@@ -1,0 +1,20 @@
+---
+layout: post
+title: 美しき git log --graph のエイリアス
+published: true
+---
+<p>"git log --graph --pretty=oneline" でもいいんだけど、情報として物足りない。</p>
+<p>こんな感じの美しさになります。</p>
+<p>[[posterous-content:DqfCrIrDawqIgrjEIrkm]]</p>
+<p>.gitconfigのエイリアスは下記のように設定します。</p>
+<div class="CodeRay">
+  <div class="code"><pre>[alias]
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset' --abbrev-commit --date=relative
+    lga = log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset' --abbrev-commit --date=relative</pre></div>
+</div>
+
+<p>下のほうが、allオプション付きになります。</p>
+<h3>参考</h3>
+<ul>
+<li><a href="http://www.jukie.net/bart/blog/pimping-out-git-log">pimping out git log</a></li>
+</ul>

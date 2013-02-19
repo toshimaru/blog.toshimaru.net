@@ -1,0 +1,94 @@
+---
+layout: post
+title: apache+Perl でhello world (CentOS 6)
+published: true
+---
+<p>「え？　今更パール？」って感じですが自分は書かないけど、動かす機会があったのでメモっとく。</p>
+<h3>前提</h3>
+<ul>
+<li>CentOS 6.3 (さくらVPS)</li>
+<li>apache + mod_perl</li>
+<li>目標はURIアクセスして「hello world」を出力するまで</li>
+</ul>
+<h3>apache</h3>
+<p>まずはapacheから。</p>
+<div class="CodeRay">
+  <div class="code"><pre># yum install httpd.x86_64
+# service httpd start
+Starting httpd:                                            [  OK  ]</pre></div>
+</div>
+
+<p>index.html を設置。</p>
+<div class="CodeRay">
+  <div class="code"><pre># cd /var/www/html/
+# ll
+total 0
+# vim index.html</pre></div>
+</div>
+
+<p>適当にこんな感じで。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;html&gt;
+&lt;body&gt;
+hello world!
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+</div>
+
+<p>HTTPアクセスします。</p>
+<p>hello world の画面が出てくればOK. 次はapache にperlの設定をしていきます。</p>
+<h3>mod_perl</h3>
+<p>perlモジュールインストール。</p>
+<div class="CodeRay">
+  <div class="code"><pre># yum install mod_perl.x86_64</pre></div>
+</div>
+
+<p>次はapacheの設定</p>
+<div class="CodeRay">
+  <div class="code"><pre># vim /etc/httpd/conf/httpd.conf</pre></div>
+</div>
+
+<p>AddHandler追加。</p>
+<div class="CodeRay">
+  <div class="code"><pre>AddHandler cgi-script .cgi .pl</pre></div>
+</div>
+
+<p>DirecctoryにExecCGIのオプション追加。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Options Indexes FollowSymLinks +ExecCGI</pre></div>
+</div>
+
+<p>リスタート。</p>
+<div class="CodeRay">
+  <div class="code"><pre># service httpd restart
+Stopping httpd:                                            [  OK  ]
+Starting httpd:                                            [  OK  ]
+# vim index.pl</pre></div>
+</div>
+
+<p>perlを書く。</p>
+<div class="CodeRay">
+  <div class="code"><pre>#!/usr/bin/perl
+
+print &quot;Content-type:text/html\n\n&quot;;
+print 'hello world';</pre></div>
+</div>
+
+<p>どうやらポイントは</p>
+<ul>
+<li>シェバンをつけること。</li>
+<li>HTTPレスポンスとして返すのでHTTPレスポンスヘッダ,Content-typeを出力すること。</li>
+</ul>
+<p>のようです。</p>
+<p>再アクセス。「Internal Server Error」。エラーログはこう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>(13)Permission denied: exec of '/var/www/html/index.pl' failed</pre></div>
+</div>
+
+<p>所有者をapacheにして実行権限を持たせてやる。</p>
+<div class="CodeRay">
+  <div class="code"><pre># chown apache:apache index.pl
+# chmod 744 index.pl</pre></div>
+</div>
+
+<p>再アクセス。これにてperlで、hello world が確認できました。めでたしめでたし。</p>

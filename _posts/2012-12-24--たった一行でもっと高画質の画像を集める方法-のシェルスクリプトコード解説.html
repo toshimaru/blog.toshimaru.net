@@ -1,0 +1,23 @@
+---
+layout: post
+title: 「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説
+published: true
+---
+<p><a href="http://d.hatena.ne.jp/shi3z/20121217/1355695824">たった一行でもっと高画質の画像を集める方法</a>にあったシェルスクリプトのコード。</p>
+<div class="CodeRay">
+  <div class="code"><pre>matome_url=$1;cnt=0;
+for j in {1..10}; do
+for i in `curl $matome_url\?page=$j| grep '_jWidgetData' | sed s/\&amp;quot\;/\&quot;/g|grep -o &quot;url\&quot;\:\&quot;[^\&quot;]*&quot; | cut -d \&quot; -f 3 `; do
+  curl -o $2_$cnt.jpg $i;
+  cnt=`expr $cnt + 1 `;
+done
+done</pre></div>
+</div>
+
+<p>その中の１行、このコードの意味がよくわからなかったので調べてみた。</p>
+<div class="CodeRay">
+  <div class="code"><pre>curl $matome_url\?page=$j| grep '_jWidgetData' | sed s/\&amp;quot\;/\&quot;/g|grep -o &quot;url\&quot;\:\&quot;[^\&quot;]*&quot; | cut -d \&quot; -f 3</pre></div>
+</div>
+
+<p><script src="https://gist.github.com/b1be508f03999ba8fbbe.js"></script></p>
+<p>いやぁ、この「◯◯で水着画像を集める」系のネタ元はphpでしたが、シェルでもいけちゃうんですね。奥深い・・・</p>
