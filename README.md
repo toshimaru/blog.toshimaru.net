@@ -7,3 +7,4 @@ TODO
 ----
 
 * design
+* favicon.ico
