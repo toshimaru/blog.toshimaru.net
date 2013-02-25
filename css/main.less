@@ -2,9 +2,9 @@
 
 @main-width: 700px;
 @line-height: 20px;
-@footer-div-width: 230px;
 @main-fontsize: 16px;
 @min-height: 470px;
+@footer-div-width: 220px;
 
 body {
   line-height: 25px;
@@ -21,11 +21,11 @@ header {
   padding: 18px 15px;
   background: rgba(255, 255, 255, 0.7);
   color: #E6218B;
-  min-height: 30px;
+  min-height: 28px;
+  font-size: 22px;
 
   a {
     color: inherit;
-
     &:hover {
       color: #F373B9;
       text-decoration: none;
@@ -36,26 +36,57 @@ header {
     line-height: @line-height;
     padding: 10px 20px;
   }
-}
 
-#logo {
-  position: absolute;
-  top:0;
-}
-
-#navigation {
-  margin: 0 auto;
-  float: right;
-
-  a {
-    padding: 0px 16px;
-    font-size: 22px;
-  }
-
-  .linemenu {
+  #toggle-menu {
+    float: right;
     display: none;
     color: black;
+    cursor: pointer;
+    &:hover {
+      color:#666;
+    }
   }
+
+  #logo {
+    position: absolute;
+    top:0;
+  }
+
+  #navigation {
+    text-align: right;
+
+    a {
+      padding: 0px 17px;
+    }
+
+    .navmenu {
+      display: inline;
+    }
+  }
+
+  /* responsive */
+  @media only screen and (max-width: @main-width) {
+
+    #toggle-menu {
+      display: block;
+    }
+
+    #toggle-item {
+      display:none;
+    }
+
+    .active {
+      #toggle-item {
+        display:block;
+      }
+      
+      a {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+
 }
 
 /* content */
@@ -73,9 +104,10 @@ header {
   min-height: @min-height;
 
   .date {
-    font-size: 13px;
+    font-size: 11px;
     color: #999;
     margin-bottom: 25px;
+    text-decoration: underline;
   }
 
   .title {
@@ -113,7 +145,6 @@ header {
   .content {
     a {
       color: #008DA8;
-
       &:hover { 
         text-decoration: none;
         border-bottom: 1px dashed;
@@ -128,28 +159,26 @@ header {
 
   .separator {
     margin: 60px auto 40px;
-    height: 30px;
     max-width: 280px;
-    border-style: solid;
-    border-color: #aaa;
     border-width: 1px 0 0 0;
-    border-radius: 20px;
+    .separator-style();
 
     &:before { 
       display: block;
       content: "";
-      height: 30px;
       margin-top: -31px;    
-      border-style: solid;
-      border-color: #aaa;
       border-width: 0 0 1px 0;
-      border-radius: 20px;
+      .separator-style();
     }
   }
-
 }
 
-
+/* responsive */
+@media only screen and (max-width: @main-width) {
+  #contents {
+    .responsive-side-padding();
+  }
+}
 
 /* footer */
 
@@ -168,7 +197,6 @@ footer {
   }
 
   .wrapper {
-
     #left {
       padding-left: 0;
       padding-right: 10px;
@@ -188,6 +216,18 @@ footer {
       padding-right: 0;
       width: @footer-div-width;
       float: left;
+    }
+  }
+
+  @media only screen and (max-width: @main-width) {
+    .main {
+      .responsive-side-padding();
+    }
+
+    .wrapper {
+      #left,#center,#right {
+        width: 100%;
+      }
     }
   }
 }
@@ -236,11 +276,15 @@ li {
 }
 
 
+/* less functions */
+.responsive-side-padding() {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 
-@media screen and (max-width: @main-width) {
-
-  #navigation {
-    display:none;
-  }
-  
+.separator-style() {
+  height: 30px;
+  border-style: solid;
+  border-color: #aaa;
+  border-radius: 20px;
 }
