@@ -48,7 +48,7 @@ header {
     display: none;
     color: black;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
     margin-right: 20px;
     margin-bottom: 10px;
 
@@ -62,7 +62,7 @@ header {
     top:0;
   }
 
-  #navigation {
+  #toggle-item {
     text-align: right;
     padding-top:20px;
 
@@ -167,7 +167,7 @@ footer {
   background: #000 url('/images/navy.png');
   margin-top: 40px;
   padding-top: 10px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   color: #eee;
 
   h2 {
@@ -177,6 +177,7 @@ footer {
   }
 
   .wrapper {
+    padding-bottom: 30px;
 
     #left {
       padding-left: 0;
@@ -200,12 +201,17 @@ footer {
     }
   }
 
+  .credit {
+  }
+
 }
 
 /* responsive */
 @media only screen and (max-width: @main-width) {
   header {
     position: absolute;
+    border-bottom: 1px solid #bbb;
+    background-color: white;
 
     #toggle-menu {
       display: block;
@@ -213,26 +219,35 @@ footer {
 
     #toggle-item {
       display:none;
-      margin-top: 40px;
+      margin-top: 50px;
     }
 
     .active {
       #toggle-item {
         display:block;
         text-align: left;
-      }
-      
-      a {
-        display: block;
+
+        a {
+          display: block;
+          padding-top: 6px;
+          padding-bottom: 6px;
+          .responsive-side-padding();
+          border-top: 1px solid #bbb;
+        }
       }
     }
   }
+
   body {
     .responsive-side-padding();
   }
 
   footer {
     .responsive-side-margin();
+
+    .main {
+      .responsive-side-padding();
+    }
 
     .wrapper {
       #left,#center,#right {
