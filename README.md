@@ -6,5 +6,9 @@ this is temporary repo for my new blog. after publish, opensource it
 TODO
 ----
 
-* design
-* favicon.ico
+* add site search form
+* page
+	* about
+	* archive
+* pagination design
+* modernize [blockquote](http://tympanus.net/codrops/2012/07/25/modern-block-quote-styles/)
