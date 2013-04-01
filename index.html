@@ -5,14 +5,14 @@ layout: default
 {% for post in paginator.posts %}
   <!-- here add you post markup -->
   <h1><a href="{{ post.url }}" class="title">{{ post.title }}</a></h1>
-  <div class="date">{{ post.date | date_to_string }}</div>
+  <div class="meta">Posted: <span>{{ post.date | date_to_string }}</span> Tags: {{ post | tags }}
+  </div>
   <div class="content">
     {{ post.content }}
   </div>
   {% if forloop.last == false %}<hr class="separator">{% endif %}
 {% endfor %}
 
-<!-- Pagination links -->
 <div class="pagination">
   {% if paginator.previous_page %}
     <a href="/page{{paginator.previous_page}}" class="previous">Previous</a>
