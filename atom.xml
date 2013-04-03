@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Hack Your Design!]]></title>
+  <link href="/atom.xml" rel="self"/>
+  <link href="/"/>
+  <updated>2013-04-04T02:44:04+09:00</updated>
+  <id>/</id>
+  <author>
+    <name><![CDATA[Toshimaru]]></name>
+  </author>
+
+  
+  <entry>
+    <title type="html"><![CDATA[npm install -g yo => npm ERR! error rolling back Error: ENOTEMPTY　の解決方法]]></title>
+    <link href="/npm-install-g-yo-npm-err-error-rolling-back-e/"/>
+    <updated>2013-02-18T00:00:00+09:00</updated>
+    <id>/npm-install-g-yo-npm-err-error-rolling-back-e</id>
+    <content type="html"><![CDATA[<p><a href="http://yeoman.io/index.html">[[posterous-content:JHcrAgpzBvopfkgduxuj]]yeoman</a> の1.0Betaがリリースされました。さっそく使ってみようとインストール。</p>
+<div class="CodeRay">
+  <div class="code"><pre>npm install -g yo</pre></div>
+</div>
+
+<p>するとエラーでこけます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>npm ERR! error rolling back Error: ENOTEMPTY, rmdir '/usr/local/lib/node_modules/yo/node_modules/yeoman-generator/node_modules/glob'
+npm ERR! error rolling back yeoman-generator@0.10.0 { [Error: ENOTEMPTY, rmdir '/usr/local/lib/node_modules/yo/node_modules/yeoman-generator/node_modules/glob']
+npm ERR! error rolling back errno: 53,
+npm ERR! error rolling back code: 'ENOTEMPTY',
+………</pre></div>
+</div>
+
+<p>via <a href="https://github.com/yeoman/yeoman/issues/929">Yeoman install errors</a></p>
+<p>どうやらbrewなどで下記の環境だと問題が出る。</p>
+<ul>
+<li>OS: Mac OS X 10.8.2</li>
+<li>Node: v0.8.20</li>
+<li>npm: 1.2.11</li>
+</ul>
+<p>一時的な解決方法としては、バージョンダウンすること。</p>
+<div class="CodeRay">
+  <div class="code"><pre>npm install -g npm@1.2.10</pre></div>
+</div>
+
+<p>これでOKでした。まだまだnode周りはバギーだなぁ。</p>
+<hr />
+<p>ところでこのyeomanすごく良い感じ。「モダンアプリケーションのためのモダンなワークフロー」と歌っているだけあって、かなり強力なJSの運用ソリューションになりそう。</p>
+<ul>
+<li>yo でアプリケーションをscaffold</li>
+<li>bower でJSのパッケージ管理</li>
+<li>grunt でビルド</li>
+</ul>
+<p>まさに「モダン」って感じ。今後に期待！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Qiita 2-day Hackathon に参加してきました！]]></title>
+    <link href="/qiita-2-day-hackathon/"/>
+    <updated>2013-02-06T00:00:00+09:00</updated>
+    <id>/qiita-2-day-hackathon</id>
+    <content type="html"><![CDATA[<p><a href="http://qiitahackathon03.peatix.com/">Qiita 2-day Hackathon</a>に参加してきました。</p>
+<p>僕にとっての初めてのハッカソン参加となりました。残念ながら入賞はなりませんでしたがとてもいい経験になりました。</p>
+<h2>開発テーマ</h2>
+<p>ハッカソンのテーマは「GitHub APIを用いた開発+プログラマの問題を解決するサービス」でした。僕がそれでつくったのはこちら。</p>
+<p><a href="http://github-tl.toshimaru.net/" target="_blank">Github Timeline</a></p>
+<p>[[posterous-content:bBilBrtnszpnqEypBBtj]]</p>
+<h2>動機</h2>
+<p>githubのNews Feedを僕はよく見るのだけど、もっとキャッチーにTwitterのように見れたらよくない？</p>
+<h2>アーキテクチャ</h2>
+<ul>
+<li>backend     
+<ul>
+<li>sinatra</li>
+<li>heroku</li>
+</ul>
+</li>
+<li>frontend     
+<ul>
+<li>jQuery</li>
+<li>hogan.js</li>
+<li>less.js</li>
+</ul>
+</li>
+</ul>
+<p>frontendの実装については、以前作った<a href="http://blog.toshimaru.net/twitter-search-api-js">twitterの検索</a>の経験が生きた。あと、微妙に以前書いた<a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax">jQuery deferred のテク</a>を使ったり。</p>
+<h2>発表スライド</h2>
+<p>ハッカソンの発表で使った発表スライドはこちらです。</p>
+<p><a href="http://toshimaru.net/slides/github_hackathon/#/">http://toshimaru.net/slides/github_hackathon/#/</a></p>
+<p>[[posterous-content:axbFecabhxeBuFimvhGI]]</p>
+<p>ちなみにこちらのプレゼンテーションはWEBで動いてますが、JSプレゼンテーションフレームワークには<a href="http://lab.hakim.se/reveal-js/">reveal.js</a>を使わせてもらいました。プレゼンには<a href="http://bartaz.github.com/impress.js/#/bored">impress.js</a><a>&nbsp;</a><a href="http://flowtime-js.marcolago.com/">flowtime.js</a> <a href="http://imakewebthings.com/deck.js/">deck.js</a>を検討しましたが、パッと見て一番簡単に作れそうなrevealを採用させてもらいました。</p>
+<h2>審査基準</h2>
+<p>実際に作ったものに対する審査基準は下記でした。こんな感じでハッカソンの成果物が評価されるんですね。</p>
+<ul>
+<li>実際にプログラマの問題を解決 できそうか</li>
+<li>多くのプログラマが幸せになれそうか</li>
+<li>アイデアはよいか</li>
+<li>完成度</li>
+</ul>
+<h2>ハッカソンを終えてみて</h2>
+<p>開発時間は二日間のうち、1日目13:00~2日目15:00の26時間くらいありました。僕は朝までぶっ通しで開発して、朝になって三時間ほど睡眠してまた開発、という感じでやりました。</p>
+<p>今回のバックエンド・アーキテクチャで使用したRubyアプリケーション(sinatra)、herokuへのデプロイ、両方ともに初めてでした。なので1日目の間にこの辺のやり方はケリをつけておきたくて、それらを朝までに集中してやって目処をつけておきました。目処はついたタイミングで休んだのでそのあと発表までは、かなり余裕をもって望むことができました。このへんの時間配分に関してはよかったと思ってます。</p>
+<p>ちょっと残念だったこととしては、僕はNews Feedをよくチェックするので本アプリケーションを作ったわけですが、周囲の反応を見てると他の開発者の方々はそこまでNews Feedをチェックしていないようで、そこまで同意を得られなかったことでしょうか。たくさんの開発者が「これは便利！すぐ使いたい！」となるようなアイディアを発案できなかったのは残念です。最優秀賞をとった方はやはり、みんなすぐに「いいね！」という反応が得られるアイデアでした。</p>
+<p>今回のハッカソンは個人参加でしたが、今度はチーム参加もしてみたいと思いました。</p>
+<h2>PJ(Github COO)と話す！</h2>
+<p>Github COO の<a href="https://github.com/pjhyett">PJ</a>とも僕の拙い英語ですが話すことができました。「Githubにおいて重要なことって何ですか？」と聞くと、「オープンソースだ。自分のプロジェクトを公開する、それが何より重要だ。」と答えたので、「なるほど。そういう意味じゃGithubはオープンソースしたい開発者にとっては最高な場所だよね！」というとPJがすごく嬉しそうに微笑んでたのが印象的でした。</p>
+<p>僕が作ったモノに対しても聞いてみると、「Coolなアプリケーションだったぜ」といってくれたのが（お世辞だとしても）嬉しかったです。</p>
+<h2>最後に</h2>
+<p>入賞を目指すべく、APIについてしっかり予習して当日望んだわけですが、入賞ならず残念。。。だたPJと話せたりいろんなプログラマの「ハック」も見れて良い経験になりました。最終的に動くものを公開できたことも良かったです。</p>
+<p>イベント最後にはGithubからMicroプラン１年無料券をいただけるという粋なプレゼントもあり、素晴らしいハッカソンでした。開催していただいたQiitaおよびスタッフの皆様、ありがとうございました。</p>
+<p>そして2日間のハッカソンを走りきった開発者の皆様、お疲れ様でした！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[mac]mkmf.rb can't find header files for ruby]]></title>
+    <link href="/macmkmfrb-cant-find-header-files-for-ruby/"/>
+    <updated>2013-01-18T00:00:00+09:00</updated>
+    <id>/macmkmfrb-cant-find-header-files-for-ruby</id>
+    <content type="html"><![CDATA[<p>Macでrailsをインストールしようとしたときにこんなエラー。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo gem install rails
+Building native extensions. This could take a while…
+ERROR: Error installing rails:
+ ERROR: Failed to build gem native extension.
+
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby extconf.rb
+mkmf.rb can't find header files for ruby at /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/ruby.h</pre></div>
+</div>
+
+<p>いろいろ調べたところ結局macのCommand line toolsがインストールされていないことが原因のよう。XcodeからそれをインストールしてOK（下記参照）.</p>
+<p><a href="http://nantekottai.com/2012/03/31/xcode-command-line-tools/">XcodeのCommand Line Tools</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[【jQuery】hidden inputタグをjQueryで追加]]></title>
+    <link href="/jqueryhidden-inputjquery/"/>
+    <updated>2013-01-17T00:00:00+09:00</updated>
+    <id>/jqueryhidden-inputjquery</id>
+    <content type="html"><![CDATA[<p><code>document.createElement</code>で要素をJS内でhiddenフィールドを動的に生成しているコードを見てjQueryで簡潔に書けないかと調べた。</p>
+<p><script src="https://gist.github.com/1044d12b5de8d920cdd9.js"></script></p>
+<p><code>document.createElement</code> よりは直感的にスッキリかけていいかな。</p>
+<h3>参考</h3>
+<ul>
+<li><a href="http://stackoverflow.com/questions/2408043/jquery-create-hidden-form-element-on-the-fly">Jquery - Create hidden form element on the fly</a></li>
+<li><a href="http://stackoverflow.com/questions/268490/jquery-document-createelement-equivalent">jQuery document.createElement equivalent?</a></li>
+</ul>
+<p>&nbsp;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説]]></title>
+    <link href="/sh3iz/"/>
+    <updated>2012-12-24T00:00:00+09:00</updated>
+    <id>/sh3iz</id>
+    <content type="html"><![CDATA[<p><a href="http://d.hatena.ne.jp/shi3z/20121217/1355695824">たった一行でもっと高画質の画像を集める方法</a>にあったシェルスクリプトのコード。</p>
+<div class="CodeRay">
+  <div class="code"><pre>matome_url=$1;cnt=0;
+for j in {1..10}; do
+for i in `curl $matome_url\?page=$j| grep '_jWidgetData' | sed s/\&amp;quot\;/\&quot;/g|grep -o &quot;url\&quot;\:\&quot;[^\&quot;]*&quot; | cut -d \&quot; -f 3 `; do
+  curl -o $2_$cnt.jpg $i;
+  cnt=`expr $cnt + 1 `;
+done
+done</pre></div>
+</div>
+
+<p>その中の１行、このコードの意味がよくわからなかったので調べてみた。</p>
+<div class="CodeRay">
+  <div class="code"><pre>curl $matome_url\?page=$j| grep '_jWidgetData' | sed s/\&amp;quot\;/\&quot;/g|grep -o &quot;url\&quot;\:\&quot;[^\&quot;]*&quot; | cut -d \&quot; -f 3</pre></div>
+</div>
+
+<p><script src="https://gist.github.com/b1be508f03999ba8fbbe.js"></script></p>
+<p>いやぁ、この「◯◯で水着画像を集める」系のネタ元はphpでしたが、シェルでもいけちゃうんですね。奥深い・・・</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Vimから３日で乗り換えた、次世代モテエディタ「Sublime Text 2」の魅力]]></title>
+    <link href="/vimsublime-text-2/"/>
+    <updated>2012-12-18T00:00:00+09:00</updated>
+    <id>/vimsublime-text-2</id>
+    <content type="html"><![CDATA[<p>本エントリは<a href="http://www.adventar.org/calendars/20">Sublime Text 2 Advent Calendar 2012</a>の19日目の記事として書きます。</p>
+<p>前回の<a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax">軽めのjQuery Advent Calendar 2012</a>に続いて2012年２回目のAdvent Calendar参加となります！</p>
+<hr />
+<p>クリスマス直前だのにこんな記事を読んでいる<span style="text-decoration: line-through;">モテない</span>勉強熱心な開発者の皆様、こんにちわ。クリスマスが近い今日は次世代「モテ」エディタと名高い（ソースは俺）、Sublime Text 2の魅力について大いに語ってみたいと思う。</p>
+<p>[[posterous-content:jJyEcqwbFxhfmFFuGdhw]]</p>
+<h3>暗黒Vim時代</h3>
+<p>Sublime前はVimを使っていたけど、イマイチぱっとしない（モテない）。モテなそうなところというと、、、</p>
+<ul>
+<li><strong>環境毎の違い。</strong> VimといえばOS、環境を選ばず使えるエディタだ！なんてことよく聞くけどその微妙な環境ごとの挙動の差異がきになる。CUIとGUIじゃ全然使い勝手違うし、WindowsとMacでも微妙に違う（文字選択とかヤンクとか）。TPOに応じて適切に振る舞えるオトコがモテるというものです。</li>
+<li><strong>嵩む設定ファイル。</strong> よくVimは自分専用にカスタマイズできる！とか言ってゴテゴテのガチャガチャにカスタマイズをしている（薦めている）人を見かけますが、逆にいうとカスタマイズしなければ使いにくいということ。一生懸命着飾って良くなろうとすることも重要ですが、ナチュラルに良いのならそれに越したことはないでしょう？</li>
+<li><strong>オタク系キーバインド（俺命名）。</strong> 一般人にEmacsやVimを使わせてみてください。ドン引きです。jkでカーソルが移動するとか意味不明です。あなたがJK好きのロリ変態に間違われる危険性もあります。また、真っ黒な画面に白文字でドヤ顔でEnterキーを打鍵しているあなた。それを後ろで見ている一般人はドン引きです。１つのモノゴトに集中するのはけっこうですが、一般人の理解の範疇に留めておきましょう。</li>
+<li><strong>Vim Scriptェ。</strong>まるで宇宙語。モテる男ならやっぱruby,pythonとか高級言語を使いたいよね〜。</li>
+</ul>
+<h3>Sublimeとの出会い - when I fell in love</h3>
+<p>そんな感じで「新しいイケてるナウでヤングなエディタないかな〜」と探してた折、海外で人気っぽいエディタがあるという噂を聞きつけ試用したのが<a href="http://www.sublimetext.com/2">Sublime Text 2</a>でした。１日使ってその魅力に取り憑かれ、二日目にライセンス購入し、３日目にはもうお前しかいない！となりました。</p>
+<p>日本でも最近よく耳にしたりするようになったので、ジワジワとSublime Text 2の魅力が認知され始めているようです。</p>
+<p>それではそんなSublime Text 2の魅力を語ってみたいと思う。</p>
+<h2>魅力１　クールなデザイン</h2>
+<p>Sublime Text 2のデザインは超クール。パッと見はChromeのような洗練されたシンプルさを感じます。</p>
+<p>[[posterous-content:xDiiulcHvzBmCmwDwtfH]]</p>
+<p>またデフォルトで用意されているColor Scheme もイケてるものばかり。流行りの<a href="http://ethanschoonover.com/solarized">Solarized</a> もありますし、ダーク系なMonokai、ライト系のLAZYのようなColor Schemeもあります。どれか１つでも気に入ったものが見つかるでしょう。</p>
+<p>もしなかったとしても<a href="http://tmtheme-editor.herokuapp.com/">Color Scheme Editor for Sublime</a>で自分好みのモノを作ってもいいですし、後述するパッケージマネージャからお好きなものを入れてもいい。</p>
+<p>※Color Scheme Editor for Sublimeについては<a href="http://d.hatena.ne.jp/pikotea/20121204/1354613192">本Advent Calendar１日目の記事</a>で書かれています！</p>
+<p>全体的な見た目が気に食わなければ Theme を好みのモノに入れ替えてやればよいです。</p>
+<p>[[posterous-content:yfjwHvfgJklkFgzEIzul]]Night.sublime-theme + Monokai</p>
+<h2>魅力２　無限に広がるコマンドパレット</h2>
+<p>Vimでいうところの<code>:</code>でしょうか。<code>Ctrl + Shift + P</code> で展開するコマンドパレット。ここからgitのコマンドを実行したり（要 Git Package）、Syntaxを設定したり、各種プラグインを実行したり、各種設定ファイルを開いたりできます。</p>
+<p>他にも</p>
+<ul>
+<li><code>⌘ + P</code> でのファイルオープン(eclipse でいうところの <code>Ctrl + Shift + R</code>) </li>
+<li><code>⌘ + R</code> での関数ジャンプ (vimでいうところの <code>]]</code> <code>[[</code>&nbsp;)</li>
+</ul>
+<p>なんかが便利です。</p>
+<h2>魅力３　パッケージマネージャ</h2>
+<p>Sublime Text 2の一番の魅力かもしれないところ。プラグインをコマンドパレットでさくさくインストール・アンインストールできます。プラグインはpythonで書くことができ、Sublime Textを愛用する開発者が、活発にプラグインをgithub上に公開しています。</p>
+<p>パッケージマネージャの導入は簡単。<code>ctrl+`</code>でコンソールを開いてこれを実行するだけ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>import urllib2,os; pf='Package Control.sublime-package'; ipp=sublime.installed_packages_path(); os.makedirs(ipp) if not os.path.exists(ipp) else None; urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler())); open(os.path.join(ipp,pf),'wb').write(urllib2.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read()); print 'Please restart Sublime Text to finish installation'</pre></div>
+</div>
+
+<p><a href="http://wbond.net/sublime_packages/package_control/installation">Sublime Package Control</a></p>
+<p>あとはコマンドパレットで<code>Install Package</code> を選択してお好きなものをどうぞ。</p>
+<h2>魅力４　わかりやすい操作感</h2>
+<p>冒頭にオタク系キーバインドとか言いましたが、Sublime Textは直感的でわかりやすい操作感です。Mac/Windows それぞれに最適化されたショートカットが用意されています。</p>
+<p>英語だけどこのへんよくまとまってます。(新しいGistってtextile表現できないん&hellip;??)</p>
+<ul>
+<li>Mac版：<a href="https://gist.github.com/1207002">Sublime Text 2 - Useful Shortcuts</a></li>
+<li>Win版：<a href="https://gist.github.com/1736542">Sublime Text 2 - Useful Shortcuts</a></li>
+</ul>
+<h2>魅力５　Json Configuration</h2>
+<p>もっと自分好みに設定したいあなたも安心、Json形式のシンプルな設定ファイルがあります。コマンドパレットで  <code>Preferences: Settings - User</code> を選択。そこでいろいろ設定できます。たとえばこんなん。</p>
+<div class="CodeRay">
+  <div class="code"><pre>{
+     //フォントサイズ
+     &quot;font_size&quot;: 13,
+     //行間
+     &quot;line_padding_top&quot;: 5,
+     //タブサイズ
+     &quot;tab_size&quot;: 4,
+     //空白の削除
+     &quot;trim_trailing_white_space_on_save&quot;: true,
+     //タブやスペースなどの不過視文字を表示(お好みで)
+     &quot;draw_white_space&quot;: &quot;all&quot;,
+     //現在の選択行をハイライト表示(お好みで)
+     &quot;highlight_line&quot;:true,
+     //自動改行
+     &quot;word_wrap&quot;: true
+}</pre></div>
+</div>
+
+<p><a href="http://mnemoniqs.com/web/sublimetext2/">Sublime Text 2ってエディタがすごくイイ。Dreamweaverから乗り換えた時の初期設定とか使い方とかをメモ</a></p>
+<p>え？ Sublime Textのキーバインドが気に入らない？　そんなあなたは <code>Preferences: Key Bindings - User</code> .</p>
+<p>こちらでお好きにどうぞ。</p>
+<h2>まとめ</h2>
+<p>今年のIT系女子へのクリスマスプレゼントは、Sublime Text 2のライセンスでキマり！　Sublime Text 2は「恋に落ちるエディタ」いや、「恋に落としいれるエディタ」だったのだ！！！</p>
+<p>（全然まとめじゃない）</p>
+<hr />
+<p>では次の方どうぞ〜</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜]]></title>
+    <link href="/jquery-ajaxdeferredajax/"/>
+    <updated>2012-12-13T00:00:00+09:00</updated>
+    <id>/jquery-ajaxdeferredajax</id>
+    <content type="html"><![CDATA[<p>本エントリは<a href="http://www.adventar.org/calendars/29">軽めのjQuery Advent Calendar 2012</a>の14日目の記事として書きます。</p>
+<p>軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。。。</p>
+<h2>jQuery 1.4以前の書き方</h2>
+<p>まずは、少し古めのコード、昔のjQueryの本とかでよく見る書き方。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$.ajax({
+    url: &quot;ajax.html&quot;,
+    success: function(data) {
+       alert('success!!');
+    },
+    error: function(data) {
+       alert('error!!!');
+    }
+});</pre></div>
+</div>
+
+<h2>jQuery 1.5以上の書き方</h2>
+<p>1.5以降だと、<code>$.ajax()</code> は<a href="http://api.jquery.com/jQuery.ajax/#jqXHR">jqXHRオブジェクト</a>を返すようになります。それを利用した書き方はこう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$.ajax({
+    url: &quot;ajax.html&quot;,
+}).success(function(data){
+    alert('success!!');
+}).error(function(data){
+    alert('error!!!');
+});</pre></div>
+</div>
+
+<p>成功時の処理と失敗時の処理がajax()と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。</p>
+<h2>jQuery 1.8以上の書き方</h2>
+<p><a href="http://api.jquery.com/jQuery.ajax/">公式リファレンス</a>いわく、</p>
+<blockquote class="posterous_medium_quote">Deprecation Notice: The jqXHR.success(), jqXHR.error(), and jqXHR.complete() callbacks will be deprecated in jQuery 1.8. To prepare your code for their eventual removal, use jqXHR.done(), jqXHR.fail(), and jqXHR.always() instead.</blockquote>
+<p>つまりjQuery1.8から</p>
+<ul>
+<li><code>success()</code> は <code>done()</code> に、</li>
+<li><code>error()</code> は <code>fail()</code> に、</li>
+<li><code>complete()</code> は <code>always()</code>を</li>
+</ul>
+<p>代わりに使ってね、ってことです。ということで、success(),error()は使わない。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$.ajax({
+    url: &quot;ajax.html&quot;,
+}).done(function(data){
+    alert('success!!');
+}).fail(function(data){
+    alert('error!!!');
+});</pre></div>
+</div>
+
+<p>あるいは<code>then()</code>を用いてこう書いてもいいでしょう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$.ajax({
+    url: &quot;ajax.html&quot;,
+}).then(
+function(data){ alert('success!!'); },
+function(data){ alert('error!!');   }
+);</pre></div>
+</div>
+
+<p>then() の一個目の関数が成功時、二個目の関数が失敗時となります。</p>
+<h2>（発展編）Deferredを用いた書き方</h2>
+<p>上述した例の中でさりげなくDeferredな書き方を使っていましたが、発展編ということでこのDeferredな書き方をさらに突き詰めてみましょう。</p>
+<h3>deferredとは何か？</h3>
+<blockquote class="posterous_medium_quote">
+<p>jQuery.Deferred() introduces several enhancements to the way callbacks are managed and invoked. In particular, jQuery.Deferred() provides flexible ways to provide multiple callbacks, and these callbacks can be invoked regardless of whether the original callback dispatch has already occurred. jQuery Deferred is based on the CommonJS Promises/A design.</p>
+<p>jQuery.Deferred() はコールバック関数の管理、実行に改善をもたらします。具体的には、jQuery.Deferred()は複数のコールバックの実行を柔軟に行うことができ、これらのコールバック関数は、オリジナルのコールバックのディスパッチが発生しているかどうかにかかわらず実行されます。</p>
+</blockquote>
+<p>要はコールバック関数の実行を延期(deferred)させて、.then() .fail() .always() なんかを使って柔軟にコールバックを管理、実行できるってことです（雑）。</p>
+<p>詳しくは下記を読むとよいでしょう。</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/magazine/gg723713.aspx">Creating Responsive Applications Using jQuery Deferred and Promises</a></li>
+<li>@tokkonoPapaさんによる上記事の翻訳はこちら:<a href="http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/jquery-deferred-for-responsive-applications-basic/">jQueryのDeferredとPromiseで応答性の良いアプリをー基本編</a></li>
+</ul>
+<p>論より実践。deferredをうまく使ったAJAXコードを見てみましょう。</p>
+<p><a href="http://jsfiddle.net/toshimaru/yP58L/1/light/">jsfiddleでの実例</a></p>
+<div class="CodeRay">
+  <div class="code"><pre>var Twitter = {
+    search: function(query) {
+        var defer = $.Deferred();
+        $.ajax({
+            url: &quot;http://search.twitter.com/search.json&quot;,
+            data: {
+                q: query,
+                rpp: 50
+            },
+            dataType: 'jsonp',
+            success: defer.resolve,
+            error: defer.reject
+        });
+        return defer.promise();
+    }
+};
+
+$('#button').on('click', function() {
+    Twitter.search('jquery deferred').done(function(data) {
+        console.log(data);
+        $(data.results).each(function(k,v){ 
+           $('#tweets').append(v.text + '&lt;br/&gt;'); 
+        });
+    });
+});</pre></div>
+</div>
+
+<p>見てわかるとおり、deferredを使うことでtwitterの検索を行うAJAX部分と結果取得時のイベント処理部分が分離できます。</p>
+<p>これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは <code>Twitter.search('query hoge').done(function(){//code...})</code> と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。</p>
+<h2>（発展編２）$.when() を用いた書き方</h2>
+<p><code>$.when()</code>を用いると複数のdeferredオブジェクトをまとめて管理できます。</p>
+<p><a href="http://jsfiddle.net/toshimaru/nNMae/">jsfiddleでの実例</a></p>
+<div class="CodeRay">
+  <div class="code"><pre>// &quot;Twitter&quot; のコードは同上
+
+$('#button').on('click', function() {
+    $.when(Twitter.search('jquery deferred'), Twitter.search('jquery when')) 
+    .then(function(data1, data2){
+        console.log(data1);
+        console.log(data2);
+    });
+});</pre></div>
+</div>
+
+<p>when内のdiferredオブジェクト全ての処理が完了すると、その後の処理が発火します。複数のAJAX結果をまとめて処理したいってときに使えます。</p>
+<hr />
+<p>いかがだったでしょうか？ diferredオブジェクトを使うことでより楽しいAjaxライフが送れそうですね。ワクワクしますね。</p>
+<p>本日のコードは<a href="https://gist.github.com/4269484">gist</a>にも上げております。</p>
+<p>では次の方にバトンタッチ〜</p>
+<h3>参考</h3>
+<ul>
+<li><a href="http://d.hatena.ne.jp/aoe-tk/20110515/1305471586">jQueryのDeferredオブジェクトについて調べてみた</a></li>
+<li><a href="http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/how-happy-with-jquery-deferred-for-your-applications/">jQueryのDeferredとPromiseで応答性の良いアプリをー実践編</a></li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Untitled]]></title>
+    <link href="/171554074/"/>
+    <updated>2012-12-12T00:00:00+09:00</updated>
+    <id>/171554074</id>
+    <content type="html"><![CDATA[<p><iframe src="http://jsfiddle.net/toshimaru/yP58L/1/embedded/" frameborder="0"></iframe></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iPhone4を着せ替えしてみた。]]></title>
+    <link href="/iphone4/"/>
+    <updated>2012-12-11T00:00:00+09:00</updated>
+    <id>/iphone4</id>
+    <content type="html"><![CDATA[<p>デフォルトのiPhoneに飽きてきたので着せ替えてみた。バックパネルの交換とバンパーを装着。</p>
+<p>[[posterous-content:nCwACByfdkdisgrEtofz]]</p>
+<p>使ったアイテムはこいつらです。（クリック先はAmazonリンク）</p>
+<p><a href="http://www.amazon.co.jp/gp/product/B007VIMZZ2/ref=as_li_tf_il?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=B007VIMZZ2&amp;linkCode=as2&amp;tag=toshimaru-22"><img src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&amp;ASIN=B007VIMZZ2&amp;Format=_SL110_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=toshimaru-22" border="0" alt="" /></a><img src="http://www.assoc-amazon.jp/e/ir?t=toshimaru-22&amp;l=as2&amp;o=9&amp;a=B007VIMZZ2" border="0" height="1" alt="" style="border: none !important; margin: 0px !important;" width="1" /> <a href="http://www.amazon.co.jp/gp/product/B006ZZXLTQ/ref=as_li_tf_il?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=B006ZZXLTQ&amp;linkCode=as2&amp;tag=toshimaru-22"><img src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&amp;ASIN=B006ZZXLTQ&amp;Format=_SL110_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=toshimaru-22" border="0" alt="" /></a><img src="http://www.assoc-amazon.jp/e/ir?t=toshimaru-22&amp;l=as2&amp;o=9&amp;a=B006ZZXLTQ" border="0" height="1" alt="" style="border: none !important; margin: 0px !important;" width="1" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[php]実行速度を計測する]]></title>
+    <link href="/php-5492/"/>
+    <updated>2012-12-02T00:00:00+09:00</updated>
+    <id>/php-5492</id>
+    <content type="html"><![CDATA[<p>最初の１行＋最後の２行の３行でOK。</p>
+<p><script src="https://gist.github.com/4188781.js"></script></p>
+<p>これを使って<a href="http://blog.toshimaru.net/php-99717">処理のパフォーマンス比較をやる</a>と良い感じ。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[Linux]プロセス毎のメモリ使用量を調べるコマンド]]></title>
+    <link href="/linux/"/>
+    <updated>2012-12-02T00:00:00+09:00</updated>
+    <id>/linux</id>
+    <content type="html"><![CDATA[<p>メモリを食いつぶしてたプロセスちゃんがいたのでそれを調べるときに利用したコマンド。</p>
+<p>これでズラっとでます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre></div>
+</div>
+
+<p>ただ見づらい。なので使用量の多い順にソートしてトップ１０を出してみるとこう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre></div>
+</div>
+
+<h3>参考</h3>
+<p><a href="http://at-aka.blogspot.jp/2006/07/linux.html">Linux でプロセスごとのメモリー使用量を調べる</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[phpの@(アットマーク)はオーバーヘッドが大きいから使わないほうがよい]]></title>
+    <link href="/php-99717/"/>
+    <updated>2012-11-30T00:00:00+09:00</updated>
+    <id>/php-99717</id>
+    <content type="html"><![CDATA[<p>事の発端はこれ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>// 1. 
+if (isset($checkedAry['key']) &amp;&amp; $checkedAry['key'] == &quot;val&quot;) {
+    // 処理
+}
+
+// 2. 1より早いんじゃね？
+if ($checkedAry['key'] == &quot;val&quot;) {
+    // でもNoticeでちゃうよ！
+    // PHP Notice:  Undefined index: index
+}
+
+// 3. 2の「PHP Notice」の回避策　＠
+if (@$checkedAry['key'] == &quot;val&quot;) {
+    // 処理
+}</pre></div>
+</div>
+
+<p>１と３なら３のほうが処理早いんじゃね？ってことで試してみたところ、こうなった。 （PHP 5.3.3）</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;?php
+$ary = array(
+    array( &quot;key1&quot; =&gt; &quot;val1&quot;, &quot;key2&quot; =&gt; &quot;val2&quot;,&quot;key3&quot; =&gt; &quot;val3&quot;,&quot;key4&quot; =&gt; &quot;val4&quot;),
+    array( &quot;key1&quot; =&gt; &quot;val1&quot;, &quot;key2&quot; =&gt; &quot;val2&quot;,&quot;key3&quot; =&gt; &quot;val3&quot;),
+);
+
+$time_start = microtime(true);
+
+$index = 0;
+foreach (range(1,100000) as $count) {
+    $index = 1 - $index;
+    $checkedAry = $ary[$index];
+    if (isset($checkedAry['key4']) &amp;&amp; $checkedAry['key4'] == &quot;val4&quot;) {
+        pow($count, $count);
+    }
+}
+
+$time = microtime(true) - $time_start;
+echo &quot;$time second&quot;;
+
+
+$time_start = microtime(true);
+
+$index = 0;
+foreach (range(1,100000) as $count) {
+    $index = 1 - $index;
+    $checkedAry = $ary[$index];
+    if (@$checkedAry['key4'] == &quot;val4&quot;) {
+        pow($count, $count);
+    }
+}
+
+$time = microtime(true) - $time_start;
+echo &quot;$time second&quot;;</pre></div>
+</div>
+
+<p>３回やってみてこんな結果でした。</p>
+<div class="CodeRay">
+  <div class="code"><pre>0.098845958709717 second
+0.19816088676453 second
+
+0.097808122634888 second
+0.15862894058228 second
+
+0.10174417495728 second
+0.16551208496094 second</pre></div>
+</div>
+
+<p>つまり、<strong>＠付きのほうがそうじゃないほうより１．５倍～２倍程度遅い</strong>、ということになります。</p>
+<p>ただ、<strong>＠付きのほうがシンプルに書ける場合もある</strong>ので、今回の例のようにループさせている場合でないのであれば、＠付きを使ってもよいのかもしれません。</p>
+<h3>参考</h3>
+<p><a href="http://www.l2tp.org/?p=1523">アットマークでエラーを抑制したときのオーバーヘッドについて検証してみた with php5.3三項演算子</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[git]直前のコミットの歴史を修正する with author]]></title>
+    <link href="/git-with-author/"/>
+    <updated>2012-11-29T00:00:00+09:00</updated>
+    <id>/git-with-author</id>
+    <content type="html"><![CDATA[<p>たとえばこんなケース。</p>
+<p>[[posterous-content:fckheFIIJrnxHiFHdbqg]]</p>
+<p>のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git rebase -i HEAD~3</pre></div>
+</div>
+
+<p>こんな画面が出てきますので、</p>
+<p>[[posterous-content:muIDkgJvHAtEDFAEitqc]]</p>
+<p>pickをeditにします。</p>
+<p>[[posterous-content:GzEozhcqlcJaqkFIsADq]]</p>
+<p>こんなメッセージ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Stopped at e4269d9... modify file1.
+You can amend the commit now, with
+    git commit --amend
+Once you are satisfied with your changes, run
+    git rebase --continue</pre></div>
+</div>
+
+<p>HEADは3つ前になってます。 （ここで使っている <a href="http://blog.toshimaru.net/git-log-graph">"git lga" コマンドはこちらを参考</a>）</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git lga
+* 5a0edde - (master) add nobita-text. (20 minutes ago) &lt;nobita&gt;
+* 4a73401 - modify file2. (20 minutes ago) &lt;nobita&gt;
+* e4269d9 - (HEAD) modify file1. (20 minutes ago) &lt;nobita&gt;</pre></div>
+</div>
+
+<p>１．amendオプションつけて、authorもジャイアンに改変します。</p>
+<div class="CodeRay">
+  <div class="code"><pre>git commit --amend --author=&quot;jaian &lt;jaian@doraemon.com&gt;&quot;</pre></div>
+</div>
+
+<p>２．コミット後、rebase continueします。</p>
+<div class="CodeRay">
+  <div class="code"><pre>git rebase --continue</pre></div>
+</div>
+
+<p>１，２を繰り返します。</p>
+<p>結果、のび太君の努力の歴史はジャイアンによって改変されました。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git lga
+* 304d0c7 - (HEAD, master) add nobita-text. (16 seconds ago) &lt;jaian&gt;
+* 66b5984 - modify file2. (34 seconds ago) &lt;jaian&gt;
+* a0a26e2 - modify file1. (2 minutes ago) &lt;jaian&gt;</pre></div>
+</div>
+
+<p>大成功☆(・&omega;&lt;)</p>
+<h3>参考</h3>
+<p><a href="http://git-scm.com/book/en/Git-Tools-Rewriting-History">6.4 Git Tools - Rewriting History</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[Mac][git]error: There was a problem with the editor 'vi'.]]></title>
+    <link href="/macgiterror-there-was-a-problem-with-the-edit/"/>
+    <updated>2012-11-28T00:00:00+09:00</updated>
+    <id>/macgiterror-there-was-a-problem-with-the-edit</id>
+    <content type="html"><![CDATA[<h3>Problem</h3>
+<p>MacのVimにてコミットメッセージを書いて"wq"するとこんなエラーが出た。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git commit
+error: There was a problem with the editor 'vi'.
+Please supply the message using either -m or -F option.</pre></div>
+</div>
+
+<h3>Solution</h3>
+<p>明示的に使用するエディタをvimの絶対パスを設定してあげればOK.</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git config --global core.editor /usr/bin/vim</pre></div>
+</div>
+
+<h3>参考</h3>
+<p><a href="http://tooky.co.uk/2010/04/08/there-was-a-problem-with-the-editor-vi-git-on-mac-os-x.html"> Fixing "There was a problem with the editor 'vi'" for Git on Mac OS X Snow Leopard</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[scala] play framework with Mac]]></title>
+    <link href="/scala-play-framework-with-mac/"/>
+    <updated>2012-11-10T00:00:00+09:00</updated>
+    <id>/scala-play-framework-with-mac</id>
+    <content type="html"><![CDATA[<p>Macを使い、今一部で流行っているらしいScalaによるWebフレームワーク、<a href="http://www.playframework.org/">playframework</a>を動かしてみます。</p>
+<h3>インストール</h3>
+<p><a href="http://mxcl.github.com/homebrew/">homebrew</a>を使えばscalaおよびplayフレームワークは簡単にイントールできます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>brew install play
+brew install scala</pre></div>
+</div>
+
+<p>確認してみます。can play?</p>
+<div class="CodeRay">
+  <div class="code"><pre>play
+       _            _ 
+ _ __ | | __ _ _  _| |
+| '_ \| |/ _' | || |_|
+|  __/|_|\____|\__ (_)
+|_|            |__/ 
+
+play! 2.0.2, http://www.playframework.org
+
+This is not a play application!
+
+Use `play new` to create a new Play application in the current directory, 
+or go to an existing application and launch the development console using `play`.
+
+You can also browse the complete documenta</pre></div>
+</div>
+
+<p>can scala?</p>
+<div class="CodeRay">
+  <div class="code"><pre>scala -version
+Scala code runner version 2.9.2 -- Copyright 2002-2011, LAMP/EPFL</pre></div>
+</div>
+
+<h3>アプリケーション作成</h3>
+<p>create new play application.</p>
+<div class="CodeRay">
+  <div class="code"><pre>play new first_app
+
+What is the application name? 
+&gt; first_app
+
+Which template do you want to use for this new application? 
+
+  1 - Create a simple Scala application
+  2 - Create a simple Java application
+  3 - Create an empty project
+
+&gt; 1
+
+OK, application first_app is created.
+
+Have fun!</pre></div>
+</div>
+
+<p>これで起動する準備は完了。</p>
+<h3>アプリケーション起動</h3>
+<p>run application.</p>
+<div class="CodeRay">
+  <div class="code"><pre>cd first_app/
+play
+[first_app] $ run</pre></div>
+</div>
+
+<div class="CodeRay">
+  <div class="code"><pre>[first_app] $ run
+
+--- (Running the application from SBT, auto-reloading is enabled) ---
+
+[info] play - Listening for HTTP on port 9000...</pre></div>
+</div>
+
+<p><a href="http://localhost:9000/">http://localhost:9000/</a> で下記の画面が確認できればOK.</p>
+<p>[[posterous-content:FqyvvyIFkkqgqemJgnHJ]]</p>
+<h3>What's next step?</h3>
+<p>サンプルアプリケーションで実装例を見てみると良いでしょう。</p>
+<ul>
+<li><a href="http://www.playframework.org/documentation/2.0.4/Samples">Sample applications</a></li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[php] array_merge VS array +(plus)]]></title>
+    <link href="/php-arraymerge-vs-plus/"/>
+    <updated>2012-10-30T00:00:00+09:00</updated>
+    <id>/php-arraymerge-vs-plus</id>
+    <content type="html"><![CDATA[<p>PHPのarray_merge関数による配列の足し合わせとプラス（＋）による足し合わせってどう違うの？ってことで実際に試してみた。</p>
+<p><script src="https://gist.github.com/3978567.js"></script></p>
+<p>上記から、同じキーで足し合わせたとき、array_mergeでは後からきたarray（第二引数）で先のarray(第一引数)を上書きして、プラスの加算のほうではすでに最初のキーで定義してある値はプラスによる加算によってその値は変化しないことがわかります。</p>
+<h4>まとめ</h4>
+<ul>
+<li><strong>array_merge() は後勝ち</strong></li>
+<li><strong>+ (プラス)は先勝ち</strong></li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Git のコミットメッセージの書き方]]></title>
+    <link href="/git-29764/"/>
+    <updated>2012-10-15T00:00:00+09:00</updated>
+    <id>/git-29764</id>
+    <content type="html"><![CDATA[<p>書き方というよりも、お作法というべきでしょうか。だいたい下記のURLの通りですが備忘録として残しておく。</p>
+<p><a href="http://keijinsonyaban.blogspot.jp/2011/01/git.html">【翻訳】Gitのコミットメッセージに関する注意点</a></p>
+<p>引用します。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Short (50 chars or less) summary of changes
+
+More detailed explanatory text, if necessary.  Wrap it to about 72
+characters or so.  In some contexts, the first line is treated as the
+subject of an email and the rest of the text as the body.  The blank
+line separating the summary from the body is critical (unless you omit
+the body entirely); tools like rebase can get confused if you run the
+two together.
+
+Write your commit message in the present tense: &quot;Fix bug&quot; and not &quot;Fixed
+bug.&quot;  This convention matches up with commit messages generated by
+commands like git merge and git revert.
+
+Further paragraphs come after blank lines.
+
+- Bullet points are okay, too
+
+- Typically a hyphen or asterisk is used for the bullet, preceded by a
+  single space, with blank lines in between, but conventions vary here
+
+- Use a hanging indent</pre></div>
+</div>
+
+<div class="CodeRay">
+  <div class="code"><pre>変更に対する短い（50文字以下の）要約
+
+もし必要なら、より詳しい説明を述べる。約72文字ほどで折り返すようにせよ。
+ある文脈では、最初の行はE-Mailの件名になり、残りのテキストが本文になる。
+空行で本文と要約を分離するのは絶対に必要だ（本文を省略していない限り）。
+もしも二つを繋げてしまうと、rebaseのようなツールが混乱する可能性がある。
+
+現在時制でコミットメッセージを書くこと。&quot;Fixed bug&quot;ではなく&quot;Fix bug&quot;だ。
+この慣習は git merge や git revert のようなコマンドが生成したコミット
+メッセージと調和する。
+
+さらなる段落があれば空行の後に続けられる。
+
+- 箇条書きも問題ない
+
+- 箇条書きにはハイフンかアスタリスクが使われ、一つスペースを空けてから
+  書き始め、合間には空行が入るのが通常だが、この部分の慣習は多種多様だ
+
+- ぶら下げインデント(一行目だけ飛び出して後はインデントする)を使うこと</pre></div>
+</div>
+
+<p>ポイントをまとめるとこう。</p>
+<ul>
+<li><strong>１行目はコミットの要約を記述。 </strong>
+<ul>
+<li><strong>要約は50文字くらいに収めること。</strong></li>
+</ul>
+</li>
+<li><strong>メッセージの詳細は三行目以降に記述。2行目は空行にすること。</strong></li>
+<li><strong>時制は現在時制。過去形は使わない。</strong></li>
+<li><strong>詳細は箇条書きでも文章でもOK。</strong></li>
+<li><strong>72文字で折り返すように記述。</strong></li>
+</ul>
+<p>みんな（自分も含む）が読みやすいコミットメッセージを！！！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[apache+Perl でhello world (CentOS 6)]]></title>
+    <link href="/apacheperl-hello-world-centos-6/"/>
+    <updated>2012-10-14T00:00:00+09:00</updated>
+    <id>/apacheperl-hello-world-centos-6</id>
+    <content type="html"><![CDATA[<p>「え？　今更パール？」って感じですが自分は書かないけど、動かす機会があったのでメモっとく。</p>
+<h3>前提</h3>
+<ul>
+<li>CentOS 6.3 (さくらVPS)</li>
+<li>apache + mod_perl</li>
+<li>目標はURIアクセスして「hello world」を出力するまで</li>
+</ul>
+<h3>apache</h3>
+<p>まずはapacheから。</p>
+<div class="CodeRay">
+  <div class="code"><pre># yum install httpd.x86_64
+# service httpd start
+Starting httpd:                                            [  OK  ]</pre></div>
+</div>
+
+<p>index.html を設置。</p>
+<div class="CodeRay">
+  <div class="code"><pre># cd /var/www/html/
+# ll
+total 0
+# vim index.html</pre></div>
+</div>
+
+<p>適当にこんな感じで。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;html&gt;
+&lt;body&gt;
+hello world!
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+</div>
+
+<p>HTTPアクセスします。</p>
+<p>hello world の画面が出てくればOK. 次はapache にperlの設定をしていきます。</p>
+<h3>mod_perl</h3>
+<p>perlモジュールインストール。</p>
+<div class="CodeRay">
+  <div class="code"><pre># yum install mod_perl.x86_64</pre></div>
+</div>
+
+<p>次はapacheの設定</p>
+<div class="CodeRay">
+  <div class="code"><pre># vim /etc/httpd/conf/httpd.conf</pre></div>
+</div>
+
+<p>AddHandler追加。</p>
+<div class="CodeRay">
+  <div class="code"><pre>AddHandler cgi-script .cgi .pl</pre></div>
+</div>
+
+<p>DirecctoryにExecCGIのオプション追加。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Options Indexes FollowSymLinks +ExecCGI</pre></div>
+</div>
+
+<p>リスタート。</p>
+<div class="CodeRay">
+  <div class="code"><pre># service httpd restart
+Stopping httpd:                                            [  OK  ]
+Starting httpd:                                            [  OK  ]
+# vim index.pl</pre></div>
+</div>
+
+<p>perlを書く。</p>
+<div class="CodeRay">
+  <div class="code"><pre>#!/usr/bin/perl
+
+print &quot;Content-type:text/html\n\n&quot;;
+print 'hello world';</pre></div>
+</div>
+
+<p>どうやらポイントは</p>
+<ul>
+<li>シェバンをつけること。</li>
+<li>HTTPレスポンスとして返すのでHTTPレスポンスヘッダ,Content-typeを出力すること。</li>
+</ul>
+<p>のようです。</p>
+<p>再アクセス。「Internal Server Error」。エラーログはこう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>(13)Permission denied: exec of '/var/www/html/index.pl' failed</pre></div>
+</div>
+
+<p>所有者をapacheにして実行権限を持たせてやる。</p>
+<div class="CodeRay">
+  <div class="code"><pre># chown apache:apache index.pl
+# chmod 744 index.pl</pre></div>
+</div>
+
+<p>再アクセス。これにてperlで、hello world が確認できました。めでたしめでたし。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Responsive Web Design 時代の画像スライダー]]></title>
+    <link href="/responsive-web-design/"/>
+    <updated>2012-10-11T00:00:00+09:00</updated>
+    <id>/responsive-web-design</id>
+    <content type="html"><![CDATA[<p>え？　"れすぽんしぶうぇぶでざいん"って何かって？</p>
+<p>なかなか日本では聞きなれないような気がしなくもないですがこんな意味です。</p>
+<blockquote>
+<p>Responsive web design (often abbreviated to RWD) is an approach to web design in which a site is crafted to provide an optimal viewing experience&mdash;easy reading and navigation with a minimum of resizing, panning, and scrolling&mdash;across a wide range of devices (from desktop computer monitors to mobile phones).</p>
+<p><a href="http://en.wikipedia.org/wiki/Responsive_web_design">Responsive web design (wikipedia)</a></p>
+</blockquote>
+<p>つまり、レスポンシブWEBデザインとは、デバイスの幅に応じてWebの見た目（レイアウトとかサイズとか）が最適化されるWebデザインの手法のことです。タブレット、スマホの台頭によってますます重要視されている手法ですね。</p>
+<p>さて、本題。本日は画像スライダーのお話。</p>
+<p>先日画像スライダーを実装する機会があったので「js slider」なんかでググって一番最初に出てくる<a href="http://www.slidesjs.com/">slidesjs</a>で画像スライダーを実装するわけです。でもスマホやタブレット見て分かる通り、全然それらのデバイスに最適化されてませんね。</p>
+<p>[[posterous-content:vroscFmIolIJAdAvtrJz]]</p>
+<p><a href="http://toshimaru.net/demo/slidesjs/">http://toshimaru.net/demo/slidesjs/</a></p>
+<p>幅がデバイスに応じて変わったりもしないので、ちゃんと最適化されるような違う画像スライダーを探してみます。</p>
+<p>んでたどり着いたのが<a href="http://flexslider.woothemes.com/">FlexSlider2</a>。ちゃんとPCでもタブレットでも最適化されて表示されますね。</p>
+<p>[[posterous-content:mFtzaDebmmhiqyhbwItm]]</p>
+<p>スマホ、タブレット対応が必須な今、しっかりレスポンシブデザインを心がけてWEB制作をしていきたいところです。</p>
+<h3>参考</h3>
+<ul>
+<li><a href="http://ascii.jp/elem/000/000/697/697463/">レスポンシブWebデザインとは</a> </li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Nexus 7 ファーストインプレッション]]></title>
+    <link href="/nexus-7/"/>
+    <updated>2012-10-08T00:00:00+09:00</updated>
+    <id>/nexus-7</id>
+    <content type="html"><![CDATA[<p>Nexus 7 を購入しました。Androidは以前アメリカで買ったSIMフリーの初代グーグル携帯、Nexus 1に続く２台目になります。先に簡単に特徴を述べると、</p>
+<ul>
+<li>通信はSIM挿入口なしのWifiオンリー、</li>
+<li>SDカード挿入口もなし、</li>
+<li>カメラはフロント側のみ、</li>
+<li>充電・PC接続はMicro USB、&nbsp;</li>
+<li>Androidバージョンは現時点で4.1</li>
+</ul>
+<p>になります。まずは外装から。</p>
+<p>[[posterous-content:CpaaijbjzHrpCeHmBtHI]]</p>
+<p>化粧箱から顔を見せるNexus 7。</p>
+<p>[[posterous-content:zzJeucxcdcaIjthjDcEu]]</p>
+<p>最初のセットアップは画面に合わせて進めていけば難なくおわるはずです。終わるとこんな画面。</p>
+<p>[[posterous-content:otanviFHbfyubgypyfuf]]</p>
+<p>最初のホーム画面はこんな感じ。下にあるアプリはブラウザ、電子書籍リーダー、動画ビューア、音楽プレイヤー、Google Playマーケットです。</p>
+<p>[[posterous-content:uvcFtFlwEjuonGhqGhhj]]</p>
+<p>すでに<a href="http://review.kakaku.com/review/K0000421212/#tab">価格コムにレビューがいくつも上がってます</a>が、大変好評の様子。私も購入して３、４日ほどですが非常に気に入ってます。</p>
+<p>では早速いくつかの点でのレビュー。</p>
+<h3>電子書籍リーダーとして</h3>
+<p>私がなぜiPadを購入せずに７インチ型タブレットを求めていたのかの理由です。個人的にはタブレットには電子書籍リーダーとしての役割を一番求めているのですが、iPadはいかんせんでかい、そして重い。</p>
+<p>私の理想の読書スタイルは電車内であれば片手で文庫本を持ち、片手でつり革につかまり本を読むスタイル。家の中であれば寝転がっていても、片手で本体を上に上げたり横にしても読めるようなスタイルが良いです。iPadの片手持ちはけっこう無理がありますね、はい。そこで7インチタブレットが私にとってのタブレットとしての最善の選択でした。</p>
+<p>じゃあどの７インチタブレットを買うか？　iPad mini, Nexus 7, Kindle Fire, 中華タブレット(&acute;・&omega;・`), Kobo Touch(爆)... あたりでしょうか。僕はこの内一番最初に日本で発売され、手に入りやすくかつ安価であるNexus 7を選びました。</p>
+<p>現在、Kindleアプリにて米国Amazonの本を購入して読んでますが、片手で持てペラペラと指でページをめくれるので非常に満足してます。（小さい女性の手には片手はきついかも？）</p>
+<p>[[posterous-content:DhEGphxapDtqFakfeHGE]]</p>
+<p>ちなみに7インチタブレットだと小さい文字のPDFは読むにはかなりきついのでepub形式で決まりです。</p>
+<h3>プロダクトデザイン</h3>
+<p>かっちょいいです。背面がラウンドしておりまず持ちやすい。iphone4以降の角張りが嫌いな私にとっては小さな幸せです。また背面がラバーっぽい材質で手から滑りおちない親切設計（ラバーにすることによるデザイン的な見た目の損失はそれほどありません）。</p>
+<p>そして何より表面がかっちょいい。表面に何一つハードウェア制御ボタンがないのが素敵。Android初期時代の統一感ゼロの画面下ハードウェアボタンが嫌いで仕方なかったのだけど、これがソフトウェア制御になることによってだいぶスッキリした。</p>
+<p>[[posterous-content:FIxHJjtFggHIBaflBwyp]]</p>
+<p>画面がわの表面はボタンがなくフラットです。物理的なボタンはサイドの電源ボタン、ボリュームボタンのみとなっております。</p>
+<h3>パフォーマンス</h3>
+<p>Android製品はApple製品に比べパフォーマンスが悪いイメージがありましたが、スムース感はApple製品にやや劣るものの、気にならないレベルです。クアッドコアTegra3のパワーは伊達じゃないです。</p>
+<p>[[posterous-content:kwxmfcfcGepdavGudCJh]]</p>
+<h3>悪いところ</h3>
+<p>わりと本品を購入された皆様が良いことばかり書いているので少し気になっているところを書きます。</p>
+<ul>
+<li>USB充電がやや遅いように感じました。電源からの充電は早かったです。</li>
+<li>日本の電子書籍マーケットしょぼいね。あと価格設定が少し高めかもね。これに関しては日本からでも米国Amazonの書籍が買えたことで安心してますが。</li>
+<li>Apple製品にくらべUIがやっぱ少しわかりにくい。ただ初期よりも１つ１つの画面のデザインがかっこよくはなってる。</li>
+</ul>
+<p>下２つはNexus7の問題でなく、日本市場とAndroid全体の問題ですが。。。</p>
+<h3>総評</h3>
+<p>これだけの性能で19800円。挑戦的価格です。Wifi環境が整ってて16Gで容量足りると感じる方であれば「買い」でしょう。</p>
+<p>気になるところはkindle Fire, iPad miniとの比較ですが、それはまた別の方にお任せします。</p>
+<p>[[posterous-content:BJAaAqkikFnGoDauudwe]]</p>
+<p>（Nexusシリーズが仲良く並びました。）</p>
+]]></content>
+  </entry>
+  
+</feed>
