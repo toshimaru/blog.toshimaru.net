@@ -1,0 +1,20 @@
+---
+layout: post
+title: ! '[Linux]プロセス毎のメモリ使用量を調べるコマンド'
+published: true
+tags:
+- rails
+---
+<p>メモリを食いつぶしてたプロセスちゃんがいたのでそれを調べるときに利用したコマンド。</p>
+<p>これでズラっとでます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre></div>
+</div>
+
+<p>ただ見づらい。なので使用量の多い順にソートしてトップ１０を出してみるとこう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre></div>
+</div>
+
+<h3>参考</h3>
+<p><a href="http://at-aka.blogspot.jp/2006/07/linux.html">Linux でプロセスごとのメモリー使用量を調べる</a></p>

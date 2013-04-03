@@ -1,0 +1,43 @@
+---
+layout: post
+title: ! 'npm install -g yo => npm ERR! error rolling back Error: ENOTEMPTY　の解決方法'
+published: true
+tags:
+- javascript
+- npm
+---
+<p><a href="http://yeoman.io/index.html">[[posterous-content:JHcrAgpzBvopfkgduxuj]]yeoman</a> の1.0Betaがリリースされました。さっそく使ってみようとインストール。</p>
+<div class="CodeRay">
+  <div class="code"><pre>npm install -g yo</pre></div>
+</div>
+
+<p>するとエラーでこけます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>npm ERR! error rolling back Error: ENOTEMPTY, rmdir '/usr/local/lib/node_modules/yo/node_modules/yeoman-generator/node_modules/glob'
+npm ERR! error rolling back yeoman-generator@0.10.0 { [Error: ENOTEMPTY, rmdir '/usr/local/lib/node_modules/yo/node_modules/yeoman-generator/node_modules/glob']
+npm ERR! error rolling back errno: 53,
+npm ERR! error rolling back code: 'ENOTEMPTY',
+………</pre></div>
+</div>
+
+<p>via <a href="https://github.com/yeoman/yeoman/issues/929">Yeoman install errors</a></p>
+<p>どうやらbrewなどで下記の環境だと問題が出る。</p>
+<ul>
+<li>OS: Mac OS X 10.8.2</li>
+<li>Node: v0.8.20</li>
+<li>npm: 1.2.11</li>
+</ul>
+<p>一時的な解決方法としては、バージョンダウンすること。</p>
+<div class="CodeRay">
+  <div class="code"><pre>npm install -g npm@1.2.10</pre></div>
+</div>
+
+<p>これでOKでした。まだまだnode周りはバギーだなぁ。</p>
+<hr />
+<p>ところでこのyeomanすごく良い感じ。「モダンアプリケーションのためのモダンなワークフロー」と歌っているだけあって、かなり強力なJSの運用ソリューションになりそう。</p>
+<ul>
+<li>yo でアプリケーションをscaffold</li>
+<li>bower でJSのパッケージ管理</li>
+<li>grunt でビルド</li>
+</ul>
+<p>まさに「モダン」って感じ。今後に期待！</p>

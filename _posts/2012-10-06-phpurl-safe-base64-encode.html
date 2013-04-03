@@ -1,0 +1,17 @@
+---
+layout: post
+title: ! '[PHP]URL safe な base64 encode メソッド'
+published: true
+tags:
+- rails
+---
+<p>base64エンコード時でに出てくる記号 +(プラス) , /(スラッシュ) , =(イコール) .　このbase64エンコードした値をさらにURLのパラメータで使うためにURLエンコードすると、パーセントエンコーディングされてしまいます。</p>
+<p>そこで、パーセントエンコーディングされないURLセーフなbase64エンコードメソッドを作ります。</p>
+<p><script src="https://gist.github.com/3775127.js"></script></p>
+<p>たしかにこれで問題なさそうですね。</p>
+<div class="CodeRay">
+  <div class="code"><pre>php &gt; echo  urlencode('test+/=');
+test%2B%2F%3D
+php &gt; echo  urlencode('test_-.');
+test_-.</pre></div>
+</div>
