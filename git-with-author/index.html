@@ -17,6 +17,7 @@
   </head>
   <body>
     <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+
     <header class="clearfix">
   <div id="header-top">
     <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
@@ -34,7 +35,57 @@
 
     <div class="main">
       <div id="contents">
-       under construction...
+       <p>たとえばこんなケース。</p>
+<p>[[posterous-content:fckheFIIJrnxHiFHdbqg]]</p>
+<p>のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git rebase -i HEAD~3</pre></div>
+</div>
+
+<p>こんな画面が出てきますので、</p>
+<p>[[posterous-content:muIDkgJvHAtEDFAEitqc]]</p>
+<p>pickをeditにします。</p>
+<p>[[posterous-content:GzEozhcqlcJaqkFIsADq]]</p>
+<p>こんなメッセージ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Stopped at e4269d9... modify file1.
+You can amend the commit now, with
+    git commit --amend
+Once you are satisfied with your changes, run
+    git rebase --continue</pre></div>
+</div>
+
+<p>HEADは3つ前になってます。 （ここで使っている <a href="http://blog.toshimaru.net/git-log-graph">"git lga" コマンドはこちらを参考</a>）</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git lga
+* 5a0edde - (master) add nobita-text. (20 minutes ago) &lt;nobita&gt;
+* 4a73401 - modify file2. (20 minutes ago) &lt;nobita&gt;
+* e4269d9 - (HEAD) modify file1. (20 minutes ago) &lt;nobita&gt;</pre></div>
+</div>
+
+<p>１．amendオプションつけて、authorもジャイアンに改変します。</p>
+<div class="CodeRay">
+  <div class="code"><pre>git commit --amend --author=&quot;jaian &lt;jaian@doraemon.com&gt;&quot;</pre></div>
+</div>
+
+<p>２．コミット後、rebase continueします。</p>
+<div class="CodeRay">
+  <div class="code"><pre>git rebase --continue</pre></div>
+</div>
+
+<p>１，２を繰り返します。</p>
+<p>結果、のび太君の努力の歴史はジャイアンによって改変されました。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git lga
+* 304d0c7 - (HEAD, master) add nobita-text. (16 seconds ago) &lt;jaian&gt;
+* 66b5984 - modify file2. (34 seconds ago) &lt;jaian&gt;
+* a0a26e2 - modify file1. (2 minutes ago) &lt;jaian&gt;</pre></div>
+</div>
+
+<p>大成功☆(・&omega;&lt;)</p>
+<h3>参考</h3>
+<p><a href="http://git-scm.com/book/en/Git-Tools-Rewriting-History">6.4 Git Tools - Rewriting History</a></p>
+
       </div>
     </div>
 

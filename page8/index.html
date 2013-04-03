@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Hack Your Design!</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <script src="/js/modernizr-2.6.2.min.js"></script>
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/main.css">
+  </head>
+  <body>
+    <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+    <header class="clearfix">
+  <div id="header-top">
+    <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+  </div>
+  <div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+  <nav id="navigation">
+    <div id="toggle-item">
+    <a href="/">Blog</a>
+    <a href="/archive.html">Archive</a>
+    <a href="/about.html">About</a>
+    </div>
+  </nav>
+</header>
+
+
+    <div class="main">
+      <div id="contents">
+       
+  <!-- here add you post markup -->
+  <h1><a href="/mac-os-x-107-pear/" class="title">Mac OS X (10.7) でpear をインストール</a></h1>
+  <div class="meta">Posted: <span>08 Jul 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+  </div>
+  <div class="content">
+    <p>Mac OS X (10.7) にpearをインストールしてみます。        <br /> このコマンド一発でいけるようです。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo php /usr/lib/php/install-pear-nozlib.phar</pre></div>
+</div>
+
+<p>実際に流した結果が以下。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo php /usr/lib/php/install-pear-nozlib.phar 
+No log handling enabled - using stderr logging
+Created directory: /var/db/net-snmp
+Created directory: /var/db/net-snmp/mib_indexes
+[PEAR] Archive_Tar    - installed: 1.3.7
+[PEAR] Console_Getopt - installed: 1.3.0
+[PEAR] Structures_Graph- installed: 1.0.4
+[PEAR] XML_Util       - installed: 1.2.1
+[PEAR] PEAR           - installed: 1.9.4
+Wrote PEAR system config file at: /private/etc/pear.conf
+You may want to add: /usr/lib/php/pear to your php.ini include_path
+$ pear 
+Commands:
+build                  Build an Extension From C Source
+bundle                 Unpacks a Pecl Package
+channel-add            Add a Channel
+......</pre></div>
+</div>
+
+<p>あとは<code>/etc/php.ini</code>でパスをincludeするだけ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>include_path = &quot;.:/usr/lib/php/pear&quot;</pre></div>
+</div>
+
+<h3>参考</h3>
+<ul>
+<li><a href="http://blog.verygoodtown.com/2012/01/mac-os-x-lion-php-pear/">Mac OS X LionでPEARをインストールする方法</a></li>
+</ul>
+
+  </div>
+  <hr class="separator">
+
+  <!-- here add you post markup -->
+  <h1><a href="/137129450/" class="title">ランダムな文字列を作るpythonスクリプト</a></h1>
+  <div class="meta">Posted: <span>09 Jun 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+  </div>
+  <div class="content">
+    <script src="https://gist.github.com/2903858.js?file=generateRandomString.py"></script>
+<ul>
+<li> LENGTHで文字列の長さを指定。 </li>
+<li> alphabets に記号を加えると記号も込みでランダムな文字列を作成する。 </li>
+</ul>
+
+  </div>
+  <hr class="separator">
+
+  <!-- here add you post markup -->
+  <h1><a href="/92078192/" class="title">iPhoneのバックアップ先を変更する</a></h1>
+  <div class="meta">Posted: <span>05 Jan 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+  </div>
+  <div class="content">
+    <p>iPhoneのバックアップ先がデフォルトでCドライブだけど、バックアップ先を（Dドライブとかに）変えたい。</p>
+
+<p>iPhoneのバックアップ先のシンボリックリンクをDドライブに作成すればOK。以下手順です。</p>
+
+<ol>
+<li>Dドライブにiphoneバックアップ用のディレクトリを作成。</li>
+<li>コマンドプロンプトを開く。</li>
+<li><p>以下のコマンドを打って、ディレクトリジャンクションを作成します。</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>mklink /j &quot;C:\Users\{User}\AppData\Roaming\Apple Computer\MobileSync\Backup&quot; &quot;D:\iPhone\Backup&quot;</pre></div>
+</div>
+</li>
+</ol>
+
+
+<p>以上！</p>
+
+  </div>
+  <hr class="separator">
+
+  <!-- here add you post markup -->
+  <h1><a href="/87271912/" class="title">[Java] Dom4Jを使ってXML操作</a></h1>
+  <div class="meta">Posted: <span>18 Dec 2011</span> Tags: <a href="/tag/rails.html">rails</a>
+  </div>
+  <div class="content">
+    <p>Javaを使ってXMLを処理したい。しかしJava標準パッケージのDomはどうもいけていない（参考：<a href="http://digitechlog.com/2009/02/25/4-ways-to-read-and-write-xml.html">JavaでXMLを操作の４種類方法とサンプルソース</a>）。ということでdom4jを使用してXMLを操作することにした。</p>
+<p>結果、下記のようにイケてる感じで処理できました。</p>
+<script src="https://gist.github.com/2904049.js?file=Dom4j.java"></script>
+<h3>参考</h3>
+<p><a href="http://www5.ocn.ne.jp/~coast/programming/java/dom4j.html">http://www5.ocn.ne.jp/~coast/programming/java/dom4j.html</a></p>
+
+  </div>
+  <hr class="separator">
+
+  <!-- here add you post markup -->
+  <h1><a href="/xssphp/" class="title">XSS脆弱性のあるPHPコード簡易サンプル</a></h1>
+  <div class="meta">Posted: <span>11 Dec 2011</span> Tags: <a href="/tag/rails.html">rails</a>
+  </div>
+  <div class="content">
+    <p>検証時に検証担当者に「XSSもチェックお願いしますね。」というと「？？？」という返答が帰ってきましたので、簡単なプログラムを作ってその検証担当者に教えました。 その際に使った簡単なコードサンプルです。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;html&gt;
+&lt;body&gt;
+    &lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;xss_text&quot; value=&quot;&quot;&gt;
+        &lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;submit&quot;&gt;&lt;/p&gt;
+    &lt;/form&gt;
+    value: &lt;?php echo $_POST['xss_text']; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+</div>
+
+<p>見た目はテキストボックスの内容をそのまま出力するだけの簡単なPHPプログラム。</p>
+<p>[[posterous-content:mADkhvenldvxgpxcrJpu]]</p>
+<p>しかし、ここに下記の文字列を入れてみます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;script&gt;alert('XSS');&lt;/script&gt;</pre></div>
+</div>
+
+<p>[[posterous-content:eCImnDiuiyfhlapClBGD]]</p>
+<p>見事にスクリプトが実行されました。</p>
+<p>このデータがDBに登録されていて、それを上サンプルのように出力させていると考えると、、、ゾッとしますね。</p>
+<p>&nbsp;</p>
+<p>XSSの具体的な対策方法や詳細については下記をご参照ください。</p>
+<p><a href="http://www.asahi-net.or.jp/~wv7y-kmr/memo/php_security.html#XSS">http://www.asahi-net.or.jp/~wv7y-kmr/memo/php_security.html#XSS</a></p>
+
+  </div>
+  
+
+
+<div class="pagination">
+  
+    <a href="/page7" class="previous">Previous</a>
+  
+  <span class="page_number ">Page: 8 of 11</span>
+  
+    <a href="/page9" class="next ">Next</a>
+  
+</div>
+
+      </div>
+    </div>
+
+    <footer>
+	<div class="main">
+		<div class="wrapper clearfix">
+			<div id="left">
+				<h2>Recommend</h2>
+				<ul>
+					<li>right1</li>
+					<li>right2</li>
+					<li>right3</li>
+				</ul>
+				left left left left left left left left left left left left 
+			</div>
+			<div id="center">
+				<h2>Category</h2>
+				<ul>
+					<li>center1</li>
+					<li>center2</li>
+					<li>center3</li>
+				</ul>
+				center center center center center center center center center center center center center center 
+			</div>
+			<div id="right">
+				<h2>Tag</h2>
+				<div><a href="/tag/javascript.html" class="set-1">javascript</a> <a href="/tag/jquery.html" class="set-1">jquery</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/rails.html" class="set-5">rails</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/tech.html" class="set-1">tech</a></div> 
+			</div>
+		</div>
+  	<p class="credit">Designed by <a href="/about.html">Toshi</a></p>
+	</div>
+</footer>
+
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+    <script src="/js/main.js"></script>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g,s)}(document,'script'));
+    </script>
+  </body>
+</html>

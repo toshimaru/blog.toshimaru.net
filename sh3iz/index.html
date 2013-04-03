@@ -17,6 +17,7 @@
   </head>
   <body>
     <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+
     <header class="clearfix">
   <div id="header-top">
     <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
@@ -34,7 +35,25 @@
 
     <div class="main">
       <div id="contents">
-       under construction...
+       <p><a href="http://d.hatena.ne.jp/shi3z/20121217/1355695824">たった一行でもっと高画質の画像を集める方法</a>にあったシェルスクリプトのコード。</p>
+<div class="CodeRay">
+  <div class="code"><pre>matome_url=$1;cnt=0;
+for j in {1..10}; do
+for i in `curl $matome_url\?page=$j| grep '_jWidgetData' | sed s/\&amp;quot\;/\&quot;/g|grep -o &quot;url\&quot;\:\&quot;[^\&quot;]*&quot; | cut -d \&quot; -f 3 `; do
+  curl -o $2_$cnt.jpg $i;
+  cnt=`expr $cnt + 1 `;
+done
+done</pre></div>
+</div>
+
+<p>その中の１行、このコードの意味がよくわからなかったので調べてみた。</p>
+<div class="CodeRay">
+  <div class="code"><pre>curl $matome_url\?page=$j| grep '_jWidgetData' | sed s/\&amp;quot\;/\&quot;/g|grep -o &quot;url\&quot;\:\&quot;[^\&quot;]*&quot; | cut -d \&quot; -f 3</pre></div>
+</div>
+
+<p><script src="https://gist.github.com/b1be508f03999ba8fbbe.js"></script></p>
+<p>いやぁ、この「◯◯で水着画像を集める」系のネタ元はphpでしたが、シェルでもいけちゃうんですね。奥深い・・・</p>
+
       </div>
     </div>
 

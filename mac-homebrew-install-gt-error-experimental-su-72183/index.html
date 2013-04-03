@@ -17,6 +17,7 @@
   </head>
   <body>
     <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+
     <header class="clearfix">
   <div id="header-top">
     <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
@@ -34,7 +35,56 @@
 
     <div class="main">
       <div id="contents">
-       under construction...
+       <p>Macにパッケージ管理を導入してみます。</p>
+<p>Macのパッケージ管理といえば、<a href="http://www.macports.org/">macports</a>・<a href="http://mxcl.github.com/homebrew/">homebrew</a>あたりが有名ですが、下記の理由から最近では後者の方が人気のようです。</p>
+<blockquote>
+<p>Homebrewの人気が上がってきた理由ですが、MacPortsと比べて依存関係でインストールされるソフトウェアが少ないという点があります。MacPortsは依存するソフトウェアを、Mac OS Xに標準でインストールされているソフトウェアを利用せずに、新規にインストールするという特徴があります。しかしHomebrewはMac OS Xにすでにあるものは、できるだけそれを利用するように設計されています。</p>
+<p><a href="http://tech.caph.jp/2011/04/06/homebrew%E3%81%AE%E5%B0%8E%E5%85%A5%E3%81%A8%E4%BD%BF%E3%81%84%E6%96%B9/">Homebrewの導入と使い方</a></p>
+</blockquote>
+<p>インストールは下記のコマンド実行するのみ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>/usr/bin/ruby -e &quot;$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)&quot;</pre></div>
+</div>
+
+<p><a href="https://github.com/mxcl/homebrew/wiki/installation">https://github.com/mxcl/homebrew/wiki/installation</a></p>
+<p>早速wgetをインストールしてみる。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ brew install wget
+==&gt; Downloading http://ftpmirror.gnu.org/wget/wget-1.13.4.tar.bz2
+######################################################################## 100.0%
+==&gt; ./configure --disable-debug --prefix=/usr/local/Cellar/wget/1.13.4 --sysconfdir=/usr/local/etc --with-ssl=openssl --
+configure: configuring for GNU Wget 1.13.4
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+
+......
+
+Error: Failed executing: ./configure --disable-debug --prefix=/usr/local/Cellar/wget/1.13.4 --sysconfdir=/usr/local/etc --with-ssl=openssl --disable-iri (wget.rb:33)</pre></div>
+</div>
+
+<p>エラー。ドクターに診察してもらおう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ brew doctor
+Error: Experimental support for using Xcode without the &quot;Command Line Tools&quot;.</pre></div>
+</div>
+
+<p>なるほど。下記の手順でコマンドラインツールをインストール。</p>
+<ol>
+<li>xcode を app store からインストール</li>
+<li>xcodeを開いて、プリファレンスから"Command line tools"をインストール.</li>
+</ol>
+<p>ドクター！</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ brew doctor
+Your system is raring to brew.</pre></div>
+</div>
+
+<p>これで問題なくhomebrew環境が整いました。</p>
+<h3>参考</h3>
+<ul>
+<li><a href="http://d.hatena.ne.jp/zatsuso/20120703/">http://d.hatena.ne.jp/zatsuso/20120703/</a></li>
+</ul>
+
       </div>
     </div>
 

@@ -17,6 +17,7 @@
   </head>
   <body>
     <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+
     <header class="clearfix">
   <div id="header-top">
     <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
@@ -34,7 +35,32 @@
 
     <div class="main">
       <div id="contents">
-       under construction...
+       <p>簡単で想像しやすいパスワードをLinuxで設定すると簡単にクラックできちゃいますよ、ということを確かめるためにも、今日は<a href="http://www.openwall.com/john/">john the ripper</a>というツールを使ってパスワードを解析してみます。</p>
+<p>まずはインストール。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo apt-get install john</pre></div>
+</div>
+
+<p>クラックするユーザーを作成。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ useradd test
+$ passwd test</pre></div>
+</div>
+
+<p>ここでは、ユーザー名を"test",パスワードも"test"という単純なアカウントを作成します。</p>
+<p>まずはパスワードとshadowファイルを統合させたファイルを作成。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo unshadow /etc/passwd /etc/shadow &gt; /tmp/passfile</pre></div>
+</div>
+
+<p>単純なアカウントなのでシングルモードで解析できます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ john --single /tmp/passfile
+test:test:1001:1001::/home/test:/bin/sh</pre></div>
+</div>
+
+<p>ということでパスワードは解析完了。 他にも辞書ファイルを使ったり、総当たりで当たっていったりもできるようです。</p>
+
       </div>
     </div>
 

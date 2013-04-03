@@ -17,6 +17,7 @@
   </head>
   <body>
     <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+
     <header class="clearfix">
   <div id="header-top">
     <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
@@ -34,7 +35,33 @@
 
     <div class="main">
       <div id="contents">
-       under construction...
+       <p>検証時に検証担当者に「XSSもチェックお願いしますね。」というと「？？？」という返答が帰ってきましたので、簡単なプログラムを作ってその検証担当者に教えました。 その際に使った簡単なコードサンプルです。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;html&gt;
+&lt;body&gt;
+    &lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;xss_text&quot; value=&quot;&quot;&gt;
+        &lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;submit&quot;&gt;&lt;/p&gt;
+    &lt;/form&gt;
+    value: &lt;?php echo $_POST['xss_text']; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+</div>
+
+<p>見た目はテキストボックスの内容をそのまま出力するだけの簡単なPHPプログラム。</p>
+<p>[[posterous-content:mADkhvenldvxgpxcrJpu]]</p>
+<p>しかし、ここに下記の文字列を入れてみます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;script&gt;alert('XSS');&lt;/script&gt;</pre></div>
+</div>
+
+<p>[[posterous-content:eCImnDiuiyfhlapClBGD]]</p>
+<p>見事にスクリプトが実行されました。</p>
+<p>このデータがDBに登録されていて、それを上サンプルのように出力させていると考えると、、、ゾッとしますね。</p>
+<p>&nbsp;</p>
+<p>XSSの具体的な対策方法や詳細については下記をご参照ください。</p>
+<p><a href="http://www.asahi-net.or.jp/~wv7y-kmr/memo/php_security.html#XSS">http://www.asahi-net.or.jp/~wv7y-kmr/memo/php_security.html#XSS</a></p>
+
       </div>
     </div>
 

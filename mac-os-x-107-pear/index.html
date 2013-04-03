@@ -17,6 +17,7 @@
   </head>
   <body>
     <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+
     <header class="clearfix">
   <div id="header-top">
     <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
@@ -34,7 +35,42 @@
 
     <div class="main">
       <div id="contents">
-       under construction...
+       <p>Mac OS X (10.7) にpearをインストールしてみます。        <br /> このコマンド一発でいけるようです。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo php /usr/lib/php/install-pear-nozlib.phar</pre></div>
+</div>
+
+<p>実際に流した結果が以下。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo php /usr/lib/php/install-pear-nozlib.phar 
+No log handling enabled - using stderr logging
+Created directory: /var/db/net-snmp
+Created directory: /var/db/net-snmp/mib_indexes
+[PEAR] Archive_Tar    - installed: 1.3.7
+[PEAR] Console_Getopt - installed: 1.3.0
+[PEAR] Structures_Graph- installed: 1.0.4
+[PEAR] XML_Util       - installed: 1.2.1
+[PEAR] PEAR           - installed: 1.9.4
+Wrote PEAR system config file at: /private/etc/pear.conf
+You may want to add: /usr/lib/php/pear to your php.ini include_path
+$ pear 
+Commands:
+build                  Build an Extension From C Source
+bundle                 Unpacks a Pecl Package
+channel-add            Add a Channel
+......</pre></div>
+</div>
+
+<p>あとは<code>/etc/php.ini</code>でパスをincludeするだけ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>include_path = &quot;.:/usr/lib/php/pear&quot;</pre></div>
+</div>
+
+<h3>参考</h3>
+<ul>
+<li><a href="http://blog.verygoodtown.com/2012/01/mac-os-x-lion-php-pear/">Mac OS X LionでPEARをインストールする方法</a></li>
+</ul>
+
       </div>
     </div>
 
