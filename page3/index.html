@@ -9,7 +9,7 @@
     <title>Hack Your Design!</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- Place apple-touch-icon.png in the root directory -->
     <script src="/js/modernizr-2.6.2.min.js"></script>
     <link rel="stylesheet" href="/css/font-awesome.css">
     <link rel="stylesheet" href="/css/normalize.css">
@@ -18,304 +18,84 @@
   <body>
     <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
     <header class="clearfix">
-  <div id="header-top">
-    <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive.html">Archive</a>
+  <a href="/about.html">About</a>
   </div>
-  <div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
-  <nav id="navigation">
-    <div id="toggle-item">
-    <a href="/">Blog</a>
-    <a href="/archive.html">Archive</a>
-    <a href="/about.html">About</a>
-    </div>
-  </nav>
+</nav>
 </header>
-
-
     <div class="main">
       <div id="contents">
-       
-  <!-- here add you post markup -->
-  <h1><a href="/linux/" class="title">[Linux]プロセス毎のメモリ使用量を調べるコマンド</a></h1>
-  <div class="meta">Posted: <span>02 Dec 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+       <h2 class="heading">Recent Entries</h2>
+
+  <div class="posts">
+  <h1><a href="/php-arraymerge-vs-plus/" class="title">[php] array_merge VS array +(plus)</a></h1>
+  <div class="meta">
+    <i class="icon-calendar"></i><span>30 Oct 2012</span> 
+    <i class="icon-tags"></i> <a href="/tag/rails.html">rails</a>
   </div>
-  <div class="content">
-    <p>メモリを食いつぶしてたプロセスちゃんがいたのでそれを調べるときに利用したコマンド。</p>
-<p>これでズラっとでます。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre></div>
-</div>
-
-<p>ただ見づらい。なので使用量の多い順にソートしてトップ１０を出してみるとこう。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre></div>
-</div>
-
-<h3>参考</h3>
-<p><a href="http://at-aka.blogspot.jp/2006/07/linux.html">Linux でプロセスごとのメモリー使用量を調べる</a></p>
-
   </div>
-  <hr class="separator">
 
-  <!-- here add you post markup -->
-  <h1><a href="/php-99717/" class="title">phpの@(アットマーク)はオーバーヘッドが大きいから使わないほうがよい</a></h1>
-  <div class="meta">Posted: <span>30 Nov 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+  <div class="posts">
+  <h1><a href="/git-29764/" class="title">Git のコミットメッセージの書き方</a></h1>
+  <div class="meta">
+    <i class="icon-calendar"></i><span>15 Oct 2012</span> 
+    <i class="icon-tags"></i> <a href="/tag/rails.html">rails</a>
   </div>
-  <div class="content">
-    <p>事の発端はこれ。</p>
-<div class="CodeRay">
-  <div class="code"><pre>// 1. 
-if (isset($checkedAry['key']) &amp;&amp; $checkedAry['key'] == &quot;val&quot;) {
-    // 処理
-}
-
-// 2. 1より早いんじゃね？
-if ($checkedAry['key'] == &quot;val&quot;) {
-    // でもNoticeでちゃうよ！
-    // PHP Notice:  Undefined index: index
-}
-
-// 3. 2の「PHP Notice」の回避策　＠
-if (@$checkedAry['key'] == &quot;val&quot;) {
-    // 処理
-}</pre></div>
-</div>
-
-<p>１と３なら３のほうが処理早いんじゃね？ってことで試してみたところ、こうなった。 （PHP 5.3.3）</p>
-<div class="CodeRay">
-  <div class="code"><pre>&lt;?php
-$ary = array(
-    array( &quot;key1&quot; =&gt; &quot;val1&quot;, &quot;key2&quot; =&gt; &quot;val2&quot;,&quot;key3&quot; =&gt; &quot;val3&quot;,&quot;key4&quot; =&gt; &quot;val4&quot;),
-    array( &quot;key1&quot; =&gt; &quot;val1&quot;, &quot;key2&quot; =&gt; &quot;val2&quot;,&quot;key3&quot; =&gt; &quot;val3&quot;),
-);
-
-$time_start = microtime(true);
-
-$index = 0;
-foreach (range(1,100000) as $count) {
-    $index = 1 - $index;
-    $checkedAry = $ary[$index];
-    if (isset($checkedAry['key4']) &amp;&amp; $checkedAry['key4'] == &quot;val4&quot;) {
-        pow($count, $count);
-    }
-}
-
-$time = microtime(true) - $time_start;
-echo &quot;$time second&quot;;
-
-
-$time_start = microtime(true);
-
-$index = 0;
-foreach (range(1,100000) as $count) {
-    $index = 1 - $index;
-    $checkedAry = $ary[$index];
-    if (@$checkedAry['key4'] == &quot;val4&quot;) {
-        pow($count, $count);
-    }
-}
-
-$time = microtime(true) - $time_start;
-echo &quot;$time second&quot;;</pre></div>
-</div>
-
-<p>３回やってみてこんな結果でした。</p>
-<div class="CodeRay">
-  <div class="code"><pre>0.098845958709717 second
-0.19816088676453 second
-
-0.097808122634888 second
-0.15862894058228 second
-
-0.10174417495728 second
-0.16551208496094 second</pre></div>
-</div>
-
-<p>つまり、<strong>＠付きのほうがそうじゃないほうより１．５倍～２倍程度遅い</strong>、ということになります。</p>
-<p>ただ、<strong>＠付きのほうがシンプルに書ける場合もある</strong>ので、今回の例のようにループさせている場合でないのであれば、＠付きを使ってもよいのかもしれません。</p>
-<h3>参考</h3>
-<p><a href="http://www.l2tp.org/?p=1523">アットマークでエラーを抑制したときのオーバーヘッドについて検証してみた with php5.3三項演算子</a></p>
-
   </div>
-  <hr class="separator">
 
-  <!-- here add you post markup -->
-  <h1><a href="/git-with-author/" class="title">[git]直前のコミットの歴史を修正する with author</a></h1>
-  <div class="meta">Posted: <span>29 Nov 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+  <div class="posts">
+  <h1><a href="/apacheperl-hello-world-centos-6/" class="title">apache+Perl でhello world (CentOS 6)</a></h1>
+  <div class="meta">
+    <i class="icon-calendar"></i><span>14 Oct 2012</span> 
+    <i class="icon-tags"></i> <a href="/tag/rails.html">rails</a>
   </div>
-  <div class="content">
-    <p>たとえばこんなケース。</p>
-<p>[[posterous-content:fckheFIIJrnxHiFHdbqg]]</p>
-<p>のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git rebase -i HEAD~3</pre></div>
-</div>
-
-<p>こんな画面が出てきますので、</p>
-<p>[[posterous-content:muIDkgJvHAtEDFAEitqc]]</p>
-<p>pickをeditにします。</p>
-<p>[[posterous-content:GzEozhcqlcJaqkFIsADq]]</p>
-<p>こんなメッセージ。</p>
-<div class="CodeRay">
-  <div class="code"><pre>Stopped at e4269d9... modify file1.
-You can amend the commit now, with
-    git commit --amend
-Once you are satisfied with your changes, run
-    git rebase --continue</pre></div>
-</div>
-
-<p>HEADは3つ前になってます。 （ここで使っている <a href="http://blog.toshimaru.net/git-log-graph">"git lga" コマンドはこちらを参考</a>）</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git lga
-* 5a0edde - (master) add nobita-text. (20 minutes ago) &lt;nobita&gt;
-* 4a73401 - modify file2. (20 minutes ago) &lt;nobita&gt;
-* e4269d9 - (HEAD) modify file1. (20 minutes ago) &lt;nobita&gt;</pre></div>
-</div>
-
-<p>１．amendオプションつけて、authorもジャイアンに改変します。</p>
-<div class="CodeRay">
-  <div class="code"><pre>git commit --amend --author=&quot;jaian &lt;jaian@doraemon.com&gt;&quot;</pre></div>
-</div>
-
-<p>２．コミット後、rebase continueします。</p>
-<div class="CodeRay">
-  <div class="code"><pre>git rebase --continue</pre></div>
-</div>
-
-<p>１，２を繰り返します。</p>
-<p>結果、のび太君の努力の歴史はジャイアンによって改変されました。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git lga
-* 304d0c7 - (HEAD, master) add nobita-text. (16 seconds ago) &lt;jaian&gt;
-* 66b5984 - modify file2. (34 seconds ago) &lt;jaian&gt;
-* a0a26e2 - modify file1. (2 minutes ago) &lt;jaian&gt;</pre></div>
-</div>
-
-<p>大成功☆(・&omega;&lt;)</p>
-<h3>参考</h3>
-<p><a href="http://git-scm.com/book/en/Git-Tools-Rewriting-History">6.4 Git Tools - Rewriting History</a></p>
-
   </div>
-  <hr class="separator">
 
-  <!-- here add you post markup -->
-  <h1><a href="/macgiterror-there-was-a-problem-with-the-edit/" class="title">[Mac][git]error: There was a problem with the editor 'vi'.</a></h1>
-  <div class="meta">Posted: <span>28 Nov 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+  <div class="posts">
+  <h1><a href="/responsive-web-design/" class="title">Responsive Web Design 時代の画像スライダー</a></h1>
+  <div class="meta">
+    <i class="icon-calendar"></i><span>11 Oct 2012</span> 
+    <i class="icon-tags"></i> <a href="/tag/css.html">css</a>, <a href="/tag/design.html">design</a>, <a href="/tag/html.html">html</a>, <a href="/tag/javascript.html">javascript</a>
   </div>
-  <div class="content">
-    <h3>Problem</h3>
-<p>MacのVimにてコミットメッセージを書いて"wq"するとこんなエラーが出た。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git commit
-error: There was a problem with the editor 'vi'.
-Please supply the message using either -m or -F option.</pre></div>
-</div>
-
-<h3>Solution</h3>
-<p>明示的に使用するエディタをvimの絶対パスを設定してあげればOK.</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git config --global core.editor /usr/bin/vim</pre></div>
-</div>
-
-<h3>参考</h3>
-<p><a href="http://tooky.co.uk/2010/04/08/there-was-a-problem-with-the-editor-vi-git-on-mac-os-x.html"> Fixing "There was a problem with the editor 'vi'" for Git on Mac OS X Snow Leopard</a></p>
-
   </div>
-  <hr class="separator">
 
-  <!-- here add you post markup -->
-  <h1><a href="/scala-play-framework-with-mac/" class="title">[scala] play framework with Mac</a></h1>
-  <div class="meta">Posted: <span>10 Nov 2012</span> Tags: <a href="/tag/rails.html">rails</a>
+  <div class="posts">
+  <h1><a href="/nexus-7/" class="title">Nexus 7 ファーストインプレッション</a></h1>
+  <div class="meta">
+    <i class="icon-calendar"></i><span>08 Oct 2012</span> 
+    <i class="icon-tags"></i> <a href="/tag/android.html">android</a>
   </div>
-  <div class="content">
-    <p>Macを使い、今一部で流行っているらしいScalaによるWebフレームワーク、<a href="http://www.playframework.org/">playframework</a>を動かしてみます。</p>
-<h3>インストール</h3>
-<p><a href="http://mxcl.github.com/homebrew/">homebrew</a>を使えばscalaおよびplayフレームワークは簡単にイントールできます。</p>
-<div class="CodeRay">
-  <div class="code"><pre>brew install play
-brew install scala</pre></div>
-</div>
-
-<p>確認してみます。can play?</p>
-<div class="CodeRay">
-  <div class="code"><pre>play
-       _            _ 
- _ __ | | __ _ _  _| |
-| '_ \| |/ _' | || |_|
-|  __/|_|\____|\__ (_)
-|_|            |__/ 
-
-play! 2.0.2, http://www.playframework.org
-
-This is not a play application!
-
-Use `play new` to create a new Play application in the current directory, 
-or go to an existing application and launch the development console using `play`.
-
-You can also browse the complete documenta</pre></div>
-</div>
-
-<p>can scala?</p>
-<div class="CodeRay">
-  <div class="code"><pre>scala -version
-Scala code runner version 2.9.2 -- Copyright 2002-2011, LAMP/EPFL</pre></div>
-</div>
-
-<h3>アプリケーション作成</h3>
-<p>create new play application.</p>
-<div class="CodeRay">
-  <div class="code"><pre>play new first_app
-
-What is the application name? 
-&gt; first_app
-
-Which template do you want to use for this new application? 
-
-  1 - Create a simple Scala application
-  2 - Create a simple Java application
-  3 - Create an empty project
-
-&gt; 1
-
-OK, application first_app is created.
-
-Have fun!</pre></div>
-</div>
-
-<p>これで起動する準備は完了。</p>
-<h3>アプリケーション起動</h3>
-<p>run application.</p>
-<div class="CodeRay">
-  <div class="code"><pre>cd first_app/
-play
-[first_app] $ run</pre></div>
-</div>
-
-<div class="CodeRay">
-  <div class="code"><pre>[first_app] $ run
-
---- (Running the application from SBT, auto-reloading is enabled) ---
-
-[info] play - Listening for HTTP on port 9000...</pre></div>
-</div>
-
-<p><a href="http://localhost:9000/">http://localhost:9000/</a> で下記の画面が確認できればOK.</p>
-<p>[[posterous-content:FqyvvyIFkkqgqemJgnHJ]]</p>
-<h3>What's next step?</h3>
-<p>サンプルアプリケーションで実装例を見てみると良いでしょう。</p>
-<ul>
-<li><a href="http://www.playframework.org/documentation/2.0.4/Samples">Sample applications</a></li>
-</ul>
-
   </div>
-  
+
+  <div class="posts">
+  <h1><a href="/ratio-calculator-height-support/" class="title">ratio calculator height support.</a></h1>
+  <div class="meta">
+    <i class="icon-calendar"></i><span>07 Oct 2012</span> 
+    <i class="icon-tags"></i> <a href="/tag/javascript.html">javascript</a>
+  </div>
+  </div>
+
+  <div class="posts">
+  <h1><a href="/phpurl-safe-base64-encode/" class="title">[PHP]URL safe な base64 encode メソッド</a></h1>
+  <div class="meta">
+    <i class="icon-calendar"></i><span>06 Oct 2012</span> 
+    <i class="icon-tags"></i> <a href="/tag/rails.html">rails</a>
+  </div>
+  </div>
 
 
 <div class="pagination">
   
     <a href="/page2" class="previous">Previous</a>
   
-  <span class="page_number ">Page: 3 of 11</span>
+  <span class="page_number">Page: 3 of 8</span>
   
     <a href="/page4" class="next ">Next</a>
   
@@ -323,37 +103,31 @@ play
 
       </div>
     </div>
-
     <footer>
 	<div class="main">
 		<div class="wrapper clearfix">
 			<div id="left">
 				<h2>Recommend</h2>
 				<ul>
-					<li>right1</li>
-					<li>right2</li>
-					<li>right3</li>
+					<li>jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</li>
 				</ul>
-				left left left left left left left left left left left left 
 			</div>
 			<div id="center">
-				<h2>Category</h2>
+				<h2>Links</h2>
 				<ul>
-					<li>center1</li>
-					<li>center2</li>
-					<li>center3</li>
+					<li><a href="https://twitter.com/toshimaru_e">Twitter</a></li>
+					<li><a href="https://github.com/toshimaru">Github</a></li>
+					<li><a href="/about.html">About</a></li>
 				</ul>
-				center center center center center center center center center center center center center center 
 			</div>
 			<div id="right">
 				<h2>Tag</h2>
-				<div><a href="/tag/javascript.html" class="set-1">javascript</a> <a href="/tag/jquery.html" class="set-1">jquery</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/rails.html" class="set-5">rails</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/tech.html" class="set-1">tech</a></div> 
+				<div><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/css.html" class="set-1">css</a> <a href="/tag/design.html" class="set-1">design</a> <a href="/tag/git.html" class="set-1">git</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/javascript.html" class="set-1">javascript</a> <a href="/tag/jquery.html" class="set-1">jquery</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-5">rails</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/tech.html" class="set-1">tech</a></div> 
 			</div>
 		</div>
   	<p class="credit">Designed by <a href="/about.html">Toshi</a></p>
 	</div>
 </footer>
-
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
