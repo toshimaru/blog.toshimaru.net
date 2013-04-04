@@ -1,2 +1,2 @@
-require "jekyll-less"
 require 'jekyll/tagging'
+require 'jekyll-less'

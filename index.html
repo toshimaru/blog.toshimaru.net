@@ -2,15 +2,15 @@
 layout: default
 ---
 
+<h2 class="heading">Recent Entries</h2>
 {% for post in paginator.posts %}
-  <!-- here add you post markup -->
+  <div class="posts">
   <h1><a href="{{ post.url }}" class="title">{{ post.title }}</a></h1>
-  <div class="meta">Posted: <span>{{ post.date | date_to_string }}</span> Tags: {{ post | tags }}
+  <div class="meta">
+    <i class="icon-calendar"></i><span>{{ post.date | date_to_string }}</span> 
+    <i class="icon-tags"></i> {{ post | tags }}
   </div>
-  <div class="content">
-    {{ post.content }}
   </div>
-  {% if forloop.last == false %}<hr class="separator">{% endif %}
 {% endfor %}
 
 <div class="pagination">
@@ -19,7 +19,7 @@ layout: default
   {% else %}
     <span class="previous">Previous</span>
   {% endif %}
-  <span class="page_number ">Page: {{paginator.page}} of {{paginator.total_pages}}</span>
+  <span class="page_number">Page: {{paginator.page}} of {{paginator.total_pages}}</span>
   {% if paginator.next_page %}
     <a href="/page{{paginator.next_page}}" class="next ">Next</a>
   {% else %}

@@ -10,8 +10,7 @@ TODO
 * page
 	* about
 	* archive
+  * add works
 * pagination design
 * modernize [blockquote](http://tympanus.net/codrops/2012/07/25/modern-block-quote-styles/)
-* add works
 * modify tags
-* next/previous entry 
