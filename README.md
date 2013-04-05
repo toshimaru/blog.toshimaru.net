@@ -1,11 +1,8 @@
-my-new-blog
+blog.toshimaru.net
 ===========
-
-this is temporary repo for my new blog. after publish, opensource it
 
 TODO
 ----
-
 * add site search form (powered by Google)
 * page
 	* about
