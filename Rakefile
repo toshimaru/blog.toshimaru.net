@@ -24,7 +24,7 @@ task :post do
   require 'date'
   content = <<EOF
 ---
-layout: posts
+layout: post
 title: 
 published: true
 tags: 
