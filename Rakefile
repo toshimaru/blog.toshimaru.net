@@ -28,6 +28,7 @@ layout: post
 title: 
 published: true
 image:
+description: 
 tags: 
 ---
 EOF

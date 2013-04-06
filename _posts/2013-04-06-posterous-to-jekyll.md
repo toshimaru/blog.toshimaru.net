@@ -2,6 +2,7 @@
 layout: post
 title: Blogをposterousからjekyll(with github page)に移行しました
 image: /images/posts/jekyll.png
+description: 本ブログ（blog.toshimaru.net）はPosterousにて運用してきましたが、Posterous閉鎖に伴い、ブログを新たにJekyll（Githubでホスティング）で構築しなおしました。
 published: true
 tags: jekyll
 ---
