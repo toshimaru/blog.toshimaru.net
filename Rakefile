@@ -41,3 +41,7 @@ EOF
   puts "create #{filepath}"
 end
 
+desc 'run dev server'
+task :server do
+  sh 'bundle exec jekyll --auto --server'
+end
