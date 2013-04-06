@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-04-07T04:01:30+09:00</updated>
+  <updated>2013-04-07T06:00:38+09:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -11,15 +11,99 @@
 
   
   <entry>
+    <title type="html"><![CDATA[ブログをjekyllで移行するにあたって考えるべきこと　Jekyllならここまでできる！]]></title>
+    <link href="http://blog.toshimaru.net/new-blog-concept/"/>
+    <updated>2013-04-07T00:00:00+09:00</updated>
+    <id>http://blog.toshimaru.net/new-blog-concept</id>
+    <content type="html"><![CDATA[<p>昨日、<a href="http://blog.toshimaru.net/posterous-to-jekyll/">ブログをposterouからjekyllに移行</a>しました。jekyllに移行するにあたっていろいろ考えたことを残しておきます。</p>
+
+<h2 id="section">前提</h2>
+<p>移行にあたりまず、前提を洗い出しました。自分の場合、こんな感じでした。</p>
+
+<ul>
+  <li>無料であること</li>
+  <li>移行元記事の移行ツールがあること</li>
+  <li>独自ドメインが使用できること</li>
+  <li>デザインがある程度自由度のあるかたちでカスタマイズできること。</li>
+  <li>信頼できるサーバであること。(ざっくり言い換えると大手有名サービスであること）</li>
+</ul>
+
+<p>ちょっと優先度が下がる前提は下記のような感じ。</p>
+
+<ul>
+  <li>JSが自由に使えたら嬉しい</li>
+  <li>CMSなどが直感的でかっこいいこと</li>
+  <li>広告とかウザいのはやめていただきたい </li>
+</ul>
+
+<h2 id="section-1">類似サービスの検討</h2>
+<p>今回の場合、ブログサービスの閉鎖に伴い、ブログ移行を与儀なくされたのでまずは類似ブログサービスを検討しました。 検討したのはこんな感じ。</p>
+
+<ul>
+  <li><a href="http://www.squarespace.com/">squarespace</a></li>
+  <li><a href="http://www.tumblr.com/">tumblr</a></li>
+  <li><a href="http://wordpress.com/">wordpress</a></li>
+  <li><a href="http://hatenablog.com/">Hatena Blog</a></li>
+</ul>
+
+<p>正直公式でも薦められているsquarespaceをとても使いたいと思ったが、有料。そして自分的にsquarespaceの価格設定が少し高く感じた。</p>
+
+<p>無料でやるならtumblr一択、って感じでしょうが、tumblrは5年以上前に触って手に馴染まず使わなかったサービスで、やっぱり今使ってみてもなんとなく見た目とかCMSが馴染まなかったので乗り気はしない。</p>
+
+<h2 id="section-2">ドメインはどうするか？</h2>
+<p>ブログは自ドメイン(blog.toshimaru.net)で運用していました。移行に伴って、ドメインに結びついたリンクがリンク切れを起こしてしまうのをなるだけ避けたい。となるとURLが柔軟にコントロールが効く必要がありますが、上記に挙げたサービスのどれもがそのような機能は提供していませんでした。</p>
+
+<h2 id="jekyll">Jekyll、君に決めた！</h2>
+<p>ということで、いろいろと柔軟にやるためにもハッカーの間で人気の高いJekyllという静的サイトジェネレータを使ってみることにしました（<a href="https://help.github.com/articles/using-jekyll-with-pages">Github Pagesでもサポートされてます</a>）。</p>
+
+<p>調べてみると自分の前提条件がほとんどクリアできることがわかった。</p>
+
+<ul>
+  <li>Github Pages使って無料</li>
+  <li><a href="https://github.com/mojombo/jekyll/wiki/blog-migrations#posterous">移行ツール</a>があった</li>
+  <li>独自ドメインが使用できる(CNAME)</li>
+  <li>デザインはもちろん自由</li>
+  <li>Githubサーバなのでたぶん大丈夫だろう</li>
+  <li>JSもバリバリ使える</li>
+  <li>urlも301リダイレクトだが保てるようだ (_config.ymlにて設定)</li>
+</ul>
+
+<p>他にもこんないいことが。</p>
+
+<ul>
+  <li>markdownで記事かける</li>
+  <li>Rubyの勉強になる！</li>
+</ul>
+
+<h2 id="section-3">コメント欄は設置するか？</h2>
+<p>SNSのプラットフォームが十分に成熟している昨今ですから、そもそもコメント欄を設置すること自体がなんとなく時代遅れになってきているのでは？と感じるのですが、Jekyllを使われている皆さんは<a href="http://disqus.com/">DISQUS</a>を使ってコメント欄を設置されているようなのでそれに倣って設置。</p>
+
+<p>なんか昔はDISQUSのデザインとかがうるさくて好きになれなかったのですが、今はサイトに馴染むように大人しめに設置できるようになったので、安心して設置できました。</p>
+
+<h2 id="jekylljekyll">Jekyllブログ構築にあたり参考にしたJekyllサイト</h2>
+<ul>
+  <li><a href="http://webtech-walker.com/">webtech-walker.com</a> - <a href="https://github.com/hokaccha/webtech-walker">(ソース)</a></li>
+  <li><a href="http://fingaholic.github.io/">fingaholic.github.io</a> - <a href="https://github.com/FiNGAHOLiC/fingaholic.github.com">(ソース)</a></li>
+</ul>
+
+<p>とくにhokacchaさんのjekyll運用の仕方は大変参考になりました！</p>
+
+<h2 id="section-4">総評</h2>
+<p>あなたがハッカーならばJekyll(+Github)はまっさきに検討すべきブログサービスです。現在別のブログサービスを使って書かれている方も、現在ブログを書いていない方も、ハッカーならばJekyllを初めてみてはいかが？</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Blogをposterousからjekyll(with github page)に移行しました]]></title>
     <link href="http://blog.toshimaru.net/posterous-to-jekyll/"/>
     <updated>2013-04-06T00:00:00+09:00</updated>
     <id>http://blog.toshimaru.net/posterous-to-jekyll</id>
-    <content type="html"><![CDATA[<p>本ブログ（blog.toshimaru.net）は<a href='https://posterous.com/'>Posterous</a>にて運用してきましたが、<a href='http://techcrunch.com/2013/02/15/posterous-will-shut-down-on-april-30th-co-founder-garry-tan-launches-posthaven-to-save-your-sites/'>Posterous閉鎖</a>に伴い、ブログを新たに<a href='https://github.com/mojombo/jekyll'>Jekyll</a>（Githubでホスティング）で構築しなおしました。</p>
+    <content type="html"><![CDATA[<p>本ブログ（blog.toshimaru.net）は<a href="https://posterous.com/">Posterous</a>にて運用してきましたが、<a href="http://techcrunch.com/2013/02/15/posterous-will-shut-down-on-april-30th-co-founder-garry-tan-launches-posthaven-to-save-your-sites/">Posterous閉鎖</a>に伴い、ブログを新たに<a href="https://github.com/mojombo/jekyll">Jekyll</a>（Githubでホスティング）で構築しなおしました。</p>
 
 <p>一応自分で試せる環境でひと通り確認しましたが、もしレイアウト崩れなど問題等ございましたらフィードバックいただけると幸いです。</p>
 
-<p>今後ともよろしくお願いします。</p>]]></content>
+<p>今後ともよろしくお願いします。</p>
+]]></content>
   </entry>
   
   <entry>
@@ -913,60 +997,6 @@ print 'hello world';</pre></div>
 <ul>
 <li><a href="http://ascii.jp/elem/000/000/697/697463/">レスポンシブWebデザインとは</a> </li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Nexus 7 ファーストインプレッション]]></title>
-    <link href="http://blog.toshimaru.net/nexus-7/"/>
-    <updated>2012-10-08T00:00:00+09:00</updated>
-    <id>http://blog.toshimaru.net/nexus-7</id>
-    <content type="html"><![CDATA[<p>Nexus 7 を購入しました。Androidは以前アメリカで買ったSIMフリーの初代グーグル携帯、Nexus 1に続く２台目になります。先に簡単に特徴を述べると、</p>
-<ul>
-<li>通信はSIM挿入口なしのWifiオンリー、</li>
-<li>SDカード挿入口もなし、</li>
-<li>カメラはフロント側のみ、</li>
-<li>充電・PC接続はMicro USB、&nbsp;</li>
-<li>Androidバージョンは現時点で4.1</li>
-</ul>
-<p>になります。まずは外装から。</p>
-<p><img src="/images/2012/10/nexus.jpg"></p>
-<p>化粧箱から顔を見せるNexus 7。</p>
-<p><img src="/images/2012/10/nexus1.jpg"></p>
-<p>最初のセットアップは画面に合わせて進めていけば難なくおわるはずです。終わるとこんな画面。</p>
-<p><img src="/images/2012/10/nexus3.jpg"></p>
-<p>最初のホーム画面はこんな感じ。下にあるアプリはブラウザ、電子書籍リーダー、動画ビューア、音楽プレイヤー、Google Playマーケットです。</p>
-<p><img src="/images/2012/10/nexus4.jpg"></p>
-<p>すでに<a href="http://review.kakaku.com/review/K0000421212/#tab">価格コムにレビューがいくつも上がってます</a>が、大変好評の様子。私も購入して３、４日ほどですが非常に気に入ってます。</p>
-<p>では早速いくつかの点でのレビュー。</p>
-<h3>電子書籍リーダーとして</h3>
-<p>私がなぜiPadを購入せずに７インチ型タブレットを求めていたのかの理由です。個人的にはタブレットには電子書籍リーダーとしての役割を一番求めているのですが、iPadはいかんせんでかい、そして重い。</p>
-<p>私の理想の読書スタイルは電車内であれば片手で文庫本を持ち、片手でつり革につかまり本を読むスタイル。家の中であれば寝転がっていても、片手で本体を上に上げたり横にしても読めるようなスタイルが良いです。iPadの片手持ちはけっこう無理がありますね、はい。そこで7インチタブレットが私にとってのタブレットとしての最善の選択でした。</p>
-<p>じゃあどの７インチタブレットを買うか？　iPad mini, Nexus 7, Kindle Fire, 中華タブレット(&acute;・&omega;・`), Kobo Touch(爆)... あたりでしょうか。僕はこの内一番最初に日本で発売され、手に入りやすくかつ安価であるNexus 7を選びました。</p>
-<p>現在、Kindleアプリにて米国Amazonの本を購入して読んでますが、片手で持てペラペラと指でページをめくれるので非常に満足してます。（小さい女性の手には片手はきついかも？）</p>
-<p><img src="/images/2012/10/nexus7.png"></p>
-<p>ちなみに7インチタブレットだと小さい文字のPDFは読むにはかなりきついのでepub形式で決まりです。</p>
-<h3>プロダクトデザイン</h3>
-<p>かっちょいいです。背面がラウンドしておりまず持ちやすい。iphone4以降の角張りが嫌いな私にとっては小さな幸せです。また背面がラバーっぽい材質で手から滑りおちない親切設計（ラバーにすることによるデザイン的な見た目の損失はそれほどありません）。</p>
-<p>そして何より表面がかっちょいい。表面に何一つハードウェア制御ボタンがないのが素敵。Android初期時代の統一感ゼロの画面下ハードウェアボタンが嫌いで仕方なかったのだけど、これがソフトウェア制御になることによってだいぶスッキリした。</p>
-<p></p>
-<p>画面がわの表面はボタンがなくフラットです。物理的なボタンはサイドの電源ボタン、ボリュームボタンのみとなっております。</p>
-<h3>パフォーマンス</h3>
-<p>Android製品はApple製品に比べパフォーマンスが悪いイメージがありましたが、スムース感はApple製品にやや劣るものの、気にならないレベルです。クアッドコアTegra3のパワーは伊達じゃないです。</p>
-<p><img src="/images/2012/10/nexus5.png"></p>
-<h3>悪いところ</h3>
-<p>わりと本品を購入された皆様が良いことばかり書いているので少し気になっているところを書きます。</p>
-<ul>
-<li>USB充電がやや遅いように感じました。電源からの充電は早かったです。</li>
-<li>日本の電子書籍マーケットしょぼいね。あと価格設定が少し高めかもね。これに関しては日本からでも米国Amazonの書籍が買えたことで安心してますが。</li>
-<li>Apple製品にくらべUIがやっぱ少しわかりにくい。ただ初期よりも１つ１つの画面のデザインがかっこよくはなってる。</li>
-</ul>
-<p>下２つはNexus7の問題でなく、日本市場とAndroid全体の問題ですが。。。</p>
-<h3>総評</h3>
-<p>これだけの性能で19800円。挑戦的価格です。Wifi環境が整ってて16Gで容量足りると感じる方であれば「買い」でしょう。</p>
-<p>気になるところはkindle Fire, iPad miniとの比較ですが、それはまた別の方にお任せします。</p>
-<p><img src="/images/2012/10/nexus6.jpg"></p>
-<p>（Nexusシリーズが仲良く並びました。）</p>
 ]]></content>
   </entry>
   
