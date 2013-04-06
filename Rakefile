@@ -27,6 +27,7 @@ task :post do
 layout: post
 title: 
 published: true
+image:
 tags: 
 ---
 EOF
