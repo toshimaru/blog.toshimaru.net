@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ブログをjekyllで移行するにあたって考えるべきこと　Jekyllならここまでできる！
+title: Jekyllならここまでできる！ ブログをjekyllで移行するにあたって考えるべきこと
 published: true
 description: 昨日、ブログをposterouからjekyllに移行しました。jekyllに移行するにあたっていろいろ考えたことを残しておきます。
 tags: jekyll
