@@ -7,6 +7,8 @@
 @content-min-height: 470px;
 @footer-div-width: 240px;
 
+@link-color:#00A1C0;
+
 body {
   line-height: @base-line-height;
   font-size: @base-fontsize;
@@ -94,9 +96,26 @@ header {
 #contents {
   min-height: @content-min-height;
 
-  .title {
+  a {
+    color: @link-color;
     text-decoration: none;
-    color: inherit;
+    &:hover {
+      text-decoration: none;
+      border-bottom: 1px dashed;
+    }
+    &:visited {
+      color: desaturate(@link-color, 70%);
+    }
+  }
+
+  hr {
+    border-top: 3px dotted #ccc;
+    border-bottom:none;
+  }
+
+  .title {
+    color: desaturate(@link-color, 50%);
+    text-decoration: none;
   }
 
   .meta {
@@ -110,11 +129,12 @@ header {
     [class^="icon-"] {
       padding-right: 7px;
 
-      .icon-tags {
-        padding-left: 7px;
-      }
     }
 
+    .icon-tags {
+      padding-left: 7px;
+    }
+    
     img {
       padding-top: 13px;
     }
@@ -141,13 +161,6 @@ header {
     color:#333;
     font-size: 24px;
     text-shadow: 2px 2px 2px white;
-
-    a {
-      &:hover {
-        color:#666;
-        border-bottom: none;
-      }
-    }
   }
 
   h2 {
@@ -159,22 +172,7 @@ header {
     font-size: 20px;
   }
 
-  .content {
-    a {
-      color: #008DA8;
-      &:hover { 
-        text-decoration: none;
-        border-bottom: 1px dashed;
-      }
-    }
-
-    hr {
-      border-top: 3px dotted #ccc;
-      border-bottom:none;
-    }
-  }
-
-  .separator {
+  hr .separator {
     margin: 25px auto 8px;
     max-width: 280px;
     border-width: 1px 0 0 0;
@@ -204,13 +202,23 @@ header {
   }
 
   .post-pagination {
-    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 30px;
 
-    .left {
-      float: left;
+    a {
+      text-decoration: none;
+      &:hover {
+        border-bottom: none;
+      }
     }
-    .right {
+
+    .newer {
+      float: left;
+      .pagination-button();
+    }
+    .older {
       float: right;
+      .pagination-button();
     }
   }
 
@@ -447,4 +455,15 @@ img {
   border-style: solid;
   border-color: #aaa;
   border-radius: 20px;
+}
+
+.pagination-button() {
+  color: #ccc;
+  border: 1px solid;
+  padding: 2px 9px;
+  border-radius: 30px;
+  box-shadow: 2px 2px #aaa;
+  &:hover {
+    background-color: #eee;
+  }
 }

@@ -29,18 +29,17 @@ layout: default
 </ul>
 
 <div class="post-pagination clearfix">
-  <div class="left">
-  {% if page.next.url %} 
-    <a href="{{page.next.url}}" title="Newer Post: 
-  {{page.next.title}}"><i class="icon-chevron-left"></i> Newer</a> 
-  {% endif %} 
-  </div> 
-  <div class="right"> 
-  {% if page.previous.url %} 
-    <a href="{{page.previous.url}}" title="Older Post: 
-  {{page.previous.title}}">Older <i class="icon-chevron-right"></i></a> 
-  {% endif %}
+  {% if page.next.url %}
+  <div class="newer">
+    <a href="{{page.next.url}}" title="Newer Post: {{page.next.title}}"><i class="icon-chevron-left"></i>  Newer</a>
   </div>
+  {% endif %}
+  
+  {% if page.previous.url %}
+  <div class="older">
+    <a href="{{page.previous.url}}" title="Older Post: {{page.previous.title}}">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  {% endif %}
 </div>
 
 <div id="disqus_thread"></div>
