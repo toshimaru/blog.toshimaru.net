@@ -3,12 +3,96 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-04-08T18:07:08+09:00</updated>
+  <updated>2013-04-09T06:32:37+09:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[メンテナビリティの高いコードを書くメリット]]></title>
+    <link href="http://blog.toshimaru.net/mentenability/"/>
+    <updated>2013-04-09T00:00:00+09:00</updated>
+    <id>http://blog.toshimaru.net/mentenability</id>
+    <content type="html"><![CDATA[<p><a href="http://careerhack.en-japan.com/report/detail/66">コードは汚くていい。「アイツがいれば勝てる」と言わせろ。</a>に対するあるはてな匿名ダイアリー記事を読んでいて考えたこと。</p>
+
+<h2 id="section">良いコードはエンドユーザにとってはどうでもいい</h2>
+<blockquote>
+  <p>非エンジニアを騙して手抜きするのは簡単。余程のヘタレでない限り手抜きをしても絶対にばれない。コードにコメントがなくてもモジュール化されてなくてもコピペ満載でもマジックナンバーだらけでも動いてさえいればユーザーは気にしない。</p>
+
+  <p><a href="http://anond.hatelabo.jp/20121201025247">会社潰すのは簡単、アイツがいれば勝てる、と思った人間を雇えば良い</a></p>
+</blockquote>
+
+<p>そう、単純に速く作るのは難しくはない。なんにも考えずにただ思いつくままに上から下に書いていけばいい。そうして出来上がったコードは大抵はひどいものだ。要らないコードがコメントアウトされて残り、バージョン管理されたコミットログもまともに書かれず、ネストが深く、関数化もまともにされていない、こんなコードだ。</p>
+
+<p>無論、「良いコード」「綺麗なコード」の多くはユーザにとっては無意味なものであり、どうでもいいものである。 ユーザにとっての最大の関心事はそのアプリケーションが面白いか面白くないか、正しく動くかどうか、バグがないかどうかであり、コードが良いか悪いかなんてアウトオブ眼中である。</p>
+
+<h2 id="section-1">悪いコードは生産性を下げる？</h2>
+<p>じゃあ悪い手抜きコードでいいのか？　というとそんなことはないはず。</p>
+
+<blockquote>
+  <p>手抜きコードをメンテさせられるプログラマの生産性は落ちる</p>
+
+  <p>手抜きコードのメンテはプログラマにとって最悪の仕事。綺麗なコードで数十分でできる仕事が２週間かかることもしばしば。最悪の仕事をさせられ、「仕事が遅い」と評価され、モチベーションが下がって更に仕事が遅くなる。</p>
+
+  <p><a href="http://anond.hatelabo.jp/20121201025247">会社潰すのは簡単、アイツがいれば勝てる、と思った人間を雇えば良い</a></p>
+</blockquote>
+
+<p>このことは「悪い」コードをメンテナンスさせられた経験のある人にとっては当然なことだと思う。</p>
+
+<p>悪いコードは３行で書けることをきっと10行で書くだろう。また、悪いコードは5メソッドに分けるべきところを1メソッドに書くだろう。ときに悪いコードは3ファイルに分けるところを1ファイルに集約するだろう。悪いコードはオブジェクト指向をうまく利用できていないだろう。</p>
+
+<p>このようなコードのメンテナンスは大変骨の折れる作業で、メンテナンスコストは高くつく。このメンテナンスコストも含めてトータルでコスト計算すると結局、コストは手抜きコードのほうが高くつくのではないだろうか。つまり数式にするとこのようになるだろう。</p>
+
+<p><strong>手抜きコードを書くコスト＋そのメンテナンスコスト　＞　ちゃんと考えて書いた良いコード＋そのメンテナンスコスト</strong></p>
+
+<p>ただ問題は前者がイニシャルコストが安いので、一見「トータルコストも安く済むのでは？」と思えてしまうところだ。悪いコードをメンテナンスしたことのない非プログラマにとっては当然とも言えるが・・・。</p>
+
+<h2 id="section-2">メンテナビリティの高いコードを書くメリットは何か</h2>
+<p>メンテナビリティの高いコードを書くメリットは何だろうか。まず上記にあげたように「メンテナンス時のコストが下がりトータルコストが下がる」ことである。</p>
+
+<p>例えばあるソーシャルゲームを考えてみよう。それが使い捨てのゲームアプリであればひどいコードでいいかもしれない。だが中長期的にそのアプリを運用していくのであれば、メンテナビリティの高いコードを書くべきだ。それにより、保守コストは下がり、トータルコストは低くなる。</p>
+
+<blockquote>
+  <p>ソースコードの理解に時間を要したり、最悪の場合、なぜそういうコードになっているのか最後までわからず、「触ると危ないコード」&gt; になってしまうようなら、例え機能的に要件を満たせていても、中長期のメンテナンスの観点から言えば、そのソースコードはコミットしない方がプロジェクトのためになります。</p>
+
+  <p><a href="http://blog.livedoor.jp/lalha/archives/50435614.html">メンテナビリティの高いソースコードを目指して</a></p>
+</blockquote>
+
+<p>またコードに気を使っている会社には「優秀なプログラマが集まる」だろう。言い換えるならば、コードに気を使う会社にはコードに気を使う優秀なプログラマが集まるし、そうでなければコードに無頓着なプログラマが集まるだろう。</p>
+
+<p>こんな要望に対して優秀なプログラマはどう思うだろうか？ 「アプリ作って。期限は◯◯までで、ヨロシク。え？テスト書くかって？　あー要らない要らない。ちゃんと動いていればいいから。」きっと気持ちが萎えてしまうだろう。</p>
+
+<h2 id="section-3">まとめ</h2>
+<ul>
+  <li>メンテナンス時のコストが下がる→トータルコストが下がる</li>
+  <li>優秀なプログラマが集まる</li>
+</ul>
+
+<p>上述した理由により、基本的に私は「いかなる場合でもメンテナビリティを意識したコードを書くべきだ」という姿勢だ。</p>
+
+<h2 id="section-4">コードを書くことが目的ではない</h2>
+<p>ただ最後に記しておきたいのはコードを書くこと自体は目的ではないということだ。会社のビジネスを成功に導くためにコード/プログラムがあるのであり、そのことはプログラマが忘れてはならないことである。</p>
+
+<blockquote>
+  <p>綺麗に書くのなんて当たり前、そしてその先で実現できるモノづくりに全力を尽くす。</p>
+
+  <p><a href="http://kyuns.hatenablog.com/entry/2012/11/30/143037">コードの綺麗さの先にあるもの</a></p>
+</blockquote>
+
+<blockquote>
+  <p>まつもと氏は、美しいコードというものがあるという。それはアートで、「プログラマはアーティストだ」と言い切る。（中略）アートだと言ってもプログラムは飾るのが目的ではない。「実用に供してなんぼ。日本では用の美というらしいですが、どのぐらい目的に合致しつつ美しいかが重要」</p>
+
+  <p><a href="http://www.atmarkit.co.jp/news/200904/10/matz.html">「ソフトウェアは工業製品ではない」、Rubyのまつもと氏が講演</a></p>
+</blockquote>
+
+<h2 id="section-5">関連エントリ</h2>
+<ul>
+  <li><a href="http://blog.toshimaru.net/8/">ダメプログラマの8つの特徴</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[レスポンシブサイト構築にあたり参考にしたレスポンシブデザイン１０選]]></title>
@@ -938,103 +1022,6 @@ Further paragraphs come after blank lines.
 <li><strong>72文字で折り返すように記述。</strong></li>
 </ul>
 <p>みんな（自分も含む）が読みやすいコミットメッセージを！！！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[apache+Perl でhello world (CentOS 6)]]></title>
-    <link href="http://blog.toshimaru.net/apacheperl-hello-world-centos-6/"/>
-    <updated>2012-10-14T00:00:00+09:00</updated>
-    <id>http://blog.toshimaru.net/apacheperl-hello-world-centos-6</id>
-    <content type="html"><![CDATA[<p>「え？　今更パール？」って感じですが自分は書かないけど、動かす機会があったのでメモっとく。</p>
-<h3>前提</h3>
-<ul>
-<li>CentOS 6.3 (さくらVPS)</li>
-<li>apache + mod_perl</li>
-<li>目標はURIアクセスして「hello world」を出力するまで</li>
-</ul>
-<h3>apache</h3>
-<p>まずはapacheから。</p>
-<div class="CodeRay">
-  <div class="code"><pre># yum install httpd.x86_64
-# service httpd start
-Starting httpd:                                            [  OK  ]</pre></div>
-</div>
-
-<p>index.html を設置。</p>
-<div class="CodeRay">
-  <div class="code"><pre># cd /var/www/html/
-# ll
-total 0
-# vim index.html</pre></div>
-</div>
-
-<p>適当にこんな感じで。</p>
-<div class="CodeRay">
-  <div class="code"><pre>&lt;html&gt;
-&lt;body&gt;
-hello world!
-&lt;/body&gt;
-&lt;/html&gt;</pre></div>
-</div>
-
-<p>HTTPアクセスします。</p>
-<p>hello world の画面が出てくればOK. 次はapache にperlの設定をしていきます。</p>
-<h3>mod_perl</h3>
-<p>perlモジュールインストール。</p>
-<div class="CodeRay">
-  <div class="code"><pre># yum install mod_perl.x86_64</pre></div>
-</div>
-
-<p>次はapacheの設定</p>
-<div class="CodeRay">
-  <div class="code"><pre># vim /etc/httpd/conf/httpd.conf</pre></div>
-</div>
-
-<p>AddHandler追加。</p>
-<div class="CodeRay">
-  <div class="code"><pre>AddHandler cgi-script .cgi .pl</pre></div>
-</div>
-
-<p>DirecctoryにExecCGIのオプション追加。</p>
-<div class="CodeRay">
-  <div class="code"><pre>Options Indexes FollowSymLinks +ExecCGI</pre></div>
-</div>
-
-<p>リスタート。</p>
-<div class="CodeRay">
-  <div class="code"><pre># service httpd restart
-Stopping httpd:                                            [  OK  ]
-Starting httpd:                                            [  OK  ]
-# vim index.pl</pre></div>
-</div>
-
-<p>perlを書く。</p>
-<div class="CodeRay">
-  <div class="code"><pre>#!/usr/bin/perl
-
-print &quot;Content-type:text/html\n\n&quot;;
-print 'hello world';</pre></div>
-</div>
-
-<p>どうやらポイントは</p>
-<ul>
-<li>シェバンをつけること。</li>
-<li>HTTPレスポンスとして返すのでHTTPレスポンスヘッダ,Content-typeを出力すること。</li>
-</ul>
-<p>のようです。</p>
-<p>再アクセス。「Internal Server Error」。エラーログはこう。</p>
-<div class="CodeRay">
-  <div class="code"><pre>(13)Permission denied: exec of '/var/www/html/index.pl' failed</pre></div>
-</div>
-
-<p>所有者をapacheにして実行権限を持たせてやる。</p>
-<div class="CodeRay">
-  <div class="code"><pre># chown apache:apache index.pl
-# chmod 744 index.pl</pre></div>
-</div>
-
-<p>再アクセス。これにてperlで、hello world が確認できました。めでたしめでたし。</p>
 ]]></content>
   </entry>
   
