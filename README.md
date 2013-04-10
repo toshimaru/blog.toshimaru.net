@@ -12,3 +12,4 @@ TODO
 * <table> css
 * add about in footer
 * archive design
+* <code> radious
