@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>[Java] Dom4Jを使ってXML操作 - Hack Your Design!</title>
+  <title>Jekyllマークダウンはデフォルトではなく kramdown を使おう - Hack Your Design!</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
@@ -15,8 +15,8 @@
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="[Java] Dom4Jを使ってXML操作 - Hack Your Design!">
-  <meta property="og:title" content="[Java] Dom4Jを使ってXML操作 - Hack Your Design!">
+  <meta name="twitter:title" content="Jekyllマークダウンはデフォルトではなく kramdown を使おう - Hack Your Design!">
+  <meta property="og:title" content="Jekyllマークダウンはデフォルトではなく kramdown を使おう - Hack Your Design!">
   
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
@@ -40,19 +40,28 @@
   <div class="main">
     <div id="contents">
      <div class="posts">
-  <h1>[Java] Dom4Jを使ってXML操作</h1>
+  <h1>Jekyllマークダウンはデフォルトではなく kramdown を使おう</h1>
   <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-12-18T00:00:00+09:00" pubdate>18 Dec 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/java.html">java</a>
+    <i class="icon-calendar"></i><time datetime="2013-04-10T00:00:00+09:00" pubdate>10 Apr 2013</time>
+    <i class="icon-tags"></i> <a href="/tag/jekyll.html">jekyll</a>
     
   </div>
 </div>
 
-<p>Javaを使ってXMLを処理したい。しかしJava標準パッケージのDomはどうもいけていない（参考：<a href="http://digitechlog.com/2009/02/25/4-ways-to-read-and-write-xml.html">JavaでXMLを操作の４種類方法とサンプルソース</a>）。ということでdom4jを使用してXMLを操作することにした。</p>
-<p>結果、下記のようにイケてる感じで処理できました。</p>
-<script src="https://gist.github.com/2904049.js?file=Dom4j.java"></script>
-<h3>参考</h3>
-<p><a href="http://www5.ocn.ne.jp/~coast/programming/java/dom4j.html">http://www5.ocn.ne.jp/~coast/programming/java/dom4j.html</a></p>
+<p>jekyllにおいて日本語リストがうまくhtmlに変換してくれないなーって調べてたら、どうやらデフォルトのmarkdownレンダラーではダメらしい。  </p>
+
+<blockquote>
+  <p>Jekyll がデフォルトの markdown レンダラーとして採用している maruku は、どうも Unicode の扱いが怪しいらしい。日本語を使っているとフォーマットが崩れることがある。オプションとして選択可能な kramdown に入れ替えることをおすすめする。 _config.yml に次の1行を足すだけでいい。</p>
+
+  <p><a href="http://radiumsoftware.tumblr.com/post/10543406778">GitHub Pagesを使うにあたって</a></p>
+</blockquote>
+
+<p>_config.ymlに下記を追記。</p>
+
+<pre><code>markdown: kramdown
+</code></pre>
+
+<p>これで日本語リスト変換もうまくいきました。</p>
 
 
 <ul id="social-buttons">
@@ -73,14 +82,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/92078192/" title="Newer Post: iPhoneのバックアップ先を変更する"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
   
   
   <div class="older">
-    <a href="/xssphp/" title="Older Post: XSS脆弱性のあるPHPコード簡易サンプル">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/mentenability/" title="Older Post: メンテナビリティの高いコードを書くメリット">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
