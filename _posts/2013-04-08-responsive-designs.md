@@ -13,62 +13,62 @@ tags: design
 
 1 Twitter Bootstrap
 ---
-[![hoge](/images/posts/responsive-designs/1.png)](http://twitter.github.io/bootstrap/)
+[![Twitter Bootstrap](/images/posts/responsive-designs/1.png)](http://twitter.github.io/bootstrap/)
 
 言わずと知れたtwitter bootstrap. 本サイトはbootstrapを使わずに構築していますが、レイアウトの組み方、CSSのコーディング手法などはこちらが大変参考になりました。
 
 2 Rockaway Relief
 ---
-[![hoge](/images/posts/responsive-designs/2.png)](http://rockawayrelief.com/)
+[![Rockaway](/images/posts/responsive-designs/2.png)](http://rockawayrelief.com/)
 
 ブルーが良い感じに映えるデザインです。
 
 3 Creasty
 ----
-[![hoge](/images/posts/responsive-designs/3.png)](http://www.creasty.com/)
+[![Creasty](/images/posts/responsive-designs/3.png)](http://www.creasty.com/)
 
 若手デザイナ/デベロッパのクリスティさんのWEBサイト。モバイル時のメニューの表示のさせ方がかっこいい。
 
 4 ANTHONY CALZADILLA
 ----
-[![hoge](/images/posts/responsive-designs/4.png)](http://www.anthonycalzadilla.com/)
+[![CALZADILLA](/images/posts/responsive-designs/4.png)](http://www.anthonycalzadilla.com/)
 
 シンプル&クール。
 
 5 Manos
 ----
-[![hoge](/images/posts/responsive-designs/5.png)](http://manoscrafted.com/)
+[![Manos](/images/posts/responsive-designs/5.png)](http://manoscrafted.com/)
 
 スクロール途中でFIXされるナビゲーションが印象的（PC閲覧時）。
 
 6 Gin Lane Media
 ----
-[![hoge](/images/posts/responsive-designs/6.png)](http://www.ginlanemedia.com/)
+[![Gin Lane Media](/images/posts/responsive-designs/6.png)](http://www.ginlanemedia.com/)
 
 上同様、途中でFIXされるナビゲーション。
 
 7 Fear the Grizzly
 ----
-[![hoge](/images/posts/responsive-designs/7.png)](http://www.fearthegrizzly.com/)
+[![Grizzly](/images/posts/responsive-designs/7.png)](http://www.fearthegrizzly.com/)
 
 
 白を基調とした美麗デザイン。
 
 8 Buffalo 
 ----
-[![hoge](/images/posts/responsive-designs/8.png)](http://builtbybuffalo.com/)
+[![Buffalo](/images/posts/responsive-designs/8.png)](http://builtbybuffalo.com/)
 
 PC時とモバイル時のレイアウトの変化のさせ方がイケてます。  
 
 9 Squarespace
 ----
-[![hoge](/images/posts/responsive-designs/9.png)](http://www.squarespace.com/)
+[![Squarespace](/images/posts/responsive-designs/9.png)](http://www.squarespace.com/)
 
 用意されているサイトのテンプレートもすごくかっこいいSquarespaceさん。そちらも覗いてみてください。 
 
 10 Muriel Labro
 ----
-[![hoge](/images/posts/responsive-designs/10.png)](http://www.muriel-labro.fr/)
+[![Muriel Labro](/images/posts/responsive-designs/10.png)](http://www.muriel-labro.fr/)
 
 パリの美容室のページ。かっこいい美容師さんの紹介です。 
 
