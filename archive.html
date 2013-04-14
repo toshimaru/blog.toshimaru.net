@@ -5,8 +5,18 @@ title: Archive
 <h2 class="heading">Archive</h2>
 <section id="archive">
   {% for post in site.posts %}
-  <hr>
-  <a href="{{ post.url }}"><time datetime="{{ post.date | date_to_xmlschema }}" pubdate>{{ post.date | date: "%Y-%m-%d" }}</time>{{ post.title }}</a>
+    {% unless post.next %}
+      <h3>{{ post.date | date: '%Y' }} 年</h3>
+    {% else %}
+      {% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
+      {% capture nyear %}{{ post.next.date | date: '%Y' }}{% endcapture %}
+      {% if year != nyear %}
+        <hr>
+        <h3>{{ post.date | date: '%Y' }} 年</h3>
+      {% endif %}
+    {% endunless %}
+    <hr>
+    <a href="{{ post.url }}"><time datetime="{{ post.date | date_to_xmlschema }}" pubdate>{{ post.date | date: "%m/%d" }}</time>{{ post.title }}</a>
   {% endfor %}
   <hr>
 </section>
