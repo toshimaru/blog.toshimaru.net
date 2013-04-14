@@ -3,8 +3,10 @@ layout: default
 title: Archive
 ---
 <h2 class="heading">Archive</h2>
-<section>
-  <ul reversed>{% for post in site.posts %}
-    <li><a href="{{ post.url }}">{{ post.title }}</a></li>{% endfor %}
-  </ul>
+<section id="archive">
+  {% for post in site.posts %}
+  <hr>
+  <a href="{{ post.url }}"><time datetime="{{ post.date | date_to_xmlschema }}" pubdate>{{ post.date | date: "%Y-%m-%d" }}</time>{{ post.title }}</a>
+  {% endfor %}
+  <hr>
 </section>
