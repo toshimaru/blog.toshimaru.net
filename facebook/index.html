@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>[php]　週間カレンダーの日付を出力する - Hack Your Design!</title>
+  <title>開発者がfacebook「いいね！」ボタン設置時に注意すべきこと - Hack Your Design!</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
@@ -15,10 +15,10 @@
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="[php]　週間カレンダーの日付を出力する - Hack Your Design!">
-  <meta property="og:title" content="[php]　週間カレンダーの日付を出力する - Hack Your Design!">
-  
-  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
+  <meta name="twitter:title" content="開発者がfacebook「いいね！」ボタン設置時に注意すべきこと - Hack Your Design!">
+  <meta property="og:title" content="開発者がfacebook「いいね！」ボタン設置時に注意すべきこと - Hack Your Design!">
+  <meta name="twitter:description" content="Facebookのいいね！ボタン設置をする際に、いくつか注意すべき点がありますのでまとめます。"><meta property="og:description" content="Facebookのいいね！ボタン設置をする際に、いくつか注意すべき点がありますのでまとめます。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/facebook.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/facebook.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
 </head>
@@ -40,19 +40,72 @@
   <div class="main">
     <div id="contents">
      <div class="posts">
-  <h1>[php]　週間カレンダーの日付を出力する</h1>
+  <h1>開発者がfacebook「いいね！」ボタン設置時に注意すべきこと</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2011-12-05T00:00:00+09:00" pubdate>05 Dec 2011</time>
-      <i class="icon-tags"></i><a href="/tag/php.html">php</a>
+      <i class="icon-calendar"></i><time datetime="2013-04-16T00:00:00+09:00" pubdate>16 Apr 2013</time>
+      <i class="icon-tags"></i><a href="/tag/facebook.html">facebook</a>
     </div>
-    
+    <img class="post-image" src="/images/posts/facebook.png" />
   </div>
 </div>
 
-<p>今日の日付は太字になるように出力。</p>
-<p>&nbsp;</p>
-<script src="https://gist.github.com/2904021.js?file=weekDays.php"></script>
+<p>Facebookの<a href="https://developers.facebook.com/docs/reference/plugins/like/">いいね！ボタン</a>設置をする際に、いくつか注意すべき点がありますのでまとめます。</p>
+
+<h2 id="section">設置方法について</h2>
+
+<p>設置方法に関してはいろんなページで紹介されているので、その手順に従えばOKです。</p>
+
+<p><a href="http://www.facebook-japan.com/iine.html">「いいね！」ボタンを設置しよう</a></p>
+
+<p>注意すべきはhtml5の設置コードだとIEの古いブラウザで動かない場合があるので、Iframeを使うところでしょうか。（ただし機能に制限あり）</p>
+
+<h2 id="share">Shareボタンとはなんだ?</h2>
+<p>もうほとんどのサイトで見かけませんが一部の古いサイトでは、Likeボタンではなく、Shareボタンというのを見かけました。ですが本ボタンはもう<strong>廃止予定なので使わないでください。</strong>公式ページでも「We deprecated the Share Button when we launched the Like button」（いいねボタンを作ったときにシェアボタンは廃止したよ！）と説明されています。</p>
+
+<h2 id="og">OGタグとはなんだ？</h2>
+<p>OGタグ、つまりオープングラフタグとはウェブページがオープングラフの情報を持つために付加されるメタデータです。オープングラフとは、例えば「太郎さんが◯◯というウェブページでいいねボタンを押した」といったときの、◯◯に入る規格化された情報を示します。オープングラフについては詳しくは公式の「<a href="http://ogp.me/">The Open Graph protocol</a>」を見てみてください。</p>
+
+<p>OGタグとは具体的に下記のようにhtmlのheadタグ内のmetaタグとして表現されます。</p>
+
+<pre><code>&lt;head&gt;
+&lt;title&gt;The Rock (1996)&lt;/title&gt;
+&lt;meta property="og:title" content="The Rock" /&gt;
+&lt;meta property="og:type" content="video.movie" /&gt;
+&lt;meta property="og:url" content="http://www.imdb.com/title/tt0117500/" /&gt;
+&lt;meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" /&gt;
+...
+&lt;/head&gt;
+</code></pre>
+
+<h2 id="section-1">いいねボタンのデバッグツールを使おう！</h2>
+<p>開発者おなじみだと思いますが。こちらを使ってOGタグのテストをしましょう。</p>
+
+<p><a href="https://developers.facebook.com/tools/debug">Debugger</a></p>
+
+<p>※私が設置したサイトはたまたま海外IP判定を行なっていたのでFacebook側がうまくOGタグを認識してくれませんでした。FacebookサーバからOGタグが読み込めるように海外facebook IPは許可しておきましょう。</p>
+
+<h2 id="section-2">ボタンのテストにはテストユーザを使おう！</h2>
+
+<p>テストの度に自分のプライベートアカウントを使うのはイヤですよね。そんなときは公式で提供されているテストユーザ作成サービスを使いましょう。詳しくは下記。</p>
+
+<p><a href="http://www.koikikukan.com/archives/2011/09/11-013333.php">Facebookがテストユーザー作成・編集画面をリリース</a></p>
+
+<h2 id="section-3">ボタン押したときに「承認」が出てきた</h2>
+<p>いいねをテストしまっくてたら「承認」ボタンが表示されるようになりました。この例は下記でレポートされているようにけっこう根が深い問題です。</p>
+
+<blockquote>
+  <p>その「承認」ボタンは、最近の導入した「いいね」ボタンに対する”like-jacking attack” への対応の一環です。ボタンの使われ方などを基準に、ボタンの設置ページで”like-jacking”が発生してることが推測された場合に、「承認」のステップが入ることになります。</p>
+
+  <p><a href="http://blog.bricoleur.in/archives/1216">facebookの「いいね」ボタンに「承認」が必要となるケースについて</a></p>
+</blockquote>
+
+<p>facebook側は”like-jacking attack”が発生している可能性があるサイトをプログラムで自動検出して、「承認」ボタンを表示させているようです。</p>
+
+<p>そしてこの「承認」ボタンはマニュアルでの解除依頼は受け付けていないようです。つまり「うちのサイトはスパムじゃないから承認ボタンは消してくれ！」とfacebookに依頼しても取り合ってはくれない、ということです。</p>
+
+<p>上記でテストユーザを使えばいくらテストしても大丈夫なんでしょうか。それともいいねを取り消せばOKなのでしょうか。いずれにしても”like-jacking attack”と判定されうるような行動は避けたほうがよさそうです。</p>
+
 
 
 <ul id="social-buttons">
@@ -72,34 +125,13 @@
 </ul>
 
 
-  <div class="related">
-  <h3>関連エントリ</h3>
-  <ul>
-  
-    <li><a href="/php-5492/">[php][ruby]実行速度を計測する</a></li>
-  
-    <li><a href="/php-99717/">phpの@(アットマーク)はオーバーヘッドが大きいから使わないほうがよい</a></li>
-  
-    <li><a href="/php-arraymerge-vs-plus/">[php] array_merge VS array +(plus)</a></li>
-  
-    <li><a href="/phpurl-safe-base64-encode/">[PHP]URL safe な base64 encode メソッド</a></li>
-  
-    <li><a href="/php-44439/">[PHP] パスワードをマスキングする　〜　マスキングは必要？</a></li>
-  
-  </ul>
-  </div>
-
 
 <div class="post-pagination clearfix">
-  
-  <div class="newer">
-    <a href="/84789272/" title="Newer Post: 携帯電話の文字入力時の入力モードを指定する"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
   
   
   
   <div class="older">
-    <a href="/snmpsnmpwalk/" title="Older Post: snmpサーバを立てて、クライアントからsnmpwalkする">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/why-resignation/" title="Older Post: 会社を退職しました。">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
