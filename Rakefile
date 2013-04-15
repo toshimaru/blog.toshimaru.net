@@ -27,7 +27,7 @@ task :post do
 layout: post
 title: 
 published: true
-image:
+image: /images/posts/
 description: 
 tags: 
 ---
