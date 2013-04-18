@@ -3,12 +3,43 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-04-16T06:19:19+09:00</updated>
+  <updated>2013-04-19T04:08:18+09:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Windows コマンドでAmazon S3にバックアップする]]></title>
+    <link href="http://blog.toshimaru.net/windows-s3-sync/"/>
+    <updated>2013-04-19T00:00:00+09:00</updated>
+    <id>http://blog.toshimaru.net/windows-s3-sync</id>
+    <content type="html"><![CDATA[<p>Windows PCを処分するにあたり、音楽、写真、動画などのデータ郡をamazon S3に置き管理することにしました。S3のGUIツールはコレといった定番がないようで（あったら教えてください）、挙動にもやや不安が残る感じでした。よって今回はコマンドラインツールを使ってローカルとS3をsync、同期することにしました。</p>
+
+<p>使ったツールは<a href="http://www.dragondisk.com/">Dragon Disk</a>。トップにパッケージの写真があってやや有料の匂いがするが、無料なのでご安心を。</p>
+
+<h2 id="section">手順</h2>
+
+<ol>
+  <li><a href="http://www.dragondisk.com/download-amazon-s3-client-google-cloud-storage-client.html">ダウンロードページ</a>からコマンドラインツールをダウンロード</li>
+  <li>展開してその中に<code>dgsync.bat</code>ファイルを作成し、下記のようなバッチファイルを作成してください。
+<script src="https://gist.github.com/toshimaru/5415149.js"></script>
+    <ul>
+      <li><code>DGTOOLS_ACCESS_KEY</code>、<code>DGTOOLS_SECRET_KEY</code>を適宜編集。</li>
+      <li>ファイルの削除も同期をとりたい場合は<code>--dont-delete</code>オプションを外してください。</li>
+      <li>S3上のフォルダはあらかじめ作成しておく。</li>
+    </ul>
+  </li>
+  <li>２で作成したバッチを実行する。</li>
+</ol>
+
+<p>以上です。amazon S3を使って安全、安価にデータを保管しましょう！</p>
+
+<h2 id="section-1">参考</h2>
+<p><a href="http://www.tdn.co.jp/techblog/201206/52/">Amazon S3のクライアント「DragonDisk」に付属の「dgsync」が便利な件</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[開発者がfacebook「いいね！」ボタン設置時に注意すべきこと]]></title>
@@ -882,87 +913,6 @@ $('#button').on('click', function() {
 
 <h3>参考</h3>
 <p><a href="http://at-aka.blogspot.jp/2006/07/linux.html">Linux でプロセスごとのメモリー使用量を調べる</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[phpの@(アットマーク)はオーバーヘッドが大きいから使わないほうがよい]]></title>
-    <link href="http://blog.toshimaru.net/php-99717/"/>
-    <updated>2012-11-30T00:00:00+09:00</updated>
-    <id>http://blog.toshimaru.net/php-99717</id>
-    <content type="html"><![CDATA[<p>事の発端はこれ。</p>
-<div class="CodeRay">
-  <div class="code"><pre>// 1. 
-if (isset($checkedAry['key']) &amp;&amp; $checkedAry['key'] == &quot;val&quot;) {
-    // 処理
-}
-
-// 2. 1より早いんじゃね？
-if ($checkedAry['key'] == &quot;val&quot;) {
-    // でもNoticeでちゃうよ！
-    // PHP Notice:  Undefined index: index
-}
-
-// 3. 2の「PHP Notice」の回避策　＠
-if (@$checkedAry['key'] == &quot;val&quot;) {
-    // 処理
-}</pre></div>
-</div>
-
-<p>１と３なら３のほうが処理早いんじゃね？ってことで試してみたところ、こうなった。 （PHP 5.3.3）</p>
-<div class="CodeRay">
-  <div class="code"><pre>&lt;?php
-$ary = array(
-    array( &quot;key1&quot; =&gt; &quot;val1&quot;, &quot;key2&quot; =&gt; &quot;val2&quot;,&quot;key3&quot; =&gt; &quot;val3&quot;,&quot;key4&quot; =&gt; &quot;val4&quot;),
-    array( &quot;key1&quot; =&gt; &quot;val1&quot;, &quot;key2&quot; =&gt; &quot;val2&quot;,&quot;key3&quot; =&gt; &quot;val3&quot;),
-);
-
-$time_start = microtime(true);
-
-$index = 0;
-foreach (range(1,100000) as $count) {
-    $index = 1 - $index;
-    $checkedAry = $ary[$index];
-    if (isset($checkedAry['key4']) &amp;&amp; $checkedAry['key4'] == &quot;val4&quot;) {
-        pow($count, $count);
-    }
-}
-
-$time = microtime(true) - $time_start;
-echo &quot;$time second&quot;;
-
-
-$time_start = microtime(true);
-
-$index = 0;
-foreach (range(1,100000) as $count) {
-    $index = 1 - $index;
-    $checkedAry = $ary[$index];
-    if (@$checkedAry['key4'] == &quot;val4&quot;) {
-        pow($count, $count);
-    }
-}
-
-$time = microtime(true) - $time_start;
-echo &quot;$time second&quot;;</pre></div>
-</div>
-
-<p>３回やってみてこんな結果でした。</p>
-<div class="CodeRay">
-  <div class="code"><pre>0.098845958709717 second
-0.19816088676453 second
-
-0.097808122634888 second
-0.15862894058228 second
-
-0.10174417495728 second
-0.16551208496094 second</pre></div>
-</div>
-
-<p>つまり、<strong>＠付きのほうがそうじゃないほうより１．５倍～２倍程度遅い</strong>、ということになります。</p>
-<p>ただ、<strong>＠付きのほうがシンプルに書ける場合もある</strong>ので、今回の例のようにループさせている場合でないのであれば、＠付きを使ってもよいのかもしれません。</p>
-<h3>参考</h3>
-<p><a href="http://www.l2tp.org/?p=1523">アットマークでエラーを抑制したときのオーバーヘッドについて検証してみた with php5.3三項演算子</a></p>
 ]]></content>
   </entry>
   
