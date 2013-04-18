@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Windows コマンドでAmazon S3にバックアップする
+title: Windows コマンドでAmazon S3上にバックアップする
 published: true
-description: 
+description: Windows PCを処分するにあたり、音楽、写真、動画などのデータ郡をamazon S3に置き管理することにしました。S3のGUIツールはコレといった定番がないようで（あったら教えてください）、挙動にもやや不安が残る感じでした。よって今回はDragon Diskコマンドラインツールを使ってローカルとS3をsync、同期することにしました。
 tags: amazon
 ---
 
