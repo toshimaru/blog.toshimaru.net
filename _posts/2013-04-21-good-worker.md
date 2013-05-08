@@ -3,7 +3,7 @@ layout: post
 title: 仕事のデキる人の７つのポイント
 published: true
 description: 「あ、この人、仕事できるんだろうな」って思う9つの瞬間を受けて僕も「仕事のデキる人」を考えてみた。
-tags: 雑記 
+tags: 雑記
 ---
 
 [「あ、この人、仕事できるんだろうな」って思う9つの瞬間](http://blog.sixapart.jp/2013-04/nine-moments.html)を受けて僕も「仕事のデキる人」を考えてみた。 (元記事を先に読むことをお薦めします)
