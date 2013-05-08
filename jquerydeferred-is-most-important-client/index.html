@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>DeferredはjQueryにおける最も重要なクライアントサイドツール - Hack Your Design!</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <script src="/js/modernizr-2.6.2.min.js"></script>
+  <link rel="stylesheet" href="/css/font-awesome.css">
+  <link rel="stylesheet" href="/css/normalize.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="DeferredはjQueryにおける最も重要なクライアントサイドツール - Hack Your Design!">
+  <meta property="og:title" content="DeferredはjQueryにおける最も重要なクライアントサイドツール - Hack Your Design!">
+  <meta name="twitter:description" content="jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜が結構読んでもらっているみたいなので、今回はdeferred第二弾として、jQuery.Deferred is the most important client-side tool you haveの翻訳をしました。"><meta property="og:description" content="jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜が結構読んでもらっているみたいなので、今回はdeferred第二弾として、jQuery.Deferred is the most important client-side tool you haveの翻訳をしました。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
+  <meta property="og:type" content="article">
+  <!-- Place apple-touch-icon.png in the root directory -->
+</head>
+<body>
+  <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive.html">Archive</a>
+  <a href="/about.html">About</a>
+  </div>
+</nav>
+</header>
+  <div class="main">
+    <div id="contents">
+     <div class="posts">
+  <h1>DeferredはjQueryにおける最も重要なクライアントサイドツール</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2013-05-08T00:00:00+09:00" pubdate>08 May 2013</time>
+      <i class="icon-tags"></i><a href="/tag/jquery.html">jquery</a>
+    </div>
+    
+  </div>
+</div>
+
+<p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</a>が結構読んでもらっているみたいなので、今回はdeferred第二弾として、<a href="http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html">jQuery.Deferred is the most important client-side tool you have</a>の翻訳をしました。</p>
+
+<hr />
+
+<p>jQueryのdeferredの導入は、近年のjQueryの歴史における最もパワフルな拡張だ。jQuery自体はとくに新しい概念ではないが、deferredの導入は多くのクライアントサイド開発者にとってメリットがある。非同期プロセスにおいてdeferredパターンはシンプルでありながらも、パワフルなツールだ。皆さんご承知の通り、クライアントサイドの開発においてそういった非同期を使う状況は数多く存在する。</p>
+
+<p>ここでは、deferredおよびjQueryによって提供されるAPIについて概観する。読者が理解できるよう多くの例を掲載した。あなたはこの記事を読み終わる頃にはdeferredとは何か、いつ使うべきものかが知ることができよう。</p>
+
+<h2 id="section">概要</h2>
+
+<p>“Deferred”パターンとは、完了するかもしれない、あるいは完了しないかもしれない処理単位のプロキシのように振る舞うオブジェクトを表す。このパターンはどんな非同期処理にでも適応することができる。少し例をあげると、Ajaxリクエスト、アニメーション、Webワーカーだ。ユーザの行動さえも「遅延処理(delayed computation)」の対象とみなすことができるのである。</p>
+
+<p>deferredの最もシンプルな使い方は、処理が終わったときあるいは失敗したときに何が起こるかを明示できるようにすることだ。jQueryの実装だと、deferedがうまく解決(resolve)したとき、あるいはエラーで拒否(reject)されたとき、あるいはいくつかの進行中の処理から解決状態だと通知(notify)されたとき（後述）に走るであろうコールバック関数の登録が可能となる。</p>
+
+<p>おそらく既に皆さんは、このdefrredパターンを使っているだろう。なぜならjQuery Ajax関数はdeferredインターフェースを実装したオブジェクトを返すからだ。それらはAjaxリクエストが成功したときにresolveされ、HTTPリクエストが失敗したときにrejectされる。</p>
+
+<h2 id="section-1">理解すべき１つの重要なこと</h2>
+<p>deferredは非同期処理における「いつ」を抽象化する。deferredは無制限に繰り返すことができる。この挙動のポイントは、もしdeferredが既にresolveならば、直ちに登録されているコールバックを実行することだ。あなたは処理単位(たとえばAjaxリクエスト)が終わっているかどうかは気にする必要がない。単純にコールバックをdeferredにバインドし、それが既にresolveであれば実行し、あるいはそれが未来にresolveになったときに実行する。</p>
+
+<h2 id="jquerydeferred">jQueryでdeferredを使ってみる</h2>
+
+<h3 id="resolution--rejection">解決(resolution) &amp; 拒否(rejection)</h3>
+<p>jQuery deferred関数の中核は、deferredの解決(resolve)/拒否(reject)を処理することだ。<code>$.Deferred().</code>でdeferredオブジェクトを作成できる。deferredオブジェクトの<code>done()</code>、<code>fail()</code>はそれぞれオブジェクトのresolveされたとき、rejectされたときに実行される関数を登録できる。</p>
+
+<p>deferredをresolve/rejectすることは実際、<code>resolve()</code>,<code>reject()</code>を使うことで実現できる。<code>jQuery.ajax()</code>メソッドは内部的には、リクエストが正常に完了したときにdeferredの<code>resolve()</code>をコールし、リクエストが失敗したとき（例えばhttpステータスコードの404）に<code>reject()</code>をコールする。</p>
+
+<h3 id="deferred-notifyprogress">deferredへ通知する: notify()とprogress()</h3>
+<p>jQuery1.7からresolve/rejectに加えて、<code>progress</code>が導入された。、<code>progress()</code>により、deferred内で<code>notify()</code>がコールされたときに実行されるコールバック関数を登録することができ、resolved状態に対する「進捗(progress)」を表現できるようになった。<code>notify()</code>で事前にコールバックを登録しておくことで例えば、ロードに時間がかかるリソースを持つdeferredオブジェクトの定期的に更新されるプログレスバーを描画できる。deferredはロード中に通知(notify)され、ロード完了時に解決(resolve)される。</p>
+
+<h3 id="promise">promise()を返す</h3>
+<p>deferred利用時のほとんどの場合、deferredの利用者にresolve/rejectを決めてほしくはないだろう。きっとあなたはそれをあなた自身で管理したいと思うはずだ。そのような場合には、<code>promise()</code>を返すのがよい。</p>
+
+<p>jQuery用語的にいうと、promiseは「read-only deferred」だ。promiseはコールバック登録、deferred状態への問い合わせを可能にするが、状態の変更は不可だ(たとえばresolve/reject状態の変更)。 <code>jQuery.ajax()</code>メソッドはpromise()を返す。なぜならAJAXリクエストが成功したか失敗したかを決定するのは、その内部のコードで完結する話だからだ。</p>
+
+<h3 id="when">非同期イベントの同期化：when()</h3>
+
+<p><code>$.when()</code>は１つ以上のdeferredを受け入れ可能で、それら全てのdeferredオブジェクトが正常に完了(resove)したときにのみresolve状態となる新たなdeferredを作り出す。つまり<code>when()</code>により、非同期イベントを一つに統合することが可能になるのだ。</p>
+
+<p>下記の例を考えてみよう。</p>
+
+<blockquote>
+  <p>ある1つのUI表現に対して、2つの分割されたAJAXリクエストのデータが必要であり、UIのレンダリングには、それら２つのリクエストのデータが必須である。</p>
+</blockquote>
+
+<p><code>when()</code>がないと、レンダリング前にどちらのリクエストも終わっていることを保証するために、コールバックをネストすることを強要されてしまう。さらに悪いことに、２つのAJAXリクエストが失敗時のエラーハンドリングコードが下記URLに示す通り２つに分散されてしまう。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/2s4Mg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<p>この代替案として、<code>when()</code>が使用可能なのだ。2つのAJAXリクエストによって分割されてしまったdeferredオブジェクトを1つに統合できる。<code>when()</code>はこれら2つの両リクエストが完了したときにのみresolveとなる。成功時のコールバックとしてUI要素のレンダリング処理を登録することができる。さらに、失敗時の処理は1つの箇所にまとめることができる（下記URL参照）。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/wJ4bm/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h3 id="section-2">人間もまた非同期だ</h3>
+
+<p>Webサイトやアプリーケーション上の数多くのモノは非同期である。これにはあなたユーザ自信も含まれてさえいる。考えてみよう、あなたのサイトはユーザにプロフィールを作成するように依頼する。プロフィールを十分にユーザに埋めさせるよう、あなたはどれくらい入力が完了しているかプログレスバーを表示させる。それらが入力が完了するとプログレスバーを変更させ、全て入力し終えたときには「ありがとうございます」というメッセージを表示させるだろう。
+この状況では、プロフィールの遅延入力完了という点でdeferredが現れている。プロフィールを作成、「計算」している本質は実際のところ、人間である。このケースは「非同期である」と見做せる状況とはいえないかもしれないが、まさにdeferredが使える有効な状況である。</p>
+
+<p>ユーザーアクション（これは解決への進捗率を示している）によるdeferredを通知するために、<code>notify()</code>が使える。そして<code>resolve()</code>がプロフィール入力完了によるdeferredを通知するのに使える。プログレスバーを更新するには<code>progress()</code>を使ってコールバックをバインドし、ありがとうメッセージを表示するコールバックをバインドするのには<code>done()</code>を使う。</p>
+
+<p>下記に例を示そう。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/TTUrQ/10/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h3 id="section-3">最後に（訳者より）</h3>
+
+<p>原文にはdeferredの面白い使い方、<code>pipe()</code>も紹介されています。是非こちらも参照してみてください。</p>
+
+<p><a href="http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html">jQuery.Deferred is the most important client-side tool you have</a></p>
+
+
+<ul id="social-buttons">
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連エントリ</h3>
+  <ul>
+  
+    <li><a href="/jqueryhidden-inputjquery/">【jQuery】hidden inputタグをjQueryで追加</a></li>
+  
+    <li><a href="/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</a></li>
+  
+    <li><a href="/jqueryfadein/">jQueryで画像を順番にfadeInする</a></li>
+  
+    <li><a href="/twitter-search-api-js/">twitter search API をJSで呼んでみる</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="post-pagination clearfix">
+  
+  
+  
+  <div class="older">
+    <a href="/good-worker/" title="Older Post: 仕事のデキる人の７つのポイント">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </div>
+  </div>
+  <footer>
+	<div class="main">
+		<div class="wrapper clearfix">
+			<div class="about">
+				<h2>About</h2>
+				<img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+				<dl>
+					<dt>Toshimaru</dt>
+					<dd>Web Developer in Japan. 技術ネタをよく書いてます。</dd>
+				</dl>
+				<ul>
+					<li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign"></a></li>
+					<li><a href="https://github.com/toshimaru" class="icon-github-sign"></a></li>
+				</ul>
+			</div>
+			<div class="center">
+				<h2>Recommend</h2>
+				<ul>
+					<li><a href="/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</a></li>
+					<li><a href="/vimsublime-text-2/">Vimから３日で乗り換えた、次世代モテエディタ「Sublime Text 2」の魅力</a></li>
+					<li><a href="/responsive-designs/">レスポンシブサイト構築にあたり参考にしたレスポンシブデザイン１０選</a></li>
+				</ul>
+			</div>
+			<div class="right">
+				<h2>Tag</h2>
+				<div class="tags"><a href="/tag/amazon.html" class="set-1">amazon</a> <a href="/tag/android.html" class="set-1">android</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/html.html" class="set-2">html</a> <a href="/tag/iphone.html" class="set-2">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-4">linux</a> <a href="/tag/mac.html" class="set-1">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-1">rails</a> <a href="/tag/ruby.html" class="set-1">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-2">security</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-2">tech</a> <a href="/tag/vim.html" class="set-2">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-2">雑記</a></div> 
+			</div>
+		</div>
+  	<p class="credit">Designed by <a href="/about.html">Toshi</a></p>
+	</div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+  <script src="/js/main.js"></script>
+  <script>
+      var _gaq=[['_setAccount','UA-35177276-1'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+</body>
+</html>

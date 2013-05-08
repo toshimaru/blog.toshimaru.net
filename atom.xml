@@ -3,12 +3,88 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-04-22T05:21:04+09:00</updated>
+  <updated>2013-05-08T17:03:14+09:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DeferredはjQueryにおける最も重要なクライアントサイドツール]]></title>
+    <link href="http://blog.toshimaru.net/jquerydeferred-is-most-important-client/"/>
+    <updated>2013-05-08T00:00:00+09:00</updated>
+    <id>http://blog.toshimaru.net/jquerydeferred-is-most-important-client</id>
+    <content type="html"><![CDATA[<p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</a>が結構読んでもらっているみたいなので、今回はdeferred第二弾として、<a href="http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html">jQuery.Deferred is the most important client-side tool you have</a>の翻訳をしました。</p>
+
+<hr />
+
+<p>jQueryのdeferredの導入は、近年のjQueryの歴史における最もパワフルな拡張だ。jQuery自体はとくに新しい概念ではないが、deferredの導入は多くのクライアントサイド開発者にとってメリットがある。非同期プロセスにおいてdeferredパターンはシンプルでありながらも、パワフルなツールだ。皆さんご承知の通り、クライアントサイドの開発においてそういった非同期を使う状況は数多く存在する。</p>
+
+<p>ここでは、deferredおよびjQueryによって提供されるAPIについて概観する。読者が理解できるよう多くの例を掲載した。あなたはこの記事を読み終わる頃にはdeferredとは何か、いつ使うべきものかが知ることができよう。</p>
+
+<h2 id="section">概要</h2>
+
+<p>“Deferred”パターンとは、完了するかもしれない、あるいは完了しないかもしれない処理単位のプロキシのように振る舞うオブジェクトを表す。このパターンはどんな非同期処理にでも適応することができる。少し例をあげると、Ajaxリクエスト、アニメーション、Webワーカーだ。ユーザの行動さえも「遅延処理(delayed computation)」の対象とみなすことができるのである。</p>
+
+<p>deferredの最もシンプルな使い方は、処理が終わったときあるいは失敗したときに何が起こるかを明示できるようにすることだ。jQueryの実装だと、deferedがうまく解決(resolve)したとき、あるいはエラーで拒否(reject)されたとき、あるいはいくつかの進行中の処理から解決状態だと通知(notify)されたとき（後述）に走るであろうコールバック関数の登録が可能となる。</p>
+
+<p>おそらく既に皆さんは、このdefrredパターンを使っているだろう。なぜならjQuery Ajax関数はdeferredインターフェースを実装したオブジェクトを返すからだ。それらはAjaxリクエストが成功したときにresolveされ、HTTPリクエストが失敗したときにrejectされる。</p>
+
+<h2 id="section-1">理解すべき１つの重要なこと</h2>
+<p>deferredは非同期処理における「いつ」を抽象化する。deferredは無制限に繰り返すことができる。この挙動のポイントは、もしdeferredが既にresolveならば、直ちに登録されているコールバックを実行することだ。あなたは処理単位(たとえばAjaxリクエスト)が終わっているかどうかは気にする必要がない。単純にコールバックをdeferredにバインドし、それが既にresolveであれば実行し、あるいはそれが未来にresolveになったときに実行する。</p>
+
+<h2 id="jquerydeferred">jQueryでdeferredを使ってみる</h2>
+
+<h3 id="resolution--rejection">解決(resolution) &amp; 拒否(rejection)</h3>
+<p>jQuery deferred関数の中核は、deferredの解決(resolve)/拒否(reject)を処理することだ。<code>$.Deferred().</code>でdeferredオブジェクトを作成できる。deferredオブジェクトの<code>done()</code>、<code>fail()</code>はそれぞれオブジェクトのresolveされたとき、rejectされたときに実行される関数を登録できる。</p>
+
+<p>deferredをresolve/rejectすることは実際、<code>resolve()</code>,<code>reject()</code>を使うことで実現できる。<code>jQuery.ajax()</code>メソッドは内部的には、リクエストが正常に完了したときにdeferredの<code>resolve()</code>をコールし、リクエストが失敗したとき（例えばhttpステータスコードの404）に<code>reject()</code>をコールする。</p>
+
+<h3 id="deferred-notifyprogress">deferredへ通知する: notify()とprogress()</h3>
+<p>jQuery1.7からresolve/rejectに加えて、<code>progress</code>が導入された。、<code>progress()</code>により、deferred内で<code>notify()</code>がコールされたときに実行されるコールバック関数を登録することができ、resolved状態に対する「進捗(progress)」を表現できるようになった。<code>notify()</code>で事前にコールバックを登録しておくことで例えば、ロードに時間がかかるリソースを持つdeferredオブジェクトの定期的に更新されるプログレスバーを描画できる。deferredはロード中に通知(notify)され、ロード完了時に解決(resolve)される。</p>
+
+<h3 id="promise">promise()を返す</h3>
+<p>deferred利用時のほとんどの場合、deferredの利用者にresolve/rejectを決めてほしくはないだろう。きっとあなたはそれをあなた自身で管理したいと思うはずだ。そのような場合には、<code>promise()</code>を返すのがよい。</p>
+
+<p>jQuery用語的にいうと、promiseは「read-only deferred」だ。promiseはコールバック登録、deferred状態への問い合わせを可能にするが、状態の変更は不可だ(たとえばresolve/reject状態の変更)。 <code>jQuery.ajax()</code>メソッドはpromise()を返す。なぜならAJAXリクエストが成功したか失敗したかを決定するのは、その内部のコードで完結する話だからだ。</p>
+
+<h3 id="when">非同期イベントの同期化：when()</h3>
+
+<p><code>$.when()</code>は１つ以上のdeferredを受け入れ可能で、それら全てのdeferredオブジェクトが正常に完了(resove)したときにのみresolve状態となる新たなdeferredを作り出す。つまり<code>when()</code>により、非同期イベントを一つに統合することが可能になるのだ。</p>
+
+<p>下記の例を考えてみよう。</p>
+
+<blockquote>
+  <p>ある1つのUI表現に対して、2つの分割されたAJAXリクエストのデータが必要であり、UIのレンダリングには、それら２つのリクエストのデータが必須である。</p>
+</blockquote>
+
+<p><code>when()</code>がないと、レンダリング前にどちらのリクエストも終わっていることを保証するために、コールバックをネストすることを強要されてしまう。さらに悪いことに、２つのAJAXリクエストが失敗時のエラーハンドリングコードが下記URLに示す通り２つに分散されてしまう。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/2s4Mg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<p>この代替案として、<code>when()</code>が使用可能なのだ。2つのAJAXリクエストによって分割されてしまったdeferredオブジェクトを1つに統合できる。<code>when()</code>はこれら2つの両リクエストが完了したときにのみresolveとなる。成功時のコールバックとしてUI要素のレンダリング処理を登録することができる。さらに、失敗時の処理は1つの箇所にまとめることができる（下記URL参照）。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/wJ4bm/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h3 id="section-2">人間もまた非同期だ</h3>
+
+<p>Webサイトやアプリーケーション上の数多くのモノは非同期である。これにはあなたユーザ自信も含まれてさえいる。考えてみよう、あなたのサイトはユーザにプロフィールを作成するように依頼する。プロフィールを十分にユーザに埋めさせるよう、あなたはどれくらい入力が完了しているかプログレスバーを表示させる。それらが入力が完了するとプログレスバーを変更させ、全て入力し終えたときには「ありがとうございます」というメッセージを表示させるだろう。
+この状況では、プロフィールの遅延入力完了という点でdeferredが現れている。プロフィールを作成、「計算」している本質は実際のところ、人間である。このケースは「非同期である」と見做せる状況とはいえないかもしれないが、まさにdeferredが使える有効な状況である。</p>
+
+<p>ユーザーアクション（これは解決への進捗率を示している）によるdeferredを通知するために、<code>notify()</code>が使える。そして<code>resolve()</code>がプロフィール入力完了によるdeferredを通知するのに使える。プログレスバーを更新するには<code>progress()</code>を使ってコールバックをバインドし、ありがとうメッセージを表示するコールバックをバインドするのには<code>done()</code>を使う。</p>
+
+<p>下記に例を示そう。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/TTUrQ/10/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h3 id="section-3">最後に（訳者より）</h3>
+
+<p>原文にはdeferredの面白い使い方、<code>pipe()</code>も紹介されています。是非こちらも参照してみてください。</p>
+
+<p><a href="http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html">jQuery.Deferred is the most important client-side tool you have</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[仕事のデキる人の７つのポイント]]></title>
@@ -956,17 +1032,6 @@ $('#button').on('click', function() {
 <p><img src="/images/2012/12/iphone.jpg"></p>
 <p>使ったアイテムはこいつらです。（クリック先はAmazonリンク）</p>
 <p><a href="http://www.amazon.co.jp/gp/product/B007VIMZZ2/ref=as_li_tf_il?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=B007VIMZZ2&amp;linkCode=as2&amp;tag=toshimaru-22"><img src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&amp;ASIN=B007VIMZZ2&amp;Format=_SL110_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=toshimaru-22" border="0" alt="" /></a><img src="http://www.assoc-amazon.jp/e/ir?t=toshimaru-22&amp;l=as2&amp;o=9&amp;a=B007VIMZZ2" border="0" height="1" alt="" style="border: none !important; margin: 0px !important;" width="1" /> <a href="http://www.amazon.co.jp/gp/product/B006ZZXLTQ/ref=as_li_tf_il?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=B006ZZXLTQ&amp;linkCode=as2&amp;tag=toshimaru-22"><img src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&amp;ASIN=B006ZZXLTQ&amp;Format=_SL110_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=toshimaru-22" border="0" alt="" /></a><img src="http://www.assoc-amazon.jp/e/ir?t=toshimaru-22&amp;l=as2&amp;o=9&amp;a=B006ZZXLTQ" border="0" height="1" alt="" style="border: none !important; margin: 0px !important;" width="1" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[php][ruby]実行速度を計測する]]></title>
-    <link href="http://blog.toshimaru.net/php-5492/"/>
-    <updated>2012-12-02T00:00:00+09:00</updated>
-    <id>http://blog.toshimaru.net/php-5492</id>
-    <content type="html"><![CDATA[<p>最初の１行＋最後の２行の３行でOK。</p>
-<p><script src="https://gist.github.com/4188781.js"></script></p>
-<p>これを使って<a href="http://blog.toshimaru.net/php-99717">処理のパフォーマンス比較をやる</a>と良い感じ。</p>
 ]]></content>
   </entry>
   
