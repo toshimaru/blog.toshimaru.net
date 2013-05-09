@@ -9,7 +9,7 @@ end
 
 desc 'deploy to production'
 task :deploy do
-  sh 'bundle exec jekyll'
+  sh 'bundle exec jekyll build'
   sh 'rm -rf _deploy/*'
   sh 'cp -R _site/* _deploy'
   cd '_deploy' do
@@ -45,5 +45,5 @@ end
 
 desc 'run dev server'
 task :server do
-  sh 'bundle exec jekyll --auto --server'
+  sh 'bundle exec jekyll serve'
 end
