@@ -44,6 +44,6 @@ EOF
 end
 
 desc 'run dev server'
-task :server do
-  sh 'bundle exec jekyll serve'
+task :serve do
+  sh 'bundle exec jekyll serve --watch'
 end
