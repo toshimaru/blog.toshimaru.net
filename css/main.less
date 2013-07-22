@@ -6,7 +6,6 @@
 @header-min-height: 70px;
 @content-min-height: 470px;
 @footer-div-width: 240px;
-
 @link-color:#00AFD1;
 
 body {
@@ -30,6 +29,7 @@ header {
   background: rgba(255, 255, 255, 0.7);
   color: #E6218B;
   font-size: 22px;
+  z-index: 10;
 
   #header-top {
     float: left;
@@ -146,6 +146,11 @@ header {
 
   .posts {
     padding-bottom: 37px;
+
+    -webkit-animation-name: fadeInLeft;
+    -webkit-animation-duration: 0.8s;
+    -webkit-animation-timing-function: cubic-bezier(0.7, -0.005, .1, 1);
+    -webkit-animation-fill-mode: both;
   }
 
   .heading {
@@ -393,7 +398,7 @@ footer {
   }
 }
 
-/* responsive */
+// responsive
 
 @media only screen and (max-width: @main-width) {
   header {
@@ -576,4 +581,59 @@ img {
   &:hover {
     background-color: #eee;
   }
+}
+
+@-webkit-keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateX(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translateX(0);
+  }
+}
+
+@-moz-keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -moz-transform: translateX(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    -moz-transform: translateX(0);
+  }
+}
+
+@-o-keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -o-transform: translateX(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    -o-transform: translateX(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fadeInLeft {
+  -webkit-animation-name: fadeInLeft;
+  -moz-animation-name: fadeInLeft;
+  -o-animation-name: fadeInLeft;
+  animation-name: fadeInLeft;
 }
