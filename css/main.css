@@ -17,6 +17,7 @@ header {
   background: rgba(255, 255, 255, 0.7);
   color: #E6218B;
   font-size: 22px;
+  z-index: 10;
 }
 header #header-top {
   float: left;
@@ -112,6 +113,10 @@ header #toggle-item .navmenu {
 }
 #contents .posts {
   padding-bottom: 37px;
+  -webkit-animation-name: fadeInLeft;
+  -webkit-animation-duration: 0.8s;
+  -webkit-animation-timing-function: cubic-bezier(0.7, -0.005, 0.1, 1);
+  -webkit-animation-fill-mode: both;
 }
 #contents .heading {
   font-size: 24px;
@@ -316,7 +321,6 @@ footer .credit a:hover {
 #archive h3 {
   font-weight: bold;
 }
-/* responsive */
 @media only screen and (max-width: 760px) {
   header {
     position: absolute;
@@ -460,4 +464,50 @@ img {
 }
 .clearfix:after {
   clear: both;
+}
+@-webkit-keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateX(0);
+  }
+}
+@-moz-keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -moz-transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    -moz-transform: translateX(0);
+  }
+}
+@-o-keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    -o-transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    -o-transform: translateX(0);
+  }
+}
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.fadeInLeft {
+  -webkit-animation-name: fadeInLeft;
+  -moz-animation-name: fadeInLeft;
+  -o-animation-name: fadeInLeft;
+  animation-name: fadeInLeft;
 }
