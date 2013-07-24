@@ -36,6 +36,7 @@ header h1 {
   font-size: 1.7em;
   font-weight: normal;
   padding-left: 15px;
+  text-shadow: 2px 2px 4px #DDD;
 }
 header #toggle-menu {
   float: right;
@@ -56,6 +57,7 @@ header #logo {
 header #toggle-item {
   text-align: right;
   padding-top: 20px;
+  text-shadow: 2px 2px 2px #DDD;
 }
 header #toggle-item a {
   padding: 0px 17px;
@@ -114,8 +116,10 @@ header #toggle-item .navmenu {
 #contents .posts {
   padding-bottom: 37px;
   -webkit-animation-name: fadeInLeft;
-  -webkit-animation-duration: 0.8s;
-  -webkit-animation-timing-function: cubic-bezier(0.7, -0.005, 0.1, 1);
+  -moz-animation-name: fadeInLeft;
+  -o-animation-name: fadeInLeft;
+  animation-name: fadeInLeft;
+  -webkit-animation-duration: 1s;
   -webkit-animation-fill-mode: both;
 }
 #contents .heading {
@@ -321,10 +325,10 @@ footer .credit a:hover {
 #archive h3 {
   font-weight: bold;
 }
-@media only screen and (max-width: 760px) {
+@media screen and (max-width: 760px) {
   header {
+    background: #fff;
     position: absolute;
-    border-bottom: 1px solid #bbb;
   }
   header #toggle-menu {
     display: block;
@@ -343,38 +347,35 @@ footer .credit a:hover {
     display: block;
     padding-top: 6px;
     padding-bottom: 6px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
     border-top: 1px solid #bbb;
   }
   header .active #toggle-item a:hover {
     color: inherit;
-    background-color: #fff;
+    background-color: #F7F7F7;
   }
   body {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   footer {
-    margin-left: -10px;
-    margin-right: -10px;
+    margin-left: -20px;
+    margin-right: -20px;
   }
   footer .main {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   footer .wrapper .about,
   footer .wrapper .center,
   footer .wrapper .right {
     width: auto;
   }
+  #archive a,
   #archive hr {
-    margin-left: -10px;
-    margin-right: -10px;
-  }
-  #archive a {
-    margin-left: -10px;
-    margin-right: -10px;
+    margin-left: -20px;
+    margin-right: -20px;
   }
 }
 code,
@@ -505,9 +506,59 @@ img {
     transform: translateX(0);
   }
 }
+@-webkit-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+  }
+}
+@-moz-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -moz-transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    -moz-transform: translateY(0);
+  }
+}
+@-o-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -o-transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    -o-transform: translateY(0);
+  }
+}
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  -moz-animation-name: fadeInDown;
+  -o-animation-name: fadeInDown;
+  animation-name: fadeInDown;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+}
 .fadeInLeft {
   -webkit-animation-name: fadeInLeft;
   -moz-animation-name: fadeInLeft;
   -o-animation-name: fadeInLeft;
   animation-name: fadeInLeft;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
 }

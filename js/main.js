@@ -1,5 +1,8 @@
-"use strict";
+$(function() {
+  "use strict";
 
-$('#toggle-menu').on('click', function () {
-  $('#navigation').toggleClass('active');
-})
+  $('#toggle-menu').on('click', function () {
+    $('#navigation').toggleClass('active');
+    $('#toggle-item').toggleClass('fadeInDown');
+  });
+});
