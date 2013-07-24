@@ -1,6 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Italianno);
 
 @main-width: 760px;
+@mobile-width: 480px;
 @base-line-height: 25px;
 @base-fontsize: 16px;
 @header-min-height: 70px;
@@ -149,10 +150,7 @@ header {
   .posts {
     padding-bottom: 37px;
 
-    -webkit-animation-name: fadeInLeft;
-    -webkit-animation-duration: 0.8s;
-    -webkit-animation-timing-function: cubic-bezier(0.7, -0.005, .1, 1);
-    -webkit-animation-fill-mode: both;
+    .fadeInLeft();
   }
 
   .heading {
@@ -194,7 +192,6 @@ header {
       .separator-style();
     }
   }
-
 
   .post-pagination {
     padding-top: 10px;
@@ -401,71 +398,7 @@ footer {
 }
 
 // responsive
-
-@media only screen and (max-width: @main-width) {
-  header {
-    position: absolute;
-    border-bottom: 1px solid #bbb;
-
-    #toggle-menu {
-      display: block;
-    }
-
-    #toggle-item {
-      display:none;
-      margin-top: 0;
-      padding-top: 0;
-    }
-
-    .active {
-      #toggle-item {
-        display:block;
-        text-align: left;
-        margin-top: @header-min-height;
-
-        a {
-          display: block;
-          padding-top: 6px;
-          padding-bottom: 6px;
-          .responsive-side-padding();
-          border-top: 1px solid #bbb;
-
-          &:hover {
-            color: inherit;
-            background-color: #fff;
-          }
-        }
-      }
-    }
-  }
-
-  body {
-    .responsive-side-padding();
-  }
-
-  footer {
-    .responsive-side-margin();
-
-    .main {
-      .responsive-side-padding();
-    }
-
-    .wrapper {
-      .about, .center, .right {
-        width: auto;
-      }
-    }
-  }
-
-  #archive {
-    hr {
-      .responsive-side-margin();
-    }
-    a {
-      .responsive-side-margin();
-    }
-  }
-}
+@import "main-responsive.less" screen and (max-width: @main-width);
 
 code, pre {
   padding: 0 3px 2px;
@@ -556,15 +489,15 @@ img {
 // clearfix
 .clearfix{*zoom:1}.clearfix:before,.clearfix:after{display:table;line-height:0;content:""}.clearfix:after{clear:both}
 
-// less functions 
-.responsive-side-padding() {
-  padding-left: 10px;
-  padding-right: 10px;
+// less functions
+.responsive-side-padding(@val) {
+  padding-left: @val;
+  padding-right: @val;
 }
 
-.responsive-side-margin() {
-  margin-left: -10px;
-  margin-right: -10px;
+.responsive-side-margin(@val) {
+  margin-left: -@val;
+  margin-right: -@val;
 }
 
 .separator-style() {
@@ -585,52 +518,25 @@ img {
   }
 }
 
-@-webkit-keyframes fadeInLeft {
-  0% {
-    opacity: 0;
-    -webkit-transform: translateX(-20px);
-  }
+// animate.css (https://github.com/daneden/animate.css)
 
-  100% {
-    opacity: 1;
-    -webkit-transform: translateX(0);
-  }
-}
+@-webkit-keyframes fadeInLeft {0% {opacity: 0; -webkit-transform: translateX(-20px); } 100% {opacity: 1; -webkit-transform: translateX(0); } }
+@-moz-keyframes fadeInLeft {0% {opacity: 0; -moz-transform: translateX(-20px); } 100% {opacity: 1; -moz-transform: translateX(0); } }
+@-o-keyframes fadeInLeft {0% {opacity: 0; -o-transform: translateX(-20px); } 100% {opacity: 1; -o-transform: translateX(0); } }
+@keyframes fadeInLeft {0% {opacity: 0; transform: translateX(-20px); } 100% {opacity: 1; transform: translateX(0); } }
 
-@-moz-keyframes fadeInLeft {
-  0% {
-    opacity: 0;
-    -moz-transform: translateX(-20px);
-  }
+@-webkit-keyframes fadeInDown {0% {opacity: 0; -webkit-transform: translateY(-20px); } 100% {opacity: 1; -webkit-transform: translateY(0); } }
+@-moz-keyframes fadeInDown {0% {opacity: 0; -moz-transform: translateY(-20px); } 100% {opacity: 1; -moz-transform: translateY(0); } }
+@-o-keyframes fadeInDown {0% {opacity: 0; -o-transform: translateY(-20px); } 100% {opacity: 1; -o-transform: translateY(0); } }
+@keyframes fadeInDown {0% {opacity: 0; transform: translateY(-20px); } 100% {opacity: 1; transform: translateY(0); } }
 
-  100% {
-    opacity: 1;
-    -moz-transform: translateX(0);
-  }
-}
-
-@-o-keyframes fadeInLeft {
-  0% {
-    opacity: 0;
-    -o-transform: translateX(-20px);
-  }
-
-  100% {
-    opacity: 1;
-    -o-transform: translateX(0);
-  }
-}
-
-@keyframes fadeInLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  -moz-animation-name: fadeInDown;
+  -o-animation-name: fadeInDown;
+  animation-name: fadeInDown;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
 }
 
 .fadeInLeft {
@@ -638,4 +544,6 @@ img {
   -moz-animation-name: fadeInLeft;
   -o-animation-name: fadeInLeft;
   animation-name: fadeInLeft;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
 }

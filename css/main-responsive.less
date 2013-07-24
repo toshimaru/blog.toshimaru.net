@@ -1,0 +1,64 @@
+// main less file for responsive
+
+@responsive-padding: 20px;
+
+header {
+  background: #fff;
+  position: absolute;
+
+  #toggle-menu {
+    display: block;
+  }
+
+  #toggle-item {
+    display:none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .active {
+    #toggle-item {
+      display:block;
+      text-align: left;
+      margin-top: @header-min-height;
+
+      a {
+        display: block;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        .responsive-side-padding(@responsive-padding);
+        border-top: 1px solid #bbb;
+
+        &:hover {
+          color: inherit;
+          background-color: #F7F7F7;
+        }
+      }
+    }
+  }
+}
+
+body {
+  .responsive-side-padding(@responsive-padding);
+}
+
+footer {
+  .responsive-side-margin(@responsive-padding);
+
+  .main {
+    .responsive-side-padding(@responsive-padding);
+  }
+
+  .wrapper {
+    .about, .center, .right {
+      width: auto;
+    }
+  }
+}
+
+#archive {
+  a, hr {
+    .responsive-side-margin(@responsive-padding);
+  }
+}
+
