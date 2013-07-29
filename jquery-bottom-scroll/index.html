@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>jQueryで画像を順番にfadeInする - Hack Your Design!</title>
+  <title>jQueryでページ最下部のスクロール時のイベントをキャッチする - Hack Your Design!</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
@@ -15,9 +15,9 @@
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="jQueryで画像を順番にfadeInする - Hack Your Design!">
-  <meta property="og:title" content="jQueryで画像を順番にfadeInする - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="jQueryでページ最下部のスクロール時のイベントをキャッチする - Hack Your Design!">
+  <meta property="og:title" content="jQueryでページ最下部のスクロール時のイベントをキャッチする - Hack Your Design!">
+  <meta name="twitter:description" content="ユースケースとしては、twitterのタイムライン表示ページのように最下部までスクロールしたら、そのイベントをキャッチして次ページのツイートを表示させたい！みたいなとき。jQueryでページ最下部のスクロール時のイベントをキャッチする。"><meta property="og:description" content="ユースケースとしては、twitterのタイムライン表示ページのように最下部までスクロールしたら、そのイベントをキャッチして次ページのツイートを表示させたい！みたいなとき。jQueryでページ最下部のスクロール時のイベントをキャッチする。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -40,21 +40,28 @@
   <div class="main">
     <div id="contents">
      <div class="posts">
-  <h1>jQueryで画像を順番にfadeInする</h1>
+  <h1>jQueryでページ最下部のスクロール時のイベントをキャッチする</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-09-30T00:00:00-07:00" pubdate>30 Sep 2012</time>
-      <i class="icon-tags"></i><a href="/tag/design.html">design</a>, <a href="/tag/jquery.html">jquery</a>
+      <i class="icon-calendar"></i><time datetime="2013-07-29T00:00:00-07:00" pubdate>29 Jul 2013</time>
+      <i class="icon-tags"></i><a href="/tag/jquery.html">jquery</a>
     </div>
     
   </div>
 </div>
 
-<p>写真をクールに１枚づつフェードインしていく。画像共有サイトで見たようなエフェクトです。</p>
-<p><a href="http://toshimaru.net/demo/order-fade/">http://toshimaru.net/demo/order-fade/</a></p>
-<p><img src="/images/2012/09/images.png"></p>
-<p>ポイントは<span style="font-family: monospace; font-size: medium;">$("img:hidden:first")でimgのhidden状態をセレクトして、再帰的にフェードインかけているところです。下記のコードのような感じ。</span></p>
-<p><script src="https://gist.github.com/3747845.js"></script></p>
+<p>ユースケースとしては、twitterのタイムライン表示ページのように最下部までスクロールしたら、そのイベントをキャッチして次ページのツイートを表示させたい！みたいなとき。</p>
+
+<script src="https://gist.github.com/toshimaru/6102647.js"></script>
+
+<p>上コードでは、ウインドウのスクロール時にスクロール位置が今どれだけなのかを差分を見て計算してる。それが0以下になったら次ページを表示させるようなコードを書けばよい。</p>
+
+<p>上記の例では「最下部」をイベントの発火ポイントにしたけど、「下記○○％に入ったら」とかでもよさそう。</p>
+
+<h2 id="section">参考</h2>
+<ul>
+  <li><a href="http://www.softel.co.jp/blogs/jquery/archives/742">ページの下までスクロールしたときに何らかの処理を実行する例</a></li>
+</ul>
 
 
 <ul id="social-buttons">
@@ -78,15 +85,15 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/responsive-designs/">レスポンシブサイト構築にあたり参考にしたレスポンシブデザイン１０選</a></li>
-  
-    <li><a href="/responsive-web-design/">Responsive Web Design 時代の画像スライダー</a></li>
-  
-    <li><a href="/jquery-bottom-scroll/">jQueryでページ最下部のスクロール時のイベントをキャッチする</a></li>
-  
     <li><a href="/jquerydeferred-is-most-important-client/">DeferredはjQueryにおける最も重要なクライアントサイドツール</a></li>
   
     <li><a href="/jqueryhidden-inputjquery/">【jQuery】hidden inputタグをjQueryで追加</a></li>
+  
+    <li><a href="/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</a></li>
+  
+    <li><a href="/jqueryfadein/">jQueryで画像を順番にfadeInする</a></li>
+  
+    <li><a href="/twitter-search-api-js/">twitter search API をJSで呼んでみる</a></li>
   
   </ul>
   </div>
@@ -94,14 +101,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/web/" title="Newer Post: アスペクト比を計算するWebアプリを作成しました！"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
   
   
   <div class="older">
-    <a href="/hatena-engineer-seminar/" title="Older Post: Hatena Engineer Seminar に行って来ました。">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/graduate-from-langschool/" title="Older Post: 語学学校を卒業しました">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
