@@ -46,11 +46,7 @@ Backbone.jsを週末を使って学習しました。メモがてらそのとき
 スライドでBackboneの良さを理解する
 ---
 
-[Client-side MVC with Backbone.js](http://www.slideshare.net/iloveigloo/clientside-mvc-with-backbonejs)
-
 <iframe src="http://www.slideshare.net/slideshow/embed_code/12146222" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen webkitallowfullscreen mozallowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/iloveigloo/clientside-mvc-with-backbonejs" title="Client-side MVC with Backbone.js " target="_blank">Client-side MVC with Backbone.js </a> </strong> from <strong><a href="http://www.slideshare.net/iloveigloo" target="_blank">iloveigloo</a></strong> </div>
-
-[いまさら聞けない！？Backbone.js 超入門](http://www.slideshare.net/kadoppe/backbonejs-22635630)
 
 <iframe src="http://www.slideshare.net/slideshow/embed_code/22635630" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen webkitallowfullscreen mozallowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/kadoppe/backbonejs-22635630" title="いまさら聞けない！？Backbone.js 超入門" target="_blank">いまさら聞けない！？Backbone.js 超入門</a> </strong> from <strong><a href="http://www.slideshare.net/kadoppe" target="_blank">Kohei Kadowaki</a></strong> </div>
 
@@ -66,7 +62,7 @@ Backbone.jsを週末を使って学習しました。メモがてらそのとき
 
 Backboneの講演を聞いて理解を深める
 ---
-Backboneの作者の講演です。
+Backboneの作者自身による講演です。
 
 <iframe width="560" height="315" src="//www.youtube.com/embed/4udR30JYenA" frameborder="0" allowfullscreen></iframe>
 
