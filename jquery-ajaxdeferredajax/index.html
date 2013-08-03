@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜 - Hack Your Design!</title>
+  <title>jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/css/font-awesome.css">
@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜 - Hack Your Design!">
-  <meta property="og:title" content="jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜 - Hack Your Design!">
+  <meta name="twitter:title" content="jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜 - Hack Your Design!">
+  <meta property="og:title" content="jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜 - Hack Your Design!">
   <meta name="twitter:description" content="jQeuryにおけるモダンAjaxな書き方を目指して、ステップ・バイ・ステップでコード付き解説していきます。"><meta property="og:description" content="jQeuryにおけるモダンAjaxな書き方を目指して、ステップ・バイ・ステップでコード付き解説していきます。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
@@ -39,7 +39,7 @@
   <div class="main">
     <div id="contents">
      <div class="posts">
-  <h1>jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</h1>
+  <h1>jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2012-12-13T00:00:00-08:00" pubdate>13 Dec 2012</time>
@@ -51,6 +51,7 @@
 
 <p>本エントリは<a href="http://www.adventar.org/calendars/29">軽めのjQuery Advent Calendar 2012</a>の14日目の記事として書きます。</p>
 <p>軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。。。</p>
+<p>※ Twitter API仕様変更によりTwitter APIを使ったコードは動かなくなっていることにご注意。</p>
 <h2>jQuery 1.4以前の書き方</h2>
 <p>まずは、少し古めのコード、昔のjQueryの本とかでよく見る書き方。</p>
 <div class="CodeRay">
@@ -77,7 +78,7 @@
 });</pre></div>
 </div>
 
-<p>成功時の処理と失敗時の処理がajax()と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。</p>
+<p>成功時の処理と失敗時の処理が<code>ajax()</code>と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。</p>
 <h2>jQuery 1.8以上の書き方</h2>
 <p><a href="http://api.jquery.com/jQuery.ajax/">公式リファレンス</a>いわく、</p>
 <blockquote class="posterous_medium_quote">Deprecation Notice: The jqXHR.success(), jqXHR.error(), and jqXHR.complete() callbacks will be deprecated in jQuery 1.8. To prepare your code for their eventual removal, use jqXHR.done(), jqXHR.fail(), and jqXHR.always() instead.</blockquote>
@@ -87,7 +88,7 @@
 <li><code>error()</code> は <code>fail()</code> に、</li>
 <li><code>complete()</code> は <code>always()</code>を</li>
 </ul>
-<p>代わりに使ってね、ってことです。ということで、success(),error()は使わない。</p>
+<p>代わりに使ってね、ってことです。ということで、<code>success()</code>,<code>error()</code>は使わない。</p>
 <div class="CodeRay">
   <div class="code"><pre>$.ajax({
     url: &quot;ajax.html&quot;,
@@ -108,7 +109,7 @@ function(data){ alert('error!!');   }
 );</pre></div>
 </div>
 
-<p>then() の一個目の関数が成功時、二個目の関数が失敗時となります。</p>
+<p><code>then()</code>の一個目の関数が成功時、二個目の関数が失敗時となります。</p>
 <h2>（発展編）Deferredを用いた書き方</h2>
 <p>上述した例の中でさりげなくDeferredな書き方を使っていましたが、発展編ということでこのDeferredな書き方をさらに突き詰めてみましょう。</p>
 <h3>deferredとは何か？</h3>
@@ -116,7 +117,7 @@ function(data){ alert('error!!');   }
 <p>jQuery.Deferred() introduces several enhancements to the way callbacks are managed and invoked. In particular, jQuery.Deferred() provides flexible ways to provide multiple callbacks, and these callbacks can be invoked regardless of whether the original callback dispatch has already occurred. jQuery Deferred is based on the CommonJS Promises/A design.</p>
 <p>jQuery.Deferred() はコールバック関数の管理、実行に改善をもたらします。具体的には、jQuery.Deferred()は複数のコールバックの実行を柔軟に行うことができ、これらのコールバック関数は、オリジナルのコールバックのディスパッチが発生しているかどうかにかかわらず実行されます。</p>
 </blockquote>
-<p>要はコールバック関数の実行を延期(deferred)させて、.then() .fail() .always() なんかを使って柔軟にコールバックを管理、実行できるってことです（雑）。</p>
+<p>要はコールバック関数の実行を延期(deferred)させて、<code>.then()</code> <code>.fail()</code> <code>.always()</code>なんかを使って柔軟にコールバックを管理、実行できるってことです（雑）。</p>
 <p>詳しくは下記を読むとよいでしょう。</p>
 <ul>
 <li><a href="http://msdn.microsoft.com/en-us/magazine/gg723713.aspx">Creating Responsive Applications Using jQuery Deferred and Promises</a></li>
