@@ -3,12 +3,34 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-08-03T00:13:35-07:00</updated>
+  <updated>2013-08-05T20:48:57-07:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[underscore.jsのテンプレートのデフォルトデリミタを変更する]]></title>
+    <link href="http://blog.toshimaru.net/underscore-template-in-erb/"/>
+    <updated>2013-08-05T00:00:00-07:00</updated>
+    <id>http://blog.toshimaru.net/underscore-template-in-erb</id>
+    <content type="html"><![CDATA[<p>erb内でunderscore.jsのテンプレートを使おうとするとerbのデリミタと競合してしまってエラーになってしまう。そういう時は下記のようにunderscoreテンプレートのデリミタを変更してやればよい。</p>
+
+<pre><code>_.templateSettings = {
+  interpolate : /\{\{(.+?)\}\}/g,
+  escape: /\{\{-(.+?)\}\}/g
+};
+</code></pre>
+
+<p>これで<code>{{ hoge }}</code>というmustacheライクなデリミタに変更できる。</p>
+
+<h2 id="section">参考</h2>
+<ul>
+  <li><a href="http://null.ly/post/20000241563/underscore-js-erb">Underscore.js のテンプレートを ERB の中で使う</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[MACアドレスを変更するコマンド]]></title>
@@ -897,27 +919,6 @@ npm ERR! error rolling back code: 'ENOTEMPTY',
 <p>入賞を目指すべく、APIについてしっかり予習して当日望んだわけですが、入賞ならず残念。。。だたPJと話せたりいろんなプログラマの「ハック」も見れて良い経験になりました。最終的に動くものを公開できたことも良かったです。</p>
 <p>イベント最後にはGithubからMicroプラン１年無料券をいただけるという粋なプレゼントもあり、素晴らしいハッカソンでした。開催していただいたQiitaおよびスタッフの皆様、ありがとうございました。</p>
 <p>そして2日間のハッカソンを走りきった開発者の皆様、お疲れ様でした！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[mac]mkmf.rb can't find header files for ruby]]></title>
-    <link href="http://blog.toshimaru.net/macmkmfrb-cant-find-header-files-for-ruby/"/>
-    <updated>2013-01-18T00:00:00-08:00</updated>
-    <id>http://blog.toshimaru.net/macmkmfrb-cant-find-header-files-for-ruby</id>
-    <content type="html"><![CDATA[<p>Macでrailsをインストールしようとしたときにこんなエラー。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ sudo gem install rails
-Building native extensions. This could take a while…
-ERROR: Error installing rails:
- ERROR: Failed to build gem native extension.
-
-/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby extconf.rb
-mkmf.rb can't find header files for ruby at /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/ruby.h</pre></div>
-</div>
-
-<p>いろいろ調べたところ結局macのCommand line toolsがインストールされていないことが原因のよう。XcodeからそれをインストールしてOK（下記参照）.</p>
-<p><a href="http://nantekottai.com/2012/03/31/xcode-command-line-tools/">XcodeのCommand Line Tools</a></p>
 ]]></content>
   </entry>
   
