@@ -1,8 +1,9 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 gem 'jekyll'
 gem 'jekyll-tagging'
-gem 'jekyll-less'
-
 gem 'therubyracer'
+gem 'jekyll-less'
+gem 'kramdown'
 gem 'link-checker'
+
