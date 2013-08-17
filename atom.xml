@@ -3,12 +3,30 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-08-16T02:27:35-07:00</updated>
+  <updated>2013-08-17T01:48:30-07:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[マイナーJS・CSSライブラリのCDNはcdnjs.comがいい感じ]]></title>
+    <link href="http://blog.toshimaru.net/cdn-js/"/>
+    <updated>2013-08-17T00:00:00-07:00</updated>
+    <id>http://blog.toshimaru.net/cdn-js</id>
+    <content type="html"><![CDATA[<p>Web制作において外部でホストされているライブラリを読み込むことは多いですね。こんな感じで。</p>
+
+<pre><code>&lt;script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>CDNは安心と信頼のGoogleのCDNを使いたいところですが、メジャーなライブラリしかホストされていません。例えばBackbone.jsとかはホストされていない。</p>
+
+<p>そこで使うべきは <a href="http://cdnjs.com/">cdnjs.com</a>。</p>
+
+<p>マイナーなものでも名前が通ってるライブラリであれば本CDNに登録されている印象です。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Mac購入時に僕がインストールしたアプリや設定を公開するよ]]></title>
@@ -862,89 +880,6 @@
 <ul>
   <li><a href="http://responsive-jp.com/">Responsive Web Design JP 日本国内の秀逸なレスポンシブWebデザインを集めたギャラリーサイト</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Jekyllならここまでできる！ ブログをjekyllで移行するにあたって考えるべきこと]]></title>
-    <link href="http://blog.toshimaru.net/new-blog-concept/"/>
-    <updated>2013-04-07T00:00:00-07:00</updated>
-    <id>http://blog.toshimaru.net/new-blog-concept</id>
-    <content type="html"><![CDATA[<p>昨日、<a href="http://blog.toshimaru.net/posterous-to-jekyll/">ブログをposterouからjekyllに移行</a>しました。jekyllに移行するにあたっていろいろ考えたことを残しておきます。</p>
-
-<h2 id="section">前提</h2>
-<p>移行にあたりまず、前提を洗い出しました。自分の場合、こんな感じでした。</p>
-
-<ul>
-  <li>無料であること</li>
-  <li>移行元記事の移行ツールがあること</li>
-  <li>独自ドメインが使用できること</li>
-  <li>デザインがある程度自由度のあるかたちでカスタマイズできること。</li>
-  <li>信頼できるサーバであること。(ざっくり言い換えると大手有名サービスであること）</li>
-</ul>
-
-<p>ちょっと優先度が下がる前提は下記のような感じ。</p>
-
-<ul>
-  <li>JSが自由に使えたら嬉しい</li>
-  <li>CMSなどが直感的でかっこいいこと</li>
-  <li>広告とかウザいのはやめていただきたい </li>
-</ul>
-
-<h2 id="section-1">類似サービスの検討</h2>
-<p>今回の場合、ブログサービスの閉鎖に伴い、ブログ移行を与儀なくされたのでまずは類似ブログサービスを検討しました。 検討したのはこんな感じ。</p>
-
-<ul>
-  <li><a href="http://www.squarespace.com/">squarespace</a></li>
-  <li><a href="http://www.tumblr.com/">tumblr</a></li>
-  <li><a href="http://wordpress.com/">wordpress</a></li>
-  <li><a href="http://hatenablog.com/">Hatena Blog</a></li>
-</ul>
-
-<p>正直公式でも薦められているsquarespaceをとても使いたいと思ったが、有料。そして自分的にsquarespaceの価格設定が少し高く感じた。</p>
-
-<p>無料でやるならtumblr一択、って感じでしょうが、tumblrは5年以上前に触って手に馴染まず使わなかったサービスで、やっぱり今使ってみてもなんとなく見た目とかCMSが馴染まなかったので乗り気はしない。</p>
-
-<h2 id="section-2">ドメインはどうするか？</h2>
-<p>ブログは自ドメイン(blog.toshimaru.net)で運用していました。移行に伴って、ドメインに結びついたリンクがリンク切れを起こしてしまうのをなるだけ避けたい。となるとURLが柔軟にコントロールが効く必要がありますが、上記に挙げたサービスのどれもがそのような機能は提供していませんでした。</p>
-
-<h2 id="jekyll">Jekyll、君に決めた！</h2>
-<p>ということで、いろいろと柔軟にやるためにもハッカーの間で人気の高いJekyllという静的サイトジェネレータを使ってみることにしました（<a href="https://help.github.com/articles/using-jekyll-with-pages">Github Pagesでもサポートされてます</a>）。</p>
-
-<p>調べてみると自分の前提条件がほとんどクリアできることがわかった。</p>
-
-<ul>
-  <li>Github Pages使って無料</li>
-  <li><a href="https://github.com/mojombo/jekyll/wiki/blog-migrations#posterous">移行ツール</a>があった</li>
-  <li>独自ドメインが使用できる(CNAME)</li>
-  <li>デザインはもちろん自由</li>
-  <li>Githubサーバなのでたぶん大丈夫だろう</li>
-  <li>JSもバリバリ使える</li>
-  <li>urlも301リダイレクトだが保てるようだ (_config.ymlにて設定)</li>
-</ul>
-
-<p>他にもこんないいことが。</p>
-
-<ul>
-  <li>markdownで記事かける</li>
-  <li>Rubyの勉強になる！</li>
-</ul>
-
-<h2 id="section-3">コメント欄は設置するか？</h2>
-<p>SNSのプラットフォームが十分に成熟している昨今ですから、そもそもコメント欄を設置すること自体がなんとなく時代遅れになってきているのでは？と感じるのですが、Jekyllを使われている皆さんは<a href="http://disqus.com/">DISQUS</a>を使ってコメント欄を設置されているようなのでそれに倣って設置。</p>
-
-<p>なんか昔はDISQUSのデザインとかがうるさくて好きになれなかったのですが、今はサイトに馴染むように大人しめに設置できるようになったので、安心して設置できました。</p>
-
-<h2 id="jekylljekyll">Jekyllブログ構築にあたり参考にしたJekyllサイト</h2>
-<ul>
-  <li><a href="http://webtech-walker.com/">webtech-walker.com</a> - <a href="https://github.com/hokaccha/webtech-walker">(ソース)</a></li>
-  <li><a href="http://fingaholic.github.io/">fingaholic.github.io</a> - <a href="https://github.com/FiNGAHOLiC/fingaholic.github.com">(ソース)</a></li>
-</ul>
-
-<p>とくにhokacchaさんのjekyll運用の仕方は大変参考になりました！</p>
-
-<h2 id="section-4">総評</h2>
-<p>あなたがハッカーならばJekyll(+Github)はまっさきに検討すべきブログサービスです。現在別のブログサービスを使って書かれている方も、現在ブログを書いていない方も、ハッカーならばJekyllを初めてみてはいかが？</p>
 ]]></content>
   </entry>
   
