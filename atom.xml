@@ -3,12 +3,45 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-08-17T01:48:30-07:00</updated>
+  <updated>2013-08-28T00:27:52-07:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[zshでRVMを使うと「RVM is not a function,...」]]></title>
+    <link href="http://blog.toshimaru.net/zsh-rvm/"/>
+    <updated>2013-08-27T00:00:00-07:00</updated>
+    <id>http://blog.toshimaru.net/zsh-rvm</id>
+    <content type="html"><![CDATA[<p>zshでRVM動かそうとして下記のエラーで止まったので対処法をメモ。</p>
+
+<pre><code>➜  ~  rvm use 2.0.0
+RVM is not a function, selecting rubies with 'rvm use ...' will not work.
+
+You need to change your terminal emulator preferences to allow login shell.
+Sometimes it is required to use `/bin/bash --login` as the command.
+Please visit https://rvm.io/integration/gnome-terminal/ for a example.
+</code></pre>
+
+<p>下記スクリプトを読み込む一行を .zshrc に追加してやればok.</p>
+
+<pre><code>source ~/.rvm/scripts/rvm
+</code></pre>
+
+<p>もう一度動かしてみる。</p>
+
+<pre><code>➜  ~  rvm use 2.0
+Using /Users/user/.rvm/gems/ruby-2.0.0-p247
+</code></pre>
+
+<p>うむ。OK.</p>
+
+<h2 id="section">参考</h2>
+<p><a href="http://stackoverflow.com/questions/9336596/rvm-installation-not-working-rvm-is-not-a-function">rvm installation not working: “RVM is not a function”</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[マイナーJS・CSSライブラリのCDNはcdnjs.comがいい感じ]]></title>
@@ -813,72 +846,6 @@
 <h2 id="section-5">関連エントリ</h2>
 <ul>
   <li><a href="http://blog.toshimaru.net/8/">ダメプログラマの8つの特徴</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[レスポンシブサイト構築にあたり参考にしたレスポンシブデザイン１０選]]></title>
-    <link href="http://blog.toshimaru.net/responsive-designs/"/>
-    <updated>2013-04-08T00:00:00-07:00</updated>
-    <id>http://blog.toshimaru.net/responsive-designs</id>
-    <content type="html"><![CDATA[<p><a href="http://blog.toshimaru.net/posterous-to-jekyll/">ブログを移行</a>するにあたって、デザインをフルスクラッチで組み直しました。以前はブログシステム側でモバイル版、PC版の出し分けを行なっておりましたが、今回は流行りの<a href="http://blog.toshimaru.net/responsive-web-design/">レスポンシブWebデザイン</a>で構築してみました。 </p>
-
-<p>デザインをレスポンシブにするために私が参考にしたサイト群をピックアップしたいと思います。</p>
-
-<h2 id="twitter-bootstrap">1 Twitter Bootstrap</h2>
-<p><a href="http://twitter.github.io/bootstrap/"><img src="/images/posts/responsive-designs/1.png" alt="Twitter Bootstrap" /></a></p>
-
-<p>言わずと知れたtwitter bootstrap. 本サイトはbootstrapを使わずに構築していますが、レイアウトの組み方、CSSのコーディング手法などはこちらが大変参考になりました。</p>
-
-<h2 id="rockaway-relief">2 Rockaway Relief</h2>
-<p><a href="http://rockawayrelief.com/"><img src="/images/posts/responsive-designs/2.png" alt="Rockaway" /></a></p>
-
-<p>ブルーが良い感じに映えるデザインです。</p>
-
-<h2 id="creasty">3 Creasty</h2>
-<p><a href="http://www.creasty.com/"><img src="/images/posts/responsive-designs/3.png" alt="Creasty" /></a></p>
-
-<p>若手デザイナ/デベロッパのクリスティさんのWEBサイト。モバイル時のメニューの表示のさせ方がかっこいい。</p>
-
-<h2 id="anthony-calzadilla">4 ANTHONY CALZADILLA</h2>
-<p><a href="http://www.anthonycalzadilla.com/"><img src="/images/posts/responsive-designs/4.png" alt="CALZADILLA" /></a></p>
-
-<p>シンプル&amp;クール。</p>
-
-<h2 id="manos">5 Manos</h2>
-<p><a href="http://manoscrafted.com/"><img src="/images/posts/responsive-designs/5.png" alt="Manos" /></a></p>
-
-<p>スクロール途中でFIXされるナビゲーションが印象的（PC閲覧時）。</p>
-
-<h2 id="gin-lane-media">6 Gin Lane Media</h2>
-<p><a href="http://www.ginlanemedia.com/"><img src="/images/posts/responsive-designs/6.png" alt="Gin Lane Media" /></a></p>
-
-<p>上同様、途中でFIXされるナビゲーション。</p>
-
-<h2 id="fear-the-grizzly">7 Fear the Grizzly</h2>
-<p><a href="http://www.fearthegrizzly.com/"><img src="/images/posts/responsive-designs/7.png" alt="Grizzly" /></a></p>
-
-<p>白を基調とした美麗デザイン。</p>
-
-<h2 id="buffalo">8 Buffalo</h2>
-<p><a href="http://builtbybuffalo.com/"><img src="/images/posts/responsive-designs/8.png" alt="Buffalo" /></a></p>
-
-<p>PC時とモバイル時のレイアウトの変化のさせ方がイケてます。  </p>
-
-<h2 id="squarespace">9 Squarespace</h2>
-<p><a href="http://www.squarespace.com/"><img src="/images/posts/responsive-designs/9.png" alt="Squarespace" /></a></p>
-
-<p>用意されているサイトのテンプレートもすごくかっこいいSquarespaceさん。そちらも覗いてみてください。 </p>
-
-<h2 id="muriel-labro">10 Muriel Labro</h2>
-<p><a href="http://www.muriel-labro.fr/"><img src="/images/posts/responsive-designs/10.png" alt="Muriel Labro" /></a></p>
-
-<p>パリの美容室のページ。かっこいい美容師さんの紹介です。 </p>
-
-<h2 id="section">参考</h2>
-<ul>
-  <li><a href="http://responsive-jp.com/">Responsive Web Design JP 日本国内の秀逸なレスポンシブWebデザインを集めたギャラリーサイト</a></li>
 </ul>
 ]]></content>
   </entry>
