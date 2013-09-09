@@ -6,4 +6,3 @@ gem 'therubyracer'
 gem 'jekyll-less'
 gem 'kramdown'
 gem 'link-checker'
-
