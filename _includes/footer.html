@@ -2,16 +2,25 @@
 	<div class="main">
 		<div class="wrapper clearfix">
 			<div class="about">
+				{% if page.path == 'about.html' %}
+				<h2>Recent</h2>
+				<ul>
+					{% for post in site.posts limit:5 %}
+					<li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
+					{% endfor %}
+				</ul>
+				{% else %}
 				<h2>About</h2>
 				<img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
-				<dl>
+				<dl class="about-dl">
 					<dt>{{ site.author }}</dt>
 					<dd>{{ site.info }}</dd>
 				</dl>
-				<ul>
+				<ul class="externallinks">
 					<li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign"></a></li>
 					<li><a href="https://github.com/toshimaru" class="icon-github-sign"></a></li>
 				</ul>
+				{% endif %}
 			</div>
 			<div class="center">
 				<h2>Recommend</h2>
