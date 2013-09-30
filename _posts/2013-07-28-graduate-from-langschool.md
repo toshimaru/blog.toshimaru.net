@@ -4,7 +4,7 @@ title: 語学学校を卒業しました
 published: true
 image: /images/posts/diploma.jpg
 description: 今月上旬に２ヶ月間通っていた語学学校を卒業しました。少し振り返ってみたいと思います。
-tags: 雑記
+tags: vancouver
 ---
 
 今月上旬にバンクーバーにて２ヶ月間通っていた語学学校を卒業しました。少し振り返ってみたいと思います。
