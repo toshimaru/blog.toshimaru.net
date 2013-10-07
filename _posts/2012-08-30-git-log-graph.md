@@ -2,11 +2,12 @@
 layout: post
 title: 美しき git log --graph のエイリアス
 image: /images/posts/gitlog.jpg
+description: git log --graph を美しく表示するためのエイリアスを紹介します
 published: true
 tags:
 - git
 ---
-"git log --graph --pretty=oneline" でもいいんだけど、情報として物足りない。
+`git log --graph --pretty=oneline` でもいいんだけど、情報として物足りない。
 
 エイリアスの設定によりこんな感じに美しくすることが可能です。
 
