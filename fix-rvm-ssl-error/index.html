@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Hatena Engineer Seminar に行って来ました。 - Hack Your Design!</title>
+  <title>【RVM】gen install時に出るSSL_connectエラー解決法 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Hatena Engineer Seminar に行って来ました。 - Hack Your Design!">
-  <meta property="og:title" content="Hatena Engineer Seminar に行って来ました。 - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="【RVM】gen install時に出るSSL_connectエラー解決法 - Hack Your Design!">
+  <meta property="og:title" content="【RVM】gen install時に出るSSL_connectエラー解決法 - Hack Your Design!">
+  <meta name="twitter:description" content="RVMでgen installした時に出るSSL_connectエラー解決法"><meta property="og:description" content="RVMでgen installした時に出るSSL_connectエラー解決法">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -37,31 +37,33 @@
   <div class="main">
     <div id="contents">
      <div class="posts">
-  <h1>Hatena Engineer Seminar に行って来ました。</h1>
+  <h1>【RVM】gen install時に出るSSL_connectエラー解決法</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-09-27T00:00:00-07:00" pubdate>27 Sep 2012</time>
-      <i class="icon-tags"></i><a href="/tag/tech.html" rel="tag">tech</a>
+      <i class="icon-calendar"></i><time datetime="2013-10-06T00:00:00-07:00" pubdate>06 Oct 2013</time>
+      <i class="icon-tags"></i><a href="/tag/ruby.html" rel="tag">ruby</a>
     </div>
     
   </div>
 </div>
 
-<p><span style=""><a href="http://developer.hatenastaff.com/entry/2012/09/11/141559">Hatena Engineer Seminar</a> にいって来ました。下記にその際のメモを掲載しておきます。</span></p>
-<p><script src="https://gist.github.com/3793104.js"></script></p>
-<p>下記は懇親会にて<a href="http://d.hatena.ne.jp/stanaka/"> id:stanaka </a>さんと少し話した内容。</p>
+<p>RVMを使って<code>gem install</code>をするとこんなエラーが出た</p>
+
+<pre><code>$ gem install rails
+ERROR:  Could not find a valid gem 'rails' (&gt;= 0), here is why:
+  　　　　Unable to download data from https://rubygems.org/ - SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed (https://s3.amazonaws.com/production.s3.rubygems.org/latest_specs.4.8.gz)
+</code></pre>
+
+<p>SSL証明書が古いためらしく下記コマンドで証明書をアップデートする。</p>
+
+<pre><code>$ rvm osx-ssl-certs update all
+</code></pre>
+
+<p>これで解決！</p>
+
+<h3 id="section">参考</h3>
 <ul>
-<li>アプリサーバ500台くらい、Webサーバ300台くらい。</li>
-<li>LBの上にnginxがいるのはクローラがけっこうサイト深く掘るので、人に影響出ないようにそれを別サーバに振り分ける。</li>
-<li>github enterprise で社内コードレビューがやりやすくなった。(push,commitなどはコマンドベース)</li>
-<li>コーディング規約は社内でそこまでガチガチには決めていないそう。</li>
-<li>去年くらいにはてぶのUIを一新してからAjaxを使ったRIAな実装が増えたけど、まだJSのテストとか実装標準的なところは確立できてないそうな。</li>
-</ul>
-<p>以下、感想。</p>
-<ul>
-<li>github enterprise、ちょっとお高い印象あるけど導入したいね！</li>
-<li>全文検索で solr はかなりいい選択っぽい。</li>
-<li>新東京オフィス移転に伴いエンジニアをちょっと募集しているみたいだよ！興味がある人はうけてみるとよいよ！</li>
+  <li><a href="http://railsapps.github.io/openssl-certificate-verify-failed.html">OpenSSL Errors and Rails – Certificate Verify Failed</a></li>
 </ul>
 
 
@@ -86,13 +88,9 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/Front-end-Developer-Interview-Questions-Japanese/">「フロントエンドデベロッパー面接時の質問事項」日本語訳しました</a></li>
+    <li><a href="/zsh-rvm/">zshでRVMを使うと「RVM is not a function,...」</a></li>
   
-    <li><a href="/mentenability/">メンテナビリティの高いコードを書くメリット</a></li>
-  
-    <li><a href="/qiita-2-day-hackathon/">Qiita 2-day Hackathon に参加してきました！</a></li>
-  
-    <li><a href="/8/">ダメプログラマの8つの特徴</a></li>
+    <li><a href="/php-5492/">[php][ruby]実行速度を計測する</a></li>
   
   </ul>
   </div>
@@ -100,14 +98,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/jqueryfadein/" title="Newer Post: jQueryで画像を順番にfadeInする"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
   
   
   <div class="older">
-    <a href="/twitter-search-api-js/" title="Older Post: twitter search API をJSで呼んでみる">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/css-flip/" title="Older Post: CSS3でフリップアニメーションの実装">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
