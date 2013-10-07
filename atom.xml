@@ -3,12 +3,29 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-10-06T22:30:09-07:00</updated>
+  <updated>2013-10-07T01:02:51-07:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[超簡単なコマンドでローカルにHTTPサーバーを起動]]></title>
+    <link href="http://blog.toshimaru.net/simple-command-web-server/"/>
+    <updated>2013-10-07T00:00:00-07:00</updated>
+    <id>http://blog.toshimaru.net/simple-command-web-server</id>
+    <content type="html"><![CDATA[<p>個人的には<a href="http://php.net/manual/ja/features.commandline.webserver.php">PHPのビルトインウェブサーバー</a>の<code>PHP -S</code>コマンドが使いたいけど、php5.4以降じゃないと使えないのが難点。Macだとデフォルトで入ってるPHPバージョンは5.3なのでこのコマンドは使えない。ということでpythonの力をお借りして簡単にHTTPサーバが起動できる。</p>
+
+<p><code>python -m SimpleHTTPServer</code></p>
+
+<p>これでポート8000でWebサーバが起動。ポート指定したければこう。</p>
+
+<p><code>python -m SimpleHTTPServer 8888</code></p>
+
+<p>スタティックなサイトをサクッと確認したいときに使えます。以上、簡単なTIPSでした。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[【RVM】gen install時に出るSSL_connectエラー解決法]]></title>
@@ -783,70 +800,6 @@ Using /Users/user/.rvm/gems/ruby-2.0.0-p247
 
 <h2 id="section-1">参考</h2>
 <p><a href="http://www.tdn.co.jp/techblog/201206/52/">Amazon S3のクライアント「DragonDisk」に付属の「dgsync」が便利な件</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[開発者がfacebook「いいね！」ボタン設置時に注意すべきこと]]></title>
-    <link href="http://blog.toshimaru.net/facebook/"/>
-    <updated>2013-04-16T00:00:00-07:00</updated>
-    <id>http://blog.toshimaru.net/facebook</id>
-    <content type="html"><![CDATA[<p>Facebookの<a href="https://developers.facebook.com/docs/reference/plugins/like/">いいね！ボタン</a>設置をする際に、いくつか注意すべき点がありますのでまとめます。</p>
-
-<h2 id="section">設置方法について</h2>
-
-<p>設置方法に関してはいろんなページで紹介されているので、その手順に従えばOKです。</p>
-
-<p><a href="http://www.facebook-japan.com/iine.html">「いいね！」ボタンを設置しよう</a></p>
-
-<p>注意すべきはhtml5の設置コードだとIEの古いブラウザで動かない場合があるので、Iframeを使うところでしょうか。（ただし機能に制限あり）</p>
-
-<h2 id="share">Shareボタンとはなんだ?</h2>
-<p>もうほとんどのサイトで見かけませんが一部の古いサイトでは、Likeボタンではなく、Shareボタンというのを見かけました。ですが本ボタンはもう<strong>廃止予定なので使わないでください。</strong>公式ページでも「We deprecated the Share Button when we launched the Like button」（いいねボタンを作ったときにシェアボタンは廃止したよ！）と説明されています。</p>
-
-<h2 id="og">OGタグとはなんだ？</h2>
-<p>OGタグ、つまりオープングラフタグとはウェブページがオープングラフの情報を持つために付加されるメタデータです。オープングラフとは、例えば「太郎さんが◯◯というウェブページでいいねボタンを押した」といったときの、◯◯に入る規格化された情報を示します。オープングラフについては詳しくは公式の「<a href="http://ogp.me/">The Open Graph protocol</a>」を見てみてください。</p>
-
-<p>OGタグとは具体的に下記のようにhtmlのheadタグ内のmetaタグとして表現されます。</p>
-
-<pre><code>&lt;head&gt;
-&lt;title&gt;The Rock (1996)&lt;/title&gt;
-&lt;meta property="og:title" content="The Rock" /&gt;
-&lt;meta property="og:type" content="video.movie" /&gt;
-&lt;meta property="og:url" content="http://www.imdb.com/title/tt0117500/" /&gt;
-&lt;meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" /&gt;
-...
-&lt;/head&gt;
-</code></pre>
-
-<h2 id="section-1">いいねボタンのデバッグツールを使おう！</h2>
-<p>開発者おなじみだと思いますが。こちらを使ってOGタグのテストをしましょう。</p>
-
-<p><a href="https://developers.facebook.com/tools/debug">Debugger</a></p>
-
-<p>※私が設置したサイトはたまたま海外IP判定を行なっていたのでFacebook側がうまくOGタグを認識してくれませんでした。FacebookサーバからOGタグが読み込めるように海外facebook IPは許可しておきましょう。</p>
-
-<h2 id="section-2">ボタンのテストにはテストユーザを使おう！</h2>
-
-<p>テストの度に自分のプライベートアカウントを使うのはイヤですよね。そんなときは公式で提供されているテストユーザ作成サービスを使いましょう。詳しくは下記。</p>
-
-<p><a href="http://www.koikikukan.com/archives/2011/09/11-013333.php">Facebookがテストユーザー作成・編集画面をリリース</a></p>
-
-<h2 id="section-3">ボタン押したときに「承認」が出てきた</h2>
-<p>いいねをテストしまっくてたら「承認」ボタンが表示されるようになりました。この例は下記でレポートされているようにけっこう根が深い問題です。</p>
-
-<blockquote>
-  <p>その「承認」ボタンは、最近の導入した「いいね」ボタンに対する”like-jacking attack” への対応の一環です。ボタンの使われ方などを基準に、ボタンの設置ページで”like-jacking”が発生してることが推測された場合に、「承認」のステップが入ることになります。</p>
-
-  <p><a href="http://blog.bricoleur.in/archives/1216">facebookの「いいね」ボタンに「承認」が必要となるケースについて</a></p>
-</blockquote>
-
-<p>facebook側は”like-jacking attack”が発生している可能性があるサイトをプログラムで自動検出して、「承認」ボタンを表示させているようです。</p>
-
-<p>そしてこの「承認」ボタンはマニュアルでの解除依頼は受け付けていないようです。つまり「うちのサイトはスパムじゃないから承認ボタンは消してくれ！」とfacebookに依頼しても取り合ってはくれない、ということです。</p>
-
-<p>上記でテストユーザを使えばいくらテストしても大丈夫なんでしょうか。それともいいねを取り消せばOKなのでしょうか。いずれにしても”like-jacking attack”と判定されうるような行動は避けたほうがよさそうです。</p>
-
 ]]></content>
   </entry>
   
