@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 【RVM】gen install時に出るSSL_connectエラー解決法
+title: 【RVM】gem install時に出るSSL_connectエラー解決法
 published: true
 description: RVMでgen installした時に出るSSL_connectエラー解決法
 tags: ruby
