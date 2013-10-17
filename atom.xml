@@ -3,12 +3,53 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-10-10T23:28:50-07:00</updated>
+  <updated>2013-10-16T20:04:06-07:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gitのrevertの-m(mainline)オプションについて]]></title>
+    <link href="http://blog.toshimaru.net/git-revert-mainline/"/>
+    <updated>2013-10-16T00:00:00-07:00</updated>
+    <id>http://blog.toshimaru.net/git-revert-mainline</id>
+    <content type="html"><![CDATA[<p><code>git revert</code>しているとこんなエラーに出くわしました。</p>
+
+<pre><code>$ g revert xxxxx
+error: Commit xxxxx is a merge but no -m option was given.
+fatal: revert failed
+</code></pre>
+
+<p>「コミットxxxxxはマージだけど、<code>-m</code>が指定されていないよ！」ってことなんですがどういうことでしょう？</p>
+
+<p>普通に考えてみると当然のことで、マージコミットですから<code>revert</code>といったときにどのブランチ状態に戻るかを指定しなければrevertできないよということです。つまり下記のようなヒストリーがあったときに、</p>
+
+<pre><code>*   1459267 - Merge pull request #4 from branch3
+|\
+| * 344fd52 - (branch3) Add sentence
+| * 2b30235 - add file
+* | dbc65f4 - add revert commit2
+* | f0b0a91 - add revert commit 1
+</code></pre>
+
+<p><code>&lt;1459267&gt;</code>のマージをrevertした場合に、<code>&lt;344fd52&gt;</code>か<code>&lt;dbc65f4&gt;</code>かどっちに戻すかがわかんないっちゅうことです。</p>
+
+<p>このmainlineは1から始まり「1がマージされた側のブランチ」「2がマージする側のブランチ」になるようなので多くの場合、前者に戻したいと思うので1を指定しとけばよいということになります。結果としては下記のコマンド。</p>
+
+<pre><code>$ g revert -m 1 1459267
+</code></pre>
+
+<p>以上でした。</p>
+
+<h3 id="section">参考</h3>
+
+<ul>
+  <li><a href="http://d.hatena.ne.jp/koba04/20121122/1353512656">gitのmerge-commitをrevertする</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[超簡単なコマンドでローカルにHTTPサーバーを起動]]></title>
@@ -769,37 +810,6 @@ Using /Users/user/.rvm/gems/ruby-2.0.0-p247
 <h2 id="section-7">最後に</h2>
 <p>なんとなくリストアップしてみると、結果的に元記事に書いてあることと半分くらいはカブっています。つまりデキる人は誰が見ても「デキる！」と思わせるような共通点があるとも言えます。デキる人のそういう共通点を見習って自分も＜デキる人＞と見られるよう精進したいと思います！</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Windows コマンドでAmazon S3上にバックアップする]]></title>
-    <link href="http://blog.toshimaru.net/windows-s3-sync/"/>
-    <updated>2013-04-19T00:00:00-07:00</updated>
-    <id>http://blog.toshimaru.net/windows-s3-sync</id>
-    <content type="html"><![CDATA[<p>Windows PCを処分するにあたり、音楽、写真、動画などのデータ郡をamazon S3に置き管理することにしました。S3のGUIツールはコレといった定番がないようで（あったら教えてください）、挙動にもやや不安が残る感じでした。よって今回はコマンドラインツールを使ってローカルとS3をsync、同期することにしました。</p>
-
-<p>使ったツールは<a href="http://www.dragondisk.com/">Dragon Disk</a>。トップにパッケージの写真があってやや有料の匂いがするが、無料なのでご安心を。</p>
-
-<h2 id="section">手順</h2>
-
-<ol>
-  <li><a href="http://www.dragondisk.com/download-amazon-s3-client-google-cloud-storage-client.html">ダウンロードページ</a>からコマンドラインツールをダウンロード</li>
-  <li>展開してその中に<code>dgsync.bat</code>ファイルを作成し、下記のようなバッチファイルを作成してください。
-<script src="https://gist.github.com/toshimaru/5415149.js"></script>
-    <ul>
-      <li><code>DGTOOLS_ACCESS_KEY</code>、<code>DGTOOLS_SECRET_KEY</code>を適宜編集。</li>
-      <li>ファイルの削除も同期をとりたい場合は<code>--dont-delete</code>オプションを外してください。</li>
-      <li>S3上のフォルダはあらかじめ作成しておく。</li>
-    </ul>
-  </li>
-  <li>２で作成したバッチを実行する。</li>
-</ol>
-
-<p>以上です。amazon S3を使って安全、安価にデータを保管しましょう！</p>
-
-<h2 id="section-1">参考</h2>
-<p><a href="http://www.tdn.co.jp/techblog/201206/52/">Amazon S3のクライアント「DragonDisk」に付属の「dgsync」が便利な件</a></p>
 ]]></content>
   </entry>
   

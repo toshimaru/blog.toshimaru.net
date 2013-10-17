@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Hack Your Design!</title>
+  <title>Gitのrevertの-m(mainline)オプションについて - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Hack Your Design!">
-  <meta property="og:title" content="Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="Gitのrevertの-m(mainline)オプションについて - Hack Your Design!">
+  <meta property="og:title" content="Gitのrevertの-m(mainline)オプションについて - Hack Your Design!">
+  <meta name="twitter:description" content="git revertのmainlineオプションについて考えてみました"><meta property="og:description" content="git revertのmainlineオプションについて考えてみました">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -36,88 +36,111 @@
 </header>
   <div class="main">
     <div id="contents">
-     <h2 class="heading">Recent Entries</h2>
-
-  <div class="posts">
-  <h1><a href="/snmpsnmpwalk/" class="title">snmpサーバを立てて、クライアントからsnmpwalkする</a></h1>
+     <div class="posts">
+  <h1>Gitのrevertの-m(mainline)オプションについて</h1>
   <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-12-04T00:00:00-08:00" pubdate>04 Dec 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/linux.html" rel="tag">linux</a>, <a href="/tag/network.html" rel="tag">network</a>
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2013-10-16T00:00:00-07:00" pubdate>16 Oct 2013</time>
+      <i class="icon-tags"></i><a href="/tag/git.html" rel="tag">git</a>
+    </div>
+    
   </div>
-  </div>
+</div>
 
-  <div class="posts">
-  <h1><a href="/firefoxvimperator/" class="title">はてなブックマークFirefox拡張をvimperatorで使う</a></h1>
-  <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-11-28T00:00:00-08:00" pubdate>28 Nov 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/vim.html" rel="tag">vim</a>
-  </div>
-  </div>
+<p><code>git revert</code>しているとこんなエラーに出くわしました。</p>
 
-  <div class="posts">
-  <h1><a href="/linuxsvn/" class="title"> LinuxでSVNレポジトリを作成</a></h1>
-  <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-11-27T00:00:00-08:00" pubdate>27 Nov 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/linux.html" rel="tag">linux</a>, <a href="/tag/svn.html" rel="tag">svn</a>
-  </div>
-  </div>
+<pre><code>$ g revert xxxxx
+error: Commit xxxxx is a merge but no -m option was given.
+fatal: revert failed
+</code></pre>
 
-  <div class="posts">
-  <h1><a href="/php-checktime/" class="title">PHPで時刻をチェックする自作関数 checktime</a></h1>
-  <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-11-12T00:00:00-08:00" pubdate>12 Nov 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/php.html" rel="tag">php</a>
-  </div>
-  </div>
+<p>「コミットxxxxxはマージだけど、<code>-m</code>が指定されていないよ！」ってことなんですがどういうことでしょう？</p>
 
-  <div class="posts">
-  <h1><a href="/79430508/" class="title">vimでhtmlタグを効率的にカーソル移動する</a></h1>
-  <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-11-09T00:00:00-08:00" pubdate>09 Nov 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/vim.html" rel="tag">vim</a>
-  </div>
-  </div>
+<p>普通に考えてみると当然のことで、マージコミットですから<code>revert</code>といったときにどのブランチ状態に戻るかを指定しなければrevertできないよということです。つまり下記のようなヒストリーがあったときに、</p>
 
-  <div class="posts">
-  <h1><a href="/mysql/" class="title">mysqlでの日付の範囲指定</a></h1>
-  <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-11-08T00:00:00-08:00" pubdate>08 Nov 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/mysql.html" rel="tag">mysql</a>
-  </div>
-  </div>
+<pre><code>*   1459267 - Merge pull request #4 from branch3
+|\
+| * 344fd52 - (branch3) Add sentence
+| * 2b30235 - add file
+* | dbc65f4 - add revert commit2
+* | f0b0a91 - add revert commit 1
+</code></pre>
 
-  <div class="posts">
-  <h1><a href="/ps2/" class="title">PS/2接続のキーボードが反応しないときにすること</a></h1>
-  <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-11-06T00:00:00-07:00" pubdate>06 Nov 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/windows.html" rel="tag">windows</a>
-  </div>
-  </div>
+<p><code>&lt;1459267&gt;</code>のマージをrevertした場合に、<code>&lt;344fd52&gt;</code>か<code>&lt;dbc65f4&gt;</code>かどっちに戻すかがわかんないっちゅうことです。</p>
 
-  <div class="posts">
-  <h1><a href="/phpisset-empty-isnull-ifvar/" class="title">phpのisset, empty, is_null + if($var) の違い</a></h1>
-  <div class="meta">
-    <i class="icon-calendar"></i><time datetime="2011-11-04T00:00:00-07:00" pubdate>04 Nov 2011</time>
-    <i class="icon-tags"></i> <a href="/tag/php.html" rel="tag">php</a>
-  </div>
+<p>このmainlineは1から始まり「1がマージされた側のブランチ」「2がマージする側のブランチ」になるようなので多くの場合、前者に戻したいと思うので1を指定しとけばよいということになります。結果としては下記のコマンド。</p>
+
+<pre><code>$ g revert -m 1 1459267
+</code></pre>
+
+<p>以上でした。</p>
+
+<h3 id="section">参考</h3>
+
+<ul>
+  <li><a href="http://d.hatena.ne.jp/koba04/20121122/1353512656">gitのmerge-commitをrevertする</a></li>
+</ul>
+
+
+<ul id="social-buttons">
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連エントリ</h3>
+  <ul>
+  
+    <li><a href="/git-with-author/">[git]直前のコミットの歴史を修正する with author</a></li>
+  
+    <li><a href="/macgiterror-there-was-a-problem-with-the-edit/">[Mac][git]error: There was a problem with the editor 'vi'.</a></li>
+  
+    <li><a href="/git-29764/">Git のコミットメッセージの書き方</a></li>
+  
+    <li><a href="/pull-request/">初pull request がマージされました！</a></li>
+  
+    <li><a href="/git/">git 自分の今日のコミットログを見る。</a></li>
+  
+  </ul>
   </div>
 
 
 <div class="post-pagination clearfix">
   
-    <div class="newer">
-    
-      <a href="/page9" class="previous"><i class="icon-chevron-left"></i>  Newer</a>
-    
-    </div>
   
-
   
   <div class="older">
-    <a href="/page11" class="next ">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/simple-command-web-server/" title="Older Post: 超簡単なコマンドでローカルにHTTPサーバーを起動">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
     </div>
   </div>
