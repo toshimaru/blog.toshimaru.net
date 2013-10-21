@@ -3,7 +3,7 @@ layout: post
 title: PHPって言うほど悪い言語じゃない
 published: true
 image: /images/posts/phplogo.png
-description:
+description: PHPってよく「PHP(笑)」って後ろに笑マークが付いたり、Disられたりすることが多い。でも僕には「笑」を付けるほどPHPは悪い言語だとは思えない。PHPを笑うな。
 tags: php
 ---
 
@@ -44,9 +44,9 @@ PHP5.5ではジェネレータの機能により`yield`キーワードが使え�
 
 ## PHPがWEBを作ってる！
 
-Googleが無縁であるはずのPHPをGAEの言語の一つとして採用したのはなぜか？　[PHPがWEBの75％を作っている、とGoogleが判断した](http://agilecatcloud.com/2013/07/04/google-app-engine-%E3%81%8C-php-%E3%82%92%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%EF%BC%9A-%E3%81%AA%E3%81%9C%E3%81%AA%E3%82%89-75-%E3%81%AE-web-%E3%82%92%E3%82%AB%E3%83%90%E3%83%BC/)からだ。
+Googleが無縁であるはずのPHPをGoogle App Engineの言語の一つとして採用したのはなぜか？　[PHPがWEBの75％を作っている、とGoogleが判断した](http://agilecatcloud.com/2013/07/04/google-app-engine-%E3%81%8C-php-%E3%82%92%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%EF%BC%9A-%E3%81%AA%E3%81%9C%E3%81%AA%E3%82%89-75-%E3%81%AE-web-%E3%82%92%E3%82%AB%E3%83%90%E3%83%BC/)からだ。
 
-世界で一番使われているCMSはなにか？　WordPressだ。PHPで作られている(と、ここでホンネを言うと、WordPressの作りはかなり[アレ](http://mask-legacy.tumblr.com/post/62315583278/in-wordpress-phpcon2013-wctokyo)なので個人的にはさっさと世代交代してほしいのだわ)。
+世界で一番使われているCMSはなにか？　WordPressだ。PHPで作られている[^wp]。
 
 世界最大のSNS、Facebookで使われている言語はなにか？　PHPだ。さらに彼らは[HipHopというPHPから C++への変換するソフトを作るというかなり頭のイカれたことをやっていたり、Hackという型付のPHP方言を使用していたり](http://2013.8-p.info/japanese/09-28-languages.html)するらしい。Facebook、お前のPHP愛が怖い[^fbd]。
 
@@ -54,7 +54,7 @@ Googleが無縁であるはずのPHPをGAEの言語の一つとして採用し�
 
 「PHP（笑）」って言っている人がどれだけ上記のような状況を知った上で笑っているのだろうか。僕は上記の状況を鑑みるにもうPHPに「笑」なんて付けることはできない。むしろ軽率に付けててゴメン、とおもった。
 
-正直自分も今まで、PHPの後ろに「笑」が付いていた。技術ブログ界隈でPHPがよくDisられたりするのを見聞きしてたから僕も知らず知らずのうちにPHPの後に「笑」が付くようになっていた。でも冷静に考えるとその当時、PHPの良さなんて何も知らなかったのだ。
+正直自分も今まで、PHPの後ろに「笑」が付いていた。技術ブログ界隈でPHPがよくDisられたりするのを見聞きしてたから僕も知らず知らずのうちにPHPをネタにしてたんだ。でも冷静に考えるとその当時、PHPの良さなんて何も知らなかったのだ。
 
 ## なんか見たことある光景？
 
@@ -77,3 +77,4 @@ PHPはPerlほど真面目じゃないし、Pythonほどスマートじゃない�
 
 [^phpway]: 「そんなこといってもぉ、どんなコード書いたらイケてるとかわかんないしぃ」というスイーツなそこのあなた。[PHP The Right Way.](http://www.phptherightway.com/)を今すぐ嫁。「技術書高ぃしぃ〜、重ぃしぃ〜、いゃ〜」とか「英語とか読めないしぃ〜」とかつべこべ言う前に無料だし[日本語版](http://ja.phptherightway.com/)もあるので黙って全部読むべし。
 [^fbd]: [今後はD言語](http://japan.internet.com/webtech/20131018/5.html)なのか？
+[^wp]: と、ここでホンネを言うと、WordPressの作りはかなり[アレ](http://mask-legacy.tumblr.com/post/62315583278/in-wordpress-phpcon2013-wctokyo)なので個人的にはさっさと世代交代してほしいのだわ
