@@ -3,12 +3,103 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-10-21T00:00:46-07:00</updated>
+  <updated>2013-10-24T03:46:51-07:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Composerで始める PHPのライブラリ管理]]></title>
+    <link href="http://blog.toshimaru.net/how-to-use-composer-autoload/"/>
+    <updated>2013-10-24T00:00:00-07:00</updated>
+    <id>http://blog.toshimaru.net/how-to-use-composer-autoload</id>
+    <content type="html"><![CDATA[<p>PHPも<a href="http://getcomposer.org/">Composer</a>の登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。</p>
+
+<h2 id="composer">Composerのインストール</h2>
+
+<p>PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！</p>
+
+<pre><code>$ curl -s https://getcomposer.org/installer | php
+</code></pre>
+
+<p>さてこれで<code>composer.phar</code>が手に入りました。<code>composer</code>コマンドを使えるようにするためにパスの通った場所に<code>composer.phar</code>を移動しましょう。</p>
+
+<pre><code>$ sudo mv composer.phar /usr/local/bin/composer
+</code></pre>
+
+<p><code>composer</code>コマンド準備完了です。</p>
+
+<pre><code>$ composer
+   ______
+  / ____/___  ____ ___  ____  ____  ________  _____
+ / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                    /_/
+Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
+</code></pre>
+
+<h2 id="section">依存関係の記述</h2>
+
+<p>composerはプロジェクトルートの<code>composer.json</code>ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
+
+<pre><code>$ touch composer.json
+</code></pre>
+
+<p><code>composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
+
+<pre><code>{
+    "require": {
+        "phpunit/phpunit": "3.7.*"
+    }
+}
+</code></pre>
+
+<h2 id="section-1">ライブラリのインストール</h2>
+
+<p><code>composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
+
+<pre><code>$ composer install
+Loading composer repositories with package information
+Installing dependencies (including require-dev)
+  - Installing symfony/yaml (v2.3.6)
+    Loading from cache
+
+  - ..............
+
+  - Installing phpunit/phpunit (3.7.28)
+    Loading from cache
+
+phpunit/phpunit suggests installing phpunit/php-invoker (&gt;=1.1.0,&lt;1.2.0)
+Writing lock file
+Generating autoload files
+</code></pre>
+
+<p>うまいこといきました。ライブラリは<code>vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code>composer.lock</code>ファイルも生成します。</p>
+
+<h2 id="section-2">ライブラリのアップデート</h2>
+
+<p>ライブラリのアップデートに関しては下記のコマンドでOK.</p>
+
+<pre><code>$ composer update
+</code></pre>
+
+<h2 id="section-3">まとめ</h2>
+
+<p>モダンなPHPパッケージ管理であればComposer一択でしょう。PEARとの使い分けに関しては<a href="http://ja.phptherightway.com/#依存関係の管理">PHP Right Way</a>にはこのように書いてあります。</p>
+
+<blockquote>
+  <ul>
+    <li>Composer を使うのは、ひとつのプロジェクトにおける依存関係を管理するとき。</li>
+    <li>PEAR を使うのは、システム全体の PHP 環境の依存関係を管理するとき。</li>
+  </ul>
+</blockquote>
+
+<p>大抵の場合、後者のようにシステム全体で依存性管理をしなきゃならん理由はないと思うのでComposerで依存管理を行いましょう！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[PHPって言うほど悪い言語じゃない]]></title>
@@ -746,82 +837,6 @@ Using /Users/user/.rvm/gems/ruby-2.0.0-p247
 
 <h2 id="section-3">これから</h2>
 <p>身に付けた英語を使って、仕事探しを本格的に始めていこうと思います。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DeferredはjQueryにおける最も重要なクライアントサイドツール]]></title>
-    <link href="http://blog.toshimaru.net/jquerydeferred-is-most-important-client/"/>
-    <updated>2013-05-08T00:00:00-07:00</updated>
-    <id>http://blog.toshimaru.net/jquerydeferred-is-most-important-client</id>
-    <content type="html"><![CDATA[<p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</a>が結構読んでもらっているみたいなので、今回はdeferred第二弾として、<a href="http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html">jQuery.Deferred is the most important client-side tool you have</a>の翻訳をしました。</p>
-
-<hr />
-
-<p>jQueryのdeferredの導入は、近年のjQueryの歴史における最もパワフルな拡張だ。jQuery自体はとくに新しい概念ではないが、deferredの導入は多くのクライアントサイド開発者にとってメリットがある。非同期プロセスにおいてdeferredパターンはシンプルでありながらも、パワフルなツールだ。皆さんご承知の通り、クライアントサイドの開発においてそういった非同期を使う状況は数多く存在する。</p>
-
-<p>ここでは、deferredおよびjQueryによって提供されるAPIについて概観する。読者が理解できるよう多くの例を掲載した。あなたはこの記事を読み終わる頃にはdeferredとは何か、いつ使うべきものかが知ることができよう。</p>
-
-<h2 id="section">概要</h2>
-
-<p>“Deferred”パターンとは、完了するかもしれない、あるいは完了しないかもしれない処理単位のプロキシのように振る舞うオブジェクトを表す。このパターンはどんな非同期処理にでも適応することができる。少し例をあげると、Ajaxリクエスト、アニメーション、Webワーカーだ。ユーザの行動さえも「遅延処理(delayed computation)」の対象とみなすことができるのである。</p>
-
-<p>deferredの最もシンプルな使い方は、処理が終わったときあるいは失敗したときに何が起こるかを明示できるようにすることだ。jQueryの実装だと、deferedがうまく解決(resolve)したとき、あるいはエラーで拒否(reject)されたとき、あるいはいくつかの進行中の処理から解決状態だと通知(notify)されたとき（後述）に走るであろうコールバック関数の登録が可能となる。</p>
-
-<p>おそらく既に皆さんは、このdefrredパターンを使っているだろう。なぜならjQuery Ajax関数はdeferredインターフェースを実装したオブジェクトを返すからだ。それらはAjaxリクエストが成功したときにresolveされ、HTTPリクエストが失敗したときにrejectされる。</p>
-
-<h2 id="section-1">理解すべき１つの重要なこと</h2>
-<p>deferredは非同期処理における「いつ」を抽象化する。deferredは無制限に繰り返すことができる。この挙動のポイントは、もしdeferredが既にresolveならば、直ちに登録されているコールバックを実行することだ。あなたは処理単位(たとえばAjaxリクエスト)が終わっているかどうかは気にする必要がない。単純にコールバックをdeferredにバインドし、それが既にresolveであれば実行し、あるいはそれが未来にresolveになったときに実行する。</p>
-
-<h2 id="jquerydeferred">jQueryでdeferredを使ってみる</h2>
-
-<h3 id="resolution--rejection">解決(resolution) &amp; 拒否(rejection)</h3>
-<p>jQuery deferred関数の中核は、deferredの解決(resolve)/拒否(reject)を処理することだ。<code>$.Deferred().</code>でdeferredオブジェクトを作成できる。deferredオブジェクトの<code>done()</code>、<code>fail()</code>はそれぞれオブジェクトのresolveされたとき、rejectされたときに実行される関数を登録できる。</p>
-
-<p>deferredをresolve/rejectすることは実際、<code>resolve()</code>,<code>reject()</code>を使うことで実現できる。<code>jQuery.ajax()</code>メソッドは内部的には、リクエストが正常に完了したときにdeferredの<code>resolve()</code>をコールし、リクエストが失敗したとき（例えばhttpステータスコードの404）に<code>reject()</code>をコールする。</p>
-
-<h3 id="deferred-notifyprogress">deferredへ通知する: notify()とprogress()</h3>
-<p>jQuery1.7からresolve/rejectに加えて、<code>progress</code>が導入された。、<code>progress()</code>により、deferred内で<code>notify()</code>がコールされたときに実行されるコールバック関数を登録することができ、resolved状態に対する「進捗(progress)」を表現できるようになった。<code>notify()</code>で事前にコールバックを登録しておくことで例えば、ロードに時間がかかるリソースを持つdeferredオブジェクトの定期的に更新されるプログレスバーを描画できる。deferredはロード中に通知(notify)され、ロード完了時に解決(resolve)される。</p>
-
-<h3 id="promise">promise()を返す</h3>
-<p>deferred利用時のほとんどの場合、deferredの利用者にresolve/rejectを決めてほしくはないだろう。きっとあなたはそれをあなた自身で管理したいと思うはずだ。そのような場合には、<code>promise()</code>を返すのがよい。</p>
-
-<p>jQuery用語的にいうと、promiseは「read-only deferred」だ。promiseはコールバック登録、deferred状態への問い合わせを可能にするが、状態の変更は不可だ(たとえばresolve/reject状態の変更)。 <code>jQuery.ajax()</code>メソッドはpromise()を返す。なぜならAJAXリクエストが成功したか失敗したかを決定するのは、その内部のコードで完結する話だからだ。</p>
-
-<h3 id="when">非同期イベントの同期化：when()</h3>
-
-<p><code>$.when()</code>は１つ以上のdeferredを受け入れ可能で、それら全てのdeferredオブジェクトが正常に完了(resove)したときにのみresolve状態となる新たなdeferredを作り出す。つまり<code>when()</code>により、非同期イベントを一つに統合することが可能になるのだ。</p>
-
-<p>下記の例を考えてみよう。</p>
-
-<blockquote>
-  <p>ある1つのUI表現に対して、2つの分割されたAJAXリクエストのデータが必要であり、UIのレンダリングには、それら２つのリクエストのデータが必須である。</p>
-</blockquote>
-
-<p><code>when()</code>がないと、レンダリング前にどちらのリクエストも終わっていることを保証するために、コールバックをネストすることを強要されてしまう。さらに悪いことに、２つのAJAXリクエストが失敗時のエラーハンドリングコードが下記URLに示す通り２つに分散されてしまう。</p>
-
-<iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/2s4Mg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<p>この代替案として、<code>when()</code>が使用可能なのだ。2つのAJAXリクエストによって分割されてしまったdeferredオブジェクトを1つに統合できる。<code>when()</code>はこれら2つの両リクエストが完了したときにのみresolveとなる。成功時のコールバックとしてUI要素のレンダリング処理を登録することができる。さらに、失敗時の処理は1つの箇所にまとめることができる（下記URL参照）。</p>
-
-<iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/wJ4bm/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<h3 id="section-2">人間もまた非同期だ</h3>
-
-<p>Webサイトやアプリーケーション上の数多くのモノは非同期である。これにはあなたユーザ自信も含まれてさえいる。考えてみよう、あなたのサイトはユーザにプロフィールを作成するように依頼する。プロフィールを十分にユーザに埋めさせるよう、あなたはどれくらい入力が完了しているかプログレスバーを表示させる。それらが入力が完了するとプログレスバーを変更させ、全て入力し終えたときには「ありがとうございます」というメッセージを表示させるだろう。
-この状況では、プロフィールの遅延入力完了という点でdeferredが現れている。プロフィールを作成、「計算」している本質は実際のところ、人間である。このケースは「非同期である」と見做せる状況とはいえないかもしれないが、まさにdeferredが使える有効な状況である。</p>
-
-<p>ユーザーアクション（これは解決への進捗率を示している）によるdeferredを通知するために、<code>notify()</code>が使える。そして<code>resolve()</code>がプロフィール入力完了によるdeferredを通知するのに使える。プログレスバーを更新するには<code>progress()</code>を使ってコールバックをバインドし、ありがとうメッセージを表示するコールバックをバインドするのには<code>done()</code>を使う。</p>
-
-<p>下記に例を示そう。</p>
-
-<iframe width="100%" height="300" src="http://jsfiddle.net/TTUrQ/10/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<h3 id="section-3">最後に（訳者より）</h3>
-
-<p>原文にはdeferredの面白い使い方、<code>pipe()</code>も紹介されています。是非こちらも参照してみてください。</p>
-
-<p><a href="http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html">jQuery.Deferred is the most important client-side tool you have</a></p>
 ]]></content>
   </entry>
   
