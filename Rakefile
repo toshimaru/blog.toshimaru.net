@@ -25,15 +25,20 @@ task :post do
   content = <<EOF
 ---
 layout: post
-title: 
+title:
 published: true
 image: /images/posts/
-description: 
-tags: 
+description:
+tags:
 ---
 EOF
   print 'title: '
   title = STDIN.gets.strip
+
+  if title.empty?
+    puts 'The title is empty!'
+    return
+  end
 
   filepath = "_posts/#{Date.today.to_s}-#{title}.md"
 
@@ -47,3 +52,14 @@ desc 'run dev server'
 task :serve do
   sh 'bundle exec jekyll serve --watch'
 end
+
+def alias_task(tasks)
+  tasks.each do |new_name, old_name|
+    task new_name, [*Rake.application[old_name].arg_names] => [old_name]
+  end
+end
+
+alias_task [
+  [:new, :post],
+  [:server, :serve]
+]
