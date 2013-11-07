@@ -2,25 +2,37 @@
 @import "normalize.less";
 @import "font-awesome.less";
 
-@main-width: 760px;
-@mobile-width: 480px;
+// height
 @base-line-height: 25px;
-@base-fontsize: 16px;
 @header-min-height: 70px;
 @content-min-height: 470px;
+
+// width
+@main-width: 760px;
+@mobile-width: 480px;
 @footer-div-width: 240px;
-@link-color:#00AFD1;
+
+// font
+@base-fontsize: 16px;
+@small-fontsize: 13px;
+
+// color
+@link-color: #00AFD1;
+@black: #201A20;
+@pink: #FFA8D8;
 
 body {
   line-height: @base-line-height;
   font-size: @base-fontsize;
+  color: @black;
   background: rgb(230, 230, 230) url("../images/furley.png");
   padding-top: 100px;
   font-family: 'ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
-  color: #201A20;
 }
 
-// header
+////////////
+// header //
+////////////
 
 header {
   font-family: 'Italianno', cursive;
@@ -44,7 +56,7 @@ header {
     text-decoration: none;
 
     &:hover {
-      color: #FFA8D8;
+      color: @pink;
       text-decoration: none;
       -webkit-transition-duration: 600ms;
     }
@@ -92,7 +104,9 @@ header {
 
 }
 
-// content
+/////////////
+// content //
+/////////////
 
 .main {
   max-width: @main-width;
@@ -173,7 +187,7 @@ header {
   h1 {
     color:#333;
     font-size: 23px;
-    text-shadow: 3px 3px 1px #D5D5D5;
+    text-shadow: 3px 3px 4px #D5D5D5;
   }
 
   h2 {
@@ -264,7 +278,6 @@ header {
 
 } // end of main
 
-// content
 #social-buttons {
   list-style-type: none;
   padding: 0;
@@ -284,18 +297,28 @@ header {
   }
 }
 
-// content
 .related {
   ul {
     margin-top: 0px;
   }
   li {
-    font-size: 13px;
+    font-size: @small-fontsize;
     line-height: 20px;
   }
 }
 
-// footer
+.footnotes {
+  font-size: @small-fontsize;
+  padding-top: 10px;
+
+  p {
+    margin: 0;
+  }
+}
+
+////////////
+// footer //
+////////////
 
 footer {
   background: #000 url('/images/navy.png');
@@ -360,6 +383,10 @@ footer {
   }
 }
 
+///////////
+// About //
+///////////
+
 .aboutme {
   img {
     float: right;
@@ -402,7 +429,9 @@ footer {
   border-radius: 50%;
 }
 
-// Archive
+/////////////
+// Archive //
+/////////////
 
 #archive {
   a {
@@ -448,12 +477,12 @@ footer {
   }
 }
 
+// code style
 code, pre {
   padding: 0 3px 2px;
   font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
-  font-size: 13px;
+  font-size: @small-fontsize;
 }
-
 code {
   padding: 2px 4px;
   color: #D14;
@@ -464,7 +493,6 @@ code {
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
-
 pre {
   display: block;
   padding: 9.5px;
@@ -486,6 +514,24 @@ pre {
     white-space: pre-wrap;
     background-color: transparent;
     border: 0;
+  }
+}
+
+// gist
+.gist {
+  font-size: @small-fontsize;
+  line-height: 18px;
+  margin-bottom: 10px;
+
+  .line-numbers {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  pre {
+    font-size: inherit;
+    line-height: inherit;
+    color: #333;
   }
 }
 
@@ -518,7 +564,6 @@ img {
 }
 
 // table
-
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -547,25 +592,6 @@ table {
   }
 }
 
-
-// gist
-.gist {
-  font-size: 13px;
-  line-height: 18px;
-  margin-bottom: 10px;
-
-  .line-numbers {
-    font-size: inherit;
-    line-height: inherit;
-  }
-
-  pre {
-    font-size: inherit;
-    line-height: inherit;
-    color: #333;
-  }
-}
-
 // clearfix
 .clearfix{*zoom:1}.clearfix:before,.clearfix:after{display:table;line-height:0;content:""}.clearfix:after{clear:both}
 
@@ -589,7 +615,7 @@ table {
   }
 }
 
-// animate.css (https://github.com/daneden/animate.css)
+// via animate.css (https://github.com/daneden/animate.css)
 
 @-webkit-keyframes fadeInLeft {0% {opacity: 0; -webkit-transform: translateX(-20px); } 100% {opacity: 1; -webkit-transform: translateX(0); } }
 @-moz-keyframes fadeInLeft {0% {opacity: 0; -moz-transform: translateX(-20px); } 100% {opacity: 1; -moz-transform: translateX(0); } }
