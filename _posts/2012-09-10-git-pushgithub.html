@@ -1,46 +1,51 @@
 ---
 layout: post
 title: github に git pushした変更の取り消し
+image: /images/2012/09/gitlog.png
 published: true
 tags:
 - git
 ---
-<p>「間違ったコミットをpushしちゃった！取り消したい！」ってときの操作。githubに誤ったpushをした場合を想定して解説してみます。</p>
-<p><img src="/images/2012/09/gitlog.png"></p>
+<p>「間違ったコミットをリモートにpushしちゃった！取り消したい！」ってときの操作。上イメージのようにgithubに誤ったpushをした場合を想定して解説してみます。</p>
 <p>下記コマンド打つ。</p>
-<div class="CodeRay">
-  <div class="code"><pre>toshi$ git rebase -i HEAD~2</pre></div>
+<div>
+  <div class="code"><pre>$ git rebase -i HEAD~2</pre></div>
 </div>
 
-<p>するとこんな画面が出てくる。</p>
+<p><code>HEAD~2</code>は「直前の２つのコミットを修正対象とする」という意味になります。３つ前のコミットを取り消したい場合は<code>HEAD~3</code>としてください。するとこんな画面が出てくる。</p>
 <p><img src="/images/2012/09/gitterminal.png"></p>
 <p>取り消したいコミットを削除して保存します。この場合、２行目のコミットが誤りなので２行目を削除して保存します。うまくいくとこんなメッセージ。</p>
-<div class="CodeRay">
+<div>
   <div class="code"><pre>Successfully rebased and updated refs/heads/master.</pre></div>
 </div>
 
 <p>これで準備はOK。でも、その状態で普通にプッシュするとこんなエラーで受け付けてくれない。</p>
-<div class="CodeRay">
-  <div class="code"><pre>toshi$ git push
+<div>
+  <div class="code"><pre>$ git push
  ! [rejected]        master -&gt; master (non-fast-forward)
 error: failed to push some refs to 'xxxx&quot;</pre></div>
 </div>
 
-<p>こうすればいける。</p>
-<div class="CodeRay">
-  <div class="code"><pre>toshi$ git push origin +master
+<p>これは一度リモートにpushした変更を書き換えようとしているためにrejectされています。今回の場合、この変更は意図したものなので<code>-f</code>オプションを付けて強制的にpushします。</p>
+<div>
+  <div class="code"><pre>$ g push -f
 + 4f82199...2778ead master -&gt; master (forced update)</pre></div>
 </div>
 
+<p>以上になります。</p>
+
 <h3>ローカルの変更を残したい場合...</h3>
-<p>上手順を行うと、リモートの変更も失われますし、ローカルの変更も失われます。</p>
-<p>ローカル上のコミットを残して、githubのpushを取り消したいときは下記のコマンド。</p>
-<div class="CodeRay">
-  <div class="code"><pre>toshi$ git push -f origin HEAD^:master
+<p>上手順を行うと、リモートの変更も失われますしローカル上の変更も失われます。ローカル上のコミットを残して、githubのpushを取り消したいときは下記のコマンド。</p>
+
+<div>
+  <div class="code"><pre>$ git push -f origin HEAD^:master
  + 91700fc...2778ead HEAD^ -&gt; master (forced update)</pre></div>
 </div>
+
+<p>上記の場合、<code>HEAD^</code>（最新の状態から１つ前の状態）へと強制pushしているので、最新コミットの１つがgithubから失われます。</p>
 
 <h3>参考</h3>
 <ul>
 <li><a href="http://d.hatena.ne.jp/n7shi/20100204/1265382280">githubにpushしたcommitの取り消し</a></li>
 </ul>
+
