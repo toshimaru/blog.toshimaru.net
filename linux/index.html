@@ -6,14 +6,14 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>[Linux]プロセス毎のメモリ使用量を調べるコマンド - Hack Your Design!</title>
+  <title>プロセス毎のメモリ使用量を調べるコマンド - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="[Linux]プロセス毎のメモリ使用量を調べるコマンド - Hack Your Design!">
-  <meta property="og:title" content="[Linux]プロセス毎のメモリ使用量を調べるコマンド - Hack Your Design!">
+  <meta name="twitter:title" content="プロセス毎のメモリ使用量を調べるコマンド - Hack Your Design!">
+  <meta property="og:title" content="プロセス毎のメモリ使用量を調べるコマンド - Hack Your Design!">
   <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
@@ -37,7 +37,7 @@
   <div class="main">
     <div id="contents">
      <div class="posts">
-  <h1>[Linux]プロセス毎のメモリ使用量を調べるコマンド</h1>
+  <h1>プロセス毎のメモリ使用量を調べるコマンド</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2012-12-02T00:00:00-08:00" pubdate>02 Dec 2012</time>
@@ -47,14 +47,14 @@
   </div>
 </div>
 
-<p>メモリを食いつぶしてたプロセスちゃんがいたのでそれを調べるときに利用したコマンド。</p>
+<p>メモリを食いつぶしてたプロセスがいたのでそれを調べるときに利用したコマンド。</p>
 <p>これでズラっとでます。</p>
-<div class="CodeRay">
+<div>
   <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre></div>
 </div>
 
-<p>ただ見づらい。なので使用量の多い順にソートしてトップ１０を出してみるとこう。</p>
-<div class="CodeRay">
+<p>しかし、このコマンドの結果が見づらい。なので<strong>使用量の多い順にソートしてトップ１０を出してみる</strong>とこういうコマンドになります。</p>
+<div>
   <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre></div>
 </div>
 
