@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>john the ripper を使用してパスワードクラッキング - Hack Your Design!</title>
+  <title>技術的に尖ってないスタートアップ企業は潰れるべき - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="john the ripper を使用してパスワードクラッキング - Hack Your Design!">
-  <meta property="og:title" content="john the ripper を使用してパスワードクラッキング - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="技術的に尖ってないスタートアップ企業は潰れるべき - Hack Your Design!">
+  <meta property="og:title" content="技術的に尖ってないスタートアップ企業は潰れるべき - Hack Your Design!">
+  <meta name="twitter:description" content="海外で仕事探しをする中でいくつかのスタートアップ企業を見た。「海外のスタートアップ」というと響きだけはとても良いかもしれない。敏腕な経営者がいて優秀なエンジニアたちがアジャイルなスタイルでスピーディにサービスを作っているーーこんなイメージだろうか。しかし僕が見た限りでいうとそうでもないようだ。"><meta property="og:description" content="海外で仕事探しをする中でいくつかのスタートアップ企業を見た。「海外のスタートアップ」というと響きだけはとても良いかもしれない。敏腕な経営者がいて優秀なエンジニアたちがアジャイルなスタイルでスピーディにサービスを作っているーーこんなイメージだろうか。しかし僕が見た限りでいうとそうでもないようだ。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -37,41 +37,55 @@
   <div class="main">
     <div id="contents">
      <div class="posts">
-  <h1>john the ripper を使用してパスワードクラッキング</h1>
+  <h1>技術的に尖ってないスタートアップ企業は潰れるべき</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2011-12-10T00:00:00+00:00" pubdate>10 Dec 2011</time>
-      <i class="icon-tags"></i><a href="/tag/linux.html" rel="tag">linux</a>, <a href="/tag/security.html" rel="tag">security</a>
+      <i class="icon-calendar"></i><time datetime="2013-11-14T00:00:00+00:00" pubdate>14 Nov 2013</time>
+      <i class="icon-tags"></i><a href="/tag/tech.html" rel="tag">tech</a>
     </div>
     
   </div>
 </div>
 
-<p>簡単で想像しやすいパスワードをLinuxで設定すると簡単にクラックできちゃいますよ、ということを確かめるためにも、今日は<a href="http://www.openwall.com/john/">john the ripper</a>というツールを使ってパスワードを解析してみます。</p>
-<p>まずはインストール。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ sudo apt-get install john</pre></div>
-</div>
+<p>海外で仕事探しをする中でいくつかのWEB系スタートアップ企業を見た。「海外のスタートアップ」というと響きだけはとても良いかもしれない。敏腕な経営者がいて優秀なエンジニアたちがアジャイルなスタイルでスピーディにサービスを作っている―こんなイメージだろうか。しかし僕が見た限りでいうとそうでもないようだ。</p>
 
-<p>クラックするユーザーを作成。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ useradd test
-$ passwd test</pre></div>
-</div>
+<h2 id="section">一見しっかりしてそうだが…？</h2>
 
-<p>ここでは、ユーザー名を"test",パスワードも"test"という単純なアカウントを作成します。</p>
-<p>まずはパスワードとshadowファイルを統合させたファイルを作成。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ sudo unshadow /etc/passwd /etc/shadow &gt; /tmp/passfile</pre></div>
-</div>
+<p>自分が勤めているスタートアップの環境でいうと、作ってるプロダクトはしっかりしてる。少なくともしっかりしているように見える。PHPのMVCフレームワークを使い、JSコードも少なからず存在する中規模以上のWEBアプリケーションだ。nodejsを使っている跡もあり新しいテクノロジーもそれなりに取り入れようとはしているようだ（だが完全に使いこなせていない）。仕事の進め方もデイリースクラムを取り入れていたりアジャイルな感じだ。</p>
 
-<p>単純なアカウントなのでシングルモードで解析できます。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ john --single /tmp/passfile
-test:test:1001:1001::/home/test:/bin/sh</pre></div>
-</div>
+<p>一見全てはうまく回っているように見える。しかし実際の現場視点でコードを覗いてみるとそんなことはなかった。MVC構造になっているものの度重なる機能追加/変更でスパゲッティ化。使っていないコードがgitの管理下に。Githubホストされてるのに使われないプルリクエスト、無いコードレビュー。大幅改善したい欲求はあるものの、テストコードがなくリファクタリングにもなかなか手が出せない。</p>
 
-<p>ということでパスワードは解析完了。 他にも辞書ファイルを使ったり、総当たりで当たっていったりもできるようです。</p>
+<p>上記のようなコードが残っているという事実は同時に中のエンジニアもそこまで優秀じゃないということが伺える。もうそれでいいと思考停止している。空気が腐っている。これは良くない。なぜなら腐った環境に優秀なエンジニアは来ないからだ。</p>
+
+<h2 id="section-1">スタートアップはどうエンジニアを誘致すべき？</h2>
+
+<p>ところでスタートアップはどのように優秀なエンジニアを誘致すべきなのか？　僕は以下の観点で考えている。</p>
+
+<ul>
+  <li>会社の今後の成長が高い可能性で見込まれる</li>
+  <li>金銭的なインセンティブがある（給与高い）</li>
+  <li>尖ってる技術を使用している</li>
+</ul>
+
+<p>１つ目の「今後の成長が見込まれる」という点はスタートアップであればマストだと思う。誰が成長が見込まれない小さい企業に加わりたいだろうか？　成長・成功こそスタートアップの醍醐味であり、キーワードだと思う。</p>
+
+<p>２つ目の「金銭的インセンティブ」、３つ目の「尖った技術」は両方あればベストだが少なくともどちらか１つは最低限必要だろう。つまり金銭的なインセンティブが無いのであれば尖った技術を使用しているべきだし、尖った技術が無いのであれば金銭的なインセンティブを与えるべきだ。（「尖った技術」が何か、という話は本エントリでは議論しない）</p>
+
+<p>前者の「金無し、技術有り」の場合、「お金はもらえなくともその技術を学ぶことそのものが金銭以上の価値がある」と考えるエンジニアが誘致できる。その場合、使う技術は本当に尖っている必要があると思う。求人市場においてその技術の求人を見つけるのが非常に難しいくらいには希少価値があるべきだ。この場合のエンジニアは会社の成長とともに給与もアップというキャリアパスが本望だろう。</p>
+
+<p>後者の「技術無し、金有り」の場合、単純に金目的のエンジニアが誘致できる。金目的というと響きがなんとなく悪い気もするがこの状況はそんなに悪くないようにも思える。というのも入社してから「自分自身で腐った技術を尖らせていく」ということが可能になるからだ。もしその改善の成果が上がったとしたらそのエンジニアの社内評価も上がるだろうし当該エンジニア自身の満足度も上がるだろう。上記のケースでは味わえない充足感がある。</p>
+
+<p>金銭インセンティブもなく技術的にも尖っていない中で「成長が望めます！」というモチベーションのみで働かせるのは「やりがいの搾取」だろう。これはブラック企業と何ら体質的に変わりがない。彼らにとってエンジニアは使い捨ての労働力なのだろう。</p>
+
+<h2 id="section-2">まとめ</h2>
+
+<p>つまりスタートアップには「成長」を前提とし、それに加え「金銭インセンティブ」「尖った技術」は必要だと思う。なので金銭インセンティブもなく技術レベルも低い会社はエンジニアにとっては潰れるべき会社だ。</p>
+
+<p>また個人的には技術力の低いスタートアップ企業、そしてそれを是とする企業は本当にビジネスを成功させる気があるのか疑ってしまう。スタートアップこそスピーディにビジネスを展開していくべきで、だからこそスピーディな開発が可能なRailsが選ばれてるのであって（そういう意味でスタートアップとRailsの親和性は高い）…。やっぱりまともに技術を扱っていない会社は信用ならない、というのが僕の考えだ。</p>
+
+<hr />
+
+<p>っていうことをPHP4使用、テスト全く無し、クラウド環境使用せず、バージョンコントロールも行わず、そして金払いも悪いスタートアップと話をしながらつらつら考えてた。</p>
 
 
 <ul id="social-buttons">
@@ -95,15 +109,15 @@ test:test:1001:1001::/home/test:/bin/sh</pre></div>
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/php-44439/">[PHP] パスワードをマスキングする　〜　マスキングは必要？</a></li>
+    <li><a href="/Front-end-Developer-Interview-Questions-Japanese/">「フロントエンドデベロッパー面接時の質問事項」日本語訳しました</a></li>
   
-    <li><a href="/xssphp/">XSS脆弱性のあるPHPコード簡易サンプル</a></li>
+    <li><a href="/mentenability/">メンテナビリティの高いコードを書くメリット</a></li>
   
-    <li><a href="/sh3iz/">「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説</a></li>
+    <li><a href="/qiita-2-day-hackathon/">Qiita 2-day Hackathon に参加してきました！</a></li>
   
-    <li><a href="/linux/">プロセス毎のメモリ使用量を調べるコマンド</a></li>
+    <li><a href="/hatena-engineer-seminar/">Hatena Engineer Seminar に行って来ました。</a></li>
   
-    <li><a href="/apacheperl-hello-world-centos-6/">apache+Perl でhello world (CentOS 6)</a></li>
+    <li><a href="/8/">ダメプログラマの8つの特徴</a></li>
   
   </ul>
   </div>
@@ -111,14 +125,10 @@ test:test:1001:1001::/home/test:/bin/sh</pre></div>
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/xssphp/" title="Newer Post: XSS脆弱性のあるPHPコード簡易サンプル"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
   
   
   <div class="older">
-    <a href="/84789272/" title="Older Post: 携帯電話の文字入力時の入力モードを指定する">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/my-impression-after-working-2-months/" title="Older Post: 2ヶ月間WEBエンジニアとして海外で働いてみて感じたこと">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
