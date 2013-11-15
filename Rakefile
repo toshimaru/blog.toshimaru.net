@@ -1,4 +1,4 @@
-desc 'setup'
+desc 'Clone blog repository to _deploy directory and checkout gh-pages branch'
 task :setup do
   sh 'rm -rf  _deploy'
   sh 'git clone git@github.com:toshimaru/blog.toshimaru.net.git _deploy'
@@ -7,7 +7,7 @@ task :setup do
   end
 end
 
-desc 'deploy to production'
+desc 'deploy static pages to gh-pages'
 task :deploy do
   sh 'bundle exec jekyll build'
   sh 'rm -rf _deploy/*'
@@ -15,6 +15,18 @@ task :deploy do
   cd '_deploy' do
     sh 'git add -A'
     sh 'git commit -v'
+    sh 'git push origin gh-pages'
+  end
+end
+
+desc 'deploy static pages to gh-pages automatically via Travis-CI'
+task :autodeploy do
+  sh 'bundle exec jekyll build'
+  sh 'rm -rf _deploy/*'
+  sh 'cp -R _site/* _deploy'
+  cd '_deploy' do
+    sh 'git add -A'
+    sh 'git commit -m "Update"'
     sh 'git push origin gh-pages'
   end
 end
