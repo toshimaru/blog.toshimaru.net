@@ -14,7 +14,7 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした - Hack Your Design!">
   <meta property="og:title" content="Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:description" content="本ブログはJekyllを使って構築しているのですがgit pushしたときにTravis-CIと連携してTravis上でビルドしてGithub Pageへとデプロイするように変更してみました。"><meta property="og:description" content="本ブログはJekyllを使って構築しているのですがgit pushしたときにTravis-CIと連携してTravis上でビルドしてGithub Pageへとデプロイするように変更してみました。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -41,7 +41,7 @@
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2013-11-15T00:00:00+00:00" pubdate>15 Nov 2013</time>
-      <i class="icon-tags"></i><a href="/tag/git.html" rel="tag">git</a>, <a href="/tag/github.html" rel="tag">github</a>
+      <i class="icon-tags"></i><a href="/tag/git.html" rel="tag">git</a>, <a href="/tag/github.html" rel="tag">github</a>, <a href="/tag/jekyll.html" rel="tag">jekyll</a>
     </div>
     
   </div>
@@ -51,26 +51,27 @@
 
 <p><a href="http://pchw.github.io/blog/2013/06/27/octopress-travis/">OctopressとTravis CIを連携させてBlog生成を自動にする</a></p>
 
-<p>基本的には上記に書いてある手順でいいのですが２点、注意点があります。</p>
+<p>上手順において２点、注意点があります。</p>
 
 <ul>
   <li><code>brew install travis</code>でtravisコマンドはインストールできなくなっているっぽいので<code>gem install travis</code>で対応すること。</li>
   <li>上記では公開鍵暗号方式を使っているが、<a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use">OAuth access tokens</a>を使ったほうが手間がかからなくて楽です。</li>
 </ul>
 
-<p>OAuth Tokenを使う場合は下記が参考になります。</p>
+<p>ということで公開鍵暗号方式ではなくOAuth Tokenを使うようにします。その場合は下記が参考になります。</p>
 
 <p><a href="http://tricknotes.hateblo.jp/entry/2013/06/17/020229">Middleman で作った web サイトを Travis + GitHub pages でお手軽に運用する</a></p>
 
 <p>デプロイまでの流れとしてはこんな感じです。</p>
 
 <ol>
-  <li>githubにpushする</li>
+  <li>githubにエントリをpushする</li>
   <li>pushをフックしてTravisCI起動（事前にService HooksでTravisと連携するように設定してある）</li>
-  <li>Travis上でスタティックサイトをビルドしてTravisからgithubへとToken通してpushする</li>
+  <li>Travis上でスタティックサイトをビルド</li>
+  <li>TravisからgithubへとToken通してpushする</li>
 </ol>
 
-<p>作成した<code>.travis.yml</code>,<code>Rakefile</code>はこんな感じです。</p>
+<p>結果的に作成した<code>.travis.yml</code>,<code>Rakefile</code>はこんな感じです。</p>
 
 <ul>
   <li><a href="https://github.com/toshimaru/blog.toshimaru.net/blob/master/.travis.yml">.travis.yml</a></li>
@@ -105,11 +106,11 @@
   
     <li><a href="/git-pushgithub/" title="githubにgit pushした変更の取り消し">githubにgit pushした変更の取り消し</a></li>
   
-    <li><a href="/git-revert-mainline/" title="Gitのrevertの-m(mainline)オプションについて">Gitのrevertの-m(mainline)オプションについて</a></li>
+    <li><a href="/jekyll-markdown/" title="Jekyllマークダウンはデフォルトではなくkramdownを使おう">Jekyllマークダウンはデフォルトではなくkramdownを使おう</a></li>
   
-    <li><a href="/git-with-author/" title="【git】直前の数個のコミットの歴史を著作者とともに修正する">【git】直前の数個のコミットの歴史を著作者とともに修正する</a></li>
+    <li><a href="/new-blog-concept/" title="Jekyllならここまでできる！ ブログをjekyllで移行するにあたって考えるべきこと">Jekyllならここまでできる！ ブログをjekyllで移行するにあたって考えるべきこと</a></li>
   
-    <li><a href="/macgiterror-there-was-a-problem-with-the-edit/" title="【git】error There was a problem with the editor 'vi'.">【git】error There was a problem with the editor 'vi'.</a></li>
+    <li><a href="/posterous-to-jekyll/" title="Blogをposterousからjekyll(with github page)に移行しました">Blogをposterousからjekyll(with github page)に移行しました</a></li>
   
   </ul>
   </div>
@@ -176,7 +177,7 @@
 			</div>
 			<div class="right">
 				<h2>Tag</h2>
-				<div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-1">design</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-1">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-1">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-3">linux</a> <a href="/tag/mac.html" class="set-2">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-1">rails</a> <a href="/tag/ruby.html" class="set-1">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-1">雑記</a></div>
+				<div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-1">design</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-1">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-3">linux</a> <a href="/tag/mac.html" class="set-2">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-1">rails</a> <a href="/tag/ruby.html" class="set-1">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-1">雑記</a></div>
 			</div>
 		</div>
   	<p class="credit">Designed by <a href="/about.html">Toshi</a></p>

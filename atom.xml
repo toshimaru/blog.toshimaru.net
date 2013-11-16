@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-11-16T09:43:00+00:00</updated>
+  <updated>2013-11-16T19:54:41+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -19,26 +19,27 @@
 
 <p><a href="http://pchw.github.io/blog/2013/06/27/octopress-travis/">OctopressとTravis CIを連携させてBlog生成を自動にする</a></p>
 
-<p>基本的には上記に書いてある手順でいいのですが２点、注意点があります。</p>
+<p>上手順において２点、注意点があります。</p>
 
 <ul>
   <li><code>brew install travis</code>でtravisコマンドはインストールできなくなっているっぽいので<code>gem install travis</code>で対応すること。</li>
   <li>上記では公開鍵暗号方式を使っているが、<a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use">OAuth access tokens</a>を使ったほうが手間がかからなくて楽です。</li>
 </ul>
 
-<p>OAuth Tokenを使う場合は下記が参考になります。</p>
+<p>ということで公開鍵暗号方式ではなくOAuth Tokenを使うようにします。その場合は下記が参考になります。</p>
 
 <p><a href="http://tricknotes.hateblo.jp/entry/2013/06/17/020229">Middleman で作った web サイトを Travis + GitHub pages でお手軽に運用する</a></p>
 
 <p>デプロイまでの流れとしてはこんな感じです。</p>
 
 <ol>
-  <li>githubにpushする</li>
+  <li>githubにエントリをpushする</li>
   <li>pushをフックしてTravisCI起動（事前にService HooksでTravisと連携するように設定してある）</li>
-  <li>Travis上でスタティックサイトをビルドしてTravisからgithubへとToken通してpushする</li>
+  <li>Travis上でスタティックサイトをビルド</li>
+  <li>TravisからgithubへとToken通してpushする</li>
 </ol>
 
-<p>作成した<code>.travis.yml</code>,<code>Rakefile</code>はこんな感じです。</p>
+<p>結果的に作成した<code>.travis.yml</code>,<code>Rakefile</code>はこんな感じです。</p>
 
 <ul>
   <li><a href="https://github.com/toshimaru/blog.toshimaru.net/blob/master/.travis.yml">.travis.yml</a></li>
