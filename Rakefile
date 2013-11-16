@@ -27,7 +27,8 @@ task :autodeploy do
   cd '_deploy' do
     sh 'git add -A'
     sh 'git commit -m "Update"'
-    sh 'git push origin gh-pages'
+    # sh 'git push origin gh-pages'
+    sh 'git push --quiet https://$GH_TOKEN@github.com/toshimaru/blog.toshimaru.net.git gh-pages 2> /dev/null'
   end
 end
 
