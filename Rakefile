@@ -8,13 +8,13 @@ desc 'Clone blog repository to _deploy directory and checkout gh-pages branch'
 task :setup do
   sh 'rm -rf  _deploy'
   sh "git clone #{REPOSITORY} _deploy"
-  cd '_deploy' do
-    sh 'git checkout gh-pages'
-  end
+  cd('_deploy') { sh 'git checkout gh-pages' }
 end
 
 desc 'deploy static pages to gh-pages'
 task :deploy do
+  cd('_deploy') { sh 'git pull origin gh-pages' }
+
   sh 'bundle exec jekyll build'
   sh 'rm -rf _deploy/*'
   sh 'cp -R _site/* _deploy'
