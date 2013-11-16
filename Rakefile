@@ -1,7 +1,13 @@
+REPOSITORY = if ENV['GH_TOKEN']
+    'https://$GH_TOKEN@github.com/toshimaru/blog.toshimaru.net.git'
+  else
+    'git@github.com:toshimaru/blog.toshimaru.net.git'
+  end
+
 desc 'Clone blog repository to _deploy directory and checkout gh-pages branch'
 task :setup do
   sh 'rm -rf  _deploy'
-  sh 'git clone git@github.com:toshimaru/blog.toshimaru.net.git _deploy'
+  sh "git clone #{REPOSITORY} _deploy"
   cd '_deploy' do
     sh 'git checkout gh-pages'
   end
@@ -27,8 +33,7 @@ task :autodeploy do
   cd '_deploy' do
     sh 'git add -A'
     sh 'git commit -m "Update"'
-    # sh 'git push origin gh-pages'
-    sh 'git push --quiet https://$GH_TOKEN@github.com/toshimaru/blog.toshimaru.net.git gh-pages 2> /dev/null'
+    sh "git push --quiet #{REPOSITORY} gh-pages 2> /dev/null"
   end
 end
 
