@@ -5,4 +5,6 @@ gem 'jekyll-tagging'
 gem 'therubyracer'
 gem 'jekyll-less'
 gem 'kramdown'
-gem 'link-checker'
+
+# want to check links with exclude option
+# gem 'link-checker'
