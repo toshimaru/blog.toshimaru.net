@@ -4,7 +4,7 @@ title: バンクーバで個人用の名刺を作った
 published: true
 image: https://pbs.twimg.com/media/BOSk3XqCMAExVF6.jpg:large
 description: バンクーバに来て名前を覚えてもらうために作った個人用の名刺。基本シンプルにした。表は名前と連絡先。裏は黒基調に漢字版の僕の名前
-tags: vancouver
+tags: vancouver 海外就労
 ---
 
 ちょっと前の話になりますがバンクーバに来て名前を覚えてもらうために作った個人用の名刺。自分でWEBからデザインすることが出来たので自分でデザインした。

@@ -27,5 +27,3 @@ And then, title new post.
 TODO
 ----
 * add site search form (powered by Google)
-* Change archive design
-* fixed header like http://line25.com/articles/20-web-designs-with-subtle-grain-texture-backgrounds
