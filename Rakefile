@@ -32,7 +32,7 @@ task :autodeploy do
   sh 'cp -R _site/* _deploy'
   cd '_deploy' do
     sh 'git add -A'
-    sh 'git commit -m "Update"'
+    sh 'git commit -m "Update via Travis"'
     sh "git push --quiet #{REPOSITORY} gh-pages 2> /dev/null"
   end
 end
