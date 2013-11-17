@@ -34,9 +34,10 @@
   </div>
 </nav>
 </header>
-  <div class="main">
-    <div id="contents">
-     <div class="posts">
+  <div class="main-wrapper">
+    <div class="main">
+      <div id="contents">
+       <div class="posts">
   <h1>Jekyllならここまでできる！ ブログをjekyllで移行するにあたって考えるべきこと</h1>
   <div class="meta">
     <div class="clearfix">
@@ -50,26 +51,26 @@
 <p>昨日、<a href="http://blog.toshimaru.net/posterous-to-jekyll/">ブログをposterouからjekyllに移行</a>しました。jekyllに移行するにあたっていろいろ考えたことを残しておきます。</p>
 
 <h2 id="section">前提</h2>
-<p>移行にあたりまず、前提を洗い出しました。自分の場合、こんな感じでした。</p>
+<p>移行にあたり前提をまず洗い出しました。自分の場合こんな感じでした。</p>
 
 <ul>
   <li>無料であること</li>
-  <li>移行元記事の移行ツールがあること</li>
+  <li>移行ツールがあること</li>
   <li>独自ドメインが使用できること</li>
-  <li>デザインがある程度自由度のあるかたちでカスタマイズできること。</li>
-  <li>信頼できるサーバであること。(ざっくり言い換えると大手有名サービスであること）</li>
+  <li>デザイン変更に自由度があり、カスタマイズできること</li>
+  <li>信頼できるサーバであること(ざっくり言い換えると大手有名サービスであること）</li>
 </ul>
 
-<p>ちょっと優先度が下がる前提は下記のような感じ。</p>
+<p>優先度が下がるが、下記のような要望も満たしているとなおよい。</p>
 
 <ul>
   <li>JSが自由に使えたら嬉しい</li>
-  <li>CMSなどが直感的でかっこいいこと</li>
-  <li>広告とかウザいのはやめていただきたい </li>
+  <li>CMSが直感的でかっこいいこと</li>
+  <li>広告とかウザいのは要らない</li>
 </ul>
 
 <h2 id="section-1">類似サービスの検討</h2>
-<p>今回の場合、ブログサービスの閉鎖に伴い、ブログ移行を与儀なくされたのでまずは類似ブログサービスを検討しました。 検討したのはこんな感じ。</p>
+<p>今回の場合、使用していたブログサービスの閉鎖に伴いブログ移行を与儀なくされたかたちなので、まずは類似ブログサービスを検討しました。検討したのはこんな感じです。</p>
 
 <ul>
   <li><a href="http://www.squarespace.com/">squarespace</a></li>
@@ -78,32 +79,32 @@
   <li><a href="http://hatenablog.com/">Hatena Blog</a></li>
 </ul>
 
-<p>正直公式でも薦められているsquarespaceをとても使いたいと思ったが、有料。そして自分的にsquarespaceの価格設定が少し高く感じた。</p>
+<p>公式でも薦められているsquarespaceを使いたいと思ったが、有料。そしてお金を払うとしても個人的にsquarespaceの価格設定が少し高く感じた。</p>
 
 <p>無料でやるならtumblr一択、って感じでしょうが、tumblrは5年以上前に触って手に馴染まず使わなかったサービスで、やっぱり今使ってみてもなんとなく見た目とかCMSが馴染まなかったので乗り気はしない。</p>
 
 <h2 id="section-2">ドメインはどうするか？</h2>
-<p>ブログは自ドメイン(blog.toshimaru.net)で運用していました。移行に伴って、ドメインに結びついたリンクがリンク切れを起こしてしまうのをなるだけ避けたい。となるとURLが柔軟にコントロールが効く必要がありますが、上記に挙げたサービスのどれもがそのような機能は提供していませんでした。</p>
+<p>ブログは自ドメイン(blog.toshimaru.net)で運用していました。移行に伴って、ドメインに結びついたリンクがリンク切れを起こしてしまうのをなるだけ避けたい。となるとURLが柔軟にコントロールできる必要があります。しかし上記に挙げたサービスのどれもがそのような機能は提供していませんでした。</p>
 
 <h2 id="jekyll">Jekyll、君に決めた！</h2>
-<p>ということで、いろいろと柔軟にやるためにもハッカーの間で人気の高いJekyllという静的サイトジェネレータを使ってみることにしました（<a href="https://help.github.com/articles/using-jekyll-with-pages">Github Pagesでもサポートされてます</a>）。</p>
+<p>ということで、いろいろと柔軟にやるためにもハッカーの間で人気の高いJekyllという静的サイトジェネレータを使ってみることにしました（<a href="https://help.github.com/articles/using-jekyll-with-pages">ちなみにGithub Pagesでもサポートされてます</a>）。</p>
 
 <p>調べてみると自分の前提条件がほとんどクリアできることがわかった。</p>
 
 <ul>
-  <li>Github Pages使って無料</li>
-  <li><a href="https://github.com/mojombo/jekyll/wiki/blog-migrations#posterous">移行ツール</a>があった</li>
+  <li>無料</li>
+  <li><a href="https://github.com/mojombo/jekyll/wiki/blog-migrations#posterous">移行ツール</a>がある</li>
   <li>独自ドメインが使用できる(CNAME)</li>
-  <li>デザインはもちろん自由</li>
+  <li>デザインはもちろん自由にカスタム可能</li>
   <li>Githubサーバなのでたぶん大丈夫だろう</li>
   <li>JSもバリバリ使える</li>
-  <li>urlも301リダイレクトだが保てるようだ (_config.ymlにて設定)</li>
+  <li>URLも301リダイレクトだが保てるようだ (_config.ymlにて設定)</li>
 </ul>
 
 <p>他にもこんないいことが。</p>
 
 <ul>
-  <li>markdownで記事かける</li>
+  <li>Markdownで記事かける</li>
   <li>Rubyの勉強になる！</li>
 </ul>
 
@@ -121,7 +122,7 @@
 <p>とくにhokacchaさんのjekyll運用の仕方は大変参考になりました！</p>
 
 <h2 id="section-4">総評</h2>
-<p>あなたがハッカーならばJekyll(+Github)はまっさきに検討すべきブログサービスです。現在別のブログサービスを使って書かれている方も、現在ブログを書いていない方も、ハッカーならばJekyllを初めてみてはいかが？</p>
+<p>あなたがハッカーならばJekyll(+Github)はまっさきに検討すべきブログサービスです。現在別のブログサービスを使って書かれている方も、現在ブログを書いていない方も、ハッカーならばJekyllを初めてみてはいかがでしょうか？</p>
 
 
 <ul id="social-buttons">
@@ -184,6 +185,7 @@
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
+      </div>
     </div>
   </div>
   <footer>
