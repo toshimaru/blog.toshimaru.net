@@ -6,17 +6,20 @@ title: Archive
 <section id="archive">
   {% for post in site.posts %}
     {% unless post.next %}
-      <h3>{{ post.date | date: '%Y' }} 年</h3>
+      <h2>{{ post.date | date: '%Y' }} 年</h2>
     {% else %}
       {% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
       {% capture nyear %}{{ post.next.date | date: '%Y' }}{% endcapture %}
       {% if year != nyear %}
         <hr>
-        <h3>{{ post.date | date: '%Y' }} 年</h3>
+        <h2>{{ post.date | date: '%Y' }} 年</h2>
       {% endif %}
     {% endunless %}
     <hr>
-    <a href="{{ post.url }}"><time datetime="{{ post.date | date_to_xmlschema }}" pubdate>{{ post.date | date: "%m/%d" }}</time>{{ post.title }}</a>
+    <a href="{{ post.url }}" class="archive-post clearfix">
+      <h3 class="archive-title">{{ post.title }}</h3>
+      <time datetime="{{ post.date | date_to_xmlschema }}" pubdate>{{ post.date | date: "<span class='month'>%b</span> <span class='day'>%d</span> <span class='year'>%Y</span>"}}</time>
+    </a>
   {% endfor %}
   <hr>
 </section>

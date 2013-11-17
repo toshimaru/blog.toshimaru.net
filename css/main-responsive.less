@@ -2,14 +2,15 @@
 
 @responsive-padding: 20px;
 
-body {
+.main-wrapper {
   .responsive-side-padding(@responsive-padding);
-  background: #E9E9E9; // <- @white
+  background: #eee; // <- @white
 }
 
 header {
   background: #fff;
   position: absolute;
+  z-index: 100;
 
   #toggle-menu {
     display: block;
@@ -23,15 +24,14 @@ header {
 
   .active {
     #toggle-item {
-      display:block;
+      display: block;
       text-align: left;
-      margin-top: 70px;
+      margin-top: 90px; // <- @header-min-height
 
       a {
+        line-height: 47px;
+        padding: 0 25px;
         display: block;
-        padding-top: 6px;
-        padding-bottom: 6px;
-        .responsive-side-padding(@responsive-padding);
         border-top: 1px solid #bbb;
 
         &:hover {
@@ -44,7 +44,6 @@ header {
 }
 
 footer {
-  .responsive-side-margin(@responsive-padding);
   background: #201A20; //<- @black
 
   .main {
@@ -59,8 +58,23 @@ footer {
 }
 
 #archive {
-  a, hr {
-    .responsive-side-margin(@responsive-padding);
+  .responsive-side-margin(@responsive-padding);
+
+  a.archive-post {
+    padding-bottom: 3px;
+  }
+
+  h3.archive-title {
+    margin: 0;
+  }
+
+  time {
+    position: static;
+    top: 0;
+
+    .year {
+      display: inline;
+    }
   }
 }
 
