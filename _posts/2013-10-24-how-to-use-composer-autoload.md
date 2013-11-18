@@ -2,7 +2,7 @@
 layout: post
 title: Composerで始める PHPのライブラリ管理
 published: true
-description:
+description: PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。
 tags: php
 ---
 
