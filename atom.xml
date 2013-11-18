@@ -3,12 +3,51 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-11-17T07:00:59+00:00</updated>
+  <updated>2013-11-18T02:04:35+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rakeタスクにエイリアスを付ける]]></title>
+    <link href="http://blog.toshimaru.net/rake-alias/"/>
+    <updated>2013-11-17T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/rake-alias</id>
+    <content type="html"><![CDATA[<p>RubyのRakeタスクにエイリアス付けたいときってありません？</p>
+
+<p>僕はあります。<code>rake create</code>なんていうタスクがあったとしたら、何らかの手癖のせいで<code>rake new</code>とか打っちゃうことがあるんですよ。</p>
+
+<p>そういうときは<code>alias_task</code>なんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。具体的にはこんな感じです。</p>
+
+<pre><code>def alias_task(tasks)
+    tasks.each do |new_name, old_name|
+        task new_name, [*Rake.application[old_name].arg_names] =&gt; [old_name]
+    end
+end
+
+alias_task [
+    [:new, :create],
+    [:dc,  :db_create]
+]
+</code></pre>
+
+<p>ここでは</p>
+
+<ul>
+  <li><code>create</code>タスクに<code>new</code>というエイリアス名を</li>
+  <li><code>db_create</code>タスクに<code>dc</code>というエイリアス名を</li>
+</ul>
+
+<p>割り当てています。</p>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/7656541/the-alias-of-task-name-in-rake">The alias of task name in rake</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした]]></title>
@@ -853,25 +892,6 @@ Using /Users/user/.rvm/gems/ruby-2.0.0-p247
 <ul>
   <li><a href="http://whatismyipaddress.com/change-mac">How do I change my MAC address?</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Macの軽量でミニマルな音楽プレーヤー「Vox」]]></title>
-    <link href="http://blog.toshimaru.net/minimal-mac-music-player/"/>
-    <updated>2013-08-01T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/minimal-mac-music-player</id>
-    <content type="html"><![CDATA[<p>iTunesは良いアプリケーションですが、メモリも食うし機能もゴテゴテしすぎててやや重たい感があります。音楽を聴きたいだけなのに…</p>
-
-<p>そんなときには軽量・ミニマルな音楽アプリケーションが欲しいですよね。そこでおすすめしたいのがVOXという音楽プレーヤー。</p>
-
-<p><a href="https://www.macupdate.com/app/mac/24852/vox">Vox - Vox is a simple little music player for OS X with support for many file types</a></p>
-
-<p>最低限のミニマルな作りが良い感じ。Beta版ってなってますけど問題なく動作してます。</p>
-
-<p><img src="/images/posts/vox/vox2.png" alt="vox2" /></p>
-
-<p>メニューバーからも操作可能です。</p>
 ]]></content>
   </entry>
   
