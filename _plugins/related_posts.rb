@@ -58,4 +58,3 @@ module Jekyll
     include RelatedPostsByTags
   end
 end
-
