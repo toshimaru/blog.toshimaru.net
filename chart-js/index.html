@@ -6,16 +6,16 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Backbone.jsをそろそろ学習したい人のための学習リソース集（2013年版） - Hack Your Design!</title>
+  <title>Canvas+Chart.jsでグラフを作成する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/css/main.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Backbone.jsをそろそろ学習したい人のための学習リソース集（2013年版） - Hack Your Design!">
-  <meta property="og:title" content="Backbone.jsをそろそろ学習したい人のための学習リソース集（2013年版） - Hack Your Design!">
-  <meta name="twitter:description" content="Backbone.jsを週末を使って学習しました。メモがてらそのときに使った学習リソースをまとめてみたいと思います。"><meta property="og:description" content="Backbone.jsを週末を使って学習しました。メモがてらそのときに使った学習リソースをまとめてみたいと思います。">
-  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/backbone/backbone.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/backbone/backbone.png" />
+  <meta name="twitter:title" content="Canvas+Chart.jsでグラフを作成する - Hack Your Design!">
+  <meta property="og:title" content="Canvas+Chart.jsでグラフを作成する - Hack Your Design!">
+  <meta name="twitter:description" content="昨日のエントリで実験的に記事内のグラフを画像ではなくJSでCanvas要素を使って描画してみました。そのときに使用したChart.jsがなかなかいい感じだったので紹介。まずはChart.jsをincludeしてください。"><meta property="og:description" content="昨日のエントリで実験的に記事内のグラフを画像ではなくJSでCanvas要素を使って描画してみました。そのときに使用したChart.jsがなかなかいい感じだったので紹介。まずはChart.jsをincludeしてください。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/canvasjs.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/canvasjs.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
 </head>
@@ -38,91 +38,124 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1>Backbone.jsをそろそろ学習したい人のための学習リソース集（2013年版）</h1>
+  <h1>Canvas+Chart.jsでグラフを作成する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-07-30T00:00:00+00:00" pubdate>30 Jul 2013</time>
+      <i class="icon-calendar"></i><time datetime="2013-11-21T00:00:00+00:00" pubdate>21 Nov 2013</time>
       <i class="icon-tags"></i><a href="/tag/javascript.html" rel="tag">javascript</a>
     </div>
-    <img class="post-image" src="/images/posts/backbone/backbone.png" />
+    <img class="post-image" src="/images/posts/canvasjs.png" />
   </div>
 </div>
 
-<p>Backbone.jsを週末を使って学習しました。メモがてらそのときに使った学習リソースをまとめてみたいと思います。</p>
+<p><a href="/cool-ui/">昨日のエントリ</a>で実験的に記事内のグラフを画像ではなくJSでCanvas要素を使って描画してみました。そのときに使用した<a href="http://www.chartjs.org/">Chart.js</a>がなかなかいい感じだったので紹介。</p>
 
-<h2 id="section">公式サイト</h2>
-<p>まずは公式サイト。ただ公式サイトを眺めただけじゃようわからないので、ざっと眺めるだけでOKだと思います。</p>
+<h2 id="section">導入</h2>
 
-<p><a href="http://underscorejs.org/">Backbone.js</a></p>
+<p>まずは<code>Chart.js</code>をincludeしてください。</p>
 
-<h2 id="backbone">動画でBackboneを触ってみる</h2>
+<pre><code>&lt;script src="Chart.js"&gt;&lt;/script&gt;
+</code></pre>
 
-<p>ドットインストールのBackbone入門。手を動かしてもいいですし、流し見でもいいでしょう。</p>
+<h2 id="section-1">線グラフ</h2>
 
-<p><a href="http://dotinstall.com/lessons/basic_backbonejs">Backbone.js入門（ドットインストール）</a></p>
+<p>まずは線グラフ。</p>
 
-<p><img src="/images/posts/backbone/dotinstall.png" alt="dotinstall" /></p>
+<canvas id="line" width="300"></canvas>
 
-<p>英語、かつ有料になりますがプログラミング学習サイト、Code Schoolのコンテンツも非常にいいです。</p>
+<script src="https://gist.github.com/toshimaru/e9d483cdb65c54d87e8d.js"></script>
 
-<p><a href="http://www.codeschool.com/courses/anatomy-of-backbonejs">Anatomy of Backbone.js（Code School）</a></p>
+<h2 id="section-2">棒グラフ</h2>
 
-<p><img src="/images/posts/backbone/codeschool.png" alt="codeschool" /></p>
+<p>次は棒。</p>
 
-<h2 id="backbone-1">文章でBackboneを理解する</h2>
+<canvas id="bar" width="300"></canvas>
 
-<p>英語になりますがオライリーのBackbone本がWEBで公開されているので読めます。（日本語訳版は現時点で出版されていないようです）</p>
+<script src="https://gist.github.com/toshimaru/14e8e9ab91d48b71673c.js"></script>
 
-<p><a href="http://addyosmani.github.io/backbone-fundamentals/">Developing Backbone.js Applications</a></p>
+<h2 id="section-3">レーダーチャート</h2>
 
-<p><img src="/images/posts/backbone/book.png" alt="book" /></p>
+<p>次はレーダーチャート。幅の制限により少し小さくなってしまいました。</p>
 
-<p>日本語だとこちらの本がよいと思います。</p>
+<canvas id="radar" width="300"></canvas>
 
-<p><a href="http://www.amazon.co.jp/gp/product/4899773501/ref=as_li_tf_il?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=4899773501&amp;linkCode=as2&amp;tag=toshimaru-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;ASIN=4899773501&amp;Format=_SL160_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=toshimaru-22" /></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;l=as2&amp;o=9&amp;a=4899773501" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></p>
+<script src="https://gist.github.com/toshimaru/136570ccc4f90049096a.js"></script>
 
-<h2 id="backbone-2">スライドでBackboneの良さを理解する</h2>
+<h2 id="section-4">円グラフ</h2>
 
-<iframe src="http://www.slideshare.net/slideshow/embed_code/12146222" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen=""> </iframe>
-<div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/iloveigloo/clientside-mvc-with-backbonejs" title="Client-side MVC with Backbone.js " target="_blank">Client-side MVC with Backbone.js </a> </strong> from <strong><a href="http://www.slideshare.net/iloveigloo" target="_blank">iloveigloo</a></strong> </div>
+<p>最期に円グラフ。</p>
 
-<iframe src="http://www.slideshare.net/slideshow/embed_code/22635630" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen=""> </iframe>
-<div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/kadoppe/backbonejs-22635630" title="いまさら聞けない！？Backbone.js 超入門" target="_blank">いまさら聞けない！？Backbone.js 超入門</a> </strong> from <strong><a href="http://www.slideshare.net/kadoppe" target="_blank">Kohei Kadowaki</a></strong> </div>
+<canvas id="pie" width="300"></canvas>
 
-<h2 id="section-1">実際に動くサンプルを見る</h2>
-<p>「いいから動くサンプルだ！」という方には、いろんなJSフレームワークでTODOアプリを作るプロジェクト、<a href="http://todomvc.com/">TodoMVC</a>のリソースが役立つでしょう。Backbone.jsのプロジェクトはこちら。</p>
+<script src="https://gist.github.com/toshimaru/2fb67c25d80683e4f1e2.js"></script>
 
-<p><a href="http://todomvc.com/architecture-examples/backbone/">Backbone.js(TodoMVC)</a></p>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
 
-<p><img src="/images/posts/backbone/todomvc.png" alt="todomvc" /></p>
+<script type="text/javascript">
+(function(){
+  // line
+  var ctx = document.getElementById("line").getContext("2d");
+  var data = {
+    labels : ["1月", "2月", "3月", "4月", "5月"],
+    datasets : [
+      {
+        fillColor : "rgba(220,220,220,0.5)",
+        strokeColor : "rgba(220,220,220,1)",
+        data : [65,59,90,81,56]
+      },
+      {
+        fillColor : "rgba(151,187,205,0.5)",
+        strokeColor : "rgba(151,187,205,1)",
+        data : [28,48,40,19,100]
+      }
+    ]
+  }
+  new Chart(ctx).Line(data);
 
-<p>※Backbone以外にも学習、比較したいJSフレームワークがあるならここで眺めてみるとよいでしょう。 </p>
+  // bar
+  var ctx = document.getElementById("bar").getContext("2d");
+  new Chart(ctx).Bar(data);
 
-<h2 id="backbone-3">Backboneの講演を聞いて理解を深める</h2>
-<p>Backboneの作者自身による講演です。</p>
+  var ctx = document.getElementById("radar").getContext("2d");
+  new Chart(ctx).Radar(data);
 
-<iframe width="560" height="315" src="//www.youtube.com/embed/4udR30JYenA" frameborder="0" allowfullscreen=""></iframe>
+  var ctx = document.getElementById("pie").getContext("2d");
+  var data = [
+    {
+      value: 30,
+      color:"#F38630"
+    },
+    {
+      value : 50,
+      color : "#E0E4CC"
+    },
+    {
+      value : 100,
+      color : "#69D2E7"
+    }
+  ]
+  new Chart(ctx).Pie(data);
+})();
+</script>
 
-<h2 id="backbone-4">Backboneを学習してみて</h2>
-<p>railsなどに代表されるサーバサイドのMVCとBackboneでいうところのMVCは似て非なるもの。前者を前提として学習を進めていくと痛い目をみるかもしれません。</p>
+<h2 id="section-5">その他</h2>
+<p>もっと細かいチャートの設定がしたければ<code>data</code>のあとにオプション引数を取ることもできます。その他のグラフ、細かいオプションに関しては<a href="http://www.chartjs.org/docs/">公式ドキュメント</a>を参考にしてください。</p>
 
-<p>BackboneにもModel, View, Collectionという名前があって一瞬勘違いしそうになりますが、CollectionはModelの集積。本がModelだとしたら本棚がCollection。なのでrailsでいうところのModelはBackboneではModel/Collectionが担っていて、View,ControllerはBackboneではViewが担う。</p>
+<p>あと細かいところですがチャートを描画するときにアニメーションで描画されてます。気付かなかったかもなので一応。</p>
 
-<p>上記を踏まえた上で、それぞれのオブジェクトがどういう役割を担っていて、疎結合に保たれているのかを意識して学習すると良い気がしました。</p>
+<h2 id="section-6">課題</h2>
 
-<p>またBackboneというと自由度の高さが逆に足枷になる場合があって、なかなか「ベスト・プラクティス」なるものが見つけにくいのも悩ましいところです。これはいろいろなサンプルを見るなりして窺い知るくらいしかできないと思っています。</p>
+<p>見てわかるようにレスポンシブデザインに対応しておりません。なのでとりあえずのところ現在はwidthを300に固定することにしています（なのでグラフが小さくなっております）。これに関しては<a href="https://github.com/nnnick/Chart.js/issues/56">Github Issues</a>で現在も議論されておりますがスマートな解決法は無いので、公式のレスポンシブデザイン対応が期待されます。</p>
 
-<h2 id="section-2">参考</h2>
-<ul>
-  <li><a href="http://mawatari.jp/archives/roadmap-for-backbonejs-beginners">Backbone.js入門 – 初学者の為のロードマップ</a></li>
-  <li><a href="http://d.hatena.ne.jp/kazuk_i/20110407/1302130947">Backbone.jsを利用したクライアントサイドMVCの導入についてそろそろ書いておくか</a> 【筆者注】やや情報が古いので注意！</li>
-</ul>
+<h3 id="section-7">参考</h3>
+
+<p><a href="http://startapp.jp/2013/07/21/how-to-create-flat-chart.html">絶対まねしたい！Chart.jsを使ってフラットデザインぽいグラフを作る方法</a></p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/backbone-learn/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/chart-js/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -140,11 +173,11 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/chart-js/" title="Canvas+Chart.jsでグラフを作成する">Canvas+Chart.jsでグラフを作成する</a></li>
-  
     <li><a href="/cdn-js/" title="マイナーJS・CSSライブラリのCDNはcdnjs.comがいい感じ">マイナーJS・CSSライブラリのCDNはcdnjs.comがいい感じ</a></li>
   
     <li><a href="/underscore-template-in-erb/" title="underscore.jsのテンプレートのデフォルトデリミタを変更する">underscore.jsのテンプレートのデフォルトデリミタを変更する</a></li>
+  
+    <li><a href="/backbone-learn/" title="Backbone.jsをそろそろ学習したい人のための学習リソース集（2013年版）">Backbone.jsをそろそろ学習したい人のための学習リソース集（2013年版）</a></li>
   
     <li><a href="/qiita-2-day-hackathon/" title="Qiita 2-day Hackathon に参加してきました！">Qiita 2-day Hackathon に参加してきました！</a></li>
   
@@ -156,14 +189,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/minimal-mac-music-player/" title="Newer Post: Macの軽量でミニマルな音楽プレーヤー「Vox」"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/jquery-bottom-scroll/" title="Older Post: jQueryでページ最下部のスクロール時のイベントをキャッチする">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/cool-ui/" title="Older Post: UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>

@@ -3,12 +3,122 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-11-22T02:57:41+00:00</updated>
+  <updated>2013-11-22T02:59:18+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Canvas+Chart.jsでグラフを作成する]]></title>
+    <link href="http://blog.toshimaru.net/chart-js/"/>
+    <updated>2013-11-21T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/chart-js</id>
+    <content type="html"><![CDATA[<p><a href="/cool-ui/">昨日のエントリ</a>で実験的に記事内のグラフを画像ではなくJSでCanvas要素を使って描画してみました。そのときに使用した<a href="http://www.chartjs.org/">Chart.js</a>がなかなかいい感じだったので紹介。</p>
+
+<h2 id="section">導入</h2>
+
+<p>まずは<code>Chart.js</code>をincludeしてください。</p>
+
+<pre><code>&lt;script src="Chart.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<h2 id="section-1">線グラフ</h2>
+
+<p>まずは線グラフ。</p>
+
+<canvas id="line" width="300"></canvas>
+
+<script src="https://gist.github.com/toshimaru/e9d483cdb65c54d87e8d.js"></script>
+
+<h2 id="section-2">棒グラフ</h2>
+
+<p>次は棒。</p>
+
+<canvas id="bar" width="300"></canvas>
+
+<script src="https://gist.github.com/toshimaru/14e8e9ab91d48b71673c.js"></script>
+
+<h2 id="section-3">レーダーチャート</h2>
+
+<p>次はレーダーチャート。幅の制限により少し小さくなってしまいました。</p>
+
+<canvas id="radar" width="300"></canvas>
+
+<script src="https://gist.github.com/toshimaru/136570ccc4f90049096a.js"></script>
+
+<h2 id="section-4">円グラフ</h2>
+
+<p>最期に円グラフ。</p>
+
+<canvas id="pie" width="300"></canvas>
+
+<script src="https://gist.github.com/toshimaru/2fb67c25d80683e4f1e2.js"></script>
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
+
+<script type="text/javascript">
+(function(){
+  // line
+  var ctx = document.getElementById("line").getContext("2d");
+  var data = {
+    labels : ["1月", "2月", "3月", "4月", "5月"],
+    datasets : [
+      {
+        fillColor : "rgba(220,220,220,0.5)",
+        strokeColor : "rgba(220,220,220,1)",
+        data : [65,59,90,81,56]
+      },
+      {
+        fillColor : "rgba(151,187,205,0.5)",
+        strokeColor : "rgba(151,187,205,1)",
+        data : [28,48,40,19,100]
+      }
+    ]
+  }
+  new Chart(ctx).Line(data);
+
+  // bar
+  var ctx = document.getElementById("bar").getContext("2d");
+  new Chart(ctx).Bar(data);
+
+  var ctx = document.getElementById("radar").getContext("2d");
+  new Chart(ctx).Radar(data);
+
+  var ctx = document.getElementById("pie").getContext("2d");
+  var data = [
+    {
+      value: 30,
+      color:"#F38630"
+    },
+    {
+      value : 50,
+      color : "#E0E4CC"
+    },
+    {
+      value : 100,
+      color : "#69D2E7"
+    }
+  ]
+  new Chart(ctx).Pie(data);
+})();
+</script>
+
+<h2 id="section-5">その他</h2>
+<p>もっと細かいチャートの設定がしたければ<code>data</code>のあとにオプション引数を取ることもできます。その他のグラフ、細かいオプションに関しては<a href="http://www.chartjs.org/docs/">公式ドキュメント</a>を参考にしてください。</p>
+
+<p>あと細かいところですがチャートを描画するときにアニメーションで描画されてます。気付かなかったかもなので一応。</p>
+
+<h2 id="section-6">課題</h2>
+
+<p>見てわかるようにレスポンシブデザインに対応しておりません。なのでとりあえずのところ現在はwidthを300に固定することにしています（なのでグラフが小さくなっております）。これに関しては<a href="https://github.com/nnnick/Chart.js/issues/56">Github Issues</a>で現在も議論されておりますがスマートな解決法は無いので、公式のレスポンシブデザイン対応が期待されます。</p>
+
+<h3 id="section-7">参考</h3>
+
+<p><a href="http://startapp.jp/2013/07/21/how-to-create-flat-chart.html">絶対まねしたい！Chart.jsを使ってフラットデザインぽいグラフを作る方法</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか]]></title>
@@ -1030,28 +1140,6 @@ Using /Users/user/.rvm/gems/ruby-2.0.0-p247
 </ul>
 
 <p>フロントエンドデベロッパーの方は自分の実力試し、あるいは知識の復習として回答を考えてみてはいかがでしょうか？  自分もやってみましたが案外知らないこと、うろ覚えになっていることが多かったです。 </p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[underscore.jsのテンプレートのデフォルトデリミタを変更する]]></title>
-    <link href="http://blog.toshimaru.net/underscore-template-in-erb/"/>
-    <updated>2013-08-05T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/underscore-template-in-erb</id>
-    <content type="html"><![CDATA[<p>erb内でunderscore.jsのテンプレートを使おうとするとerbのデリミタと競合してしまってエラーになってしまう。そういう時は下記のようにunderscoreテンプレートのデリミタを変更してやればよい。</p>
-
-<pre><code>_.templateSettings = {
-  interpolate : /\{\{(.+?)\}\}/g,
-  escape: /\{\{-(.+?)\}\}/g
-};
-</code></pre>
-
-<p>これで<code>{{ hoge }}</code>というmustacheライクなデリミタに変更できる。</p>
-
-<h2 id="section">参考</h2>
-<ul>
-  <li><a href="http://null.ly/post/20000241563/underscore-js-erb">Underscore.js のテンプレートを ERB の中で使う</a></li>
-</ul>
 ]]></content>
   </entry>
   
