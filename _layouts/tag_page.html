@@ -3,8 +3,13 @@ layout: default
 title: Tag
 ---
 <h2 class="heading">{{ page.tag }}</h2>
-<ul>
-{% for post in page.posts %}
-  <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-{% endfor %}
-</ul>
+<section id="archive">
+  <hr>
+  {% for post in page.posts %}
+  <a href="{{ post.url }}" class="archive-post clearfix">
+    <h3 class="archive-title">{{ post.title }}</h3>
+    <time datetime="{{ post.date | date_to_xmlschema }}" pubdate>{{ post.date | date: "<span class='month'>%b</span> <span class='day'>%d</span> <span id='tag-year' class='year'>%Y</span>"}}</time>
+  </a>
+  <hr>
+  {% endfor %}
+</section>
