@@ -40,27 +40,28 @@ end
 desc 'create new post'
 task :post do
   require 'date'
+
+  print 'title: '
+  title = STDIN.gets.strip
+
+  if title.empty?
+    puts 'Title is empty!'
+    return
+  end
+
+  filepath = "_posts/#{Date.today.to_s}-#{title}.md"
+  raise "#{filepath} is exists" if File.exist?(filepath)
+
   content = <<EOF
 ---
 layout: post
-title:
+title: #{title}
 published: true
 image: /images/posts/
 description:
 tags:
 ---
 EOF
-  print 'title: '
-  title = STDIN.gets.strip
-
-  if title.empty?
-    puts 'The title is empty!'
-    return
-  end
-
-  filepath = "_posts/#{Date.today.to_s}-#{title}.md"
-
-  raise "#{filepath} is exists" if File.exist?(filepath)
 
   File.write(filepath, content)
   puts "create #{filepath}"
