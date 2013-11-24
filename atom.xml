@@ -3,12 +3,73 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-11-24T04:08:13+00:00</updated>
+  <updated>2013-11-24T12:13:57+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Google Analyticsにみるブログ記事のバズり方の流れ]]></title>
+    <link href="http://blog.toshimaru.net/buzz-flow/"/>
+    <updated>2013-11-23T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/buzz-flow</id>
+    <content type="html"><![CDATA[<p><a href="/cool-ui/">先日のブログ記事</a>がバズりました。現時点でおおよそtweet数1200、いいね数1000、はてブ数900となっています。はてブ数500以上もらったのは始めての経験でGoogle Analyticsを興味深く眺めてたんですが、面白い傾向が見えたので個人的メモの意味もこめて書いてみます。</p>
+
+<h2 id="section">バズによるページビュー変化</h2>
+
+<p>まずは今月のページビューのチャート。</p>
+
+<p><img src="/images/posts/buzz/chart.png" alt="pageview chart" /></p>
+
+<p>今までのビュー数がアホみたいにみえますね（笑）。恐るべしバズ効果。</p>
+
+<h2 id="section-1">流入元</h2>
+
+<p>これだけ各種SNSでシェアされたので、次はどこからの流入が最も多かったのかが気になりました。</p>
+
+<p><img src="/images/posts/buzz/sources.png" alt="流入元" /></p>
+
+<p>なんと一番はTwitterでもFacebookでもはてなでもなくGunosyでした！　いかにみんながGunosyで情報を消化しているかがわかりますね。</p>
+
+<h2 id="gunosytwitterfacebook">Gunosy砲、Twitter砲、Facebook砲、はてブ砲それぞれの波及順序</h2>
+
+<p>今回Gunosy砲、Twitter砲、Facebook砲、はてブ砲全てを食らったわけですがどういう順番で砲撃されるかを見てみました。</p>
+
+<p><img src="/images/posts/buzz/compare2.png" alt="比較２" /></p>
+
+<ul>
+  <li>青：全体</li>
+  <li>オレンジ：Gunosy</li>
+  <li>緑：はてな</li>
+  <li>紫：Twitter</li>
+  <li>黄：Facebook</li>
+</ul>
+
+<p><img src="/images/posts/buzz/compare.png" alt="比較１" /></p>
+
+<p>なんとなく感じてた自分の感覚値と一緒の感じでした。順番としてはこんな感じです。</p>
+
+<ol>
+  <li>Twitter/Facebookでシェアされ始める。と同時にはてなブックマークされ始める。</li>
+  <li>はてな新着エントリ入り→ホットエントリ入り→はてなからのアクセス数が一気に増える</li>
+  <li>Twitterのシェアがどんどん拡大、アクセス数も増える</li>
+  <li>Twitter/はてなの流入が落ち着き始める頃に記事がGunosyに取り上げられる→Gunosyから大量アクセス</li>
+  <li>1-4の間、Facebookからはじわじわとアクセス数が上がっている</li>
+</ol>
+
+<p>Gunosyに取り上げられた日の翌日にはアクセス数が落ち着き始める感じでしょうか。</p>
+
+<h2 id="section-2">軽く分析</h2>
+
+<p>FBいいね数、Tweet数はだいたい同じにもかかわらずFacebookからの流入のほうがTwitterよりも少ないのは面白かった。つまりFacebookのほうが共有されたとしても波及効果はTwitterよりも低いということになりますね。</p>
+
+<p>長い記事だったせいか読者傾向に大きな違いは見られなかったです。みんな５分くらいは滞在して読んでくれたみたいです。</p>
+
+<p>あとGunosyからのアクセス数が一番多かったのは驚きでした。自分もニュースソースのほとんどはGunosyから見るようにしているのですが、みなさんもそうなんですね。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[「UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか」後記]]></title>
@@ -1175,29 +1236,6 @@ Using /Users/user/.rvm/gems/ruby-2.0.0-p247
 <ul>
   <li><a href="http://boxen.github.com/">boxen</a> を使った環境構築</li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ChromeのDevToolでlocalStrageのデータをイジイジする]]></title>
-    <link href="http://blog.toshimaru.net/chrome-dev-tool-localstrage/"/>
-    <updated>2013-08-15T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/chrome-dev-tool-localstrage</id>
-    <content type="html"><![CDATA[<p>ChromeのDevToolでローカルストレージのデータをイジったことなかったけど、簡単にできたのでメモ。</p>
-
-<p>例えばTODOデータをローカルストレージに保存している<a href="http://todomvc.com/architecture-examples/backbone/">TodoMVC</a>で上記のようにデータを作ってみる。</p>
-
-<p>こんな感じで閲覧できる。</p>
-
-<p><img src="/images/posts/localstrage/ls.png" alt="chrome-localstrage" /></p>
-
-<p>ローカルストレージのデータを<code>TODO1</code>を<code>TODO123</code>に変更してみる。</p>
-
-<p><img src="/images/posts/localstrage/ls2.png" alt="chrome-localstrage" /></p>
-
-<p>ページをリロードしてみる。ローカルストレージからデータの初期化が行われるので、<code>TODO123</code>になっていることが確認できます。</p>
-
-<p><img src="/images/posts/localstrage/ls3.png" alt="chrome-localstrage" /></p>
 ]]></content>
   </entry>
   
