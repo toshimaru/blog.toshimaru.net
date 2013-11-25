@@ -4,14 +4,18 @@ title: 【翻訳】クソ酷いウェブサイト
 published: true
 image: /images/posts/fuck-website.png
 description:
-tags: design english
+tags: design 翻訳
 ---
 
-最近のエントリでクソクソ言ってたらHackers Newsから[Motherfucking Website](http://motherfuckingwebsite.com/)というクソ記事を見つけたので翻訳してみた。
+最近のエントリでクソクソ言ってたらHackers Newsから[Motherfucking Website](http://motherfuckingwebsite.com/)というクソ記事が流れてきたので翻訳してみた。
 
 [クソ酷いウェブサイト](http://toshimaru.net/motherfuckingwebsite/)
 
 <iframe src="http://toshimaru.net/motherfuckingwebsite/"></iframe>
+
+##あわせて読みたい
+
+[http://justinjackson.ca/words_japan.html](http://justinjackson.ca/words_japan.html)
 
 ##翻訳後記
 
