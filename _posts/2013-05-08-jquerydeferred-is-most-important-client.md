@@ -3,7 +3,7 @@ layout: post
 title: DeferredはjQueryにおける最も重要なクライアントサイドツール
 published: true
 description: jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜が結構読んでもらっているみたいなので、今回はdeferred第二弾として、jQuery.Deferred is the most important client-side tool you haveの翻訳をしました。
-tags: jquery
+tags: jquery 翻訳
 ---
 
 [jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜](http://blog.toshimaru.net/jquery-ajaxdeferredajax/)が結構読んでもらっているみたいなので、今回はdeferred第二弾として、[jQuery.Deferred is the most important client-side tool you have](http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html)の翻訳をしました。

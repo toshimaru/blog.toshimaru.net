@@ -3,7 +3,7 @@ layout: post
 title: 【翻訳】クソ酷いウェブサイト
 published: true
 image: /images/posts/fuck-website.png
-description:
+description: 最近のエントリでクソクソ言ってたらHackers NewsからMotherfucking Websiteというクソ記事が流れてきたので翻訳してみた。
 tags: design 翻訳
 ---
 
@@ -15,7 +15,7 @@ tags: design 翻訳
 
 ##あわせて読みたい
 
-[http://justinjackson.ca/words_japan.html](http://justinjackson.ca/words_japan.html)
+[これはウェブページです｡](http://justinjackson.ca/words_japan.html)
 
 ##翻訳後記
 
