@@ -6,21 +6,21 @@ My blog repository powered by Jekyll.
 
 #Rake Tasks
 
-## Create new post
+##Create new post
 
     $ rake post
 
 And then, title new post.
 
-## Initial setup
+##Initial setup
 
     $ rake setup
 
-## Deploy to gh-pages
+##Deploy to gh-pages
 
     $ rake deploy
 
-## Serve static pages
+##Serve static pages
 
     $ rake serve
 
