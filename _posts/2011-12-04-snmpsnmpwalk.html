@@ -1,32 +1,34 @@
 ---
 layout: post
-title: snmpサーバを立てて、クライアントからsnmpwalkする
+title: SNMPサーバを立てて、クライアントからsnmpwalkする
 published: true
-tags:
-- linux
-- network
+description: お仕事でSNMPを使うことがありましたので勉強がてらメモ。sudo apt-get install snmp snmpd
+tags: linux network
 ---
 <p>お仕事でSNMPを使うことがありましたので勉強がてらメモ。</p>
-<div class="CodeRay">
-  <div class="code"><pre>sudo apt-get install snmp snmpd</pre></div>
+<div>
+  <pre>$ sudo apt-get install snmp snmpd</pre>
 </div>
 
 <p>localhostにsnmpwalkしてMIBツリーの情報を取得できます。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ snmpwalk -v 1 -c public localhost
+
+<div>
+<pre>$ snmpwalk -v 1 -c public localhost
  iso.3.6.1.2.1.1.1.0 = STRING: &quot;Linux ubuntu 3.0.0-12-generic #20-Ubuntu SMP Fri Oct 7 14:56:25 UTC 2011 x86_64&quot;
  iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.10
-（以下略...）</pre></div>
+（以下略...）</pre>
 </div>
 
 <p>デフォルトの状態だとlocalhostのみで外部からsnmpwalkできないので、/etc/snmp/snmpd.conf　のagentAddressを下記のように編集してsnmpdを再起動する。</p>
-<div class="CodeRay">
-  <div class="code"><pre>agentAddress  udp:161</pre></div>
+
+<div>
+  <pre>agentAddress  udp:161</pre>
 </div>
 
 <p>これで外部からsnmpwalkできるようになります。</p>
+
 <h3>参考</h3>
 <ul>
-<li> <a href="http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html">http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html</a> </li>
-<li> <a href="http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html">http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html</a> </li>
+<li><a href="http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html">http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html</a></li>
+<li><a href="http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html">http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html</a></li>
 </ul>
