@@ -12,6 +12,9 @@
 @mobile-width:     480px;
 @footer-div-width: 240px;
 
+// for responsive
+@responsive-padding: 20px;
+
 // font size
 @base-fontsize:  16px;
 @small-fontsize: 13px;
@@ -23,6 +26,24 @@
 @pink:       #FFA8D8;
 @white:      #EEE;
 @grey:       #999;
+
+
+// less functions
+.responsive-side-margin(@val) {
+  margin-left: -@val;
+  margin-right: -@val;
+}
+.responsive-side-padding(@val) {
+  padding-left: @val;
+  padding-right: @val;
+}
+.animation(@time) {
+  -webkit-animation-duration: @time;
+  animation-duration: @time;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
 
 body {
   line-height: @base-line-height;
@@ -109,12 +130,23 @@ header {
       line-height: @header-min-height;
     }
 
+    a.icon {
+      padding: 15px 15px;
+    }
+
+    .icon-search:hover {
+      cursor: pointer;
+    }
+
     .navmenu {
       display: inline;
     }
   }
 
-  .rss {
+  #search-form {
+    display: inline-block;
+    height: @header-min-height;
+    margin-left: 8px;
   }
 }
 
@@ -683,6 +715,20 @@ iframe {
   top: @header-min-height;
 }
 
+// input styles
+// inspired by pure.css
+input[type=text] {
+  padding: .2em .3em;
+  display: inline-block;
+  border: 1px solid #DDD;
+  font-size: .7em;
+  box-shadow: inset 0 0 3px #DDD;
+  border-radius: 5px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 // via animate.css (https://github.com/daneden/animate.css)
 
 @-webkit-keyframes fadeInLeft {
@@ -696,10 +742,7 @@ iframe {
 .fadeInLeft {
   -webkit-animation-name: fadeInLeft;
   animation-name: fadeInLeft;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
+  .animation(1s);
 }
 
 @-webkit-keyframes fadeInDown {
@@ -713,10 +756,7 @@ iframe {
 .fadeInDown {
   -webkit-animation-name: fadeInDown;
   animation-name: fadeInDown;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
+  .animation(1s);
 }
 
 @-webkit-keyframes flipInX {
@@ -735,10 +775,20 @@ iframe {
   backface-visibility: visible !important;
   -webkit-animation-name: flipInX;
   animation-name: flipInX;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
+  .animation(1s);
+}
+@-webkit-keyframes slideInRight {
+  0% {opacity: 0; -webkit-transform: translateX(2000px); transform: translateX(2000px); }
+  100% {-webkit-transform: translateX(0); transform: translateX(0); }
+}
+@keyframes slideInRight {
+  0% {opacity: 0; -webkit-transform: translateX(2000px); -ms-transform: translateX(2000px); transform: translateX(2000px); }
+  100% {-webkit-transform: translateX(0); -ms-transform: translateX(0); transform: translateX(0); }
+}
+.slideInRight {
+  -webkit-animation-name: slideInRight;
+  animation-name: slideInRight;
+  .animation(.4s);
 }
 
 // responsive
