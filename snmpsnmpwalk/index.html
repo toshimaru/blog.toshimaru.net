@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>snmpサーバを立てて、クライアントからsnmpwalkする - Hack Your Design!</title>
+  <title>SNMPサーバを立てて、クライアントからsnmpwalkする - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
-  <link rel="stylesheet" href="/assets/main-fbc0d9d97591ca2bdc78de395bb7c8a4.css">
+  <link rel="stylesheet" href="/assets/main-4dead0e5b85f499faeaea5ac8b2d0602.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="snmpサーバを立てて、クライアントからsnmpwalkする - Hack Your Design!">
-  <meta property="og:title" content="snmpサーバを立てて、クライアントからsnmpwalkする - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="SNMPサーバを立てて、クライアントからsnmpwalkする - Hack Your Design!">
+  <meta property="og:title" content="SNMPサーバを立てて、クライアントからsnmpwalkする - Hack Your Design!">
+  <meta name="twitter:description" content="お仕事でSNMPを使うことがありましたので勉強がてらメモ。sudo apt-get install snmp snmpd"><meta property="og:description" content="お仕事でSNMPを使うことがありましたので勉強がてらメモ。sudo apt-get install snmp snmpd">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -31,7 +31,14 @@
   <a href="/">Blog</a>
   <a href="/archive.html">Archive</a>
   <a href="/about.html">About</a>
-  <a href="/atom.xml" class="rss"><i class="icon-rss-sign"></i></a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="http://google.com/search" method="get" style="display:none;">
+      <input type="hidden" name="q" value="site:blog.toshimaru.net" />
+      <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+    </form>
+  </a>
   </div>
 </nav>
 </header>
@@ -40,7 +47,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">snmpサーバを立てて、クライアントからsnmpwalkする</h1>
+  <h1 class="fadeInLeft">SNMPサーバを立てて、クライアントからsnmpwalkする</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2011-12-04T00:00:00+00:00" pubdate>04 Dec 2011</time>
@@ -51,28 +58,31 @@
 </div>
 
 <p>お仕事でSNMPを使うことがありましたので勉強がてらメモ。</p>
-<div class="CodeRay">
-  <div class="code"><pre>sudo apt-get install snmp snmpd</pre></div>
+<div>
+  <pre>$ sudo apt-get install snmp snmpd</pre>
 </div>
 
 <p>localhostにsnmpwalkしてMIBツリーの情報を取得できます。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ snmpwalk -v 1 -c public localhost
+
+<div>
+<pre>$ snmpwalk -v 1 -c public localhost
  iso.3.6.1.2.1.1.1.0 = STRING: &quot;Linux ubuntu 3.0.0-12-generic #20-Ubuntu SMP Fri Oct 7 14:56:25 UTC 2011 x86_64&quot;
  iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.10
-（以下略...）</pre></div>
+（以下略...）</pre>
 </div>
 
 <p>デフォルトの状態だとlocalhostのみで外部からsnmpwalkできないので、/etc/snmp/snmpd.conf　のagentAddressを下記のように編集してsnmpdを再起動する。</p>
-<div class="CodeRay">
-  <div class="code"><pre>agentAddress  udp:161</pre></div>
+
+<div>
+  <pre>agentAddress  udp:161</pre>
 </div>
 
 <p>これで外部からsnmpwalkできるようになります。</p>
+
 <h3>参考</h3>
 <ul>
-<li> <a href="http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html">http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html</a> </li>
-<li> <a href="http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html">http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html</a> </li>
+<li><a href="http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html">http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html</a></li>
+<li><a href="http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html">http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html</a></li>
 </ul>
 
 
@@ -170,7 +180,7 @@
 </li>
           <li><a href="/Front-end-Developer-Interview-Questions-Japanese/">「フロントエンドデベロッパー面接時の質問事項」日本語訳しました</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/"></a>
 </li>
-          <li><a href="/jquerydeferred-is-most-important-client/">DeferredはjQueryにおける最も重要なクライアントサイドツール</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquerydeferred-is-most-important-client/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquerydeferred-is-most-important-client/"></a>
+          <li><a href="/jquerydeferred-is-most-important-client/">【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquerydeferred-is-most-important-client/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquerydeferred-is-most-important-client/"></a>
 </li>
           <li><a href="/git-log-graph/">美しき git log --graph のエイリアス</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
 </li>
