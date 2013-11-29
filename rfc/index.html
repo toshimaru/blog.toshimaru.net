@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>メールアドレスのローカル部に使用できる記号について　RFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わない - Hack Your Design!</title>
+  <title>メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わないほうが良い - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/assets/main-fbc0d9d97591ca2bdc78de395bb7c8a4.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="メールアドレスのローカル部に使用できる記号について　RFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わない - Hack Your Design!">
-  <meta property="og:title" content="メールアドレスのローカル部に使用できる記号について　RFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わない - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わないほうが良い - Hack Your Design!">
+  <meta property="og:title" content="メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わないほうが良い - Hack Your Design!">
+  <meta name="twitter:description" content="メールアドレスのローカル部に使用できる記号について調べた。調べるきっかけはGmailの+（プラス）アドレスを使おうとしたこと。"><meta property="og:description" content="メールアドレスのローカル部に使用できる記号について調べた。調べるきっかけはGmailの+（プラス）アドレスを使おうとしたこと。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -40,7 +40,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">メールアドレスのローカル部に使用できる記号について　RFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わない</h1>
+  <h1 class="fadeInLeft">メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)は使わないほうが良い</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2012-07-11T00:00:00+00:00" pubdate>11 Jul 2012</time>
@@ -50,31 +50,35 @@
   </div>
 </div>
 
-<p>きっかけはGmailの＋（プラス）アドレスを使おうとしたこと。</p>
+<p>メールアドレスのローカル部に使用できる記号について調べた。調べるきっかけはGmailの <code>+</code>（プラス）アドレスを使おうとしたこと。</p>
+
+
 <blockquote>
 <p>Gmail が次のような仕様になっているからだ。</p>
 <ul>
-<li>・.(ドット/ピリオド)は無視される</li>
-<li>。+(プラス) から @ までは無視される</li>
+<li><code>・</code><code>.</code>(ドット/ピリオド)は無視される</li>
+<li>。<code>+</code>(プラス) から <code>@</code> までは無視される</li>
 </ul>
 <p>via <a href="http://blog.livedoor.&gt;jp/lalha/archives/50158699.html">Gmail における .(ドット/ピリオド) と +(プラス) の扱いの不思議</a></p>
 </blockquote>
-<p>上記のようなgmail仕様から、例えば会員登録機能を開発した場合に、１つのgmailアカウントをとっておけばテストするのにいろいろと便利なのです（ <a href="mailto:myaddress+test1@gmail.com">myaddress+test1@gmail.com</a> / <a href="mailto:myaddress+test2@gmail.com">myaddress+test2@gmail.com</a> という具合に複数登録できます）。</p>
-<p>ということで自分が作った会員登録機能でプラスアドレスを使おうと思ったが、どういうわけか不正なメールアドレスとして弾かれる。</p>
-<p>調べてみると、開発においてとあるバリデートのエンジンを使用していたのですが、今回の場合、そのバリデートエンジンがプラスをどうやら弾いているらしいことがわかった。</p>
+
+<p>上記のようなgmail仕様から、例えば会員登録機能を開発したときに、１つのgmailアカウントをとってそれを使い回せばテストするのにいろいろと便利なのです（ <a href="mailto:myaddress+test1@gmail.com">myaddress+test1@gmail.com</a> / <a href="mailto:myaddress+test2@gmail.com">myaddress+test2@gmail.com</a> という具合に複数登録できます）。</p>
+<p>ということで自分が作った会員登録機能でこのプラスアドレスを使おうと思ったが、どういうわけか不正なメールアドレスとして弾かれる。調べてみると、開発においてとあるバリデーションのライブラリを使用していたのですが、そのバリデーション機構がプラスを弾いているらしいことがわかった。</p>
 <p><a href="http://n.h7a.org/blog/entry/1509">メールアドレスに + を使うと危ない件</a></p>
-<p>え？プラスって使っちゃいけないの？ （タイトルだけ読んで判断したが、元記事はそんなことは全くいってません）</p>
-<p>RFC的にはどーなのか？</p>
+<p>え？プラスって使っちゃいけないのか？ （タイトルだけ読んで判断したが、元記事はそんなことは全くいってません）</p>
+<p>RFC的にはどーなんだろうか。調べてみよう。</p>
+
 <blockquote>
 <p>上記をまとめると、メールアドレスに使える文字は</p>
 <div class="CodeRay">
   <div class="code"><pre>アルファベット 数字 ! # $ % &amp; ’ * + - / = ? ^ _ ` { | } ~ .</pre></div>
 </div>
-
-<p>となります。.は先頭と最後には利用することができません。</p>
+<p>となります。<code>.</code>は先頭と最後には利用することができません。</p>
 <p>via <a href="http://www.go5.jp/~nyomo/net/mailaddr.html">メールアドレスで使える記号</a></p>
 </blockquote>
-<p>だが実際のところ同記事に書いてあるとおり、プロバイダ側で使える文字を制限しているのが現実。</p>
+
+<p>だが実際のところ同記事に書いてあるとおり、プロバイダ側で使える文字を制限しているのが現実です。</p>
+
 <blockquote>
 <p>メールでの利用やwebサイトに掲載の際に安心して利用できる文字種は以下の通り</p>
 <ul>
@@ -86,12 +90,13 @@
 </ul>
 <p>via <a href="http://www.go5.jp/~nyomo/net/mailaddr.html">メールアドレスで使える記号</a></p>
 </blockquote>
-<p>結局のところ安心して使えるのは上記の文字、となうようです。 RFCは個人的にはネットワークにおける聖典、絶対的な価値基準だと思っていたけどそんなことはないようです。</p>
-<p><a href="http://neta.ywcafe.net/000587.html">RFCを守らない大手通信キャリアさん</a>もある（あった）ようですので（そのメールアドレスにメールを送ろうとする度にiPhoneに怒られてます）、まだRFCの基準の範囲内にあるだけよいのかもしれません。</p>
+
+<p>結局のところ安心して使えるのは上記の文字、となるようです。RFCは個人的にはネットワークにおける聖典、絶対的な価値基準だと思っていたけどそんなことはないようです。<a href="http://neta.ywcafe.net/000587.html">RFCを守らない大手通信キャリアさん</a>もある（あった）ようですので（そのメールアドレスにメールを送ろうとする度にiPhoneに怒られてます）、まだRFCの基準の範囲内にあるだけよいのかもしれません。</p>
+
 <h3>まとめ</h3>
 <ul>
-<li>わりとメールアドレスとして安心して使える使用可能文字列は「アルファベット」,「数字」,「-」（ハイフン）,「_」（アンダースコア）,「.」（ドット）</li>
-<li>RFCが言っているからといって、一般的にそれが正解とは限らないよ！</li>
+<li>メールアドレスとして安心して使える使用可能文字列は「アルファベット」,「数字」,「-」（ハイフン）,「_」（アンダースコア）,「.」（ドット）</li>
+<li>RFCが言っているからといって、それが正解とは限らないよ！</li>
 </ul>
 
 
@@ -183,7 +188,7 @@
       </div>
       <div class="right">
         <h2>Tag</h2>
-        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-1">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-3">linux</a> <a href="/tag/mac.html" class="set-2">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-1">rails</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-2">雑記</a></div>
+        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-2">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-3">linux</a> <a href="/tag/mac.html" class="set-2">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-1">rails</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-2">雑記</a></div>
       </div>
     </div>
     <p class="credit">Designed and coded by <a href="/about.html">Toshi</a></p>
