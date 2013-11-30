@@ -3,12 +3,51 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-11-29T04:24:27+00:00</updated>
+  <updated>2013-11-30T18:48:18+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[PHPのプロパティをStrictに定義する]]></title>
+    <link href="http://blog.toshimaru.net/php-force-property/"/>
+    <updated>2013-12-01T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/php-force-property</id>
+    <content type="html"><![CDATA[<p>本記事は<a href="http://www.adventar.org/calendars/101">PHP Advent Calendar 2013</a>一日目の記事として書きます。　現在僕しかカレンダーに参加していないようなのでお暇な方は是非参加してみてくださいね！</p>
+
+<hr />
+
+<p>PHPといえばそのユルさ・ルーズさが嫌われる１つの原因ですよね（と同時に好かれる理由でもある）。例えば<a href="http://www.php.net/manual/ja/language.oop5.properties.php">プロパティ</a>に関してこんなユルさがあります。</p>
+
+<script src="https://gist.github.com/toshimaru/6dc602b5ce5db54f8db0.js"></script>
+
+<p>まずは1を見てください。<code>public</code>なプロパティには普通にアクセスできて、<code>private</code>なプロパティにはアクセスできない。普通ですね。</p>
+
+<p>次に2です。未定義の<code>hoge</code>プロパティにアクセスしてみます。<code>Undefined property</code>で怒られます。ここもOK.</p>
+
+<p>次に3。未定義の<code>hoge</code>プロパティを外部からセットしてみます。エラーは起こりません。この辺から少しおかしい。その後、もう一度2でやったことをやってみます。今度はうまくいきます（なんと！）。</p>
+
+<p>「え、じゃあプロパティ外部から自由に定義し放題じゃないですか」と思ったあなた、その通り、PHPでは自由にプロパティを外部から弄くり回せちゃうわけです。4でやっているように。</p>
+
+<h2 id="strict">解決策 (Strictなプロパティ)</h2>
+
+<p>実際のところもうちょっと厳密にプロパティを制御したいですよね。外部からプロパティを自由に操作してほしくはない。プロパティを強制することはできないだろうか、ということで出来上がったのがこちら。</p>
+
+<script src="https://gist.github.com/toshimaru/4721470.js"></script>
+
+<p>まず注目してもらいたいのは、<code>val</code>という変数を<code>private</code>として宣言しているところです。これにより<code>val</code>変数はクラスに隠蔽されています。</p>
+
+<p>ではどう<code>val</code>変数にアクセスするのか？　通常であれば<code>getVal()</code>,<code>setVal()</code>なんていうアクセッサーを用意しちゃうところですが、ここでは<code>__get</code>, <code>__set</code>の<a href="http://php.net/manual/ja/language.oop5.magic.php">マジックメソッド</a>を利用することで普遍的に実装しています。</p>
+
+<p>これにより最初に紹介した例の3,4のような自由にプロパティを外部から定義できちゃうようなことは防げます。小さい実装のわりにはこれで得られるメリットが大きく、我ながら素敵な実装と思うんですが、どうでしょう？</p>
+
+<hr />
+
+<p>次回のPHP Advent CalendarはPHP5.4について書きたいと思います。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Github+hubコマンドで快適なGithubライフを営む]]></title>
@@ -1154,39 +1193,6 @@ ERROR:  Could not find a valid gem 'rails' (&gt;= 0), here is why:
     <content type="html"><![CDATA[<p>バンクーバーにて仕事（WEBエンジニア）をゲットした。とりあえずは目標が達成できて一安心。仕事を見つけるまでにやったことなどは後日ブログに上げたいと思います。</p>
 
 <p>報告まで。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[zshでRVMを使うと「RVM is not a function,...」]]></title>
-    <link href="http://blog.toshimaru.net/zsh-rvm/"/>
-    <updated>2013-08-27T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/zsh-rvm</id>
-    <content type="html"><![CDATA[<p>zshでRVM動かそうとして下記のエラーで止まったので対処法をメモ。</p>
-
-<pre><code>➜  ~  rvm use 2.0.0
-RVM is not a function, selecting rubies with 'rvm use ...' will not work.
-
-You need to change your terminal emulator preferences to allow login shell.
-Sometimes it is required to use `/bin/bash --login` as the command.
-Please visit https://rvm.io/integration/gnome-terminal/ for a example.
-</code></pre>
-
-<p>下記スクリプトを読み込む一行を .zshrc に追加してやればok.</p>
-
-<pre><code>source ~/.rvm/scripts/rvm
-</code></pre>
-
-<p>もう一度動かしてみる。</p>
-
-<pre><code>➜  ~  rvm use 2.0
-Using /Users/user/.rvm/gems/ruby-2.0.0-p247
-</code></pre>
-
-<p>うむ。OK.</p>
-
-<h2 id="section">参考</h2>
-<p><a href="http://stackoverflow.com/questions/9336596/rvm-installation-not-working-rvm-is-not-a-function">rvm installation not working: “RVM is not a function”</a></p>
 ]]></content>
   </entry>
   

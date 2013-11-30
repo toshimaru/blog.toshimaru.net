@@ -2,8 +2,8 @@ $(function() {
   "use strict";
 
   $('#toggle-menu').on('click', function () {
-    $('#navigation').toggleClass('active');
     $('#toggle-item').toggleClass('fadeInDown');
+    $('#navigation').toggleClass('active');
   });
 
   $('.icon-search').on('click', function () {
