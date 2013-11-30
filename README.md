@@ -26,4 +26,4 @@ And then, title new post.
 
 TODO
 ----
-* add site search form (powered by Google)
+* Bump up font-awosome
