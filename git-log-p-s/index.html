@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>【git】直前の数個のコミットの歴史を著作者とともに修正する - Hack Your Design!</title>
+  <title>gitのログから特定の文字列を含むコミットを採掘する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <link rel="stylesheet" href="/assets/main-051ad11596c6fbc9ad779e94ceac7bcd.css">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="【git】直前の数個のコミットの歴史を著作者とともに修正する - Hack Your Design!">
-  <meta property="og:title" content="【git】直前の数個のコミットの歴史を著作者とともに修正する - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="gitのログから特定の文字列を含むコミットを採掘する - Hack Your Design!">
+  <meta property="og:title" content="gitのログから特定の文字列を含むコミットを採掘する - Hack Your Design!">
+  <meta name="twitter:description" content="「このコード書いたのは誰だ？」ってのはgit blameからのgit showでOKですが、多くのコミットを重ねている場合、git blameでは「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK."><meta property="og:description" content="「このコード書いたのは誰だ？」ってのはgit blameからのgit showでOKですが、多くのコミットを重ねている場合、git blameでは「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK.">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
   <!-- Place apple-touch-icon.png in the root directory -->
@@ -47,72 +47,34 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">【git】直前の数個のコミットの歴史を著作者とともに修正する</h1>
+  <h1 class="fadeInLeft">gitのログから特定の文字列を含むコミットを採掘する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-11-29T00:00:00+00:00" pubdate>29 Nov 2012</time>
+      <i class="icon-calendar"></i><time datetime="2013-12-02T00:00:00+00:00" pubdate>02 Dec 2013</time>
       <i class="icon-tags"></i><a href="/tag/git.html" rel="tag">git</a>
     </div>
     
   </div>
 </div>
 
-<p>たとえばこんなケース。</p>
-<p><img src="/images/2012/11/terminal.png"></p>
-<p>のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git rebase -i HEAD~3</pre></div>
-</div>
+<p>「このコード書いたのは誰だ？」ってのは<code>git blame</code>からの<code>git show</code>でOKですが、多くのコミットを重ねている場合、<code>git blame</code>では「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK.</p>
 
-<p>こんな画面が出てきますので、</p>
-<p><img src="/images/2012/11/terminal1.png"></p>
-<p>pickをeditにします。</p>
-<p><img src="/images/2012/11/terminal2.png"></p>
-<p>こんなメッセージ。</p>
-<div class="CodeRay">
-  <div class="code"><pre>Stopped at e4269d9... modify file1.
-You can amend the commit now, with
-    git commit --amend
-Once you are satisfied with your changes, run
-    git rebase --continue</pre></div>
-</div>
+<pre><code>$ git log -p -S 'function shitty_function'
+</code></pre>
 
-<p>HEADは3つ前になってます。 （ここで使っている <a href="http://blog.toshimaru.net/git-log-graph">"git lga" コマンドはこちらを参考</a>）</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git lga
-* 5a0edde - (master) add nobita-text. (20 minutes ago) &lt;nobita&gt;
-* 4a73401 - modify file2. (20 minutes ago) &lt;nobita&gt;
-* e4269d9 - (HEAD) modify file1. (20 minutes ago) &lt;nobita&gt;</pre></div>
-</div>
+<p>これで<code>shitty_function</code>というfunctionに関する最初から今にいたるまでのコミットをログから発掘できます。</p>
 
-<p>１．amendオプションつけて、authorもジャイアンに改変します。</p>
-<div class="CodeRay">
-  <div class="code"><pre>git commit --amend --author=&quot;jaian &lt;jaian@doraemon.com&gt;&quot;</pre></div>
-</div>
+<h2 id="section">参考</h2>
 
-<p>２．コミット後、rebase continueします。</p>
-<div class="CodeRay">
-  <div class="code"><pre>git rebase --continue</pre></div>
-</div>
-
-<p>１，２を繰り返します。</p>
-<p>結果、のび太君の努力の歴史はジャイアンによって改変されました。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$ git lga
-* 304d0c7 - (HEAD, master) add nobita-text. (16 seconds ago) &lt;jaian&gt;
-* 66b5984 - modify file2. (34 seconds ago) &lt;jaian&gt;
-* a0a26e2 - modify file1. (2 minutes ago) &lt;jaian&gt;</pre></div>
-</div>
-
-<p>大成功☆(・&omega;&lt;)</p>
-<h3>参考</h3>
-<p><a href="http://git-scm.com/book/en/Git-Tools-Rewriting-History">6.4 Git Tools - Rewriting History</a></p>
+<ul>
+  <li><a href="http://blog.eiel.info/blog/2013/06/04/git-log-s/">このコード書いた誰だよ! そんな時の Git Log -S でもしてみよう</a></li>
+</ul>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-with-author/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-p-s/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -130,13 +92,13 @@ Once you are satisfied with your changes, run
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/git-log-p-s/" title="gitのログから特定の文字列を含むコミットを採掘する">gitのログから特定の文字列を含むコミットを採掘する</a></li>
-  
     <li><a href="/github-and-hub/" title="Github+hubコマンドで快適なGithubライフを営む">Github+hubコマンドで快適なGithubライフを営む</a></li>
   
     <li><a href="/autodeploy-jekyll/" title="Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした">Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした</a></li>
   
     <li><a href="/git-revert-mainline/" title="Gitのrevertの-m(mainline)オプションについて">Gitのrevertの-m(mainline)オプションについて</a></li>
+  
+    <li><a href="/git-with-author/" title="【git】直前の数個のコミットの歴史を著作者とともに修正する">【git】直前の数個のコミットの歴史を著作者とともに修正する</a></li>
   
     <li><a href="/macgiterror-there-was-a-problem-with-the-edit/" title="【git】error There was a problem with the editor 'vi'.">【git】error There was a problem with the editor 'vi'.</a></li>
   
@@ -146,14 +108,10 @@ Once you are satisfied with your changes, run
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/php-99717/" title="Newer Post: phpの@(アットマーク)はオーバーヘッドが大きいから使わないほうがよい"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/macgiterror-there-was-a-problem-with-the-edit/" title="Older Post: 【git】error There was a problem with the editor 'vi'.">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/php-force-property/" title="Older Post: PHPのプロパティをStrictに定義する">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
