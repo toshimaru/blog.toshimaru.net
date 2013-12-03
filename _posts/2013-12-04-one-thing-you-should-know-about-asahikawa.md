@@ -2,6 +2,7 @@
 layout: post
 title: 旭川にある有名な動物園についてあなたが知るべきたった１つのこと
 published: true
+image: /images/posts/zoo.png
 description:
 tags: 雑記
 ---
@@ -28,3 +29,5 @@ tags: 雑記
 ---
 
 以上、[道民部 Advent Calendar 2013](http://www.adventar.org/calendars/77)４日目の記事でした。
+
+※写真は[旭山動物園の動物写真集](http://asahiyama.boo.jp/index.html)からお借りしました。
