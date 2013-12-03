@@ -3,7 +3,7 @@ layout: post
 title: 旭川にある有名な動物園についてあなたが知るべきたった１つのこと
 published: true
 image: /images/posts/zoo.png
-description:
+description: 旭「川」動物園ではなく旭「山」動物園なのだ！ これ、北海道出身じゃない人の１０人中、８〜９人くらいは間違えてた。（ソースは俺）
 tags: 雑記
 ---
 
