@@ -2,12 +2,12 @@ $(function() {
   "use strict";
 
   $('#toggle-menu').on('click', function () {
-    $('#toggle-item').toggleClass('fadeInDown');
-    $('#navigation').toggleClass('active');
+    $('#toggle-item')[0].classList.toggle('fadeInDown');
+    $('#navigation')[0].classList.toggle('active');
   });
 
   $('.icon-search').on('click', function () {
-    $('#search-form').toggle().toggleClass('slideInRight');
+    $('#search-form')[0].classList.toggle('slideInRight');
   });
 
 });
