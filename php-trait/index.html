@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Hatena Engineer Seminar に行って来ました。 - Hack Your Design!</title>
+  <title>PHP5.4のtrait機能を理解する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="/assets/main-4418e97be6f409e4dfaf088f0256734b.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Hatena Engineer Seminar に行って来ました。 - Hack Your Design!">
-  <meta property="og:title" content="Hatena Engineer Seminar に行って来ました。 - Hack Your Design!">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="PHP5.4のtrait機能を理解する - Hack Your Design!">
+  <meta property="og:title" content="PHP5.4のtrait機能を理解する - Hack Your Design!">
+  <meta name="twitter:description" content="この記事はPHP Advent Calendar 2013の8日目の記事です。本エントリではphp5.4の注目機能の１つであるtraitをどう扱うべきかを書いてみようと思います。"><meta property="og:description" content="この記事はPHP Advent Calendar 2013の8日目の記事です。本エントリではphp5.4の注目機能の１つであるtraitをどう扱うべきかを書いてみようと思います。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
 </head>
@@ -46,38 +46,88 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">Hatena Engineer Seminar に行って来ました。</h1>
+  <h1 class="fadeInLeft">PHP5.4のtrait機能を理解する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-09-27T00:00:00+00:00" pubdate>27 Sep 2012</time>
-      <i class="icon-tags"></i><a href="/tag/tech.html" rel="tag">tech</a>
+      <i class="icon-calendar"></i><time datetime="2013-12-08T00:00:00+00:00" pubdate>08 Dec 2013</time>
+      <i class="icon-tags"></i><a href="/tag/php.html" rel="tag">php</a>
     </div>
     
   </div>
 </div>
 
-<p><span style=""><a href="http://developer.hatenastaff.com/entry/2012/09/11/141559">Hatena Engineer Seminar</a> にいって来ました。下記にその際のメモを掲載しておきます。</span></p>
-<p><script src="https://gist.github.com/3793104.js"></script></p>
-<p>下記は懇親会にて<a href="http://d.hatena.ne.jp/stanaka/"> id:stanaka </a>さんと少し話した内容。</p>
+<p>この記事は<a href="http://www.adventar.org/calendars/101">PHP Advent Calendar 2013</a>の8日目の記事です。本エントリではphp5.4の注目機能の１つである<a href="http://php.net/manual/ja/language.oop5.traits.php">trait</a>をどう扱うべきかを書いてみようと思います。</p>
+
+<h2 id="trait">Traitとは</h2>
+
+<p>Traitとは継承関係と関係なく実装を再利用できる仕組みのことです<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>。言い換えるならば、「多重継承」であったり「Mix-in」を可能にする仕組みと言えるでしょう。Rubyistの間ではMix-inの概念は当たり前のことでしょうが、PHP界隈ではTraitは新しい機能ということもあり浸透していない概念かと思います（Ruby以外にもTraitと似た機構はあるみたいですね<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>）。</p>
+
+<p>本エントリではPHPerの間では未だ聞き慣れないであろうTraitの概念を実コードとともに紹介してみようと思います。</p>
+
+<h2 id="trait-1">Traitの特徴</h2>
+
+<p>Traitの簡単な特徴は以下の通りです。</p>
+
 <ul>
-<li>アプリサーバ500台くらい、Webサーバ300台くらい。</li>
-<li>LBの上にnginxがいるのはクローラがけっこうサイト深く掘るので、人に影響出ないようにそれを別サーバに振り分ける。</li>
-<li>github enterprise で社内コードレビューがやりやすくなった。(push,commitなどはコマンドベース)</li>
-<li>コーディング規約は社内でそこまでガチガチには決めていないそう。</li>
-<li>去年くらいにはてぶのUIを一新してからAjaxを使ったRIAな実装が増えたけど、まだJSのテストとか実装標準的なところは確立できてないそうな。</li>
+  <li>PHP5.4以降必須</li>
+  <li>Trait自身のインスタンスを作成することはできない</li>
+  <li>振る舞いを継承関係のような上下方向ではなく水平方向に定義可能</li>
 </ul>
-<p>以下、感想。</p>
+
+<h2 id="trait-2">Traitを使うと嬉しくなる状況</h2>
+
+<p>ではTraitを使うべき状況、使うと嬉しい状況とはどんな状況でしょうか？　まずは下記を満たす実装を普通にPHPで書いてみます。</p>
+
 <ul>
-<li>github enterprise、ちょっとお高い印象あるけど導入したいね！</li>
-<li>全文検索で solr はかなりいい選択っぽい。</li>
-<li>新東京オフィス移転に伴いエンジニアをちょっと募集しているみたいだよ！興味がある人はうけてみるとよいよ！</li>
+  <li>人間(<code>Human</code>): 「話す」「逃げる」などの基本行動が可能</li>
+  <li>戦士(<code>Warrior</code>): 基本行動に加え「物理攻撃」が可能</li>
+  <li>魔法使い(<code>Wizard</code>): 基本行動に加え「魔法攻撃」が可能</li>
 </ul>
+
+<p>結果、このようになりました。</p>
+
+<script src="https://gist.github.com/toshimaru/00cc0dc16120976c7fcb.js"></script>
+
+<p>基本行動可能な<code>Human</code>クラスがあってそれを継承した<code>Warrior</code>,<code>Wizard</code>がいて…。普通のコードかと思います。</p>
+
+<h3 id="section">追加要件：「魔法戦士を追加したい！」</h3>
+
+<p>こんな要望がきました。「魔法戦士も追加したいんだよねー！」　さて上記のような実装に魔法戦士を加えるとしたらどうなるでしょうか？</p>
+
+<p>魔法も攻撃もできなきゃいけないから、まず<code>Warrior</code>を継承してその次に<code>Wizard</code>も継承して…と、ここで多重継承の問題が出てきますね。愚直に<code>Human</code>を継承した魔法戦士を作ってもいいのですが、同じコードを二度は書きたくないですよね。DRYに行きたいですよね、ね？</p>
+
+<h3 id="trait-3">Traitを使ってみる</h3>
+
+<p>そこでTraitの出番です。<code>trait</code>であれば振る舞いを水平方向に構成できちゃうんです。え？よくわからない？　コードを見てください。</p>
+
+<script src="https://gist.github.com/toshimaru/ad5430fca181db62cd7a.js"></script>
+
+<p>まずは<code>Attackable</code>、<code>Spellable</code>というトレイト、つまり「物理攻撃が可能である」「魔法攻撃が可能である」という特性を定義します。ここまでくればもう簡単。あとはそれを<code>WarriorWizard</code>クラス内で<code>use</code>してやるだけです。これで<code>WarriorWizard</code>は魔法も物理攻撃も可能になります。</p>
+
+<p>ね？簡単でしょ？</p>
+
+<h2 id="traittrait">今後のTrait事情―まだ来ないであろうTraitの波　</h2>
+
+<p>今回紹介したTraitはフレームワークの設計を根本から変えうる素晴らしい機能なのですが、<a href="http://w3techs.com/technologies/details/pl-php/5/all">PHP5.4の使用率がまだ10%</a>なこと、まだまだTraitを使ったコード使用例が少ないこと、これらを考えるとTraitがPHPerに広く普及するにはあと2,3年はかかるのかな、と考えています。</p>
+
+<p>CakePHP3では、PHP5.4が必須となり、<a href="http://www.engineyard.co.jp/blog/2013/cakephp3-preprepreview/">trait機能がうまく活用された設計</a>となっています。このフレームワークレベルでのTrait有効活用を機に、Traitを利用したナイスなコード、ひいてはPHP5.4の使用が今後増えていけばいいなと思っています。</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p><a href="http://www.slideshare.net/tlync/trait">Trait とは? その使い道を考えてみる</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>RubyだとMix-in、Scalaだとtrait、Perl6だとrole　にあたります。 <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/hatena-engineer-seminar/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/php-trait/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -95,15 +145,15 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/startup-technology/" title="技術的に尖ってないスタートアップ企業は潰れるべき">技術的に尖ってないスタートアップ企業は潰れるべき</a></li>
+    <li><a href="/php-force-property/" title="PHPのプロパティをStrictに定義する">PHPのプロパティをStrictに定義する</a></li>
   
-    <li><a href="/Front-end-Developer-Interview-Questions-Japanese/" title="「フロントエンドデベロッパー面接時の質問事項」日本語訳しました">「フロントエンドデベロッパー面接時の質問事項」日本語訳しました</a></li>
+    <li><a href="/how-to-use-composer-autoload/" title="Composerで始める PHPのライブラリ管理">Composerで始める PHPのライブラリ管理</a></li>
   
-    <li><a href="/mentenability/" title="メンテナビリティの高いコードを書くメリット">メンテナビリティの高いコードを書くメリット</a></li>
+    <li><a href="/php-is-not-bad-language/" title="PHPって言うほど悪い言語じゃない">PHPって言うほど悪い言語じゃない</a></li>
   
-    <li><a href="/qiita-2-day-hackathon/" title="Qiita 2-day Hackathon に参加してきました！">Qiita 2-day Hackathon に参加してきました！</a></li>
+    <li><a href="/simple-command-web-server/" title="超簡単なコマンドでローカルにHTTPサーバーを起動">超簡単なコマンドでローカルにHTTPサーバーを起動</a></li>
   
-    <li><a href="/8/" title="ダメプログラマの8つの特徴">ダメプログラマの8つの特徴</a></li>
+    <li><a href="/php-5492/" title="[php][ruby]実行速度を計測する">[php][ruby]実行速度を計測する</a></li>
   
   </ul>
   </div>
@@ -111,14 +161,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/jqueryfadein/" title="Newer Post: jQueryで画像を順番にfadeInする"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/twitter-search-api-js/" title="Older Post: Twitter Search API をJSで呼んでみる">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/bc-decimal-hex/" title="Older Post: bcコマンドで16進数変換">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
