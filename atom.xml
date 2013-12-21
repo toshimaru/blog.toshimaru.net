@@ -3,12 +3,101 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-12-11T05:46:57+00:00</updated>
+  <updated>2013-12-21T04:19:56+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[細かすぎて伝わりにくいChrome Developerツールを使いこなそう！]]></title>
+    <link href="http://blog.toshimaru.net/chrome-dev-tool/"/>
+    <updated>2013-12-20T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/chrome-dev-tool</id>
+    <content type="html"><![CDATA[<p><a href="http://www.adventar.org/calendars/62">Frontrend Advent Calendar 2013</a>、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を解説してみたいと思います。（写真は公式ページから引用）</p>
+
+<h2 id="consolelogconsole">console.log以外にも便利なconsoleメソッドがある</h2>
+
+<p><code>console.log()</code>とかは常識でしょうが、それ以外にもconsole系メソッドがあります。下記のような感じ。</p>
+
+<ul>
+  <li><code>console.error()</code>: コンソールにエラー出力</li>
+  <li><code>console.warn()</code>: コンソールに警告出力</li>
+  <li><code>console.assert()</code>: アサーション。第一引数がfalseだった場合に第二引数の文字列を出力。</li>
+  <li><code>console.time()</code> &amp; <code>console.timeEnd()</code>: タイマー機能。前者でタイマースタート、後者でタイマーストップ。引数の文字列でタイマーIDを識別している。</li>
+</ul>
+
+<p>例えば下記のコード例では<code>console.time</code>を使って<code>getElementById</code>とjQueryのセレクターのパフォーマンスの違いを計測しています。結果はChromeConsoleを開いてResultを押してどうぞご自身で確認してみてください。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/toshimaru/tr8Vg/5/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h2 id="csschromecss">CSSマッピングでChromeからCSS変更を直接反映！</h2>
+
+<p>CSSマッピングの機能を使うことでChrome上のCSS変更を直接反映することができます。簡単な手順はこうです。</p>
+
+<ul>
+  <li>ChromeDevツールの歯車アイコンで開くメニューからWorkspaceを追加</li>
+  <li>マッピングしたいファイルを選択し、右クリックして <code>Map to File System Resource...</code>をクリックする。</li>
+</ul>
+
+<p>これで準備OK！ Chrome上で直接ヴィジュアルを確認しながらいい具合に変更を加えてれば、ローカル上のファイルも変更されます。</p>
+
+<h2 id="sass">ソースマッピングにSASSを使う！</h2>
+
+<p>CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサーですよねー。ということで実はCSSマッピングにSASSも使えるんです。ただし下記の点に注意してください。</p>
+
+<ul>
+  <li>Sass 3.3以上が必要</li>
+  <li>Chrome Canaryを使う</li>
+  <li>chrome://flags にアクセスしてデベロッパーツールを有効にする</li>
+</ul>
+
+<p>詳しい手順は<a href="http://dev.classmethod.jp/etc/scss-source-maps-debug/">こちら</a>で確認してみてください。良きCSSライフを！</p>
+
+<h2 id="androidchrome">AndroidをChromeでリモートデバック可能</h2>
+
+<p>下記Screen CastでPaul Irish氏がリモートデバッギングを簡単に解説してくれてます。</p>
+
+<iframe width="560" height="315" src="//www.youtube.com/embed/Q7rEFEMpwe4" frameborder="0" allowfullscreen=""></iframe>
+
+<p>実機をChromeDevツールでデバッグできるのはとても喜ばしいことです。注意点は下記。</p>
+
+<ul>
+  <li><a href="https://play.google.com/store/apps/details?id=com.chrome.beta">Chrome Beta</a>がAndroidに必要</li>
+  <li>USBでAndroidと接続が必要</li>
+  <li>アンドロイド上でDeveloperオプションを有効にする必要があります。ONにするためには設定からBuild Numberをゴニョゴニョする必要があります</li>
+</ul>
+
+<p>詳しい解説は<a href="https://developers.google.com/chrome-developer-tools/docs/remote-debugging">こちら</a>を参照。</p>
+
+<h2 id="fps">FPSを確認してヌルヌル動作を目指そう！</h2>
+
+<p>たとえば下記のかなりリッチなパララックスウェブサイト。ちょっと見てみてください。</p>
+
+<p><a href="http://letsfreecongress.org/">Money wins Elections</a></p>
+
+<p>パララックス効果はサイトをリッチに見せることができる最近良く使われるテクニックではありますが、一方ローエンドPCでの動作も気にしたいところです。上サイトをTimelineからレコーディングしてみます。</p>
+
+<p><img src="/images/posts/chrome-timeline.png" alt="timeline" /></p>
+
+<p>上のグレイ線が30FPSのライン、下の線が60FPSのラインです。途中のぶわーって広がるエフェクトのところで30FPSまで落ちているのが確認できます。体感的にも少しガクついている感じです。ローエンドPCだともっとガクつくことでしょう。</p>
+
+<p>上サイト・本機能の使い方もPaul Irish氏が<a href="http://www.youtube.com/watch?v=bqfoYaKCYUI">Fluent 2013</a>の講演で紹介しています。</p>
+
+<h2 id="section">おわりに</h2>
+
+<p>ここで紹介した以外にもまだまだ便利な使い方がChromeDeveloperツールにはあります。自分もまだ全然把握できていません。もし「この機能が便利！」ってのがありましたら是非とも教えてくださいまし〜。</p>
+
+<h3 id="section-1">参考</h3>
+<ul>
+  <li><a href="http://www.igvita.com/slides/2012/devtools-tips-and-tricks/">Wait, DevTools could do THAT?</a></li>
+  <li><a href="https://developers.google.com/chrome-developer-tools/docs/console">Using the Console</a></li>
+  <li><a href="http://liginc.co.jp/web/tool/browser/38012">Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ</a></li>
+  <li><a href="https://developers.google.com/chrome-developer-tools/docs/css-preprocessors#toc-requirements">Working with CSS Preprocessors</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CSS3アニメーションを使ってサイトをリッチに]]></title>
@@ -1275,47 +1364,6 @@ PHP Framework, Phalcon</a>という選択肢も今ならある。</p>
     </li>
   </ol>
 </div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gitのrevertの-m(mainline)オプションについて]]></title>
-    <link href="http://blog.toshimaru.net/git-revert-mainline/"/>
-    <updated>2013-10-16T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/git-revert-mainline</id>
-    <content type="html"><![CDATA[<p><code>git revert</code>しているとこんなエラーに出くわしました。</p>
-
-<pre><code>$ g revert xxxxx
-error: Commit xxxxx is a merge but no -m option was given.
-fatal: revert failed
-</code></pre>
-
-<p>「コミットxxxxxはマージだけど、<code>-m</code>が指定されていないよ！」ってことなんですがどういうことでしょう？</p>
-
-<p>普通に考えてみると当然のことで、マージコミットですから<code>revert</code>といったときにどのブランチ状態に戻るかを指定しなければrevertできないよということです。つまり下記のようなヒストリーがあったときに、</p>
-
-<pre><code>*   1459267 - Merge pull request #4 from branch3
-|\
-| * 344fd52 - (branch3) Add sentence
-| * 2b30235 - add file
-* | dbc65f4 - add revert commit2
-* | f0b0a91 - add revert commit 1
-</code></pre>
-
-<p><code>&lt;1459267&gt;</code>のマージをrevertした場合に、<code>&lt;344fd52&gt;</code>か<code>&lt;dbc65f4&gt;</code>かどっちに戻すかがわかんないっちゅうことです。</p>
-
-<p>このmainlineは1から始まり「1がマージされた側のブランチ」「2がマージする側のブランチ」になるようなので多くの場合、前者に戻したいと思うので1を指定しとけばよいということになります。結果としては下記のコマンド。</p>
-
-<pre><code>$ g revert -m 1 1459267
-</code></pre>
-
-<p>以上でした。</p>
-
-<h3 id="section">参考</h3>
-
-<ul>
-  <li><a href="http://d.hatena.ne.jp/koba04/20121122/1353512656">gitのmerge-commitをrevertする</a></li>
-</ul>
 ]]></content>
   </entry>
   
