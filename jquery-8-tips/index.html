@@ -6,16 +6,16 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>バンクーバで個人用の名刺を作った - Hack Your Design!</title>
+  <title>jQuery使いが知っておくべき8つのjQueryテクニック - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="/assets/main-3695fd6224aa40853d14baf4b2febecd.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="バンクーバで個人用の名刺を作った - Hack Your Design!">
-  <meta property="og:title" content="バンクーバで個人用の名刺を作った - Hack Your Design!">
-  <meta name="twitter:description" content="バンクーバに来て名前を覚えてもらうために作った個人用の名刺。基本シンプルにした。表は名前と連絡先。裏は黒基調に漢字版の僕の名前"><meta property="og:description" content="バンクーバに来て名前を覚えてもらうために作った個人用の名刺。基本シンプルにした。表は名前と連絡先。裏は黒基調に漢字版の僕の名前">
-  <meta property="og:image" content="http://blog.toshimaru.nethttps://pbs.twimg.com/media/BOSk3XqCMAExVF6.jpg:large" /><meta name="twitter:image" content="http://blog.toshimaru.nethttps://pbs.twimg.com/media/BOSk3XqCMAExVF6.jpg:large" />
+  <meta name="twitter:title" content="jQuery使いが知っておくべき8つのjQueryテクニック - Hack Your Design!">
+  <meta property="og:title" content="jQuery使いが知っておくべき8つのjQueryテクニック - Hack Your Design!">
+  <meta name="twitter:description" content="jQuery Advent Calendar 2013の23日目の記事となります。今回はjQuery使いとして覚えておきたいテクニックを個人的に8つピックアップしてみました。"><meta property="og:description" content="jQuery Advent Calendar 2013の23日目の記事となります。今回はjQuery使いとして覚えておきたいテクニックを個人的に8つピックアップしてみました。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
 </head>
 <body>
@@ -46,53 +46,140 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">バンクーバで個人用の名刺を作った</h1>
+  <h1 class="fadeInLeft">jQuery使いが知っておくべき8つのjQueryテクニック</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-09-29T00:00:00+00:00" pubdate>29 Sep 2013</time>
-      <i class="icon-tags"></i><a href="/tag/vancouver.html" rel="tag">vancouver</a>, <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" rel="tag">海外就労</a>
+      <i class="icon-calendar"></i><time datetime="2014-11-23T00:00:00+00:00" pubdate>23 Nov 2014</time>
+      <i class="icon-tags"></i><a href="/tag/jquery.html" rel="tag">jquery</a>
     </div>
-    <img class="post-image flipInX" src="https://pbs.twimg.com/media/BOSk3XqCMAExVF6.jpg:large" alt="(image)バンクーバで個人用の名刺を作った" title="バンクーバで個人用の名刺を作った" />
+    
   </div>
 </div>
 
-<p>ちょっと前の話になりますがバンクーバに来て名前を覚えてもらうために作った個人用の名刺。自分でWEBからデザインすることが出来たので自分でデザインした。</p>
+<p><a href="http://www.adventar.org/calendars/135">jQuery Advent Calendar 2013</a>の23日目の記事となります。今回はjQuery使いとして覚えておきたいテクニックを個人的に8つピックアップしてみました。</p>
 
-<h2 id="section">コンセプト</h2>
-<p>基本シンプルにした。表は名前と連絡先。裏は黒基調に漢字版の僕の名前。なぜ漢字の名前を入れたかというと、以前アメリカ滞在中に漢字でクレジットカードのサインしたときに店員がえらくそれを気に入っていたので「漢字で書いとけばCoolだと思われてより覚えてもらえるんじゃないか！」というのが理由。特に深い意味はない。</p>
+<p>日本との時差の関係で更新が24日になっているでしょうが気にせずいきましょう。</p>
 
-<p>あと紙質は黒が映えるようにちょっと光沢のある感じのやつを選んだ。</p>
+<h2 id="jquery-2x-vs-1x">1. jQuery 2.x vs 1.x</h2>
 
-<h2 id="section-1">作ったところ</h2>
-<p><a href="http://www.jukeboxprint.com/index.php">Juke Box Print</a>というところで作った。（ここはバンクーバーのWEB屋のセナさんから教えていただいた）</p>
+<p>jQueryには最新版の2.x系と1.x系があります。さてどのようにバージョンを選べばいいでしょう？ 2.x系からの大きな変更点としてはIE6/7/8のサポート廃止です。大して1.x系はそれらのブラウザをサポートしています。</p>
 
-<h2 id="section-2">作ってみての感想とか反省とか</h2>
+<p>よってまとめるとIE6/7/8をサポートしているのであれば1.x系を使用、サポートしないのであれば2.x系を使用で良いです。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。</p>
 
-<h3 id="section-3">縮尺は100%で確認する</h3>
-<p>縮尺をちゃんと100%で確認してなかったので、仕上がりの文字サイズが自分の思ったよりも小さいものになってしまっていた。</p>
+<h2 id="on">2.　イベントハンドリングには<code>on()</code>を使うべし</h2>
 
-<h3 id="section-4">印刷方法はオフセット印刷にすべき</h3>
-<p>ケチってデジタル印刷を選んだけど、小さい文字が少し霞んでしまっていたのでやっぱケチらずオフセット印刷でよかったな、と。</p>
+<p>もはや常識ですかね。jQuery1.7以前だと<code>bind()</code>,<code>live()</code>,<code>delegate()</code>やらいろいろあったのが1.7で<code>on</code>でまとめられました。</p>
 
-<h3 id="pt">厚みは14ptくらいはほしいところ</h3>
-<p>名刺が薄っぺらいと安っぽい印象を与えてしまうので、個人的に名刺の厚さは14PTくらいは欲しい。</p>
+<p>ではここで質問。<code>click()</code>などではなく、<code>on()</code>を使うことで何が嬉しいのでしょうか？　１つ目は複数のイベントを登録できるということです。下記では<code>click</code>と<code>mouseenter</code>の２つのイベントを１つの処理にアタッチしてます。</p>
 
-<h3 id="section-5">紙質とかに拘りたいなら実物見なきゃわからん。</h3>
-<p>今回の印刷屋さんはリアルショップがあったので、リアルショップまで足を運んで紙質や仕上がり具合などを実際に確認した。こればっかりはオンラインでは確認できないのでしっかり自分の納得のいくものを作りたいのであれば、ちゃんと実物を確認すべき。</p>
+<iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/YDur2/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<h3 id="section-6">日本より価格高い</h3>
-<p>学生時代に個人用の名刺は作ったことあるんだけど、日本で名刺作るより全体的に相場が高い気がした（今回の場合いろいろといい紙を選んだのもあるけど100枚60カナダドル、そんなもん？）。</p>
+<p>２つ目、オブジェクトを引数に取ることができ、複数イベントをアタッチできます。</p>
 
-<h3 id="section-7">あんまこっちの人って名刺持たないんだね！</h3>
-<p>名刺作った目的はミートアップとか参加したときに他のエンジニアさんと名刺交換できたらいいなーっていう感じだったんだけど、こっちのエンジニアの人ってあんま名刺持たない。CEO/CTOクラスの人、もしくはセールスの人とかじゃないとそんなに持ち歩いていないみたい。</p>
+<iframe width="100%" height="130" src="http://jsfiddle.net/toshimaru/cANuP/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<p>まぁそれでも一方的に「これあげる！」って感じで配ったから役には立ったわけですが。（笑）</p>
+<p>３つ目、第二引数にアタッチ先のセレクターを指定することができます。これでなにが嬉しいかというとAJAXなどで遅延して取得してくるような要素に対しても事前にイベントを設定することができます。</p>
+
+<iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/hSZLY/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<p>いわずもがなですが<code>off()</code>でイベントをデタッチできることも<code>on()</code>の良い所です。</p>
+
+<h2 id="ajaxdonefail">3. AJAXには<code>done()</code>、<code>fail()</code>を使うべし</h2>
+
+<p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">去年のjQuery Advent Calendar</a>で書いた通りです。</p>
+
+<pre><code>$.ajax({
+    url: "ajax.html",
+    success: function(data) {
+       alert('success!!');
+    },
+    error: function(data) {
+       alert('error!!!');
+    }
+});
+</code></pre>
+
+<p>上記の書き方よりも、</p>
+
+<pre><code>$.ajax({
+    url: "ajax.html",
+}).done(function(data){
+    alert('success!!');
+}).fail(function(data){
+    alert('error!!!');
+});
+</code></pre>
+
+<p>こっちのほうがPromiseなモダン形式です。</p>
+
+<h2 id="ajax">4. <code>ajax()</code>だけじゃなくショートカットメソッドも活用すべし</h2>
+
+<p><code>ajax()</code>がオプションで色々出来過ぎちゃってついつい<code>ajax()</code>を使いがちですが、jQueryには<a href="http://api.jquery.com/category/ajax/shorthand-methods/">AJAXショートカットメソッド</a>があるんです！　例えばデータをPOSTするAJAX。下記に<code>ajax()</code>と<code>post()</code>の二通り書き方を載せましたが、<code>post()</code>のほうがシンプルでよさ気ですね。</p>
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/toshimaru/BkNfr/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h2 id="find">5. <code>find()</code>を使って絞り込むべし</h2>
+
+<p>これもわりと有名ですかね。下記のセレクタは、</p>
+
+<pre><code>$('.foo #bar')
+</code></pre>
+
+<p><code>find()</code>を使ったほうが良いとされています。</p>
+
+<pre><code>$('.foo').find('#bar')
+</code></pre>
+
+<h2 id="section">6. カスタムイベントを定義する</h2>
+
+<p>下記のコードでは<code>show.price</code>というカスタムイベントを定義しています。クリック時に<code>show.price</code>イベントを<code>trigger()</code>しています。</p>
+
+<iframe width="100%" height="200" src="http://jsfiddle.net/toshimaru/JHYhR/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h2 id="dom">7. 属性を指定してDOMエレメントを生成できる</h2>
+
+<p>こんな感じでAタグが生成できます。</p>
+
+<pre><code>$('&lt;a&gt;', {href: 'http://google.com/', title: 'google'}).text('google')
+[&lt;a href=​"http:​/​/​google.com/​" title=​"google"&gt;​google​&lt;/a&gt;​ ]
+</code></pre>
+
+<p>$.mapと組み合わせるとなかなかよいかもしれません。</p>
+
+<pre><code>var links = $.map(['google.com', 'yahoo.com'], function(link) {
+    var list = $('&lt;li&gt;');
+    $('&lt;a&gt;&lt;/a&gt;', {href: link}).text('LINK').appendTo(list);
+    return list;
+});
+
+$('&lt;ul&gt;').html(links)
+=&gt; [&lt;ul&gt;​
+        &lt;li&gt;​
+        &lt;a href=​"google.com"&gt;​LINK​&lt;/a&gt;​
+        &lt;/li&gt;​
+        &lt;li&gt;​
+        &lt;a href=​"yahoo.com"&gt;​LINK​&lt;/a&gt;​
+        &lt;/li&gt;​
+    &lt;/ul&gt;​ ]
+</code></pre>
+
+<h2 id="formserialize">8. form送信時は<code>serialize()</code>を使って値をまとめて取得すべし</h2>
+
+<p><code>serialize()</code>を使うことでform内のinputの値をまとめて取得できます。</p>
+
+<iframe width="100%" height="130" src="http://jsfiddle.net/toshimaru/3GG3c/3/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h3 id="section-1">参考</h3>
+
+<ul>
+  <li><a href="http://blog.jquery.com/2013/04/18/jquery-2-0-released/">jQuery 2.0 Released</a></li>
+</ul>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/business-card-in-Vancouver/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-8-tips/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -110,13 +197,15 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/my-impression-after-working-2-months/" title="2ヶ月間WEBエンジニアとして海外で働いてみて感じたこと">2ヶ月間WEBエンジニアとして海外で働いてみて感じたこと</a></li>
+    <li><a href="/jquery-bottom-scroll/" title="jQueryでページ最下部のスクロール時のイベントをキャッチする">jQueryでページ最下部のスクロール時のイベントをキャッチする</a></li>
   
-    <li><a href="/how-to-find-job-in-Vancouver/" title="僕が単身海外（バンクーバー）に来て仕事を見つけるまでにやったこと">僕が単身海外（バンクーバー）に来て仕事を見つけるまでにやったこと</a></li>
+    <li><a href="/jquerydeferred-is-most-important-client/" title="【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール">【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール</a></li>
   
-    <li><a href="/get-a-job-in-vancouver/" title="仕事をゲットした in バンクーバー">仕事をゲットした in バンクーバー</a></li>
+    <li><a href="/jqueryhidden-inputjquery/" title="hidden inputタグをjQueryで追加">hidden inputタグをjQueryで追加</a></li>
   
-    <li><a href="/graduate-from-langschool/" title="語学学校を卒業しました">語学学校を卒業しました</a></li>
+    <li><a href="/jquery-ajaxdeferredajax/" title="jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜">jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜</a></li>
+  
+    <li><a href="/jqueryfadein/" title="jQueryで画像を順番にfadeInする">jQueryで画像を順番にfadeInする</a></li>
   
   </ul>
   </div>
@@ -124,14 +213,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/how-to-find-job-in-Vancouver/" title="Newer Post: 僕が単身海外（バンクーバー）に来て仕事を見つけるまでにやったこと"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/get-a-job-in-vancouver/" title="Older Post: 仕事をゲットした in バンクーバー">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/chrome-dev-tool/" title="Older Post: 細かすぎて伝わりにくいChrome Developerツールを使いこなそう！">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
