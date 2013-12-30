@@ -14,8 +14,8 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！ - Hack Your Design!">
   <meta property="og:title" content="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！ - Hack Your Design!">
-  <meta name="twitter:description" content="Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を解説してみたいと思います。"><meta property="og:description" content="Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を解説してみたいと思います。">
-  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/chrome-dev.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/chrome-dev.png" />
+  <meta name="twitter:description" content="Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。"><meta property="og:description" content="Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/chromedev/chrome-dev.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/chromedev/chrome-dev.png" />
   <meta property="og:type" content="article">
 </head>
 <body>
@@ -52,15 +52,17 @@
       <i class="icon-calendar"></i><time datetime="2013-12-20T00:00:00+00:00" pubdate>20 Dec 2013</time>
       <i class="icon-tags"></i><a href="/tag/chrome.html" rel="tag">chrome</a>
     </div>
-    <img class="post-image flipInX" src="/images/posts/chrome-dev.png" alt="(image)細かすぎて伝わりにくいChrome Developerツールを使いこなそう！" title="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！" />
+    <img class="post-image flipInX" src="/images/posts/chromedev/chrome-dev.png" alt="(image)細かすぎて伝わりにくいChrome Developerツールを使いこなそう！" title="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！" />
   </div>
 </div>
 
-<p><a href="http://www.adventar.org/calendars/62">Frontrend Advent Calendar 2013</a>、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を解説してみたいと思います。（写真は公式ページから引用）</p>
+<p><a href="http://www.adventar.org/calendars/62">Frontrend Advent Calendar 2013</a>、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。</p>
+
+<p>（※写真は公式ページから引用）</p>
 
 <h2 id="consolelogconsole">console.log以外にも便利なconsoleメソッドがある</h2>
 
-<p><code>console.log()</code>とかは常識でしょうが、それ以外にもconsole系メソッドがあります。下記のような感じ。</p>
+<p><code>console.log()</code>とかは常識でしょうが、それ以外にも実はconsole系メソッドが多くあります。下記のような感じ。</p>
 
 <ul>
   <li><code>console.error()</code>: コンソールにエラー出力</li>
@@ -69,9 +71,25 @@
   <li><code>console.time()</code> &amp; <code>console.timeEnd()</code>: タイマー機能。前者でタイマースタート、後者でタイマーストップ。引数の文字列でタイマーIDを識別している。</li>
 </ul>
 
-<p>例えば下記のコード例では<code>console.time</code>を使って<code>getElementById</code>とjQueryのセレクターのパフォーマンスの違いを計測しています。結果はChromeConsoleを開いてResultを押してどうぞご自身で確認してみてください。</p>
+<p>例えば下記のコード例では<code>console.time</code>を使って<code>getElementById</code>とjQueryのセレクターのパフォーマンスの違いを計測しています。結果はChromeConsoleを開いてResultを押してどうぞご自身の目で確認してみてください。</p>
 
 <iframe width="100%" height="300" src="http://jsfiddle.net/toshimaru/tr8Vg/5/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<p>ちなみに私の環境上での結果。</p>
+
+<p><img src="/images/posts/chromedev/result.png" alt="assert" /></p>
+
+<h3 id="consoleassert">console.assert</h3>
+
+<p>簡易的な<code>true</code>/<code>false</code>テストであれば<code>console.assert()</code>が使えます。例えばこんなコード。</p>
+
+<pre><code>function returnTrue() { return false; }
+console.assert(returnTrue(), 'Trueをreturnすべきだよ！')
+</code></pre>
+
+<p>こんな感じで表示されます。</p>
+
+<p><img src="/images/posts/chromedev/assert.png" alt="assert" /></p>
 
 <h2 id="csschromecss">CSSマッピングでChromeからCSS変更を直接反映！</h2>
 
@@ -82,6 +100,10 @@
   <li>マッピングしたいファイルを選択し、右クリックして <code>Map to File System Resource...</code>をクリックする。</li>
 </ul>
 
+<p><img src="/images/posts/chromedev/css-map.png" alt="css mapping" /></p>
+
+<p>(Image from <a href="http://liginc.co.jp/web/tool/browser/38012">Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ</a>)</p>
+
 <p>これで準備OK！ Chrome上で直接ヴィジュアルを確認しながらいい具合に変更を加えてれば、ローカル上のファイルも変更されます。</p>
 
 <h2 id="sass">ソースマッピングにSASSを使う！</h2>
@@ -89,16 +111,20 @@
 <p>CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサーですよねー。ということで実はCSSマッピングにSASSも使えるんです。ただし下記の点に注意してください。</p>
 
 <ul>
-  <li>Sass 3.3以上が必要</li>
-  <li>Chrome Canaryを使う</li>
-  <li>chrome://flags にアクセスしてデベロッパーツールを有効にする</li>
+  <li><strong>Sass 3.3以上</strong>が必要</li>
+  <li><strong>Chrome Canary</strong>を使う</li>
+  <li><strong>chrome://flags</strong> にアクセスしてデベロッパーツールを有効にする</li>
 </ul>
 
-<p>詳しい手順は<a href="http://dev.classmethod.jp/etc/scss-source-maps-debug/">こちら</a>で確認してみてください。良きCSSライフを！</p>
+<p>↓Enable Developer Tools experimentsをONにする↓</p>
+
+<p><img src="/images/posts/chromedev/dev-flag.png" alt="css mapping" /></p>
+
+<p>詳しい手順は<a href="http://dev.classmethod.jp/etc/scss-source-maps-debug/">こちら（Chrome CanaryでSCSS(Sass)のデバックを試してみました。）</a>で確認してみてください。良きCSSライフを！</p>
 
 <h2 id="androidchrome">AndroidをChromeでリモートデバック可能</h2>
 
-<p>下記Screen CastでPaul Irish氏がリモートデバッギングを簡単に解説してくれてます。</p>
+<p>下記動画でPaul Irish氏がリモートデバッギングを簡単に解説してくれてます。この動画でどんなことができるか簡単に把握することができます。</p>
 
 <iframe width="560" height="315" src="//www.youtube.com/embed/Q7rEFEMpwe4" frameborder="0" allowfullscreen=""></iframe>
 
@@ -110,7 +136,7 @@
   <li>アンドロイド上でDeveloperオプションを有効にする必要があります。ONにするためには設定からBuild Numberをゴニョゴニョする必要があります</li>
 </ul>
 
-<p>詳しい解説は<a href="https://developers.google.com/chrome-developer-tools/docs/remote-debugging">こちら</a>を参照。</p>
+<p>詳しい解説は<a href="https://developers.google.com/chrome-developer-tools/docs/remote-debugging">こちら（Remote Debugging Chrome on Android）</a>を参照。</p>
 
 <h2 id="fps">FPSを確認してヌルヌル動作を目指そう！</h2>
 
@@ -120,11 +146,11 @@
 
 <p>パララックス効果はサイトをリッチに見せることができる最近良く使われるテクニックではありますが、一方ローエンドPCでの動作も気にしたいところです。上サイトをTimelineからレコーディングしてみます。</p>
 
-<p><img src="/images/posts/chrome-timeline.png" alt="timeline" /></p>
+<p><img src="/images/posts/chromedev/chrome-timeline.png" alt="timeline" /></p>
 
 <p>上のグレイ線が30FPSのライン、下の線が60FPSのラインです。途中のぶわーって広がるエフェクトのところで30FPSまで落ちているのが確認できます。体感的にも少しガクついている感じです。ローエンドPCだともっとガクつくことでしょう。</p>
 
-<p>上サイト・本機能の使い方もPaul Irish氏が<a href="http://www.youtube.com/watch?v=bqfoYaKCYUI">Fluent 2013</a>の講演で紹介しています。</p>
+<p>（※本機能の使い方もPaul Irish氏が<a href="http://www.youtube.com/watch?v=bqfoYaKCYUI">Fluent 2013</a>の講演で紹介しています。）</p>
 
 <h2 id="section">おわりに</h2>
 
@@ -133,9 +159,11 @@
 <h3 id="section-1">参考</h3>
 <ul>
   <li><a href="http://www.igvita.com/slides/2012/devtools-tips-and-tricks/">Wait, DevTools could do THAT?</a></li>
+  <li><a href="http://blog.asial.co.jp/1036">【Javascript】consoleオブジェクトが持つlog以外の便利メソッド18（前編）</a></li>
   <li><a href="https://developers.google.com/chrome-developer-tools/docs/console">Using the Console</a></li>
   <li><a href="http://liginc.co.jp/web/tool/browser/38012">Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ</a></li>
   <li><a href="https://developers.google.com/chrome-developer-tools/docs/css-preprocessors#toc-requirements">Working with CSS Preprocessors</a></li>
+  <li><a href="http://dev.classmethod.jp/etc/scss-source-maps-debug/">【Source Maps】Chrome CanaryでSCSS(Sass)のデバックを試してみました。</a></li>
 </ul>
 
 
