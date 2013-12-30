@@ -3,12 +3,55 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2013-12-30T05:40:43+00:00</updated>
+  <updated>2013-12-30T05:50:01+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[MacでWi-Fiのシグナル強度を調べる]]></title>
+    <link href="http://blog.toshimaru.net/mac-wifi-diagnostics/"/>
+    <updated>2013-12-28T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/mac-wifi-diagnostics</id>
+    <content type="html"><![CDATA[<p>カフェなんかでWi-Fi使っていると、Wi-FiがつながりにくくなってWi-Fiシグナル強度が弱いのかなーとか思って、シグナル強度調べるアプリを探していたところ、Mac標準搭載のアプリで発見。</p>
+
+<p>アプリ名は「Wireless Diagnostics」。場所は自分の環境(Mountain Lion)で<code>/System/Library/CoreServices</code>にありました。</p>
+
+<h2 id="section">手順</h2>
+
+<ul>
+  <li>Wireless Diagnostics を開く。（コマンド: <code>open /System/Library/CoreServices/Wireless\ Diagnostics.app</code>）</li>
+  <li>Utilitiesを開く(<code>⌘2</code>)</li>
+  <li><code>Wi-Fi Scan</code>のタブを選択して<code>Scan Now</code>をクリック。</li>
+</ul>
+
+<p><img src="/images/posts/wifi-scan.png" alt="mac wi-fi scan" /></p>
+
+<p>本画像のRSSI(Received signal strength indication)がシグナルの強度となります。値が高い方が「シグナルが強い」という意味になります。</p>
+
+<p>詳しい説明を引用しておきます。</p>
+
+<blockquote>
+  <p>シグナルの数値は、MacとWi-Fiアクセスポイントまたはルータ間のシグナルの強度を示します。数値が大きいほどシグナルは良好です&gt; 。数値はマイナス表示なので、「-60」の方が「-80」よりも良好ということになります。</p>
+
+  <p>ノイズの数値は、シグナルの障害となるワイヤレスノイズの大きさを示しています。この場合、数値は低いほうが良好です。ノイズも&gt; マイナス表示なので、ノイズレベル「-94」の方が「-90」よりもノイズが少なくて良好なネットワーク状態である、ということを示し&gt; ています。</p>
+
+  <p>シグナルとノイズの数値を比較し、シグナル対ノイズの比率（SNR）を導き出しましょう。信号レベルが「-60」でノイズレベルが「-91」の場合、数値の差は「31」になります。SNRが高ければ高いほど、Wi-Fiのパフォーマンスが良好であることを示します。SNRが25以上であれば、Wi-Fiのパフォーマンスは良好といえるでしょう。</p>
+
+  <p>(<a href="http://www.lifehacker.jp/2012/08/120807os_x_wifi.html">Wi-Fiの電波が弱い？ Macには診断ツールを標準搭載しております</a>)</p>
+</blockquote>
+
+<p>Wi-Fiのパフォーマンスを調整したいときに是非つかいたいツールですね。</p>
+
+<h3 id="section-1">参考</h3>
+
+<ul>
+  <li><a href="http://osxdaily.com/2012/07/31/wi-fi-scanner-mac-os-x-mountain-lion/">Wi-Fi Scanner Tool is Native in Mac OS X, Here’s How to Use it</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[jQuery使いが知っておくべき8つのjQueryテクニック]]></title>
@@ -1314,97 +1357,6 @@ alias_task [
     </li>
   </ol>
 </div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Composerで始める PHPのライブラリ管理]]></title>
-    <link href="http://blog.toshimaru.net/how-to-use-composer-autoload/"/>
-    <updated>2013-10-24T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/how-to-use-composer-autoload</id>
-    <content type="html"><![CDATA[<p>PHPも<a href="http://getcomposer.org/">Composer</a>の登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。</p>
-
-<h2 id="composer">Composerのインストール</h2>
-
-<p>PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！</p>
-
-<pre><code>$ curl -s https://getcomposer.org/installer | php
-</code></pre>
-
-<p>さてこれで<code>composer.phar</code>が手に入りました。<code>composer</code>コマンドを使えるようにするためにパスの通った場所に<code>composer.phar</code>を移動しましょう。</p>
-
-<pre><code>$ sudo mv composer.phar /usr/local/bin/composer
-</code></pre>
-
-<p><code>composer</code>コマンド準備完了です。</p>
-
-<pre><code>$ composer
-   ______
-  / ____/___  ____ ___  ____  ____  ________  _____
- / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
-/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
-\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
-                    /_/
-Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
-</code></pre>
-
-<h2 id="section">依存関係の記述</h2>
-
-<p>composerはプロジェクトルートの<code>composer.json</code>ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
-
-<pre><code>$ touch composer.json
-</code></pre>
-
-<p><code>composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
-
-<pre><code>{
-    "require": {
-        "phpunit/phpunit": "3.7.*"
-    }
-}
-</code></pre>
-
-<h2 id="section-1">ライブラリのインストール</h2>
-
-<p><code>composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
-
-<pre><code>$ composer install
-Loading composer repositories with package information
-Installing dependencies (including require-dev)
-  - Installing symfony/yaml (v2.3.6)
-    Loading from cache
-
-  - ..............
-
-  - Installing phpunit/phpunit (3.7.28)
-    Loading from cache
-
-phpunit/phpunit suggests installing phpunit/php-invoker (&gt;=1.1.0,&lt;1.2.0)
-Writing lock file
-Generating autoload files
-</code></pre>
-
-<p>うまいこといきました。ライブラリは<code>vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code>composer.lock</code>ファイルも生成します。</p>
-
-<h2 id="section-2">ライブラリのアップデート</h2>
-
-<p>ライブラリのアップデートに関しては下記のコマンドでOK.</p>
-
-<pre><code>$ composer update
-</code></pre>
-
-<h2 id="section-3">まとめ</h2>
-
-<p>モダンなPHPパッケージ管理であればComposer一択でしょう。PEARとの使い分けに関しては<a href="http://ja.phptherightway.com/#依存関係の管理">PHP Right Way</a>にはこのように書いてあります。</p>
-
-<blockquote>
-  <ul>
-    <li>Composer を使うのは、ひとつのプロジェクトにおける依存関係を管理するとき。</li>
-    <li>PEAR を使うのは、システム全体の PHP 環境の依存関係を管理するとき。</li>
-  </ul>
-</blockquote>
-
-<p>大抵の場合、後者のようにシステム全体で依存性管理をしなきゃならん理由はないと思うのでComposerで依存管理を行いましょう！</p>
 ]]></content>
   </entry>
   
