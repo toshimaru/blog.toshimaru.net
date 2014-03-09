@@ -6,16 +6,16 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>細かすぎて伝わりにくいChrome Developerツールを使いこなそう！ - Hack Your Design!</title>
+  <title>Chromebookを使ってみた WEBだけ使えればいい人にはオススメ - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="/assets/main-bdbf61f0dc5ca168f0d516ed0e3ee2f2.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！ - Hack Your Design!">
-  <meta property="og:title" content="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！ - Hack Your Design!">
-  <meta name="twitter:description" content="Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。"><meta property="og:description" content="Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。">
-  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/chromedev/chrome-dev.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/chromedev/chrome-dev.png" />
+  <meta name="twitter:title" content="Chromebookを使ってみた WEBだけ使えればいい人にはオススメ - Hack Your Design!">
+  <meta property="og:title" content="Chromebookを使ってみた WEBだけ使えればいい人にはオススメ - Hack Your Design!">
+  <meta name="twitter:description" content="toshimaruの技術系なブログ"><meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/chromebook/chromebook2.jpg" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/chromebook/chromebook2.jpg" />
   <meta property="og:type" content="article">
 </head>
 <body>
@@ -46,131 +46,106 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">細かすぎて伝わりにくいChrome Developerツールを使いこなそう！</h1>
+  <h1 class="fadeInLeft">Chromebookを使ってみた WEBだけ使えればいい人にはオススメ</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-12-20T00:00:00+00:00" pubdate>20 Dec 2013</time>
+      <i class="icon-calendar"></i><time datetime="2014-03-09T00:00:00+00:00" pubdate>09 Mar 2014</time>
       <i class="icon-tags"></i><a href="/tag/chrome.html" rel="tag">chrome</a>
     </div>
-    <img class="post-image flipInX" src="/images/posts/chromedev/chrome-dev.png" alt="(image)細かすぎて伝わりにくいChrome Developerツールを使いこなそう！" title="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！" />
+    <img class="post-image flipInX" src="/images/posts/chromebook/chromebook2.jpg" alt="(image)Chromebookを使ってみた WEBだけ使えればいい人にはオススメ" title="Chromebookを使ってみた WEBだけ使えればいい人にはオススメ" />
   </div>
 </div>
 
-<p><a href="http://www.adventar.org/calendars/62">Frontrend Advent Calendar 2013</a>、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。</p>
+<p><a href="http://blog.livedoor.jp/itsoku/archives/37545648.html">ついに激安PCのChromeBookが日本上陸！東芝が来月にも発売へ</a></p>
 
-<p>（※写真は公式ページから引用）</p>
+<p>Chromebookが日本にも来るようですね。カナダにて一足先にChromebookを一週間ほど触ってみたので、その感想を書いてみようと思います。</p>
 
-<h2 id="consolelogconsole">console.log以外にも便利なconsoleメソッドがある</h2>
+<h2 id="section">スペック</h2>
 
-<p><code>console.log()</code>とかは常識でしょうが、それ以外にも実はconsole系メソッドが多くあります。下記のような感じ。</p>
+<p>購入したのはSamsungのChromebook. ３万円くらいでした。安い。</p>
 
-<ul>
-  <li><code>console.error()</code>: コンソールにエラー出力</li>
-  <li><code>console.warn()</code>: コンソールに警告出力</li>
-  <li><code>console.assert()</code>: アサーション。第一引数がfalseだった場合に第二引数の文字列を出力。</li>
-  <li><code>console.time()</code> &amp; <code>console.timeEnd()</code>: タイマー機能。前者でタイマースタート、後者でタイマーストップ。引数の文字列でタイマーIDを識別している。</li>
-</ul>
+<p><img src="/images/posts/chromebook/chromebook1.jpg" alt="chromebook pic 1" /></p>
 
-<p>例えば下記のコード例では<code>console.time</code>を使って<code>getElementById</code>とjQueryのセレクターのパフォーマンスの違いを計測しています。結果はChromeConsoleを開いてResultを押してどうぞご自身の目で確認してみてください。</p>
-
-<iframe width="100%" height="300" src="http://jsfiddle.net/toshimaru/tr8Vg/5/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<p>ちなみに私の環境上での結果。</p>
-
-<p><img src="/images/posts/chromedev/result.png" alt="assert" /></p>
-
-<h3 id="consoleassert">console.assert</h3>
-
-<p>簡易的な<code>true</code>/<code>false</code>テストであれば<code>console.assert()</code>が使えます。例えばこんなコード。</p>
-
-<pre><code>function returnTrue() { return false; }
-console.assert(returnTrue(), 'Trueをreturnすべきだよ！')
-</code></pre>
-
-<p>こんな感じで表示されます。</p>
-
-<p><img src="/images/posts/chromedev/assert.png" alt="assert" /></p>
-
-<h2 id="csschromecss">CSSマッピングでChromeからCSS変更を直接反映！</h2>
-
-<p>CSSマッピングの機能を使うことでChrome上のCSS変更を直接反映することができます。簡単な手順はこうです。</p>
+<p>特徴はざっくりこんな感じ。</p>
 
 <ul>
-  <li>ChromeDevツールの歯車アイコンで開くメニューからWorkspaceを追加</li>
-  <li>マッピングしたいファイルを選択し、右クリックして <code>Map to File System Resource...</code>をクリックする。</li>
+  <li>11.6 インチディスプレイ</li>
+  <li>約1キログラム</li>
+  <li>2GB メモリ</li>
+  <li>16GB SSD</li>
+  <li>Samsung Exynos 5 Dual Processor</li>
 </ul>
 
-<p><img src="/images/posts/chromedev/css-map.png" alt="css mapping" /></p>
+<p>via. <a href="https://www.google.com/intl/ms/chrome/devices/samsung-chromebook.html#specs">Samsung Chromebook</a></p>
 
-<p>(Image from <a href="http://liginc.co.jp/web/tool/browser/38012">Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ</a>)</p>
+<p>重さも軽くノートのように持ち運べるので携帯性は優れてて良いかと。SSD容量が少ないのは「ファイルはローカルじゃなくWEBに置いてね」というChromeOSの思想から気にしちゃいけないところ。動作に関してはタブ何十枚も一度に開いたり動画を閲覧してたりするとモッサリするかなって感じだった。</p>
 
-<p>これで準備OK！ Chrome上で直接ヴィジュアルを確認しながらいい具合に変更を加えてれば、ローカル上のファイルも変更されます。</p>
+<p>何より驚いたのは起動の早さでした。本当に10秒くらいで起動するんですよ、これが。見てて気持ちよかった。</p>
 
-<h2 id="sass">ソースマッピングにSASSを使う！</h2>
+<h2 id="chrome-os">Chrome OSの思想</h2>
 
-<p>CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサーですよねー。ということで実はCSSマッピングにSASSも使えるんです。ただし下記の点に注意してください。</p>
+<p>ChromeOSは全ての作業がブラウザ/WEBで実行可能になりつつある昨今、生まれるべくして生まれたOSだと思う。僕らが日々パソコンの前に座って行う作業はウェブ上で可能な作業へとシフトしていっている。メールチェックはOutlookからGmailへと、ドキュメント作成はWord/ExcelからGoogleDocsへと、各種データはローカル保存からEvernote,DropBoxなどのクラウドストレージへと移行している。プログラミングですら<a href="https://c9.io/">Cloud9 IDE</a>などのサービスでウェブ上で可能になっている。</p>
+
+<p>ChromeOSには従来のようなデスクトップやファイルといった発想はない。</p>
+
+<blockquote>
+  <p>Googleアカウントを利用してログインする。Google Chrome OSのユーザインタフェースは、基本的にGoogle Chromeだけが全面に出ている形で、デスクトップやファイルブラウザなどは無く、すべてのアプリケーションはウェブアプリケーションという形でGoogle Chromeにインストールされ、実行される。インストールしたアプリはGoogle Chromeにショートカットを作成してアクセスすることが出来る。</p>
+
+  <p><a href="http://ja.wikipedia.org/wiki/Google_Chrome_OS">Google Chrome OS - Wikipedia</a></p>
+</blockquote>
+
+<p>起動するとこんな画面。一見他OSのデスクトップのようにファイルが置けたりするんじゃないの？って思うかもしれないけどそんなことはない。</p>
+
+<p><img src="/images/posts/chromebook/chromebook2.jpg" alt="chromebook pic 2" /></p>
+
+<p>基本的にアプリケーションはChrome上で動作するアプリケーションのみなので、下部にズラって並んでるのはChromeアプリのショートカットアイコン。クリックするとChromeが開きWEBアプリが起動する感じ。</p>
+
+<h2 id="section-1">開発者マシンとして利用可能？</h2>
+
+<p>自分は開発者なので開発者マシンとして利用可能かも試してみた。</p>
+
+<p>結論から言うと現時点では難しいという印象。</p>
+
+<h3 id="developer-mode">Developer Mode</h3>
+
+<p>Chromebookには<a href="http://www.chromium.org/chromium-os/chromiumos-design-docs/developer-mode">Developerモード</a>というのがあって、これをONにすることでシェル操作が可能になったりする。例えば自分のSamsung Chromebookであれば<a href="http://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/samsung-arm-chromebook#TOC-Developer-Mode">この手順</a>でDeveloperモードがONにできた。</p>
+
+<h3 id="chrome">Chrome上で動作する代替アプリケーション</h3>
+
+<p>Chrome上で動作する開発者用のアプリケーションとしてはこんなのが紹介されてる。</p>
 
 <ul>
-  <li><strong>Sass 3.3以上</strong>が必要</li>
-  <li><strong>Chrome Canary</strong>を使う</li>
-  <li><strong>chrome://flags</strong> にアクセスしてデベロッパーツールを有効にする</li>
+  <li><a href="https://chrome.google.com/webstore/detail/secure-shell/pnhechapfaindjhompbnflcldabbghjo">Secure Shell</a> - ターミナル、SSHクライアント</li>
+  <li><a href="https://chrome.google.com/webstore/detail/chrome-remote-desktop/gbchcmhmhahfdphkhkmpfmihenigjmpp">Chrome Remote Desktop</a> - リモートデスクトップ</li>
+  <li><a href="https://chrome.google.com/webstore/detail/text/mmfbcljfglbokpmkimbfghdkjmjhdgbg">Text</a> - テキストエディタ</li>
+  <li><a href="https://chrome.google.com/webstore/detail/beagle-term/gkdofhllgfohlddimiiildbgoggdpoea">Beagle Term</a> - ターミナルエミュレータ</li>
+  <li><a href="https://chrome.google.com/webstore/detail/cloud9/nbdmccoknlfggadpfkmcpnamfnbkmkcp">Cloud9</a> - オンラインIDE</li>
+  <li><a href="http://runnable.com/">Runnable</a> - クラウドベースIDE</li>
 </ul>
 
-<p>↓Enable Developer Tools experimentsをONにする↓</p>
+<p>via. <a href="http://www.chromium.org/chromium-os/developing-apps-on-your-chromium-os-device">Developing apps on your Chromebook</a></p>
 
-<p><img src="/images/posts/chromedev/dev-flag.png" alt="css mapping" /></p>
+<p>どれも悪くはないけど痒いところには手が届かない感じ。</p>
 
-<p>詳しい手順は<a href="http://dev.classmethod.jp/etc/scss-source-maps-debug/">こちら（Chrome CanaryでSCSS(Sass)のデバックを試してみました。）</a>で確認してみてください。良きCSSライフを！</p>
+<h3 id="section-2">その他</h3>
 
-<h2 id="androidchrome">AndroidをChromeでリモートデバック可能</h2>
+<p>他にも<a href="http://jeremyckahn.github.io/blog/2013/02/09/setting-up-a-local-development-environment-in-chrome-os/">Setting Up a Local Development Environment in Chrome OS</a>や<a href="http://lifehacker.com/how-to-install-linux-on-a-chromebook-and-unlock-its-ful-509039343">How to Install Linux on a Chromebook and Unlock Its Full Potential</a>なんかを参考に<a href="https://github.com/dnschneid/crouton">crouton</a>を使ってみたりしたけど、まだまだ発展途中という印象だった。</p>
 
-<p>下記動画でPaul Irish氏がリモートデバッギングを簡単に解説してくれてます。この動画でどんなことができるか簡単に把握することができます。</p>
+<h3 id="tips">Tips</h3>
 
-<iframe width="560" height="315" src="//www.youtube.com/embed/Q7rEFEMpwe4" frameborder="0" allowfullscreen=""></iframe>
+<p><a href="http://www.chromestory.com/google-chromebook/">100 Tips for Your Google Chromebook</a></p>
 
-<p>実機をChromeDevツールでデバッグできるのはとても喜ばしいことです。注意点は下記。</p>
+<h2 id="section-3">まとめ</h2>
 
-<ul>
-  <li><a href="https://play.google.com/store/apps/details?id=com.chrome.beta">Chrome Beta</a>がAndroidに必要</li>
-  <li>USBでAndroidと接続が必要</li>
-  <li>アンドロイド上でDeveloperオプションを有効にする必要があります。ONにするためには設定からBuild Numberをゴニョゴニョする必要があります</li>
-</ul>
+<p>パソコンの普段の使い方が「Gmailでメールチェック」「YouTube/ニコ動などで動画視聴」「Twitter/Facebook閲覧」などWEBに閉じている方であれば、Chromebookはオススメできます。WindowsやMacよりも低価格ですし、悪い買い物ではないと思います。</p>
 
-<p>詳しい解説は<a href="https://developers.google.com/chrome-developer-tools/docs/remote-debugging">こちら（Remote Debugging Chrome on Android）</a>を参照。</p>
-
-<h2 id="fps">FPSを確認してヌルヌル動作を目指そう！</h2>
-
-<p>たとえば下記のかなりリッチなパララックスウェブサイト。ちょっと見てみてください。</p>
-
-<p><a href="http://letsfreecongress.org/">Money wins Elections</a></p>
-
-<p>パララックス効果はサイトをリッチに見せることができる最近良く使われるテクニックではありますが、一方ローエンドPCでの動作も気にしたいところです。上サイトをTimelineからレコーディングしてみます。</p>
-
-<p><img src="/images/posts/chromedev/chrome-timeline.png" alt="timeline" /></p>
-
-<p>上のグレイ線が30FPSのライン、下の線が60FPSのラインです。途中のぶわーって広がるエフェクトのところで30FPSまで落ちているのが確認できます。体感的にも少しガクついている感じです。ローエンドPCだともっとガクつくことでしょう。</p>
-
-<p>（※本機能の使い方もPaul Irish氏が<a href="http://www.youtube.com/watch?v=bqfoYaKCYUI">Fluent 2013</a>の講演で紹介しています。）</p>
-
-<h2 id="section">おわりに</h2>
-
-<p>ここで紹介した以外にもまだまだ便利な使い方がChromeDeveloperツールにはあります。自分もまだ全然把握できていません。もし「この機能が便利！」ってのがありましたら是非とも教えてくださいまし〜。</p>
-
-<h3 id="section-1">参考</h3>
-<ul>
-  <li><a href="http://www.igvita.com/slides/2012/devtools-tips-and-tricks/">Wait, DevTools could do THAT?</a></li>
-  <li><a href="http://blog.asial.co.jp/1036">【Javascript】consoleオブジェクトが持つlog以外の便利メソッド18（前編）</a></li>
-  <li><a href="https://developers.google.com/chrome-developer-tools/docs/console">Using the Console</a></li>
-  <li><a href="http://liginc.co.jp/web/tool/browser/38012">Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ</a></li>
-  <li><a href="https://developers.google.com/chrome-developer-tools/docs/css-preprocessors#toc-requirements">Working with CSS Preprocessors</a></li>
-  <li><a href="http://dev.classmethod.jp/etc/scss-source-maps-debug/">【Source Maps】Chrome CanaryでSCSS(Sass)のデバックを試してみました。</a></li>
-</ul>
+<p>ただ仕事での利用、ソフトウェア開発などの利用シーンにおいてはオススメできません。「Chrome縛り」でイケると思ってchromebook試用してみたが、僕は思ったより辛かった。</p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/chrome-dev-tool/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/chromebook-firstimpression/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -188,7 +163,7 @@ console.assert(returnTrue(), 'Trueをreturnすべきだよ！')
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/chromebook-firstimpression/" title="Chromebookを使ってみた WEBだけ使えればいい人にはオススメ">Chromebookを使ってみた WEBだけ使えればいい人にはオススメ</a></li>
+    <li><a href="/chrome-dev-tool/" title="細かすぎて伝わりにくいChrome Developerツールを使いこなそう！">細かすぎて伝わりにくいChrome Developerツールを使いこなそう！</a></li>
   
     <li><a href="/chrome-dev-tool-localstrage/" title="ChromeのDevToolでlocalStrageのデータをイジイジする">ChromeのDevToolでlocalStrageのデータをイジイジする</a></li>
   
@@ -198,14 +173,10 @@ console.assert(returnTrue(), 'Trueをreturnすべきだよ！')
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/jquery-8-tips/" title="Newer Post: jQuery使いが知っておくべき8つのjQueryテクニック"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/css-animation/" title="Older Post: CSS3アニメーションを使ってサイトをリッチに">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/vancouver-job-after/" title="Older Post: バンクーバーの仕事を退職しました">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
