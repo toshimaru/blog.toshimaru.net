@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Chromebookを使ってみた WEBだけ使えればいい人にはオススメ
+title: Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい
 published: true
 image: /images/posts/chromebook/chromebook2.jpg
 description:
