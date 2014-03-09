@@ -3,7 +3,7 @@ layout: post
 title: Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい
 published: true
 image: /images/posts/chromebook/chromebook2.jpg
-description:
+description: Chromebookが日本にも来るようですね。カナダにて一足先にChromebookを一週間ほど触ってみたので、その感想を書いてみようと思います。
 tags: chrome
 ---
 
