@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする
+title: 1円クラウド、DigitalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする
 published: true
 image: /images/posts/vagrant/vagrant.png
-description: 流行りの1円クラウド、DititalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
+description: 流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
 tags: vagrant digitalocean
 ---
 
-流行りの1円クラウド、DititalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
+流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
 
 ##install vagrant command
 
@@ -22,7 +22,7 @@ Mac使っているのであれば[homebrew-cask](https://github.com/phinze/homeb
 
 ##install vagrant-digitalocean plugin
 
-そのままではDigitalOceanは使えないので、次にvagrantのDititalOceanプラグインをインストール。
+そのままではDigitalOceanは使えないので、次にvagrantのDigitalOceanプラグインをインストール。
 
     $ vagrant plugin install vagrant-digitalocean
 
