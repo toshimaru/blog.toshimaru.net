@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="/assets/main-14c2bd2c79c3873673e46cac0d9b625c.css">
+  <script src="/js/modernizr-2.6.2.min.js"></script>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする - Hack Your Design!">
+  <meta property="og:title" content="1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする - Hack Your Design!">
+  <meta name="twitter:description" content="流行りの1円クラウド、DititalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。"><meta property="og:description" content="流行りの1円クラウド、DititalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/vagrant/vagrant.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/vagrant/vagrant.png" />
+  <meta property="og:type" content="article">
+</head>
+<body>
+  <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive.html">Archive</a>
+  <a href="/about.html">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="http://google.com/search" method="get">
+      <input type="hidden" name="q" value="site:blog.toshimaru.net" />
+      <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="posts">
+  <h1 class="fadeInLeft">1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2014-03-12T00:00:00+00:00" pubdate>12 Mar 2014</time>
+      <i class="icon-tags"></i><a href="/tag/vagrant.html" rel="tag">vagrant</a>, <a href="/tag/digitalocean.html" rel="tag">digitalocean</a>
+    </div>
+    <img class="post-image flipInX" src="/images/posts/vagrant/vagrant.png" alt="(image)1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする" title="1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする" />
+  </div>
+</div>
+
+<p>流行りの1円クラウド、DititalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。</p>
+
+<h2 id="install-vagrant-command">install vagrant command</h2>
+
+<p>Mac使っているのであれば<a href="https://github.com/phinze/homebrew-cask">homebrew-cask</a>を使うのが便利。</p>
+
+<pre><code>$ brew cask install vagrant
+</code></pre>
+
+<p>バージョンは1.5.1</p>
+
+<pre><code>$ vagrant -v
+Vagrant 1.5.1
+</code></pre>
+
+<h2 id="install-vagrant-digitalocean-plugin">install vagrant-digitalocean plugin</h2>
+
+<p>そのままではDigitalOceanは使えないので、次にvagrantのDititalOceanプラグインをインストール。</p>
+
+<pre><code>$ vagrant plugin install vagrant-digitalocean
+</code></pre>
+
+<h2 id="vagrantfile-configuration">Vagrantfile Configuration</h2>
+
+<p>まずはVagrantfileを用意。</p>
+
+<pre><code>$ mkdir vagrant-digitalocean-test
+$ cd vagrant-digitalocean-test
+$ touch Vagrantfile
+</code></pre>
+
+<p>次に<code>Vagrantfile</code>に書く設定。</p>
+
+<pre><code>Vagrant.configure('2') do |config|
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+
+    provider.client_id = '{your_client_id}'
+    provider.api_key = '{your_api_key}'
+
+    provider.image                = 'CentOS 6.4 x64'
+    provider.region               = 'San Francisco 1'
+    provider.size                 = '512MB'
+  end
+
+end
+</code></pre>
+
+<p><code>provider.client_id</code>, <code>provider.api_key</code>の値はアカウント作成後、下記URLより生成できる。</p>
+
+<p><a href="https://cloud.digitalocean.com/api_access">https://cloud.digitalocean.com/api_access</a></p>
+
+<p>今回はCentOS6.4、場所はサンフランシスコ、サイズは512で作ってみる。</p>
+
+<h2 id="section">インスタンス作成！</h2>
+
+<p>あとはこのコマンドのみ。</p>
+
+<pre><code>$ vagrant up --provider digital_ocean
+</code></pre>
+
+<p>これで一分くらい待つと立ち上がりました。動いてます。</p>
+
+<pre><code>$ vagrant status
+Current machine states:
+
+default                   active (digital_ocean)
+
+active
+</code></pre>
+
+<p>あとは<code>vagrant ssh</code>するなり<code>vagrant destroy</code>（インスタンス破棄[重要！]）するなり。</p>
+
+<h2 id="section-1">プロビジョニング</h2>
+
+<p>これだけでは最小パッケージで必要なパッケージが入ってなく片手落ち。そうだ、puppetでプロビジョニングしてみよう。<code>Vagrantfile</code>をこうしてみる。</p>
+
+<pre><code>Vagrant.configure('2') do |config|
+  config.vm.provision "shell", inline: "rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force"
+  config.vm.provision "shell", inline: "yum -y install puppet"
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+
+    provider.client_id = '{client_id}'
+    provider.api_key = '{api_key}'
+
+    provider.image                = 'CentOS 6.4 x64'
+    provider.region               = 'San Francisco 1'
+    provider.size                 = '512MB'
+  end
+
+  config.vm.provision "puppet" do |puppet|
+    puppet.options                = "--verbose"
+  end
+end
+</code></pre>
+
+<p>最初にpuppetをインストールコマンドを追加。そして</p>
+
+<h2 id="puppet-manifest">puppet manifest</h2>
+
+<p>puppetのmanifestファイルを定義します。</p>
+
+<pre><code>$ mkdir manifests
+$ touch manifests/default.pp
+</code></pre>
+
+<p><code>manifests/default.pp</code>はこう。vimとgitのパッケージを追加。必要に応じて追加したりする。</p>
+
+<pre><code>package {
+  [
+    'vim-enhanced',
+    'git',
+  ]:
+  ensure =&gt; installed
+}
+</code></pre>
+
+<h2 id="lets-provision">Let’s provision!</h2>
+
+<pre><code>$ vagrant provision
+</code></pre>
+
+<p>これでpuppet経由で、vimやらgitが入る。良い。</p>
+
+<h2 id="section-2">本当に１円？</h2>
+
+<p>はい。</p>
+
+<p>検証環境として使ったあとに、dropletをちゃんと破棄していればこうなります。</p>
+
+<p><img src="/images/posts/vagrant/bill.png" alt="bill" /></p>
+
+<p>現時点で1USD=102JPYくらいなので0.01USD=約１円ですね。</p>
+
+<h2 id="section-3">参考</h2>
+<ul>
+  <li><a href="http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/">VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する</a></li>
+</ul>
+
+
+<ul id="social-buttons">
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/digital-ocean-vagrant-puppet/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/chromebook-firstimpression/" title="Older Post: Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+        <h2>About</h2>
+        <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+        <dl class="about-dl">
+          <dt>Toshimaru</dt>
+          <dd>Web Developer. 現在カナダのバンクーバにて修行中。技術ネタをよく書いてます。最近興味あるのはRoRとフロントエンド関連技術。</dd>
+        </dl>
+        <ul class="externallinks">
+          <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+          <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+          <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
+        </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li><a href="/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li><a href="/Front-end-Developer-Interview-Questions-Japanese/">「フロントエンドデベロッパー面接時の質問事項」日本語訳しました</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/"></a>
+</li>
+          <li><a href="/git-log-graph/">美しき git log --graph のエイリアス</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
+</li>
+          <li><a href="/jquerydeferred-is-most-important-client/">【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquerydeferred-is-most-important-client/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquerydeferred-is-most-important-client/"></a>
+</li>
+          <li><a href="/how-to-find-job-in-Vancouver/">僕が単身海外（バンクーバー）に来て仕事を見つけるまでにやったこと</a> <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/how-to-find-job-in-Vancouver/"><img src="http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/how-to-find-job-in-Vancouver/"></a>
+</li>
+        </ul>
+        
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/digitalocean.html" class="set-1">digitalocean</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-2">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-3">linux</a> <a href="/tag/mac.html" class="set-2">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-1">rails</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vagrant.html" class="set-1">vagrant</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-2">雑記</a></div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by Jekyll, Hosted by Github.</p>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+  <script src="/js/main.js"></script>
+  <script>
+      var _gaq=[['_setAccount','UA-35177276-1'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+</body>
+</html>

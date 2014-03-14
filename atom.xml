@@ -3,12 +3,165 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-03-09T09:32:50+00:00</updated>
+  <updated>2014-03-14T05:28:27+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[1円クラウド、DititalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする]]></title>
+    <link href="http://blog.toshimaru.net/digital-ocean-vagrant-puppet/"/>
+    <updated>2014-03-12T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/digital-ocean-vagrant-puppet</id>
+    <content type="html"><![CDATA[<p>流行りの1円クラウド、DititalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。</p>
+
+<h2 id="install-vagrant-command">install vagrant command</h2>
+
+<p>Mac使っているのであれば<a href="https://github.com/phinze/homebrew-cask">homebrew-cask</a>を使うのが便利。</p>
+
+<pre><code>$ brew cask install vagrant
+</code></pre>
+
+<p>バージョンは1.5.1</p>
+
+<pre><code>$ vagrant -v
+Vagrant 1.5.1
+</code></pre>
+
+<h2 id="install-vagrant-digitalocean-plugin">install vagrant-digitalocean plugin</h2>
+
+<p>そのままではDigitalOceanは使えないので、次にvagrantのDititalOceanプラグインをインストール。</p>
+
+<pre><code>$ vagrant plugin install vagrant-digitalocean
+</code></pre>
+
+<h2 id="vagrantfile-configuration">Vagrantfile Configuration</h2>
+
+<p>まずはVagrantfileを用意。</p>
+
+<pre><code>$ mkdir vagrant-digitalocean-test
+$ cd vagrant-digitalocean-test
+$ touch Vagrantfile
+</code></pre>
+
+<p>次に<code>Vagrantfile</code>に書く設定。</p>
+
+<pre><code>Vagrant.configure('2') do |config|
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+
+    provider.client_id = '{your_client_id}'
+    provider.api_key = '{your_api_key}'
+
+    provider.image                = 'CentOS 6.4 x64'
+    provider.region               = 'San Francisco 1'
+    provider.size                 = '512MB'
+  end
+
+end
+</code></pre>
+
+<p><code>provider.client_id</code>, <code>provider.api_key</code>の値はアカウント作成後、下記URLより生成できる。</p>
+
+<p><a href="https://cloud.digitalocean.com/api_access">https://cloud.digitalocean.com/api_access</a></p>
+
+<p>今回はCentOS6.4、場所はサンフランシスコ、サイズは512で作ってみる。</p>
+
+<h2 id="section">インスタンス作成！</h2>
+
+<p>あとはこのコマンドのみ。</p>
+
+<pre><code>$ vagrant up --provider digital_ocean
+</code></pre>
+
+<p>これで一分くらい待つと立ち上がりました。動いてます。</p>
+
+<pre><code>$ vagrant status
+Current machine states:
+
+default                   active (digital_ocean)
+
+active
+</code></pre>
+
+<p>あとは<code>vagrant ssh</code>するなり<code>vagrant destroy</code>（インスタンス破棄[重要！]）するなり。</p>
+
+<h2 id="section-1">プロビジョニング</h2>
+
+<p>これだけでは最小パッケージで必要なパッケージが入ってなく片手落ち。そうだ、puppetでプロビジョニングしてみよう。<code>Vagrantfile</code>をこうしてみる。</p>
+
+<pre><code>Vagrant.configure('2') do |config|
+  config.vm.provision "shell", inline: "rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force"
+  config.vm.provision "shell", inline: "yum -y install puppet"
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+
+    provider.client_id = '{client_id}'
+    provider.api_key = '{api_key}'
+
+    provider.image                = 'CentOS 6.4 x64'
+    provider.region               = 'San Francisco 1'
+    provider.size                 = '512MB'
+  end
+
+  config.vm.provision "puppet" do |puppet|
+    puppet.options                = "--verbose"
+  end
+end
+</code></pre>
+
+<p>最初にpuppetをインストールコマンドを追加。そして</p>
+
+<h2 id="puppet-manifest">puppet manifest</h2>
+
+<p>puppetのmanifestファイルを定義します。</p>
+
+<pre><code>$ mkdir manifests
+$ touch manifests/default.pp
+</code></pre>
+
+<p><code>manifests/default.pp</code>はこう。vimとgitのパッケージを追加。必要に応じて追加したりする。</p>
+
+<pre><code>package {
+  [
+    'vim-enhanced',
+    'git',
+  ]:
+  ensure =&gt; installed
+}
+</code></pre>
+
+<h2 id="lets-provision">Let’s provision!</h2>
+
+<pre><code>$ vagrant provision
+</code></pre>
+
+<p>これでpuppet経由で、vimやらgitが入る。良い。</p>
+
+<h2 id="section-2">本当に１円？</h2>
+
+<p>はい。</p>
+
+<p>検証環境として使ったあとに、dropletをちゃんと破棄していればこうなります。</p>
+
+<p><img src="/images/posts/vagrant/bill.png" alt="bill" /></p>
+
+<p>現時点で1USD=102JPYくらいなので0.01USD=約１円ですね。</p>
+
+<h2 id="section-3">参考</h2>
+<ul>
+  <li><a href="http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/">VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい]]></title>
@@ -1472,45 +1625,6 @@ new Chart(ctx).Line(data,options);
     </li>
   </ol>
 </div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rakeタスクにエイリアスを付ける]]></title>
-    <link href="http://blog.toshimaru.net/rake-alias/"/>
-    <updated>2013-11-17T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/rake-alias</id>
-    <content type="html"><![CDATA[<p>RubyのRakeタスクにエイリアス付けたいときってありません？</p>
-
-<p>僕はあります。<code>rake create</code>なんていうタスクがあったとしたら、何らかの手癖のせいで<code>rake new</code>とか打っちゃうことがあるんですよ。</p>
-
-<p>そういうときは<code>alias_task</code>なんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。具体的にはこんな感じです。</p>
-
-<pre><code>def alias_task(tasks)
-    tasks.each do |new_name, old_name|
-        task new_name, [*Rake.application[old_name].arg_names] =&gt; [old_name]
-    end
-end
-
-alias_task [
-    [:new, :create],
-    [:dc,  :db_create]
-]
-</code></pre>
-
-<p>ここでは</p>
-
-<ul>
-  <li><code>create</code>タスクに<code>new</code>というエイリアス名を</li>
-  <li><code>db_create</code>タスクに<code>dc</code>というエイリアス名を</li>
-</ul>
-
-<p>割り当てています。</p>
-
-<h3 id="section">参考</h3>
-<ul>
-  <li><a href="http://stackoverflow.com/questions/7656541/the-alias-of-task-name-in-rake">The alias of task name in rake</a></li>
-</ul>
 ]]></content>
   </entry>
   
