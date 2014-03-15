@@ -140,5 +140,11 @@ puppetのmanifestファイルを定義します。
 
 現時点で1USD=102JPYくらいなので0.01USD=約１円ですね。
 
-##参考
+##Github Repo
+
+Githubに今回のサンプルの最終形を置いておく。
+
+<https://github.com/toshimaru/vagrant-digitalocean-puppet>
+
+###参考
 * [VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する](http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/)
