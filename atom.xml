@@ -3,12 +3,133 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-03-15T04:17:19+00:00</updated>
+  <updated>2014-03-17T05:55:44+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[packerを使ってDigital Ocean上にイメージを作成する]]></title>
+    <link href="http://blog.toshimaru.net/digitalocean-image-with-packer/"/>
+    <updated>2014-03-16T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/digitalocean-image-with-packer</id>
+    <content type="html"><![CDATA[<p>＜前回のあらすじ＞<br />
+<a href="/digital-ocean-vagrant-puppet/">1円クラウド、DigitalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする</a></p>
+
+<p><a href="http://www.packer.io/">packer</a>を使ってDigital Ocean上にイメージを作成してみたのでそのときのメモ。</p>
+
+<h2 id="packer">Packerとは？</h2>
+
+<p><a href="http://www.vagrantup.com/">Vagrant</a>がVMの構築とかAWS/Digitgal Oceanでのインスタンス作成とかを抽象化して、プログラマブルにすることが可能なツールだとしたら、Packerはそれをさらに抽象化して、1つの設定ファイル(JSON)からAWS, Digital Ocean, VirtualBox向けのイメージを作成できるツール。</p>
+
+<h2 id="digital-ocean">Digital Oceanにイメージ作成する</h2>
+
+<p>今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。</p>
+
+<pre><code>$ mkdir packer-test
+$ cd packer-test
+</code></pre>
+
+<p>次にpackerの設定ファイルを用意。ファイル名は何でもよいっぽい。</p>
+
+<pre><code>$ touch Packer.json
+</code></pre>
+
+<p>このように書く。</p>
+
+<pre><code>{
+  "builders": [
+    {
+      "type": "digitalocean",
+      "client_id": "your_client_id",
+      "api_key": "your_api_key",
+      "image_id": 1505447,
+      "region_id": 3,
+      "size_id": 66
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "setup.sh"
+    }
+  ]
+}
+</code></pre>
+
+<p><code>builder</code>でタイプをチョイス。今回は<code>digitalocean</code>を選択。<code>client_id</code>, <code>api_key</code>を設定。<code>image_id</code>,<code>region_id</code>,<code>size_id</code>のint値については<a href="https://developers.digitalocean.com/">こちらのDigitalOcean API</a>を見るとよいっぽい。</p>
+
+<p>プロビジョニングのタイプは今回はシンプルにshellを設定。適当に<code>setup.sh</code>を作る。</p>
+
+<pre><code>$ echo "echo 'hello world'" &gt; setup.sh
+</code></pre>
+
+<h2 id="packer-1">Packer!</h2>
+
+<p>packerビルドしてみる。</p>
+
+<pre><code>$ packer build Packer.json
+digitalocean output will be in this color.
+
+==&gt; digitalocean: Creating temporary ssh key for droplet...
+==&gt; digitalocean: Creating droplet...
+==&gt; digitalocean: Waiting for droplet to become active...
+==&gt; digitalocean: Waiting for SSH to become available...
+==&gt; digitalocean: Connected to SSH!
+==&gt; digitalocean: Provisioning with shell script: setup.sh
+    digitalocean: hello world!
+    digitalocean:
+==&gt; digitalocean: Gracefully shutting down droplet...
+==&gt; digitalocean: Creating snapshot: packer-1395033724
+==&gt; digitalocean: Waiting for snapshot to complete...
+==&gt; digitalocean: Destroying droplet...
+==&gt; digitalocean: Deleting temporary ssh key...
+Build 'digitalocean' finished.
+
+==&gt; Builds finished. The artifacts of successful builds are:
+--&gt; digitalocean: A snapshot was created: 'packer-1395033724' in region 'San Francisco 1'
+</code></pre>
+
+<h2 id="section">結果</h2>
+
+<p>Before:</p>
+
+<p><img src="/images/posts/packer/do-before.png" alt="before" /></p>
+
+<p>After:</p>
+
+<p><img src="/images/posts/packer/do-after.png" alt="after" /></p>
+
+<p>イメージのスナップショット（<code>packer-1395033724</code>）が作成されてますね。</p>
+
+<h2 id="section-1">最後に</h2>
+
+<p>packerはあくまでもイメージを作成するツールであり、イメージを管理するツールではないようです。</p>
+
+<blockquote>
+  <p>Packer only builds images. It does not attempt to manage them in any way.</p>
+</blockquote>
+
+<p>See. <a href="http://www.packer.io/intro/getting-started/build-image.html">http://www.packer.io/intro/getting-started/build-image.html</a></p>
+
+<p>また、<code>builders</code>の設定を変更することで、<a href="http://www.packer.io/docs/builders/amazon.html">Amazon EC2</a>や<a href="http://www.packer.io/docs/builders/googlecompute.html">Google Compute Engine</a>とかにもイメージ作成できるようですね。</p>
+
+<h3 id="github-repo">Github Repo</h3>
+
+<p>今回使ったものをGithubにおいておきます。</p>
+
+<p><a href="https://github.com/toshimaru/packer-digitalocean-sample">https://github.com/toshimaru/packer-digitalocean-sample</a></p>
+
+<h3 id="section-2">参考</h3>
+
+<ul>
+  <li><a href="http://rebuild.fm/25/">Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[1円クラウド、DigitalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする]]></title>
@@ -1443,194 +1564,6 @@ AA
 <h3 id="section-7">参考</h3>
 
 <p><a href="http://startapp.jp/2013/07/21/how-to-create-flat-chart.html">絶対まねしたい！Chart.jsを使ってフラットデザインぽいグラフを作る方法</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか]]></title>
-    <link href="http://blog.toshimaru.net/cool-ui/"/>
-    <updated>2013-11-20T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/cool-ui</id>
-    <content type="html"><![CDATA[<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js"></script>
-
-<p><a href="http://togetter.com/li/590729">「基本的に運営側がすることが正しいんですよ Webの世界ってそういう論理で動いてるんですよ」理論</a></p>
-
-<p>実はここで言われている<a href="https://twitter.com/masarakki">@masarakki</a>さんの意見はすごくわかる。「最高にクール」なUIがクソユーザー（便宜上、UIの良さがわからないユーザーを本エントリではそう呼ぶ）によって阻止されるのは中の人としては決して喜ばしいことではない。</p>
-
-<h2 id="ui">ユーザーは「最高にクールなUI」がわかるか？</h2>
-
-<p>まずこの問いから始めたい。一般ユーザーは「最高にクール」なUIがわかるか？</p>
-
-<p>答えはNOだ。彼らは「使いやすい」UIはわかっても「クール」なUIはわからない。そして「使いやすい」というのは結局各人の主観に依るものなので、この「使いやすい」UIというのは参考にはできても信用はできないものである。</p>
-
-<p>この話を読んで真っ先に思い出した１つの話がある。</p>
-
-<blockquote class="twitter-tweet"><p>フラットデザインや新機種が評判どうか、というのはAppleにとっては意味が無い。Appleは消費者や開発者の意見を聞かない。なぜなら消費者というのは自分たちが何を欲しがっているのか理解していないため、聞いても意味が無いから（だからAppleではユーザビリティテストをしない）。</p>&mdash; Hak Matsuda (@hak) <a href="https://twitter.com/hak/statuses/383983878186094592">September 28, 2013</a></blockquote>
-<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-<p>iOS7が紹介されてすぐはiPhone開発者・デザイナーから不満の声をよく聞いた。しかしiOS7がリリースされ実際にアップデートしたユーザーの話を聞いてみると、思ったよりも不満の声は聞かない。むしろ「使い始めてみるとiOS6のデザインが古臭く見える」くらいらしいのだ<sup id="fnref:ios7"><a href="#fn:ios7" class="footnote">1</a></sup>。結局、iOS7の不満の声はユーザーのiOS7への「慣れ」によって解決されてしまう問題だったのだ。</p>
-
-<p>同時に上の話は当然のようにも思う。なぜならAppleはiPhoneで「未来」のUIを提供しているからだ。そのUIは未だユーザー達が体験したことのないUIであり、ユーザーの想像力の及ばないUIだ。Appleにとってユーザーは「何を欲しがっているのか理解していない」クソなのである。なのでAppleがユーザーの声を聞く意味は無い。</p>
-
-<p>そういう意味において「基本的に運営側がすることが正しいんですよ」理論はあながち間違っていない。</p>
-
-<h2 id="ui-1">「UIを破壊していく」という行為</h2>
-
-<p>ユーザーの声を第一価値基準に置いてしまうとUIの破壊的変更は行えない。なぜなら旧UIと新UIの２つがあったときにクソユーザーが肯定するのは当然「慣れ」ている旧UIだからだ。この事例の典型的な例が<a href="http://www.itmedia.co.jp/news/articles/1304/02/news033.html">CookpadのiPhone UIリニューアル</a>である。</p>
-
-<p>「開発チームにはユーザーエクスペリエンス（UX）の専門家を入れ、ユーザーインタビューを重ねるなど、ユーザー目線に立った設計を重視。」とあるのでUX的観点でアプリは確実に良くなっているはずである。ただクックパッドチームにとって想定外だったのは「慣れ」を第一価値基準に置くクックパッドユーザー、クソBBAたちの存在である。結果的に彼女らからとんでもないレビュー１スター攻撃をくらってしまった。</p>
-
-<p>しかしこのようなクソユーザーの声ばかりに耳を傾けていてはいけない。さもなければUIの進化は止まる。UIの進化のためにはあるタイミングにおけるUIの破壊行為が不可欠だ。UI破壊のアプローチとして以下の２つが取りうる。</p>
-
-<ol>
-  <li>漸進的変化: 徐々にUIに変化を加えていくアプローチ</li>
-  <li>劇的変化: UIをフルスクラッチで再構築するアプローチ</li>
-</ol>
-
-<h3 id="section">漸進的変化</h3>
-
-<p>前者の場合のメリットとしてはユーザーの不満の声を極力少なくすることができる。ユーザーに気づかせない、あるいは「あれ、いつの間にかここ変わってる？」と思われるくらいの変更に留めておく。この変更の例としてはGoogleの検索結果画面が挙げられる。</p>
-
-<p>Googleの検索結果は微細なデザインが変わっているとはいえ、本質的なデザインは何一つ変わっていない。ここに2001年のGoogleの検索結果画面がある。</p>
-
-<p><img src="/images/posts/ui/google.png" alt="google" /></p>
-
-<p>Googleのロゴが左上にあって、その右に検索フォームと検索ボタンがあり、その下に検索結果がある。本質的なUIとしては何も変わっていないのがわかるはずだ。</p>
-
-<p>この変化の仕方のデメリットとしては大々的なUI破壊ができないということだ。具体的には現在のUIをフルフラットUIで作りなおそう、といったことはできない。</p>
-
-<h3 id="section-1">劇的変化</h3>
-
-<p>後者はAppleがiOS6をiOS7にアップデートしたときのような劇的な変化、Apple的アプローチだ。メリットとしてはUIをコンセプトレベルで作り変えることができる。フルフラットUIに変更しようとか、3カラムだったデザインを1カラムのレスポンシブデザインに作り変えようとか。</p>
-
-<p>デメリットとしては上記に書いたように旧UIに「慣れ」たユーザーからの不満の声が上がることだ。新UIに全く満足できないユーザーが出てきた場合の最悪のシナリオとして、既存ユーザーのサービス離れも起こりえる。</p>
-
-<p>逆に言うとサービス提供者としてはその最悪のシナリオも想定しておく必要があるだろう。UIをロールバックさせるのか、クソユーザーの不満の声を聞きつつ新UIをアップデートしていくのか、不満の声を無視してサービスの提供を続けていくのか。</p>
-
-<h2 id="ui-2">何が「クール」なUIなのか</h2>
-
-<p>ところで「クール」なUIというのはどういったUIなんだろうか。たとえ運営が「最高にクール」なUIだと信じこんでいたとしても本質的に「クール」でなければユーザーは離れていくだけだろう。クールなUI、私は「慣れとともにUX満足度が向上する」UIだと思っている<sup id="fnref:ui"><a href="#fn:ui" class="footnote">2</a></sup>。グラフに表すとこのようになる。</p>
-
-<canvas id="myChart1" width="300" height="200"></canvas>
-
-<script type="text/javascript">
-(function(){
-var ctx = document.getElementById("myChart1").getContext("2d");
-var data = {
-  labels : ["時間の経過", ""],
-  datasets : [
-    {
-      fillColor : "rgba(106,178,202,0.5)",
-      strokeColor : "rgba(150,150,150,1)",
-      pointColor : "rgba(150,150,150,1)",
-      pointStrokeColor : "#fff",
-      data : [20,100]
-    }
-  ]
-};
-var options = {
-  scaleOverride : true,
-  scaleSteps : 10,
-  scaleStepWidth : 10,
-  scaleStartValue : 0
-};
-new Chart(ctx).Line(data,options);
-})();
-</script>
-
-<p>横軸は時間の経過、縦軸はUXの満足度を表している。時間の経過とともにUIに「慣れ」ることで、UXも向上していく。良いUIを提供できればこのような満足度の曲線を描くことだろう。</p>
-
-<p>一方悪いUIを提供した場合の曲線はどうなるか。</p>
-
-<canvas id="myChart2" width="300" height="200"></canvas>
-
-<script type="text/javascript">
-(function(){
-var ctx = document.getElementById("myChart2").getContext("2d");
-var data = {
-  labels : ["時間の経過", ""],
-  datasets : [
-    {
-      fillColor : "rgba(106,178,202,0.5)",
-      strokeColor : "rgba(150,150,150,1)",
-      pointColor : "rgba(150,150,150,1)",
-      pointStrokeColor : "#fff",
-      data : [20,40]
-    }
-  ]
-};
-var options = {
-  scaleOverride : true,
-  scaleSteps : 10,
-  scaleStepWidth : 10,
-  scaleStartValue : 0
-};
-new Chart(ctx).Line(data,options);
-})();
-</script>
-
-<p>たとえ時間の経過とともにユーザーがUIに「慣れ」たとしてもUXはほとんど向上しない。このダメなUIの例としては楽天の各種サービスが挙げられる。楽天のUIのクソさは単純に慣れとかそれ以前の問題だ。いくら使い込もうともUXは上がらない。せいぜい操作を繰り返す内にナビゲーション・リンクの位置を覚えて操作が前より早くなる程度だ。</p>
-
-<p>破壊的なUI変更を行う場合、サービス運営者は基本的に上曲線のようなユーザーの「慣れ」とともにUXが向上するようなUIを目指すべきである<sup id="fnref:nice-ui"><a href="#fn:nice-ui" class="footnote">3</a></sup>。</p>
-
-<h2 id="section-2">「ジャパニーズ・デザイン」の限界</h2>
-
-<p>日本のサービスではヒットしていても欧米と比較してUIがイケていないケースをよく見る。これは日本のデザイン業界が抱える根源的な問題を浮き上がらせている。</p>
-
-<ul>
-  <li><a href="http://thebridge.jp/2013/11/why-japanese-web-design-is-so-different">日本のウェブデザインはなぜこんなにも世界と違うのか？</a> (<a href="http://randomwire.com/why-japanese-web-design-is-so-different/">原文</a>)</li>
-</ul>
-
-<p>上記事では文化的、歴史的観点から日本のデザインがダサくならざるを得ない状況を述べている。日本人は絵だけでは満足できず文字が必要なこと。日本語という言語特性によりタイポグラフィの表現が乏しいこと（WEBフォントが扱えない）。日本語という文字自体がクールじゃないこと。などなど。</p>
-
-<p><img src="/images/posts/ui/japanese.png" alt="japanese is uncool" /></p>
-
-<p>（via. <a href="http://www.slideshare.net/yuudaitachibana/creators-meetup-8">流行に乗っていいの？フラットデザインの落とし穴</a>）</p>
-
-<p>このような記事を読むと日本という国の文化・社会そのものがUIをクールじゃない方向へと規定しているのではないかとも思う。</p>
-
-<h2 id="section-3">ニコ動はどうすべきか？</h2>
-
-<p>話が飛んだが本来のニコ動の話に戻ってニコ動はどうすべきなのかを私なりに考えてみる。私ならまずはファットなUIをスリムにするところから考え始めるだろう。つまり何の要素を加えるか、または何を変更するかといった足し算ではなく、何の要素を削るかの引き算の発想で始めるのである。</p>
-
-<p>ニコニコ動画に限っていうと、ニコニコ動画のコアな機能は「動画＆コメントを観る」ことと「動画にコメントをする」ことの２つだけだと私は考える。それ以外の機能に関するUIは削るor目立たなくさせて良いだろう。お手本としてはFuluやNetflixが良いだろう。基本は動画視聴サービス。動画を視聴させることに徹底的にUIをフォーカスさせる。ニコニコ動画は動画視聴＋コメント閲覧にフォーカスしたUI作りを考えてスリム化していけばよい。</p>
-
-<p>と、ここまで来た時点でユーザーの不満が噴出することは見え見えである。というのもニコニコ動画というサービス自体がファットな機能に支えられており、ユーザーのニコニコ動画の使い方・楽しみ方も多種多様化してしまっているからだ。コア機能以外を引き算した時点で、その機能を愛用していたユーザーは激おこぷんぷん丸である。</p>
-
-<p>ここでUI変更のディレンマが発生する。「ファットなUIをスリムにしたい」という気持ちと「できるだけ多くのユーザーの声に応えたい」気持ちの間で揺れてしまう。ただ上述したようにクソユーザーにはクールなUIはわからないのだ。そしてもう１つ重要なこととして、<a href="http://fladdict.net/blog/2013/08/client-user-request.html">顧客やユーザーの要望に全て対応すると、アプリは99%破綻する</a>ことも忘れてはならない。</p>
-
-<p>つまり何を言いたいかというと、結局ニコ動はどんなUI変更やっても不満は少なからず絶対来るのだからそんなのいちいち気にするな、ということである。本当に「最高にクール」なUIであれば、慣れとともにユーザー・エクスペリエンスは向上するんだよ。お前らが考えた「最高にクール」なUIだろうが。というかユーザーの声くらいでロールバックしてしまうような変更なら最初からするな、ということである。</p>
-
-<h2 id="section-4">まとめ</h2>
-
-<p>かなり内容が発散してしまったが、無理やりまとめるとこんな感じだ。</p>
-
-<ul>
-  <li>UIに対するユーザーの声は「参考」であって「正解」ではない</li>
-  <li>UIの進化のためにはユーザーの声を顧みない破壊的変更が必要である</li>
-  <li>「本当にクール」なUIならばUXは「慣れ」とともに向上するはずである</li>
-  <li>ニコ動は「本当にクール」なUIを今後も自信を持って提供していくべき</li>
-</ul>
-
-<h3 id="section-5">追記</h3>
-
-<ul>
-  <li>この記事の反応を受けて<a href="/cool-ui-after/">後記</a>を書きました。（2013/11/22　18:05）</li>
-</ul>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:ios7">
-      <p><a href="http://rebuild.fm/21/">Rebuild: 21: On the Launch of iPhone 5s and iOS 7 (Naoya Ito.)</a>　私はちなみに現時点でiOS6を使用。あと私はAppleは好きですがApple信者ではありません。 <a href="#fnref:ios7" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:ui">
-      <p>UIとUXははっきり区別すべきものである。詳しくはこちらを参照されたし。<a href="http://blog.btrax.com/jp/2012/09/10/what_is_ux/">「ユーザーエクスペリエンスとは何か？」【インタビュー】ホワイトハウスも注目のUXデザイナーJanice Fraser氏（前編）</a> <a href="#fnref:ui" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:nice-ui">
-      <p>では何が「慣れとともにUX満足度が向上する」UIなのかという話になるが、私はUI/UXの専門家ではないのでそこは専門家に譲るとする。 <a href="#fnref:nice-ui" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 ]]></content>
   </entry>
   
