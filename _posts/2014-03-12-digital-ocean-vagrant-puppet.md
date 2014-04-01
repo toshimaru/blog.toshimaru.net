@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 1円クラウド、DigitalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする
+title: 1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする
 published: true
 image: /images/posts/vagrant/vagrant.png
 description: 流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
@@ -138,7 +138,7 @@ puppetのmanifestファイルを定義します。
 
 ![bill](/images/posts/vagrant/bill.png)
 
-現時点で1USD=102JPYくらいなので0.01USD=約１円ですね。
+現時点で`1USD` = `102JPY`くらいなので`0.01USD`=約１円ですね。
 
 ##Github Repo
 
@@ -147,4 +147,5 @@ Githubに今回のサンプルの最終形を置いておく。
 <https://github.com/toshimaru/vagrant-digitalocean-puppet>
 
 ###参考
+
 * [VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する](http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/)
