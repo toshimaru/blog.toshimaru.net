@@ -7,15 +7,15 @@ description: packerを使ってDigital Ocean上にイメージを作成してみ
 tags: digitalocean packer
 ---
 ＜前回のあらすじ＞  
-[1円クラウド、DigitalOceanのインスタンスをVagrant upして、puppetでプロビジョニングする](/digital-ocean-vagrant-puppet/)
+[1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする](/digital-ocean-vagrant-puppet/)
 
 [packer](http://www.packer.io/)を使ってDigital Ocean上にイメージを作成してみたのでそのときのメモ。
 
-##Packerとは？
+## Packerとは？
 
 [Vagrant](http://www.vagrantup.com/)がVMの構築とかAWS/Digitgal Oceanでのインスタンス作成とかを抽象化して、プログラマブルにすることが可能なツールだとしたら、Packerはそれをさらに抽象化して、1つの設定ファイル(JSON)からAWS, Digital Ocean, VirtualBox向けのイメージを作成できるツール。
 
-##Digital Oceanにイメージ作成する
+## Digital Oceanにイメージ作成する
 
 今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。
 
@@ -54,7 +54,7 @@ tags: digitalocean packer
 
     $ echo "echo 'hello world'" > setup.sh
 
-##Packer!
+## Packer!
 
 packerビルドしてみる。
 
@@ -79,7 +79,9 @@ packerビルドしてみる。
     ==> Builds finished. The artifacts of successful builds are:
     --> digitalocean: A snapshot was created: 'packer-1395033724' in region 'San Francisco 1'
 
-##結果
+## 結果
+
+Before,Afterで見てみる。
 
 Before:
 
@@ -91,7 +93,7 @@ After:
 
 イメージのスナップショット（`packer-1395033724`）が作成されてますね。
 
-##最後に
+## 最後に
 
 packerはあくまでもイメージを作成するツールであり、イメージを管理するツールではないようです。
 
@@ -101,12 +103,12 @@ See. <http://www.packer.io/intro/getting-started/build-image.html>
 
 また、`builders`の設定を変更することで、[Amazon EC2](http://www.packer.io/docs/builders/amazon.html)や[Google Compute Engine](http://www.packer.io/docs/builders/googlecompute.html)とかにもイメージ作成できるようですね。
 
-###Github Repo
+### Github Repo
 
 今回使ったものをGithubにおいておきます。
 
 <https://github.com/toshimaru/packer-digitalocean-sample>
 
-###参考
+### 参考
 
 * [Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)](http://rebuild.fm/25/)
