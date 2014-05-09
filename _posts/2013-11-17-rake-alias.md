@@ -12,16 +12,18 @@ RubyのRakeタスクにエイリアス付けたいときってありません？
 
 そういうときは`alias_task`なんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。具体的にはこんな感じです。
 
-    def alias_task(tasks)
-        tasks.each do |new_name, old_name|
-            task new_name, [*Rake.application[old_name].arg_names] => [old_name]
-        end
+{% highlight ruby %}
+def alias_task(tasks)
+    tasks.each do |new_name, old_name|
+        task new_name, [*Rake.application[old_name].arg_names] => [old_name]
     end
+end
 
-    alias_task [
-        [:new, :create],
-        [:dc,  :db_create]
-    ]
+alias_task [
+    [:new, :create],
+    [:dc,  :db_create]
+]
+{% endhighlight %}
 
 ここでは
 
