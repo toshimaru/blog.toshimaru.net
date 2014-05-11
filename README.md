@@ -4,26 +4,27 @@ My blog repository powered by Jekyll.
 
 [![Build Status](https://travis-ci.org/toshimaru/blog.toshimaru.net.png?branch=master)](https://travis-ci.org/toshimaru/blog.toshimaru.net)
 
-#Rake Tasks
+# Rake Tasks
 
-##Create new post
+## Create new post
 
     $ rake post
 
-And then, title new post.
+Then, title your new post.
 
-##Initial setup
+## Initial setup
 
     $ rake setup
 
-##Deploy to gh-pages
-
-    $ rake deploy
-
-##Serve static pages
+## Serve static pages
 
     $ rake serve
 
-TODO
-----
+## Deploy to gh-pages
+
+    $ rake deploy
+
+## TODO
+* Use CoffeeScript
+* Convert LESS to SCSS
 * Bump up font-awosome
