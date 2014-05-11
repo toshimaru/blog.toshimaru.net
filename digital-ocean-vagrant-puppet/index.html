@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="/assets/main-f54df36232f7f019ee167bdd21225601.css">
+  <link rel="stylesheet" href="/assets/main-50ac2094ad4d5d8ac3486229a0124b81.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
@@ -58,7 +58,7 @@
 
 <p>流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。</p>
 
-<h2 id="install-vagrant-command">install vagrant command</h2>
+<h2 id="install-vagrant-command">Install vagrant command</h2>
 
 <p>Mac使っているのであれば<a href="https://github.com/phinze/homebrew-cask">homebrew-cask</a>を使うのが便利。</p>
 
@@ -71,7 +71,7 @@
 Vagrant 1.5.1
 </code></pre>
 
-<h2 id="install-vagrant-digitalocean-plugin">install vagrant-digitalocean plugin</h2>
+<h2 id="install-vagrant-digitalocean-plugin">Install vagrant-digitalocean plugin</h2>
 
 <p>そのままではDigitalOceanは使えないので、次にvagrantのDigitalOceanプラグインをインストール。</p>
 
@@ -89,23 +89,22 @@ $ touch Vagrantfile
 
 <p>次に<code>Vagrantfile</code>に書く設定。</p>
 
-<pre><code>Vagrant.configure('2') do |config|
+<div class="highlight"><pre><code class="ruby"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 
-  config.vm.provider :digital_ocean do |provider, override|
-    override.ssh.private_key_path = '~/.ssh/id_rsa'
-    override.vm.box = 'digital_ocean'
-    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="ss">:digital_ocean</span> <span class="k">do</span> <span class="o">|</span><span class="n">provider</span><span class="p">,</span> <span class="n">override</span><span class="o">|</span>
+    <span class="n">override</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">private_key_path</span> <span class="o">=</span> <span class="s1">&#39;~/.ssh/id_rsa&#39;</span>
+    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s1">&#39;digital_ocean&#39;</span>
+    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box&quot;</span>
 
-    provider.client_id = '{your_client_id}'
-    provider.api_key = '{your_api_key}'
+    <span class="n">provider</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="s1">&#39;{your_client_id}&#39;</span>
+    <span class="n">provider</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;{your_api_key}&#39;</span>
 
-    provider.image                = 'CentOS 6.4 x64'
-    provider.region               = 'San Francisco 1'
-    provider.size                 = '512MB'
-  end
+    <span class="n">provider</span><span class="o">.</span><span class="n">image</span>                <span class="o">=</span> <span class="s1">&#39;CentOS 6.4 x64&#39;</span>
+    <span class="n">provider</span><span class="o">.</span><span class="n">region</span>               <span class="o">=</span> <span class="s1">&#39;San Francisco 1&#39;</span>
+    <span class="n">provider</span><span class="o">.</span><span class="n">size</span>                 <span class="o">=</span> <span class="s1">&#39;512MB&#39;</span>
+  <span class="k">end</span>
 
-end
-</code></pre>
+<span class="k">end</span></code></pre></div>
 
 <p><code>provider.client_id</code>, <code>provider.api_key</code>の値はアカウント作成後、下記URLより生成できる。</p>
 
@@ -136,28 +135,27 @@ active
 
 <p>これだけでは最小パッケージで必要なパッケージが入ってなく片手落ち。そうだ、puppetでプロビジョニングしてみよう。<code>Vagrantfile</code>をこうしてみる。</p>
 
-<pre><code>Vagrant.configure('2') do |config|
-  config.vm.provision "shell", inline: "rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force"
-  config.vm.provision "shell", inline: "yum -y install puppet"
+<div class="highlight"><pre><code class="ruby"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s2">&quot;rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force&quot;</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s2">&quot;yum -y install puppet&quot;</span>
 
-  config.vm.provider :digital_ocean do |provider, override|
-    override.ssh.private_key_path = '~/.ssh/id_rsa'
-    override.vm.box = 'digital_ocean'
-    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="ss">:digital_ocean</span> <span class="k">do</span> <span class="o">|</span><span class="n">provider</span><span class="p">,</span> <span class="n">override</span><span class="o">|</span>
+    <span class="n">override</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">private_key_path</span> <span class="o">=</span> <span class="s1">&#39;~/.ssh/id_rsa&#39;</span>
+    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s1">&#39;digital_ocean&#39;</span>
+    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box&quot;</span>
 
-    provider.client_id = '{client_id}'
-    provider.api_key = '{api_key}'
+    <span class="n">provider</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="s1">&#39;{client_id}&#39;</span>
+    <span class="n">provider</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;{api_key}&#39;</span>
 
-    provider.image                = 'CentOS 6.4 x64'
-    provider.region               = 'San Francisco 1'
-    provider.size                 = '512MB'
-  end
+    <span class="n">provider</span><span class="o">.</span><span class="n">image</span>                <span class="o">=</span> <span class="s1">&#39;CentOS 6.4 x64&#39;</span>
+    <span class="n">provider</span><span class="o">.</span><span class="n">region</span>               <span class="o">=</span> <span class="s1">&#39;San Francisco 1&#39;</span>
+    <span class="n">provider</span><span class="o">.</span><span class="n">size</span>                 <span class="o">=</span> <span class="s1">&#39;512MB&#39;</span>
+  <span class="k">end</span>
 
-  config.vm.provision "puppet" do |puppet|
-    puppet.options                = "--verbose"
-  end
-end
-</code></pre>
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;puppet&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">puppet</span><span class="o">|</span>
+    <span class="n">puppet</span><span class="o">.</span><span class="n">options</span>                <span class="o">=</span> <span class="s2">&quot;--verbose&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
 
 <p>最初にpuppetをインストールコマンドを追加。そして</p>
 
