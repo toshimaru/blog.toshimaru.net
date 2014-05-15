@@ -3,12 +3,11 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'jekyll'
 gem 'jekyll-tagging'
-gem 'kramdown'
+gem 'jekyll-sitemap'
 
 gem 'therubyracer'
 gem 'jekyll-less'
 gem "jekyll-assets"
-gem "yui-compressor"
 
 # want to check links with exclude option
 # gem 'link-checker'
