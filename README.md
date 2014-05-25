@@ -1,5 +1,5 @@
-blog.toshimaru.net
-===========
+# blog.toshimaru.net
+
 My blog repository powered by Jekyll.
 
 [![Build Status](https://travis-ci.org/toshimaru/blog.toshimaru.net.png?branch=master)](https://travis-ci.org/toshimaru/blog.toshimaru.net)
@@ -25,6 +25,5 @@ Then, title your new post.
     $ rake deploy
 
 ## TODO
-* Use CoffeeScript
 * Convert LESS to SCSS
 * Bump up font-awosome

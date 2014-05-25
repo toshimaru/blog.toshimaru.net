@@ -1,6 +1,6 @@
 ---
 layout: post
-title: MACアドレスを変更するコマンド
+title: MacOSでMACアドレスを変更するコマンド
 published: true
 description: MACアドレスを変更するコマンドが思ったより簡単に実行できたのでご紹介。(MAC OS X 10.8)
 tags: mac network
