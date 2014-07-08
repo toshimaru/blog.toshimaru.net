@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 就活日記 (0)
+title: 就活日記(0) エントリー
 published: true
-description:
+description: カナダからワーホリビザも切れるというところで帰国した。仕事も無いし金もないので日本で就職活動を開始した。その記録を残す。
 tags: 就活
 ---
 
