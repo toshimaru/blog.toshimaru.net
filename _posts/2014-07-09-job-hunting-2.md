@@ -16,16 +16,16 @@ freeeを支えている技術
 -----
 モダンな環境は整ってる。
 
-* Ansible
+* Github
 * RoR
 * CoffeeScript
 * Backbone.js
 * Vue.js
 * Jenkins
 * Hubot
-* Github
 * HipChat
 * Qiita Team
+* Ansible
 * Asana
 
 最近フロントエンド界隈のエンジニアからよく聞く[Vue.js](http://vuejs.org/)を早速実戦投入しているのには驚いた。Vue.jsは[IE8サポートは既に切っている](https://github.com/yyx990803/vue#browser-support)。ユーザーの中にはIE8ユーザーもいるということで、Vue.jsの中を少々ハックして使っているとのことだ。
