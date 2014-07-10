@@ -66,8 +66,19 @@ kyannyさんはフィリピン出張とのことで話せなかった。
 
 こんな人におすすめ
 -----
-Quipperはエンジニアが「無茶」をできる環境があります。エッジな技術で無茶をしたいに向いているかもしれません。
+Quipperはエンジニアが「無茶」をできる環境があります。エッジな技術で無茶をしたい人に向いているかもしれません。
 
 モバイル・アプリケーションはネーティブではなくHTML5/JS技術を使って実装しているあたり、サーバーサイドもさることながら、フロント側もきっちりできる人があっているかと思いました。
 
 [Quipperの採用ページ](https://www.wantedly.com/companies/quipper)
+
+追記
+----
+<blockquote class="twitter-tweet" lang="en"><p>エッジというよりは固い感じでやってるつもりだけどもあんまり他の会社知らないのでよくわからず</p>&mdash; Masatomo Nakano (@masatomon) <a href="https://twitter.com/masatomon/statuses/486936618499309568">July 9, 2014</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="en"><p>(今思いついただけの)Quipperの開発方針 1.「普通」にやるべきことをやる 2.ユーザーを(悪い意味で)びっくりさせない 3. 楽しむ</p>&mdash; Masatomo Nakano (@masatomon) <a href="https://twitter.com/masatomon/statuses/486945136023457792">July 9, 2014</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote class="twitter-tweet" lang="en"><p>4. つらくても折れない心でがんばる（ブラック</p>&mdash; Kensuke Nagae (@kyanny) <a href="https://twitter.com/kyanny/statuses/486945387916173313">July 9, 2014</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
