@@ -57,3 +57,7 @@ freeeを支えている技術
 freeeの急成長を支えたいエンジニアは今すぐジョイン。
 
 [freeeの採用ページ](https://www.wantedly.com/companies/cfo)
+
+あわせてどうぞ
+----
+* [freee 株式会社 に行ってきた！](http://blog.kushii.net/archives/1914293.html)

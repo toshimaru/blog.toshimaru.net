@@ -52,3 +52,7 @@ CTOの方が「日本一技術者の面接が難しい会社にする」と言�
 興味のある方はまずWantedlyオフィスで開催される[もくもく会](https://www.wantedly.com/projects/5106)から参加してはいかがでしょうか？
 
 [Wantedlyの採用ページ](https://www.wantedly.com/companies/wantedly)
+
+あわせてどうぞ
+----
+* [ウォンテッドリー株式会社 に行ってきた！](http://blog.kushii.net/archives/1874257.html)
