@@ -3,12 +3,70 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-07-17T18:13:44+00:00</updated>
+  <updated>2014-07-18T20:02:47+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話]]></title>
+    <link href="http://blog.toshimaru.net/rspec2-to-rspec3-errors/"/>
+    <updated>2014-07-19T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/rspec2-to-rspec3-errors</id>
+    <content type="html"><![CDATA[<p>遊びで作ってるRailsアプリケーションのRSpecのバージョンを２から３に上げたら、２では全部通ってたテストが３にした途端テストが100個くらいFailした。一体何が起こっているかわからなかったのでRSpec3の挙動の違いを調べてみることにした。</p>
+
+<p><code>rspec-rails</code>を<code>bundle install</code>したあと<code>rspec:install</code>する。</p>
+
+<pre><code>$ rails g rspec:install
+create  .rspec
+create  spec
+create  spec/spec_helper.rb
+create  spec/rails_helper.rb
+</code></pre>
+
+<p>今までなかった<code>rails_helper.rb</code>ってのが作られている。<code>scaffold</code>で生成されるspecディレクトリの構成はこう。</p>
+
+<pre><code>spec
+├── controllers
+│   └── users_controller_spec.rb
+├── helpers
+│   └── users_helper_spec.rb
+├── models
+│   └── user_spec.rb
+├── rails_helper.rb
+├── requests
+│   └── users_spec.rb
+├── routing
+│   └── users_routing_spec.rb
+├── spec_helper.rb
+└── views
+    └── users
+        ├── edit.html.erb_spec.rb
+        ├── index.html.erb_spec.rb
+        ├── new.html.erb_spec.rb
+        └── show.html.erb_spec.rb
+</code></pre>
+
+<p>試しに<code>spec/controllers/users_controller_spec.rb</code>を開いてみると冒頭がこんな感じになっていました。</p>
+
+<pre><code>require 'rails_helper'
+</code></pre>
+
+<p><a href="http://willnet.in/126">RSpec 3 時代の設定ファイル rails_helper.rb について</a></p>
+
+<blockquote>
+  <p>というわけで、これまで require ‘spec_helper’ としていた箇所の大部分は require ‘rails_helper’ に置換してあげる必要がありそうですね。パーフェクト Ruby on Rails のテストの章は require ‘spec_helper’ となっているので、RSpec 3 のリリース版を利用する場合は適宜読み替えをお願いします。</p>
+</blockquote>
+
+<p><code>spec_helper</code>を<code>rails_helper</code>に変えて、それらの２ファイルの設定をRSpec3用に見直せば全てのテストが問題なく通るようになりました、とさ。</p>
+
+<p>RSpec3よりruby1.8,ruby1.9をサポートしなくなったり新しいマッチャーが増えたりしてるので変更点を下記より再度確認してみるとよいと思います。</p>
+
+<p><a href="http://myronmars.to/n/dev-blog/2014/05/notable-changes-in-rspec-3">Notable Changes in RSpec 3</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[就活日記(5) トレタ]]></title>
@@ -407,6 +465,7 @@
   <li><a href="/job-hunting-2/">就活日記(2) freee</a></li>
   <li><a href="/job-hunting-3/">就活日記(3) Quipper</a></li>
   <li><a href="/job-hunting-4/">就活日記(4) Gunosy</a></li>
+  <li><a href="/job-hunting-5/">就活日記(5) トレタ</a></li>
 </ul>
 
 <div class="footnotes">
@@ -1605,26 +1664,6 @@ AA
 <p>以上、<a href="http://www.adventar.org/calendars/77">道民部 Advent Calendar 2013</a>、４日目の記事でした。</p>
 
 <p>※写真は<a href="http://asahiyama.boo.jp/index.html">旭山動物園の動物写真集</a>からお借りしました。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[gitのログから特定の文字列を含むコミットを採掘する]]></title>
-    <link href="http://blog.toshimaru.net/git-log-p-s/"/>
-    <updated>2013-12-02T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/git-log-p-s</id>
-    <content type="html"><![CDATA[<p>「このコード書いたのは誰だ？」ってのは<code>git blame</code>からの<code>git show</code>でOKですが、多くのコミットを重ねている場合、<code>git blame</code>では「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK.</p>
-
-<pre><code>$ git log -p -S 'function shitty_function'
-</code></pre>
-
-<p>これで<code>shitty_function</code>というfunctionに関する最初から今にいたるまでのコミットをログから発掘できます。</p>
-
-<h2 id="section">参考</h2>
-
-<ul>
-  <li><a href="http://blog.eiel.info/blog/2013/06/04/git-log-s/">このコード書いた誰だよ! そんな時の Git Log -S でもしてみよう</a></li>
-</ul>
 ]]></content>
   </entry>
   
