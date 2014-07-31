@@ -6,16 +6,16 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜 - Hack Your Design!</title>
+  <title>就活日記(6) KAIZEN platform Inc. - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="/assets/main-e9d356ce94af8a7665204e6c434215f2.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜 - Hack Your Design!">
-  <meta property="og:title" content="jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜 - Hack Your Design!">
-  <meta name="twitter:description" content="jQeuryにおけるモダンAjaxな書き方を目指して、ステップ・バイ・ステップでコード付き解説していきます。"><meta property="og:description" content="jQeuryにおけるモダンAjaxな書き方を目指して、ステップ・バイ・ステップでコード付き解説していきます。">
-  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
+  <meta name="twitter:title" content="就活日記(6) KAIZEN platform Inc. - Hack Your Design!">
+  <meta property="og:title" content="就活日記(6) KAIZEN platform Inc. - Hack Your Design!">
+  <meta name="twitter:description" content="Kaizenといえばカリスマハッカー、Naoya Itoさんが勤めていることでよく知られているかと思う。ブログやプレゼン、rebuild.fmにてNaoyaさんが折に触れてKaizenについて言及するので気になって気になって仕方ない、ということで訪問。"><meta property="og:description" content="Kaizenといえばカリスマハッカー、Naoya Itoさんが勤めていることでよく知られているかと思う。ブログやプレゼン、rebuild.fmにてNaoyaさんが折に触れてKaizenについて言及するので気になって気になって仕方ない、ということで訪問。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/job-hunting/kaizentop.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/job-hunting/kaizentop.png" />
   <meta property="og:type" content="article">
 </head>
 <body>
@@ -46,153 +46,101 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜</h1>
+  <h1 class="fadeInLeft">就活日記(6) KAIZEN platform Inc.</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-12-13T00:00:00+00:00" pubdate>13 Dec 2012</time>
-      <i class="icon-tags"></i><a href="/tag/jquery.html" rel="tag">jquery</a>
+      <i class="icon-calendar"></i><time datetime="2014-07-26T00:00:00+00:00" pubdate>26 Jul 2014</time>
+      <i class="icon-tags"></i><a href="/tag/%E5%B0%B1%E6%B4%BB.html" rel="tag">就活</a>
     </div>
-    
+    <img class="post-image flipInX" src="/images/posts/job-hunting/kaizentop.png" alt="(image)就活日記(6) KAIZEN platform Inc." title="就活日記(6) KAIZEN platform Inc." />
   </div>
 </div>
 
-<p>本エントリは<a href="http://www.adventar.org/calendars/29">軽めのjQuery Advent Calendar 2012</a>の14日目の記事として書きます。</p>
-<p>軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。。。</p>
-<p>※ Twitter API仕様変更によりTwitter APIを使ったコードは動かなくなっていることにご注意。</p>
-<h2>jQuery 1.4以前の書き方</h2>
-<p>まずは、少し古めのコード、昔のjQueryの本とかでよく見る書き方。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$.ajax({
-    url: &quot;ajax.html&quot;,
-    success: function(data) {
-       alert('success!!');
-    },
-    error: function(data) {
-       alert('error!!!');
-    }
-});</pre></div>
-</div>
+<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
 
-<h2>jQuery 1.5以上の書き方</h2>
-<p>1.5以降だと、<code>$.ajax()</code> は<a href="http://api.jquery.com/jQuery.ajax/#jqXHR">jqXHRオブジェクト</a>を返すようになります。それを利用した書き方はこう。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$.ajax({
-    url: &quot;ajax.html&quot;,
-}).success(function(data){
-    alert('success!!');
-}).error(function(data){
-    alert('error!!!');
-});</pre></div>
-</div>
+<h2 id="section">きっかけ</h2>
+<p>Kaizenといえばカリスマハッカー、<a href="https://twitter.com/naoya_ito">Naoya Itoさん</a>が勤めていることでよく知られているかと思う。<a href="http://d.hatena.ne.jp/naoya/">ブログ</a>や<a href="https://speakerdeck.com/naoya">プレゼン</a>、<a href="http://rebuild.fm/">rebuild.fm</a>にてNaoyaさんが折に触れてKaizenについて言及するので気になって気になって仕方ない、ということで訪問。</p>
 
-<p>成功時の処理と失敗時の処理が<code>ajax()</code>と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。</p>
-<h2>jQuery 1.8以上の書き方</h2>
-<p><a href="http://api.jquery.com/jQuery.ajax/">公式リファレンス</a>いわく、</p>
-<blockquote class="posterous_medium_quote">Deprecation Notice: The jqXHR.success(), jqXHR.error(), and jqXHR.complete() callbacks will be deprecated in jQuery 1.8. To prepare your code for their eventual removal, use jqXHR.done(), jqXHR.fail(), and jqXHR.always() instead.</blockquote>
-<p>つまりjQuery1.8から</p>
+<h2 id="kaizen">Kaizenを支えている技術</h2>
+
+<p>使われている技術は下記ページに紹介されているので、ここで改めて紹介する必要はないかと思う。</p>
+
+<p><a href="http://kaizenplatform.in/hiring/engineer.html">KAIZEN platform Inc. ではエンジニアを募集しています</a></p>
+
+<p><img src="/images/posts/job-hunting/kaizen.png" alt="Kaizen Technology" /></p>
+
+<p>開発の進め方などに関しはNaoyaさんがブログにまとめているのでそちらを読むとよいかと思う。</p>
+
+<p><a href="http://d.hatena.ne.jp/naoya/20131013/1381651545">Webサービス開発現場から / 近頃の開発のやり方 ･･･ Github と Pull Request とコードレビュー</a></p>
+
+<h2 id="section-1">働き方</h2>
+<p>上ページの中でも紹介されているがKaizenの働き方は特徴的だ。見出しだけ抜き出してみると、、、</p>
+
 <ul>
-<li><code>success()</code> は <code>done()</code> に、</li>
-<li><code>error()</code> は <code>fail()</code> に、</li>
-<li><code>complete()</code> は <code>always()</code>を</li>
+  <li>OSSのように作る</li>
+  <li>オープンなコミュニケーション</li>
+  <li>リモートワーク</li>
+  <li>自動化</li>
+  <li>コードとしてのインフラ</li>
+  <li>オープンな組織・ハッカー文化</li>
 </ul>
-<p>代わりに使ってね、ってことです。ということで、<code>success()</code>,<code>error()</code>は使わない。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$.ajax({
-    url: &quot;ajax.html&quot;,
-}).done(function(data){
-    alert('success!!');
-}).fail(function(data){
-    alert('error!!!');
-});</pre></div>
-</div>
 
-<p>あるいは<code>then()</code>を用いてこう書いてもいいでしょう。</p>
-<div class="CodeRay">
-  <div class="code"><pre>$.ajax({
-    url: &quot;ajax.html&quot;,
-}).then(
-function(data){ alert('success!!'); },
-function(data){ alert('error!!');   }
-);</pre></div>
-</div>
+<p>この働き方は<a href="https://github.com/about/jobs">githubの働き方</a>をモデルとして作られているようだ。中でも興味深いのはリモートワークを導入している点。日本企業でリモートワークを積極的に導入していこうとしている企業はそんなに多くはない中、Kaizenは「リモートワークを妥協」していない。リモートワークを実践するためのツール群も良いモノであればどんどん導入していっているようだ。</p>
 
-<p><code>then()</code>の一個目の関数が成功時、二個目の関数が失敗時となります。</p>
-<h2>（発展編）Deferredを用いた書き方</h2>
-<p>上述した例の中でさりげなくDeferredな書き方を使っていましたが、発展編ということでこのDeferredな書き方をさらに突き詰めてみましょう。</p>
-<h3>deferredとは何か？</h3>
+<p>エンジニアはリモートワークを絶対しなければしないのか、というとそんなことはなく重要視しているのは「その人が最も生産性が高くなる環境で働く」ということのようだ。新宿にあるオフィスから物理的に通勤困難な人はリモートワークで働かざるを得ないわけだが、そうではない人はオフィスに来て働いてもOKだという。中には週の半分がリモート、もう半分はオフィスで働く人もいるようだ。</p>
+
+<p>このへんのリモートワークかどうかの選択権もまた与えられているのは良いことかと思う。というのも人によってはリモートでは生産性が出ないという人もいるからだ。自分の場合、集中してコードを書きたいときはリモートワークしたくて、コミュニケーションが多く発生するようなステージ（まだ仕様が煮詰まっていないプロジェクト発足時など）だと対面で働きたいなと思う。</p>
+
+<h2 id="section-2">なぜ日本にはリモートワークが少ないのか</h2>
+<p>ところでなぜ日本はそれほどリモートワークスタイルが少ないのだろうか（自分は海外で働いたときにリモートワークを経験した。あとリモートワークの求人も見ることが多かった）。考えられる理由としては、</p>
+
+<ul>
+  <li>従業員を信頼していない（「直接管理していないからサボるんじゃないか」という懸念）</li>
+  <li>対面での会議、コミュニケーションができない</li>
+  <li>セキュリティ的な理由（会社の仕事は外に持ち出さない）</li>
+  <li>社内規定が云々…</li>
+</ul>
+
+<p>上記のうち会議、コミュニケーションの部分に関してはITツールを駆使することで解決できると思う。特にエンジニアの場合、Githubをはじめ、HipChatなどのチャットツール、Hangoutなどのビデオ通話サービスなどリモートワークでも問題なく仕事を進められるようなツール群が存在するのでリモート勤務がやりやすいかと思う。</p>
+
+<p>一方でリモートワークは会社にとって良い事もある。</p>
+
+<ul>
+  <li>割り込みが減る→作業に集中できる→生産性アップ</li>
+  <li>物理的な場所を取らない</li>
+  <li>リモートワークを許可することで場所にとらわれない採用ができる。（地方に住む人、海外在住の人）</li>
+</ul>
+
+<p>最近は37Signalsの<a href="http://www.amazon.co.jp/gp/product/4152094338/ref=as_li_tf_tl?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=4152094338&amp;linkCode=as2&amp;tag=toshimaru-22">『強いチームはオフィスを捨てる: 37シグナルズが考える「働き方革命」』</a>なんて本が話題になったけど、まだまだリモートワークが少ないのが日本の現状なので今後リモートワークを認める企業がKaizenのように増えていけばいいと思う。</p>
+
 <blockquote>
-<p>jQuery.Deferred() introduces several enhancements to the way callbacks are managed and invoked. In particular, jQuery.Deferred() provides flexible ways to provide multiple callbacks, and these callbacks can be invoked regardless of whether the original callback dispatch has already occurred. jQuery Deferred is based on the CommonJS Promises/A design.</p>
-<p>jQuery.Deferred() はコールバック関数の管理、実行に改善をもたらします。具体的には、jQuery.Deferred()は複数のコールバックの実行を柔軟に行うことができ、これらのコールバック関数は、オリジナルのコールバックのディスパッチが発生しているかどうかにかかわらず実行されます。</p>
+  <p>もちろん対面でやった方が早いと思うことはたくさんあるけど、本当にそれは対面じゃないとできないのかというところをまずは疑ってみないことには、新しい働き方を追求するということはできない。結果的にそれで会議を減らす、非同期に作業することができれば全体の効率が上がるわけで、そこで思考停止しない･･･ということが大切だと思う</p>
 </blockquote>
-<p>要はコールバック関数の実行を延期(deferred)させて、<code>.then()</code> <code>.fail()</code> <code>.always()</code>なんかを使って柔軟にコールバックを管理、実行できるってことです（雑）。</p>
-<p>詳しくは下記を読むとよいでしょう。</p>
-<ul>
-<li><a href="http://msdn.microsoft.com/en-us/magazine/gg723713.aspx">Creating Responsive Applications Using jQuery Deferred and Promises</a></li>
-<li>@tokkonoPapaさんによる上記事の翻訳はこちら:<a href="http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/jquery-deferred-for-responsive-applications-basic/">jQueryのDeferredとPromiseで応答性の良いアプリをー基本編</a></li>
-</ul>
-<p>論より実践。deferredをうまく使ったAJAXコードを見てみましょう。</p>
-<p><a href="http://jsfiddle.net/toshimaru/yP58L/1/light/">jsfiddleでの実例</a></p>
-<div class="CodeRay">
-  <div class="code"><pre>var Twitter = {
-    search: function(query) {
-        var defer = $.Deferred();
-        $.ajax({
-            url: &quot;http://search.twitter.com/search.json&quot;,
-            data: {
-                q: query,
-                rpp: 50
-            },
-            dataType: 'jsonp',
-            success: defer.resolve,
-            error: defer.reject
-        });
-        return defer.promise();
-    }
-};
 
-$('#button').on('click', function() {
-    Twitter.search('jquery deferred').done(function(data) {
-        console.log(data);
-        $(data.results).each(function(k,v){ 
-           $('#tweets').append(v.text + '&lt;br/&gt;'); 
-        });
-    });
-});</pre></div>
-</div>
+<p>(via <a href="http://d.hatena.ne.jp/naoya/20140512/1399864629">Sqwiggle が良いという話、またはリモートでアジャイル開発をどう進めるか</a>)</p>
 
-<p>見てわかるとおり、deferredを使うことでtwitterの検索を行うAJAX部分と結果取得時のイベント処理部分が分離できます。</p>
-<p>これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは <code>Twitter.search('query hoge').done(function(){//code...})</code> と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。</p>
-<h2>（発展編２）$.when() を用いた書き方</h2>
-<p><code>$.when()</code>を用いると複数のdeferredオブジェクトをまとめて管理できます。</p>
-<p><a href="http://jsfiddle.net/toshimaru/nNMae/">jsfiddleでの実例</a></p>
-<div class="CodeRay">
-  <div class="code"><pre>// &quot;Twitter&quot; のコードは同上
+<h2 id="section-3">採用・人について</h2>
+<p>自分の受けてる企業がそうだったけど、スタートアップって良い人がいれば即採用みたいなノリが多かったけど、Kaizenはじっくり人を選考している感を受けました。書類選考が採用のスタート地点なあたりそれが表れている。</p>
 
-$('#button').on('click', function() {
-    $.when(Twitter.search('jquery deferred'), Twitter.search('jquery when')) 
-    .then(function(data1, data2){
-        console.log(data1);
-        console.log(data2);
-    });
-});</pre></div>
-</div>
+<p>逆にいうとそれだけ「応募者が技術者として（働き方含め）Kaizenに合うか」を見極めたいのでしょう。ちなみに既にKaizenで働いている人はリモートでもしっかり働ける技術的に熟達したエンジニアの方が多い印象でした。</p>
 
-<p>when内のdiferredオブジェクト全ての処理が完了すると、その後の処理が発火します。複数のAJAX結果をまとめて処理したいってときに使えます。</p>
-<hr />
-<p>いかがだったでしょうか？ diferredオブジェクトを使うことでより楽しいAjaxライフが送れそうですね。ワクワクしますね。</p>
-<p>本日のコードは<a href="https://gist.github.com/4269484">gist</a>にも上げております。</p>
-<p>では次の方にバトンタッチ〜</p>
-<h3>参考</h3>
-<ul>
-<li><a href="http://d.hatena.ne.jp/aoe-tk/20110515/1305471586">jQueryのDeferredオブジェクトについて調べてみた</a></li>
-<li><a href="http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/how-happy-with-jquery-deferred-for-your-applications/">jQueryのDeferredとPromiseで応答性の良いアプリをー実践編</a></li>
-</ul>
+<h2 id="section-4">エンジニア行動指針</h2>
+<p>Kaizenにはこんな行動指針がエンジニア間でシェアされている。</p>
+
+<p><img src="/images/posts/job-hunting/kaizen-kodoshishin.png" alt="Kaizenエンジニア行動指針" /></p>
+
+<p>チラリと見せてもらったけど分量としてそんなに多くなく、シンプルで力強い行動指針が示されていてとても良い感じでした。宗教ってわけじゃないけどいざ何かに迷ったときに「この行動指針に則って考えるとこっちのほうが良いよね」みたいに考えられるので良いよね。</p>
+
+<h2 id="section-5">こんな人におすすめ</h2>
+<p>リモートワークワークをしたい方、Kaizenの働き方に共感できる人であればKaizenはステキな環境なのではないのでしょうか。Kaizenにはハッカーにとって居心地の良い環境があります。</p>
+
+<p><a href="http://kaizenplatform.in/hiring/engineer.html#application_engineer">KAIZEN platform Inc.の公式採用ページ</a></p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-6/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -210,15 +158,15 @@ $('#button').on('click', function() {
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/jquery-8-tips/" title="jQuery使いが知っておくべき8つのjQueryテクニック">jQuery使いが知っておくべき8つのjQueryテクニック</a></li>
+    <li><a href="/job-hunting-5/" title="就活日記(5) トレタ">就活日記(5) トレタ</a></li>
   
-    <li><a href="/jquery-bottom-scroll/" title="jQueryでページ最下部のスクロール時のイベントをキャッチする">jQueryでページ最下部のスクロール時のイベントをキャッチする</a></li>
+    <li><a href="/job-hunting-4/" title="就活日記(4) Gunosy">就活日記(4) Gunosy</a></li>
   
-    <li><a href="/jquerydeferred-is-most-important-client/" title="【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール">【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール</a></li>
+    <li><a href="/job-hunting-3/" title="就活日記(3) Quipper">就活日記(3) Quipper</a></li>
   
-    <li><a href="/jqueryhidden-inputjquery/" title="hidden inputタグをjQueryで追加">hidden inputタグをjQueryで追加</a></li>
+    <li><a href="/job-hunting-2/" title="就活日記(2) freee">就活日記(2) freee</a></li>
   
-    <li><a href="/jqueryfadein/" title="jQueryで画像を順番にfadeInする">jQueryで画像を順番にfadeInする</a></li>
+    <li><a href="/job-hunting-1/" title="就活日記(1) Wantedly">就活日記(1) Wantedly</a></li>
   
   </ul>
   </div>
@@ -226,14 +174,10 @@ $('#button').on('click', function() {
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/vimsublime-text-2/" title="Newer Post: Vimから３日で乗り換えた、次世代モテエディタ「Sublime Text 2」の魅力"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/iphone4/" title="Older Post: iPhone4を着せ替えしてみた。">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/mac-mysql-upgrade-error/" title="Older Post: brew upgrade mysql 後にpidエラー">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
