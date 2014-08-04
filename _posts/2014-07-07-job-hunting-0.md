@@ -61,5 +61,6 @@ tags: 就活
 * [就活日記(3) Quipper](/job-hunting-3/)
 * [就活日記(4) Gunosy](/job-hunting-4/)
 * [就活日記(5) トレタ](/job-hunting-5/)
+* [就活日記(6) KAIZEN platform Inc.](/job-hunting-6/)
 
 [^1]: 中の人はこれを「採用業界の＜出会い系＞」なんて表現していた。
