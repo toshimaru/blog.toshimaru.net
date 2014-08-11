@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Railsでhas_many,throughではなくdelegate,throughを利用する
+title: Railsでhas_many, throughではなくdelegate, throughを利用する
 published: true
 description: RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。
 tags: rails
