@@ -3,12 +3,82 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-08-04T01:01:56+00:00</updated>
+  <updated>2014-08-11T17:17:58+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Railsでhas_many,throughの逆であるdelegate,toを利用する]]></title>
+    <link href="http://blog.toshimaru.net/belongs_to-through/"/>
+    <updated>2014-08-12T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/belongs_to-through</id>
+    <content type="html"><![CDATA[<h2 id="hasmany-through">has_many, through</h2>
+
+<p>RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:post</span>
+<span class="k">end</span></code></pre></div>
+
+<p>特定のUserがどんなTagを持っているかを調べるには<code>through</code>を使うと簡単に実装できます。<code>User</code>モデルに<code>through</code>を追加しましょう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:post</span>
+<span class="k">end</span></code></pre></div>
+
+<p>こうすることで、<code>@user.tags</code>でユーザーが所有するタグを取得できます。</p>
+
+<p>ではここで疑問。逆に<code>Tag</code>から<code>Post</code>を省いて<code>User</code>を導きだすことはできないのでしょうか？</p>
+
+<h2 id="delegate-">delegate を使う</h2>
+
+<p>結論からいうと<code>delegate</code>を利用することで省けます。具体的には<code>Tag</code>モデルをこうします。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:post</span>
+  <span class="n">delegate</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:post</span>
+<span class="k">end</span></code></pre></div>
+
+<p>これで<code>@tag.user</code>なんて風に当該tagを所有するuserにアクセスできます。</p>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/4021322/belongs-to-through-associations">belongs_to through associations</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[就活日記(6) KAIZEN platform Inc.]]></title>
@@ -1615,80 +1685,6 @@ console.assert(returnTrue(), 'Trueをreturnすべきだよ！')
 
 <h3 id="section-2">追記</h3>
 <p>本アドベントカレンダー二日目でhokacchaさんが「インドの青鬼」という日本で買えるIPAを<a href="http://www.flickr.com/photos/hokaccha/11169857043/">紹介</a>していました。今度日本帰ったら飲んでみたいと思います。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[PHP5.4のtrait機能を理解する]]></title>
-    <link href="http://blog.toshimaru.net/php-trait/"/>
-    <updated>2013-12-08T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/php-trait</id>
-    <content type="html"><![CDATA[<p>この記事は<a href="http://www.adventar.org/calendars/101">PHP Advent Calendar 2013</a>の8日目の記事です。本エントリではphp5.4の注目機能の１つである<a href="http://php.net/manual/ja/language.oop5.traits.php">trait</a>をどう扱うべきかを書いてみようと思います。</p>
-
-<h2 id="trait">Traitとは</h2>
-
-<p>Traitとは継承関係と関係なく実装を再利用できる仕組みのことです<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>。言い換えるならば、「多重継承」であったり「Mix-in」を可能にする仕組みと言えるでしょう。Rubyistの間ではMix-inの概念は当たり前のことでしょうが、PHP界隈ではTraitは新しい機能ということもあり浸透していない概念かと思います（Ruby以外にもTraitと似た機構はあるみたいですね<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>）。</p>
-
-<p>本エントリではPHPerの間では未だ聞き慣れないであろうTraitの概念を実コードとともに紹介してみようと思います。</p>
-
-<h2 id="trait-1">Traitの特徴</h2>
-
-<p>Traitの簡単な特徴は以下の通りです。</p>
-
-<ul>
-  <li>PHP5.4以降必須</li>
-  <li>Trait自身のインスタンスを作成することはできない</li>
-  <li>振る舞いを継承関係のような上下方向ではなく水平方向に定義可能</li>
-</ul>
-
-<h2 id="trait-2">Traitを使うと嬉しくなる状況</h2>
-
-<p>ではTraitを使うべき状況、使うと嬉しい状況とはどんな状況でしょうか？　まずは下記を満たす実装を普通にPHPで書いてみます。</p>
-
-<ul>
-  <li>人間(<code>Human</code>): 「話す」「逃げる」などの基本行動が可能</li>
-  <li>戦士(<code>Warrior</code>): 基本行動に加え「物理攻撃」が可能</li>
-  <li>魔法使い(<code>Wizard</code>): 基本行動に加え「魔法攻撃」が可能</li>
-</ul>
-
-<p>結果、このようになりました。</p>
-
-<script src="https://gist.github.com/toshimaru/00cc0dc16120976c7fcb.js"></script>
-
-<p>基本行動可能な<code>Human</code>クラスがあってそれを継承した<code>Warrior</code>,<code>Wizard</code>がいて…。普通のコードかと思います。</p>
-
-<h3 id="section">追加要件：「魔法戦士を追加したい！」</h3>
-
-<p>こんな要望がきました。「魔法戦士も追加したいんだよねー！」　さて上記のような実装に魔法戦士を加えるとしたらどうなるでしょうか？</p>
-
-<p>魔法も攻撃もできなきゃいけないから、まず<code>Warrior</code>を継承してその次に<code>Wizard</code>も継承して…と、ここで多重継承の問題が出てきますね。愚直に<code>Human</code>を継承した魔法戦士を作ってもいいのですが、同じコードを二度は書きたくないですよね。DRYに行きたいですよね、ね？</p>
-
-<h3 id="trait-3">Traitを使ってみる</h3>
-
-<p>そこでTraitの出番です。<code>trait</code>であれば振る舞いを水平方向に構成できちゃうんです。え？よくわからない？　コードを見てください。</p>
-
-<script src="https://gist.github.com/toshimaru/ad5430fca181db62cd7a.js"></script>
-
-<p>まずは<code>Attackable</code>、<code>Spellable</code>というトレイト、つまり「物理攻撃が可能である」「魔法攻撃が可能である」という特性を定義します。ここまでくればもう簡単。あとはそれを<code>WarriorWizard</code>クラス内で<code>use</code>してやるだけです。これで<code>WarriorWizard</code>は魔法も物理攻撃も可能になります。</p>
-
-<p>ね？簡単でしょ？</p>
-
-<h2 id="traittrait">今後のTrait事情―まだ来ないであろうTraitの波　</h2>
-
-<p>今回紹介したTraitはフレームワークの設計を根本から変えうる素晴らしい機能なのですが、<a href="http://w3techs.com/technologies/details/pl-php/5/all">PHP5.4の使用率がまだ10%</a>なこと、まだまだTraitを使ったコード使用例が少ないこと、これらを考えるとTraitがPHPerに広く普及するにはあと2,3年はかかるのかな、と考えています。</p>
-
-<p>CakePHP3では、PHP5.4が必須となり、<a href="http://www.engineyard.co.jp/blog/2013/cakephp3-preprepreview/">trait機能がうまく活用された設計</a>となっています。このフレームワークレベルでのTrait有効活用を機に、Traitを利用したナイスなコード、ひいてはPHP5.4の使用が今後増えていけばいいなと思っています。</p>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p><a href="http://www.slideshare.net/tlync/trait">Trait とは? その使い道を考えてみる</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:2">
-      <p>RubyだとMix-in、Scalaだとtrait、Perl6だとrole　にあたります。 <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 ]]></content>
   </entry>
   
