@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Railsでhas_many, throughではなくdelegate, throughを利用する - Hack Your Design!</title>
+  <title>就活日記(完) 就職 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="/assets/main-e9d356ce94af8a7665204e6c434215f2.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Railsでhas_many, throughではなくdelegate, throughを利用する - Hack Your Design!">
-  <meta property="og:title" content="Railsでhas_many, throughではなくdelegate, throughを利用する - Hack Your Design!">
-  <meta name="twitter:description" content="RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。"><meta property="og:description" content="RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。">
+  <meta name="twitter:title" content="就活日記(完) 就職 - Hack Your Design!">
+  <meta property="og:title" content="就活日記(完) 就職 - Hack Your Design!">
+  <meta name="twitter:description" content="7月初旬より就活を始め就活日記を書いてまいりましたが、Gunosyに入社する運びとなりましたのでご報告します。今月からすでに働き始めてます。"><meta property="og:description" content="7月初旬より就活を始め就活日記を書いてまいりましたが、Gunosyに入社する運びとなりましたのでご報告します。今月からすでに働き始めてます。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
 </head>
@@ -46,88 +46,75 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">Railsでhas_many, throughではなくdelegate, throughを利用する</h1>
+  <h1 class="fadeInLeft">就活日記(完) 就職</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2014-08-12T00:00:00+00:00" pubdate>12 Aug 2014</time>
-      <i class="icon-tags"></i><a href="/tag/rails.html" rel="tag">rails</a>
+      <i class="icon-calendar"></i><time datetime="2014-08-15T00:00:00+00:00" pubdate>15 Aug 2014</time>
+      <i class="icon-tags"></i><a href="/tag/%E5%B0%B1%E6%B4%BB.html" rel="tag">就活</a>
     </div>
     
   </div>
 </div>
 
-<h2 id="tldr">TL;DR</h2>
+<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
 
-<p>結論はdelegate,throughでなく、delegate,to。</p>
+<h2 id="gunosy">Gunosyに入社しました</h2>
+<p>7月初旬より就活を始め就活日記を書いてまいりましたが、Gunosyに入社する運びとなりましたのでご報告します（今月からすでに働き始めてます）。</p>
 
-<h2 id="hasmany-through">has_many, through</h2>
+<p>まぁ決めてとしてはまぁこんな感じです。</p>
 
-<p>RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:posts</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span>
-  <span class="n">belongs_to</span> <span class="ss">:user</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:post</span>
-<span class="k">end</span></code></pre></div>
-
-<p>特定のUserがどんなTagを持っているかを調べるには<code>through</code>を使うと簡単に実装できます。<code>User</code>モデルに<code>through</code>を追加しましょう。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span>
-  <span class="n">belongs_to</span> <span class="ss">:user</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:post</span>
-<span class="k">end</span></code></pre></div>
-
-<p>こうすることで、<code>@user.tags</code>でユーザーが所有するタグを取得できます。</p>
-
-<p>ではここで疑問。逆に<code>Tag</code>から<code>Post</code>を省いて<code>User</code>を導きだすことはできないのでしょうか？</p>
-
-<h2 id="delegate-">delegate を使う</h2>
-
-<p>結論からいうと<code>delegate</code>を利用することで省けます。具体的には<code>Tag</code>モデルをこうします。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span>
-  <span class="n">belongs_to</span> <span class="ss">:user</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:post</span>
-  <span class="n">delegate</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:post</span>
-<span class="k">end</span></code></pre></div>
-
-<p>これで<code>@tag.user</code>なんて風に当該tagを所有するuserにアクセスできます。</p>
-
-<h3 id="section">参考</h3>
 <ul>
-  <li><a href="http://stackoverflow.com/questions/4021322/belongs-to-through-associations">belongs_to through associations</a></li>
+  <li><a href="/job-hunting-0/">就活日記(0)</a>にて書いた「応募基準」に大体当てはまってる</li>
+  <li>さくっとオファーもらった（会社説明兼面接が一回、CTO/CEOとの面接一回の計二回）</li>
+  <li>若くて優秀な人が多そう、仲も良さそう</li>
+  <li>勉強会も定期開催してて新しい技術の習得に積極的</li>
+  <li>Goとかプロダクションレベルで使ってる珍しい会社→新しいこともやれそう</li>
 </ul>
+
+<p>一ヶ月以上かかるかなーと見込んでましたが、本格的に就活を始めてから3週間以内にはオファーをもらえた。自分の場合は無職だったので、オファーをもらったその日に「明日からアルバイトで働いてもいいよ」と言われ、オファーをもらった2日後にはアルバイトとしてGunosyで働いていた。今月からは社員として働いている。</p>
+
+<h3 id="section">他の会社の話</h3>
+
+<p>「他の会社はダメだったの？」と聞かれると、正直どこもいい会社で「（もし採用してくれるのであれば）どの会社に入っても面白い体験ができるだろう」と思います。特に（入社会社以外で）オススメはどこか？ときかれると、以下です。</p>
+
+<ul>
+  <li>Wantedly</li>
+  <li>KAIZEN Platform</li>
+</ul>
+
+<p>ただココに挙げたのはそれぞれWantedlyはサービスに共感したから、KAIZENにははっきりと明文化されたエンジニア文化があるからであって、一番重要なのは<strong>興味のある会社に実際に行って・そこにいる人に会って・話を聞いて・自分に合うかどうか</strong>だと思うので、とりあえず話を聞いてみることを強くオススメします。その上で会社が合うかどうかは自分で判断してください。</p>
+
+<h2 id="section-1">モダンな開発環境は当たり前</h2>
+<p>会社を選ぶ基準の１つに「モダンな開発環境が整備されている」があったのですが、今回いろいろ会社を周って話を聞いた結果、（少なくとも自分が周った会社は）<strong>モダンな開発環境は当たり前</strong>のように整備されてました。Githubは当たり前のように使ってコードレビューをしていて、テストを書いてCI回してて、リッチなJSアプリケーションを書くときはJavaScript MV*フレームワーク使ってて、PCはMacで…といった感じです。瑣末な違いはあれどどこの会社もモダンな開発環境は整っていました。</p>
+
+<p>なので最近のスタートアップにおいてはモダンな開発環境が整っていることは前提として、その先の「何をやっていきたいか？」というのが重要だと感じました。具体的には、、、</p>
+
+<ul>
+  <li>どんなiOS/Android/Webアプリケーションを作りたいのか？</li>
+  <li>どんな仲間と働きたいのか？</li>
+  <li>スモールチームで個人の判断で裁量持って動きたいのか、それとも他の誰かと協力して動きたいのか？</li>
+  <li>どんな雰囲気の中で働きたいのか？</li>
+  <li>等々…</li>
+</ul>
+
+<p>このへんの辺りを考えて会社を選んでいければいいかと思いました。</p>
+
+<h2 id="web">WEBエンジニアでよかった</h2>
+<p>Wantedlyで「とりあえずまずは話を聞きに行く」という感じでカジュアルに話を聞きに行けるのも、どこも良いエンジニアを求めているからだと思います。自分は文系出身でエンジニアになる予定はそんなに無かった身ですが、今こうやっていろんな会社に行っていろんな人と会ってお話できるのもWEBエンジニアだったからこそです。エンジニアで良かった。</p>
+
+<h2 id="were-hiring">We’re hiring!!!</h2>
+<p>Gunosyは優秀なエンジニアを求めています（具体的にはiOSエンジニア、Androidエンジニア、Go/Railsエンジニア、Pythonエンジニア）。興味があれば一緒に働きましょう。</p>
+
+<p><a href="https://www.wantedly.com/companies/gunosy">Gunosyのソーシャル採用・Wantedly</a></p>
+
+<h2 id="amazon">Amazonウィッシュリスト</h2>
+<p>エンジニアの謎のくれくれ根性、ウザいからやめろ</p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/belongs_to-through/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-fin/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -145,9 +132,15 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/macmkmfrb-cant-find-header-files-for-ruby/" title="[mac]mkmf.rb can't find header files for ruby">[mac]mkmf.rb can't find header files for ruby</a></li>
+    <li><a href="/job-hunting-6/" title="就活日記(6) KAIZEN platform Inc.">就活日記(6) KAIZEN platform Inc.</a></li>
   
-    <li><a href="/gemgeminstallerror-the-json-native-gem-requir/" title="Gemで「Gem::InstallError: The 'json' native gem requires installed build tools.」というエラー">Gemで「Gem::InstallError: The 'json' native gem requires installed build tools.」というエラー</a></li>
+    <li><a href="/job-hunting-5/" title="就活日記(5) トレタ">就活日記(5) トレタ</a></li>
+  
+    <li><a href="/job-hunting-4/" title="就活日記(4) Gunosy">就活日記(4) Gunosy</a></li>
+  
+    <li><a href="/job-hunting-3/" title="就活日記(3) Quipper">就活日記(3) Quipper</a></li>
+  
+    <li><a href="/job-hunting-2/" title="就活日記(2) freee">就活日記(2) freee</a></li>
   
   </ul>
   </div>
@@ -155,14 +148,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/job-hunting-fin/" title="Newer Post: 就活日記(完) 就職"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/job-hunting-6/" title="Older Post: 就活日記(6) KAIZEN platform Inc.">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/belongs_to-through/" title="Older Post: Railsでhas_many, throughではなくdelegate, throughを利用する">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
