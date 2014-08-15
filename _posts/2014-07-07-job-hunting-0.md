@@ -56,13 +56,13 @@ tags: 就活
 
 就活日記一覧
 -----
-* [就活日記(0) エントリー](#)（今読んでる記事）
-* [就活日記(1) Wantedly](/job-hunting-1/)
-* [就活日記(2) freee](/job-hunting-2/)
-* [就活日記(3) Quipper](/job-hunting-3/)
-* [就活日記(4) Gunosy](/job-hunting-4/)
-* [就活日記(5) トレタ](/job-hunting-5/)
-* [就活日記(6) KAIZEN platform Inc.](/job-hunting-6/)
-* [就活日記(完) 就職](/job-hunting-fin/)
+* [就活日記(0) エントリー](#)（今ココ）{% include hatebu.html url="/job-hunting-0/" %}<br />
+* [就活日記(1) Wantedly](/job-hunting-1/) {% include hatebu.html url="/job-hunting-1/" %}<br />
+* [就活日記(2) freee](/job-hunting-2/){% include hatebu.html url="/job-hunting-2/" %}<br />
+* [就活日記(3) Quipper](/job-hunting-3/){% include hatebu.html url="/job-hunting-3/" %}<br />
+* [就活日記(4) Gunosy](/job-hunting-4/){% include hatebu.html url="/job-hunting-4/" %}<br />
+* [就活日記(5) トレタ](/job-hunting-5/){% include hatebu.html url="/job-hunting-5/" %}<br />
+* [就活日記(6) KAIZEN platform Inc.](/job-hunting-6/){% include hatebu.html url="/job-hunting-6/" %}<br />
+* [就活日記(完) 就職](/job-hunting-fin/){% include hatebu.html url="/job-hunting-fin/" %}<br />
 
 [^1]: 中の人はこれを「採用業界の＜出会い系＞」なんて表現していた。
