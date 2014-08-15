@@ -54,13 +54,15 @@ tags: 就活
 
 全てあてはまってると望ましいけど一部でも良い。
 
-就活日記一覧（随時更新）
+就活日記一覧
 -----
+* [就活日記(0) エントリー](#)（今読んでる記事）
 * [就活日記(1) Wantedly](/job-hunting-1/)
 * [就活日記(2) freee](/job-hunting-2/)
 * [就活日記(3) Quipper](/job-hunting-3/)
 * [就活日記(4) Gunosy](/job-hunting-4/)
 * [就活日記(5) トレタ](/job-hunting-5/)
 * [就活日記(6) KAIZEN platform Inc.](/job-hunting-6/)
+* [就活日記(完) 就職](/job-hunting-fin/)
 
 [^1]: 中の人はこれを「採用業界の＜出会い系＞」なんて表現していた。
