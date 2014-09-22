@@ -3,12 +3,52 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-09-22T19:13:05+00:00</updated>
+  <updated>2014-09-22T19:43:31+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[RSpecが通ったり落ちたりしたときに]]></title>
+    <link href="http://blog.toshimaru.net/rspec-occasional-fail/"/>
+    <updated>2014-09-23T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/rspec-occasional-fail</id>
+    <content type="html"><![CDATA[<p>RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。</p>
+
+<h3 id="section">バージョン情報</h3>
+<ul>
+  <li>rails (4.1.5)</li>
+  <li>rspec (3.1.0)</li>
+</ul>
+
+<p>RSpecを順番に依存させないために<code>spec_helper.rb</code>でこんな設定がされている。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Run specs in random order to surface order dependencies. If you find an</span>
+<span class="c1"># order dependency and want to debug it, you can fix the order by providing</span>
+<span class="c1"># the seed, which is printed after each run.</span>
+<span class="c1">#     --seed 1234</span>
+<span class="n">config</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span></code></pre></div>
+
+<p>この設定によりテスト実行の順序がランダムになり、順序に依存しないテストの記述が可能となる。シード値はテストの最後に得られる。</p>
+
+<pre><code>Randomized with seed 724
+</code></pre>
+
+<p>Failしたテストのこのシード値を設定してテストを走らせればFailしたテストの順番を再現できる。</p>
+
+<pre><code>$ bundle exec rspec --seed 724 --fail-fast
+</code></pre>
+
+<p><code>--seed</code>でシード値を指定、<code>--fail-fast</code>を設定してFailしたときにテストを即時終了させるようにする。</p>
+
+<p>こうすればFailするテストを再現できて、どのテストが順番に依存して落ちているのかがわかります。</p>
+
+<h3 id="section-1">参考</h3>
+<p><a href="http://ikm.hatenablog.jp/entry/2013/03/26/003838">ランダムに落ちるspecの修正で便利だったRSpecの2つの設定</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[就活日記(完) 就職]]></title>
@@ -1597,126 +1637,6 @@ console.assert(returnTrue(), 'Trueをreturnすべきだよ！')
   <li><a href="http://liginc.co.jp/web/tool/browser/38012">Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ</a></li>
   <li><a href="https://developers.google.com/chrome-developer-tools/docs/css-preprocessors#toc-requirements">Working with CSS Preprocessors</a></li>
   <li><a href="http://dev.classmethod.jp/etc/scss-source-maps-debug/">【Source Maps】Chrome CanaryでSCSS(Sass)のデバックを試してみました。</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CSS3アニメーションを使ってサイトをリッチに]]></title>
-    <link href="http://blog.toshimaru.net/css-animation/"/>
-    <updated>2013-12-11T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/css-animation</id>
-    <content type="html"><![CDATA[<style type="text/css">
-@-webkit-keyframes anim {
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
-}
-@keyframes anim　{
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
-}
-.post-image  {
-  -webkit-animation: anim 2s infinite;
-  animation: anim 2s infinite;
-}
-</style>
-
-<p><a href="http://www.adventar.org/calendars/57">CSS Property Advent Calendar 2013</a>の11日目の記事としてCSSアニメーションのプロパティを紹介をします。</p>
-
-<h2 id="css">なぜCSSアニメーションなのか？</h2>
-
-<p>さて本ブログでもタイトルやアイキャッチ画像のイメージの表示にちょっとしたCSS3アニメーションを採用しています。ほんのちょっとのCSSの記述なんですがサイトがイイ感じにリッチに見えてとても気に入ってます。</p>
-
-<p>jQueryなんかでも<a href="http://api.jquery.com/animate/">.animate()</a>を使えばアニメーションができますね。ではなぜCSS3アニメーションなのか？　そこからエントリを始めてみたいと思います。</p>
-
-<h3 id="css-vs-jquery">パフォーマンス的観点 CSS vs jQuery</h3>
-
-<p>DEV.OPERAにて<a href="http://dev.opera.com/articles/view/css3-vs-jquery-animations/">CSS3 vs jQueryアニメーションの比較</a>が行われています。ここではjQueryとCSS3によるアニメーションどちらが優れているかがレポートされており、最終的な勝者はCSS3だとして記事を結んでいます。本比較において使われている<a href="http://devfiles.myopera.com/articles/10262/CSS3-300-boxes.html">CSS3のアニメーションサンプル</a>と<a href="http://devfiles.myopera.com/articles/10262/jQuery-300-boxes.html">jQueryのアニメーションサンプル</a>を自分のChrome(Canary)上でも比較してみました。</p>
-
-<p>肉眼でもCSSアニメーションのほうが綺麗に見える気がします。DevTools上でも実際、Rendering、Paintイベントをフィルターしてみたところ、実際jQueryのほうがイベントの粒度が荒いことが見て取れます。</p>
-
-<h4 id="css-1">CSSによるアニメーション</h4>
-<p><img src="/images/posts/css-animate/1.png" alt="比較１" /></p>
-
-<p><img src="/images/posts/css-animate/A.png" alt="比較A" /></p>
-
-<p>イベントが滑らかに流れています。メモリ効率も良い感じです。</p>
-
-<h4 id="jquery">jQueryによるアニメーション</h4>
-<p><img src="/images/posts/css-animate/2.png" alt="比較２" /></p>
-
-<p><img src="/images/posts/css-animate/B.png" alt="比較B" /></p>
-
-<p>イベントの流れの傾斜がCSSより緩やかで、たまに上画像のようにもたつくことがある。メモリ効率も山状に上がってよろしくないです。</p>
-
-<p>パフォーマンス的に考えてCSSアニメーションはjQueryよりも優れています。</p>
-
-<h3 id="section">ブラウザ対応は？</h3>
-
-<p>CSS3プロパティだとブラウザ対応が心配なところ。<a href="http://caniuse.com/#search=keyframes">サポート状況はこんな感じ</a>です。</p>
-
-<p><img src="/images/posts/css-animate/browser.png" alt="対応状況" /></p>
-
-<p>IEは10以降、それ以外のメインブラウザの最新版は対応済みですね。ベンダープレフィックスも<code>-webkit-</code>さえつければ大丈夫そうです。IE9以前を気にするかもしれませんが、<a href="http://www.adobe.com/jp/devnet/dreamweaver/articles/html5pack_css3_part6.html">グレースフル・デグラデーション</a>の考え方で＜装飾＞という意味においてはCSSアニメーションプロパティはどんどん使っていい機能かと思います。</p>
-
-<h2 id="css-2">CSSアニメーションの書き方</h2>
-
-<p>ではCSSアニメーションはどう書くか？　キーワードは<code>@keyframes</code>と<code>animation</code>の２つです。</p>
-
-<pre><code>@keyframes &lt;アニメーションの名前&gt; {
-    0% { /* 定義 */ }
-    50% { /* 定義 */ }
-    100% { /* 定義 */ }
-}
-</code></pre>
-
-<p>こんな感じで0%から100%にかけて特定のタイミングでのアニメーションスタイル定義を書いていきます。次にそのアニメーション名を使った<code>animation</code>をクラス内に加えます。</p>
-
-<pre><code>.&lt;class名&gt; {
-    animation: &lt;アニメーションの名前&gt; &lt;秒数&gt;s ;
-}
-</code></pre>
-
-<p>あとはこのクラス名をDOM内のアニメーションしたい要素に加えればOKです。</p>
-
-<p>では具体例。実際に本記事タイトル下でフェードインさせている画像のCSSを見てみましょう。</p>
-
-<pre><code>@-webkit-keyframes anim {
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
-}
-@keyframes anim　{
-    0%   { opacity: 0; }
-    100% { opacity: 1; }
-}
-.post-image  {
-  -webkit-animation: anim 2s infinite;
-  animation: anim 2s infinite;
-}
-</code></pre>
-
-<p>透過度0から透明度1へのアニメーション（<code>anim</code>）を2秒（<code>2s</code>）毎にループ（<code>infinite</code>）させてます。このアニメーションは<code>post-image</code>クラスに適応されます。実際に使用の際は<code>-webkit-</code>プレフィックス付きの定義も必要なことに注意してください。</p>
-
-<h2 id="section-1">どこからアニメーションの着想を得るか</h2>
-
-<p>といっても「アニメーションのCSSスタイル定義するの面倒くさい」とか「自分のやりたい動きをどう書けばいいかわからない」という人も多いかと思います。そんな人は<a href="https://daneden.me/animate/">Animate.css</a>のページを見てみるとよいかと思います。</p>
-
-<p>これらのアニメーションは全てCSSにて動いているのですが、使い回しの効きそうなCSSで表現できる典型的なアニメーションは大体網羅されていると思うので、ここからアニメーションスタイルをパクってくると良いかと思います（CSSのサイズを気にしないという方は<code>animate.css</code>をそのままサイトに持ってきてもいいですね）。</p>
-
-<p>CSSコードは下記のコードから引っ張ってきてください。</p>
-
-<p><a href="https://github.com/daneden/animate.css/blob/master/animate.css">animate.css/animate.css at master</a></p>
-
-<h3 id="section-2">最後に</h3>
-
-<p>どうでしたか？　あなたもCSSアニメーションをサイトのちょっとしたところに取り入れてみてはいかがでしょう？</p>
-
-<p>ただ１つ注意したいのが、基本的に人の目は動いているものに行きやすいです。アニメーションの使いすぎ、または派手すぎるアニメーションの動きはユーザビリティを著しく下げるので、「使いすぎ注意」ということを忘れずに。</p>
-
-<h3 id="section-3">参考</h3>
-<ul>
-  <li><a href="https://developer.mozilla.org/ja/docs/Web/CSS/@keyframes">@keyframes - CSS / MDN</a></li>
-  <li><a href="https://github.com/daneden/animate.css">daneden/animate.css - GitHub</a></li>
 </ul>
 ]]></content>
   </entry>
