@@ -87,3 +87,7 @@ Kaizenにはこんな行動指針がエンジニア間でシェアされてい�
 リモートワークワークをしたい方、Kaizenの働き方に共感できる人であればKaizenはステキな環境なのではないのでしょうか。Kaizenにはハッカーにとって居心地の良い環境があります。
 
 [KAIZEN platform Inc.の公式採用ページ](http://kaizenplatform.in/hiring/engineer.html#application_engineer)
+
+追記（2014/11/03）
+---
+<script async class="speakerdeck-embed" data-id="153982a0431f01329b8852a2dda60dbc" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
