@@ -6,14 +6,14 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Railsでhas_many, throughではなくdelegate, throughを利用する - Hack Your Design!</title>
+  <title>【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="/assets/main-18e82d8f2a6d1876aefa40f2b09fa6b7.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Railsでhas_many, throughではなくdelegate, throughを利用する - Hack Your Design!">
-  <meta property="og:title" content="Railsでhas_many, throughではなくdelegate, throughを利用する - Hack Your Design!">
+  <meta name="twitter:title" content="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through - Hack Your Design!">
+  <meta property="og:title" content="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through - Hack Your Design!">
   <meta name="twitter:description" content="RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。"><meta property="og:description" content="RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
@@ -46,7 +46,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">Railsでhas_many, throughではなくdelegate, throughを利用する</h1>
+  <h1 class="fadeInLeft">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2014-08-12T00:00:00+00:00" pubdate>12 Aug 2014</time>
@@ -58,7 +58,7 @@
 
 <h2 id="tldr">TL;DR</h2>
 
-<p>結論はdelegate,throughでなく、delegate,to。</p>
+<p>結論は<code>belongs_to</code>,<code>through</code>でなく、<code>delegate</code>, <code>to</code> or <code>has_one</code>, <code>through</code>。</p>
 
 <h2 id="hasmany-through">has_many, through</h2>
 
@@ -118,7 +118,26 @@
 
 <p>これで<code>@tag.user</code>なんて風に当該tagを所有するuserにアクセスできます。</p>
 
-<h3 id="section">参考</h3>
+<h2 id="section">追記（2014/11/11）</h2>
+
+<p>このように<code>has_one</code>, <code>through</code>も使えます。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:post</span>
+  <span class="n">has_one</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:post</span>
+<span class="k">end</span></code></pre></div>
+
+<h3 id="section-1">参考</h3>
 <ul>
   <li><a href="http://stackoverflow.com/questions/4021322/belongs-to-through-associations">belongs_to through associations</a></li>
 </ul>
