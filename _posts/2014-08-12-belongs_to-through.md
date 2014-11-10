@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Railsでhas_many, throughではなくdelegate, throughを利用する
+title: 【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through
 published: true
 description: RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。
 tags: rails
@@ -8,7 +8,7 @@ tags: rails
 
 ## TL;DR
 
-結論はdelegate,throughでなく、delegate,to。
+結論は`belongs_to`,`through`でなく、`delegate`, `to` or `has_one`, `through`。
 
 ## has_many, through
 
@@ -73,6 +73,27 @@ end
 {% endhighlight %}
 
 これで`@tag.user`なんて風に当該tagを所有するuserにアクセスできます。
+
+## 追記（2014/11/11）
+
+このように`has_one`, `through`も使えます。
+
+{% highlight ruby %}
+class User < ActiveRecord::Base
+  has_many :posts
+  has_many :tags, through: :posts
+end
+
+class Post < ActiveRecord::Base
+  has_many :tags
+  belongs_to :user
+end
+
+class Tag < ActiveRecord::Base
+  belongs_to :post
+  has_one :user, through: :post
+end
+{% endhighlight %}
 
 ### 参考
 * [belongs_to through associations](http://stackoverflow.com/questions/4021322/belongs-to-through-associations)
