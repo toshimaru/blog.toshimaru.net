@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/toshimaru/blog.toshimaru.net.png?branch=master)](https://travis-ci.org/toshimaru/blog.toshimaru.net)
+[![Dependency Status](https://gemnasium.com/toshimaru/blog.toshimaru.net.svg)](https://gemnasium.com/toshimaru/blog.toshimaru.net)
 
 # blog.toshimaru.net
 
@@ -29,5 +30,5 @@ Then, title your new post.
     $ rake deploy
 
 ## TODO
-* Convert LESS to SCSS
-* Bump up font-awosome
+* Convert LESS to SASS
+* Bump up font-awesome
