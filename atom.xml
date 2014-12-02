@@ -3,12 +3,119 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-12-01T17:38:30+00:00</updated>
+  <updated>2014-12-02T16:41:54+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[pry-byebug を使ってRailsアプリをステップ実行する]]></title>
+    <link href="http://blog.toshimaru.net/rails-pry-byebug/"/>
+    <updated>2014-12-02T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/rails-pry-byebug</id>
+    <content type="html"><![CDATA[<p>Railsアプリケーションのデバッグはどのように行っていますか？　愚直にプリントデバッグ？　でも複雑なロジック内だと「このロジックのこの処理のここでピンポイントで止めたい！」という場合もありますよね。</p>
+
+<p>そんなときに便利なのがpry-byebug. Githubのリンクは下記。</p>
+
+<p><a href="https://github.com/deivid-rodriguez/pry-byebug">https://github.com/deivid-rodriguez/pry-byebug</a></p>
+
+<p>pry-byebugを使えばピンポイントで処理を止めてステップ実行が可能になります。</p>
+
+<h2 id="requirement">Requirement</h2>
+
+<ul>
+  <li>Ruby2以上</li>
+</ul>
+
+<p>pry-byebugで使われている<a href="https://github.com/deivid-rodriguez/byebug">Byebug</a>はRuby2前提のデバッガーなので2以上が必要になってきます。</p>
+
+<h2 id="section">導入</h2>
+
+<p>下記をGemfileに追加して<code>bundle install</code>.</p>
+
+<pre><code>gem 'pry-byebug', group: :development
+</code></pre>
+
+<h2 id="section-1">ユースケース</h2>
+
+<p>例えばこんなコントローラーのロジックがあったとする。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">complicated_logic</span>
+    <span class="c1">#</span>
+    <span class="c1"># ... long logic ...</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>resultの中身を見たい場合はこうすればよい。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">complicated_logic</span>
+    <span class="n">byebug</span>
+    <span class="c1">#</span>
+    <span class="c1"># ... long logic ...</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>すると<code>byebug</code>を通る処理をした際に、下記のように表示されます。</p>
+
+<pre><code>[26, 35] in /Users/toshi/playground/pry-bybug/app/controllers/posts_controller.rb
+   26:   def create
+   27:     @post = Post.new(post_params)
+   28:     result = @post.complicated_logic
+   29:     byebug
+   30:     # ... long logic ...
+=&gt; 31:     respond_to do |format|
+(byebug)
+</code></pre>
+
+<p>この状態で下記のように変数をみたりできます。</p>
+
+<pre><code>(byebug) result
+true
+(byebug) post_params
+{"title"=&gt;"hoge", "category"=&gt;"doi", "content"=&gt;"sdfsdf"}
+</code></pre>
+
+<h2 id="section-2">その他のコマンド</h2>
+
+<p>ステップ実行に使えるコマンドは下記４つ。</p>
+
+<ol>
+  <li><code>step</code></li>
+  <li><code>next</code></li>
+  <li><code>finish</code></li>
+  <li><code>continue</code></li>
+</ol>
+
+<p>次の行を実行したければ<code>step</code>、Pryセッションから抜けたい場合は<code>continue</code>を打てばよい。</p>
+
+<h3 id="section-3">コマンドエイリアス</h3>
+
+<p>それぞれのコマンドをいちいち打つのがダルいので、プロジェクトルートに<code>.pryrc</code>を置きに下記のように書くとエイリアスを設定できるようだ。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">PryByebug</span><span class="p">)</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;continue&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;next&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;finish&#39;</span>
+<span class="k">end</span></code></pre></div>
+
+<p>本エントリで紹介したpry-byebugなどのデバッグgemを駆使してRailsアプリのデバッグをもっと効率的にしましょう！</p>
+
+<p>Happy Debugging Life!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[カナダ・バンクーバー情報（2014年度版）]]></title>
@@ -1641,134 +1748,6 @@ $ touch manifests/default.pp
 
 <ul>
   <li><a href="http://osxdaily.com/2012/07/31/wi-fi-scanner-mac-os-x-mountain-lion/">Wi-Fi Scanner Tool is Native in Mac OS X, Here’s How to Use it</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[jQuery使いが知っておくべき8つのjQueryテクニック]]></title>
-    <link href="http://blog.toshimaru.net/jquery-8-tips/"/>
-    <updated>2013-12-23T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/jquery-8-tips</id>
-    <content type="html"><![CDATA[<p><a href="http://www.adventar.org/calendars/135">jQuery Advent Calendar 2013</a>の23日目の記事となります。今回はjQuery使いとして覚えておきたいテクニックを個人的に8つピックアップしてみました。</p>
-
-<p>日本との時差の関係で更新が24日になっているでしょうが気にせずいきましょう。</p>
-
-<h2 id="jquery-2x-vs-1x">1. jQuery 2.x vs 1.x</h2>
-
-<p>１つ目はテクニックというよりTipsです。jQueryには最新版の2.x系と1.x系があります。さてどのようにバージョンを選べばいいでしょう？</p>
-
-<p>2.x系からの大きな変更点としては<strong>IE6/7/8のサポート廃止</strong>です。大して1.x系はそれらのブラウザをサポートしています。</p>
-
-<p>よってまとめるとIE6/7/8をサポートしているのであれば1.x系を使用、サポートしないのであれば2.x系を使用で良いです。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。</p>
-
-<h2 id="on">2.　イベントハンドリングには<code>on()</code>を使うべし</h2>
-
-<p>もはや常識ですかね。jQuery1.7以前だと<code>bind()</code>,<code>live()</code>,<code>delegate()</code>やらいろいろあったのが1.7で<code>on</code>でまとめられました。</p>
-
-<p>ではここで質問。<code>click()</code>などではなく、<code>on()</code>を使うことで何が嬉しいのでしょうか？　１つ目は複数のイベントを登録できるということです。下記では<code>click</code>と<code>mouseenter</code>の２つのイベントを１つの処理にアタッチしてます。</p>
-
-<iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/YDur2/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<p>２つ目、オブジェクトを引数に取ることができ、複数イベントをアタッチできます。</p>
-
-<iframe width="100%" height="130" src="http://jsfiddle.net/toshimaru/cANuP/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<p>３つ目、第二引数にアタッチ先のセレクターを指定することができます。これでなにが嬉しいかというとAJAXなどで遅延して取得してくるような要素に対しても事前にイベントを設定することができます。</p>
-
-<iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/hSZLY/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<p>いわずもがなですが<code>off()</code>でイベントをデタッチできることも<code>on()</code>の良い所です。</p>
-
-<h2 id="ajaxdonefail">3. AJAXには<code>done()</code>、<code>fail()</code>を使うべし</h2>
-
-<p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">去年のjQuery Advent Calendar</a>で書いた通りです。</p>
-
-<pre><code>$.ajax({
-    url: "ajax.html",
-    success: function(data) {
-       alert('success!!');
-    },
-    error: function(data) {
-       alert('error!!!');
-    }
-});
-</code></pre>
-
-<p>上記の書き方よりも、</p>
-
-<pre><code>$.ajax({
-    url: "ajax.html",
-}).done(function(data){
-    alert('success!!');
-}).fail(function(data){
-    alert('error!!!');
-});
-</code></pre>
-
-<p>こっちのほうがPromiseなモダン形式です。</p>
-
-<h2 id="ajax">4. <code>ajax()</code>だけじゃなくショートカットメソッドも活用すべし</h2>
-
-<p><code>ajax()</code>がオプションで色々出来過ぎちゃってついつい<code>ajax()</code>を使いがちですが、jQueryには<a href="http://api.jquery.com/category/ajax/shorthand-methods/">AJAXショートカットメソッド</a>があるんです！　例えばデータをPOSTするAJAX。下記に<code>ajax()</code>と<code>post()</code>の二通り書き方を載せましたが、<code>post()</code>のほうがシンプルでよさ気ですね。</p>
-
-<iframe width="100%" height="300" src="http://jsfiddle.net/toshimaru/BkNfr/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<h2 id="find">5. <code>find()</code>を使って絞り込むべし</h2>
-
-<p>これもわりと有名ですかね。下記のセレクタは、</p>
-
-<pre><code>$('.foo #bar')
-</code></pre>
-
-<p><code>find()</code>を使ったほうが良いとされています。</p>
-
-<pre><code>$('.foo').find('#bar')
-</code></pre>
-
-<h2 id="section">6. カスタムイベントを定義する</h2>
-
-<p>下記のコードでは<code>show.price</code>というカスタムイベントを定義しています。クリック時に<code>show.price</code>イベントを<code>trigger()</code>しています。</p>
-
-<iframe width="100%" height="200" src="http://jsfiddle.net/toshimaru/JHYhR/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<h2 id="dom">7. 属性を指定してDOMエレメントを生成できる</h2>
-
-<p>こんな感じでAタグが生成できます。</p>
-
-<pre><code>$('&lt;a&gt;', {href: 'http://google.com/', title: 'google'}).text('google')
-[&lt;a href=​"http:​/​/​google.com/​" title=​"google"&gt;​google​&lt;/a&gt;​ ]
-</code></pre>
-
-<p>$.mapと組み合わせるとなかなかよいかもしれません。</p>
-
-<pre><code>var links = $.map(['google.com', 'yahoo.com'], function(link) {
-    var list = $('&lt;li&gt;');
-    $('&lt;a&gt;&lt;/a&gt;', {href: link}).text('LINK').appendTo(list);
-    return list;
-});
-
-$('&lt;ul&gt;').html(links)
-=&gt; [&lt;ul&gt;​
-        &lt;li&gt;​
-        &lt;a href=​"google.com"&gt;​LINK​&lt;/a&gt;​
-        &lt;/li&gt;​
-        &lt;li&gt;​
-        &lt;a href=​"yahoo.com"&gt;​LINK​&lt;/a&gt;​
-        &lt;/li&gt;​
-    &lt;/ul&gt;​ ]
-</code></pre>
-
-<h2 id="formserialize">8. form送信時は<code>serialize()</code>を使って値をまとめて取得すべし</h2>
-
-<p><code>serialize()</code>を使うことでform内のinputの値をまとめて取得できます。</p>
-
-<iframe width="100%" height="130" src="http://jsfiddle.net/toshimaru/3GG3c/3/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<h3 id="section-1">参考</h3>
-
-<ul>
-  <li><a href="http://blog.jquery.com/2013/04/18/jquery-2-0-released/">jQuery 2.0 Released</a></li>
 </ul>
 ]]></content>
   </entry>

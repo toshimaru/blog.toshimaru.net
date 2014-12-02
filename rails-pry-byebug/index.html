@@ -6,15 +6,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Github+hubコマンドで快適なGithubライフを営む - Hack Your Design!</title>
+  <title>pry-byebug を使ってRailsアプリをステップ実行する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="/assets/main-18e82d8f2a6d1876aefa40f2b09fa6b7.css">
   <script src="/js/modernizr-2.6.2.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Github+hubコマンドで快適なGithubライフを営む - Hack Your Design!">
-  <meta property="og:title" content="Github+hubコマンドで快適なGithubライフを営む - Hack Your Design!">
-  <meta name="twitter:description" content="githubで開発を進めている場合、hubコマンドの利用が素敵な感じです。"><meta property="og:description" content="githubで開発を進めている場合、hubコマンドの利用が素敵な感じです。">
+  <meta name="twitter:title" content="pry-byebug を使ってRailsアプリをステップ実行する - Hack Your Design!">
+  <meta property="og:title" content="pry-byebug を使ってRailsアプリをステップ実行する - Hack Your Design!">
+  <meta name="twitter:description" content="Railsのデバッグに使えるpry-byebugの紹介です。"><meta property="og:description" content="Railsのデバッグに使えるpry-byebugの紹介です。">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
 </head>
@@ -46,57 +46,121 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="posts">
-  <h1 class="fadeInLeft">Github+hubコマンドで快適なGithubライフを営む</h1>
+  <h1 class="fadeInLeft">pry-byebug を使ってRailsアプリをステップ実行する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-11-28T00:00:00+00:00" pubdate>28 Nov 2013</time>
-      <i class="icon-tags"></i><a href="/tag/git.html" rel="tag">git</a>, <a href="/tag/github.html" rel="tag">github</a>
+      <i class="icon-calendar"></i><time datetime="2014-12-02T00:00:00+00:00" pubdate>02 Dec 2014</time>
+      <i class="icon-tags"></i><a href="/tag/rails.html" rel="tag">rails</a>
     </div>
     
   </div>
 </div>
 
-<p><code>github</code>で開発を進めている場合、<a href="https://github.com/github/hub">hubコマンド</a>の利用が素敵な感じです。</p>
+<p>Railsアプリケーションのデバッグはどのように行っていますか？　愚直にプリントデバッグ？　でも複雑なロジック内だと「このロジックのこの処理のここでピンポイントで止めたい！」という場合もありますよね。</p>
 
-<h2 id="section">インストール</h2>
+<p>そんなときに便利なのがpry-byebug. Githubのリンクは下記。</p>
 
-<p>Macを使っていると<code>brew</code>使って<code>hub</code>コマンドが一発で入ります。</p>
+<p><a href="https://github.com/deivid-rodriguez/pry-byebug">https://github.com/deivid-rodriguez/pry-byebug</a></p>
 
-<pre><code>$ brew install hub
+<p>pry-byebugを使えばピンポイントで処理を止めてステップ実行が可能になります。</p>
+
+<h2 id="requirement">Requirement</h2>
+
+<ul>
+  <li>Ruby2以上</li>
+</ul>
+
+<p>pry-byebugで使われている<a href="https://github.com/deivid-rodriguez/byebug">Byebug</a>はRuby2前提のデバッガーなので2以上が必要になってきます。</p>
+
+<h2 id="section">導入</h2>
+
+<p>下記をGemfileに追加して<code>bundle install</code>.</p>
+
+<pre><code>gem 'pry-byebug', group: :development
 </code></pre>
 
-<h2 id="github">gitのエイリアスをhubコマンドで拡張</h2>
+<h2 id="section-1">ユースケース</h2>
 
-<p>ただこのままだとhubコマンドはgitコマンドと分離しており少し不便なので、gitコマンドをhubコマンドで置き換えてやりましょう。もちろん既存のgitコマンドに悪影響を与えるようなことはありません。やり方は下記の１行を<code>.zshrc</code>なり<code>.bashrc</code>に追記すればOK.</p>
+<p>例えばこんなコントローラーのロジックがあったとする。</p>
 
-<pre><code>eval "$(hub alias -s)"
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">complicated_logic</span>
+    <span class="c1">#</span>
+    <span class="c1"># ... long logic ...</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>resultの中身を見たい場合はこうすればよい。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">complicated_logic</span>
+    <span class="n">byebug</span>
+    <span class="c1">#</span>
+    <span class="c1"># ... long logic ...</span>
+    <span class="c1">#</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>すると<code>byebug</code>を通る処理をした際に、下記のように表示されます。</p>
+
+<pre><code>[26, 35] in /Users/toshi/playground/pry-bybug/app/controllers/posts_controller.rb
+   26:   def create
+   27:     @post = Post.new(post_params)
+   28:     result = @post.complicated_logic
+   29:     byebug
+   30:     # ... long logic ...
+=&gt; 31:     respond_to do |format|
+(byebug)
 </code></pre>
 
-<h2 id="githubclone">githubからのcloneが楽に</h2>
+<p>この状態で下記のように変数をみたりできます。</p>
 
-<p>hubコマンドの導入によりGithubからのcloneが楽になります。下記のように<code>{user}/{repo}</code>でcloneできます。</p>
-
-<pre><code>$ git clone toshimaru/dotfiles
+<pre><code>(byebug) result
+true
+(byebug) post_params
+{"title"=&gt;"hoge", "category"=&gt;"doi", "content"=&gt;"sdfsdf"}
 </code></pre>
 
-<h2 id="github-1">githubページを開く</h2>
+<h2 id="section-2">その他のコマンド</h2>
 
-<p>自分の場合、GithubにpushしたあとにGithubのGUI上でDiffであったり諸々の状態を確認したいことがよくあります。<code>hub</code>コマンドであれば一発でいけます。</p>
+<p>ステップ実行に使えるコマンドは下記４つ。</p>
 
-<pre><code>$ git browse
-</code></pre>
+<ol>
+  <li><code>step</code></li>
+  <li><code>next</code></li>
+  <li><code>finish</code></li>
+  <li><code>continue</code></li>
+</ol>
 
-<p>規定のブラウザで当該Githubページが開きます。</p>
+<p>次の行を実行したければ<code>step</code>、Pryセッションから抜けたい場合は<code>continue</code>を打てばよい。</p>
 
-<h2 id="section-1">その他</h2>
+<h3 id="section-3">コマンドエイリアス</h3>
 
-<p>他にもpull-requestをコマンドから簡単に送れるようになったり嬉しいことがたくさんあります。詳しくは<a href="http://hub.github.com/">公式hubページ</a>を見てください。</p>
+<p>それぞれのコマンドをいちいち打つのがダルいので、プロジェクトルートに<code>.pryrc</code>を置きに下記のように書くとエイリアスを設定できるようだ。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">PryByebug</span><span class="p">)</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;continue&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;next&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;finish&#39;</span>
+<span class="k">end</span></code></pre></div>
+
+<p>本エントリで紹介したpry-byebugなどのデバッグgemを駆使してRailsアプリのデバッグをもっと効率的にしましょう！</p>
+
+<p>Happy Debugging Life!</p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/github-and-hub/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-pry-byebug/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -114,15 +178,11 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/autodeploy-jekyll/" title="Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした">Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした</a></li>
+    <li><a href="/belongs_to-through/" title="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</a></li>
   
-    <li><a href="/pull-request/" title="初pull request がマージされました！">初pull request がマージされました！</a></li>
+    <li><a href="/macmkmfrb-cant-find-header-files-for-ruby/" title="[mac]mkmf.rb can't find header files for ruby">[mac]mkmf.rb can't find header files for ruby</a></li>
   
-    <li><a href="/git-pushgithub/" title="githubにgit pushした変更の取り消し">githubにgit pushした変更の取り消し</a></li>
-  
-    <li><a href="/git-log-p-s/" title="gitのログから特定の文字列を含むコミットを採掘する">gitのログから特定の文字列を含むコミットを採掘する</a></li>
-  
-    <li><a href="/git-revert-mainline/" title="Gitのrevertの-m(mainline)オプションについて">Gitのrevertの-m(mainline)オプションについて</a></li>
+    <li><a href="/gemgeminstallerror-the-json-native-gem-requir/" title="Gemで「Gem::InstallError: The 'json' native gem requires installed build tools.」というエラー">Gemで「Gem::InstallError: The 'json' native gem requires installed build tools.」というエラー</a></li>
   
   </ul>
   </div>
@@ -130,14 +190,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/php-force-property/" title="Newer Post: PHPのプロパティをStrictに定義する"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/motherfucking-website/" title="Older Post: 【翻訳】クソ酷いウェブサイト">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/vancouver-infomation/" title="Older Post: カナダ・バンクーバー情報（2014年度版）">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
