@@ -64,14 +64,14 @@ end
 
 From: app/controllers/posts_controller.rb @ line 31 PostsController#create:
 
-   26: def create
-   27:   @post = Post.new(post_params)
-   28:   result = @post.complicated_logic
-   29:   binding.pry
-   30:   # ... long logic ...
-=> 31:   respond_to do |format|
+       26: def create
+       27:   @post = Post.new(post_params)
+       28:   result = @post.complicated_logic
+       29:   binding.pry
+       30:   # ... long logic ...
+    => 31:   respond_to do |format|
 
-[1] pry(#<PostsController>)>
+    [1] pry(#<PostsController>)>
 
 この状態で下記のように変数をみたりできます。
 
