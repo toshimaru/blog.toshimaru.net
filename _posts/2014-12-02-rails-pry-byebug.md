@@ -3,6 +3,7 @@ layout: post
 title: pry-byebug を使ってRailsアプリをステップ実行する
 published: true
 description: Railsのデバッグに使えるpry-byebugの紹介です。
+image: /images/posts/pry-byebug.png
 tags: rails
 ---
 
@@ -51,7 +52,7 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(post_params)
     result = @post.complicated_logic
-    byebug
+    binding.pry
     #
     # ... long logic ...
     #
@@ -59,23 +60,25 @@ class PostsController < ApplicationController
 end
 {% endhighlight %}
 
-すると`byebug`を通る処理をした際に、下記のように表示されます。
+すると`binding.pry`を通る処理をした際に、下記のように表示されます。
 
-    [26, 35] in /Users/toshi/playground/pry-bybug/app/controllers/posts_controller.rb
-       26:   def create
-       27:     @post = Post.new(post_params)
-       28:     result = @post.complicated_logic
-       29:     byebug
-       30:     # ... long logic ...
-    => 31:     respond_to do |format|
-    (byebug)
+From: app/controllers/posts_controller.rb @ line 31 PostsController#create:
+
+   26: def create
+   27:   @post = Post.new(post_params)
+   28:   result = @post.complicated_logic
+   29:   binding.pry
+   30:   # ... long logic ...
+=> 31:   respond_to do |format|
+
+[1] pry(#<PostsController>)>
 
 この状態で下記のように変数をみたりできます。
 
-    (byebug) result
-    true
-    (byebug) post_params
-    {"title"=>"hoge", "category"=>"doi", "content"=>"sdfsdf"}
+    [1] pry(#<PostsController>)> result
+    => true
+    [2] pry(#<PostsController>)> post_params
+    => {"title"=>"a", "category"=>"b", "content"=>"c"}
 
 ## その他のコマンド
 
