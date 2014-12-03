@@ -15,7 +15,7 @@
   <meta name="twitter:title" content="pry-byebug を使ってRailsアプリをステップ実行する - Hack Your Design!">
   <meta property="og:title" content="pry-byebug を使ってRailsアプリをステップ実行する - Hack Your Design!">
   <meta name="twitter:description" content="Railsのデバッグに使えるpry-byebugの紹介です。"><meta property="og:description" content="Railsのデバッグに使えるpry-byebugの紹介です。">
-  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/pry-byebug.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/pry-byebug.png" />
   <meta property="og:type" content="article">
 </head>
 <body>
@@ -52,7 +52,7 @@
       <i class="icon-calendar"></i><time datetime="2014-12-02T00:00:00+00:00" pubdate>02 Dec 2014</time>
       <i class="icon-tags"></i><a href="/tag/rails.html" rel="tag">rails</a>
     </div>
-    
+    <img class="post-image flipInX" src="/images/posts/pry-byebug.png" alt="(image)pry-byebug を使ってRailsアプリをステップ実行する" title="pry-byebug を使ってRailsアプリをステップ実行する" />
   </div>
 </div>
 
@@ -101,31 +101,32 @@
   <span class="k">def</span> <span class="nf">create</span>
     <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">complicated_logic</span>
-    <span class="n">byebug</span>
+    <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
     <span class="c1">#</span>
     <span class="c1"># ... long logic ...</span>
     <span class="c1">#</span>
   <span class="k">end</span>
 <span class="k">end</span></code></pre></div>
 
-<p>すると<code>byebug</code>を通る処理をした際に、下記のように表示されます。</p>
+<p>すると<code>binding.pry</code>を通る処理をした際に、下記のように表示されます。</p>
 
-<pre><code>[26, 35] in /Users/toshi/playground/pry-bybug/app/controllers/posts_controller.rb
-   26:   def create
-   27:     @post = Post.new(post_params)
-   28:     result = @post.complicated_logic
-   29:     byebug
-   30:     # ... long logic ...
-=&gt; 31:     respond_to do |format|
-(byebug)
-</code></pre>
+<p>From: app/controllers/posts_controller.rb @ line 31 PostsController#create:</p>
+
+<p>26: def create
+   27:   @post = Post.new(post_params)
+   28:   result = @post.complicated_logic
+   29:   binding.pry
+   30:   # … long logic …
+=&gt; 31:   respond_to do |format|</p>
+
+<p>[1] pry(#<postscontroller>)&gt;</postscontroller></p>
 
 <p>この状態で下記のように変数をみたりできます。</p>
 
-<pre><code>(byebug) result
-true
-(byebug) post_params
-{"title"=&gt;"hoge", "category"=&gt;"doi", "content"=&gt;"sdfsdf"}
+<pre><code>[1] pry(#&lt;PostsController&gt;)&gt; result
+=&gt; true
+[2] pry(#&lt;PostsController&gt;)&gt; post_params
+=&gt; {"title"=&gt;"a", "category"=&gt;"b", "content"=&gt;"c"}
 </code></pre>
 
 <h2 id="section-2">その他のコマンド</h2>
