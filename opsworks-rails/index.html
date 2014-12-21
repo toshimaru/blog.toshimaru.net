@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="/assets/main-18e82d8f2a6d1876aefa40f2b09fa6b7.css">
+  <script src="/js/modernizr-2.6.2.min.js"></script>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング - Hack Your Design!">
+  <meta property="og:title" content="Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング - Hack Your Design!">
+  <meta name="twitter:description" content="Rails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。"><meta property="og:description" content="Rails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/opsworks/eyecatch.png" /><meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/opsworks/eyecatch.png" />
+  <meta property="og:type" content="article">
+</head>
+<body>
+  <!--[if lt IE 7]> <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p> <![endif]-->
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive.html">Archive</a>
+  <a href="/about.html">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="http://google.com/search" method="get">
+      <input type="hidden" name="q" value="site:blog.toshimaru.net" />
+      <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="posts">
+  <h1 class="fadeInLeft">Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2014-12-21T00:00:00+00:00" pubdate>21 Dec 2014</time>
+      <i class="icon-tags"></i><a href="/tag/opsworks.html" rel="tag">opsworks</a>, <a href="/tag/rails.html" rel="tag">rails</a>
+    </div>
+    <img class="post-image flipInX" src="/images/posts/opsworks/eyecatch.png" alt="(image)Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング" title="Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング" />
+  </div>
+</div>
+
+<p>本記事は<a href="http://qiita.com/advent-calendar/2014/chef">Chef Advent Calendar 2014</a>の21日目の記事です。</p>
+
+<h2 id="opsworks">OpsWorksとは？</h2>
+<p>公式サイトの説明は下記です。</p>
+
+<blockquote>
+  <p>AWS OpsWorks は、すべての種類およびサイズのアプリケーションを容易にデプロイおよび運用できるクラウドアプリケーション管理サービスです。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。</p>
+
+  <p><a href="http://aws.amazon.com/jp/opsworks/">http://aws.amazon.com/jp/opsworks/</a></p>
+</blockquote>
+
+<p>ポイントは下記です。</p>
+
+<ul>
+  <li>Chefでサーバーをプロビジョニング・デプロイできる</li>
+  <li>スタック＞レイヤー＞Appという概念でシステムを構成</li>
+  <li>インスタンスをタイムベースorロードベースでスケールアウトできる</li>
+  <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">githubで公開</a>されている</li>
+</ul>
+
+<h2 id="section">料金</h2>
+<p>OpsWorksの使用自体にかかる料金は<strong>0円</strong>です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。</p>
+
+<h2 id="railsopsworks">RailsをOpsWorksにデプロイしてみよう</h2>
+<p>OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。</p>
+
+<p>今回デプロイするRailsアプリケーションのコードは下記になります。</p>
+
+<p><a href="https://github.com/toshimaru/opsworks-rails">https://github.com/toshimaru/opsworks-rails</a></p>
+
+<h2 id="section-1">デプロイ手順</h2>
+
+<h3 id="section-2">スタックの追加</h3>
+
+<p>まずはAWS ConsoleからOpsWorksにいきAdd Stackしましょう。RegionとかVPCとかIAMとかは適宜設定してね。</p>
+
+<p><img src="/images/posts/opsworks/add_stack.png" alt="" /></p>
+
+<p>こんなのがStackのトップ画面。</p>
+
+<p><img src="/images/posts/opsworks/top.png" alt="" /></p>
+
+<h3 id="section-3">レイヤーの定義</h3>
+
+<p><img src="/images/posts/opsworks/layer.png" alt="" /></p>
+
+<p>Layer TypeはRails App、Ruby versionは2.1、nginx+unicornを選択する</p>
+
+<p><img src="/images/posts/opsworks/add_layer.png" alt="" /></p>
+
+<p>追加されました。</p>
+
+<p><img src="/images/posts/opsworks/layer_done.png" alt="" /></p>
+
+<h3 id="section-4">レシピ</h3>
+
+<p>RecipesでOpsWorksにどんなレシピが設定されているかがわかります。レシピ名がGithubへのリンクになっており、どんなレシピが書かれているかを確認できます。</p>
+
+<p><img src="/images/posts/opsworks/recipes.png" alt="" /></p>
+
+<p>今回はこのままでOK.</p>
+
+<h3 id="section-5">インスタンスの追加</h3>
+
+<p>では次にAppインスタンスを追加。t1microインスタンスで。</p>
+
+<p><img src="/images/posts/opsworks/add_instance.png" alt="" /></p>
+
+<p>AddInstanceするとステータスがStoppedなのでstartで起動します。</p>
+
+<p><img src="/images/posts/opsworks/instance_stopped.png" alt="" /></p>
+
+<p>10分くらいでセットアップが完了します。Statusがonlineでグリーンになれば準備OK.</p>
+
+<p><img src="/images/posts/opsworks/instance_online.png" alt="" /></p>
+
+<h3 id="app">Appの設定</h3>
+
+<p>次にデプロイするAppの設定を追加していきます。</p>
+
+<p><img src="/images/posts/opsworks/apps.png" alt="" /></p>
+
+<p>こんな感じでAppを設定。</p>
+
+<ul>
+  <li>Type: RoR</li>
+  <li>DataSource: 今回は特にないのでNoneで</li>
+  <li>Applicationソース: Githubから持ってきたいのでGithubのレポジトリURLを指定</li>
+</ul>
+
+<p><img src="/images/posts/opsworks/add_apps.png" alt="" /></p>
+
+<p><code>SECRET_KEY_BASE</code>(Rails4.2の<code>secrets.yml</code>で必要になる)もあわせてセットしましょう。</p>
+
+<p><img src="/images/posts/opsworks/add_envvar.png" alt="" /></p>
+
+<p>DeploymentsでDeploy Appしてみよう。</p>
+
+<p><img src="/images/posts/opsworks/deploy_app.png" alt="" /></p>
+
+<p>Appは先ほど設定したApp、CommandはDeployを指定してDeploy App!（マイグレーションが必要であればここでMigration ON）</p>
+
+<p><img src="/images/posts/opsworks/deploy_app2.png" alt="" /></p>
+
+<p>SuccessすればOK.</p>
+
+<p><img src="/images/posts/opsworks/deploy_app3.png" alt="" /></p>
+
+<h2 id="section-6">幾つかのハマりポイント</h2>
+
+<h3 id="gemfile">Gemfile</h3>
+
+<p>下記のGemが必要になるのでコメントアウトされていることを確認すること。</p>
+
+<pre><code>gem 'therubyracer', platforms: :ruby
+gem 'unicorn'
+</code></pre>
+
+<h3 id="databaseyml">database.yml</h3>
+
+<p>RDSを設定していれば自動的に設定されるのですが、今回の場合設定していないので別途手で<code>database.yml</code>を作りました。</p>
+
+<pre><code>[root@rails-app1 current]# cat config/database.yml
+default: &amp;default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+production:
+  &lt;&lt;: *default
+  database: db/production.sqlite3
+</code></pre>
+
+<h3 id="css">CSSが適応されていない問題</h3>
+
+<p>「アレ、なんかCSSが効いていないっぽい！？」</p>
+
+<p><img src="/images/posts/opsworks/before_css.png" alt="" /></p>
+
+<p>これは<code>asset:precompile</code>が走っていないため。</p>
+
+<blockquote>
+  <p>rake asset:precompile というタスクを実行する必要がありますが、OpsWorksのRailsアプリケーションのデフォルトのデプロイ処理ではこのタスクを実行してくれません。</p>
+
+  <p><a href="http://interu.hatenablog.com/entry/2013/08/01/214258">http://interu.hatenablog.com/entry/2013/08/01/214258</a></p>
+</blockquote>
+
+<p>下記を<code>deploy/before_migrate.rb</code>に設定する。</p>
+
+<pre><code>Chef::Log.info("Running deploy/before_migrate.rb")
+env = node[:deploy][:rails_opsworks][:rails_env]
+current_release = release_path
+
+execute "rake assets:precompile" do
+  cwd current_release
+  command "bundle exec rake assets:precompile"
+  environment "RAILS_ENV" =&gt; env
+end
+</code></pre>
+
+<p>これでデプロイ。</p>
+
+<p><img src="/images/posts/opsworks/after_css.png" alt="" /></p>
+
+<p>OK.</p>
+
+<h3 id="section-7">デプロイされるディレクトリ</h3>
+
+<p><code>/srv/www/rails_opsworks/current</code>に最新の状態がデプロイされます。</p>
+
+<h3 id="section-8">ログディレクトリ</h3>
+
+<p><code>/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
+
+
+<ul id="social-buttons">
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/opsworks-rails/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連エントリ</h3>
+  <ul>
+  
+    <li><a href="/rails-pry-byebug/" title="pry-byebug を使ってRailsアプリをステップ実行する">pry-byebug を使ってRailsアプリをステップ実行する</a></li>
+  
+    <li><a href="/belongs_to-through/" title="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</a></li>
+  
+    <li><a href="/macmkmfrb-cant-find-header-files-for-ruby/" title="[mac]mkmf.rb can't find header files for ruby">[mac]mkmf.rb can't find header files for ruby</a></li>
+  
+    <li><a href="/gemgeminstallerror-the-json-native-gem-requir/" title="Gemで「Gem::InstallError: The 'json' native gem requires installed build tools.」というエラー">Gemで「Gem::InstallError: The 'json' native gem requires installed build tools.」というエラー</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/hikari-e/" title="Older Post: 光へ">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+        <h2>About</h2>
+        <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+        <dl class="about-dl">
+          <dt>Toshimaru</dt>
+          <dd>Web Developer @ Gunosy. カナダ・バンクーバでの修行時代を経て日本帰国。技術ネタをよく書きます。最近興味あるのはRoRとフロントエンド関連技術。</dd>
+        </dl>
+        <ul class="externallinks">
+          <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+          <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+          <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
+        </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a>
+<a href=" http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/"><img src=" http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li><a href="/jquery-ajaxdeferredajax/">jQuery モダンAjaxな書き方を目指して　〜Deferredを使ったAJAX〜</a>
+<a href=" http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src=" http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li><a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
+<a href=" http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src=" http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
+</li>
+          <li><a href="/jquery-8-tips/">jQuery使いが知っておくべき8つのjQueryテクニック</a>
+<a href=" http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-8-tips/"><img src=" http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-8-tips/"></a>
+</li>
+          <li><a href="/Front-end-Developer-Interview-Questions-Japanese/">「フロントエンドデベロッパー面接時の質問事項」日本語訳しました</a>
+<a href=" http://b.hatena.ne.jp/entry/blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/"><img src=" http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/"></a>
+</li>
+          <li><a href="/jquerydeferred-is-most-important-client/">【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール</a>
+<a href=" http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquerydeferred-is-most-important-client/"><img src=" http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquerydeferred-is-most-important-client/"></a>
+</li>
+          <li><a href="/how-to-find-job-in-Vancouver/">僕が単身海外（バンクーバー）に来て仕事を見つけるまでにやったこと</a>
+<a href=" http://b.hatena.ne.jp/entry/blog.toshimaru.net/how-to-find-job-in-Vancouver/"><img src=" http://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/how-to-find-job-in-Vancouver/"></a>
+</li>
+        </ul>
+        
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/apache.html" class="set-1">apache</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/digitalocean.html" class="set-1">digitalocean</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-2">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-2">linux</a> <a href="/tag/mac.html" class="set-3">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/opsworks.html" class="set-1">opsworks</a> <a href="/tag/packer.html" class="set-1">packer</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-2">rails</a> <a href="/tag/rspec.html" class="set-1">rspec</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vagrant.html" class="set-1">vagrant</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB.html" class="set-3">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-3">雑記</a></div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+  <script src="/js/main.js"></script>
+  <script>
+      var _gaq=[['_setAccount','UA-35177276-1'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+</body>
+</html>

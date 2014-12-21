@@ -3,12 +3,193 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-12-06T12:48:11+00:00</updated>
+  <updated>2014-12-21T18:55:17+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング]]></title>
+    <link href="http://blog.toshimaru.net/opsworks-rails/"/>
+    <updated>2014-12-21T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/opsworks-rails</id>
+    <content type="html"><![CDATA[<p>本記事は<a href="http://qiita.com/advent-calendar/2014/chef">Chef Advent Calendar 2014</a>の21日目の記事です。</p>
+
+<h2 id="opsworks">OpsWorksとは？</h2>
+<p>公式サイトの説明は下記です。</p>
+
+<blockquote>
+  <p>AWS OpsWorks は、すべての種類およびサイズのアプリケーションを容易にデプロイおよび運用できるクラウドアプリケーション管理サービスです。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。</p>
+
+  <p><a href="http://aws.amazon.com/jp/opsworks/">http://aws.amazon.com/jp/opsworks/</a></p>
+</blockquote>
+
+<p>ポイントは下記です。</p>
+
+<ul>
+  <li>Chefでサーバーをプロビジョニング・デプロイできる</li>
+  <li>スタック＞レイヤー＞Appという概念でシステムを構成</li>
+  <li>インスタンスをタイムベースorロードベースでスケールアウトできる</li>
+  <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">githubで公開</a>されている</li>
+</ul>
+
+<h2 id="section">料金</h2>
+<p>OpsWorksの使用自体にかかる料金は<strong>0円</strong>です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。</p>
+
+<h2 id="railsopsworks">RailsをOpsWorksにデプロイしてみよう</h2>
+<p>OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。</p>
+
+<p>今回デプロイするRailsアプリケーションのコードは下記になります。</p>
+
+<p><a href="https://github.com/toshimaru/opsworks-rails">https://github.com/toshimaru/opsworks-rails</a></p>
+
+<h2 id="section-1">デプロイ手順</h2>
+
+<h3 id="section-2">スタックの追加</h3>
+
+<p>まずはAWS ConsoleからOpsWorksにいきAdd Stackしましょう。RegionとかVPCとかIAMとかは適宜設定してね。</p>
+
+<p><img src="/images/posts/opsworks/add_stack.png" alt="" /></p>
+
+<p>こんなのがStackのトップ画面。</p>
+
+<p><img src="/images/posts/opsworks/top.png" alt="" /></p>
+
+<h3 id="section-3">レイヤーの定義</h3>
+
+<p><img src="/images/posts/opsworks/layer.png" alt="" /></p>
+
+<p>Layer TypeはRails App、Ruby versionは2.1、nginx+unicornを選択する</p>
+
+<p><img src="/images/posts/opsworks/add_layer.png" alt="" /></p>
+
+<p>追加されました。</p>
+
+<p><img src="/images/posts/opsworks/layer_done.png" alt="" /></p>
+
+<h3 id="section-4">レシピ</h3>
+
+<p>RecipesでOpsWorksにどんなレシピが設定されているかがわかります。レシピ名がGithubへのリンクになっており、どんなレシピが書かれているかを確認できます。</p>
+
+<p><img src="/images/posts/opsworks/recipes.png" alt="" /></p>
+
+<p>今回はこのままでOK.</p>
+
+<h3 id="section-5">インスタンスの追加</h3>
+
+<p>では次にAppインスタンスを追加。t1microインスタンスで。</p>
+
+<p><img src="/images/posts/opsworks/add_instance.png" alt="" /></p>
+
+<p>AddInstanceするとステータスがStoppedなのでstartで起動します。</p>
+
+<p><img src="/images/posts/opsworks/instance_stopped.png" alt="" /></p>
+
+<p>10分くらいでセットアップが完了します。Statusがonlineでグリーンになれば準備OK.</p>
+
+<p><img src="/images/posts/opsworks/instance_online.png" alt="" /></p>
+
+<h3 id="app">Appの設定</h3>
+
+<p>次にデプロイするAppの設定を追加していきます。</p>
+
+<p><img src="/images/posts/opsworks/apps.png" alt="" /></p>
+
+<p>こんな感じでAppを設定。</p>
+
+<ul>
+  <li>Type: RoR</li>
+  <li>DataSource: 今回は特にないのでNoneで</li>
+  <li>Applicationソース: Githubから持ってきたいのでGithubのレポジトリURLを指定</li>
+</ul>
+
+<p><img src="/images/posts/opsworks/add_apps.png" alt="" /></p>
+
+<p><code>SECRET_KEY_BASE</code>(Rails4.2の<code>secrets.yml</code>で必要になる)もあわせてセットしましょう。</p>
+
+<p><img src="/images/posts/opsworks/add_envvar.png" alt="" /></p>
+
+<p>DeploymentsでDeploy Appしてみよう。</p>
+
+<p><img src="/images/posts/opsworks/deploy_app.png" alt="" /></p>
+
+<p>Appは先ほど設定したApp、CommandはDeployを指定してDeploy App!（マイグレーションが必要であればここでMigration ON）</p>
+
+<p><img src="/images/posts/opsworks/deploy_app2.png" alt="" /></p>
+
+<p>SuccessすればOK.</p>
+
+<p><img src="/images/posts/opsworks/deploy_app3.png" alt="" /></p>
+
+<h2 id="section-6">幾つかのハマりポイント</h2>
+
+<h3 id="gemfile">Gemfile</h3>
+
+<p>下記のGemが必要になるのでコメントアウトされていることを確認すること。</p>
+
+<pre><code>gem 'therubyracer', platforms: :ruby
+gem 'unicorn'
+</code></pre>
+
+<h3 id="databaseyml">database.yml</h3>
+
+<p>RDSを設定していれば自動的に設定されるのですが、今回の場合設定していないので別途手で<code>database.yml</code>を作りました。</p>
+
+<pre><code>[root@rails-app1 current]# cat config/database.yml
+default: &amp;default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+production:
+  &lt;&lt;: *default
+  database: db/production.sqlite3
+</code></pre>
+
+<h3 id="css">CSSが適応されていない問題</h3>
+
+<p>「アレ、なんかCSSが効いていないっぽい！？」</p>
+
+<p><img src="/images/posts/opsworks/before_css.png" alt="" /></p>
+
+<p>これは<code>asset:precompile</code>が走っていないため。</p>
+
+<blockquote>
+  <p>rake asset:precompile というタスクを実行する必要がありますが、OpsWorksのRailsアプリケーションのデフォルトのデプロイ処理ではこのタスクを実行してくれません。</p>
+
+  <p><a href="http://interu.hatenablog.com/entry/2013/08/01/214258">http://interu.hatenablog.com/entry/2013/08/01/214258</a></p>
+</blockquote>
+
+<p>下記を<code>deploy/before_migrate.rb</code>に設定する。</p>
+
+<pre><code>Chef::Log.info("Running deploy/before_migrate.rb")
+env = node[:deploy][:rails_opsworks][:rails_env]
+current_release = release_path
+
+execute "rake assets:precompile" do
+  cwd current_release
+  command "bundle exec rake assets:precompile"
+  environment "RAILS_ENV" =&gt; env
+end
+</code></pre>
+
+<p>これでデプロイ。</p>
+
+<p><img src="/images/posts/opsworks/after_css.png" alt="" /></p>
+
+<p>OK.</p>
+
+<h3 id="section-7">デプロイされるディレクトリ</h3>
+
+<p><code>/srv/www/rails_opsworks/current</code>に最新の状態がデプロイされます。</p>
+
+<h3 id="section-8">ログディレクトリ</h3>
+
+<p><code>/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[光へ]]></title>
@@ -1679,88 +1860,6 @@ $ touch manifests/default.pp
 <h2 id="section-7">今後</h2>
 
 <p>語学学校でもう少し英語の勉強をして夏頃に日本に帰ろうと思います。日本での仕事どうしようかなぁ…</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[2013年に参加したAdventCalendar、そしてAdventCalendar参加の意義]]></title>
-    <link href="http://blog.toshimaru.net/2013-advent-calendar/"/>
-    <updated>2013-12-29T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/2013-advent-calendar</id>
-    <content type="html"><![CDATA[<p>2013年のAdvent Calendarは下記の記事にて参加しました。</p>
-
-<ul>
-  <li><a href="http://blog.toshimaru.net/php-force-property/">PHPのプロパティをStrictに定義する</a> (<a href="http://www.adventar.org/calendars/101">PHP Advent Calendar 2013</a>)</li>
-  <li><a href="http://blog.toshimaru.net/one-thing-you-should-know-about-asahikawa/">旭川にある有名な動物園についてあなたが知るべきたった１つのこと</a> (<a href="http://www.adventar.org/calendars/77">道民部 Advent Calendar 2013</a>)</li>
-  <li><a href="http://blog.toshimaru.net/php-trait/">PHP5.4のtrait機能を理解する</a> (<a href="http://www.adventar.org/calendars/101">PHP Advent Calendar 2013</a>)</li>
-  <li><a href="http://blog.toshimaru.net/canadian-beers/">カナディアンビールの紹介</a> (<a href="http://www.adventar.org/calendars/86">ビール Advent Calendar 2013</a>)</li>
-  <li><a href="http://blog.toshimaru.net/css-animation/">CSS3アニメーションを使ってサイトをリッチに</a> (<a href="http://www.adventar.org/calendars/57">CSS Property Advent Calendar 2013</a>)</li>
-  <li><a href="http://blog.toshimaru.net/chrome-dev-tool/">細かすぎて伝わりにくいChrome Developerツールを使いこなそう！</a> (<a href="http://www.adventar.org/calendars/62">Frontrend Advent Calendar 2013</a>)</li>
-  <li><a href="http://blog.toshimaru.net/jquery-8-tips/">jQuery使いが知っておくべき8つのjQueryテクニック</a> (<a href="http://www.adventar.org/calendars/135">jQuery Advent Calendar 2013</a>)</li>
-</ul>
-
-<p>合計７本。思ったよりも多く書くことができました。</p>
-
-<h2 id="advent-calendar">Advent Calendar参加意義</h2>
-
-<p>Advent Calendarに参加する意義とは何でしょうか？　僕は下記のように考えています。</p>
-
-<ul>
-  <li>ブログを書くきっかけになる</li>
-  <li>ブログを書くモチベーションになる</li>
-  <li>普段より多くの人に読んでもらえる</li>
-  <li>他の人のブログを知る・読むきっかけになる</li>
-</ul>
-
-<h2 id="section">ブログを書くきっかけになる</h2>
-
-<p>自分の場合、「これブログに書こうかなー」とネタだけ書き留めておいてあるのですが、面倒で＜下書き＞状態のまま保存されている記事がいくつかあります。Advent Calendarはそれを掃き出すいいきっかけとなります。例えばPHPについてブログを書こうかなと思っていることがあるのであれば、思い切ってPHP Advent Calendarに参加して書くきっかけとしちゃいましょう。</p>
-
-<p>Advent Calendarは12月という時期もあり2013年を総括する良いきっかけでもあります。エンジニアであれば2013年の間に学んだ新しい技術、面白い技術、紹介したい技術を2013年総括の意味も込めて書いてみましょう。ブログに残すことにより自分が2013年に何を学んだのかを振り返る良いきっかけにもなりますし、「書く」ことにより自分自身の知識の整理にもなり良い事尽くしです。</p>
-
-<h2 id="section-1">ブログを書くモチベーションになる</h2>
-
-<p>ブログを書くモチベーションになるのもAdvent Calendarの良いところです。１人で書いているとブログを書こうと思い立ってもどうしても「別に後でいいか」「今度時間あるときに更新しようか」と放置気味になってしまうのが怠惰な人間の性（さが）であります。</p>
-
-<p>しかしAdvent Calendarの場合はみんなでやっているので、「みんなも更新してるし俺も頑張るか」って気になります。あと更新する日付も事前に決定されているので「○○日までには記事を書いてアップデートしなきゃ！」というある意味締め切り的な役割もあります。</p>
-
-<p>逆にこれを利用して、書くネタはないけどとりあえず参加だけポチっておいて＜更新しなきゃいけない状況＞を作ることでブログ記事を書くことができるって作戦もありかと思います。</p>
-
-<p>あと<a href="http://dic.nicovideo.jp/a/%E9%A0%93%E6%8C%AB%E3%81%97%E3%81%9F%E6%8A%80%E8%A1%93%E7%B3%BB%E3%82%A2%E3%83%89%E3%83%99%E3%83%B3%E3%83%88%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC%E3%81%AE%E4%B8%80%E8%A6%A7(2013%E5%B9%B4)">こんな</a>のもネタ記事として存在していますが、Advent Calendarを書かない人の抑止力として働いてて悪くないネタ記事だと思ってます。「俺が記事更新しなかったから＜頓挫＞とか言われた！」なんてなりたくないですもんね。</p>
-
-<h2 id="section-2">普段より多くの人に読んでもらえる</h2>
-
-<p>これも良いことです。Advent Calendarの記事にたどり着く流れとしては下記のような可能性があるかと思います。</p>
-
-<ol>
-  <li>普段からのブログの読者</li>
-  <li>Advent Calendarのサイトからたどり着く</li>
-  <li>バズったAdvent Calendarから同じAdvent Calendarの別の記事を読みに行く</li>
-</ol>
-
-<p>普段ブログでリーチできる読者というのは1のみかと思います。例えばRSSでブログを購読しているとかTwitterでフォローしていてそこから記事にたどり着くとか。1の読者は普段からそのブログを読んでいるので、Advent Calendarとして書こうが書かまいがあまり影響はないと言えます。</p>
-
-<p>しかしAdvent Calendarに書くことにより、普段ブログに訪れないであろう2や3の人までリーチできるのは良いことです。つまり、Advent Calendarというメディアを利用するということです。最新技術にアンテナ張っているエンジニアであれば、自分の興味ある技術のAdvent Calendarは全部とは言わずとも、それなりにチェックしているかと思います。これらのエンジニアは大手のAdvent Calendarサイト（<a href="http://www.adventar.org/">Adventar</a>とか<a href="http://qiita.com/advent-calendar">Advent Calendar (qiita)</a>）であればチェックしているかと思うのでそこからのブログの流入が見込めます。</p>
-
-<p>また3のようにバズった記事からの流入の可能性も見込めますね。例えば下記の記事は技術界隈にとどまらず、多くの人に読まれたようです。</p>
-
-<p><a href="http://blog.jugyo.org/post/70240698465">◯ックパッドの面接に落ちたことを社員の高◯さんに言いふらされた話</a> from <a href="http://www.adventar.org/calendars/252">闇 Advent Calendar 2013</a></p>
-
-<p>この記事を読んだ人の中には「闇Advent Calendarにはこの記事の他にどんな闇があるのだろう？」と興味を持ち他の記事も読みに行ったのではないでしょうか。このように普段読まれない読者からもブログを読んでもらえてAdvent Calendarは素晴らしいです。</p>
-
-<h2 id="section-3">他の人のブログを知る・読むきっかけになる</h2>
-
-<p>他の人のブログを知ったり、読んだりするきっかけにもなるのも良いです。上記に書いたような普段からのブログ読者、あるいはバズった記事でないとなかなか新たなブログを知ったりするのは難しいです。自分も今回参加したAdvent Calendarのその他の記事を読んだのをきっかけにTwitterをフォローしたり、そこから同ブログの別の記事をディグったりしました。</p>
-
-<p>わりとブログ上でのエンジニア有名人はAdvent Calendarに参加しているケースも多いので、PHPのカレンダーであればPHP界隈のエンジニア、フロントエンドのカレンダーであればフロントエンド界隈のエンジニア、GoのカレンダーであればGo界隈のエンジニアにどんな人がいるのかを知ることができます。例えばGoなんかは最近ホットになっている言語でもあるのでAdvent Calendarに参加しているエンジニアの方々をフォローしていれば、Go言語の最新動向もフォローできると思います。</p>
-
-<h2 id="advent-calendar-1">Advent Calendarを終えて</h2>
-
-<p>このようにAdvent Calendarはエンジニアにとって良い事尽くしですので、来年のAdvent Calendarも参加したいなーと考えている所存です。これを読んでいるエンジニアの方でAdvent Calendarに参加したことないという方は来年のカレンダーにチャレンジしてみてはいかがでしょうか？</p>
-
-<h3 id="section-4">反省</h3>
-
-<p>前半の記事は参加表明した後に当日になる前に準備をすることができたのでちゃんと日本時間で更新することができましたが、後半の方は日本との時差もあり日本時間で1日遅れての更新となってしまった記事がありました。それが今回の反省点。</p>
 ]]></content>
   </entry>
   
