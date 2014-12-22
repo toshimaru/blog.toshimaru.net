@@ -3,7 +3,7 @@ layout: post
 title: Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング
 published: true
 image: /images/posts/opsworks/eyecatch.png
-description: Rails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。
+description: Rails4.2.0のアプリケーションをChefでプロビジョニングできるOpsWorksにデプロイしてみます。
 tags: opsworks rails
 ---
 
@@ -15,7 +15,7 @@ OpsWorksとは？
 
 > AWS OpsWorks は、すべての種類およびサイズのアプリケーションを容易にデプロイおよび運用できるクラウドアプリケーション管理サービスです。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。
 >
-> <http://aws.amazon.com/jp/opsworks/>
+> [AWS OpsWorks](http://aws.amazon.com/jp/opsworks/)
 
 ポイントは下記です。
 
@@ -23,10 +23,11 @@ OpsWorksとは？
 * スタック＞レイヤー＞Appという概念でシステムを構成
 * インスタンスをタイムベースorロードベースでスケールアウトできる
 * OpsWorksで使われているレシピは[githubで公開](https://github.com/aws/opsworks-cookbooks)されている
+* 自らのCustom Chefレシピを追加することも可能
 
 料金
 ----
-OpsWorksの使用自体にかかる料金は**0円**です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。
+OpsWorksの使用自体にかかる料金は**＜0円＞**です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。
 
 RailsをOpsWorksにデプロイしてみよう
 ---
@@ -146,19 +147,21 @@ RDSを設定していれば自動的に設定されるのですが、今回の�
 
 > rake asset:precompile というタスクを実行する必要がありますが、OpsWorksのRailsアプリケーションのデフォルトのデプロイ処理ではこのタスクを実行してくれません。
 >
-> <http://interu.hatenablog.com/entry/2013/08/01/214258>
+> [OpsWorksでRailsをデプロイする際にasset:precompileを実施する方法](http://interu.hatenablog.com/entry/2013/08/01/214258)
 
 下記を`deploy/before_migrate.rb`に設定する。
 
-    Chef::Log.info("Running deploy/before_migrate.rb")
-    env = node[:deploy][:rails_opsworks][:rails_env]
-    current_release = release_path
+{% highlight ruby %}
+Chef::Log.info("Running deploy/before_migrate.rb")
+env = node[:deploy][:rails_opsworks][:rails_env]
+current_release = release_path
 
-    execute "rake assets:precompile" do
-      cwd current_release
-      command "bundle exec rake assets:precompile"
-      environment "RAILS_ENV" => env
-    end
+execute "rake assets:precompile" do
+  cwd current_release
+  command "bundle exec rake assets:precompile"
+  environment "RAILS_ENV" => env
+end
+{% endhighlight %}
 
 これでデプロイ。
 
