@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-12-21T18:55:17+00:00</updated>
+  <updated>2014-12-22T13:30:18+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -23,7 +23,7 @@
 <blockquote>
   <p>AWS OpsWorks は、すべての種類およびサイズのアプリケーションを容易にデプロイおよび運用できるクラウドアプリケーション管理サービスです。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。</p>
 
-  <p><a href="http://aws.amazon.com/jp/opsworks/">http://aws.amazon.com/jp/opsworks/</a></p>
+  <p><a href="http://aws.amazon.com/jp/opsworks/">AWS OpsWorks</a></p>
 </blockquote>
 
 <p>ポイントは下記です。</p>
@@ -33,10 +33,11 @@
   <li>スタック＞レイヤー＞Appという概念でシステムを構成</li>
   <li>インスタンスをタイムベースorロードベースでスケールアウトできる</li>
   <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">githubで公開</a>されている</li>
+  <li>自らのCustom Chefレシピを追加することも可能</li>
 </ul>
 
 <h2 id="section">料金</h2>
-<p>OpsWorksの使用自体にかかる料金は<strong>0円</strong>です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。</p>
+<p>OpsWorksの使用自体にかかる料金は<strong>＜0円＞</strong>です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。</p>
 
 <h2 id="railsopsworks">RailsをOpsWorksにデプロイしてみよう</h2>
 <p>OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。</p>
@@ -159,21 +160,20 @@ production:
 <blockquote>
   <p>rake asset:precompile というタスクを実行する必要がありますが、OpsWorksのRailsアプリケーションのデフォルトのデプロイ処理ではこのタスクを実行してくれません。</p>
 
-  <p><a href="http://interu.hatenablog.com/entry/2013/08/01/214258">http://interu.hatenablog.com/entry/2013/08/01/214258</a></p>
+  <p><a href="http://interu.hatenablog.com/entry/2013/08/01/214258">OpsWorksでRailsをデプロイする際にasset:precompileを実施する方法</a></p>
 </blockquote>
 
 <p>下記を<code>deploy/before_migrate.rb</code>に設定する。</p>
 
-<pre><code>Chef::Log.info("Running deploy/before_migrate.rb")
-env = node[:deploy][:rails_opsworks][:rails_env]
-current_release = release_path
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running deploy/before_migrate.rb&quot;</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="ss">:deploy</span><span class="o">][</span><span class="ss">:rails_opsworks</span><span class="o">][</span><span class="ss">:rails_env</span><span class="o">]</span>
+<span class="n">current_release</span> <span class="o">=</span> <span class="n">release_path</span>
 
-execute "rake assets:precompile" do
-  cwd current_release
-  command "bundle exec rake assets:precompile"
-  environment "RAILS_ENV" =&gt; env
-end
-</code></pre>
+<span class="n">execute</span> <span class="s2">&quot;rake assets:precompile&quot;</span> <span class="k">do</span>
+  <span class="n">cwd</span> <span class="n">current_release</span>
+  <span class="n">command</span> <span class="s2">&quot;bundle exec rake assets:precompile&quot;</span>
+  <span class="n">environment</span> <span class="s2">&quot;RAILS_ENV&quot;</span> <span class="o">=&gt;</span> <span class="n">env</span>
+<span class="k">end</span></code></pre></div>
 
 <p>これでデプロイ。</p>
 
