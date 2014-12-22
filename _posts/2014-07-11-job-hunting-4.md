@@ -29,7 +29,7 @@ Gunosyを支えている技術
 
 注目すべきはAPIサーバ部分をGolangで書いていることだった。GoのWEBフレームワークを特に使っているというわけではなく、速度が出る素のGoで書いているということだった。RailsからGoへの移行の経緯あたりは下記の発表に詳しい。
 
-[300万人をGoで捌いた話](https://speakerdeck.com/ymatsuwitter/katutedockergaita)
+[300万人をGoで捌いた話](https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua)
 
 また技術的なチャレンジとして[Dockerも試したりして](https://speakerdeck.com/ymatsuwitter/katutedockergaita)おり、どんどん新しい技術を取り入れて既存の仕組みを改善していこうという姿勢が見られた。
 
