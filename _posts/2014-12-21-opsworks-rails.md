@@ -17,12 +17,12 @@ OpsWorksとは？
 >
 > [AWS OpsWorks](http://aws.amazon.com/jp/opsworks/)
 
-ポイントは下記です。
+ポイントは以下の通り。
 
 * Chefでサーバーをプロビジョニング・デプロイできる
-* スタック＞レイヤー＞Appという概念でシステムを構成
-* インスタンスをタイムベースorロードベースでスケールアウトできる
-* OpsWorksで使われているレシピは[githubで公開](https://github.com/aws/opsworks-cookbooks)されている
+* スタック ＞ レイヤー ＞ App という概念でシステムを構成
+* インスタンスをタイムベース or ロードベースでスケールアウトできる
+* OpsWorksで使われているレシピは[Githubで公開](https://github.com/aws/opsworks-cookbooks)されている
 * 自らのCustom Chefレシピを追加することも可能
 
 料金
@@ -33,7 +33,7 @@ RailsをOpsWorksにデプロイしてみよう
 ---
 OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。
 
-今回デプロイするRailsアプリケーションのコードは下記になります。
+今回デプロイするRailsアプリケーションのコード（最終形）は下記になります。
 
 <https://github.com/toshimaru/opsworks-rails>
 
@@ -72,7 +72,7 @@ RecipesでOpsWorksにどんなレシピが設定されているかがわかり�
 
 ### インスタンスの追加
 
-では次にAppインスタンスを追加。t1microインスタンスで。
+では次にAppインスタンスを追加。t1.microインスタンスで。
 
 ![](/images/posts/opsworks/add_instance.png)
 
