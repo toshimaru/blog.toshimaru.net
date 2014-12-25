@@ -17,6 +17,7 @@ tags: css
     100% { opacity: 1; }
 }
 .post-image  {
+  -ms-animation: anim 2s infinite;
   -webkit-animation: anim 2s infinite;
   animation: anim 2s infinite;
 }
@@ -32,25 +33,27 @@ jQueryなんかでも[.animate()](http://api.jquery.com/animate/)を使えばア
 
 ###パフォーマンス的観点 CSS vs jQuery
 
-DEV.OPERAにて[CSS3 vs jQueryアニメーションの比較](http://dev.opera.com/articles/view/css3-vs-jquery-animations/)が行われています。ここではjQueryとCSS3によるアニメーションどちらが優れているかがレポートされており、最終的な勝者はCSS3だとして記事を結んでいます。本比較において使われている[CSS3のアニメーションサンプル](http://devfiles.myopera.com/articles/10262/CSS3-300-boxes.html)と[jQueryのアニメーションサンプル](http://devfiles.myopera.com/articles/10262/jQuery-300-boxes.html)を自分のChrome(Canary)上でも比較してみました。
+DEV.OPERAにて[CSS3 vs jQueryアニメーションの比較](http://dev.opera.com/articles/view/css3-vs-jquery-animations/)が行われています。ここではjQueryとCSS3によるアニメーションどちらが優れているかがレポートされており、最終的な勝者はCSS3だとして記事を結んでいます。本比較において使われている[CSS3のアニメーションサンプル](http://devfiles.myopera.com/articles/10262/CSS3-300-boxes.html)と[jQueryのアニメーションサンプル](http://devfiles.myopera.com/articles/10262/jQuery-300-boxes.html)を私のChrome(Canary)上でも比較してみました。
 
 肉眼でもCSSアニメーションのほうが綺麗に見える気がします。DevTools上でも実際、Rendering、Paintイベントをフィルターしてみたところ、実際jQueryのほうがイベントの粒度が荒いことが見て取れます。
 
-####CSSによるアニメーション
+#### 1. CSSによるアニメーション
 ![比較１](/images/posts/css-animate/1.png)
 
 ![比較A](/images/posts/css-animate/A.png)
 
-イベントが滑らかに流れています。メモリ効率も良い感じです。
+イベントが安定して滑らかに流れています。メモリ効率も良い感じ。
 
-####jQueryによるアニメーション
+#### 2. jQueryによるアニメーション
+一方、jQueryはどうでしょうか。
+
 ![比較２](/images/posts/css-animate/2.png)
 
 ![比較B](/images/posts/css-animate/B.png)
 
-イベントの流れの傾斜がCSSより緩やかで、たまに上画像のようにもたつくことがある。メモリ効率も山状に上がってよろしくないです。
+イベントの流れの傾斜がCSSより緩やかで、たまに上画像のようにもたつくことがあります。メモリ効率も山状に上がってよろしくない感じです。
 
-パフォーマンス的に考えてCSSアニメーションはjQueryよりも優れています。
+上記の結果からCSSアニメーションを使って良いシーンであれば、**パフォーマンス的にCSSはjQueryよりも優れている**と言えます。
 
 ###ブラウザ対応は？
 
@@ -89,6 +92,7 @@ IEは10以降、それ以外のメインブラウザの最新版は対応済み�
         100% { opacity: 1; }
     }
     .post-image  {
+      -ms-animation: anim 2s infinite;
       -webkit-animation: anim 2s infinite;
       animation: anim 2s infinite;
     }
@@ -107,9 +111,9 @@ CSSコードは下記のコードから引っ張ってきてください。
 
 ###最後に
 
-どうでしたか？　あなたもCSSアニメーションをサイトのちょっとしたところに取り入れてみてはいかがでしょう？
+皆さんもCSSアニメーションをサイトのちょっとしたところに取り入れてサイトをリッチにみせてみてはいかがでしょうか。
 
-ただ１つ注意したいのが、基本的に人の目は動いているものに行きやすいです。アニメーションの使いすぎ、または派手すぎるアニメーションの動きはユーザビリティを著しく下げるので、「使いすぎ注意」ということを忘れずに。
+ただ１つ注意したいのが、基本的に人の目は動いているものに行きやすく、過度なアニメーションの使用、または派手すぎるアニメーションの動きはユーザー体験を著しく下げるので「使いすぎ注意」ということを忘れずに。
 
 ###参考
 * [@keyframes - CSS / MDN](https://developer.mozilla.org/ja/docs/Web/CSS/@keyframes)
