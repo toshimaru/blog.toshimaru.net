@@ -67,6 +67,7 @@
     100% { opacity: 1; }
 }
 .post-image  {
+  -ms-animation: anim 2s infinite;
   -webkit-animation: anim 2s infinite;
   animation: anim 2s infinite;
 }
@@ -82,25 +83,27 @@
 
 <h3 id="css-vs-jquery">パフォーマンス的観点 CSS vs jQuery</h3>
 
-<p>DEV.OPERAにて<a href="http://dev.opera.com/articles/view/css3-vs-jquery-animations/">CSS3 vs jQueryアニメーションの比較</a>が行われています。ここではjQueryとCSS3によるアニメーションどちらが優れているかがレポートされており、最終的な勝者はCSS3だとして記事を結んでいます。本比較において使われている<a href="http://devfiles.myopera.com/articles/10262/CSS3-300-boxes.html">CSS3のアニメーションサンプル</a>と<a href="http://devfiles.myopera.com/articles/10262/jQuery-300-boxes.html">jQueryのアニメーションサンプル</a>を自分のChrome(Canary)上でも比較してみました。</p>
+<p>DEV.OPERAにて<a href="http://dev.opera.com/articles/view/css3-vs-jquery-animations/">CSS3 vs jQueryアニメーションの比較</a>が行われています。ここではjQueryとCSS3によるアニメーションどちらが優れているかがレポートされており、最終的な勝者はCSS3だとして記事を結んでいます。本比較において使われている<a href="http://devfiles.myopera.com/articles/10262/CSS3-300-boxes.html">CSS3のアニメーションサンプル</a>と<a href="http://devfiles.myopera.com/articles/10262/jQuery-300-boxes.html">jQueryのアニメーションサンプル</a>を私のChrome(Canary)上でも比較してみました。</p>
 
 <p>肉眼でもCSSアニメーションのほうが綺麗に見える気がします。DevTools上でも実際、Rendering、Paintイベントをフィルターしてみたところ、実際jQueryのほうがイベントの粒度が荒いことが見て取れます。</p>
 
-<h4 id="css-1">CSSによるアニメーション</h4>
+<h4 id="css-1">1. CSSによるアニメーション</h4>
 <p><img src="/images/posts/css-animate/1.png" alt="比較１" /></p>
 
 <p><img src="/images/posts/css-animate/A.png" alt="比較A" /></p>
 
-<p>イベントが滑らかに流れています。メモリ効率も良い感じです。</p>
+<p>イベントが安定して滑らかに流れています。メモリ効率も良い感じ。</p>
 
-<h4 id="jquery">jQueryによるアニメーション</h4>
+<h4 id="jquery">2. jQueryによるアニメーション</h4>
+<p>一方、jQueryはどうでしょうか。</p>
+
 <p><img src="/images/posts/css-animate/2.png" alt="比較２" /></p>
 
 <p><img src="/images/posts/css-animate/B.png" alt="比較B" /></p>
 
-<p>イベントの流れの傾斜がCSSより緩やかで、たまに上画像のようにもたつくことがある。メモリ効率も山状に上がってよろしくないです。</p>
+<p>イベントの流れの傾斜がCSSより緩やかで、たまに上画像のようにもたつくことがあります。メモリ効率も山状に上がってよろしくない感じです。</p>
 
-<p>パフォーマンス的に考えてCSSアニメーションはjQueryよりも優れています。</p>
+<p>上記の結果からCSSアニメーションを使って良いシーンであれば、<strong>パフォーマンス的にCSSはjQueryよりも優れている</strong>と言えます。</p>
 
 <h3 id="section">ブラウザ対応は？</h3>
 
@@ -141,6 +144,7 @@
     100% { opacity: 1; }
 }
 .post-image  {
+  -ms-animation: anim 2s infinite;
   -webkit-animation: anim 2s infinite;
   animation: anim 2s infinite;
 }
@@ -160,9 +164,9 @@
 
 <h3 id="section-2">最後に</h3>
 
-<p>どうでしたか？　あなたもCSSアニメーションをサイトのちょっとしたところに取り入れてみてはいかがでしょう？</p>
+<p>皆さんもCSSアニメーションをサイトのちょっとしたところに取り入れてサイトをリッチにみせてみてはいかがでしょうか。</p>
 
-<p>ただ１つ注意したいのが、基本的に人の目は動いているものに行きやすいです。アニメーションの使いすぎ、または派手すぎるアニメーションの動きはユーザビリティを著しく下げるので、「使いすぎ注意」ということを忘れずに。</p>
+<p>ただ１つ注意したいのが、基本的に人の目は動いているものに行きやすく、過度なアニメーションの使用、または派手すぎるアニメーションの動きはユーザー体験を著しく下げるので「使いすぎ注意」ということを忘れずに。</p>
 
 <h3 id="section-3">参考</h3>
 <ul>
