@@ -8,11 +8,11 @@ tags: rails opsworks
 
 この記事は[Gunosy Advent Calendar 2014](http://qiita.com/advent-calendar/2014/gunosy)の22日目の記事です。
 
-こんにちは、Gunosyの[@toshimaru](https://twitter.com/toshimaru_e)です。Gunosyでは主にRuby on Railsアプリを担当しています。
+こんにちは、Gunosyの[toshimaru](https://twitter.com/toshimaru_e)です。Gunosyでは主にRuby on Railsアプリを担当しています。
 
 はじめに
 -------
-Gunosyでは昨年度よりAPIの実装を[Rails実装からGo実装へと変えた](https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua)ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです[^2]。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashCorpでさえも[Railsは手放せない](http://blog.gopheracademy.com/advent-2014/atlas/)ようですしね。
+Gunosyでは昨年度よりAPIの実装を[Rails実装からGo実装へと変えた](https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua)ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです[^2]。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも[Railsは手放せない](http://blog.gopheracademy.com/advent-2014/atlas/)ようですしね。
 
 本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います[^1]。
 
@@ -22,7 +22,7 @@ Gunosyでは昨年度よりAPIの実装を[Rails実装からGo実装へと変え
 
 ![](/images/posts/gunosy/deploy.png)
 
-**（↑）developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ**
+**【↑図】developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ**
 
 デプロイ
 -------
@@ -64,7 +64,7 @@ Railsのテストに関してはRSpec, FactoryGirl, Capybaraあたりを使っ�
 
 ![](/images/posts/gunosy/coverage.png)
 
-**（↑）artifactsで公開されたカバレッジ率**
+**【↑図】artifactsで公開されたカバレッジ率**
 
 ただ「テストカバレッジを上げること」が目的化してしまっては本末転倒なので（いわゆる「テスト書きすぎ問題」）、「どこまでテストを書くか」は今後も考えていきたいテーマではあります。
 
@@ -72,13 +72,12 @@ Railsのテストに関してはRSpec, FactoryGirl, Capybaraあたりを使っ�
 ------
 Railsの悩みとして１つ大きいのは複数DBの扱いではないでしょうか？ Gunosyでももちろん複数DBを使い分ける必要があり、そのときはCookpadさん, DeNAさんで実績のある[swith_point](https://github.com/eagletmt/switch_point) gemを使用しています。
 
-この2社のDB事情に関しては下記に詳しいです。
+この2社のDB事情に関しては下記ブログ・資料に詳しいです。
 
 * [クックパッドにおける最近のActiveRecord運用事情](http://techlife.cookpad.com/entry/2014/08/28/194147)
 * [Mobage を支える Ruby の技術 ~ 複数DB編 ~](http://www.slideshare.net/sonots/mobage-ruby-db)
 
 上記に紹介されているように下記のように簡単に複数DBをswitchでき素敵です。
-
 
 {% highlight ruby %}
 # Configuration
@@ -94,7 +93,7 @@ class Article < ActiveRecord::Base
 end
 {% endhighlight %}
 
-※ Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。[参考](http://mozaic.fm/post/104575088493/12-rails)
+Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。[参考: #12 Rails | mozaic.fm](http://mozaic.fm/post/104575088493/12-rails)
 
 権限管理
 -------
@@ -113,7 +112,7 @@ cronの管理に関しては[whenever](https://github.com/javan/whenever)を使�
 その他・今後の課題
 -------
 * 僕が携わったプロジェクトはどちらもRails4系だが、歴史が積み重なったRails3系プロジェクトもあるので今後どうアップデートしていくか。
-* Hubotは遊びで飼ってるけどChatOpsといえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？
+* Hubotは遊びで飼ってるけど[ChatOps](https://speakerdeck.com/jnewland/chatops-at-github)といえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？
 
 最後に
 --------
