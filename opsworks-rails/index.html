@@ -51,7 +51,7 @@
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2014-12-21T00:00:00+00:00" pubdate>21 Dec 2014</time>
-      <i class="icon-tags"></i><a href="/tag/opsworks.html" rel="tag">opsworks</a>, <a href="/tag/rails.html" rel="tag">rails</a>
+      <i class="icon-tags"></i><a href="/tag/chef.html" rel="tag">chef</a>, <a href="/tag/opsworks.html" rel="tag">opsworks</a>, <a href="/tag/rails.html" rel="tag">rails</a>
     </div>
     <img class="post-image flipInX" src="/images/posts/opsworks/eyecatch.png" alt="(image)Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング" title="Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング" />
   </div>
@@ -74,8 +74,8 @@
   <li>Chefでサーバーをプロビジョニング・デプロイできる</li>
   <li>スタック ＞ レイヤー ＞ App という概念でシステムを構成</li>
   <li>インスタンスをタイムベース or ロードベースでスケールアウトできる</li>
-  <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">Githubで公開</a>されている</li>
-  <li>自らのCustom Chefレシピを追加することも可能</li>
+  <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">Githubで公開</a>されており実行コードが追える</li>
+  <li>OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能</li>
 </ul>
 
 <h2 id="section">料金</h2>
@@ -231,6 +231,27 @@ production:
 
 <p><code>/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
 
+<h2 id="section-9">まとめ</h2>
+<p>さてOpsWorksでのデプロイ手順を紹介してきましたが一体何が嬉しいのでしょうか。個人的なメリットは以下です。</p>
+
+<ul>
+  <li>インスタンスがDisposable・Repeatableである
+    <ul>
+      <li>= サーバーをいつでも潰して全く同じ環境を再現できる！</li>
+      <li>「サーバーを増やしたい！」→Add Instanceの作業だけで完了</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/capistrano/capistrano">Capistrano</a>などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks&amp;Chefに一任できる</li>
+</ul>
+
+<h2 id="section-10">さいごに</h2>
+<p>Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、<strong>OpsWorksレシピ+Custom Chefレシピ</strong>の２つを組み合わせて運用していくのが現実的かと思います。</p>
+
+<h2 id="section-11">参考</h2>
+<ul>
+  <li><a href="http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks">Deploying Ruby on Rails Applications to AWS OpsWorks</a></li>
+</ul>
+
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
@@ -346,7 +367,7 @@ production:
       </div>
       <div class="right">
         <h2>Tag</h2>
-        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/apache.html" class="set-1">apache</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/digitalocean.html" class="set-1">digitalocean</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-2">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-2">linux</a> <a href="/tag/mac.html" class="set-3">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/opsworks.html" class="set-1">opsworks</a> <a href="/tag/packer.html" class="set-1">packer</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-2">rails</a> <a href="/tag/rspec.html" class="set-1">rspec</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vagrant.html" class="set-1">vagrant</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB.html" class="set-3">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-3">雑記</a></div>
+        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/apache.html" class="set-1">apache</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chef.html" class="set-1">chef</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/digitalocean.html" class="set-1">digitalocean</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-2">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-2">linux</a> <a href="/tag/mac.html" class="set-3">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/opsworks.html" class="set-1">opsworks</a> <a href="/tag/packer.html" class="set-1">packer</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-2">rails</a> <a href="/tag/rspec.html" class="set-1">rspec</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/vagrant.html" class="set-1">vagrant</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB.html" class="set-3">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-3">雑記</a></div>
       </div>
     </div>
     <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>

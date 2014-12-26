@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-12-26T09:00:54+00:00</updated>
+  <updated>2014-12-26T16:40:16+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -188,8 +188,8 @@
   <li>Chefでサーバーをプロビジョニング・デプロイできる</li>
   <li>スタック ＞ レイヤー ＞ App という概念でシステムを構成</li>
   <li>インスタンスをタイムベース or ロードベースでスケールアウトできる</li>
-  <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">Githubで公開</a>されている</li>
-  <li>自らのCustom Chefレシピを追加することも可能</li>
+  <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">Githubで公開</a>されており実行コードが追える</li>
+  <li>OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能</li>
 </ul>
 
 <h2 id="section">料金</h2>
@@ -344,6 +344,27 @@ production:
 <h3 id="section-8">ログディレクトリ</h3>
 
 <p><code>/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
+
+<h2 id="section-9">まとめ</h2>
+<p>さてOpsWorksでのデプロイ手順を紹介してきましたが一体何が嬉しいのでしょうか。個人的なメリットは以下です。</p>
+
+<ul>
+  <li>インスタンスがDisposable・Repeatableである
+    <ul>
+      <li>= サーバーをいつでも潰して全く同じ環境を再現できる！</li>
+      <li>「サーバーを増やしたい！」→Add Instanceの作業だけで完了</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/capistrano/capistrano">Capistrano</a>などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks&amp;Chefに一任できる</li>
+</ul>
+
+<h2 id="section-10">さいごに</h2>
+<p>Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、<strong>OpsWorksレシピ+Custom Chefレシピ</strong>の２つを組み合わせて運用していくのが現実的かと思います。</p>
+
+<h2 id="section-11">参考</h2>
+<ul>
+  <li><a href="http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks">Deploying Ruby on Rails Applications to AWS OpsWorks</a></li>
+</ul>
 ]]></content>
   </entry>
   
