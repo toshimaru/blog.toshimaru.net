@@ -93,7 +93,7 @@ class Article < ActiveRecord::Base
 end
 {% endhighlight %}
 
-Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。[参考: #12 Rails | mozaic.fm](http://mozaic.fm/post/104575088493/12-rails)
+Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。[参考: #12 Rails mozaic.fm](http://mozaic.fm/post/104575088493/12-rails)
 
 権限管理
 -------
