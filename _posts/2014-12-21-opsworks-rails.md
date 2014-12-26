@@ -25,6 +25,10 @@ OpsWorksとは？
 * OpsWorksで使われているレシピは[Githubで公開](https://github.com/aws/opsworks-cookbooks)されており実行コードが追える
 * OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能
 
+![](/images/posts/opsworks/stack.png)
+
+**【↑図】OpsWorksのStack & Layerの関係**
+
 料金
 ----
 OpsWorksの使用自体にかかる料金は**＜0円＞**です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。
@@ -33,7 +37,7 @@ RailsをOpsWorksにデプロイしてみよう
 ---
 OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。
 
-今回デプロイするRailsアプリケーションのコード（最終形）は下記になります。
+今回デプロイするRailsアプリケーションのコードの最終形は下記になります。
 
 <https://github.com/toshimaru/opsworks-rails>
 
