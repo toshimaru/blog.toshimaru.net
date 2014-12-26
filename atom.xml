@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2014-12-25T00:42:28+00:00</updated>
+  <updated>2014-12-26T09:00:54+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -17,10 +17,10 @@
     <id>http://blog.toshimaru.net/gunosy-rails-way</id>
     <content type="html"><![CDATA[<p>この記事は<a href="http://qiita.com/advent-calendar/2014/gunosy">Gunosy Advent Calendar 2014</a>の22日目の記事です。</p>
 
-<p>こんにちは、Gunosyの<a href="https://twitter.com/toshimaru_e">@toshimaru</a>です。Gunosyでは主にRuby on Railsアプリを担当しています。</p>
+<p>こんにちは、Gunosyの<a href="https://twitter.com/toshimaru_e">toshimaru</a>です。Gunosyでは主にRuby on Railsアプリを担当しています。</p>
 
 <h2 id="section">はじめに</h2>
-<p>Gunosyでは昨年度よりAPIの実装を<a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">Rails実装からGo実装へと変えた</a>ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです<sup id="fnref:2"><a href="#fn:2" class="footnote">1</a></sup>。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashCorpでさえも<a href="http://blog.gopheracademy.com/advent-2014/atlas/">Railsは手放せない</a>ようですしね。</p>
+<p>Gunosyでは昨年度よりAPIの実装を<a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">Rails実装からGo実装へと変えた</a>ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです<sup id="fnref:2"><a href="#fn:2" class="footnote">1</a></sup>。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも<a href="http://blog.gopheracademy.com/advent-2014/atlas/">Railsは手放せない</a>ようですしね。</p>
 
 <p>本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います<sup id="fnref:1"><a href="#fn:1" class="footnote">2</a></sup>。</p>
 
@@ -29,7 +29,7 @@
 
 <p><img src="/images/posts/gunosy/deploy.png" alt="" /></p>
 
-<p><strong>（↑）developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ</strong></p>
+<p><strong>【↑図】developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ</strong></p>
 
 <h2 id="section-2">デプロイ</h2>
 <p>デプロイフローは下記のようになっています。</p>
@@ -88,14 +88,14 @@
 
 <p><img src="/images/posts/gunosy/coverage.png" alt="" /></p>
 
-<p><strong>（↑）artifactsで公開されたカバレッジ率</strong></p>
+<p><strong>【↑図】artifactsで公開されたカバレッジ率</strong></p>
 
 <p>ただ「テストカバレッジを上げること」が目的化してしまっては本末転倒なので（いわゆる「テスト書きすぎ問題」）、「どこまでテストを書くか」は今後も考えていきたいテーマではあります。</p>
 
 <h2 id="db">複数DB</h2>
 <p>Railsの悩みとして１つ大きいのは複数DBの扱いではないでしょうか？ Gunosyでももちろん複数DBを使い分ける必要があり、そのときはCookpadさん, DeNAさんで実績のある<a href="https://github.com/eagletmt/switch_point">swith_point</a> gemを使用しています。</p>
 
-<p>この2社のDB事情に関しては下記に詳しいです。</p>
+<p>この2社のDB事情に関しては下記ブログ・資料に詳しいです。</p>
 
 <ul>
   <li><a href="http://techlife.cookpad.com/entry/2014/08/28/194147">クックパッドにおける最近のActiveRecord運用事情</a></li>
@@ -116,7 +116,14 @@
   <span class="n">use_switch_point</span> <span class="ss">:blog</span>
 <span class="k">end</span></code></pre></div>
 
-<p>※ Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。<a href="http://mozaic.fm/post/104575088493/12-rails">参考</a></p>
+<table>
+  <tbody>
+    <tr>
+      <td>Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。[参考: #12 Rails</td>
+      <td>mozaic.fm](http://mozaic.fm/post/104575088493/12-rails)</td>
+    </tr>
+  </tbody>
+</table>
 
 <h2 id="section-4">権限管理</h2>
 <p>管理画面の権限管理に関しては<a href="https://github.com/nathanl/authority">authority</a>を使用しています。権限は大まかにそれぞれの機能においてそれを参照できる権限（READ）・更新できる権限（CREATE/UPDATE/DELETE）というような権限分けを行っています。例えば＜ユーザーを閲覧可能＞という権限、＜ユーザーを更新可能＞な権限、これらを組み合わせて管理ユーザーの権限を定義します。</p>
@@ -132,7 +139,7 @@
 <h2 id="section-7">その他・今後の課題</h2>
 <ul>
   <li>僕が携わったプロジェクトはどちらもRails4系だが、歴史が積み重なったRails3系プロジェクトもあるので今後どうアップデートしていくか。</li>
-  <li>Hubotは遊びで飼ってるけどChatOpsといえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？</li>
+  <li>Hubotは遊びで飼ってるけど<a href="https://speakerdeck.com/jnewland/chatops-at-github">ChatOps</a>といえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？</li>
 </ul>
 
 <h2 id="section-8">最後に</h2>
