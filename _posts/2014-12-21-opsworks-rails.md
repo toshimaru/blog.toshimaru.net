@@ -4,7 +4,7 @@ title: Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング
 published: true
 image: /images/posts/opsworks/eyecatch.png
 description: Rails4.2.0のアプリケーションをChefでプロビジョニングできるOpsWorksにデプロイしてみます。
-tags: opsworks rails
+tags: chef opsworks rails
 ---
 
 本記事は[Chef Advent Calendar 2014](http://qiita.com/advent-calendar/2014/chef)の21日目の記事です。
@@ -22,8 +22,8 @@ OpsWorksとは？
 * Chefでサーバーをプロビジョニング・デプロイできる
 * スタック ＞ レイヤー ＞ App という概念でシステムを構成
 * インスタンスをタイムベース or ロードベースでスケールアウトできる
-* OpsWorksで使われているレシピは[Githubで公開](https://github.com/aws/opsworks-cookbooks)されている
-* 自らのCustom Chefレシピを追加することも可能
+* OpsWorksで使われているレシピは[Githubで公開](https://github.com/aws/opsworks-cookbooks)されており実行コードが追える
+* OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能
 
 料金
 ----
@@ -176,3 +176,20 @@ OK.
 ### ログディレクトリ
 
 `/var/lib/aws/opsworks/chef` Chefのログ、OpsWorksの設定JSONが格納されています。
+
+まとめ
+---
+さてOpsWorksでのデプロイ手順を紹介してきましたが一体何が嬉しいのでしょうか。個人的なメリットは以下です。
+
+* インスタンスがDisposable・Repeatableである
+  * = サーバーをいつでも潰して全く同じ環境を再現できる！
+  * 「サーバーを増やしたい！」→Add Instanceの作業だけで完了
+* [Capistrano](https://github.com/capistrano/capistrano)などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks&Chefに一任できる
+
+さいごに
+---
+Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、**OpsWorksレシピ+Custom Chefレシピ**の２つを組み合わせて運用していくのが現実的かと思います。
+
+参考
+----
+* [Deploying Ruby on Rails Applications to AWS OpsWorks](http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks)
