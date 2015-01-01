@@ -3,17 +3,17 @@ layout: post
 title: underscore.jsのテンプレートのデフォルトデリミタを変更する
 published: true
 description: erb内でunderscore.jsのテンプレートを使おうとするとerbのデリミタと競合してしまってエラーになってしまう。そういう時は下記のようにunderscoreテンプレートのデリミタを変更してやればよい。
-tags: javascript
+tags: javascript underscore
 ---
 
-erb内でunderscore.jsのテンプレートを使おうとするとerbのデリミタと競合してしまってエラーになってしまう。そういう時は下記のようにunderscoreテンプレートのデリミタを変更してやればよい。
+Railsのerb内でunderscore.jsのテンプレートを使おうとするとerbのデリミタとunderscoreのデリミタが競合してしまってエラーになってしまう。そういう時は下記のようにunderscoreテンプレートのデリミタを変更してやればよい。
 
     _.templateSettings = {
       interpolate : /\{\{(.+?)\}\}/g,
       escape: /\{\{-(.+?)\}\}/g
     };
 
-これで`{{ "{{ hoge " }}}}`というmustacheライクなデリミタに変更できる。
+これで`{{ "{{ hoge " }}}}`という[mustache](http://mustache.github.io/)ライクなデリミタに変更できる。
 
 参考
 ---
