@@ -14,15 +14,17 @@ tags: jquery
 
 １つ目はテクニックというよりTipsです。jQueryには最新版の2.x系と1.x系があります。さてどのようにバージョンを選べばいいでしょう？
 
-2.x系からの大きな変更点としては**IE6/7/8のサポート廃止**です。大して1.x系はそれらのブラウザをサポートしています。
+2.x系からの大きな変更点としては**IE6/7/8のサポート廃止**です。一方、1.x系は**IE6/7/8ブラウザをサポート**しています。
 
-よってまとめるとIE6/7/8をサポートしているのであれば1.x系を使用、サポートしないのであれば2.x系を使用で良いです。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。
+よってまとめると**IE6/7/8をサポートしたいのであれば1.x系を使用、サポートしないのであれば2.x系を使用**しましょう。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。
 
 ##2.　イベントハンドリングには`on()`を使うべし
 
-もはや常識ですかね。jQuery1.7以前だと`bind()`,`live()`,`delegate()`やらいろいろあったのが1.7で`on`でまとめられました。
+イベントハンドリングのメソッドがjQuery1.7以前だと`bind()`,`live()`,`delegate()`やらいろいろあったのが、jQuery1.7で`on()`でまとめられました。
 
-ではここで質問。`click()`などではなく、`on()`を使うことで何が嬉しいのでしょうか？　１つ目は複数のイベントを登録できるということです。下記では`click`と`mouseenter`の２つのイベントを１つの処理にアタッチしてます。
+ではここで疑問。`click()`などではなく、`on()`を使うことで何が嬉しいのでしょうか？　大きく３つあります。
+
+１つ目は複数のイベントを登録できるということです。下記では`click`と`mouseenter`の２つのイベントを１つの処理にアタッチしてます。
 
 <iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/YDur2/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
@@ -32,7 +34,7 @@ tags: jquery
 
 ３つ目、第二引数にアタッチ先のセレクターを指定することができます。これでなにが嬉しいかというとAJAXなどで遅延して取得してくるような要素に対しても事前にイベントを設定することができます。
 
-<iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/hSZLY/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+<iframe width="100%" height="150" src="http://jsfiddle.net/toshimaru/hSZLY/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 いわずもがなですが`off()`でイベントをデタッチできることも`on()`の良い所です。
 
@@ -40,25 +42,29 @@ tags: jquery
 
 [去年のjQuery Advent Calendar](http://blog.toshimaru.net/jquery-ajaxdeferredajax/)で書いた通りです。
 
-    $.ajax({
-        url: "ajax.html",
-        success: function(data) {
-           alert('success!!');
-        },
-        error: function(data) {
-           alert('error!!!');
-        }
-    });
+{% highlight javascript %}
+$.ajax({
+    url: "ajax.html",
+    success: function(data) {
+       alert('success!!');
+    },
+    error: function(data) {
+       alert('error!!!');
+    }
+});
+{% endhighlight %}
 
 上記の書き方よりも、
 
-    $.ajax({
-        url: "ajax.html",
-    }).done(function(data){
-        alert('success!!');
-    }).fail(function(data){
-        alert('error!!!');
-    });
+{% highlight javascript %}
+$.ajax({
+    url: "ajax.html",
+}).done(function(data){
+    alert('success!!');
+}).fail(function(data){
+    alert('error!!!');
+});
+{% endhighlight %}
 
 こっちのほうがPromiseなモダン形式です。
 
@@ -66,7 +72,7 @@ tags: jquery
 
 `ajax()`がオプションで色々出来過ぎちゃってついつい`ajax()`を使いがちですが、jQueryには[AJAXショートカットメソッド](http://api.jquery.com/category/ajax/shorthand-methods/)があるんです！　例えばデータをPOSTするAJAX。下記に`ajax()`と`post()`の二通り書き方を載せましたが、`post()`のほうがシンプルでよさ気ですね。
 
-<iframe width="100%" height="300" src="http://jsfiddle.net/toshimaru/BkNfr/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+<iframe width="100%" height="400" src="http://jsfiddle.net/toshimaru/BkNfr/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 ## 5. `find()`を使って絞り込むべし
 
@@ -93,21 +99,23 @@ tags: jquery
 
 $.mapと組み合わせるとなかなかよいかもしれません。
 
-    var links = $.map(['google.com', 'yahoo.com'], function(link) {
-        var list = $('<li>');
-        $('<a></a>', {href: link}).text('LINK').appendTo(list);
-        return list;
-    });
+{% highlight javascript %}
+var links = $.map(['google.com', 'yahoo.com'], function(link) {
+    var list = $('<li>');
+    $('<a></a>', {href: link}).text('LINK').appendTo(list);
+    return list;
+});
 
-    $('<ul>').html(links)
-    => [<ul>​
-            <li>​
-            <a href=​"google.com">​LINK​</a>​
-            </li>​
-            <li>​
-            <a href=​"yahoo.com">​LINK​</a>​
-            </li>​
-        </ul>​ ]
+$('<ul>').html(links)
+// => [<ul>​
+//        <li>​
+//        <a href=​"google.com">​LINK​</a>​
+//        </li>​
+//        <li>​
+//        <a href=​"yahoo.com">​LINK​</a>​
+//        </li>​
+//    </ul>​ ]
+{% endhighlight %}
 
 
 ## 8. form送信時は`serialize()`を使って値をまとめて取得すべし
@@ -115,7 +123,6 @@ $.mapと組み合わせるとなかなかよいかもしれません。
 `serialize()`を使うことでform内のinputの値をまとめて取得できます。
 
 <iframe width="100%" height="130" src="http://jsfiddle.net/toshimaru/3GG3c/3/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
 
 ###参考
 
