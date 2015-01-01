@@ -2,8 +2,10 @@
 ---
 
 $('#toggle-menu').on 'click', ->
-  $('#toggle-item')[0].classList.toggle('fadeInDown')
-  $('#navigation')[0].classList.toggle('active')
+  $('#toggle-item').toggleClass 'fadeInDown'
+  $('#navigation').toggleClass 'active'
 
 $('.icon-search').on 'click', ->
-  $('#search-form')[0].classList.toggle('slideInRight')
+  $('#search-form').toggleClass 'slideInRight'
+  $txtbox = $('.search-txt')
+  $txtbox.focus()
