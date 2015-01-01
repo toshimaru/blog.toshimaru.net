@@ -64,15 +64,17 @@
 
 <p>１つ目はテクニックというよりTipsです。jQueryには最新版の2.x系と1.x系があります。さてどのようにバージョンを選べばいいでしょう？</p>
 
-<p>2.x系からの大きな変更点としては<strong>IE6/7/8のサポート廃止</strong>です。大して1.x系はそれらのブラウザをサポートしています。</p>
+<p>2.x系からの大きな変更点としては<strong>IE6/7/8のサポート廃止</strong>です。一方、1.x系は<strong>IE6/7/8ブラウザをサポート</strong>しています。</p>
 
-<p>よってまとめるとIE6/7/8をサポートしているのであれば1.x系を使用、サポートしないのであれば2.x系を使用で良いです。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。</p>
+<p>よってまとめると<strong>IE6/7/8をサポートしたいのであれば1.x系を使用、サポートしないのであれば2.x系を使用</strong>しましょう。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。</p>
 
 <h2 id="on">2.　イベントハンドリングには<code>on()</code>を使うべし</h2>
 
-<p>もはや常識ですかね。jQuery1.7以前だと<code>bind()</code>,<code>live()</code>,<code>delegate()</code>やらいろいろあったのが1.7で<code>on</code>でまとめられました。</p>
+<p>イベントハンドリングのメソッドがjQuery1.7以前だと<code>bind()</code>,<code>live()</code>,<code>delegate()</code>やらいろいろあったのが、jQuery1.7で<code>on()</code>でまとめられました。</p>
 
-<p>ではここで質問。<code>click()</code>などではなく、<code>on()</code>を使うことで何が嬉しいのでしょうか？　１つ目は複数のイベントを登録できるということです。下記では<code>click</code>と<code>mouseenter</code>の２つのイベントを１つの処理にアタッチしてます。</p>
+<p>ではここで疑問。<code>click()</code>などではなく、<code>on()</code>を使うことで何が嬉しいのでしょうか？　大きく３つあります。</p>
+
+<p>１つ目は複数のイベントを登録できるということです。下記では<code>click</code>と<code>mouseenter</code>の２つのイベントを１つの処理にアタッチしてます。</p>
 
 <iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/YDur2/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
@@ -82,7 +84,7 @@
 
 <p>３つ目、第二引数にアタッチ先のセレクターを指定することができます。これでなにが嬉しいかというとAJAXなどで遅延して取得してくるような要素に対しても事前にイベントを設定することができます。</p>
 
-<iframe width="100%" height="100" src="http://jsfiddle.net/toshimaru/hSZLY/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+<iframe width="100%" height="150" src="http://jsfiddle.net/toshimaru/hSZLY/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 <p>いわずもがなですが<code>off()</code>でイベントをデタッチできることも<code>on()</code>の良い所です。</p>
 
@@ -90,27 +92,25 @@
 
 <p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">去年のjQuery Advent Calendar</a>で書いた通りです。</p>
 
-<pre><code>$.ajax({
-    url: "ajax.html",
-    success: function(data) {
-       alert('success!!');
-    },
-    error: function(data) {
-       alert('error!!!');
-    }
-});
-</code></pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+    <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;ajax.html&quot;</span><span class="p">,</span>
+    <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;success!!&#39;</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;error!!!&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">});</span></code></pre></div>
 
 <p>上記の書き方よりも、</p>
 
-<pre><code>$.ajax({
-    url: "ajax.html",
-}).done(function(data){
-    alert('success!!');
-}).fail(function(data){
-    alert('error!!!');
-});
-</code></pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+    <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;ajax.html&quot;</span><span class="p">,</span>
+<span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;success!!&#39;</span><span class="p">);</span>
+<span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;error!!!&#39;</span><span class="p">);</span>
+<span class="p">});</span></code></pre></div>
 
 <p>こっちのほうがPromiseなモダン形式です。</p>
 
@@ -118,7 +118,7 @@
 
 <p><code>ajax()</code>がオプションで色々出来過ぎちゃってついつい<code>ajax()</code>を使いがちですが、jQueryには<a href="http://api.jquery.com/category/ajax/shorthand-methods/">AJAXショートカットメソッド</a>があるんです！　例えばデータをPOSTするAJAX。下記に<code>ajax()</code>と<code>post()</code>の二通り書き方を載せましたが、<code>post()</code>のほうがシンプルでよさ気ですね。</p>
 
-<iframe width="100%" height="300" src="http://jsfiddle.net/toshimaru/BkNfr/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+<iframe width="100%" height="400" src="http://jsfiddle.net/toshimaru/BkNfr/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 <h2 id="find">5. <code>find()</code>を使って絞り込むべし</h2>
 
@@ -148,22 +148,21 @@
 
 <p>$.mapと組み合わせるとなかなかよいかもしれません。</p>
 
-<pre><code>var links = $.map(['google.com', 'yahoo.com'], function(link) {
-    var list = $('&lt;li&gt;');
-    $('&lt;a&gt;&lt;/a&gt;', {href: link}).text('LINK').appendTo(list);
-    return list;
-});
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">map</span><span class="p">([</span><span class="s1">&#39;google.com&#39;</span><span class="p">,</span> <span class="s1">&#39;yahoo.com&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">link</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;li&gt;&#39;</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;a&gt;&lt;/a&gt;&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">href</span><span class="o">:</span> <span class="nx">link</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="s1">&#39;LINK&#39;</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">list</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">list</span><span class="p">;</span>
+<span class="p">});</span>
 
-$('&lt;ul&gt;').html(links)
-=&gt; [&lt;ul&gt;​
-        &lt;li&gt;​
-        &lt;a href=​"google.com"&gt;​LINK​&lt;/a&gt;​
-        &lt;/li&gt;​
-        &lt;li&gt;​
-        &lt;a href=​"yahoo.com"&gt;​LINK​&lt;/a&gt;​
-        &lt;/li&gt;​
-    &lt;/ul&gt;​ ]
-</code></pre>
+<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;ul&gt;&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">links</span><span class="p">)</span>
+<span class="c1">// =&gt; [&lt;ul&gt;​</span>
+<span class="c1">//        &lt;li&gt;​</span>
+<span class="c1">//        &lt;a href=​&quot;google.com&quot;&gt;​LINK​&lt;/a&gt;​</span>
+<span class="c1">//        &lt;/li&gt;​</span>
+<span class="c1">//        &lt;li&gt;​</span>
+<span class="c1">//        &lt;a href=​&quot;yahoo.com&quot;&gt;​LINK​&lt;/a&gt;​</span>
+<span class="c1">//        &lt;/li&gt;​</span>
+<span class="c1">//    &lt;/ul&gt;​ ]</span></code></pre></div>
 
 <h2 id="formserialize">8. form送信時は<code>serialize()</code>を使って値をまとめて取得すべし</h2>
 
