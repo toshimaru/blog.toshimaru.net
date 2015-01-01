@@ -1,11 +1,14 @@
 (function() {
   $('#toggle-menu').on('click', function() {
-    $('#toggle-item')[0].classList.toggle('fadeInDown');
-    return $('#navigation')[0].classList.toggle('active');
+    $('#toggle-item').toggleClass('fadeInDown');
+    return $('#navigation').toggleClass('active');
   });
 
   $('.icon-search').on('click', function() {
-    return $('#search-form')[0].classList.toggle('slideInRight');
+    var $txtbox;
+    $('#search-form').toggleClass('slideInRight');
+    $txtbox = $('.search-txt');
+    return $txtbox.focus();
   });
 
 }).call(this);
