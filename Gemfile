@@ -8,6 +8,7 @@ gem 'jekyll-sitemap'
 gem 'therubyracer'
 gem 'jekyll-less'
 gem 'jekyll-assets'
+gem 'nokogiri'
 
 # want to check links with exclude option
 # gem 'link-checker'
