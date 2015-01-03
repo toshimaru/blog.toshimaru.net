@@ -7,7 +7,7 @@ tags: rails opsworks
 toc: true
 ---
 
-この記事は[Gunosy Advent Calendar 2014](http://qiita.com/advent-calendar/2014/gunosy)の22日目の記事です。
+**この記事は[Gunosy Advent Calendar 2014](http://qiita.com/advent-calendar/2014/gunosy)の22日目の記事です。**
 
 こんにちは、Gunosyの[toshimaru](https://twitter.com/toshimaru_e)です。Gunosyでは主にRuby on Railsアプリを担当しています。
 
