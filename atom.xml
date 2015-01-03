@@ -3,12 +3,84 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-01-03T15:33:22+00:00</updated>
+  <updated>2015-01-03T17:35:41+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[GZip形式のS3上のファイルをIO.pipeでストリーム読み出し]]></title>
+    <link href="http://blog.toshimaru.net/ruby-pipe-s3/"/>
+    <updated>2015-01-04T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/ruby-pipe-s3</id>
+    <content type="html"><![CDATA[<h2 id="section">やりたいこと</h2>
+
+<p>S3からgzip形式のファイルをストリーミングダウンロードしてそれを読み出す。</p>
+
+<h2 id="s3">S3からのダウンロード</h2>
+
+<p><a href="http://docs.aws.amazon.com/AWSRubySDK/latest/AWS/S3/S3Object.html">公式ドキュメント</a>によるとこうする。</p>
+
+<p>If you want to stream an object from S3, you can pass a block to #read.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+  <span class="n">large_object</span><span class="o">.</span><span class="n">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<h2 id="gzip">gzipを読む</h2>
+
+<p>gzipの読み出しのサンプルコードはこんな感じ。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;hoge.gz&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+  <span class="nb">print</span> <span class="n">gz</span><span class="o">.</span><span class="n">read</span>
+  <span class="n">gz</span><span class="o">.</span><span class="n">close</span>
+<span class="k">end</span></code></pre></div>
+
+<p>via. <a href="http://apidock.com/ruby/Zlib/GzipReader">http://apidock.com/ruby/Zlib/GzipReader</a></p>
+
+<h2 id="pipe">pipeでつなぐ</h2>
+
+<p><code>IO.pipe</code>を使ってつなぐとこう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">IO</span><span class="o">.</span><span class="n">pipe</span> <span class="k">do</span> <span class="o">|</span><span class="n">read_io</span><span class="p">,</span> <span class="n">write_io</span><span class="o">|</span>
+  <span class="n">write_io</span><span class="o">.</span><span class="n">binmode</span>
+  <span class="n">thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
+    <span class="k">begin</span>
+      <span class="no">AWS</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">S3Object</span><span class="o">.</span><span class="n">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
+        <span class="n">write_io</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">rescue</span>
+      <span class="n">write_io</span><span class="o">.</span><span class="n">close</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">read_io</span><span class="p">)</span>
+  <span class="k">while</span> <span class="n">line</span> <span class="o">=</span> <span class="n">gz</span><span class="o">.</span><span class="n">gets</span>
+    <span class="c1"># do something with line ...</span>
+    <span class="nb">puts</span> <span class="n">line</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>注意点としては以下。</p>
+
+<ol>
+  <li>gzip形式なので<code>write_io.binmode</code>でバイナリモードにすること</li>
+  <li>Thread内で何かエラーが起こったときに<code>gets</code>が待ち状態で止まっちゃうので<code>close</code>なりなんなり適切な処理をしてやること</li>
+</ol>
+
+<h3 id="section-1">参考</h3>
+
+<ul>
+  <li><a href="http://stackoverflow.com/questions/24016548/how-do-i-get-zlib-to-uncompress-from-s3-stream-in-ruby">How do I get Zlib to uncompress from S3 stream in Ruby?</a></li>
+  <li><a href="http://takuya-1st.hatenablog.jp/entry/20120205/1328470521">RubyはIO.pipeを使えば、パイプを作ることが出来る</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GunosyでのRails開発フロー]]></title>
@@ -1831,98 +1903,6 @@ $ touch manifests/default.pp
 <ul>
   <li><a href="http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/">VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい]]></title>
-    <link href="http://blog.toshimaru.net/chromebook-firstimpression/"/>
-    <updated>2014-03-09T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/chromebook-firstimpression</id>
-    <content type="html"><![CDATA[<p><a href="http://blog.livedoor.jp/itsoku/archives/37545648.html">ついに激安PCのChromeBookが日本上陸！東芝が来月にも発売へ</a></p>
-
-<p>Chromebookが日本にも来るようですね。カナダにて一足先にChromebookを一週間ほど触ってみたので、その感想を書いてみようと思います。</p>
-
-<h2 id="section">スペック</h2>
-
-<p>購入したのはSamsungのChromebook. ３万円くらいでした。安い。</p>
-
-<p><img src="/images/posts/chromebook/chromebook1.jpg" alt="chromebook pic 1" /></p>
-
-<p>特徴はざっくりこんな感じ。</p>
-
-<ul>
-  <li>11.6 インチディスプレイ</li>
-  <li>約1キログラム</li>
-  <li>2GB メモリ</li>
-  <li>16GB SSD</li>
-  <li>Samsung Exynos 5 Dual Processor</li>
-</ul>
-
-<p>via. <a href="https://www.google.com/intl/ms/chrome/devices/samsung-chromebook.html#specs">Samsung Chromebook</a></p>
-
-<p>重さも軽くノートのように持ち運べるので携帯性は優れてて良いかと。SSD容量が少ないのは「ファイルはローカルじゃなくWEBに置いてね」というChromeOSの思想から気にしちゃいけないところ。動作に関してはタブ何十枚も一度に開いたり動画を閲覧してたりするとモッサリするかなって感じだった。</p>
-
-<p>何より驚いたのは起動の早さでした。本当に10秒くらいで起動するんですよ、これが。見てて気持ちよかった。</p>
-
-<h2 id="chrome-os">Chrome OSの思想</h2>
-
-<p>ChromeOSは全ての作業がブラウザ/WEBで実行可能になりつつある昨今、生まれるべくして生まれたOSだと思う。僕らが日々パソコンの前に座って行う作業はウェブ上で可能な作業へとシフトしていっている。メールチェックはOutlookからGmailへと、ドキュメント作成はWord/ExcelからGoogleDocsへと、各種データはローカル保存からEvernote,DropBoxなどのクラウドストレージへと移行している。プログラミングですら<a href="https://c9.io/">Cloud9 IDE</a>などのサービスでウェブ上で可能になっている。</p>
-
-<p>ChromeOSには従来のようなデスクトップやファイルといった発想はない。</p>
-
-<blockquote>
-  <p>Googleアカウントを利用してログインする。Google Chrome OSのユーザインタフェースは、基本的にGoogle Chromeだけが全面に出ている形で、デスクトップやファイルブラウザなどは無く、すべてのアプリケーションはウェブアプリケーションという形でGoogle Chromeにインストールされ、実行される。インストールしたアプリはGoogle Chromeにショートカットを作成してアクセスすることが出来る。</p>
-
-  <p><a href="http://ja.wikipedia.org/wiki/Google_Chrome_OS">Google Chrome OS - Wikipedia</a></p>
-</blockquote>
-
-<p>起動するとこんな画面。一見他OSのデスクトップのようにファイルが置けたりするんじゃないの？って思うかもしれないけどそんなことはない。</p>
-
-<p><img src="/images/posts/chromebook/chromebook2.jpg" alt="chromebook pic 2" /></p>
-
-<p>基本的にアプリケーションはChrome上で動作するアプリケーションのみなので、下部にズラって並んでるのはChromeアプリのショートカットアイコン。クリックするとChromeが開きWEBアプリが起動する感じ。</p>
-
-<h2 id="section-1">開発者マシンとして利用可能？</h2>
-
-<p>自分は開発者なので開発者マシンとして利用可能かも試してみた。</p>
-
-<p>結論から言うと現時点では難しいという印象。</p>
-
-<h3 id="developer-mode">Developer Mode</h3>
-
-<p>Chromebookには<a href="http://www.chromium.org/chromium-os/chromiumos-design-docs/developer-mode">Developerモード</a>というのがあって、これをONにすることでシェル操作が可能になったりする。例えば自分のSamsung Chromebookであれば<a href="http://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/samsung-arm-chromebook#TOC-Developer-Mode">この手順</a>でDeveloperモードがONにできた。</p>
-
-<h3 id="chrome">Chrome上で動作する代替アプリケーション</h3>
-
-<p>Chrome上で動作する開発者用のアプリケーションとしてはこんなのが紹介されてる。</p>
-
-<ul>
-  <li><a href="https://chrome.google.com/webstore/detail/secure-shell/pnhechapfaindjhompbnflcldabbghjo">Secure Shell</a> - ターミナル、SSHクライアント</li>
-  <li><a href="https://chrome.google.com/webstore/detail/chrome-remote-desktop/gbchcmhmhahfdphkhkmpfmihenigjmpp">Chrome Remote Desktop</a> - リモートデスクトップ</li>
-  <li><a href="https://chrome.google.com/webstore/detail/text/mmfbcljfglbokpmkimbfghdkjmjhdgbg">Text</a> - テキストエディタ</li>
-  <li><a href="https://chrome.google.com/webstore/detail/beagle-term/gkdofhllgfohlddimiiildbgoggdpoea">Beagle Term</a> - ターミナルエミュレータ</li>
-  <li><a href="https://chrome.google.com/webstore/detail/cloud9/nbdmccoknlfggadpfkmcpnamfnbkmkcp">Cloud9</a> - オンラインIDE</li>
-  <li><a href="http://runnable.com/">Runnable</a> - クラウドベースIDE</li>
-</ul>
-
-<p>via. <a href="http://www.chromium.org/chromium-os/developing-apps-on-your-chromium-os-device">Developing apps on your Chromebook</a></p>
-
-<p>どれも悪くはないけど痒いところには手が届かない感じ。</p>
-
-<h3 id="section-2">その他</h3>
-
-<p>他にも<a href="http://jeremyckahn.github.io/blog/2013/02/09/setting-up-a-local-development-environment-in-chrome-os/">Setting Up a Local Development Environment in Chrome OS</a>や<a href="http://lifehacker.com/how-to-install-linux-on-a-chromebook-and-unlock-its-ful-509039343">How to Install Linux on a Chromebook and Unlock Its Full Potential</a>なんかを参考に<a href="https://github.com/dnschneid/crouton">crouton</a>を使ってみたりしたけど、まだまだ発展途中という印象だった。</p>
-
-<h3 id="tips">Tips</h3>
-
-<p><a href="http://www.chromestory.com/google-chromebook/">100 Tips for Your Google Chromebook</a></p>
-
-<h2 id="section-3">まとめ</h2>
-
-<p>パソコンの普段の使い方が「Gmailでメールチェック」「YouTube/ニコ動などで動画視聴」「Twitter/Facebook閲覧」などWEBに閉じている方であれば、Chromebookはオススメできます。WindowsやMacよりも低価格ですし、悪い買い物ではないと思います。</p>
-
-<p>ただ仕事での利用、ソフトウェア開発などの利用シーンにおいてはオススメできません。「Chrome縛り」でイケると思ってchromebook試用してみたが、僕は思ったより辛かった。</p>
 ]]></content>
   </entry>
   

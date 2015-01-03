@@ -3,21 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Google Analyticsにみるブログ記事のバズり方の流れ - Hack Your Design!</title>
+  <title>GZip形式のS3上のファイルをIO.pipeでストリーム読み出し - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Google Analyticsにみるブログ記事のバズり方の流れ - Hack Your Design!">
-  <meta property="og:title" content="Google Analyticsにみるブログ記事のバズり方の流れ - Hack Your Design!">
-  <meta name="description" content="先日のブログ記事がバズりました。現時点でおおよそtweet数1200、いいね数1000、はてブ数900となっています。はてブ数500以上もらったのは始めての経験でGoogle Analyticsを興味深く眺めてたんですが、面白い傾向が見えたので個人的メモの意味もこめて書いてみます。">
-  <meta name="twitter:description" content="先日のブログ記事がバズりました。現時点でおおよそtweet数1200、いいね数1000、はてブ数900となっています。はてブ数500以上もらったのは始めての経験でGoogle Analyticsを興味深く眺めてたんですが、面白い傾向が見えたので個人的メモの意味もこめて書いてみます。">
-  <meta property="og:description" content="先日のブログ記事がバズりました。現時点でおおよそtweet数1200、いいね数1000、はてブ数900となっています。はてブ数500以上もらったのは始めての経験でGoogle Analyticsを興味深く眺めてたんですが、面白い傾向が見えたので個人的メモの意味もこめて書いてみます。">
+  <meta name="twitter:title" content="GZip形式のS3上のファイルをIO.pipeでストリーム読み出し - Hack Your Design!">
+  <meta property="og:title" content="GZip形式のS3上のファイルをIO.pipeでストリーム読み出し - Hack Your Design!">
+  <meta name="description" content="S3からgzip形式のファイルをストリーミングダウンロードしてそれをRubyで読み出す。IO.pipeを使えば可能です。">
+  <meta name="twitter:description" content="S3からgzip形式のファイルをストリーミングダウンロードしてそれをRubyで読み出す。IO.pipeを使えば可能です。">
+  <meta property="og:description" content="S3からgzip形式のファイルをストリーミングダウンロードしてそれをRubyで読み出す。IO.pipeを使えば可能です。">
   
-  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/buzz/compare.png" />
-  <meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/buzz/compare.png" />
-  
+  <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
+  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
 </head>
 <body>
@@ -50,77 +49,88 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Google Analyticsにみるブログ記事のバズり方の流れ</h1>
+  <h1 class="fadeInLeft">GZip形式のS3上のファイルをIO.pipeでストリーム読み出し</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-11-23T00:00:00+00:00" pubdate>23 Nov 2013</time>
-      <i class="icon-tags"></i><a href="/tag/seo.html" rel="tag">seo</a>
+      <i class="icon-calendar"></i><time datetime="2015-01-04T00:00:00+00:00" pubdate>04 Jan 2015</time>
+      <i class="icon-tags"></i><a href="/tag/ruby.html" rel="tag">ruby</a>, <a href="/tag/s3.html" rel="tag">s3</a>
     </div>
-    <img class="post-image flipInX" src="/images/posts/buzz/compare.png" alt="(image)Google Analyticsにみるブログ記事のバズり方の流れ" title="Google Analyticsにみるブログ記事のバズり方の流れ" />
+    
   </div>
 </div>
 
 
-  <p><a href="/cool-ui/">先日のブログ記事</a>がバズりました。現時点でおおよそtweet数1200、いいね数1000、はてブ数900となっています。はてブ数500以上もらったのは始めての経験でGoogle Analyticsを興味深く眺めてたんですが、面白い傾向が見えたので個人的メモの意味もこめて書いてみます。</p>
+  <h2 id="section">やりたいこと</h2>
 
-<h2 id="section">バズによるページビュー変化</h2>
+<p>S3からgzip形式のファイルをストリーミングダウンロードしてそれを読み出す。</p>
 
-<p>まずは今月のページビューのチャート。</p>
+<h2 id="s3">S3からのダウンロード</h2>
 
-<p><img src="/images/posts/buzz/chart.png" alt="pageview chart" /></p>
+<p><a href="http://docs.aws.amazon.com/AWSRubySDK/latest/AWS/S3/S3Object.html">公式ドキュメント</a>によるとこうする。</p>
 
-<p>今までのビュー数がアホみたいにみえますね（笑）。恐るべしバズ効果。</p>
+<p>If you want to stream an object from S3, you can pass a block to #read.</p>
 
-<h2 id="section-1">流入元</h2>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+  <span class="n">large_object</span><span class="o">.</span><span class="n">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
 
-<p>これだけ各種SNSでシェアされたので、次はどこからの流入が最も多かったのかが気になりました。</p>
+<h2 id="gzip">gzipを読む</h2>
 
-<p><img src="/images/posts/buzz/sources.png" alt="流入元" /></p>
+<p>gzipの読み出しのサンプルコードはこんな感じ。</p>
 
-<p>なんと一番はTwitterでもFacebookでもはてなでもなくGunosyでした！　いかにみんながGunosyで情報を消化しているかがわかりますね。</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;hoge.gz&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+  <span class="nb">print</span> <span class="n">gz</span><span class="o">.</span><span class="n">read</span>
+  <span class="n">gz</span><span class="o">.</span><span class="n">close</span>
+<span class="k">end</span></code></pre></div>
 
-<h2 id="gunosytwitterfacebook">Gunosy砲、Twitter砲、Facebook砲、はてブ砲それぞれの波及順序</h2>
+<p>via. <a href="http://apidock.com/ruby/Zlib/GzipReader">http://apidock.com/ruby/Zlib/GzipReader</a></p>
 
-<p>今回Gunosy砲、Twitter砲、Facebook砲、はてブ砲全てを食らったわけですがどういう順番で砲撃されるかを見てみました。</p>
+<h2 id="pipe">pipeでつなぐ</h2>
 
-<p><img src="/images/posts/buzz/compare2.png" alt="比較２" /></p>
+<p><code>IO.pipe</code>を使ってつなぐとこう。</p>
 
-<ul>
-  <li>青：全体</li>
-  <li>オレンジ：Gunosy</li>
-  <li>緑：はてな</li>
-  <li>紫：Twitter</li>
-  <li>黄：Facebook</li>
-</ul>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">IO</span><span class="o">.</span><span class="n">pipe</span> <span class="k">do</span> <span class="o">|</span><span class="n">read_io</span><span class="p">,</span> <span class="n">write_io</span><span class="o">|</span>
+  <span class="n">write_io</span><span class="o">.</span><span class="n">binmode</span>
+  <span class="n">thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
+    <span class="k">begin</span>
+      <span class="no">AWS</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">S3Object</span><span class="o">.</span><span class="n">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
+        <span class="n">write_io</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">rescue</span>
+      <span class="n">write_io</span><span class="o">.</span><span class="n">close</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 
-<p><img src="/images/posts/buzz/compare.png" alt="比較１" /></p>
+  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">read_io</span><span class="p">)</span>
+  <span class="k">while</span> <span class="n">line</span> <span class="o">=</span> <span class="n">gz</span><span class="o">.</span><span class="n">gets</span>
+    <span class="c1"># do something with line ...</span>
+    <span class="nb">puts</span> <span class="n">line</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
 
-<p>なんとなく感じてた自分の感覚値と一緒の感じでした。順番としてはこんな感じです。</p>
+<p>注意点としては以下。</p>
 
 <ol>
-  <li>Twitter/Facebookでシェアされ始める。と同時にはてなブックマークされ始める。</li>
-  <li>はてな新着エントリ入り→ホットエントリ入り→はてなからのアクセス数が一気に増える</li>
-  <li>Twitterのシェアがどんどん拡大、アクセス数も増える</li>
-  <li>Twitter/はてなの流入が落ち着き始める頃に記事がGunosyに取り上げられる→Gunosyから大量アクセス</li>
-  <li>1-4の間、Facebookからはじわじわとアクセス数が上がっている</li>
+  <li>gzip形式なので<code>write_io.binmode</code>でバイナリモードにすること</li>
+  <li>Thread内で何かエラーが起こったときに<code>gets</code>が待ち状態で止まっちゃうので<code>close</code>なりなんなり適切な処理をしてやること</li>
 </ol>
 
-<p>Gunosyに取り上げられた日の翌日にはアクセス数が落ち着き始める感じでしょうか。</p>
+<h3 id="section-1">参考</h3>
 
-<h2 id="section-2">軽く分析</h2>
-
-<p>FBいいね数、Tweet数はだいたい同じにもかかわらずFacebookからの流入のほうがTwitterよりも少ないのは面白かった。つまりFacebookのほうが共有されたとしても波及効果はTwitterよりも低いということになりますね。</p>
-
-<p>長い記事だったせいか読者傾向に大きな違いは見られなかったです。みんな５分くらいは滞在して読んでくれたみたいです。</p>
-
-<p>あとGunosyからのアクセス数が一番多かったのは驚きでした。自分もニュースソースのほとんどはGunosyから見るようにしているのですが、みなさんもそうなんですね。</p>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/24016548/how-do-i-get-zlib-to-uncompress-from-s3-stream-in-ruby">How do I get Zlib to uncompress from S3 stream in Ruby?</a></li>
+  <li><a href="http://takuya-1st.hatenablog.jp/entry/20120205/1328470521">RubyはIO.pipeを使えば、パイプを作ることが出来る</a></li>
+</ul>
 
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/buzz-flow/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-pipe-s3/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -134,17 +144,30 @@
 </ul>
 
 
+  <div class="related">
+  <h3>関連エントリ</h3>
+  <ul>
+  
+    <li><a href="/rspec2-to-rspec3-errors/" title="RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話">RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話</a></li>
+  
+    <li><a href="/rake-alias/" title="Rakeタスクにエイリアスを付ける">Rakeタスクにエイリアスを付ける</a></li>
+  
+    <li><a href="/fix-rvm-ssl-error/" title="【RVM】gem install時に出るSSL_connectエラー解決法">【RVM】gem install時に出るSSL_connectエラー解決法</a></li>
+  
+    <li><a href="/zsh-rvm/" title="zshでRVMを使うと「RVM is not a function,...」">zshでRVMを使うと「RVM is not a function,...」</a></li>
+  
+    <li><a href="/php-5492/" title="[php][ruby]実行速度を計測する">[php][ruby]実行速度を計測する</a></li>
+  
+  </ul>
+  </div>
+
 
 <div class="post-pagination clearfix">
-  
-  <div class="newer">
-    <a href="/motherfucking-website/" title="Newer Post: 【翻訳】クソ酷いウェブサイト"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
   
 
   
   <div class="older">
-    <a href="/cool-ui-after/" title="Older Post: 「UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか」後記">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/gunosy-rails-way/" title="Older Post: GunosyでのRails開発フロー">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>

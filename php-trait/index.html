@@ -90,7 +90,43 @@
 
 <p>結果、このようになりました。</p>
 
-<script src="https://gist.github.com/toshimaru/00cc0dc16120976c7fcb.js"></script>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">class</span> <span class="nc">Human</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">talk</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;話す&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">function</span> <span class="nf">escape</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;逃げる&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * 使用可能なコマンド一覧を出力</span>
+<span class="sd">     */</span>
+    <span class="k">static</span> <span class="k">function</span> <span class="nf">commands</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nv">$class</span> <span class="o">=</span> <span class="nb">get_called_class</span><span class="p">();</span>
+        <span class="k">echo</span> <span class="nv">$class</span> <span class="o">.</span> <span class="s1">&#39; can use &#39;</span><span class="p">;</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nb">get_class_methods</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$method</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s2">&quot;`</span><span class="si">{</span><span class="nv">$method</span><span class="si">}</span><span class="s2">` &quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Warrior</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">attack</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;攻撃&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Wizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">spell</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;魔法&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">Warrior</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; Warrior can use `attack` `talk` `escape` `commands`</span>
+<span class="nx">Wizard</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; Wizard can use `spell` `talk` `escape` `commands`</span></code></pre></div>
 
 <p>基本行動可能な<code>Human</code>クラスがあってそれを継承した<code>Warrior</code>,<code>Wizard</code>がいて…。普通のコードかと思います。</p>
 
@@ -104,7 +140,50 @@
 
 <p>そこでTraitの出番です。<code>trait</code>であれば振る舞いを水平方向に構成できちゃうんです。え？よくわからない？　コードを見てください。</p>
 
-<script src="https://gist.github.com/toshimaru/ad5430fca181db62cd7a.js"></script>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+
+<span class="k">trait</span> <span class="nx">Attackable</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">attack</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;攻撃&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">trait</span> <span class="nx">Spellable</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">spell</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;魔法&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">Human</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="nf">talk</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;話す&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">function</span> <span class="nf">escape</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s1">&#39;逃げる&#39;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * 使用可能なコマンド一覧を出力</span>
+<span class="sd">     */</span>
+    <span class="k">static</span> <span class="k">function</span> <span class="nf">commands</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nv">$class</span> <span class="o">=</span> <span class="nb">get_called_class</span><span class="p">();</span>
+        <span class="k">echo</span> <span class="nv">$class</span> <span class="o">.</span> <span class="s1">&#39; can use &#39;</span><span class="p">;</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="nb">get_class_methods</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$method</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s2">&quot;`</span><span class="si">{</span><span class="nv">$method</span><span class="si">}</span><span class="s2">` &quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">WarriorWizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
+    <span class="k">use</span> <span class="nx">Attackable</span><span class="p">,</span> <span class="nx">Spellable</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">WarriorWizard</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; WarriorWizard can use `talk` `escape` `commands` `attack` `spell`</span>
+
+<span class="nv">$ww</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WarriorWizard</span><span class="p">();</span>
+<span class="nv">$ww</span><span class="o">-&gt;</span><span class="na">spell</span><span class="p">();</span> <span class="c1">//=&gt; 魔法</span>
+<span class="nv">$ww</span><span class="o">-&gt;</span><span class="na">attack</span><span class="p">();</span> <span class="c1">//=&gt; 攻撃</span></code></pre></div>
 
 <p>まずは<code>Attackable</code>、<code>Spellable</code>というトレイト、つまり「物理攻撃が可能である」「魔法攻撃が可能である」という特性を定義します。ここまでくればもう簡単。あとはそれを<code>WarriorWizard</code>クラス内で<code>use</code>してやるだけです。これで<code>WarriorWizard</code>は魔法も物理攻撃も可能になります。</p>
 
@@ -243,7 +322,7 @@
       </div>
       <div class="right">
         <h2>Tag</h2>
-        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/apache.html" class="set-1">apache</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chef.html" class="set-1">chef</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/digitalocean.html" class="set-1">digitalocean</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-2">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-2">linux</a> <a href="/tag/mac.html" class="set-3">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/opsworks.html" class="set-1">opsworks</a> <a href="/tag/packer.html" class="set-1">packer</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-2">rails</a> <a href="/tag/rspec.html" class="set-1">rspec</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/underscore.html" class="set-1">underscore</a> <a href="/tag/vagrant.html" class="set-1">vagrant</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB.html" class="set-3">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-3">雑記</a></div>
+        <div class="tags"><a href="/tag/android.html" class="set-1">android</a> <a href="/tag/apache.html" class="set-1">apache</a> <a href="/tag/aws.html" class="set-1">aws</a> <a href="/tag/chef.html" class="set-1">chef</a> <a href="/tag/chrome.html" class="set-1">chrome</a> <a href="/tag/css.html" class="set-2">css</a> <a href="/tag/design.html" class="set-2">design</a> <a href="/tag/digitalocean.html" class="set-1">digitalocean</a> <a href="/tag/facebook.html" class="set-1">facebook</a> <a href="/tag/git.html" class="set-4">git</a> <a href="/tag/github.html" class="set-2">github</a> <a href="/tag/html.html" class="set-1">html</a> <a href="/tag/iphone.html" class="set-1">iphone</a> <a href="/tag/java.html" class="set-1">java</a> <a href="/tag/javascript.html" class="set-4">javascript</a> <a href="/tag/jekyll.html" class="set-2">jekyll</a> <a href="/tag/jquery.html" class="set-3">jquery</a> <a href="/tag/linux.html" class="set-2">linux</a> <a href="/tag/mac.html" class="set-3">mac</a> <a href="/tag/mail.html" class="set-1">mail</a> <a href="/tag/markdown.html" class="set-1">markdown</a> <a href="/tag/mysql.html" class="set-1">mysql</a> <a href="/tag/network.html" class="set-1">network</a> <a href="/tag/npm.html" class="set-1">npm</a> <a href="/tag/opsworks.html" class="set-1">opsworks</a> <a href="/tag/packer.html" class="set-1">packer</a> <a href="/tag/perl.html" class="set-1">perl</a> <a href="/tag/php.html" class="set-5">php</a> <a href="/tag/python.html" class="set-1">python</a> <a href="/tag/rails.html" class="set-2">rails</a> <a href="/tag/rspec.html" class="set-1">rspec</a> <a href="/tag/ruby.html" class="set-2">ruby</a> <a href="/tag/s3.html" class="set-1">s3</a> <a href="/tag/scala.html" class="set-1">scala</a> <a href="/tag/security.html" class="set-1">security</a> <a href="/tag/seo.html" class="set-1">seo</a> <a href="/tag/shell.html" class="set-1">shell</a> <a href="/tag/sinatra.html" class="set-1">sinatra</a> <a href="/tag/sublimetext.html" class="set-1">sublimetext</a> <a href="/tag/svn.html" class="set-1">svn</a> <a href="/tag/tech.html" class="set-3">tech</a> <a href="/tag/underscore.html" class="set-1">underscore</a> <a href="/tag/vagrant.html" class="set-1">vagrant</a> <a href="/tag/vancouver.html" class="set-2">vancouver</a> <a href="/tag/vim.html" class="set-1">vim</a> <a href="/tag/windows.html" class="set-1">windows</a> <a href="/tag/zsh.html" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB.html" class="set-3">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4.html" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3.html" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98.html" class="set-3">雑記</a></div>
       </div>
     </div>
     <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
