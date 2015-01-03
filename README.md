@@ -30,5 +30,4 @@ Then, title your new post.
     $ rake deploy
 
 ## TODO
-* Convert LESS to SASS
 * Bump up font-awesome
