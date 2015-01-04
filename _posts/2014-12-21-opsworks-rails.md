@@ -4,7 +4,8 @@ title: Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング
 published: true
 image: /images/posts/opsworks/eyecatch.png
 description: Rails4.2.0のアプリケーションをChefでプロビジョニングできるOpsWorksにデプロイしてみます。
-tags: chef opsworks rails
+tags: chef opsworks rails aws
+toc: true
 ---
 
 本記事は[Chef Advent Calendar 2014](http://qiita.com/advent-calendar/2014/chef)の21日目の記事です。
@@ -194,6 +195,6 @@ OK.
 ---
 Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、**OpsWorksレシピ+Custom Chefレシピ**の２つを組み合わせて運用していくのが現実的かと思います。
 
-参考
+:link: 参考
 ----
 * [Deploying Ruby on Rails Applications to AWS OpsWorks](http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks)
