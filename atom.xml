@@ -3,12 +3,72 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-01-04T10:14:53+00:00</updated>
+  <updated>2015-01-07T18:06:16+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rubyのinjectを使いこなす]]></title>
+    <link href="http://blog.toshimaru.net/ruby-inject/"/>
+    <updated>2015-01-08T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/ruby-inject</id>
+    <content type="html"><![CDATA[<p>Rubyのイテレータメソッド<code>inject</code>の使い方を紹介してみようと思います。</p>
+
+<h2 id="inject">inject</h2>
+
+<p>Rubyのinjectはこんなふうに使えます。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">enum</span><span class="o">.</span><span class="n">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
+<span class="n">enum</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span></code></pre></div>
+
+<p><a href="http://ref.xaio.jp/ruby/classes/enumerable/inject">http://ref.xaio.jp/ruby/classes/enumerable/inject</a></p>
+
+<h2 id="sum">Sum（合計）を出す</h2>
+
+<p>これだけではわかりにくいと思うので合計を出す処理を書いてみましょう。</p>
+
+<p>まずは<code>inject</code>を使わないパターン。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+<span class="nb">puts</span> <span class="n">sum</span> <span class="c1"># =&gt; 55</span></code></pre></div>
+
+<p>これを<code>inject</code>で書き直すとこう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+<span class="c1"># =&gt; 55</span></code></pre></div>
+
+<p>この場合、sumの初期値は0ですがそれを明示的にかくならこう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+<span class="c1"># =&gt; 55</span></code></pre></div>
+
+<p>さらにinjectにはシンボルで演算子をわたしてうまいようにやってくれる。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
+<span class="c1"># =&gt; 55</span></code></pre></div>
+
+<p>これが一番シンプルでエレガント。</p>
+
+<h2 id="section">応用編1: 配列内の要素数をハッシュに</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="o">].</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span><span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span> <span class="nb">hash</span><span class="o">[</span><span class="n">key</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">hash</span><span class="p">}</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:great</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="ss">:good</span><span class="o">=&gt;</span><span class="mi">3</span><span class="p">,</span> <span class="ss">:bad</span><span class="o">=&gt;</span><span class="mi">2</span><span class="p">,</span> <span class="ss">:awesome</span><span class="o">=&gt;</span><span class="mi">1</span><span class="p">}</span></code></pre></div>
+
+<h2 id="section-1">応用編2: フィボナッチ数列</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">fib</span> <span class="o">&lt;&lt;</span> <span class="n">fib</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">+</span> <span class="n">fib</span><span class="o">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">]</span> <span class="p">}</span>
+<span class="c1"># =&gt; [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]</span></code></pre></div>
+
+<h3 id="section-2">参考</h3>
+<ul>
+  <li><a href="http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject">ruby の inject をわかりやすく説明してみる</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[GZip形式のS3上のファイルをIO.pipeでストリーム読み出し]]></title>
@@ -1744,164 +1804,6 @@ Build 'digitalocean' finished.
 
 <ul>
   <li><a href="http://rebuild.fm/25/">Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする]]></title>
-    <link href="http://blog.toshimaru.net/digital-ocean-vagrant-puppet/"/>
-    <updated>2014-03-12T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/digital-ocean-vagrant-puppet</id>
-    <content type="html"><![CDATA[<p>流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。</p>
-
-<h2 id="install-vagrant-command">Install vagrant command</h2>
-
-<p>Mac使っているのであれば<a href="https://github.com/phinze/homebrew-cask">homebrew-cask</a>を使うのが便利。</p>
-
-<pre><code>$ brew cask install vagrant
-</code></pre>
-
-<p>バージョンは1.5.1</p>
-
-<pre><code>$ vagrant -v
-Vagrant 1.5.1
-</code></pre>
-
-<h2 id="install-vagrant-digitalocean-plugin">Install vagrant-digitalocean plugin</h2>
-
-<p>そのままではDigitalOceanは使えないので、次にvagrantのDigitalOceanプラグインをインストール。</p>
-
-<pre><code>$ vagrant plugin install vagrant-digitalocean
-</code></pre>
-
-<h2 id="vagrantfile-configuration">Vagrantfile Configuration</h2>
-
-<p>まずはVagrantfileを用意。</p>
-
-<pre><code>$ mkdir vagrant-digitalocean-test
-$ cd vagrant-digitalocean-test
-$ touch Vagrantfile
-</code></pre>
-
-<p>次に<code>Vagrantfile</code>に書く設定。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="ss">:digital_ocean</span> <span class="k">do</span> <span class="o">|</span><span class="n">provider</span><span class="p">,</span> <span class="n">override</span><span class="o">|</span>
-    <span class="n">override</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">private_key_path</span> <span class="o">=</span> <span class="s1">&#39;~/.ssh/id_rsa&#39;</span>
-    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s1">&#39;digital_ocean&#39;</span>
-    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box&quot;</span>
-
-    <span class="n">provider</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="s1">&#39;{your_client_id}&#39;</span>
-    <span class="n">provider</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;{your_api_key}&#39;</span>
-
-    <span class="n">provider</span><span class="o">.</span><span class="n">image</span>                <span class="o">=</span> <span class="s1">&#39;CentOS 6.4 x64&#39;</span>
-    <span class="n">provider</span><span class="o">.</span><span class="n">region</span>               <span class="o">=</span> <span class="s1">&#39;San Francisco 1&#39;</span>
-    <span class="n">provider</span><span class="o">.</span><span class="n">size</span>                 <span class="o">=</span> <span class="s1">&#39;512MB&#39;</span>
-  <span class="k">end</span>
-
-<span class="k">end</span></code></pre></div>
-
-<p><code>provider.client_id</code>, <code>provider.api_key</code>の値はアカウント作成後、下記URLより生成できる。</p>
-
-<p><a href="https://cloud.digitalocean.com/api_access">https://cloud.digitalocean.com/api_access</a></p>
-
-<p>今回はCentOS6.4、場所はサンフランシスコ、サイズは512で作ってみる。</p>
-
-<h2 id="section">インスタンス作成！</h2>
-
-<p>あとはこのコマンドのみ。</p>
-
-<pre><code>$ vagrant up --provider digital_ocean
-</code></pre>
-
-<p>これで一分くらい待つと立ち上がりました。動いてます。</p>
-
-<pre><code>$ vagrant status
-Current machine states:
-
-default                   active (digital_ocean)
-
-active
-</code></pre>
-
-<p>あとは<code>vagrant ssh</code>するなり<code>vagrant destroy</code>（インスタンス破棄[重要！]）するなり。</p>
-
-<h2 id="section-1">プロビジョニング</h2>
-
-<p>これだけでは最小パッケージで必要なパッケージが入ってなく片手落ち。そうだ、puppetでプロビジョニングしてみよう。<code>Vagrantfile</code>をこうしてみる。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s2">&quot;rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force&quot;</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s2">&quot;yum -y install puppet&quot;</span>
-
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="ss">:digital_ocean</span> <span class="k">do</span> <span class="o">|</span><span class="n">provider</span><span class="p">,</span> <span class="n">override</span><span class="o">|</span>
-    <span class="n">override</span><span class="o">.</span><span class="n">ssh</span><span class="o">.</span><span class="n">private_key_path</span> <span class="o">=</span> <span class="s1">&#39;~/.ssh/id_rsa&#39;</span>
-    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s1">&#39;digital_ocean&#39;</span>
-    <span class="n">override</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box&quot;</span>
-
-    <span class="n">provider</span><span class="o">.</span><span class="n">client_id</span> <span class="o">=</span> <span class="s1">&#39;{client_id}&#39;</span>
-    <span class="n">provider</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;{api_key}&#39;</span>
-
-    <span class="n">provider</span><span class="o">.</span><span class="n">image</span>                <span class="o">=</span> <span class="s1">&#39;CentOS 6.4 x64&#39;</span>
-    <span class="n">provider</span><span class="o">.</span><span class="n">region</span>               <span class="o">=</span> <span class="s1">&#39;San Francisco 1&#39;</span>
-    <span class="n">provider</span><span class="o">.</span><span class="n">size</span>                 <span class="o">=</span> <span class="s1">&#39;512MB&#39;</span>
-  <span class="k">end</span>
-
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;puppet&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">puppet</span><span class="o">|</span>
-    <span class="n">puppet</span><span class="o">.</span><span class="n">options</span>                <span class="o">=</span> <span class="s2">&quot;--verbose&quot;</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
-<p>最初にpuppetをインストールコマンドを追加。そして</p>
-
-<h2 id="puppet-manifest">puppet manifest</h2>
-
-<p>puppetのmanifestファイルを定義します。</p>
-
-<pre><code>$ mkdir manifests
-$ touch manifests/default.pp
-</code></pre>
-
-<p><code>manifests/default.pp</code>はこう。vimとgitのパッケージを追加。必要に応じて追加したりする。</p>
-
-<pre><code>package {
-  [
-    'vim-enhanced',
-    'git',
-  ]:
-  ensure =&gt; installed
-}
-</code></pre>
-
-<h2 id="lets-provision">Let’s provision!</h2>
-
-<pre><code>$ vagrant provision
-</code></pre>
-
-<p>これでpuppet経由で、vimやらgitが入る。良い。</p>
-
-<h2 id="section-2">本当に１円？</h2>
-
-<p>はい。</p>
-
-<p>検証環境として使ったあとに、dropletをちゃんと破棄していればこうなります。</p>
-
-<p><img src="/images/posts/vagrant/bill.png" alt="bill" /></p>
-
-<p>現時点で<code>1USD</code> = <code>102JPY</code>くらいなので<code>0.01USD</code>=約１円ですね。</p>
-
-<h2 id="github-repo">Github Repo</h2>
-
-<p>Githubに今回のサンプルの最終形を置いておく。</p>
-
-<p><a href="https://github.com/toshimaru/vagrant-digitalocean-puppet">https://github.com/toshimaru/vagrant-digitalocean-puppet</a></p>
-
-<h3 id="section-3">参考</h3>
-
-<ul>
-  <li><a href="http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/">VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する</a></li>
 </ul>
 ]]></content>
   </entry>
