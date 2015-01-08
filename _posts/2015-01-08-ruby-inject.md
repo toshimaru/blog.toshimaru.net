@@ -58,7 +58,7 @@ puts sum # => 55
 
 {% highlight ruby %}
 [:great, :good, :bad, :good, :good, :bad, :awesome, :great].inject(Hash.new(0)) {|hash, key| hash[key] += 1; hash}
-=> {:great=>2, :good=>3, :bad=>2, :awesome=>1}
+# => {:great=>2, :good=>3, :bad=>2, :awesome=>1}
 {% endhighlight %}
 
 ## 応用編2: フィボナッチ数列
@@ -70,3 +70,4 @@ puts sum # => 55
 
 ### 参考
 * [ruby の inject をわかりやすく説明してみる](http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject)
+* [inject (Enumerable)](http://ref.xaio.jp/ruby/classes/enumerable/inject)
