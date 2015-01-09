@@ -3,12 +3,72 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-01-08T03:49:08+00:00</updated>
+  <updated>2015-01-09T23:14:21+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rubyの%の記法まとめ]]></title>
+    <link href="http://blog.toshimaru.net/ruby-percent-notation/"/>
+    <updated>2015-01-10T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/ruby-percent-notation</id>
+    <content type="html"><![CDATA[<p>Rubyでつかわれる%（パーセント）を使った記法、たまに忘れることがあるのでメモがてらにまとめてみる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>%記法</th>
+      <th>%使わない場合の書き方</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>%</code>, <code>%Q</code></td>
+      <td><code>""</code> (ダブルクオート)</td>
+    </tr>
+    <tr>
+      <td><code>%q</code></td>
+      <td><code>''</code> (シングルクオート)</td>
+    </tr>
+    <tr>
+      <td><code>%w</code></td>
+      <td><code>[]</code> (文字列配列)</td>
+    </tr>
+    <tr>
+      <td><code>%W</code></td>
+      <td><code>[]</code> (文字列配列・式展開あり)</td>
+    </tr>
+    <tr>
+      <td><code>%i</code></td>
+      <td><code>[]</code> (シンボル配列)</td>
+    </tr>
+    <tr>
+      <td><code>%I</code></td>
+      <td><code>[]</code> (シンボル配列・式展開あり)</td>
+    </tr>
+    <tr>
+      <td><code>%x</code></td>
+      <td><code>``</code> (コマンド実行)</td>
+    </tr>
+    <tr>
+      <td><code>%s</code></td>
+      <td><code>:</code> (シンボル)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※ %の後には丸括弧（<code>()</code>）や波括弧（<code>{}</code>）が使えます</p>
+
+<h3 id="section">参考</h3>
+
+<ul>
+  <li><a href="http://qiita.com/mogulla3/items/46bb876391be07921743">Rubyで%記法（パーセント記法）を使う</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rubyのinjectを使いこなす]]></title>
@@ -1683,129 +1743,6 @@ create  spec/rails_helper.rb
     </li>
   </ol>
 </div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[packerを使ってDigital Ocean上にイメージを作成する]]></title>
-    <link href="http://blog.toshimaru.net/digitalocean-image-with-packer/"/>
-    <updated>2014-03-16T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/digitalocean-image-with-packer</id>
-    <content type="html"><![CDATA[<p>＜前回のあらすじ＞<br />
-<a href="/digital-ocean-vagrant-puppet/">1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする</a></p>
-
-<p><a href="http://www.packer.io/">packer</a>を使ってDigital Ocean上にイメージを作成してみたのでそのときのメモ。</p>
-
-<h2 id="packer">Packerとは？</h2>
-
-<p><a href="http://www.vagrantup.com/">Vagrant</a>がVMの構築とかAWS/Digitgal Oceanでのインスタンス作成とかを抽象化して、プログラマブルにすることが可能なツールだとしたら、Packerはそれをさらに抽象化して、1つの設定ファイル(JSON)からAWS, Digital Ocean, VirtualBox向けのイメージを作成できるツール。</p>
-
-<h2 id="digital-ocean">Digital Oceanにイメージ作成する</h2>
-
-<p>今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。</p>
-
-<pre><code>$ mkdir packer-test
-$ cd packer-test
-</code></pre>
-
-<p>次にpackerの設定ファイルを用意。ファイル名は何でもよいっぽい。</p>
-
-<pre><code>$ touch Packer.json
-</code></pre>
-
-<p>このように書く。</p>
-
-<pre><code>{
-  "builders": [
-    {
-      "type": "digitalocean",
-      "client_id": "your_client_id",
-      "api_key": "your_api_key",
-      "image_id": 1505447,
-      "region_id": 3,
-      "size_id": 66
-    }
-  ],
-
-  "provisioners": [
-    {
-      "type": "shell",
-      "script": "setup.sh"
-    }
-  ]
-}
-</code></pre>
-
-<p><code>builder</code>でタイプをチョイス。今回は<code>digitalocean</code>を選択。<code>client_id</code>, <code>api_key</code>を設定。<code>image_id</code>,<code>region_id</code>,<code>size_id</code>のint値については<a href="https://developers.digitalocean.com/">こちらのDigitalOcean API</a>を見るとよいっぽい。</p>
-
-<p>プロビジョニングのタイプは今回はシンプルにshellを設定。適当に<code>setup.sh</code>を作る。</p>
-
-<pre><code>$ echo "echo 'hello world'" &gt; setup.sh
-</code></pre>
-
-<h2 id="packer-1">Packer!</h2>
-
-<p>packerビルドしてみる。</p>
-
-<pre><code>$ packer build Packer.json
-digitalocean output will be in this color.
-
-==&gt; digitalocean: Creating temporary ssh key for droplet...
-==&gt; digitalocean: Creating droplet...
-==&gt; digitalocean: Waiting for droplet to become active...
-==&gt; digitalocean: Waiting for SSH to become available...
-==&gt; digitalocean: Connected to SSH!
-==&gt; digitalocean: Provisioning with shell script: setup.sh
-    digitalocean: hello world!
-    digitalocean:
-==&gt; digitalocean: Gracefully shutting down droplet...
-==&gt; digitalocean: Creating snapshot: packer-1395033724
-==&gt; digitalocean: Waiting for snapshot to complete...
-==&gt; digitalocean: Destroying droplet...
-==&gt; digitalocean: Deleting temporary ssh key...
-Build 'digitalocean' finished.
-
-==&gt; Builds finished. The artifacts of successful builds are:
---&gt; digitalocean: A snapshot was created: 'packer-1395033724' in region 'San Francisco 1'
-</code></pre>
-
-<h2 id="section">結果</h2>
-
-<p>Before,Afterで見てみる。</p>
-
-<p>Before:</p>
-
-<p><img src="/images/posts/packer/do-before.png" alt="before" /></p>
-
-<p>After:</p>
-
-<p><img src="/images/posts/packer/do-after.png" alt="after" /></p>
-
-<p>イメージのスナップショット（<code>packer-1395033724</code>）が作成されてますね。</p>
-
-<h2 id="section-1">最後に</h2>
-
-<p>packerはあくまでもイメージを作成するツールであり、イメージを管理するツールではないようです。</p>
-
-<blockquote>
-  <p>Packer only builds images. It does not attempt to manage them in any way.</p>
-</blockquote>
-
-<p>See. <a href="http://www.packer.io/intro/getting-started/build-image.html">http://www.packer.io/intro/getting-started/build-image.html</a></p>
-
-<p>また、<code>builders</code>の設定を変更することで、<a href="http://www.packer.io/docs/builders/amazon.html">Amazon EC2</a>や<a href="http://www.packer.io/docs/builders/googlecompute.html">Google Compute Engine</a>とかにもイメージ作成できるようですね。</p>
-
-<h3 id="github-repo">Github Repo</h3>
-
-<p>今回使ったものをGithubにおいておきます。</p>
-
-<p><a href="https://github.com/toshimaru/packer-digitalocean-sample">https://github.com/toshimaru/packer-digitalocean-sample</a></p>
-
-<h3 id="section-2">参考</h3>
-
-<ul>
-  <li><a href="http://rebuild.fm/25/">Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)</a></li>
-</ul>
 ]]></content>
   </entry>
   
