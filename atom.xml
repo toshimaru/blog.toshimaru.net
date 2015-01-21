@@ -3,12 +3,157 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-01-18T18:21:13+00:00</updated>
+  <updated>2015-01-21T16:45:21+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rubyで独自例外を定義するときはStandardErrorを継承する]]></title>
+    <link href="http://blog.toshimaru.net/ruby-standard-error/"/>
+    <updated>2015-01-21T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/ruby-standard-error</id>
+    <content type="html"><![CDATA[<p>タイトルの通り、Rubyで独自例外を定義するときは<code>Exception</code>ではなく、<code>StandardError</code> を継承するしきたりとなっています。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># `Exception`ではなく</span>
+<span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
+<span class="c1"># `StandardError`.</span>
+<span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></div>
+
+<p>理由をコードでみてみます。</p>
+
+<h2 id="exception-">Exception を継承した場合</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
+
+<span class="k">begin</span>
+  <span class="k">raise</span> <span class="no">MyError1</span>
+<span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
+  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">end</span>
+
+<span class="c1"># =&gt; MyError1: MyError1</span></code></pre></div>
+
+<p>MyError1 が<code>rescue</code>節でハンドリングされてませんね。こうしてみるとどうでしょう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
+
+<span class="k">begin</span>
+  <span class="k">raise</span> <span class="no">MyError1</span>
+<span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span>
+  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">end</span>
+
+<span class="c1"># =&gt; Exception handled! MyError1</span></code></pre></div>
+
+<p>次は<code>rescue</code>節に入りました。</p>
+
+<h2 id="standarderror-">StandardError を継承した場合</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span>
+
+<span class="k">begin</span>
+  <span class="k">raise</span> <span class="no">MyError2</span>
+<span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
+  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">end</span>
+
+<span class="c1"># =&gt; Exception handled! MyError2</span></code></pre></div>
+
+<p>こちらは問題なく<code>rescue</code>節でハンドルされました。</p>
+
+<h2 id="section">なぜ？</h2>
+
+<blockquote>
+  <p>rescue は第1引数で指定した例外クラスの下の階層にある例外だけを補足するけど、引数を省略すると StandardErrorクラスを指定したものとみなすからだ。</p>
+</blockquote>
+
+<p>via. <a href="http://d.hatena.ne.jp/yarb/20121005/p1">Rubyで自前の例外クラスを作るときExceptionではなくStandardErrorを継承する理由</a></p>
+
+<p>下記がビルトインのExceptionのサブクラスたちです。<code>rescue</code>のデフォルトが<code>StandardError</code>、<code>raise</code>のデフォルトが<code>RuntimeError</code>となっています。</p>
+
+<blockquote>
+  <ul>
+    <li>NoMemoryError</li>
+    <li>ScriptError
+      <ul>
+        <li>LoadError</li>
+        <li>NotImplementedError</li>
+        <li>SyntaxError</li>
+      </ul>
+    </li>
+    <li>SecurityError</li>
+    <li>SignalException
+      <ul>
+        <li>Interrupt</li>
+      </ul>
+    </li>
+    <li>StandardError – default for <code>rescue</code>
+      <ul>
+        <li>ArgumentError
+          <ul>
+            <li>UncaughtThrowError</li>
+          </ul>
+        </li>
+        <li>EncodingError</li>
+        <li>FiberError</li>
+        <li>IOError
+          <ul>
+            <li>EOFError</li>
+          </ul>
+        </li>
+        <li>IndexError
+          <ul>
+            <li>KeyError
+              <ul>
+                <li>StopIteration</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>LocalJumpError</li>
+        <li>NameError
+          <ul>
+            <li>NoMethodError</li>
+          </ul>
+        </li>
+        <li>RangeError
+          <ul>
+            <li>FloatDomainError</li>
+          </ul>
+        </li>
+        <li>RegexpError</li>
+        <li>RuntimeError – default for <code>raise</code></li>
+        <li>SystemCallError
+          <ul>
+            <li>Errno::*</li>
+          </ul>
+        </li>
+        <li>ThreadError</li>
+        <li>TypeError</li>
+        <li>ZeroDivisionError</li>
+      </ul>
+    </li>
+    <li>SystemExit</li>
+    <li>SystemStackError</li>
+    <li>fatal – impossible to rescue</li>
+  </ul>
+</blockquote>
+
+<p>via <a href="http://ruby-doc.org/core-2.2.0/Exception.html">Exception</a></p>
+
+<p>よって<code>rescue</code>のデフォルトで拾える<code>StandardError</code>を使って独自例外を定義しましょう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></div>
+
+<h3 id="section-1">参考</h3>
+<ul>
+  <li><a href="http://d.hatena.ne.jp/yarb/20121005/p1">Rubyで自前の例外クラスを作るときExceptionではなくStandardErrorを継承する理由</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails4 でトランザクション分離レベルを設定する]]></title>
@@ -1784,59 +1929,6 @@ create  spec/rails_helper.rb
 <h2 id="section-5">あわせてどうぞ</h2>
 <ul>
   <li><a href="http://blog.kushii.net/archives/1914293.html">freee 株式会社 に行ってきた！</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[就活日記(1) Wantedly]]></title>
-    <link href="http://blog.toshimaru.net/job-hunting-1/"/>
-    <updated>2014-07-08T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/job-hunting-1</id>
-    <content type="html"><![CDATA[<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
-
-<h2 id="section">きっかけ</h2>
-<p>Wantedlyをヘビーに使い始めてわりとすぐにWantedlyの中の人から招待もらえた。Wantedly自体使っててすごく良いサービスだと思っていたので遊びに行くことにした。</p>
-
-<h2 id="wantedly">Wantedlyを支えてる技術</h2>
-<p>WantedlyにはPC/Mobile用のWeb上のアプリケーションと、iPhone/Androidアプリケーションがある。</p>
-
-<p>iPhone/Androidは基本ネイティブ。Swiftとかも勉強会で取り上げたり精力的。どんどん新しくていいものには取り入れていくような姿勢が見られた。（参考：<a href="http://engineer.wantedly.com/2014/04/28/how-wantedly-make-ios-app.html">WantedlyではどうやってiOSアプリ開発しているのか</a>）</p>
-
-<p>サーバーサイドはRoR。フロントエンドはHaml, Scss, CoffeeScript, Backbone.js, AngularJSあたりを使っている模様。CSSはreset.css的なの以外は基本CSSライブラリは使っていないとのこと。</p>
-
-<p>HipChatでコミュニケーション。CIはGithubをフックして<a href="http://wercker.com/">wercker</a>でCI。テストに関してはそこまでカバレッジ率を意識しすぎることなく、クリティカルなロジックを集中してテストしていこうという感じ。<a href="http://kenn.hatenablog.com/entry/2014/01/03/095026">「テスト書きすぎ問題」</a>とかもあるのでこの方向性は間違ってないと思う。</p>
-
-<p>いわゆるモダンな開発環境が一通り整っておりナウい感じだった。</p>
-
-<h2 id="section-1">ビジネス的な話</h2>
-<p>既に企業と求職者を結びつけるWantedlyがビジネス的にうまく回っており、Wantedly自体の機能拡充とあわせて「日本のLinkedIn」となるようなプラットフォームを作りたいとのこと。LinkedInは「北米で就活する際にはアカウント必須」と言われ、カナダで就活する際にはアカウント作成し使ったがUIとかゴチャゴチャしてて正直使うのがイヤだったので、是非Wantedlyさんには頑張っていただきたい。</p>
-
-<p>Wantedlyの他には<a href="https://contacts.wantedly.com/">連絡帳アプリ・CONTACT</a>とかやってる。</p>
-
-<p>既にWantedlyでかなり企業ならびにユーザーの心をキャッチしているので、その採用プラットフォームを起点として広がるビジネス的展開の可能性は無限大だなと思いました。そしてきっと手堅い。</p>
-
-<h2 id="ceo">CEO・仲さん</h2>
-<p>日本一<a href="https://www.youtube.com/watch?v=TSUryiRhgJw">ストールが似合うことで有名な仲さん</a>ですが（今僕が即興で作った）、仲さんが今でもコードをコミットし組織のコントリビュート・ランキング四位なのは驚いた。組織の成長とともにマネジメント側の人はコードは書かなくなるという印象を持ってるのだが、仲さんは例外らしい。</p>
-
-<p>大体テック系スタートアップは野郎ばかりのホモ・ソーシャル感が強いんですが、そんなホモソーシャルの中に咲く一輪の花、女性CEOがいるのはとても好感が持てました。きっとデキる女性社員も多いのだろうと勝手に予想しました。そして女性社員率も比較的高い。</p>
-
-<p>余談になるが、会議室の片隅に仲さん作の「FUCKIN PRAY FOR JAPAN」と書かれた絵画が置いてあって、地震後のチャリティー絵画として海外に出展したが売れなかったという渋い話を聞いたけど、僕は仲さんがロックな人であることがわかりさらに好感度を上げた。</p>
-
-<h2 id="section-2">こんな人におすすめ</h2>
-<p>Wantedlyはサーバーサイドのみを書く、クライアントサイドのみを書くというより、どちらも書けるようなフルスタック志向の人が向いているかもしれません。</p>
-
-<p>CTOの方が「日本一技術者の面接が難しい会社にする」と言っており並大抵のスキルの人は門前払いになるかもしれません。ですが逆に言うとそれだけ厳選された少数精鋭の優秀な人がチームにいるということになるわけで、そのような環境下で優秀な仲間たちと切磋琢磨したい人にはいいかと思います。</p>
-
-<p>会ったエンジニアは一部ですが、話を聞くとモバイルデベロッパーがAPIもごりごりメンテナンスしていたり、コードが書けるデザイナーさんがいたりときっとみなさん優秀な方なんだろうなぁという印象でした。</p>
-
-<p>興味のある方はまずWantedlyオフィスで開催される<a href="https://www.wantedly.com/projects/5106">もくもく会</a>から参加してはいかがでしょうか？</p>
-
-<p><a href="https://www.wantedly.com/companies/wantedly">Wantedlyの採用ページ</a></p>
-
-<h2 id="section-3">あわせてどうぞ</h2>
-<ul>
-  <li><a href="http://blog.kushii.net/archives/1874257.html">ウォンテッドリー株式会社 に行ってきた！</a></li>
 </ul>
 ]]></content>
   </entry>
