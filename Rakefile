@@ -74,7 +74,7 @@ end
 
 desc 'run development server'
 task :serve do
-  sh 'bundle exec jekyll serve --watch'
+  sh 'bundle exec jekyll serve'
 end
 
 def alias_task(tasks)
