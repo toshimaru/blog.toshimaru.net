@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-03-04T16:59:03+00:00</updated>
+  <updated>2015-03-04T17:27:44+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -15,7 +15,7 @@
     <link href="http://blog.toshimaru.net/ruby-vs-go/"/>
     <updated>2015-03-05T00:00:00+00:00</updated>
     <id>http://blog.toshimaru.net/ruby-vs-go</id>
-    <content type="html"><![CDATA[<p>Rubyで書いたコードがGoで書いたらどれくらい早くなるかを検証してみたくて試してみた。</p>
+    <content type="html"><![CDATA[<p>Rubyで書いたコードがGoで書いたらどれくらい早くなるかを検証してみたくて試してみた。単純に画像ファイルをダウンロードするだけの単純な処理での比較。</p>
 
 <h2 id="ruby">Rubyの場合</h2>
 
@@ -128,6 +128,22 @@ go run thread.go  0.50s user 0.21s system 50% cpu 1.413 total
 $ time ./thread
 ./thread  0.06s user 0.07s system 16% cpu 0.789 total
 </code></pre>
+
+<p>たぶん比較するロジックが複雑化すればするほど、Goのパフォーマンスの良さがガッツリ効いてきそう。</p>
+
+<hr />
+
+<h3 id="shell-script-">【番外編】Shell Script で実行</h3>
+
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="k">for</span> i in <span class="sb">`</span>seq <span class="m">1</span> 100<span class="sb">`</span><span class="p">;</span> <span class="k">do</span>
+  wget --background --quiet <span class="s2">&quot;http://dummyimage.com/600x400&quot;</span> -O images/<span class="nv">$i</span>.png &gt; /dev/null
+<span class="k">done</span></code></pre></div>
+
+<pre><code>$ time bash bash_script.bash
+bash bash_script.bash  0.15s user 0.24s system 72% cpu 0.547 total
+</code></pre>
+
+<p>はやい。 <img class="emoji" title=":astonished:" alt=":astonished:" src="https://assets.github.com/images/icons/emoji/unicode/1f632.png" height="20" width="20" align="absmiddle" /></p>
 ]]></content>
   </entry>
   
