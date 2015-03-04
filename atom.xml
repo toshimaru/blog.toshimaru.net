@@ -3,12 +3,133 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-02-28T17:09:30+00:00</updated>
+  <updated>2015-03-04T16:59:03+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby vs Golang でパフォーマンス比較してみた]]></title>
+    <link href="http://blog.toshimaru.net/ruby-vs-go/"/>
+    <updated>2015-03-05T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/ruby-vs-go</id>
+    <content type="html"><![CDATA[<p>Rubyで書いたコードがGoで書いたらどれくらい早くなるかを検証してみたくて試してみた。</p>
+
+<h2 id="ruby">Rubyの場合</h2>
+
+<p>イメージを100個ダウンロードするコードをサンプルにやってみました。</p>
+
+<h3 id="section">直列にダウンロード</h3>
+
+<p>何も考えず１つ１つダウンロードするコード。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;open-uri&#39;</span>
+
+<span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+  <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;./images/</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">.png&quot;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+   <span class="n">f</span><span class="o">.</span><span class="n">write</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;http://dummyimage.com/600x400&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<pre><code>$ time ruby no_thread.rb
+ruby no_thread.rb  0.25s user 0.10s system 1% cpu 29.813 total
+</code></pre>
+
+<p>約30秒。遅い。</p>
+
+<h3 id="thread">Threadで並行ダウンロード</h3>
+
+<p>Thread使って平行に処理してみる。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;open-uri&#39;</span>
+
+<span class="n">thr</span> <span class="o">=</span> <span class="o">[]</span>
+<span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+  <span class="n">thr</span> <span class="o">&lt;&lt;</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
+    <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;./images/</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">.png&quot;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+      <span class="n">f</span><span class="o">.</span><span class="n">write</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;http://dummyimage.com/600x400&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+<span class="n">thr</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span></code></pre></div>
+
+<pre><code>$ time ruby thread.rb
+ruby thread.rb  0.20s user 0.10s system 27% cpu 1.105 total
+</code></pre>
+
+<p>1.1秒。劇的な改善。</p>
+
+<h2 id="go">Goの場合</h2>
+
+<p>Goで書きなおしてみる。</p>
+
+<p><a href="http://qiita.com/keisukeP/items/f4d680eb9e8f93263fa9">こちら</a>を参考に書いてみた。</p>
+
+<div class="highlight"><pre><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&quot;fmt&quot;</span>
+	<span class="s">&quot;io&quot;</span>
+	<span class="s">&quot;net/http&quot;</span>
+	<span class="s">&quot;os&quot;</span>
+	<span class="s">&quot;sync&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nx">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="kd">var</span> <span class="nx">url</span> <span class="kt">string</span> <span class="p">=</span> <span class="s">&quot;http://dummyimage.com/600x400&quot;</span>
+
+		<span class="c1">//ファイルを開く</span>
+		<span class="nx">file</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="s">&quot;images/&quot;</span> <span class="o">+</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprint</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;.png&quot;</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+		<span class="p">}</span>
+
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">response</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="c1">//レスポンスのボディを閉じる関数の遅延実行指定</span>
+			<span class="k">defer</span> <span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+
+			<span class="c1">//fmt.Println(&quot;status:&quot;, response.Status)</span>
+
+			<span class="c1">//ファイルを閉じる関数の遅延実行指定</span>
+			<span class="k">defer</span> <span class="nx">file</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+
+			<span class="c1">//レスポンスのボディから読み込みつつファイルに書き出す。</span>
+			<span class="nx">io</span><span class="p">.</span><span class="nx">Copy</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nx">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+
+	<span class="nx">wg</span><span class="p">.</span><span class="nx">Wait</span><span class="p">()</span>
+<span class="p">}</span></code></pre></div>
+
+<h3 id="go-run-">Go run で実行</h3>
+
+<p>コンパイルせずに<code>go run</code>で実行してみる。</p>
+
+<pre><code>$ time go run thread.go
+go run thread.go  0.50s user 0.21s system 50% cpu 1.413 total
+</code></pre>
+
+<h3 id="go-build-img-classemoji-titlearrowright-altarrowright-srchttpsassetsgithubcomimagesiconsemojiunicode27a1png-height20-width20-alignabsmiddle--run">Go build <img class="emoji" title=":arrow_right:" alt=":arrow_right:" src="https://assets.github.com/images/icons/emoji/unicode/27a1.png" height="20" width="20" align="absmiddle" /> Run</h3>
+
+<p>buildして実行する。Rubyで書いたコードの3/4の時間で完了した。</p>
+
+<pre><code>$ go build thread.go
+$ time ./thread
+./thread  0.06s user 0.07s system 16% cpu 0.789 total
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ActiveRecordのコールバックの順番・コールバック内のロールバック処理]]></title>
@@ -2252,73 +2373,6 @@ create  spec/rails_helper.rb
 <p>興味がある人は一緒に会食してはいかがでしょうか？　豚から始まる恋もある。</p>
 
 <p><a href="https://www.wantedly.com/projects/6519">トレタの採用ページ</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[就活日記(4) Gunosy]]></title>
-    <link href="http://blog.toshimaru.net/job-hunting-4/"/>
-    <updated>2014-07-11T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/job-hunting-4</id>
-    <content type="html"><![CDATA[<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
-
-<h2 id="section">きっかけ</h2>
-<p>Gunosyは海外滞在中も日本語で書かれたテック系ニュース・ソースとして活躍しており、利用当初からとても良いサービスだと思っていた。<a href="http://jp.techcrunch.com/2014/06/23/jp20140623gunosy/">今年になって大型の資金調達を</a>していたり、今後の成長株であることも間違いなさそうだし訪問。</p>
-
-<h2 id="gunosy">Gunosyを支えている技術</h2>
-<ul>
-  <li>Github</li>
-  <li>RoR</li>
-  <li>Golang</li>
-  <li>CircleCI</li>
-  <li>Jenkins</li>
-  <li>MySQL</li>
-  <li>MongoDB</li>
-  <li>Redis</li>
-  <li>Docker</li>
-  <li>HipChat / Slack</li>
-  <li>Qiita Team</li>
-  <li>Yammer</li>
-</ul>
-
-<p>注目すべきはAPIサーバ部分をGolangで書いていることだった。GoのWEBフレームワークを特に使っているというわけではなく、速度が出る素のGoで書いているということだった。RailsからGoへの移行の経緯あたりは下記の発表に詳しい。</p>
-
-<p><a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">300万人をGoで捌いた話</a></p>
-
-<p>また技術的なチャレンジとして<a href="https://speakerdeck.com/ymatsuwitter/katutedockergaita">Dockerも試したりして</a>おり、どんどん新しい技術を取り入れて既存の仕組みを改善していこうという姿勢が見られた。</p>
-
-<p>ところでこれらの発表をしている<a href="https://twitter.com/y_matsuwitter">@y_matsuwitter</a>さんは自分よりも全然まだ若いのにGunosy執行役員でインフラからプログラムもバリバリ書けるスーパーエンジニアだ。しゅごい。</p>
-
-<h2 id="section-1">雰囲気</h2>
-<p>とにかく若いエンジニアが多く、仲もとても良さそうだった。先に上げたy_matsuwitterさんも25歳だし27,8歳くらいの人が多いとのことだ。スケスケの会議室でエンジニアから話を聞いたのだけど、スケスケルームはきっと会社のオープンネスとか透明性を象徴しているんだろうなと思った。きっと風通しの良い職場なのだろう。</p>
-
-<p>また技術者はやりたいことをどんどん取り組めるような空気もあるようだ。何か新しいやりたいことがあったときにエンジニアが手を挙げれば「（そのやりたいことが妥当であれば）社内でそれを止める人はいない」とのことだ。スタートアップでは優秀な人の入社をきっかけに社内が変わり始めたりすることも多いと思うがGunosyもその例外ではないようだ。</p>
-
-<h2 id="section-2">基本の積み重ね</h2>
-<p>Gunosyはいわゆる＜キュレーションニュースメディア＞で使えば使うほど記事がパーソナライズされていき興味のある記事が届けられる精度も高まっていくようになっている。どのようにそのレコメンデーションエンジンを向上しているかを聞いてみると「そんな難しいことはしていない。基本を積み重ねていっているだけ」と言っていた。</p>
-
-<p>社内で論文の勉強会をしてまだ実装に落とされていない論文の内容を実装に落としていくなどして、リコメンドエンジンをブラッシュアップしていっているようだ。こういう積み重ねを真摯に着実に行っているからこそ良いプロダクトも生まれてくるのだろう。</p>
-
-<blockquote>
-  <p>スタートアップだと、どうしても即効性のある技術やノウハウの方がが大きく価値認識されがちですが、僕たちは長期的な視点を持って、新旧かかわらず様々な研究を追っています。</p>
-</blockquote>
-
-<p><a href="http://careerhack.en-japan.com/report/detail/283">“数字は神より正しい”《Gunosy》が掲げる、フェアでクールな指針。</a></p>
-
-<p>（上記事はGunosyの哲学がよくわかる記事なので興味のある方は一読すべし）</p>
-
-<h2 id="section-3">総評</h2>
-<p>今まで訪問した会社の中では一番よかった（と書くように言われた）。</p>
-
-<h2 id="section-4">こんな人におすすめ</h2>
-<p>Gunosyは手を挙げれば自分のやりたいことがチャレンジできる場所です。また若いエンジニアが多く仲も良さ気で和気あいあいと働ける職場だと感じました。神でなく数字を信仰できるような人にはピッタリの環境です。</p>
-
-<p><a href="https://www.wantedly.com/companies/gunosy">Gunosyの採用ページ</a></p>
-
-<h2 id="section-5">こちらもどうぞ</h2>
-<ul>
-  <li><a href="http://blog.kushii.net/archives/1876150.html">株式会社Gunosy に行ってきた！</a></li>
-</ul>
 ]]></content>
   </entry>
   
