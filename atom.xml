@@ -3,12 +3,107 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-03-12T23:15:42+00:00</updated>
+  <updated>2015-03-17T18:39:30+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話]]></title>
+    <link href="http://blog.toshimaru.net/coverage-with-codeclimate/"/>
+    <updated>2015-03-18T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/coverage-with-codeclimate</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/toshimaru/Rails-4-Twitter-Clone">趣味で立ち上げているプロジェクト</a>をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。</p>
+
+<h2 id="sass">どんなSasSを使うか</h2>
+
+<p>自分がRails(ruby)プロジェクト(not private)をGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。それをまとめると下記のようになる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>サービス</th>
+      <th>用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://travis-ci.org/repositories">Travis CI</a></td>
+      <td>CI回す</td>
+    </tr>
+    <tr>
+      <td><a href="https://coveralls.io/">Coveralls</a></td>
+      <td>カバレッジ率を計測</td>
+    </tr>
+    <tr>
+      <td><a href="https://codeclimate.com/">Code Climate</a></td>
+      <td>コード品質を計測</td>
+    </tr>
+    <tr>
+      <td><a href="https://gemnasium.com/dashboard">Gemnasium</a></td>
+      <td>Gemのバージョンチェック</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>※ Publicなレポジトリであれば全て無料で使えます</strong></p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/803398/6694382/558b6f5c-cd1d-11e4-96ff-1e67d5905e83.png" alt="badges" /></p>
+
+<h2 id="coveralls--codeclimate">Coveralls → CodeClimate</h2>
+
+<p>今回その内の１つであるCoverallsをCodeClimateに移行してみたのですが、そのきっかけとしてはCircleCIでCodeClimateとのインテグレーションが推奨されていたから。</p>
+
+<p><a href="http://docs.travis-ci.com/user/code-climate/">Travis CI: Using Code Climate with Travis CI</a></p>
+
+<p>コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいしTravis CIのすすめるCodeClimateに統合してみることとした。</p>
+
+<h2 id="section">手順</h2>
+
+<h3 id="set-code-climate-token">Set Code Climate token</h3>
+
+<p>CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを<code>.travis.yml</code>にセット。</p>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">addons</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">code_climate</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">repo_token</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">adf08323...</span></code></pre></div>
+
+<h3 id="intall-codeclimate-reporter">Intall CodeClimate reporter</h3>
+
+<p>codeclimate-test-reporter を<code>Gemfile</code>のtest groupに追加する。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gem</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span><span class="p">,</span> <span class="nb">require</span><span class="p">:</span> <span class="kp">false</span></code></pre></div>
+
+<p>CodeClimateのセットアップインストラクション通りに書くとこう。<code>spec/rails_helper.rb</code>に書きます。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span>
+<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">.</span><span class="n">start</span></code></pre></div>
+
+<h3 id="simplecov">Simplecovと同居させる</h3>
+
+<p>私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">coverage</span> <span class="n">with</span> <span class="n">simplecov</span> <span class="ow">and</span> <span class="n">codeclimate</span>
+<span class="nb">require</span> <span class="s1">&#39;simplecov&#39;</span>
+<span class="nb">require</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span>
+<span class="no">SimpleCov</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">MultiFormatter</span><span class="o">[</span>
+  <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">HTMLFormatter</span><span class="p">,</span>
+  <span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">::</span><span class="no">Formatter</span>
+<span class="o">]</span>
+<span class="no">SimpleCov</span><span class="o">.</span><span class="n">start</span> <span class="s2">&quot;rails&quot;</span></code></pre></div>
+
+<p>SimpleCovのformatterに<code>CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
+
+<p>これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png" alt="codeclimate" /></p>
+
+<h3 id="section-1">参考</h3>
+<p><a href="https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter">Using Code Climate’s new test reporter together with Coveralls and SimpleCov’s HTML Formatter</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ruby vs Golang でパフォーマンス比較してみた]]></title>
@@ -2324,71 +2419,6 @@ create  spec/rails_helper.rb
 <p>RSpec3よりruby1.8,ruby1.9をサポートしなくなったり新しいマッチャーが増えたりしてるので変更点を下記より再度確認してみるとよいと思います。</p>
 
 <p><a href="http://myronmars.to/n/dev-blog/2014/05/notable-changes-in-rspec-3">Notable Changes in RSpec 3</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[就活日記(5) トレタ]]></title>
-    <link href="http://blog.toshimaru.net/job-hunting-5/"/>
-    <updated>2014-07-14T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/job-hunting-5</id>
-    <content type="html"><![CDATA[<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
-
-<h2 id="section">きっかけ</h2>
-<p><a href="http://blog.masuidrive.jp/2014/03/31/toreta-jobs/">トレタで一緒に働いてくれるRails/iOSエンジニアを探しています</a></p>
-
-<p><del>「豚しゃぶがただただ食べたい…」その一心で応募。</del> <a href="http://toreta.in/">トレタ</a>というサービスの存在を知ったのは<a href="https://twitter.com/masuidrive">@masuidrive</a>さんこと増井雄一郎さんがきっかけだった。増井さんが今何をやっていて何をやろうとしているのか、一度お話してみたかったこともあり豚しゃぶをご馳走になることにした。</p>
-
-<p>増井さんとAutoPagarize作者として有名な<a href="http://swdyh.github.io/">swdyh</a>さんとお話する。</p>
-
-<h2 id="section-1">トレタを支えている技術</h2>
-<ul>
-  <li>Github</li>
-  <li>RoR</li>
-  <li>Backbone.js</li>
-  <li>Jenkins</li>
-  <li>Slack</li>
-</ul>
-
-<p>（飲み食いしながらメモを取らずに聞いていたので記憶違いで間違っているかも…）</p>
-
-<p>「難しいことはしない、新しすぎるものを不用意に導入しない」という姿勢が他のスタートアップとは最も違うところだった。技術にアンテナを張ったスタートアップだと「新技術サイコー！」「新技術フォローしてる俺ら超カッコイイ…（ドヤァ）」とともするとなりがちな気がするのだけど、トレタはそんなことはなかった。</p>
-
-<p>増井さんは新しいことは趣味の範囲内でやって（<a href="http://mobiruby.org/">MobiRuby</a>なんかはその代表格のようだ）、商用で動く環境には下手に地雷が多い・地雷を踏みそうな技術は使わないという考えのようだった。この姿勢が少ないコストでユーザーに安定したサービスを届ける秘訣なような気がした。</p>
-
-<p>あと技術雑談の中で二人ともGo推しな感じだったのが印象深かった（Node.jsはディスり気味だった）。Goはやっぱりキテる言語なのかもしれない。</p>
-
-<h2 id="section-2">なぜ予約アプリケーション？</h2>
-<p>トレタはもともとミイルチームからスピンアウトするかたちで生まれた。トレタが生まれた経緯には中村仁さん（<a href="https://twitter.com/hitoshi">@hitoshi</a>さん）が店を経営する中で抱えた問題意識が根底にあるようだ。</p>
-
-<blockquote>
-  <p>動機は極めて単純です。僕自身が豚組を初めとした飲食店で長く現場に立ってきて、そこで多くの非効率や課題を目の当たりにしてきたからです。
-(中略)
-そして数年の構想期間を経て、自らそれを解決することに挑戦したのがトレタなのです。
-トレタが解決を目指す課題。それは「予約」です。</p>
-</blockquote>
-
-<p><a href="http://hitoshi.hatenablog.com/entry/2013/12/18/113038">新サービス「トレタ」を正式リリースしました</a></p>
-
-<p>上記事に書いてあるようにトレタが強みとしてるのは「使い勝手」であり、そのUI/UXの良さにあるのだと思う。中村さんが実際に店を経営する中で生まれた＜現場目線＞のUIなので、他社サービスよりはよいモノなのだろう。</p>
-
-<h2 id="section-3">増井雄一郎さん</h2>
-<p>とにかく増井雄一郎さんの経歴は面白い。</p>
-
-<p><a href="http://next.rikunabi.com/tech/docs/ct_s03600.jsp?p=002467">なぜコードを書き続けるのか？ギーク増井雄一郎の原点</a></p>
-
-<p>上記事を読んでわかるように一生コードを書いていられる奇人、それが増井雄一郎さんだ。そういう人は往々にしてNERDな性格（コンピューターおたくでコミュニケーション力のない不器用な人）であることが多いのだけど増井さんは例外のようで、すごく人当たりがよく必要があればガツガツコミュニケーションしていくようなタイプの人だ。</p>
-
-<p>増井さんの公開した<a href="https://wri.pe/">wri.pe</a>には今でも簡単なテキストを書きたいときに重宝している。個人サービスながら少なくない人からの注目を集め<a href="http://blog.masuidrive.jp/2014/03/31/open-wri-pe/">オープンソース化</a>もしている。</p>
-
-<p>その奇人性ゆえに常人には理解し難いかもしれないが、全てのエンジニアは増井雄一郎さんの生き様から何かしら学べることがあるのじゃないだろうか。</p>
-
-<h2 id="section-4">こんな人にいいかも</h2>
-<p>増井さんもswdyhさんも両名ともにベテランなので、お二人と一緒に働けばいろいろ学べることが多いかと思います。現在その二名しかエンジニアは居ないようなので、フルスタックな「何でもデキます！」系エンジニアが欲しいと思いきやそうでもなく、しっかりした専門性がある人材も求めているようです。</p>
-
-<p>興味がある人は一緒に会食してはいかがでしょうか？　豚から始まる恋もある。</p>
-
-<p><a href="https://www.wantedly.com/projects/6519">トレタの採用ページ</a></p>
 ]]></content>
   </entry>
   
