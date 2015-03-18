@@ -64,7 +64,6 @@ CodeClimate::TestReporter.start
 私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。
 
 {% highlight ruby %}
-coverage with simplecov and codeclimate
 require 'simplecov'
 require "codeclimate-test-reporter"
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
@@ -76,7 +75,6 @@ SimpleCov.start "rails"
 
 SimpleCovのformatterに`CodeClimate::TestReporter::Formatter`を入れてやれば :ok:
 
-これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。
 
 ![codeclimate](https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png)
 
