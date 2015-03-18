@@ -11,9 +11,9 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話 - Hack Your Design!">
   <meta property="og:title" content="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話 - Hack Your Design!">
-  <meta name="description" content="趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクト(not private)をGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。それをまとめると下記のようになる。">
-  <meta name="twitter:description" content="趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクト(not private)をGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。それをまとめると下記のようになる。">
-  <meta property="og:description" content="趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクト(not private)をGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。それをまとめると下記のようになる。">
+  <meta name="description" content="趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクトをGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。">
+  <meta name="twitter:description" content="趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクトをGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。">
+  <meta property="og:description" content="趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクトをGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。">
   
   <meta property="og:image" content="http://blog.toshimaru.nethttps://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" />
   <meta name="twitter:image" content="http://blog.toshimaru.nethttps://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" />
@@ -98,6 +98,8 @@
 
 <p><img src="https://cloud.githubusercontent.com/assets/803398/6694382/558b6f5c-cd1d-11e4-96ff-1e67d5905e83.png" alt="badges" /></p>
 
+<p><strong>【図】SaaSの利用により表示できるようになるバッジ群</strong></p>
+
 <h2 id="coveralls--codeclimate">Coveralls → CodeClimate</h2>
 
 <p>今回その内の１つであるCoverallsをCodeClimateに移行してみたのですが、そのきっかけとしてはCircleCIでCodeClimateとのインテグレーションが推奨されていたから。</p>
@@ -139,9 +141,11 @@
 <span class="o">]</span>
 <span class="no">SimpleCov</span><span class="o">.</span><span class="n">start</span> <span class="s2">&quot;rails&quot;</span></code></pre></div>
 
-<p>SimpleCovのformatterに<code>CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
+<p>このようにSimpleCovのformatterに<code>CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
 
 <p><img src="https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png" alt="codeclimate" /></p>
+
+<p>これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。</p>
 
 <h3 id="section-1">参考</h3>
 <p><a href="https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter">Using Code Climate’s new test reporter together with Coveralls and SimpleCov’s HTML Formatter</a></p>
