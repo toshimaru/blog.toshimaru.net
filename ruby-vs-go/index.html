@@ -60,7 +60,7 @@
   </div>
 </div>
 
-<p>Rubyで書いたコードがGoで書いたらどれくらい早くなるかを検証してみたくて試してみた。単純に画像ファイルをダウンロードするだけの単純な処理での比較。</p>
+<p>Rubyで書いたコードがGoで書いたらどれくらい早くなるかを検証してみたくて試してみた。画像ファイルをダウンロードするだけの単純な処理での比較。（複雑な処理になるとまた全然違ってくると思います）</p>
 
 <h2 id="ruby">Rubyの場合</h2>
 
@@ -82,7 +82,7 @@
 ruby no_thread.rb  0.25s user 0.10s system 1% cpu 29.813 total
 </code></pre>
 
-<p>約30秒。遅い。</p>
+<p>約30秒。遅い。そしてCPUコストは低い。</p>
 
 <h3 id="thread">Threadで並行ダウンロード</h3>
 
@@ -104,7 +104,7 @@ ruby no_thread.rb  0.25s user 0.10s system 1% cpu 29.813 total
 ruby thread.rb  0.20s user 0.10s system 27% cpu 1.105 total
 </code></pre>
 
-<p>1.1秒。劇的な改善。</p>
+<p>1.1秒。劇的な改善。CPUは30％くらい使ってる。</p>
 
 <h2 id="go">Goの場合</h2>
 
@@ -176,6 +176,8 @@ $ time ./thread
 
 <p>たぶん比較するロジックが複雑化すればするほど、Goのパフォーマンスの良さがガッツリ効いてきそう。</p>
 
+<p>CPUコストがRubyより半分程度に済んでいるところもナイス。</p>
+
 <hr />
 
 <h3 id="shell-script-">【番外編】Shell Script で実行</h3>
@@ -189,6 +191,8 @@ bash bash_script.bash  0.15s user 0.24s system 72% cpu 0.547 total
 </code></pre>
 
 <p>はやい。 <img class="emoji" title=":astonished:" alt=":astonished:" src="https://assets.github.com/images/icons/emoji/unicode/1f632.png" height="20" width="20" align="absmiddle" /></p>
+
+<p>CPUは超使ってる。</p>
 
 
 <ul id="social-buttons">
