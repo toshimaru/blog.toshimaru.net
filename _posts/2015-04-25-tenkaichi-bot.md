@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 天下一bot武闘会でクソbotたちを発表してきた
+title: 天下一bot武闘会でクソbotたちを発表してきました
 published: true
 description: 先日天下一bot武闘会で僕が作ったクソbotたちを発表してきました。
 tags: hubot
@@ -17,6 +17,8 @@ tags: hubot
 1. [hubot-hikakin](https://github.com/toshimaru/hubot-hikakin)
 
 ほんとにしょーもないクソbotたちですが、発表することにより彼らを:shit:世界から救えた気がして満足しています。:angel:
+
+スライド作成に使ったアプリは[Deckset](http://www.decksetapp.com/)ってやつです。現時点でMac専用アプリ、デザインのカスタマイズも非力ですがなんといってもmarkdown書けばそれっぽいスライドが仕上がるのがとても良い。今後も使っていきたいアプリである。
 
 ## 参考
 * [#tenkabot - Twitter Search](https://twitter.com/search?f=realtime&q=%23tenkabot&src=typd)
