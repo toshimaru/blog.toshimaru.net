@@ -3,12 +3,113 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-04-24T16:58:38+00:00</updated>
+  <updated>2015-05-03T08:57:52+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[video.js で m3u8 形式の動画ファイルをブラウザで再生する]]></title>
+    <link href="http://blog.toshimaru.net/play-m3u8-video-in-browser/"/>
+    <updated>2015-05-03T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/play-m3u8-video-in-browser</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/videojs/video.js">video.js</a>を使ってm3u8形式の動画ファイルをSafari以外のブラウザでも再生する方法を紹介します。</p>
+
+<p><a href="http://toshimaru.net/demo/videojs-m3u8/" class="btn btn-primary">Demo</a></p>
+
+<h2 id="section">動作環境</h2>
+
+<p>下記環境で（現時点の最新版での）動作を確認しています。</p>
+
+<ul>
+  <li>Chrome</li>
+  <li>Safari</li>
+  <li>Opera</li>
+  <li>Safari</li>
+</ul>
+
+<p><strong>※要Flash</strong></p>
+
+<h2 id="js">使うJSライブラリ</h2>
+<ul>
+  <li><a href="https://github.com/videojs/video.js">videojs/video.js</a>
+    <ul>
+      <li>基本素材. 動画ファイルを様々なブラウザで再生できるようにする。</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/videojs/videojs-contrib-media-sources">videojs/videojs-contrib-media-sources</a>
+    <ul>
+      <li>videoタグに動画ソースを流し込めるようにするvideo.jsプラグイン。</li>
+      <li>W3Cのドラフト仕様<a href="https://w3c.github.io/media-source/">Media Source Extensions</a>が元のよう。</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/videojs/videojs-contrib-hls">videojs/videojs-contrib-hls</a>
+    <ul>
+      <li>HLS(<code>m3u8</code>)形式の動画ファイルを再生可能にするvideo.jsプラグイン。</li>
+      <li>HLSに対応していないブラウザでもFlash技術を通すことで再生可能にしているよう。</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="usage">Usage</h2>
+
+<p>全体HTMLファイルはこんな感じ。</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Video.js m3u8<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/video-js.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs-media-sources.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs.hls.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+
+    <span class="nt">&lt;h1&gt;</span>Video.js m3u8 demo page<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">&quot;test&quot;</span> <span class="na">class=</span><span class="s">&quot;video-js vjs-default-skin&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">width=</span><span class="s">&quot;600&quot;</span> <span class="na">controls</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">&quot;//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8&quot;</span> <span class="na">type=</span><span class="s">&quot;application/x-mpegURL&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/video&gt;</span>
+
+    <span class="nt">&lt;script&gt;</span>
+      <span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+      <span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span>
+    <span class="nt">&lt;/script&gt;</span>
+
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span></code></pre></div>
+
+<h3 id="cssjs">CSS/JS読み込み</h3>
+
+<p>video.js, videojs-media-sources.js, videojs.hls.js 以外にもCSSを読み込まないとエラーが出て再生できなかったのでCSSも読み込むこと。</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/video-js.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs-media-sources.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs.hls.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
+
+<h3 id="video">videoタグ</h3>
+
+<p>適当なクラスを持った<code>&lt;video&gt;</code>をタグに<code>height</code>, <code>width</code>を定義してやって、中に<code>type="application/x-mpegURL"</code>と<code>src</code>を持った<code>&lt;source&gt;</code>タグを入れてやる。</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">&quot;test&quot;</span> <span class="na">class=</span><span class="s">&quot;video-js vjs-default-skin&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">width=</span><span class="s">&quot;600&quot;</span> <span class="na">controls</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">&quot;//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8&quot;</span> <span class="na">type=</span><span class="s">&quot;application/x-mpegURL&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/video&gt;</span></code></pre></div>
+
+<h3 id="javascript">JavaScript</h3>
+
+<p><code>videojs()</code>内にvideoタグのIDでplayerを生成してplay。</p>
+
+<div class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+<span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span></code></pre></div>
+
+<h2 id="section-1">最後に</h2>
+
+<p>クロスオリジンな動画リソースを読み込むときは CORS(Cross-Origin Resource Sharing) の設定を適切にしてやる必要があることに注意！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[天下一bot武闘会でクソbotたちを発表してきました]]></title>
@@ -2316,99 +2417,6 @@ production:
 <ul>
   <li><a href="http://stackoverflow.com/questions/4021322/belongs-to-through-associations">belongs_to through associations</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[就活日記(6) KAIZEN platform Inc.]]></title>
-    <link href="http://blog.toshimaru.net/job-hunting-6/"/>
-    <updated>2014-07-26T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/job-hunting-6</id>
-    <content type="html"><![CDATA[<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
-
-<h2 id="section">きっかけ</h2>
-<p>Kaizenといえばカリスマハッカー、<a href="https://twitter.com/naoya_ito">Naoya Itoさん</a>が勤めていることでよく知られているかと思う。<a href="http://d.hatena.ne.jp/naoya/">ブログ</a>や<a href="https://speakerdeck.com/naoya">プレゼン</a>、<a href="http://rebuild.fm/">rebuild.fm</a>にてNaoyaさんが折に触れてKaizenについて言及するので気になって気になって仕方ない、ということで訪問。</p>
-
-<h2 id="kaizen">Kaizenを支えている技術</h2>
-
-<p>使われている技術は下記ページに紹介されているので、ここで改めて紹介する必要はないかと思う。</p>
-
-<p><a href="http://kaizenplatform.in/hiring/engineer.html">KAIZEN platform Inc. ではエンジニアを募集しています</a></p>
-
-<p><img src="/images/posts/job-hunting/kaizen.png" alt="Kaizen Technology" /></p>
-
-<p>開発の進め方などに関してはNaoyaさんがブログにまとめているのでそちらを読むとよいかと思う。</p>
-
-<p><a href="http://d.hatena.ne.jp/naoya/20131013/1381651545">Webサービス開発現場から / 近頃の開発のやり方 ･･･ Github と Pull Request とコードレビュー</a></p>
-
-<h2 id="section-1">働き方</h2>
-<p>上ページの中でも紹介されているがKaizenの働き方は特徴的だ。見出しだけ抜き出してみると、、、</p>
-
-<ul>
-  <li>OSSのように作る</li>
-  <li>オープンなコミュニケーション</li>
-  <li>リモートワーク</li>
-  <li>自動化</li>
-  <li>コードとしてのインフラ</li>
-  <li>オープンな組織・ハッカー文化</li>
-</ul>
-
-<p>この働き方は<a href="https://github.com/about/jobs">githubの働き方</a>をモデルとして作られているようだ。中でも興味深いのはリモートワークを導入している点。日本企業でリモートワークを積極的に導入していこうとしている企業はそんなに多くはない中、Kaizenは「リモートワークを妥協」していない。リモートワークを実践するためのツール群も良いモノであればどんどん導入していっているようだ。</p>
-
-<p>エンジニアはリモートワークを絶対しなければいけないのかというとそんなことはなく、重要視しているのは「その人が最も生産性が高くなる環境で働く」ということのようだ。新宿にあるオフィスから物理的に通勤困難な人はリモートワークで働かざるを得ないわけだが、そうではない人はオフィスに来て働いてもOKだという。中には週の半分がリモート、もう半分はオフィスで働く人もいるようだ。</p>
-
-<p>このへんのリモートワークをするかどうかの選択権もまた与えられているのは良いことかと思う。というのも人によってはリモートでは生産性が出ないという人もいるからだ。自分の場合、集中してコードを書きたいときはリモートワークしたくて、コミュニケーションが多く発生するようなステージ（まだ仕様が煮詰まっていないプロジェクト発足時など）だと対面で働きたいなと思う。</p>
-
-<h2 id="section-2">なぜ日本にはリモートワークが少ないのか</h2>
-<p>ところでなぜ日本はそれほどリモートワークスタイルが少ないのだろうか（自分は海外で働いたときにリモートワークを経験した。あとリモートワークの求人も見ることが多かった）。考えられる理由としては、</p>
-
-<ul>
-  <li>従業員を信頼していない（「直接管理していないからサボるんじゃないか」という懸念）</li>
-  <li>対面での会議、コミュニケーションができない</li>
-  <li>セキュリティ的な理由（会社の仕事は外に持ち出さない）</li>
-  <li>社内規定が云々…</li>
-</ul>
-
-<p>上記のうち会議、コミュニケーションの部分に関してはITツールを駆使することで解決できることだ。特にエンジニアの場合、Githubをはじめ、HipChat/Slackなどのチャットツール、Hangout/Skypeなどのビデオ通話サービスなどリモートワークでも問題なく仕事を進められるようなツール群が存在するのでリモート勤務がやりやすいかと思う。</p>
-
-<p>一方でリモートワークは会社にとって良い事もある。</p>
-
-<ul>
-  <li>割り込みが減る→作業に集中できる→生産性アップ</li>
-  <li>物理的な場所を取らない</li>
-  <li>リモートワークを許可することで場所にとらわれない採用ができる。（地方に住む人、海外在住の人）</li>
-</ul>
-
-<p>最近は37Signalsの<a href="http://www.amazon.co.jp/gp/product/4152094338/ref=as_li_tf_tl?ie=UTF8&amp;camp=247&amp;creative=1211&amp;creativeASIN=4152094338&amp;linkCode=as2&amp;tag=toshimaru-22">『強いチームはオフィスを捨てる: 37シグナルズが考える「働き方革命」』</a>なんて本が話題になったけど、まだまだリモートワークが少ないのが日本の現状なので今後リモートワークを認める企業がKaizenのように増えていけばいいと思う。</p>
-
-<blockquote>
-  <p>もちろん対面でやった方が早いと思うことはたくさんあるけど、本当にそれは対面じゃないとできないのかというところをまずは疑ってみないことには、新しい働き方を追求するということはできない。結果的にそれで会議を減らす、非同期に作業することができれば全体の効率が上がるわけで、そこで思考停止しない･･･ということが大切だと思う</p>
-</blockquote>
-
-<p>(via <a href="http://d.hatena.ne.jp/naoya/20140512/1399864629">Sqwiggle が良いという話、またはリモートでアジャイル開発をどう進めるか</a>)</p>
-
-<h2 id="section-3">採用・人について</h2>
-<p>自分の受けてる企業がそうだったけど、スタートアップって良い人がいれば即採用みたいなノリが多かったけど、Kaizenはじっくり人を選考している感を受けました。書類選考が採用のスタート地点なあたりそれが表れている。</p>
-
-<p>逆にいうとそれだけ「応募者が技術者として（働き方含め）Kaizenに合うか」を見極めたいのでしょう。ちなみに既にKaizenで働いている人はリモートでもしっかり働ける技術的に熟達したエンジニアの方が多い印象でした。</p>
-
-<h2 id="section-4">エンジニア行動指針</h2>
-<p>Kaizenにはこんな行動指針がエンジニア間でシェアされている。</p>
-
-<p><img src="/images/posts/job-hunting/kaizen-kodoshishin.png" alt="Kaizenエンジニア行動指針" /></p>
-
-<p>(via <a href="https://speakerdeck.com/naoya/b2bsabisukai-fa-falsexian-chang-kara-number-devsumi">B2Bサービス開発の現場から</a>)</p>
-
-<p>チラリと見せてもらったけど分量としてそんなに多くなく、シンプルで力強い行動指針が示されていてとても良い感じでした。宗教ってわけじゃないけどいざ何かに迷ったときに「この行動指針に則って考えるとこっちのほうが良いよね」みたいに考えられるので良いよね。</p>
-
-<h2 id="section-5">こんな人におすすめ</h2>
-<p>リモートワークワークをしたい方、Kaizenの働き方に共感できる人であればKaizenはステキな環境なのではないのでしょうか。Kaizenにはハッカーにとって居心地の良い環境があります。</p>
-
-<p><a href="http://kaizenplatform.in/hiring/engineer.html#application_engineer">KAIZEN platform Inc.の公式採用ページ</a></p>
-
-<h2 id="section-6">追記（2014/11/03）</h2>
-<script async="" class="speakerdeck-embed" data-id="153982a0431f01329b8852a2dda60dbc" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-
 ]]></content>
   </entry>
   
