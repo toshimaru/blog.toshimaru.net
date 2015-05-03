@@ -2,6 +2,7 @@
 layout: post
 title: video.js で m3u8 形式の動画ファイルをブラウザで再生する
 published: true
+image: /images/posts/videojs.png
 description: video.jsを使ってm3u8形式の動画ファイルをSafari以外のブラウザでも再生する方法を紹介します。
 tags: video javascript
 ---
