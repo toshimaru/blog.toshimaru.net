@@ -7,15 +7,15 @@ description: PHPってよく「PHP(笑)」って後ろに笑マークが付い�
 tags: php
 ---
 
-**※ただしPHP5.3以降に限る。**
+**※ただしPHP5.3以降に限る。**{:.red}
 
 PHPってよく「PHP(笑)」って後ろに笑マークが付いたり、Disられたりすることが多い。でも僕には「笑」を付けるほどPHPは悪い言語だとは思えないんだよね。
 
 ## PHPの良いところ
 
-PHPの良さはなんといってもとっつきやすさだと思う。何も知らない初学者が「WEBページ作りたいよ！WEBプログラミングしたいよ！」といったときにPHPは第一の選択肢となると思う。なんせPHPは「ぴーえっちぴー：はいぱーてきすとぷろせっさー」なんだからな！　HyperText作るための言語、それこそPHPの本質たるところなのです。
+PHPの良さはなんといってもその**とっつきやすさ**だと思う。何も知らない初学者が「WEBページ作りたいよ！WEBプログラミングしたいよ！」といったときに第一の選択肢となるのはPHPだ。なんせPHPは「ぴーえっちぴー：はいぱーてきすとぷろせっさー」なんだからな！　HyperText作るための言語、それこそPHPの本質たるところなのです。
 
-逆にその手軽さがイケてないコードを量産していてるとも言えて、結果的にそうやって生まれたイケてないコードのいくつかを見て「PHPダメ」って判断してしまいがちだけど、それは早急だと思う[^phpway]。
+逆にその手軽さがイケてないコードを量産していてるとも言えて、結果的にそうやって生まれたイケてないコードのいくつかを見て「PHPはダメ言語」って判断してしまいがちだけど、それは早急だと思う[^phpway]。
 
 またPHPの[公式リファレンスは他のどの言語よりも情報が充実していると思う](http://blog.clock-up.jp/entry/2013/09/01/141859)。簡潔な良いコード例がたくさん載ってるし、PHPのバージョン情報も明記されている。PHPは日本語情報もたくさんあるので困ったときに日本語で検索して情報も出やすい。
 
@@ -27,26 +27,26 @@ PHPの良さはなんといってもとっつきやすさだと思う。何も�
 
 ## 近年のPHPの進化
 
-[Composer](http://getcomposer.org/)で外部ライブラリのインストール、依存関係管理できる。フレームワークもMVCな[Symfony](https://github.com/symfony/symfony),[CakePHP](https://github.com/cakephp/cakephp),[FuelPHP](https://github.com/fuel/fuel)から、SinatraライクのMicroフレームワークな[Slim](https://github.com/codeguy/Slim),[Silex](https://github.com/fabpot/Silex)だってある。CakePHPなんかは日本で人気が高く日本語情報がネットに沢山あってググりやすい。[Laravel](https://github.com/laravel/laravel)なんかは今グングン成長している注目株のMVCフレームワークだ。[PHPUnit](https://github.com/sebastianbergmann/phpunit)でテストも書ける。PHPUnitの書き方がイケてない？　ならモダンな[atoum](https://github.com/atoum/atoum)もある。PHPは遅い？　[The fastest
+[Composer](http://getcomposer.org/)で外部ライブラリのインストール、依存関係管理できる。フレームワークもMVCな[Symfony](https://github.com/symfony/symfony),[CakePHP](https://github.com/cakephp/cakephp),[FuelPHP](https://github.com/fuel/fuel)から、SinatraライクのMicroフレームワークな[Slim](https://github.com/codeguy/Slim),[Silex](https://github.com/fabpot/Silex)だってある。CakePHPなんかは日本で人気が高く日本語情報がネットに沢山あってググりやすい。[Laravel](https://github.com/laravel/laravel)なんかは今グングン成長している注目株のMVCフレームワークだ。[PHPUnit](https://github.com/sebastianbergmann/phpunit)でテストも書ける。PHPUnitの書き方がイケてない？　ならモダンな[atoum](https://github.com/atoum/atoum)もある。PHPは遅い？　だったら[The fastest
 PHP Framework, Phalcon](http://phalconphp.com/en/)という選択肢も今ならある。
 
 ## PHPのコードは汚い？
 
-正直5.2以前はけっこう汚いコードが多いと思う。PHP4の書き方の名残があるコードなんて最低だ。ただ5.3以降は綺麗に書けるようになってきてる。
+正直5.2以前はけっこう汚いコードが多いと思う。PHP4の書き方の名残があるコードなんて最低だ。ただPHP5.3以降は綺麗に書けるようになってきてる。
 
 PHP5.3以降からは名前空間がサポートされて、これとComposerのAutoloadの機能を使えば`require`地獄から解放される。他にも5.3では無名関数がサポートされた。
 
-PHP5.4からは新しいショートArrayシンタックスが追加されてかつてのArray地獄からは解放されそうだし、Traitの導入によりRubyのMix-inみたいなことも可能になった。
+PHP5.4からは新しいショートArrayシンタックスが追加されてかつての`array`書きまくり地獄からは解放されそうだし、Traitの導入によりRubyのMix-inみたいなことも可能になった。
 
 PHP5.5ではジェネレータの機能により`yield`キーワードが使えるようになったり、`finally`節も追加される（この辺は今更感ありまくりだけど）。
 
-シンタックスとか言語特性上限界がありますけど（PHPは言語特性上、クソコードが書きやすい）、Rubyでもきっとクソなコード書く人はクソなコードを書くだろうし、Ruby on Railsでもレールの乗り方を無視してクソみたいなコードを書く奴もいるだろう。クソコードはPHPに限った話じゃないぜ、たぶん。
+シンタックスとか言語特性上限界がありますけど（PHPは言語特性上、クソコードが書きやすい）、Rubyでもきっとクソなコード書く人はクソなコードを書くだろうし、Ruby on Railsでもレールの乗り方を無視してクソみたいなコードを書く奴もいるだろう。クソコードはPHPに限った話じゃないぜ。 :shit:
 
-## PHPがWEBを作ってる！
+## PHPがWEBを作っている！
 
 Googleが無縁であるはずのPHPをGoogle App Engineの言語の一つとして採用したのはなぜか？　[PHPがWEBの75％を作っている、とGoogleが判断した](http://agilecatcloud.com/2013/07/04/google-app-engine-%E3%81%8C-php-%E3%82%92%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%99%E3%82%8B%EF%BC%9A-%E3%81%AA%E3%81%9C%E3%81%AA%E3%82%89-75-%E3%81%AE-web-%E3%82%92%E3%82%AB%E3%83%90%E3%83%BC/)からだ。
 
-世界で一番使われているCMSはなにか？　WordPressだ。PHPで作られている[^wp]。
+世界で一番使われているCMSはなにか？　WordPressだ。WordPressはPHPで作られている[^wp]。
 
 世界最大のSNS、Facebookで使われている言語はなにか？　PHPだ。さらに彼らは[HipHopというPHPから C++への変換するソフトを作るというかなり頭のイカれたことをやっていたり、Hackという型付のPHP方言を使用していたり](http://2013.8-p.info/japanese/09-28-languages.html)するらしい。Facebook、お前のPHP愛が怖い[^fbd]。
 
@@ -66,7 +66,7 @@ PHPはさすがにJSまでの再評価までいかなくとも、少なくとも
 
 ## 最後に
 
-「PHP（笑）」の時代は終わりを告げた。ぼくはPHPは悪い言語だとは思わないし、お世辞にもすごく良い言語とも言うことはできない。ただ侮れない言語であると思うのです。
+「PHP（笑）」の時代は終わりを告げた。ぼくはPHPは悪い言語だとは思わないし、お世辞にもすごく良い言語とも言うことはできない。ただ＜侮れない言語＞であると思うのです。
 
 PHPはPerlほど真面目じゃないし、Pythonほどスマートじゃないし、Rubyほど垢抜けてないし、JavaScriptほど流行に敏感じゃないけど、そんなPHPが、僕は嫌いじゃない。
 
