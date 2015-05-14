@@ -56,6 +56,8 @@ puts sum # => 55
 
 ## 応用編1: 配列内の要素数をハッシュに
 
+Hash.new(0)で初期化してinject.
+
 {% highlight ruby %}
 [:great, :good, :bad, :good, :good, :bad, :awesome, :great].inject(Hash.new(0)) {|hash, key| hash[key] += 1; hash}
 # => {:great=>2, :good=>3, :bad=>2, :awesome=>1}
@@ -63,9 +65,21 @@ puts sum # => 55
 
 ## 応用編2: フィボナッチ数列
 
+inject を利用したフィボナッチ数列ロジック。
+
 {% highlight ruby %}
 (0..10).inject([1, 1]) {|fib, i| fib << fib[i] + fib[i+1] }
 # => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]
+{% endhighlight %}
+
+## 番外編: each_with_index
+
+`each_with_index`でも`inject`は使える。
+
+{% highlight ruby %}
+(1..10).each_with_index.inject do |result, (element, index)|
+  # 
+end
 {% endhighlight %}
 
 ### 参考
