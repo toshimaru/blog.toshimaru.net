@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-05-09T18:05:31+00:00</updated>
+  <updated>2015-05-14T18:11:05+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -1393,13 +1393,25 @@ after_save is called
 
 <h2 id="section">応用編1: 配列内の要素数をハッシュに</h2>
 
+<p>Hash.new(0)で初期化してinject.</p>
+
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="o">].</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span><span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span> <span class="nb">hash</span><span class="o">[</span><span class="n">key</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">hash</span><span class="p">}</span>
 <span class="c1"># =&gt; {:great=&gt;2, :good=&gt;3, :bad=&gt;2, :awesome=&gt;1}</span></code></pre></div>
 
 <h2 id="section-1">応用編2: フィボナッチ数列</h2>
 
+<p>inject を利用したフィボナッチ数列ロジック。</p>
+
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">fib</span> <span class="o">&lt;&lt;</span> <span class="n">fib</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">+</span> <span class="n">fib</span><span class="o">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">]</span> <span class="p">}</span>
 <span class="c1"># =&gt; [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]</span></code></pre></div>
+
+<h2 id="eachwithindex">番外編: each_with_index</h2>
+
+<p><code>each_with_index</code>でも<code>inject</code>は使える。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">each_with_index</span><span class="o">.</span><span class="n">inject</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span>
+  <span class="c1"># </span>
+<span class="k">end</span></code></pre></div>
 
 <h3 id="section-2">参考</h3>
 <ul>
