@@ -23,7 +23,7 @@ Then, title your new post.
 
 ## Serve static pages
 
-    $ rake serve
+    $ jekyll serve
 
 ## Deploy to gh-pages
 

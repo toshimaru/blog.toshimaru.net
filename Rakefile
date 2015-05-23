@@ -72,11 +72,6 @@ EOF
   puts "create #{filepath}"
 end
 
-desc 'run development server'
-task :serve do
-  sh 'bundle exec jekyll serve'
-end
-
 def alias_task(tasks)
   tasks.each do |new_name, old_name|
     task new_name, [*Rake.application[old_name].arg_names] => [old_name]
@@ -84,6 +79,5 @@ def alias_task(tasks)
 end
 
 alias_task [
-  [:new, :post],
-  [:server, :serve]
+  [:new, :post]
 ]
