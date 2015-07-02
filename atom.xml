@@ -3,12 +3,50 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-06-20T12:42:59+00:00</updated>
+  <updated>2015-07-02T19:00:28+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SQLファイルでRailsのスキーマ情報管理]]></title>
+    <link href="http://blog.toshimaru.net/manage-schema-with-sql-in-rails/"/>
+    <updated>2015-07-03T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/manage-schema-with-sql-in-rails</id>
+    <content type="html"><![CDATA[<p>Railsでは<code>db:migrate</code>すると、デフォルトで<code>db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code>active_record.schema_format</code>を<code>:sql</code>と設定します（デフォルト値は<code>:ruby</code>）。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
+<span class="k">module</span> <span class="nn">Rails4TwitterClone</span>
+  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>これで<code>db/migrate</code>するとschema.rbではなく、<code>db/structure.sql</code>というSQLファイルを吐きます。</p>
+
+<h2 id="structuresql">structure.sqlをロードする</h2>
+
+<p>下記のコマンドでSQLをデータベースへロードできます。</p>
+
+<pre><code>rake db:structure:load
+</code></pre>
+
+<h2 id="sql">SQLファイルだけ欲しい場合</h2>
+
+<p>sqlダンプファイルのみ欲しい場合は下記のコマンドでstructure.sqlを生成できます。</p>
+
+<pre><code>rake db:structure:dump
+</code></pre>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="http://tech-kazuhisa.hatenablog.com/entry/20130902/1378126825">schema.rbじゃなくてstructure.sqlでスキーマ情報を管理しよう - tech-kazuhisa’s blog</a></li>
+  <li><a href="http://edgeguides.rubyonrails.org/active_record_migrations.html#types-of-schema-dumps">Active Record Migrations — Ruby on Rails Guides</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[AWS Summit Tokyo 2015で発表してきました]]></title>
@@ -2320,69 +2358,6 @@ production:
 
 <h3 id="section-1">参考</h3>
 <p><a href="http://ikm.hatenablog.jp/entry/2013/03/26/003838">ランダムに落ちるspecの修正で便利だったRSpecの2つの設定</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[就活日記(完) 就職]]></title>
-    <link href="http://blog.toshimaru.net/job-hunting-fin/"/>
-    <updated>2014-08-15T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/job-hunting-fin</id>
-    <content type="html"><![CDATA[<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
-
-<h2 id="gunosy">Gunosyに入社しました</h2>
-<p>7月初旬より就活を始め就活日記を書いてまいりましたが、Gunosyに入社する運びとなりましたのでご報告します（今月からすでに働き始めてます）。Gunosyの訪問記事は<a href="/job-hunting-4/">こちら</a>。</p>
-
-<p>決め手としてはまぁこんな感じです。</p>
-
-<ul>
-  <li><a href="/job-hunting-0/">就活日記(0)</a>にて書いた「応募基準」に大体当てはまってる</li>
-  <li>さくっとオファーもらった（会社説明兼面接が一回、CTO/CEOとの面接一回の計二回）</li>
-  <li>若くて優秀な人が多そう、仲も良さそう</li>
-  <li>勉強会も定期開催してて新しい技術の習得に積極的</li>
-  <li>Goとかプロダクションレベルで使ってる珍しい会社→新しいこともやれそう</li>
-</ul>
-
-<p>一ヶ月以上かかるかなーと見込んでましたが、本格的に就活を始めてから3週間以内にはオファーをもらえた。自分の場合は無職だったので、オファーをもらったその日に「明日からアルバイトで働いてもいいよ」と言われ、結局オファーをもらった2日後にはアルバイトとしてGunosyで働いていた。今月からは社員として働いている。</p>
-
-<p>ちなみにGunosy面接時には僕の書いた<a href="/job-hunting-0/">就活日記(0)</a>を中の人が既に読んでもらっていたようで、僕の求める応募基準に則して会社説明をしてもらったので就活日記を書いておいてよかった。</p>
-
-<h3 id="section">他の会社の話</h3>
-
-<p>「他の会社はダメだったの？」と聞かれると、正直どこもいい会社で「（もし採用してくれるのであれば）どの会社に入っても面白い体験ができるだろう」と思います。特に（入社会社以外で）オススメはどこか？ときかれると、以下です。</p>
-
-<ul>
-  <li>Wantedly</li>
-  <li>KAIZEN Platform</li>
-</ul>
-
-<p>ただココに挙げたのはそれぞれWantedlyはサービスに共感したから、KAIZENにははっきりと明文化されたエンジニア文化があるからであって、一番重要なのは<strong>興味のある会社に実際に行って・そこにいる人に会って・話を聞いて・自分に合うかどうか</strong>だと思うので、とりあえず話を聞いてみることを強くオススメします。その上で会社が合うかどうかは自分で判断してください。</p>
-
-<h2 id="section-1">モダンな開発環境は当たり前</h2>
-<p>会社を選ぶ基準の１つに「モダンな開発環境が整備されている」があったのですが、今回いろいろ会社を周って話を聞いた結果、（少なくとも自分が周った会社は）<strong>モダンな開発環境は当たり前</strong>のように整備されてました。Githubは当たり前のように使ってコードレビューをしていて、テストを書いてCI回してて、リッチなJSアプリケーションを書くときはJavaScript MV*フレームワーク使ってて、PCはMacで…といった感じです。瑣末な違いはあれどどこの会社もモダンな開発環境は整っていました。</p>
-
-<p>なので最近のスタートアップにおいてはモダンな開発環境が整っていることは前提として、その先の「何をやっていきたいか？」というのが重要だと感じました。具体的には、、、</p>
-
-<ul>
-  <li>どんなiOS/Android/Webアプリケーションを作りたいのか？</li>
-  <li>どんな仲間と働きたいのか？</li>
-  <li>スモールチームで個人の判断で裁量持って動きたいのか、それとも他の誰かと協力して動きたいのか？</li>
-  <li>どんな雰囲気の中で働きたいのか？</li>
-  <li>等々…</li>
-</ul>
-
-<p>このへんの辺りを考えて会社を選んでいければいいかと思いました。</p>
-
-<h2 id="web">WEBエンジニアでよかった</h2>
-<p>Wantedlyで「とりあえずまずは話を聞きに行く」という感じでカジュアルに話を聞きに行けるのも、どこも良いエンジニアを求めているからだと思います。自分は文系出身でエンジニアになる予定はそんなに無かった身ですが、今こうやっていろんな会社に行っていろんな人と会ってお話できるのもWEBエンジニアだったからこそです。エンジニアで良かった。</p>
-
-<h2 id="were-hiring">We’re hiring!!!</h2>
-<p>GunosyはGunosyをもっともっと良くしてくれるエンジニアを求めています（具体的にはiOSエンジニア、Androidエンジニア、Go/Railsエンジニア、Pythonエンジニア）。興味があれば一緒に働きましょう。応募は以下からどうぞ。</p>
-
-<p><a href="https://www.wantedly.com/companies/gunosy">Gunosyのソーシャル採用・Wantedly</a></p>
-
-<h2 id="amazon">Amazonウィッシュリスト</h2>
-<p>エンジニアの謎のくれくれ根性、ウザいからやめろ</p>
 ]]></content>
   </entry>
   
