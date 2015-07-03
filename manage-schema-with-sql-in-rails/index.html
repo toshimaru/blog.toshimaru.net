@@ -11,9 +11,9 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!">
   <meta property="og:title" content="SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!">
-  <meta name="description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにactive_record.schema_formatを:sqlと設定します。">
-  <meta name="twitter:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにactive_record.schema_formatを:sqlと設定します。">
-  <meta property="og:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにactive_record.schema_formatを:sqlと設定します。">
+  <meta name="description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
+  <meta name="twitter:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
+  <meta property="og:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
@@ -70,7 +70,7 @@
   </div>
 </div>
 
-<p>Railsでは<code>db:migrate</code>すると、デフォルトで<code>db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code>active_record.schema_format</code>を<code>:sql</code>と設定します（デフォルト値は<code>:ruby</code>）。</p>
+<p>Railsでは<code>db:migrate</code>すると、デフォルトで<code>db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code>config/application.rb</code>内で<code>active_record.schema_format</code>を<code>:sql</code>と設定することで可能になります（デフォルト値は<code>:ruby</code>）。</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
 <span class="k">module</span> <span class="nn">Rails4TwitterClone</span>
@@ -79,18 +79,18 @@
   <span class="k">end</span>
 <span class="k">end</span></code></pre></div>
 
-<p>これで<code>db/migrate</code>するとschema.rbではなく、<code>db/structure.sql</code>というSQLファイルを吐きます。</p>
+<p>これで<code>db/migrate</code>するとデフォルトのschema.rbではなく、<code>db/structure.sql</code>というSQLファイルを吐きます。</p>
 
 <h2 id="structuresql">structure.sqlをロードする</h2>
 
-<p>下記のコマンドでSQLをデータベースへロードできます。</p>
+<p>生成されたstructure.sqlファイルは、下記のコマンドでデータベースへロードできます。</p>
 
 <pre><code>rake db:structure:load
 </code></pre>
 
 <h2 id="sql">SQLファイルだけ欲しい場合</h2>
 
-<p>sqlダンプファイルのみ欲しい場合は下記のコマンドでstructure.sqlを生成できます。</p>
+<p>sqlダンプファイルのみが欲しい場合は、<code>config.active_record.schema_format</code>の設定を変えずとも下記コマンドでstructure.sqlを生成することができます。</p>
 
 <pre><code>rake db:structure:dump
 </code></pre>
@@ -123,6 +123,8 @@
   <h3>関連エントリ</h3>
   <ul>
   
+    <li><a href="/rake-alias/" title="Rakeタスクにエイリアスを付ける">Rakeタスクにエイリアスを付ける</a></li>
+  
     <li><a href="/active-record-callbacks/" title="ActiveRecordのコールバックの順番・コールバック内のロールバック処理">ActiveRecordのコールバックの順番・コールバック内のロールバック処理</a></li>
   
     <li><a href="/rails-http-status-symbols/" title="RailsのHTTPステータスのシンボル表現まとめ">RailsのHTTPステータスのシンボル表現まとめ</a></li>
@@ -130,8 +132,6 @@
     <li><a href="/ruby-standard-error/" title="Rubyで独自例外を定義するときはStandardErrorを継承する">Rubyで独自例外を定義するときはStandardErrorを継承する</a></li>
   
     <li><a href="/rails-4-transaction-isolation/" title="Rails4 でトランザクション分離レベルを設定する">Rails4 でトランザクション分離レベルを設定する</a></li>
-  
-    <li><a href="/gunosy-rails-way/" title="GunosyでのRails開発フロー">GunosyでのRails開発フロー</a></li>
   
   </ul>
   </div>
