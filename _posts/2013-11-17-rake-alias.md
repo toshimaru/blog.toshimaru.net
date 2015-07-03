@@ -3,7 +3,7 @@ layout: post
 title: Rakeタスクにエイリアスを付ける
 published: true
 description: RubyのRakeタスクにエイリアス付けたいときってありません？ 僕はあります。rake createなんていうタスクがあったとしたら、何らかの手癖のせいでrake newとか打っちゃうことがあるんですよ。そういうときはalias_taskなんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。
-tags: ruby
+tags: ruby rake
 ---
 
 RubyのRakeタスクにエイリアス付けたいときってありません？
