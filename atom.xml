@@ -3,12 +3,44 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-07-03T15:33:10+00:00</updated>
+  <updated>2015-07-16T16:37:50+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[RailsアプリケーションをLAN内に公開する]]></title>
+    <link href="http://blog.toshimaru.net/publish-rails-app-in-lan/"/>
+    <updated>2015-07-17T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/publish-rails-app-in-lan</id>
+    <content type="html"><![CDATA[<p>普通に<code>rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。(Railsのバージョンは4.2.3です)</p>
+
+<pre><code>$ rails server
+=&gt; Booting WEBrick
+=&gt; Rails 4.2.3 application starting in development on http://localhost:3000
+=&gt; Run `rails server -h` for more startup options
+=&gt; Ctrl-C to shutdown server
+</code></pre>
+
+<p>これをLAN内に公開したい場合はどうするか。下記のように<code>binding</code>オプションを付けてやります。</p>
+
+<pre><code>$ rails server --binding=0.0.0.0
+=&gt; Booting WEBrick
+=&gt; Rails 4.2.3 application starting in development on http://0.0.0.0:3000
+=&gt; Run `rails server -h` for more startup options
+=&gt; Ctrl-C to shutdown server
+</code></pre>
+
+<p>これで同じLAN内にいるクライアントからローカルIP（e.g. <code>192.168.1.10:3000</code> ）でRailsへとアクセス可能になります。</p>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/29132719/rails-application-not-visible-to-local-network">osx yosemite - Rails application not visible to local network - Stack Overflow</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SQLファイルでRailsのスキーマ情報管理]]></title>
@@ -2318,46 +2350,6 @@ production:
     </li>
   </ol>
 </div>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[RSpecが通ったり落ちたりしたときに]]></title>
-    <link href="http://blog.toshimaru.net/rspec-occasional-fail/"/>
-    <updated>2014-09-23T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/rspec-occasional-fail</id>
-    <content type="html"><![CDATA[<p>RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。</p>
-
-<h3 id="section">バージョン情報</h3>
-<ul>
-  <li>rails (4.1.5)</li>
-  <li>rspec (3.1.0)</li>
-</ul>
-
-<p>RSpecを順番に依存させないために<code>spec_helper.rb</code>でこんな設定がされている。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Run specs in random order to surface order dependencies. If you find an</span>
-<span class="c1"># order dependency and want to debug it, you can fix the order by providing</span>
-<span class="c1"># the seed, which is printed after each run.</span>
-<span class="c1">#     --seed 1234</span>
-<span class="n">config</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span></code></pre></div>
-
-<p>この設定によりテスト実行の順序がランダムになり、順序に依存しないテストの記述が可能となる。シード値はテストの最後に得られる。</p>
-
-<pre><code>Randomized with seed 724
-</code></pre>
-
-<p>Failしたテストのこのシード値を設定してテストを走らせればFailしたテストの順番を再現できる。</p>
-
-<pre><code>$ bundle exec rspec --seed 724 --fail-fast
-</code></pre>
-
-<p><code>--seed</code>でシード値を指定、<code>--fail-fast</code>を設定してFailしたときにテストを即時終了させるようにする。</p>
-
-<p>こうすればFailするテストを再現できて、どのテストが順番に依存して落ちているのかがわかります。</p>
-
-<h3 id="section-1">参考</h3>
-<p><a href="http://ikm.hatenablog.jp/entry/2013/03/26/003838">ランダムに落ちるspecの修正で便利だったRSpecの2つの設定</a></p>
 ]]></content>
   </entry>
   

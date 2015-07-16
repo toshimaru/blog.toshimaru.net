@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>gitで自分の今日のコミットログを見る - Hack Your Design!</title>
+  <title>RailsアプリケーションをLAN内に公開する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="gitで自分の今日のコミットログを見る - Hack Your Design!">
-  <meta property="og:title" content="gitで自分の今日のコミットログを見る - Hack Your Design!">
-  <meta name="description" content="一発コマンドネタ。 一日の振り返りにgitで自分の今日のコミットログを見てみましょう。">
-  <meta name="twitter:description" content="一発コマンドネタ。 一日の振り返りにgitで自分の今日のコミットログを見てみましょう。">
-  <meta property="og:description" content="一発コマンドネタ。 一日の振り返りにgitで自分の今日のコミットログを見てみましょう。">
+  <meta name="twitter:title" content="RailsアプリケーションをLAN内に公開する - Hack Your Design!">
+  <meta property="og:title" content="RailsアプリケーションをLAN内に公開する - Hack Your Design!">
+  <meta name="description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
+  <meta name="twitter:description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
+  <meta property="og:description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <link rel="canonical" href="http://blog.toshimaru.net/git/">
+  <link rel="canonical" href="http://blog.toshimaru.net/publish-rails-app-in-lan/">
 </head>
 <body>
   <!--[if lt IE 8]>
@@ -60,40 +60,46 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">gitで自分の今日のコミットログを見る</h1>
+  <h1 class="fadeInLeft">RailsアプリケーションをLAN内に公開する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-09-11T00:00:00+00:00" pubdate>11 Sep 2012</time>
-      <i class="icon-tags"></i><a href="/tag/git.html" rel="tag">git</a>
+      <i class="icon-calendar"></i><time datetime="2015-07-17T00:00:00+00:00" pubdate>17 Jul 2015</time>
+      <i class="icon-tags"></i><a href="/tag/rails.html" rel="tag">rails</a>, <a href="/tag/network.html" rel="tag">network</a>
     </div>
     
   </div>
 </div>
 
-<p>一発コマンドネタ。 一日の振り返りに。</p>
+<p>普通に<code>rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。(Railsのバージョンは4.2.3です)</p>
 
-<pre><code>git log --after=2012-xx-xx --author="your_name"
+<pre><code>$ rails server
+=&gt; Booting WEBrick
+=&gt; Rails 4.2.3 application starting in development on http://localhost:3000
+=&gt; Run `rails server -h` for more startup options
+=&gt; Ctrl-C to shutdown server
 </code></pre>
 
-<p>afterの日付は今日の日付（今週にしたければ月曜日の日付を）、authorには自分の名前を指定（人の見たければその人の名前を）。</p>
+<p>これをLAN内に公開したい場合はどうするか。下記のように<code>binding</code>オプションを付けてやります。</p>
 
-<h2 id="section">追記（2013/11/15）</h2>
-
-<p><a href="https://coderwall.com/p/7jbwww">git today</a>というエイリアスが素敵だと思ったのでこちらを今後採用したいと思います。<code>git today</code>のエイリアスは下記のように登録してください。</p>
-
-<pre><code>git config --global alias.today "log --since=midnight --author='$(git config user.name)' --oneline"
+<pre><code>$ rails server --binding=0.0.0.0
+=&gt; Booting WEBrick
+=&gt; Rails 4.2.3 application starting in development on http://0.0.0.0:3000
+=&gt; Run `rails server -h` for more startup options
+=&gt; Ctrl-C to shutdown server
 </code></pre>
 
-<h3 id="section-1">参考</h3>
+<p>これで同じLAN内にいるクライアントからローカルIP（e.g. <code>192.168.1.10:3000</code> ）でRailsへとアクセス可能になります。</p>
+
+<h3 id="section">参考</h3>
 <ul>
-<li><a href="http://webtech-walker.com/archive/2010/03/04034601.html">git log</a></li>
+  <li><a href="http://stackoverflow.com/questions/29132719/rails-application-not-visible-to-local-network">osx yosemite - Rails application not visible to local network - Stack Overflow</a></li>
 </ul>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/publish-rails-app-in-lan/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -111,15 +117,15 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/git-log-p-s/" title="gitのログから特定の文字列を含むコミットを採掘する">gitのログから特定の文字列を含むコミットを採掘する</a></li>
+    <li><a href="/change-mac-address/" title="MacOSでMACアドレスを変更するコマンド">MacOSでMACアドレスを変更するコマンド</a></li>
   
-    <li><a href="/github-and-hub/" title="Github+hubコマンドで快適なGithubライフを営む">Github+hubコマンドで快適なGithubライフを営む</a></li>
+    <li><a href="/snmpsnmpwalk/" title="SNMPサーバを立てて、クライアントからsnmpwalkする">SNMPサーバを立てて、クライアントからsnmpwalkする</a></li>
   
-    <li><a href="/autodeploy-jekyll/" title="Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした">Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした</a></li>
+    <li><a href="/vmwareubuntu/" title="vmware上のubuntuのネットワーク設定">vmware上のubuntuのネットワーク設定</a></li>
   
-    <li><a href="/git-revert-mainline/" title="Gitのrevertの-m(mainline)オプションについて">Gitのrevertの-m(mainline)オプションについて</a></li>
+    <li><a href="/manage-schema-with-sql-in-rails/" title="SQLファイルでRailsのスキーマ情報管理">SQLファイルでRailsのスキーマ情報管理</a></li>
   
-    <li><a href="/git-with-author/" title="【git】直前の数個のコミットの歴史を著作者とともに修正する">【git】直前の数個のコミットの歴史を著作者とともに修正する</a></li>
+    <li><a href="/active-record-callbacks/" title="ActiveRecordのコールバックの順番・コールバック内のロールバック処理">ActiveRecordのコールバックの順番・コールバック内のロールバック処理</a></li>
   
   </ul>
   </div>
@@ -127,14 +133,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/pull-request/" title="Newer Post: 初pull request がマージされました！"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/git-pushgithub/" title="Older Post: githubにgit pushした変更の取り消し">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/manage-schema-with-sql-in-rails/" title="Older Post: SQLファイルでRailsのスキーマ情報管理">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
