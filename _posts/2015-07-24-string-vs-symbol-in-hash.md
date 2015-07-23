@@ -2,7 +2,7 @@
 layout: post
 title: HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較
 published: true
-description:
+description: HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。比較として使用したRubyのバージョンは下記です。 Ruby 2.1.6 Ruby 2.2.2
 tags: ruby
 ---
 
