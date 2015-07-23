@@ -3,12 +3,112 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-07-16T16:37:50+00:00</updated>
+  <updated>2015-07-23T17:59:28+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較]]></title>
+    <link href="http://blog.toshimaru.net/string-vs-symbol-in-hash/"/>
+    <updated>2015-07-24T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/string-vs-symbol-in-hash</id>
+    <content type="html"><![CDATA[<p>HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。コードは<a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">こちら</a>を参照しています。</p>
+
+<h2 id="section">前提条件</h2>
+
+<p>比較として使用したRubyのバージョンは下記です。</p>
+
+<ul>
+  <li>Ruby 2.1.6</li>
+  <li>Ruby 2.2.2</li>
+</ul>
+
+<h3 id="section-1">ベンチマーク・コード</h3>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+
+<span class="no">STRING_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;foo&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span> <span class="p">}</span>
+<span class="no">SYMBOL_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span>  <span class="p">}</span>
+
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">STRING_HASH</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">SYMBOL_HASH</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span>  <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<h2 id="ruby-21">Ruby 2.1</h2>
+
+<pre><code>Calculating -------------------------------------
+              string    70.713k i/100ms
+              symbol    93.805k i/100ms
+-------------------------------------------------
+              string      3.356M (± 7.6%) i/s -     16.688M
+              symbol      6.363M (± 8.3%) i/s -     31.612M
+</code></pre>
+
+<p>シンボルを使った方がハッシュのアクセスは2倍ほど速い。</p>
+
+<h2 id="ruby-22">Ruby 2.2</h2>
+
+<pre><code>Calculating -------------------------------------
+              string    77.873k i/100ms
+              symbol    78.367k i/100ms
+-------------------------------------------------
+              string      5.604M (± 7.8%) i/s -     27.879M
+              symbol      6.463M (± 8.2%) i/s -     32.130M
+</code></pre>
+
+<p>シンボルを使った方がハッシュのアクセスは速いが、Stringでのハッシュのアクセス速度はシンボルのそれと大きく変わらない値となっている。</p>
+
+<h2 id="section-2">結論</h2>
+<p>シンボルを使ったキーの方がHashのアクセスは速い。2.1だとそれが顕著。しかし2.2以降はそう変わらない速度になってきている。</p>
+
+<hr />
+
+<h3 id="json">【おまけ】JSONの場合</h3>
+
+<p>JSONをパースした場合。下記のコードで<code>symbolize_names</code>した場合とそうでない場合を比較。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+
+<span class="no">SAMPLE_JSON</span> <span class="o">=</span> <span class="s1">&#39;{&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3}&#39;</span>
+
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="s2">&quot;c&quot;</span><span class="o">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">,</span> <span class="ss">symbolize_names</span><span class="p">:</span> <span class="kp">true</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:c</span><span class="o">]</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<h3 id="ruby-21-1">Ruby 2.1</h3>
+
+<pre><code>Calculating -------------------------------------
+          string    11.910k i/100ms
+          symbol    11.072k i/100ms
+-------------------------------------------------
+          string    148.480k (± 4.5%) i/s -    750.330k
+          symbol    141.624k (± 5.3%) i/s -    708.608k
+</code></pre>
+
+<h3 id="ruby-22-1">Ruby 2.2</h3>
+
+<pre><code>Calculating -------------------------------------
+              string    11.980k i/100ms
+              symbol    11.129k i/100ms
+-------------------------------------------------
+              string    150.421k (± 6.5%) i/s -    754.740k
+              symbol    137.871k (± 9.1%) i/s -    689.998k
+</code></pre>
+
+<p><code>symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
+
+<h3 id="section-3">参考</h3>
+<ul>
+  <li><a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">Unraveling String Key Performance in Ruby 2.2</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[RailsアプリケーションをLAN内に公開する]]></title>
@@ -2124,232 +2224,6 @@ production:
 <p>本エントリで紹介したpry-byebugなどのデバッグgemを駆使してRailsアプリのデバッグをもっと効率的にしましょう！</p>
 
 <p>Happy Debugging Life!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[カナダ・バンクーバー情報（2014年度版）]]></title>
-    <link href="http://blog.toshimaru.net/vancouver-infomation/"/>
-    <updated>2014-11-09T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/vancouver-infomation</id>
-    <content type="html"><![CDATA[<p>2013年から一年間カナダ・バンクーバーに滞在した僕がバンクーバーの様々な情報を共有します。</p>
-
-<h1 id="section">生活編</h1>
-<ul>
-  <li>電車はスカイトレインが便利
-    <ul>
-      <li>切符は三種類のみ。1ゾーン、2ゾーン、3ゾーンの三種類。数字が小さくなるほど移動できる範囲が狭くなる。 使うエリアが1ゾーン内であれば1ゾーンを、2ゾーンエリアに跨って使用するのであれば2ゾーンの切符を購入する。</li>
-      <li>定期券を一旦買ってしまえばそのゾーン内であれば電車もバスも好きなだけ乗ってOK. 難しい料金システムはない。</li>
-      <li><a href="http://tripplanning.translink.ca/FILE/Apps/Info/images/skytrain_map.png">スカイトレインMAPを参考にどうぞ</a>。</li>
-    </ul>
-  </li>
-  <li>車なくても公共交通機関が十分整備されているのでバンクーバー周辺は大体どこでも行ける。
-    <ul>
-      <li>米国シアトルまで買い物に行きたい！とかなら車あったほうが断然便利。</li>
-    </ul>
-  </li>
-  <li>エスカレーターのポジションは右側。大阪スタイル。</li>
-  <li>図書館が良い感じ。集中して勉強したいときに。
-    <ul>
-      <li>十分な数の机、椅子が用意されていてWiFiも提供されている。</li>
-    </ul>
-  </li>
-  <li>ショッピングモールに行きたいなら、メトロタウン or パシフィックセンターが定番どころ。</li>
-  <li>いろんな小さい店をぶらぶらと巡回したいなら、ショッピングストリートとして栄えるロブソンストリートを歩いてみるのがオススメ。</li>
-  <li><a href="http://vcryugaku.exblog.jp/14575406">BCIDを作成</a>すれば、身分証としてパスポートを持ち歩く必要がない。日本人は若く見られがちでIDをバーやクラブでアラサーでも求められることがあるので、BCIDはあるとかなり便利。パスポートを持ち歩きたくない人は作成するべき。</li>
-  <li>くしゃみとかせきをしたときは「Excuse me.」「Pardon me.」と音を出してしまったことに対して周囲に謝っておく。</li>
-  <li>1カナダドル = ???円　→<a href="https://www.google.ca/?q=1%20cad%20jpy#q=1+cad+jpy">ここ</a>で確認</li>
-</ul>
-
-<h2 id="section-1">シェアハウスを探す</h2>
-<ul>
-  <li>シェアハウスを探すなら下記２つのサイトが定番どころ。
-    <ul>
-      <li>英語サイト：<a href="http://vancouver.craigslist.ca/">Craigslist</a></li>
-      <li>日本語サイト：<a href="http://www.jpcanada.com/">JPカナダ</a></li>
-      <li>日本人と住みたいという方はJPカナダ一択、その辺気にしないということであればCraigslitも便利（ただ連絡が返ってこない率が高いかも）。</li>
-    </ul>
-  </li>
-</ul>
-
-<h1 id="section-2">気候編</h1>
-<ul>
-  <li>夏を除いて一年を通して雨が多い。傘必須（折りたたみを１つ常に持ち歩いていると便利）。
-    <ul>
-      <li>バンクーバーは間違いなく夏が最高の季節。雨が少なく暑すぎるない（むしろたまに寒い）。</li>
-      <li>夏は朝6時から夜の10時まで太陽の光があるという日の長さ。素晴らしい。</li>
-    </ul>
-  </li>
-  <li>気温は夏は25℃とかそんな感じ。</li>
-  <li>冬は10℃以下になるが、雪が降ることはあんまりない。</li>
-</ul>
-
-<h1 id="section-3">留学情報編</h1>
-<ul>
-  <li>留学時には保険は悪い事言わんから入っておけ。
-    <ul>
-      <li>こっちでもっと安い保険に加入するというのもアリだけの日本のサービスの質が世界一。</li>
-    </ul>
-  </li>
-  <li>もしあなたが特別なスキルが無く、カナダで就職したいのなら、BCITで専門スキルを付けるのが手堅い。</li>
-  <li>フレキシブルな学校探してるなら<a href="http://www.eh-plus.com/">eh-plus</a>とかオススメ。</li>
-</ul>
-
-<h1 id="section-4">観光編</h1>
-<ul>
-  <li>ウィスラー:  スキー・スノボができる</li>
-  <li>ビクトリア: バンクーバー近くにある島。田舎。</li>
-  <li>ダウンダウン: 小さいのでダウンタウンエリア内は歩いていろいろなところ回れる</li>
-  <li>ノース・バンクーバー: ハイキングとかしに行くならここ。シーバスに乗るのも気持ち良い。</li>
-  <li>スタンレー・パーク: 自転車のって外周してみるのが○</li>
-  <li>カナダプレイス周辺をぶらぶら歩くだけでも気持ちいい</li>
-  <li><a href="http://www.tripadvisor.ca/Attractions-g154943-Activities-Vancouver_British_Columbia.html">ここ</a>から探してみてもよい。</li>
-</ul>
-
-<h1 id="section-5">レストラン編</h1>
-<ul>
-  <li>日本食レストラン
-    <ul>
-      <li>「Goo」レストランが有名。ダウンタウンに何店舗かある</li>
-      <li>焼き肉なら「牛角」がある</li>
-      <li>ラーメンなら日本でも有名な「山頭火」が安心のチョイス。</li>
-    </ul>
-  </li>
-  <li>サンドイッチショップ
-    <ul>
-      <li><a href="http://meatandbread.ca/">Meat &amp; Bread</a></li>
-      <li><a href="http://scentofasandwich.com/">Scent of a Sandwich</a></li>
-      <li><a href="http://www.biglousbutchershop.com/">Big Lou’s Butcher Shop</a></li>
-      <li><a href="http://www.finchteahouse.com/">Finch’s Tea &amp; Coffee House</a></li>
-      <li>バンクーバーで食べるランチはサンドイッチが一番好きだった</li>
-    </ul>
-  </li>
-  <li>カフェ
-    <ul>
-      <li>チェーン系のカフェはStarbucks, Waves, Blenzあたりに行けば良い</li>
-      <li>日本と違い、Wifiは当然のようにどこも使えるのでネットの心配ご無用。</li>
-      <li>自動販売機が無い代わりにみんなコーヒーを買って飲み歩きをする。</li>
-    </ul>
-  </li>
-  <li>パブ
-    <ul>
-      <li>Cactus Club Cafeが安定（ちょい料金は高めかも）</li>
-      <li>ビールの種類がいろいろあるのでいろいろな味・香りを楽しむのがオススメ。</li>
-    </ul>
-  </li>
-  <li><a href="http://www.urbanspoon.com/c/14/Vancouver-restaurants.html">ここ</a>で探してみると良い。</li>
-</ul>
-
-<h1 id="section-6">人・国民性編</h1>
-<ul>
-  <li>カナダ人はインターナショナルな空気感になれてるので気さくで優しい
-    <ul>
-      <li>といっても「カナダ人」といったときに中国系カナダ人とかも含むので、同じカナダ人でも国民性が全然違う。</li>
-    </ul>
-  </li>
-  <li>カナダで生まれ育っていない中国人とか韓国系の人の接客態度は無愛想なことが多いかも？</li>
-  <li>適当
-    <ul>
-      <li>給料、教科書遅れる</li>
-      <li>アポイントメントがあるのに20-30分待たされたりした</li>
-      <li>レジで会計通したのに袋に商品入れてくれなかったり、商品をレジまで持っていったのにレジに通してくれなかったり</li>
-    </ul>
-  </li>
-  <li>アジア人多い。半分くらい
-    <ul>
-      <li>東アジアのインターナショナルスチューデントの割合は50%中国、30%韓国人、15%日本人、5%台湾人みたいな印象。</li>
-    </ul>
-  </li>
-</ul>
-
-<h1 id="section-7">各種コミュニティ</h1>
-<ul>
-  <li><a href="http://www.meetup.com/cities/ca/bc/vancouver/">meetup.com</a>なんかでコミュニティを見つけるとよい。</li>
-  <li>オススメは下記
-    <ul>
-      <li>Japanese meetup: 日本人、日本人好きが集まるmeetup. 日本好きの外人とか仲良くなりやすく話しも通じて外人の友達つくるならこのへん良い。</li>
-      <li>English Conversation Meetup: 英語第二外国語学習者が集まるコミュニティ。英語初学者には参加しやすいコミュニティ。１年以上くらい居てある程度喋れる人にとっては、ややレベルが低いのが難。</li>
-    </ul>
-  </li>
-  <li>自分はエンジニアなので各種技術meetupに参加してました。</li>
-</ul>
-
-<h1 id="section-8">航空券</h1>
-<ul>
-  <li>カナダ→日本 or anywhere の航空券はこのあたりで検索するとよい
-    <ul>
-      <li><a href="http://www.tripadvisor.ca/CheapFlightsHome">tripadvisor</a></li>
-      <li><a href="http://www.skyscanner.ca/">Skyscanner</a>　<a href="http://www.skyscanner.jp/">Skyscanner 日本語</a>　</li>
-    </ul>
-  </li>
-  <li>バンクーバー発のツアーを探すなら <a href="http://www.his-canada.com/">H.I.Sバンクーバー支店</a>があるので気軽に相談してみるとよい。</li>
-</ul>
-
-<h1 id="section-9">日系食材</h1>
-<ul>
-  <li>「コンビニ屋」が有名。価格は日本価格の2,3倍の印象。</li>
-  <li>安く探したいのなら中国系のスーパーマーケットになるけど「T&amp;T」が良い。</li>
-</ul>
-
-<h1 id="section-10">バンクーバーの物価</h1>
-<ul>
-  <li>全体的に日本よりちょっと高くつくイメージ。</li>
-  <li>日本より高い
-    <ul>
-      <li>タバコ</li>
-      <li>本</li>
-      <li>酒</li>
-      <li>食料品</li>
-      <li>レストラン</li>
-    </ul>
-  </li>
-  <li>日本より安い
-    <ul>
-      <li>CD</li>
-      <li>DVD</li>
-      <li>服</li>
-      <li>コーヒー</li>
-    </ul>
-  </li>
-  <li>同じくらい
-    <ul>
-      <li>家賃（ダウンタウンはやっぱ高い。でもシェアハウスなら安く見つけられる）</li>
-    </ul>
-  </li>
-</ul>
-
-<h1 id="section-11">治安編</h1>
-<ul>
-  <li>世界的に見てバンクーバーは相対的にかなり安全な街だと思う</li>
-  <li>図書館でPC使ってる時にウトウトしてたらMacBook Airを盗まれそうになった<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>。気をつけるに越したことはないです</li>
-  <li>ガスタウン周辺にホームレスが多くいる。歩いてるだけで「小銭恵んでくれませんか？」と歩み寄ってくる</li>
-  <li>基本アメリカと一緒でブロックとブロックの間の細い小路は夜（昼でも）歩かないほうが良い。</li>
-  <li>人気のあるメインストリートさえ歩いていれば一人で夜歩いてても危なくはないと感じた</li>
-  <li>女性は上記に全くあてはまらないかもなので、気をつけすぎるくらいでいいかも？</li>
-</ul>
-
-<h1 id="section-12">仕事編</h1>
-<ul>
-  <li>基本的には定時上がりがデフォルト。</li>
-  <li>レストランとかカフェの店員の時給は1200円くらいだろうか。</li>
-  <li>カナダで働くなら<a href="http://gotovan.com/manual/view.php?id=9">SINカードが必要なので取得</a>しときましょう。</li>
-  <li>メモ: <a href="http://internetcom.jp/busnews/20130213/3.html">バンクーバーを北米進出のゲートウェイに</a></li>
-</ul>
-
-<h1 id="section-13">その他</h1>
-<ul>
-  <li>荷造りはここを参考に。<a href="http://ta-bi.net/posts/packing/">荷造り・パッキングのコツ</a></li>
-  <li>カナダは世界でロシアについで二番目にでかい国、自然がたくさん！</li>
-  <li>バンクーバーは世界の「住みたい街」ランキングに毎年上位にくいこむ街。カナダでも一番ナイスな街なんて言われているっぽい。</li>
-</ul>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>それまではバンクーバーは日本くらい安全だなぁと思い込んでいたけどそのイメージがこの事件以降崩れさった <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 ]]></content>
   </entry>
   

@@ -3,21 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>[php][ruby]実行速度を計測する - Hack Your Design!</title>
+  <title>HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="[php][ruby]実行速度を計測する - Hack Your Design!">
-  <meta property="og:title" content="[php][ruby]実行速度を計測する - Hack Your Design!">
-  <meta name="description" content="toshimaruの技術系なブログ">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ">
-  <meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:title" content="HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較 - Hack Your Design!">
+  <meta property="og:title" content="HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較 - Hack Your Design!">
+  <meta name="description" content="HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。比較として使用したRubyのバージョンは下記です。 Ruby 2.1.6 Ruby 2.2.2">
+  <meta name="twitter:description" content="HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。比較として使用したRubyのバージョンは下記です。 Ruby 2.1.6 Ruby 2.2.2">
+  <meta property="og:description" content="HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。比較として使用したRubyのバージョンは下記です。 Ruby 2.1.6 Ruby 2.2.2">
+  
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <link rel="canonical" href="http://blog.toshimaru.net/php-5492/">
+  <link rel="canonical" href="http://blog.toshimaru.net/string-vs-symbol-in-hash/">
 </head>
 <body>
   <!--[if lt IE 8]>
@@ -59,25 +60,114 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">[php][ruby]実行速度を計測する</h1>
+  <h1 class="fadeInLeft">HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-12-02T00:00:00+00:00" pubdate>02 Dec 2012</time>
-      <i class="icon-tags"></i><a href="/tag/php.html" rel="tag">php</a>, <a href="/tag/ruby.html" rel="tag">ruby</a>
+      <i class="icon-calendar"></i><time datetime="2015-07-24T00:00:00+00:00" pubdate>24 Jul 2015</time>
+      <i class="icon-tags"></i><a href="/tag/ruby.html" rel="tag">ruby</a>
     </div>
     
   </div>
 </div>
 
-<p>最初の１行＋最後の２行の３行でOK。</p>
-<p><script src="https://gist.github.com/4188781.js"></script></p>
-<p>これを使って<a href="http://blog.toshimaru.net/php-99717">処理のパフォーマンス比較をやる</a>と良い感じ。</p>
+<p>HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。コードは<a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">こちら</a>を参照しています。</p>
+
+<h2 id="section">前提条件</h2>
+
+<p>比較として使用したRubyのバージョンは下記です。</p>
+
+<ul>
+  <li>Ruby 2.1.6</li>
+  <li>Ruby 2.2.2</li>
+</ul>
+
+<h3 id="section-1">ベンチマーク・コード</h3>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+
+<span class="no">STRING_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;foo&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span> <span class="p">}</span>
+<span class="no">SYMBOL_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span>  <span class="p">}</span>
+
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">STRING_HASH</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">SYMBOL_HASH</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span>  <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<h2 id="ruby-21">Ruby 2.1</h2>
+
+<pre><code>Calculating -------------------------------------
+              string    70.713k i/100ms
+              symbol    93.805k i/100ms
+-------------------------------------------------
+              string      3.356M (± 7.6%) i/s -     16.688M
+              symbol      6.363M (± 8.3%) i/s -     31.612M
+</code></pre>
+
+<p>シンボルを使った方がハッシュのアクセスは2倍ほど速い。</p>
+
+<h2 id="ruby-22">Ruby 2.2</h2>
+
+<pre><code>Calculating -------------------------------------
+              string    77.873k i/100ms
+              symbol    78.367k i/100ms
+-------------------------------------------------
+              string      5.604M (± 7.8%) i/s -     27.879M
+              symbol      6.463M (± 8.2%) i/s -     32.130M
+</code></pre>
+
+<p>シンボルを使った方がハッシュのアクセスは速いが、Stringでのハッシュのアクセス速度はシンボルのそれと大きく変わらない値となっている。</p>
+
+<h2 id="section-2">結論</h2>
+<p>シンボルを使ったキーの方がHashのアクセスは速い。2.1だとそれが顕著。しかし2.2以降はそう変わらない速度になってきている。</p>
+
+<hr />
+
+<h3 id="json">【おまけ】JSONの場合</h3>
+
+<p>JSONをパースした場合。下記のコードで<code>symbolize_names</code>した場合とそうでない場合を比較。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+
+<span class="no">SAMPLE_JSON</span> <span class="o">=</span> <span class="s1">&#39;{&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3}&#39;</span>
+
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="s2">&quot;c&quot;</span><span class="o">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">,</span> <span class="ss">symbolize_names</span><span class="p">:</span> <span class="kp">true</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:c</span><span class="o">]</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<h3 id="ruby-21-1">Ruby 2.1</h3>
+
+<pre><code>Calculating -------------------------------------
+          string    11.910k i/100ms
+          symbol    11.072k i/100ms
+-------------------------------------------------
+          string    148.480k (± 4.5%) i/s -    750.330k
+          symbol    141.624k (± 5.3%) i/s -    708.608k
+</code></pre>
+
+<h3 id="ruby-22-1">Ruby 2.2</h3>
+
+<pre><code>Calculating -------------------------------------
+              string    11.980k i/100ms
+              symbol    11.129k i/100ms
+-------------------------------------------------
+              string    150.421k (± 6.5%) i/s -    754.740k
+              symbol    137.871k (± 9.1%) i/s -    689.998k
+</code></pre>
+
+<p><code>symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
+
+<h3 id="section-3">参考</h3>
+<ul>
+  <li><a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">Unraveling String Key Performance in Ruby 2.2</a></li>
+</ul>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/php-5492/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/string-vs-symbol-in-hash/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -95,8 +185,6 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/string-vs-symbol-in-hash/" title="HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較">HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較</a></li>
-  
     <li><a href="/ruby-vs-go/" title="Ruby vs Golang でパフォーマンス比較してみた">Ruby vs Golang でパフォーマンス比較してみた</a></li>
   
     <li><a href="/ruby-standard-error/" title="Rubyで独自例外を定義するときはStandardErrorを継承する">Rubyで独自例外を定義するときはStandardErrorを継承する</a></li>
@@ -105,20 +193,18 @@
   
     <li><a href="/ruby-inject/" title="Rubyのinjectを使いこなす">Rubyのinjectを使いこなす</a></li>
   
+    <li><a href="/ruby-pipe-s3/" title="GZip形式のS3上のファイルをIO.pipeでストリーム読み出し">GZip形式のS3上のファイルをIO.pipeでストリーム読み出し</a></li>
+  
   </ul>
   </div>
 
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/iphone4/" title="Newer Post: iPhone4を着せ替えしてみた。"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/linux/" title="Older Post: プロセス毎のメモリ使用量を調べるコマンド">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/publish-rails-app-in-lan/" title="Older Post: RailsアプリケーションをLAN内に公開する">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
