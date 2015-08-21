@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!</title>
+  <title>他のrakeタスクに依存するrakeタスクの実行 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!">
-  <meta property="og:title" content="SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!">
-  <meta name="description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
-  <meta name="twitter:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
-  <meta property="og:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
+  <meta name="twitter:title" content="他のrakeタスクに依存するrakeタスクの実行 - Hack Your Design!">
+  <meta property="og:title" content="他のrakeタスクに依存するrakeタスクの実行 - Hack Your Design!">
+  <meta name="description" content="他のrakeタスクに依存性のあるrakeタスクの実行の仕方について紹介します。">
+  <meta name="twitter:description" content="他のrakeタスクに依存性のあるrakeタスクの実行の仕方について紹介します。">
+  <meta property="og:description" content="他のrakeタスクに依存性のあるrakeタスクの実行の仕方について紹介します。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <link rel="canonical" href="http://blog.toshimaru.net/manage-schema-with-sql-in-rails/">
+  <link rel="canonical" href="http://blog.toshimaru.net/rake-dependency/">
 </head>
 <body>
   <!--[if lt IE 8]>
@@ -60,52 +60,78 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">SQLファイルでRailsのスキーマ情報管理</h1>
+  <h1 class="fadeInLeft">他のrakeタスクに依存するrakeタスクの実行</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2015-07-03T00:00:00+00:00" pubdate>03 Jul 2015</time>
-      <i class="icon-tags"></i><a href="/tag/rails.html" rel="tag">rails</a>, <a href="/tag/rake.html" rel="tag">rake</a>
+      <i class="icon-calendar"></i><time datetime="2015-08-22T00:00:00+00:00" pubdate>22 Aug 2015</time>
+      <i class="icon-tags"></i><a href="/tag/rake.html" rel="tag">rake</a>
     </div>
     
   </div>
 </div>
 
-<p>Railsでは<code>db:migrate</code>すると、デフォルトで<code>db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code>config/application.rb</code>内で<code>active_record.schema_format</code>を<code>:sql</code>と設定することで可能になります（デフォルト値は<code>:ruby</code>）。</p>
+<h2 id="rakerake">rakeタスクの前に別のrakeタスクを実行</h2>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
-<span class="k">module</span> <span class="nn">Rails4TwitterClone</span>
-  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
-  <span class="k">end</span>
+<p>ある特定のRakeタスクを実行する前に別のタスクを実行したい場合、このようにタスクを書きます。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
+
+<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
+<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
 <span class="k">end</span></code></pre></div>
 
-<p>これで<code>db/migrate</code>するとデフォルトのschema.rbではなく、<code>db/structure.sql</code>というSQLファイルを吐きます。</p>
+<p>結果はこんな感じ。</p>
 
-<h2 id="structuresql">structure.sqlをロードする</h2>
-
-<p>生成されたstructure.sqlファイルは、下記のコマンドでデータベースへロードできます。</p>
-
-<pre><code>rake db:structure:load
+<pre><code>$ rake foo
+x
+y
+z
+foo task
 </code></pre>
 
-<h2 id="sql">SQLファイルだけ欲しい場合</h2>
+<p>タスク<code>x</code>, <code>y</code>, <code>z</code> が実行された後にタスク<code>foo</code>が実行されます。</p>
 
-<p>sqlダンプファイルのみが欲しい場合は、<code>config.active_record.schema_format</code>の設定を変えずとも下記コマンドでstructure.sqlを生成することができます。</p>
+<h2 id="rakerake-1">rakeタスクの後に別のrakeタスクを実行</h2>
 
-<pre><code>rake db:structure:dump
+<p>ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、<code>enhance</code>を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
+
+<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
+<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
+<span class="k">end</span>
+
+<span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">].</span><span class="n">enhance</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo enhancing task&quot;</span>
+<span class="k">end</span></code></pre></div>
+
+<p>結果はこんな感じ。</p>
+
+<pre><code>$ rake foo
+x
+y
+z
+foo task
+foo enhancing task
 </code></pre>
 
 <h3 id="section">参考</h3>
 <ul>
-  <li><a href="http://tech-kazuhisa.hatenablog.com/entry/20130902/1378126825">schema.rbじゃなくてstructure.sqlでスキーマ情報を管理しよう - tech-kazuhisa’s blog</a></li>
-  <li><a href="http://edgeguides.rubyonrails.org/active_record_migrations.html#types-of-schema-dumps">Active Record Migrations — Ruby on Rails Guides</a></li>
+  <li><a href="http://www.dan-manges.com/blog/modifying-rake-tasks">Modifying Rake Tasks - Dan Manges’s Blog</a></li>
+  <li><a href="https://github.com/ruby/rake">ruby/rake</a></li>
 </ul>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/manage-schema-with-sql-in-rails/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rake-dependency/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -123,15 +149,9 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/rake-dependency/" title="他のrakeタスクに依存するrakeタスクの実行">他のrakeタスクに依存するrakeタスクの実行</a></li>
+    <li><a href="/manage-schema-with-sql-in-rails/" title="SQLファイルでRailsのスキーマ情報管理">SQLファイルでRailsのスキーマ情報管理</a></li>
   
     <li><a href="/rake-alias/" title="Rakeタスクにエイリアスを付ける">Rakeタスクにエイリアスを付ける</a></li>
-  
-    <li><a href="/publish-rails-app-in-lan/" title="RailsアプリケーションをLAN内に公開する">RailsアプリケーションをLAN内に公開する</a></li>
-  
-    <li><a href="/active-record-callbacks/" title="ActiveRecordのコールバックの順番・コールバック内のロールバック処理">ActiveRecordのコールバックの順番・コールバック内のロールバック処理</a></li>
-  
-    <li><a href="/rails-http-status-symbols/" title="RailsのHTTPステータスのシンボル表現まとめ">RailsのHTTPステータスのシンボル表現まとめ</a></li>
   
   </ul>
   </div>
@@ -139,14 +159,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/publish-rails-app-in-lan/" title="Newer Post: RailsアプリケーションをLAN内に公開する"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/aws-summit-tokyo-2015/" title="Older Post: AWS Summit Tokyo 2015で発表してきました">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/work-style-difference/" title="Older Post: 日米ワークスタイル比較">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>

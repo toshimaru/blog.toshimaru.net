@@ -3,12 +3,76 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-08-05T18:20:08+00:00</updated>
+  <updated>2015-08-21T16:36:37+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[他のrakeタスクに依存するrakeタスクの実行]]></title>
+    <link href="http://blog.toshimaru.net/rake-dependency/"/>
+    <updated>2015-08-22T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/rake-dependency</id>
+    <content type="html"><![CDATA[<h2 id="rakerake">rakeタスクの前に別のrakeタスクを実行</h2>
+
+<p>ある特定のRakeタスクを実行する前に別のタスクを実行したい場合、このようにタスクを書きます。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
+
+<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
+<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
+<span class="k">end</span></code></pre></div>
+
+<p>結果はこんな感じ。</p>
+
+<pre><code>$ rake foo
+x
+y
+z
+foo task
+</code></pre>
+
+<p>タスク<code>x</code>, <code>y</code>, <code>z</code> が実行された後にタスク<code>foo</code>が実行されます。</p>
+
+<h2 id="rakerake-1">rakeタスクの後に別のrakeタスクを実行</h2>
+
+<p>ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、<code>enhance</code>を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
+
+<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
+<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
+<span class="k">end</span>
+
+<span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">].</span><span class="n">enhance</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo enhancing task&quot;</span>
+<span class="k">end</span></code></pre></div>
+
+<p>結果はこんな感じ。</p>
+
+<pre><code>$ rake foo
+x
+y
+z
+foo task
+foo enhancing task
+</code></pre>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="http://www.dan-manges.com/blog/modifying-rake-tasks">Modifying Rake Tasks - Dan Manges’s Blog</a></li>
+  <li><a href="https://github.com/ruby/rake">ruby/rake</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[日米ワークスタイル比較]]></title>
@@ -2173,59 +2237,6 @@ production:
 <ul>
   <li><a href="http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks">Deploying Ruby on Rails Applications to AWS OpsWorks</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[光へ]]></title>
-    <link href="http://blog.toshimaru.net/hikari-e/"/>
-    <updated>2014-12-03T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/hikari-e</id>
-    <content type="html"><![CDATA[<p>タカキは恐れていた。自分は開発者として一人前であるのか。現時点の自分のスキルセットは市場価値があるのか。開発者としての成長は止まっていないか。技術トレンドに取り残されていないか。自分の生産性に見合う対価は支払われているか。</p>
-
-<p>ITエンジニアとはほとほと難しい職業だ。終わりがない。何か１つ技術を身につけたとしてもその技術は５年後、１０年後にはもう枯れている技術かもしれない（多くの場合、五年も経てば技術は陳腐化してしまうだろう）。最新の流行りの技術を勉強し身に付けたとしても技術潮流が大きく変わって使われなくなることだってすらある。</p>
-
-<p>それゆえエンジニアは面白い職業でもある。日々変化する技術にキャッチアップし、その変化を楽しむこと。変化の流れに身を委ねる。他の産業にはない流れの速さだ。取り残されないようにうまく流れに乗る。進歩、進歩。学習、学習。吸収、吸収。毛刈り、毛刈り。おっと、いつのまにかYak Shavingしていた。</p>
-
-<p>★</p>
-
-<p>タカキがエンジニア志望したのには深い理由はなかった。ゴミのような「文系ライフ」を謳歌していたと思っていたらあっという間にいざ就活、周囲が一様に同じような黒い服を身にまとい、明るかった髪色が均一化した。</p>
-
-<p>「お前志望企業どうすんの？」　友人の問いにタカキは答えられなかったが、その晩テレビでやっていた討論番組でどこかのIT社長が「これからはITの時代だ」「受験勉強で役に立たない知識を学ぶよりプログラミングを学ぶべきだ」という要旨のことを言ってたのをビールを片手に聞きIT開発者を目指すことを彼は決めた。子供の頃からコンピュータで遊ぶのが好きだった彼にとっては悪くない選択だった（とはいえやっていたのはもっぱらネットとゲームだ）。</p>
-
-<p>そうしてタカキが新卒で入った会社は某大手ITベンダーの下請けSIだった。就職氷河期の中、Dラン大学・文系出身・プログラミングすらまともにやったことの無いタカキに開発者としての内定を出した稀有な会社だ。大手企業の選考は壊滅的、無い内定状態のタカキは他に選択肢もなく入社を決めた。</p>
-
-<p>その会社（仮にK社としよう）はマイクロソフト技術ベースの開発を行っていた。.NET Framework, Microsoft SQL Server, Windows Server, Visual Basic, 誰が作ったかわからない社内フレームワーク…。</p>
-
-<p>今でこそ「アレは掃き溜めのような環境だった」とタカキは言えるが当時の彼には何もわからなかった。無理もない、開発者として右も左もわからない状況だったのだ。良い悪いなんて価値判断もできるわけがない。当時の彼にはK社こそが＜世界の中心＞だった。</p>
-
-<p>開発者として働き始めてITニュースチェックは毎朝欠かさずに行うようになった。するとK社では使われていない技術用語を目にすることが明らかに多かった。Ruby on Rails, Angular.js, AWS, Git, Github, Node.js, HTML5, CI, RESTful, アジャイル, Docker, Go…。タカキはふと気づく「ここは＜世界の中心＞なんかじゃない。世界の片隅、しかもすごく小さい辺境の地だ。」と。</p>
-
-<p>そこからタカキが世界の広さを知るまでは時間はそうかからなかった。まずはTwitterでIT界隈で有名な人を片っ端からフォローした。彼らの共有している記事は欠かさずチェックし、彼らが呟いているワードから彼らがどんな技術に注目しているのかを把握した。次に興味を持った技術分野の勉強会にも顔を出し、その分野のエンジニアたちと交流を行った。</p>
-
-<p>気づくとタカキの技術力は社内の先輩より高くなっていた。最初は単純な疑問だった。「なぜこの人はこんなふうにわざわざ汚いコードを書くのだろう？」それが日々の積み重ねで不満へとだんだん変わっていった。「なぜこの人はなんでこんなクソコードを書くのだ？」「どうして汎用的に使えるようなクラスを作らない？」「どうしてシステムを疎結合に設計しない？」「どうして品質を高めるためにテストを書かない？」「どうしてオープンソースの自社フレームワークなんかよりずっとずっと優れたフレームワークを使わない？」どうして。どうして。どうして。　(そして驚くべきことに彼らはタカキの１．５倍から２倍以上の給料をもらっている)</p>
-
-<p>ある日、タカキは当時かかわっていたプロジェクトの開発マネージャーに進言したことがあった。「このコードの作りは使う側から見て少し使いにくいのでこのように変更しませんか？」　タカキの言葉にマネージャーはこのような要旨のことを返した。「開発経験が浅い若造のお前に何がわかる。俺が設計したコードに口出しするな」</p>
-
-<p>タカキはK社を去ることを決意した。</p>
-
-<p>★</p>
-
-<p>新しい環境ではかつてはタカキの世界の外にあった技術が目の前にあった。Ruby on Rails, CI, AWS, Github, Go…。不条理なことを言う「ビッグ・ブラザー」たちはもう居ない。今ではリトル・ピープルとして仲間とともにタカキは楽しく働いている。</p>
-
-<p>かつての＜世界の中心＞はもう世界の中心ではなくなった。今ではブラウザの検索窓ごしに世界が観える。</p>
-
-<p>「ハロー、ワールド。」</p>
-
-<p>タカキは呟いた。</p>
-
-<p><span style="color:#eee">Where there’s a will, there’s a way.</span></p>
-
-<p><strong>※この話はフィクションです。</strong></p>
-
-<hr />
-
-<p><a href="http://www.adventar.org/calendars/628">闇 Advent Calendar 2014</a></p>
 ]]></content>
   </entry>
   
