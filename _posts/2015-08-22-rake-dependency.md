@@ -59,6 +59,8 @@ end
     foo task
     foo enhancing task
 
+`enhance`の中にかいた処理はしっかり`foo`タスクのあとに実行されていますね。
+
 ### 参考
 * [Modifying Rake Tasks - Dan Manges's Blog](http://www.dan-manges.com/blog/modifying-rake-tasks)
 * [ruby/rake](https://github.com/ruby/rake)
