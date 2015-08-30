@@ -3,12 +3,35 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-08-28T16:55:18+00:00</updated>
+  <updated>2015-08-30T15:08:22+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[docomo雑談対話APIでリプライ返すhubotプラグイン作った]]></title>
+    <link href="http://blog.toshimaru.net/hubot-docomo-chatter/"/>
+    <updated>2015-08-30T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/hubot-docomo-chatter</id>
+    <content type="html"><![CDATA[<p>五番煎じくらいになりますが、docomo雑談対話APIを使ってリプライを返すhubotプラグインを作りました。</p>
+
+<p><a href="https://github.com/toshimaru/hubot-docomochatter">toshimaru/hubot-docomochatter</a></p>
+
+<ul>
+  <li><a href="https://github.com/toshimaru/docomochatter">toshimaru/docomochatter</a>というシンプルなAPIクライアントをまず作り、それを利用するかたちでプラグインを作った</li>
+  <li>既に定義された<code>hubot ping</code>などのコマンドに対しては返答しないようにし、マッチするコマンドが他にない場合にプラグインが反応するようにした。 このへんのやり方についてはこちらを参照した: <a href="http://qiita.com/hiconyan/items/baf6ac56129a26d8ac0c">Hubotで「どのコマンドにも一致しない」ときの処理 - Qiita</a></li>
+  <li>ルーム毎（SlackでいうところのChannel）にcontextを保存するようにした</li>
+  <li><code>DOCOMO_API_KEY</code>という環境変数使ってAPIアクセスする</li>
+</ul>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&amp;api_name=dialogue&amp;p_name=api_reference">雑談対話 | docomo Developer support | NTTドコモ</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[YAPC::Asia 2015で心に残ったトーク&スライド #yapcasia]]></title>
@@ -137,6 +160,22 @@
 
 <iframe src="//www.slideshare.net/slideshow/embed_code/key/a9AbEpcmNp1vxX" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen=""> </iframe>
 <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/kazeburo/isucon-yapcasia-tokyo-2015" title="ISUCONの勝ち方 YAPC::Asia Tokyo 2015" target="_blank">ISUCONの勝ち方 YAPC::Asia Tokyo 2015</a> </strong> from <strong><a href="//www.slideshare.net/kazeburo" target="_blank">Masahiro Nagano</a></strong> </div>
+
+<h3 id="section-4">参考</h3>
+
+<ul>
+  <li>YouTubeに動画あります: <a href="https://www.youtube.com/playlist?list=PLzT643y4OYZp0K4YhPmmaLtnZzlVrbz0G">YAPC::Asia Tokyo 2015 - YouTube</a></li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>その他YAPCレポートがまとめられています: [【随時更新中】YAPC::Asia Tokyo 2015 感想エントリまとめ</td>
+          <td>YAPC::Asia Tokyo 2015](http://yapcasia.org/2015/news/08/yapcasia-tokyo-2015-blog-entries.html)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
 ]]></content>
   </entry>
   
@@ -2014,155 +2053,6 @@ after_save is called
   <li><a href="http://stackoverflow.com/questions/24016548/how-do-i-get-zlib-to-uncompress-from-s3-stream-in-ruby">How do I get Zlib to uncompress from S3 stream in Ruby?</a></li>
   <li><a href="http://takuya-1st.hatenablog.jp/entry/20120205/1328470521">RubyはIO.pipeを使えば、パイプを作ることが出来る</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[GunosyでのRails開発フロー]]></title>
-    <link href="http://blog.toshimaru.net/gunosy-rails-way/"/>
-    <updated>2014-12-22T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/gunosy-rails-way</id>
-    <content type="html"><![CDATA[<p><strong>この記事は<a href="http://qiita.com/advent-calendar/2014/gunosy">Gunosy Advent Calendar 2014</a>の22日目の記事です。</strong></p>
-
-<p>こんにちは、Gunosyの<a href="https://twitter.com/toshimaru_e">toshimaru</a>です。Gunosyでは主にRuby on Railsアプリを担当しています。</p>
-
-<h2 id="section">はじめに</h2>
-<p>Gunosyでは昨年度よりAPIの実装を<a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">Rails実装からGo実装へと変えた</a>ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです<sup id="fnref:2"><a href="#fn:2" class="footnote">1</a></sup>。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも<a href="http://blog.gopheracademy.com/advent-2014/atlas/">Railsは手放せない</a>ようですしね。</p>
-
-<p>本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います<sup id="fnref:1"><a href="#fn:1" class="footnote">2</a></sup>。</p>
-
-<h2 id="section-1">ブランチの運用</h2>
-<p>基本は<a href="http://danielkummer.github.io/git-flow-cheatsheet/index.ja_JP.html">Git flow</a>に則って開発を進めています。ただGit flowにおけるリリースブランチの運用はフローの簡易化のため、またスモールチーム（２〜３人）での開発ということもあり省いています。これによりdevelop→master間のフローがラクになりスピーディな開発が可能になります。</p>
-
-<p><img src="/images/posts/gunosy/deploy.png" alt="" /></p>
-
-<p><strong>【↑図】developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ</strong></p>
-
-<h2 id="section-2">デプロイ</h2>
-<p>デプロイフローは下記のようになっています。</p>
-
-<p><img src="/images/posts/gunosy/workflow.png" alt="" /></p>
-
-<ol>
-  <li>ローカルで開発</li>
-  <li>コードをGithubにプッシュ</li>
-  <li>CircleCIでテスト &amp; テスト結果を通知</li>
-  <li>CircleCIからAmazon OpsWorksにデプロイ命令（Chefのデプロイレシピを実行させる）</li>
-  <li>OpsWorksからデプロイ完了通知</li>
-</ol>
-
-<p>※Amazon OpsWorksについては昨日のChefAdventCalendarにまとめさせていただきましたのでよかったらどうぞ。</p>
-
-<p><a href="/opsworks-rails/">Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング</a></p>
-
-<p>上記のブランチ運用と照らし合わせるとこうなります。</p>
-
-<table>
-  <tbody>
-    <tr>
-      <td><code>develop</code>ブランチ変更時</td>
-      <td>CircleCIテスト後に、（テストパスすれば）OpsWorksのステージング環境に<code>develop</code> ブランチをデプロイ</td>
-    </tr>
-    <tr>
-      <td><code>master</code>ブランチ変更時</td>
-      <td>CircleCIテスト後に、OpsWorksのプロダクション環境に<code>master</code>ブランチをデプロイ</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>アプリケーションレポジトリの責任範囲がCircleCIでテストを実行してOpsWorksにデプロイリクエストを投げるまでで、その後のデプロイは別レポジトリとして管理されているChefのレシピの責任範囲として役割が分けられています。デプロイ環境が一通り揃ってしまえば、アプリケーション開発者はほとんどデプロイに関するアレコレを考える必要がなく本来の開発に集中できます。</p>
-
-<h2 id="rails">Railsのバージョン</h2>
-<p>入社以来、Gunosyでは２つのRailsプロジェクトにかかわってきましたが（どちらも入社後にゼロから開始したプロジェクトです）両プロジェクトともにバージョン4.1.8です。まだ現時点で最新のバージョン4.2.0には上げてませんが今後も最新のRailsに追従していく所存です。</p>
-
-<h2 id="section-3">テスト</h2>
-<p>Railsのテストに関してはRSpec, FactoryGirl, Capybaraあたりを使っています。</p>
-
-<table>
-  <tbody>
-    <tr>
-      <td>RSpec</td>
-      <td>モデル、コントローラー周りのテスト</td>
-    </tr>
-    <tr>
-      <td>Capybara</td>
-      <td>ビューを含むEnd-to-Endテスト<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup></td>
-    </tr>
-  </tbody>
-</table>
-
-<p>カバレッジ率に関しては90%前後を保っています。カバレッジは<a href="https://github.com/colszowka/simplecov">simplecov</a>を使用し、結果作成されるカバレッジ率はCircleCIの<a href="https://circleci.com/docs/build-artifacts">artifacts</a>の機能を使いカバレッジ率と共に公開しています。</p>
-
-<p><img src="/images/posts/gunosy/coverage.png" alt="" /></p>
-
-<p><strong>【↑図】artifactsで公開されたカバレッジ率</strong></p>
-
-<p>ただ「テストカバレッジを上げること」が目的化してしまっては本末転倒なので（いわゆる「テスト書きすぎ問題」）、「どこまでテストを書くか」は今後も考えていきたいテーマではあります。</p>
-
-<h2 id="db">複数DB</h2>
-<p>Railsの悩みとして１つ大きいのは複数DBの扱いではないでしょうか？ Gunosyでももちろん複数DBを使い分ける必要があり、そのときはCookpadさん, DeNAさんで実績のある<a href="https://github.com/eagletmt/switch_point">swith_point</a> gemを使用しています。</p>
-
-<p>この2社のDB事情に関しては下記ブログ・資料に詳しいです。</p>
-
-<ul>
-  <li><a href="http://techlife.cookpad.com/entry/2014/08/28/194147">クックパッドにおける最近のActiveRecord運用事情</a></li>
-  <li><a href="http://www.slideshare.net/sonots/mobage-ruby-db">Mobage を支える Ruby の技術 ~ 複数DB編 ~</a></li>
-</ul>
-
-<p>上記に紹介されているように下記のように簡単に複数DBをswitchでき素敵です。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Configuration</span>
-<span class="no">SwitchPoint</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">define_switch_point</span> <span class="ss">:blog</span><span class="p">,</span>
-    <span class="ss">readonly</span><span class="p">:</span> <span class="ss">:&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="si">}</span><span class="ss">_blog_slave&quot;</span><span class="p">,</span>
-    <span class="ss">writable</span><span class="p">:</span> <span class="ss">:&quot;</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="si">}</span><span class="ss">_blog_master&quot;</span>
-<span class="k">end</span>
-
-<span class="c1"># Model</span>
-<span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">use_switch_point</span> <span class="ss">:blog</span>
-<span class="k">end</span></code></pre></div>
-
-<p>Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。<a href="http://mozaic.fm/post/104575088493/12-rails">参考: #12 Rails mozaic.fm</a></p>
-
-<h2 id="section-4">権限管理</h2>
-<p>管理画面の権限管理に関しては<a href="https://github.com/nathanl/authority">authority</a>を使用しています。権限は大まかにそれぞれの機能においてそれを参照できる権限（READ）・更新できる権限（CREATE/UPDATE/DELETE）というような権限分けを行っています。例えば＜ユーザーを閲覧可能＞という権限、＜ユーザーを更新可能＞な権限、これらを組み合わせて管理ユーザーの権限を定義します。</p>
-
-<p>なお、初期の権限設定は<code>seeds.rb</code>で権限をまくようにしています。</p>
-
-<h2 id="section-5">バッチ</h2>
-<p>cronの管理に関しては<a href="https://github.com/javan/whenever">whenever</a>を使用しています。こちらはOpsWorkのデプロイ実行時にChefのwheneverレシビが定義してあり、そこでcronがデプロイ時に更新されるようになっています。</p>
-
-<h2 id="section-6">非同期ジョブ</h2>
-<p>重い処理に関してはSidekiqを使いRails側ではSidekiqにキューイングするまでにして、その後の処理はSidekiqで行うようにしてます。例えばGunosyの場合何が重い処理にあたるかというと「全ユーザーにプッシュ通知を送るぞ！」みたいなケース。そのような時間のかかる処理に関してはSidekiqで処理を行っています<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup>。</p>
-
-<h2 id="section-7">その他・今後の課題</h2>
-<ul>
-  <li>僕が携わったプロジェクトはどちらもRails4系だが、歴史が積み重なったRails3系プロジェクトもあるので今後どうアップデートしていくか。</li>
-  <li>Hubotは遊びで飼ってるけど<a href="https://speakerdeck.com/jnewland/chatops-at-github">ChatOps</a>といえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？</li>
-</ul>
-
-<h2 id="section-8">最後に</h2>
-<p>Ruby/Rails業務経験歴半年足らずのヒヨッコではありますが、僕がかかわった範囲内でのGunosyでのRailsの開発の方法を紹介してみました。もし「うちはこんなRailsの開発してるよ！」とか「これ使うともっと便利になるよ！」とか教えていただけたら嬉しいです。</p>
-
-<p>ではでは。</p>
-
-<div class="footnotes">
-  <ol>
-    <li id="fn:2">
-      <p>ちなみにDjangoも使われています。 <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:1">
-      <p>とはいえ会社全てのRailsプロダクトが今回紹介するようなやり方で統一されているわけではありません。あくまでも自分がかかわっている範囲での開発の進め方です。 <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:3">
-      <p>デフォルトのrack_testドライバーを使っていますが、<a href="http://qiita.com/take/items/779747e0981355e569ad">poltergaistが良さ気なので</a>今後使っていきたいと思っています。 <a href="#fnref:3" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:4">
-      <p>正確には別途配信ワーカーがいるのですがここでは割愛 <a href="#fnref:4" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 ]]></content>
   </entry>
   
