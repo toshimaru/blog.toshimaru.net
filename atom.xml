@@ -3,12 +3,89 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-08-30T15:08:22+00:00</updated>
+  <updated>2015-09-01T15:57:11+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby Gem Configuration Pattern]]></title>
+    <link href="http://blog.toshimaru.net/ruby-configuration-pattern/"/>
+    <updated>2015-09-01T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/ruby-configuration-pattern</id>
+    <content type="html"><![CDATA[<p>railsのgemでよくみかける初期設定ファイル、<code>config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
+
+<p>完成系として、下記を想定してみます。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
+<span class="no">Konfig</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">my_value</span> <span class="o">=</span> <span class="s1">&#39;my configuration value&#39;</span>
+<span class="k">end</span></code></pre></div>
+
+<p>まずは<code>module</code>と<code>configure</code>というクラスメソッドを用意します。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">configure</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>次に実際の設定値が入る<code>Configuration</code>クラスを用意します。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span>
+    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">&#39;default value&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>次にこれを組み合わせてみましょう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+    <span class="kp">attr_accessor</span> <span class="ss">:configuration</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">configure</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="o">.</span><span class="n">new</span>
+    <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">class</span> <span class="nc">Configuration</span>
+    <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
+
+    <span class="k">def</span> <span class="nf">initialize</span>
+      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">&#39;default value&#39;</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>これでインスタンス化された<code>Configuration</code>クラスが出てきます。</p>
+
+<pre><code>&gt; Konfig.configure {|config| p config}
+#&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="default value"&gt;
+</code></pre>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">my_value</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
+<span class="k">end</span>
+<span class="c1"># =&gt; &quot;abc&quot;</span>
+
+<span class="no">Konfig</span><span class="o">.</span><span class="n">configuration</span>
+<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value=&quot;abc&quot;&gt;</span></code></pre></div>
+
+<p><code>configure</code>で<code>Configuration</code>インスタンス作っててブロック内の<code>config</code>で<code>Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="https://robots.thoughtbot.com/mygem-configure-block">MyGem.configure Block</a></li>
+  <li><a href="http://jimsei.hatenablog.com/entry/20120721/1342855783">クラスインスタンス変数にアクセサを利用しアクセスする - ひたすら事務</a></li>
+  <li><a href="http://o.inchiki.jp/obbr/168">Rubyのクラスインスタンス変数をアクセサで定義する</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[docomo雑談対話APIでリプライ返すhubotプラグイン作った]]></title>
@@ -1980,78 +2057,6 @@ after_save is called
 <ul>
   <li><a href="http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject">ruby の inject をわかりやすく説明してみる</a></li>
   <li><a href="http://ref.xaio.jp/ruby/classes/enumerable/inject">inject (Enumerable)</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[GZip形式のS3上のファイルをIO.pipeでストリーム読み出し]]></title>
-    <link href="http://blog.toshimaru.net/ruby-pipe-s3/"/>
-    <updated>2015-01-04T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/ruby-pipe-s3</id>
-    <content type="html"><![CDATA[<h2 id="section">やりたいこと</h2>
-
-<p>S3からgzip形式のファイルをストリーミングダウンロードしてそれを読み出す。</p>
-
-<h2 id="s3">S3からのダウンロード</h2>
-
-<p><a href="http://docs.aws.amazon.com/AWSRubySDK/latest/AWS/S3/S3Object.html">公式ドキュメント</a>によるとこうする。</p>
-
-<p>If you want to stream an object from S3, you can pass a block to #read.</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
-  <span class="n">large_object</span><span class="o">.</span><span class="n">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
-    <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
-<h2 id="gzip">gzipを読む</h2>
-
-<p>gzipの読み出しのサンプルコードはこんな感じ。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;hoge.gz&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
-  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-  <span class="nb">print</span> <span class="n">gz</span><span class="o">.</span><span class="n">read</span>
-  <span class="n">gz</span><span class="o">.</span><span class="n">close</span>
-<span class="k">end</span></code></pre></div>
-
-<p>via. <a href="http://apidock.com/ruby/Zlib/GzipReader">http://apidock.com/ruby/Zlib/GzipReader</a></p>
-
-<h2 id="pipe">pipeでつなぐ</h2>
-
-<p><code>IO.pipe</code>を使ってつなぐとこう。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">IO</span><span class="o">.</span><span class="n">pipe</span> <span class="k">do</span> <span class="o">|</span><span class="n">read_io</span><span class="p">,</span> <span class="n">write_io</span><span class="o">|</span>
-  <span class="n">write_io</span><span class="o">.</span><span class="n">binmode</span>
-  <span class="n">thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
-    <span class="k">begin</span>
-      <span class="no">AWS</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">S3Object</span><span class="o">.</span><span class="n">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
-        <span class="n">write_io</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
-      <span class="k">end</span>
-    <span class="k">rescue</span>
-      <span class="n">write_io</span><span class="o">.</span><span class="n">close</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">read_io</span><span class="p">)</span>
-  <span class="k">while</span> <span class="n">line</span> <span class="o">=</span> <span class="n">gz</span><span class="o">.</span><span class="n">gets</span>
-    <span class="c1"># do something with line ...</span>
-    <span class="nb">puts</span> <span class="n">line</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
-
-<p>注意点としては以下。</p>
-
-<ol>
-  <li>gzip形式なので<code>write_io.binmode</code>でバイナリモードにすること</li>
-  <li>Thread内で何かエラーが起こったときに<code>gets</code>が待ち状態で止まっちゃうので<code>close</code>なりなんなり適切な処理をしてやること</li>
-</ol>
-
-<h3 id="section-1">参考</h3>
-
-<ul>
-  <li><a href="http://stackoverflow.com/questions/24016548/how-do-i-get-zlib-to-uncompress-from-s3-stream-in-ruby">How do I get Zlib to uncompress from S3 stream in Ruby?</a></li>
-  <li><a href="http://takuya-1st.hatenablog.jp/entry/20120205/1328470521">RubyはIO.pipeを使えば、パイプを作ることが出来る</a></li>
 </ul>
 ]]></content>
   </entry>

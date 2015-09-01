@@ -3,22 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Composerで始める PHPのライブラリ管理 - Hack Your Design!</title>
+  <title>gem - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Composerで始める PHPのライブラリ管理 - Hack Your Design!">
-  <meta property="og:title" content="Composerで始める PHPのライブラリ管理 - Hack Your Design!">
-  <meta name="description" content="PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。">
-  <meta name="twitter:description" content="PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。">
-  <meta property="og:description" content="PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。">
-  
+  <meta name="twitter:title" content="gem - Hack Your Design!">
+  <meta property="og:title" content="gem - Hack Your Design!">
+  <meta name="description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:description" content="toshimaruの技術系なブログ">
+  <meta property="og:description" content="toshimaruの技術系なブログ">
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <link rel="canonical" href="http://blog.toshimaru.net/how-to-use-composer-autoload/">
+  <link rel="canonical" href="http://blog.toshimaru.net/tag/gem.html">
 </head>
 <body>
   <!--[if lt IE 8]>
@@ -59,165 +58,17 @@
   <div class="main-wrapper">
     <div class="main clearfix">
       <div id="contents">
-       <div class="post">
-  <h1 class="fadeInLeft">Composerで始める PHPのライブラリ管理</h1>
-  <div class="meta">
-    <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-10-24T00:00:00+00:00" pubdate>24 Oct 2013</time>
-      <i class="icon-tags"></i><a href="/tag/php.html" rel="tag">php</a>
-    </div>
-    
-  </div>
-</div>
-
-<p>PHPも<a href="http://getcomposer.org/">Composer</a>の登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。</p>
-
-<h2 id="composer">Composerのインストール</h2>
-
-<p>PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！</p>
-
-<pre><code>$ curl -s https://getcomposer.org/installer | php
-</code></pre>
-
-<p>さてこれで<code>composer.phar</code>が手に入りました。<code>composer</code>コマンドを使えるようにするためにパスの通った場所に<code>composer.phar</code>を移動しましょう。</p>
-
-<pre><code>$ sudo mv composer.phar /usr/local/bin/composer
-</code></pre>
-
-<p><code>composer</code>コマンド準備完了です。</p>
-
-<pre><code>$ composer
-   ______
-  / ____/___  ____ ___  ____  ____  ________  _____
- / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
-/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
-\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
-                    /_/
-Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
-</code></pre>
-
-<h2 id="section">依存関係の記述</h2>
-
-<p>composerはプロジェクトルートの<code>composer.json</code>ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
-
-<pre><code>$ touch composer.json
-</code></pre>
-
-<p><code>composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
-
-<pre><code>{
-    "require": {
-        "phpunit/phpunit": "3.7.*"
-    }
-}
-</code></pre>
-
-<h2 id="section-1">ライブラリのインストール</h2>
-
-<p><code>composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
-
-<pre><code>$ composer install
-Loading composer repositories with package information
-Installing dependencies (including require-dev)
-  - Installing symfony/yaml (v2.3.6)
-    Loading from cache
-
-  - ..............
-
-  - Installing phpunit/phpunit (3.7.28)
-    Loading from cache
-
-phpunit/phpunit suggests installing phpunit/php-invoker (&gt;=1.1.0,&lt;1.2.0)
-Writing lock file
-Generating autoload files
-</code></pre>
-
-<p>うまいこといきました。ライブラリは<code>vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code>composer.lock</code>ファイルも生成します。</p>
-
-<h2 id="section-2">ライブラリのアップデート</h2>
-
-<p>ライブラリのアップデートに関しては下記のコマンドでOK.</p>
-
-<pre><code>$ composer update
-</code></pre>
-
-<h2 id="section-3">まとめ</h2>
-
-<p>モダンなPHPパッケージ管理であればComposer一択でしょう。PEARとの使い分けに関しては<a href="http://ja.phptherightway.com/#依存関係の管理">PHP Right Way</a>にはこのように書いてあります。</p>
-
-<blockquote>
-  <ul>
-    <li>Composer を使うのは、ひとつのプロジェクトにおける依存関係を管理するとき。</li>
-    <li>PEAR を使うのは、システム全体の PHP 環境の依存関係を管理するとき。</li>
-  </ul>
-</blockquote>
-
-<p>大抵の場合、後者のようにシステム全体で依存性管理をしなきゃならん理由はないと思うのでComposerで依存管理を行いましょう！</p>
-
-
-<ul id="social-buttons">
-  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
-  <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/how-to-use-composer-autoload/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
-  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-  <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-  <div id="fb-root"></div>
-  <script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));</script>
-</ul>
-
-
-  <div class="related">
-  <h3>関連エントリ</h3>
-  <ul>
+       <h2 class="heading">gem</h2>
+<section id="archive">
+  <hr>
   
-    <li><a href="/php-trait/" title="PHP5.4のtrait機能を理解する">PHP5.4のtrait機能を理解する</a></li>
+  <a href="/ruby-configuration-pattern/" class="archive-post clearfix">
+    <h3 class="archive-title">Ruby Gem Configuration Pattern</h3>
+    <time datetime="2015-09-01T00:00:00+00:00" pubdate><span class='month'>Sep</span> <span class='day'>01</span> <span id='tag-year' class='year'>2015</span></time>
+  </a>
+  <hr>
   
-    <li><a href="/php-force-property/" title="PHPのプロパティをStrictに定義する">PHPのプロパティをStrictに定義する</a></li>
-  
-    <li><a href="/php-is-not-bad-language/" title="PHPって言うほど悪い言語じゃない">PHPって言うほど悪い言語じゃない</a></li>
-  
-    <li><a href="/simple-command-web-server/" title="超簡単なコマンドでローカルにHTTPサーバーを起動">超簡単なコマンドでローカルにHTTPサーバーを起動</a></li>
-  
-    <li><a href="/php-5492/" title="[php][ruby]実行速度を計測する">[php][ruby]実行速度を計測する</a></li>
-  
-  </ul>
-  </div>
-
-
-<div class="post-pagination clearfix">
-  
-  <div class="newer">
-    <a href="/my-impression-after-working-2-months/" title="Newer Post: 2ヶ月間WEBエンジニアとして海外で働いてみて感じたこと"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
-
-  
-  <div class="older">
-    <a href="/php-is-not-bad-language/" title="Older Post: PHPって言うほど悪い言語じゃない">Older  <i class="icon-chevron-right"></i></a>
-  </div>
-  
-</div>
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
 
       </div>
     </div>
