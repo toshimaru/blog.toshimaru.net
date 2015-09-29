@@ -3,12 +3,48 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-09-01T15:57:11+00:00</updated>
+  <updated>2015-09-29T19:10:20+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[コマンドラインで複数行を1行にまとめる]]></title>
+    <link href="http://blog.toshimaru.net/join-lines-command/"/>
+    <updated>2015-09-30T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/join-lines-command</id>
+    <content type="html"><![CDATA[<p>やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</p>
+
+<pre><code>$ cat text
+aaaa
+bbbb
+cccc
+
+$ cat text | tr '\n' ','
+aaaa,bbbb,cccc,%
+</code></pre>
+
+<p>こんな感じで<code>tr</code>を使って改行コードを置換してやればカンマ区切りで1行にできる。</p>
+
+<h3 id="section">もともと</h3>
+
+<p>もともとやりたかったのはこんな感じのこと。</p>
+
+<pre><code>$ echo '{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }' | jq '.employees[] .firstName' | tr '\n' ',' | awk '{ print "result = [" $1 "]" }'
+result = ["John","Anna","Peter",]
+</code></pre>
+
+<p>curlでJSONをGETしてそれをjqでパースして出たリストをカンマ区切りで出力する、みたいなやつ。</p>
+
+<h3 id="section-1">参考</h3>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/2764051/how-to-join-multiple-lines-of-file-names-into-one-with-custom-delimiter">linux - How to join multiple lines of file names into one with custom delimiter? - Stack Overflow</a></li>
+  <li><a href="http://tbpgr.hatenablog.com/entry/20120309/1331314857">tr | 標準入力の内容を置換、削除する - Tbpgr Blog</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ruby Gem Configuration Pattern]]></title>
@@ -1984,79 +2020,6 @@ after_save is called
 
 <ul>
   <li><a href="http://qiita.com/mogulla3/items/46bb876391be07921743">Rubyで%記法（パーセント記法）を使う</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rubyのinjectを使いこなす]]></title>
-    <link href="http://blog.toshimaru.net/ruby-inject/"/>
-    <updated>2015-01-08T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/ruby-inject</id>
-    <content type="html"><![CDATA[<p>Rubyのイテレータメソッド<code>inject</code>の使い方を紹介してみようと思います。</p>
-
-<h2 id="inject">inject</h2>
-
-<p>Rubyのinjectはこんなふうに使えます。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">enum</span><span class="o">.</span><span class="n">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
-<span class="n">enum</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span></code></pre></div>
-
-<p><a href="http://ref.xaio.jp/ruby/classes/enumerable/inject">http://ref.xaio.jp/ruby/classes/enumerable/inject</a></p>
-
-<h2 id="sum">Sum（合計）を出す</h2>
-
-<p>これだけではわかりにくいと思うので合計を出す処理を書いてみましょう。</p>
-
-<p>まずは<code>inject</code>を使わないパターン。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-<span class="nb">puts</span> <span class="n">sum</span> <span class="c1"># =&gt; 55</span></code></pre></div>
-
-<p>これを<code>inject</code>で書き直すとこう。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-<span class="c1"># =&gt; 55</span></code></pre></div>
-
-<p>この場合、sumの初期値は0ですがそれを明示的にかくならこう。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-<span class="c1"># =&gt; 55</span></code></pre></div>
-
-<p>さらにinjectにはシンボルで演算子をわたしてうまいようにやってくれる。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="ss">:+</span><span class="p">)</span>
-<span class="c1"># =&gt; 55</span></code></pre></div>
-
-<p>これが一番シンプルでエレガント。</p>
-
-<h2 id="section">応用編1: 配列内の要素数をハッシュに</h2>
-
-<p>Hash.new(0)で初期化してinject.</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="o">].</span><span class="n">inject</span><span class="p">(</span><span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span><span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span> <span class="nb">hash</span><span class="o">[</span><span class="n">key</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">hash</span><span class="p">}</span>
-<span class="c1"># =&gt; {:great=&gt;2, :good=&gt;3, :bad=&gt;2, :awesome=&gt;1}</span></code></pre></div>
-
-<h2 id="section-1">応用編2: フィボナッチ数列</h2>
-
-<p>inject を利用したフィボナッチ数列ロジック。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">]</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">fib</span> <span class="o">&lt;&lt;</span> <span class="n">fib</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">+</span> <span class="n">fib</span><span class="o">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">]</span> <span class="p">}</span>
-<span class="c1"># =&gt; [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]</span></code></pre></div>
-
-<h2 id="eachwithindex">番外編: each_with_index</h2>
-
-<p><code>each_with_index</code>でも<code>inject</code>は使える。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">each_with_index</span><span class="o">.</span><span class="n">inject</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span>
-  <span class="c1"># </span>
-<span class="k">end</span></code></pre></div>
-
-<h3 id="section-2">参考</h3>
-<ul>
-  <li><a href="http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject">ruby の inject をわかりやすく説明してみる</a></li>
-  <li><a href="http://ref.xaio.jp/ruby/classes/enumerable/inject">inject (Enumerable)</a></li>
 </ul>
 ]]></content>
   </entry>

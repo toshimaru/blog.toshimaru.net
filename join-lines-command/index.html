@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>就活日記(4) Gunosy - Hack Your Design!</title>
+  <title>コマンドラインで複数行を1行にまとめる - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="就活日記(4) Gunosy - Hack Your Design!">
-  <meta property="og:title" content="就活日記(4) Gunosy - Hack Your Design!">
-  <meta name="description" content="Gunosyは海外滞在中も日本語で書かれたテック系ニュース・ソースとして活躍しており、利用当初からとても良いサービスだと思っていた。今年になって大型の資金調達をしていたり、今後の成長株であることも間違いなさそうだし訪問。">
-  <meta name="twitter:description" content="Gunosyは海外滞在中も日本語で書かれたテック系ニュース・ソースとして活躍しており、利用当初からとても良いサービスだと思っていた。今年になって大型の資金調達をしていたり、今後の成長株であることも間違いなさそうだし訪問。">
-  <meta property="og:description" content="Gunosyは海外滞在中も日本語で書かれたテック系ニュース・ソースとして活躍しており、利用当初からとても良いサービスだと思っていた。今年になって大型の資金調達をしていたり、今後の成長株であることも間違いなさそうだし訪問。">
+  <meta name="twitter:title" content="コマンドラインで複数行を1行にまとめる - Hack Your Design!">
+  <meta property="og:title" content="コマンドラインで複数行を1行にまとめる - Hack Your Design!">
+  <meta name="description" content="やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。">
+  <meta name="twitter:description" content="やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。">
+  <meta property="og:description" content="やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <link rel="canonical" href="http://blog.toshimaru.net/job-hunting-4/">
+  <link rel="canonical" href="http://blog.toshimaru.net/join-lines-command/">
 </head>
 <body>
   <!--[if lt IE 8]>
@@ -60,81 +60,50 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">就活日記(4) Gunosy</h1>
+  <h1 class="fadeInLeft">コマンドラインで複数行を1行にまとめる</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2014-07-11T00:00:00+00:00" pubdate>11 Jul 2014</time>
-      <i class="icon-tags"></i><a href="/tag/%E5%B0%B1%E6%B4%BB.html" rel="tag">就活</a>
+      <i class="icon-calendar"></i><time datetime="2015-09-30T00:00:00+00:00" pubdate>30 Sep 2015</time>
+      <i class="icon-tags"></i><a href="/tag/shell.html" rel="tag">shell</a>, <a href="/tag/api.html" rel="tag">api</a>
     </div>
     
   </div>
 </div>
 
-<p><a href="/job-hunting-0/">就活日記(0) エントリー</a></p>
+<p>やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</p>
 
-<h2 id="section">きっかけ</h2>
-<p>Gunosyは海外滞在中も日本語で書かれたテック系ニュース・ソースとして活躍しており、利用当初からとても良いサービスだと思っていた。<a href="http://jp.techcrunch.com/2014/06/23/jp20140623gunosy/">今年になって大型の資金調達を</a>していたり、今後の成長株であることも間違いなさそうだし訪問。</p>
+<pre><code>$ cat text
+aaaa
+bbbb
+cccc
 
-<h2 id="gunosy">Gunosyを支えている技術</h2>
+$ cat text | tr '\n' ','
+aaaa,bbbb,cccc,%
+</code></pre>
+
+<p>こんな感じで<code>tr</code>を使って改行コードを置換してやればカンマ区切りで1行にできる。</p>
+
+<h3 id="section">もともと</h3>
+
+<p>もともとやりたかったのはこんな感じのこと。</p>
+
+<pre><code>$ echo '{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }' | jq '.employees[] .firstName' | tr '\n' ',' | awk '{ print "result = [" $1 "]" }'
+result = ["John","Anna","Peter",]
+</code></pre>
+
+<p>curlでJSONをGETしてそれをjqでパースして出たリストをカンマ区切りで出力する、みたいなやつ。</p>
+
+<h3 id="section-1">参考</h3>
 <ul>
-  <li>Github</li>
-  <li>RoR</li>
-  <li>Golang</li>
-  <li>CircleCI</li>
-  <li>Jenkins</li>
-  <li>MySQL</li>
-  <li>MongoDB</li>
-  <li>Redis</li>
-  <li>Docker</li>
-  <li>HipChat / Slack</li>
-  <li>Qiita Team</li>
-  <li>Yammer</li>
-</ul>
-
-<p>注目すべきはAPIサーバ部分をGolangで書いていることだった。GoのWEBフレームワークを特に使っているというわけではなく、速度が出る素のGoで書いているということだった。RailsからGoへの移行の経緯あたりは下記の発表に詳しい。</p>
-
-<p><a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">300万人をGoで捌いた話</a></p>
-
-<p>また技術的なチャレンジとして<a href="https://speakerdeck.com/ymatsuwitter/katutedockergaita">Dockerも試したりして</a>おり、どんどん新しい技術を取り入れて既存の仕組みを改善していこうという姿勢が見られた。</p>
-
-<p>ところでこれらの発表をしている<a href="https://twitter.com/y_matsuwitter">@y_matsuwitter</a>さんは自分よりも全然まだ若いのにGunosy執行役員でインフラからプログラムもバリバリ書けるスーパーエンジニアだ。しゅごい。</p>
-
-<h2 id="section-1">雰囲気</h2>
-<p>とにかく若いエンジニアが多く、仲もとても良さそうだった。先に上げたy_matsuwitterさんも25歳だし27,8歳くらいの人が多いとのことだ。スケスケの会議室でエンジニアから話を聞いたのだけど、スケスケルームはきっと会社のオープンネスとか透明性を象徴しているんだろうなと思った。きっと風通しの良い職場なのだろう。</p>
-
-<p>また技術者はやりたいことをどんどん取り組めるような空気もあるようだ。何か新しいやりたいことがあったときにエンジニアが手を挙げれば「（そのやりたいことが妥当であれば）社内でそれを止める人はいない」とのことだ。スタートアップでは優秀な人の入社をきっかけに社内が変わり始めたりすることも多いと思うがGunosyもその例外ではないようだ。</p>
-
-<h2 id="section-2">基本の積み重ね</h2>
-<p>Gunosyはいわゆる＜キュレーションニュースメディア＞で使えば使うほど記事がパーソナライズされていき興味のある記事が届けられる精度も高まっていくようになっている。どのようにそのレコメンデーションエンジンを向上しているかを聞いてみると「そんな難しいことはしていない。基本を積み重ねていっているだけ」と言っていた。</p>
-
-<p>社内で論文の勉強会をしてまだ実装に落とされていない論文の内容を実装に落としていくなどして、リコメンドエンジンをブラッシュアップしていっているようだ。こういう積み重ねを真摯に着実に行っているからこそ良いプロダクトも生まれてくるのだろう。</p>
-
-<blockquote>
-  <p>スタートアップだと、どうしても即効性のある技術やノウハウの方がが大きく価値認識されがちですが、僕たちは長期的な視点を持って、新旧かかわらず様々な研究を追っています。</p>
-</blockquote>
-
-<p><a href="http://careerhack.en-japan.com/report/detail/283">“数字は神より正しい”《Gunosy》が掲げる、フェアでクールな指針。</a></p>
-
-<p>（上記事はGunosyの哲学がよくわかる記事なので興味のある方は一読すべし）</p>
-
-<h2 id="section-3">総評</h2>
-<p>今まで訪問した会社の中では一番よかった（と書くように言われた）。</p>
-
-<h2 id="section-4">こんな人におすすめ</h2>
-<p>Gunosyは手を挙げれば自分のやりたいことがチャレンジできる場所です。また若いエンジニアが多く仲も良さ気で和気あいあいと働ける職場だと感じました。神でなく数字を信仰できるような人にはピッタリの環境です。</p>
-
-<p><a href="https://www.wantedly.com/companies/gunosy">Gunosyの採用ページ</a></p>
-
-<h2 id="section-5">こちらもどうぞ</h2>
-<ul>
-  <li><a href="http://blog.kushii.net/archives/1876150.html">株式会社Gunosy に行ってきた！</a></li>
+  <li><a href="http://stackoverflow.com/questions/2764051/how-to-join-multiple-lines-of-file-names-into-one-with-custom-delimiter">linux - How to join multiple lines of file names into one with custom delimiter? - Stack Overflow</a></li>
+  <li><a href="http://tbpgr.hatenablog.com/entry/20120309/1331314857">tr | 標準入力の内容を置換、削除する - Tbpgr Blog</a></li>
 </ul>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-4/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/join-lines-command/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -152,15 +121,9 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/job-hunting-fin/" title="就活日記(完) 就職">就活日記(完) 就職</a></li>
+    <li><a href="/sh3iz/" title="「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説">「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説</a></li>
   
-    <li><a href="/job-hunting-6/" title="就活日記(6) KAIZEN platform Inc.">就活日記(6) KAIZEN platform Inc.</a></li>
-  
-    <li><a href="/job-hunting-5/" title="就活日記(5) トレタ">就活日記(5) トレタ</a></li>
-  
-    <li><a href="/job-hunting-3/" title="就活日記(3) Quipper">就活日記(3) Quipper</a></li>
-  
-    <li><a href="/job-hunting-2/" title="就活日記(2) freee">就活日記(2) freee</a></li>
+    <li><a href="/linux/" title="プロセス毎のメモリ使用量を調べるコマンド">プロセス毎のメモリ使用量を調べるコマンド</a></li>
   
   </ul>
   </div>
@@ -168,14 +131,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/job-hunting-5/" title="Newer Post: 就活日記(5) トレタ"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/job-hunting-3/" title="Older Post: 就活日記(3) Quipper">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/ruby-configuration-pattern/" title="Older Post: Ruby Gem Configuration Pattern">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
