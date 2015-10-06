@@ -3,22 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>MacでWi-Fiのシグナル強度を調べる - Hack Your Design!</title>
+  <title>Macbookでファン・照明・電源に問題が生じたときはSMCリセット - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="MacでWi-Fiのシグナル強度を調べる - Hack Your Design!">
-  <meta property="og:title" content="MacでWi-Fiのシグナル強度を調べる - Hack Your Design!">
-  <meta name="description" content="カフェなんかでWi-Fi使っていると、Wi-FiがつながりにくくなってWi-Fiシグナル強度が弱いのかなーとか思って、シグナル強度調べるアプリを探していたところ、Mac標準搭載のアプリで発見。">
-  <meta name="twitter:description" content="カフェなんかでWi-Fi使っていると、Wi-FiがつながりにくくなってWi-Fiシグナル強度が弱いのかなーとか思って、シグナル強度調べるアプリを探していたところ、Mac標準搭載のアプリで発見。">
-  <meta property="og:description" content="カフェなんかでWi-Fi使っていると、Wi-FiがつながりにくくなってWi-Fiシグナル強度が弱いのかなーとか思って、シグナル強度調べるアプリを探していたところ、Mac標準搭載のアプリで発見。">
+  <meta name="twitter:title" content="Macbookでファン・照明・電源に問題が生じたときはSMCリセット - Hack Your Design!">
+  <meta property="og:title" content="Macbookでファン・照明・電源に問題が生じたときはSMCリセット - Hack Your Design!">
+  <meta name="description" content="ファンが周り続けたときにSMCリセットしたら解決したよ、という話。">
+  <meta name="twitter:description" content="ファンが周り続けたときにSMCリセットしたら解決したよ、という話。">
+  <meta property="og:description" content="ファンが周り続けたときにSMCリセットしたら解決したよ、という話。">
   
-  <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
-  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
+  
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/macbook.png" />
+  <meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/macbook.png" />
+  
   <meta property="og:type" content="article">
-  <link rel="canonical" href="http://blog.toshimaru.net/mac-wifi-diagnostics/">
+  <link rel="canonical" href="http://blog.toshimaru.net/macbook-smc-reset/">
 </head>
 <body>
   <!--[if lt IE 8]>
@@ -60,57 +62,59 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">MacでWi-Fiのシグナル強度を調べる</h1>
+  <h1 class="fadeInLeft">Macbookでファン・照明・電源に問題が生じたときはSMCリセット</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-12-28T00:00:00+00:00" pubdate>28 Dec 2013</time>
+      <i class="icon-calendar"></i><time datetime="2015-10-07T00:00:00+00:00" pubdate>07 Oct 2015</time>
       <i class="icon-tags"></i><a href="/tag/mac.html" rel="tag">mac</a>
     </div>
-    
+    <img class="post-image flipInX" src="/images/posts/macbook.png" alt="(image)Macbookでファン・照明・電源に問題が生じたときはSMCリセット" title="Macbookでファン・照明・電源に問題が生じたときはSMCリセット" />
   </div>
 </div>
 
-<p>カフェなんかでWi-Fi使っていると、Wi-FiがつながりにくくなってWi-Fiシグナル強度が弱いのかなーとか思って、シグナル強度調べるアプリを探していたところ、Mac標準搭載のアプリで発見。</p>
+<p>ファンが周り続けたときにSMCリセットしたら解決したよ、という話。</p>
 
-<p>アプリ名は「Wireless Diagnostics」。場所は自分の環境(Mountain Lion)で<code>/System/Library/CoreServices</code>にありました。</p>
-
-<h2 id="section">手順</h2>
-
+<h2 id="section">発生した問題</h2>
 <ul>
-  <li>Wireless Diagnostics を開く。（コマンド: <code>open /System/Library/CoreServices/Wireless\ Diagnostics.app</code>）</li>
-  <li>Utilitiesを開く(<code>⌘2</code>)</li>
-  <li><code>Wi-Fi Scan</code>のタブを選択して<code>Scan Now</code>をクリック。</li>
+  <li>熱持ってるわけでもないし、CPU食いつぶされているわけでもないのに、<strong>ファンがフル回転</strong></li>
+  <li><strong>バッテリーの残り容量が出なくなる</strong></li>
 </ul>
 
-<p><img src="/images/posts/wifi-scan.png" alt="mac wi-fi scan" /></p>
+<p>そんなときはSMCリセット。</p>
 
-<p>本画像のRSSI(Received signal strength indication)がシグナルの強度となります。値が高い方が「シグナルが強い」という意味になります。</p>
+<h2 id="smc">SMCリセットとは</h2>
 
-<p>詳しい説明を引用しておきます。</p>
+<p>SMCとはSystem Management Controllerの略。System Management Controllerとはシステム管理コントローラのこと。</p>
 
-<blockquote>
-  <p>シグナルの数値は、MacとWi-Fiアクセスポイントまたはルータ間のシグナルの強度を示します。数値が大きいほどシグナルは良好です&gt; 。数値はマイナス表示なので、「-60」の方が「-80」よりも良好ということになります。</p>
+<p>SMCはMacの電源関係を処理するコンピュータチップのことで、システム起動、スリープ、バッテリーなど、電源関係のハードウエアをコントロールします。</p>
 
-  <p>ノイズの数値は、シグナルの障害となるワイヤレスノイズの大きさを示しています。この場合、数値は低いほうが良好です。ノイズも&gt; マイナス表示なので、ノイズレベル「-94」の方が「-90」よりもノイズが少なくて良好なネットワーク状態である、ということを示し&gt; ています。</p>
+<h2 id="smc-1">SMCリセット手順</h2>
 
-  <p>シグナルとノイズの数値を比較し、シグナル対ノイズの比率（SNR）を導き出しましょう。信号レベルが「-60」でノイズレベルが「-91」の場合、数値の差は「31」になります。SNRが高ければ高いほど、Wi-Fiのパフォーマンスが良好であることを示します。SNRが25以上であれば、Wi-Fiのパフォーマンスは良好といえるでしょう。</p>
+<p>公式の下記ドキュメントが最も参考になります。</p>
 
-  <p>(<a href="http://www.lifehacker.jp/2012/08/120807os_x_wifi.html">Wi-Fiの電波が弱い？ Macには診断ツールを標準搭載しております</a>)</p>
-</blockquote>
+<p><a href="https://support.apple.com/ja-jp/HT201295">Mac の SMC (システム管理コントローラ) をリセットする - Apple サポート</a></p>
 
-<p>Wi-Fiのパフォーマンスを調整したいときに是非つかいたいツールですね。</p>
+<p>具体的にはMacbook Airで以下の手順となります。</p>
 
-<h3 id="section-1">参考</h3>
+<ol>
+  <li>コンピュータをシステム終了します。</li>
+  <li>MagSafe 電源アダプタまたは USB-C 電源アダプタをコンセントに接続し、コンピュータに接続します。</li>
+  <li>内蔵キーボードで、「(左の) shift + control + option」キーを押しながら、電源ボタンを押します。</li>
+  <li>3 つのキー全部と電源ボタンを同時に放します。</li>
+  <li>電源ボタンを押してコンピュータを起動します。</li>
+</ol>
 
+<h2 id="section-1">参考</h2>
 <ul>
-  <li><a href="http://osxdaily.com/2012/07/31/wi-fi-scanner-mac-os-x-mountain-lion/">Wi-Fi Scanner Tool is Native in Mac OS X, Here’s How to Use it</a></li>
+  <li><a href="http://inforati.jp/apple/mac-tips-techniques/hardware-hints/how-to-reset-the-system-management-controller-of-mac.html">MacのSMCを初期化してスリープやバッテリーのトラブルなどに対処する方法 / Inforati</a></li>
+  <li><a href="http://digitalnetcreate.com/blog/mac/mbafan/">MacBookAirのファンが止まらない⇒解決しました！ | フリーランスの話のタネ</a></li>
 </ul>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/mac-wifi-diagnostics/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/macbook-smc-reset/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -128,9 +132,9 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/macbook-smc-reset/" title="Macbookでファン・照明・電源に問題が生じたときはSMCリセット">Macbookでファン・照明・電源に問題が生じたときはSMCリセット</a></li>
-  
     <li><a href="/mac-mysql-upgrade-error/" title="brew upgrade mysql 後にpidエラー">brew upgrade mysql 後にpidエラー</a></li>
+  
+    <li><a href="/mac-wifi-diagnostics/" title="MacでWi-Fiのシグナル強度を調べる">MacでWi-Fiのシグナル強度を調べる</a></li>
   
     <li><a href="/mac-setup/" title="Mac購入時に僕がインストールしたアプリや設定を公開するよ">Mac購入時に僕がインストールしたアプリや設定を公開するよ</a></li>
   
@@ -144,14 +148,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/2013-advent-calendar/" title="Newer Post: 2013年に参加したAdventCalendar、そしてAdventCalendar参加の意義"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/jquery-8-tips/" title="Older Post: jQuery使いが知っておくべき8つのjQueryテクニック">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/join-lines-command/" title="Older Post: コマンドラインで複数行を1行にまとめる">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>

@@ -3,12 +3,57 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-09-29T19:10:20+00:00</updated>
+  <updated>2015-10-06T18:08:43+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Macbookでファン・照明・電源に問題が生じたときはSMCリセット]]></title>
+    <link href="http://blog.toshimaru.net/macbook-smc-reset/"/>
+    <updated>2015-10-07T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/macbook-smc-reset</id>
+    <content type="html"><![CDATA[<p>ファンが周り続けたときにSMCリセットしたら解決したよ、という話。</p>
+
+<h2 id="section">発生した問題</h2>
+<ul>
+  <li>熱持ってるわけでもないし、CPU食いつぶされているわけでもないのに、<strong>ファンがフル回転</strong></li>
+  <li><strong>バッテリーの残り容量が出なくなる</strong></li>
+</ul>
+
+<p>そんなときはSMCリセット。</p>
+
+<h2 id="smc">SMCリセットとは</h2>
+
+<p>SMCとはSystem Management Controllerの略。System Management Controllerとはシステム管理コントローラのこと。</p>
+
+<p>SMCはMacの電源関係を処理するコンピュータチップのことで、システム起動、スリープ、バッテリーなど、電源関係のハードウエアをコントロールします。</p>
+
+<h2 id="smc-1">SMCリセット手順</h2>
+
+<p>公式の下記ドキュメントが最も参考になります。</p>
+
+<p><a href="https://support.apple.com/ja-jp/HT201295">Mac の SMC (システム管理コントローラ) をリセットする - Apple サポート</a></p>
+
+<p>具体的にはMacbook Airで以下の手順となります。</p>
+
+<ol>
+  <li>コンピュータをシステム終了します。</li>
+  <li>MagSafe 電源アダプタまたは USB-C 電源アダプタをコンセントに接続し、コンピュータに接続します。</li>
+  <li>内蔵キーボードで、「(左の) shift + control + option」キーを押しながら、電源ボタンを押します。</li>
+  <li>3 つのキー全部と電源ボタンを同時に放します。</li>
+  <li>電源ボタンを押してコンピュータを起動します。</li>
+</ol>
+
+<h2 id="section-1">参考</h2>
+<ul>
+  <li><a href="http://inforati.jp/apple/mac-tips-techniques/hardware-hints/how-to-reset-the-system-management-controller-of-mac.html">MacのSMCを初期化してスリープやバッテリーのトラブルなどに対処する方法 / Inforati</a></li>
+  <li><a href="http://digitalnetcreate.com/blog/mac/mbafan/">MacBookAirのファンが止まらない⇒解決しました！ | フリーランスの話のタネ</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[コマンドラインで複数行を1行にまとめる]]></title>
@@ -1880,146 +1925,6 @@ after_save is called
   <li><a href="http://d.hatena.ne.jp/tkrd/20131121/1385044179">Rails &amp; MySQL: トランザクション分離レベルをグローバルに設定する</a></li>
   <li><a href="http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html">Rails 4 - Transaction isolation level</a></li>
   <li><a href="http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838">トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rubyの%(パーセント)を使った記法まとめ]]></title>
-    <link href="http://blog.toshimaru.net/ruby-percent-notation/"/>
-    <updated>2015-01-10T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/ruby-percent-notation</id>
-    <content type="html"><![CDATA[<p>Rubyでつかわれる%（パーセント）を使った記法、たまに忘れることがあるのでメモがてらにまとめてみる。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>%記法</th>
-      <th>%使わない場合の書き方</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>%</code>, <code>%Q</code></td>
-      <td><code>""</code> (ダブルクオート)</td>
-    </tr>
-    <tr>
-      <td><code>%q</code></td>
-      <td><code>''</code> (シングルクオート)</td>
-    </tr>
-    <tr>
-      <td><code>%w</code></td>
-      <td><code>[]</code> (文字列配列)</td>
-    </tr>
-    <tr>
-      <td><code>%W</code></td>
-      <td><code>[]</code> (文字列配列・式展開あり)</td>
-    </tr>
-    <tr>
-      <td><code>%i</code></td>
-      <td><code>[]</code> (シンボル配列)</td>
-    </tr>
-    <tr>
-      <td><code>%I</code></td>
-      <td><code>[]</code> (シンボル配列・式展開あり)</td>
-    </tr>
-    <tr>
-      <td><code>%x</code></td>
-      <td><code>``</code> (コマンド実行)</td>
-    </tr>
-    <tr>
-      <td><code>%s</code></td>
-      <td><code>:</code> (シンボル)</td>
-    </tr>
-    <tr>
-      <td><code>%r</code></td>
-      <td><code>//</code> (正規表現)</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><strong>※ %の後には丸括弧（<code>()</code>）や波括弧（<code>{}</code>）などの記号が使えます</strong></p>
-
-<h2 id="section">文字列表現系</h2>
-
-<h3 id="q">%, %Q</h3>
-
-<pre><code>&gt; %(a b c)
- =&gt; "a b c"
-
-&gt; a, b, c = 1, 2, 3
-&gt; %Q(#{a} #{b} #{c})
- =&gt; "1 2 3" # 式展開される
-</code></pre>
-
-<h3 id="q-1">%q</h3>
-
-<pre><code>&gt; %q(a b c)
- =&gt; "a b c"
-
-&gt; a, b, c = 1, 2, 3
-&gt; %q(#{a} #{b} #{c})
- =&gt; "\#{a} \#{b} \#{c}" # 式展開されない
-</code></pre>
-
-<h2 id="section-1">配列表現系</h2>
-
-<h3 id="w">%w</h3>
-
-<pre><code>&gt; %w(a b c)
- =&gt; ["a", "b", "c"]
-</code></pre>
-
-<h3 id="w-1">%W</h3>
-
-<pre><code>&gt; a, b, c = 1, 2, 3
-&gt; %W(#{a} #{b} #{c})
- =&gt; ["1", "2", "3"]
-</code></pre>
-
-<h3 id="i">%i</h3>
-
-<pre><code>&gt; %i(a b c)
- =&gt; [:a, :b, :c]
-</code></pre>
-
-<h3 id="i-1">%I</h3>
-
-<pre><code>&gt; a, b, c = 1, 2, 3
-&gt; %I(#{a} #{b} #{c})
- =&gt; [:"1", :"2", :"3"]
-</code></pre>
-
-<h2 id="section-2">コマンド実行</h2>
-
-<h3 id="x">%x</h3>
-
-<pre><code>&gt; %x(date)
- =&gt; "Sun Jan 11 01:01:52 JST 2015\n"
-&gt; `date`
- =&gt; "Sun Jan 11 01:01:54 JST 2015\n"
-</code></pre>
-
-<h2 id="section-3">シンボル</h2>
-
-<h3 id="s">%s</h3>
-
-<pre><code>&gt; %s(a b c)
- =&gt; :"a b c"
-</code></pre>
-
-<h2 id="section-4">正規表現</h2>
-
-<h3 id="r">%r</h3>
-
-<pre><code>&gt; %r(^http://)
- =&gt; /^http:\/\//
-</code></pre>
-
-<h3 id="section-5">参考</h3>
-
-<ul>
-  <li><a href="http://qiita.com/mogulla3/items/46bb876391be07921743">Rubyで%記法（パーセント記法）を使う</a></li>
 </ul>
 ]]></content>
   </entry>
