@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Composerで始める PHPのライブラリ管理 - Hack Your Design!</title>
+  <title>rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Composerで始める PHPのライブラリ管理 - Hack Your Design!">
-  <meta property="og:title" content="Composerで始める PHPのライブラリ管理 - Hack Your Design!">
-  <meta name="description" content="PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。">
-  <meta name="twitter:description" content="PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。">
-  <meta property="og:description" content="PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。">
+  <meta name="twitter:title" content="rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較 - Hack Your Design!">
+  <meta property="og:title" content="rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較 - Hack Your Design!">
+  <meta name="description" content="Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。 (Rubyのバージョンは2.2です)">
+  <meta name="twitter:description" content="Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。 (Rubyのバージョンは2.2です)">
+  <meta property="og:description" content="Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。 (Rubyのバージョンは2.2です)">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <link rel="canonical" href="http://blog.toshimaru.net/how-to-use-composer-autoload/">
+  <link rel="canonical" href="http://blog.toshimaru.net/destructive-method-performance/">
 </head>
 <body>
   <!--[if lt IE 8]>
@@ -60,105 +60,64 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Composerで始める PHPのライブラリ管理</h1>
+  <h1 class="fadeInLeft">rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-10-24T00:00:00+00:00" pubdate>24 Oct 2013</time>
-      <i class="icon-tags"></i><a href="/tag/php.html" rel="tag">php</a>
+      <i class="icon-calendar"></i><time datetime="2015-11-06T00:00:00+00:00" pubdate>06 Nov 2015</time>
+      <i class="icon-tags"></i><a href="/tag/ruby.html" rel="tag">ruby</a>
     </div>
     
   </div>
 </div>
 
-<p>PHPも<a href="http://getcomposer.org/">Composer</a>の登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。</p>
+<p>Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。</p>
 
-<h2 id="composer">Composerのインストール</h2>
+<p>Rubyのバージョンは2.2です。</p>
 
-<p>PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;benchmark&#39;</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100_000</span>
 
-<pre><code>$ curl -s https://getcomposer.org/installer | php
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;非破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="ss">d</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="ss">d</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>  <span class="p">}</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<pre><code>user     system      total        real
+非破壊的  0.330000   0.010000   0.340000 (  0.337557)
+破壊的  0.170000   0.000000   0.170000 (  0.177394)
 </code></pre>
 
-<p>さてこれで<code>composer.phar</code>が手に入りました。<code>composer</code>コマンドを使えるようにするためにパスの通った場所に<code>composer.phar</code>を移動しましょう。</p>
-
-<pre><code>$ sudo mv composer.phar /usr/local/bin/composer
-</code></pre>
-
-<p><code>composer</code>コマンド準備完了です。</p>
-
-<pre><code>$ composer
-   ______
-  / ____/___  ____ ___  ____  ____  ________  _____
- / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
-/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
-\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
-                    /_/
-Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
-</code></pre>
-
-<h2 id="section">依存関係の記述</h2>
-
-<p>composerはプロジェクトルートの<code>composer.json</code>ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
-
-<pre><code>$ touch composer.json
-</code></pre>
-
-<p><code>composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
-
-<pre><code>{
-    "require": {
-        "phpunit/phpunit": "3.7.*"
-    }
-}
-</code></pre>
-
-<h2 id="section-1">ライブラリのインストール</h2>
-
-<p><code>composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
-
-<pre><code>$ composer install
-Loading composer repositories with package information
-Installing dependencies (including require-dev)
-  - Installing symfony/yaml (v2.3.6)
-    Loading from cache
-
-  - ..............
-
-  - Installing phpunit/phpunit (3.7.28)
-    Loading from cache
-
-phpunit/phpunit suggests installing phpunit/php-invoker (&gt;=1.1.0,&lt;1.2.0)
-Writing lock file
-Generating autoload files
-</code></pre>
-
-<p>うまいこといきました。ライブラリは<code>vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code>composer.lock</code>ファイルも生成します。</p>
-
-<h2 id="section-2">ライブラリのアップデート</h2>
-
-<p>ライブラリのアップデートに関しては下記のコマンドでOK.</p>
-
-<pre><code>$ composer update
-</code></pre>
-
-<h2 id="section-3">まとめ</h2>
-
-<p>モダンなPHPパッケージ管理であればComposer一択でしょう。PEARとの使い分けに関しては<a href="http://ja.phptherightway.com/#依存関係の管理">PHP Right Way</a>にはこのように書いてあります。</p>
+<p>破壊的のほうが速い。</p>
 
 <blockquote>
-  <ul>
-    <li>Composer を使うのは、ひとつのプロジェクトにおける依存関係を管理するとき。</li>
-    <li>PEAR を使うのは、システム全体の PHP 環境の依存関係を管理するとき。</li>
-  </ul>
+  <p>破壊的メソッド (「!」が付くメソッド) はそうでないのに比べ概して高速。 しかし最近は非破壊的メソッドも高速化されてきているので以前ほど 違わなくなってきているのは確かだ。 たとえば gsub と gsub! だと作業自体は gsub のほうが高速だったりする。 計測してみると非破壊的メソッドが遅いことが多いのは、 無駄なオブジェクトが増えて GC が起きているからである。</p>
 </blockquote>
 
-<p>大抵の場合、後者のようにシステム全体で依存性管理をしなきゃならん理由はないと思うのでComposerで依存管理を行いましょう！</p>
+<p>via. <a href="http://i.loveruby.net/w/OptimizingRubyProgram.html">LoveRubyNet Wiki: OptimizingRubyProgram</a></p>
+
+<p>なるほど。<code>gsub</code>でも検証してみよう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;非破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="s2">&quot;hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="s2">&quot;hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<pre><code>user     system      total        real
+非破壊的  0.410000   0.010000   0.420000 (  0.420611)
+破壊的  0.420000   0.000000   0.420000 (  0.418214)
+</code></pre>
+
+<p>こちらは結果はほとんど変わらなかった。</p>
+
+<h2 id="section">まとめ</h2>
+
+<p>多くの場合、破壊的メソッドのほうが速い。</p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-send="false" data-layout="button_count" data-width="110" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/how-to-use-composer-autoload/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/destructive-method-performance/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -176,15 +135,15 @@ Generating autoload files
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/php-trait/" title="PHP5.4のtrait機能を理解する">PHP5.4のtrait機能を理解する</a></li>
+    <li><a href="/ruby-configuration-pattern/" title="Ruby Gem Configuration Pattern">Ruby Gem Configuration Pattern</a></li>
   
-    <li><a href="/php-force-property/" title="PHPのプロパティをStrictに定義する">PHPのプロパティをStrictに定義する</a></li>
+    <li><a href="/string-vs-symbol-in-hash/" title="HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較">HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較</a></li>
   
-    <li><a href="/php-is-not-bad-language/" title="PHPって言うほど悪い言語じゃない">PHPって言うほど悪い言語じゃない</a></li>
+    <li><a href="/ruby-vs-go/" title="Ruby vs Golang でパフォーマンス比較してみた">Ruby vs Golang でパフォーマンス比較してみた</a></li>
   
-    <li><a href="/simple-command-web-server/" title="超簡単なコマンドでローカルにHTTPサーバーを起動">超簡単なコマンドでローカルにHTTPサーバーを起動</a></li>
+    <li><a href="/ruby-standard-error/" title="Rubyで独自例外を定義するときはStandardErrorを継承する">Rubyで独自例外を定義するときはStandardErrorを継承する</a></li>
   
-    <li><a href="/php-5492/" title="[php][ruby]実行速度を計測する">[php][ruby]実行速度を計測する</a></li>
+    <li><a href="/ruby-percent-notation/" title="Rubyの%(パーセント)を使った記法まとめ">Rubyの%(パーセント)を使った記法まとめ</a></li>
   
   </ul>
   </div>
@@ -192,14 +151,10 @@ Generating autoload files
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/my-impression-after-working-2-months/" title="Newer Post: 2ヶ月間WEBエンジニアとして海外で働いてみて感じたこと"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/php-is-not-bad-language/" title="Older Post: PHPって言うほど悪い言語じゃない">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/macbook-smc-reset/" title="Older Post: Macbookでファン・照明・電源に問題が生じたときはSMCリセット">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>

@@ -3,12 +3,62 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-11-03T11:34:48+00:00</updated>
+  <updated>2015-11-05T16:19:48+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較]]></title>
+    <link href="http://blog.toshimaru.net/destructive-method-performance/"/>
+    <updated>2015-11-06T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/destructive-method-performance</id>
+    <content type="html"><![CDATA[<p>Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。</p>
+
+<p>Rubyのバージョンは2.2です。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;benchmark&#39;</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100_000</span>
+
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;非破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="ss">d</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="ss">d</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>  <span class="p">}</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<pre><code>user     system      total        real
+非破壊的  0.330000   0.010000   0.340000 (  0.337557)
+破壊的  0.170000   0.000000   0.170000 (  0.177394)
+</code></pre>
+
+<p>破壊的のほうが速い。</p>
+
+<blockquote>
+  <p>破壊的メソッド (「!」が付くメソッド) はそうでないのに比べ概して高速。 しかし最近は非破壊的メソッドも高速化されてきているので以前ほど 違わなくなってきているのは確かだ。 たとえば gsub と gsub! だと作業自体は gsub のほうが高速だったりする。 計測してみると非破壊的メソッドが遅いことが多いのは、 無駄なオブジェクトが増えて GC が起きているからである。</p>
+</blockquote>
+
+<p>via. <a href="http://i.loveruby.net/w/OptimizingRubyProgram.html">LoveRubyNet Wiki: OptimizingRubyProgram</a></p>
+
+<p>なるほど。<code>gsub</code>でも検証してみよう。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;非破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="s2">&quot;hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="s2">&quot;hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
+
+<pre><code>user     system      total        real
+非破壊的  0.410000   0.010000   0.420000 (  0.420611)
+破壊的  0.420000   0.000000   0.420000 (  0.418214)
+</code></pre>
+
+<p>こちらは結果はほとんど変わらなかった。</p>
+
+<h2 id="section">まとめ</h2>
+
+<p>多くの場合、破壊的メソッドのほうが速い。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Macbookでファン・照明・電源に問題が生じたときはSMCリセット]]></title>
@@ -1810,121 +1860,6 @@ after_save is called
 <h3 id="section-1">参考</h3>
 <ul>
   <li><a href="http://d.hatena.ne.jp/yarb/20121005/p1">Rubyで自前の例外クラスを作るときExceptionではなくStandardErrorを継承する理由</a></li>
-</ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rails4 でトランザクション分離レベルを設定する]]></title>
-    <link href="http://blog.toshimaru.net/rails-4-transaction-isolation/"/>
-    <updated>2015-01-19T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/rails-4-transaction-isolation</id>
-    <content type="html"><![CDATA[<h2 id="mysql">MySQLのトランザクション分離レベル</h2>
-
-<p>MySQLのデフォルトのトランザクション分離レベルは何か？</p>
-
-<blockquote>
-  <p><strong>REPEATABLE READ</strong></p>
-
-  <p>This is the default isolation level for InnoDB.</p>
-</blockquote>
-
-<p>via. <a href="http://dev.mysql.com/doc/refman/5.0/en/set-transaction.html">13.3.6 SET TRANSACTION Syntax</a></p>
-
-<p>ハイ、答えは「REPEATABLE READ」ですネ.</p>
-
-<h2 id="rails4">Rails4でトランザクション分離レベルを設定</h2>
-
-<p>では次にRailsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょう？ 実はRails3.xとRails4ではトランザクション分離レベルの設定方法は異なっています。</p>
-
-<p><a href="http://d.hatena.ne.jp/tkrd/20131121/1385044179">Rails &amp; MySQL: トランザクション分離レベルをグローバルに設定する</a></p>
-
-<p><em>（引用ここから）</em></p>
-
-<p>Rails 3.x 時代までは、</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span>
-  <span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SET TRANSACTION ISOLATION LEVEL READ COMMITTED&#39;</span><span class="p">)</span>
-<span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">transaction</span> <span class="k">do</span>
-  <span class="c1"># ...</span>
-<span class="k">end</span></code></pre></div>
-
-<p>のように書かなければなりませんでしたが、Rails 4 でトランザクションごとに分離レベルを指定できるようになりました：</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">transaction</span><span class="p">(</span><span class="ss">isolation</span><span class="p">:</span> <span class="ss">:read_committed</span><span class="p">)</span> <span class="k">do</span>
-  <span class="c1"># ...</span>
-<span class="k">end</span></code></pre></div>
-
-<p><em>（引用ここまで）</em></p>
-
-<h2 id="section">有効なトランザクション分離レベル</h2>
-
-<p>設定可能で有効な<code>isolation:</code>レベルは何でしょう？　下記４つになります。</p>
-
-<blockquote>
-  <p>Valid isolation levels are:</p>
-
-  <ul>
-    <li><code>:read_uncommitted</code></li>
-    <li><code>:read_committed</code></li>
-    <li><code>:repeatable_read</code></li>
-    <li><code>:serializable</code></li>
-  </ul>
-</blockquote>
-
-<p>via. <a href="http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html">Rails 4 - Transaction isolation level</a></p>
-
-<h2 id="section-1">分離レベルとダーティリード、ファジーリード、ファントムリードの関係</h2>
-
-<p>分離レベルとダーティリード、ファジーリード、ファントムリードそれぞれの関係性は以下。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th> </th>
-      <th>ダーティリード</th>
-      <th>ファジーリード</th>
-      <th>ファントムリード</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>READ UNCOMMITTED</strong></td>
-      <td>発生する</td>
-      <td>発生する</td>
-      <td>発生する</td>
-    </tr>
-    <tr>
-      <td><strong>READ COMMITTED</strong></td>
-      <td>発生しない</td>
-      <td>発生する</td>
-      <td>発生する</td>
-    </tr>
-    <tr>
-      <td><strong>REPEATABLE READ</strong></td>
-      <td>発生しない</td>
-      <td>発生しない</td>
-      <td>発生する</td>
-    </tr>
-    <tr>
-      <td><strong>SERIALIZABLE</strong></td>
-      <td>発生しない</td>
-      <td>発生しない</td>
-      <td>発生しない</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>via. <a href="http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838">トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]</a></p>
-
-<p>適切なトランザクション分離レベルで適切なトランザクション処理をしましょう！</p>
-
-<h3 id="section-2">参考</h3>
-
-<ul>
-  <li><a href="http://d.hatena.ne.jp/tkrd/20131121/1385044179">Rails &amp; MySQL: トランザクション分離レベルをグローバルに設定する</a></li>
-  <li><a href="http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html">Rails 4 - Transaction isolation level</a></li>
-  <li><a href="http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838">トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]</a></li>
 </ul>
 ]]></content>
   </entry>
