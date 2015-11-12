@@ -3,12 +3,121 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-11-06T18:00:44+00:00</updated>
+  <updated>2015-11-12T17:29:47+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Railsのfind_eachの挙動を調べた]]></title>
+    <link href="http://blog.toshimaru.net/rails-find_each/"/>
+    <updated>2015-11-12T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/rails-find_each</id>
+    <content type="html"><![CDATA[<p>Railsのfind_eachがどんな挙動をするか気になったので調べた。</p>
+
+<h2 id="findeach">find_eachとは</h2>
+
+<p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
+
+<blockquote>
+  <p>Railsには find_each というメソッドが用意されています。通常の each メソッドを使用すると、全データをまとめてメモリに展開してから処理を開始します。そのため、十分にメモリに載るデータ量であれば何も問題ないですが、数百万、数千万というデータ量になってくるとメモリに載りきらずに溢れてしまって大変なことになります。</p>
+
+  <ul>
+    <li>find: 全データをメモリに展開してから処理</li>
+    <li>find_each: 少しずつデータをメモリに展開しつつ処理</li>
+  </ul>
+
+  <p>そういうときには find_each メソッドを使いましょう。</p>
+</blockquote>
+
+<p><a href="http://blog.livedoor.jp/sasata299/archives/51882704.html">Railsで大量のデータをまとめて更新するならfind_each使うよね - (ﾟ∀ﾟ)o彡 sasata299’s blog</a></p>
+
+<h2 id="findeach-1">素のfind_each</h2>
+
+<p>Userテーブルに1万件くらいデータを作って素直に<code>find_each</code>してみる。</p>
+
+<pre><code>&gt; User.find_each{|a|}
+  User Load (2.7ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (2.6ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
+  ...
+</code></pre>
+
+<p>デフォルトでは<code>order by id</code>で全件取得して1000件ずつ<code>limit 1000</code>して処理していくようなかたち。</p>
+
+<h2 id="orderfindeach">order付きfind_each</h2>
+
+<pre><code>&gt; User.order(created_at: :desc).find_each{|a| }
+Scoped order and limit are ignored, it's forced to be batch order and batch size
+  User Load (3.8ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (3.0ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (2.3ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
+  ...
+</code></pre>
+
+<p><code>Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
+
+<h2 id="limitfindeach">limit付きfind_each</h2>
+
+<p>じゃあlimitも試してみよう。</p>
+
+<pre><code>&gt; User.limit(2000).find_each{|a| }
+Scoped order and limit are ignored, it's forced to be batch order and batch size
+  User Load (3.0ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (3.5ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 11003)  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (3.4ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 12003)  ORDER BY `users`.`id` ASC LIMIT 1000
+  ...
+</code></pre>
+
+<p>やっぱりワーニングが出て無視された。</p>
+
+<h2 id="wherefindeach">where付きfind_each</h2>
+
+<p><code>where</code>を使って処理対象に条件を付けることもできます。</p>
+
+<pre><code>&gt; User.where(notes: "1").find_each{|a|}
+  User Load (4.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1'  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (4.8ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 11955)  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (4.9ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 13954)  ORDER BY `users`.`id` ASC LIMIT 1000
+  User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 18067)  ORDER BY `users`.`id` ASC LIMIT 1000
+  ...
+</code></pre>
+
+<p>しっかり全てのクエリに<code>users</code>.<code>notes</code> = ‘1’が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">while</span> <span class="n">records</span><span class="o">.</span><span class="n">any?</span>
+  <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">size</span>
+  <span class="n">primary_key_offset</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">id</span>
+  <span class="k">raise</span> <span class="s2">&quot;Primary key not included in the custom select clause&quot;</span> <span class="k">unless</span> <span class="n">primary_key_offset</span>
+
+  <span class="k">yield</span> <span class="n">records</span>
+
+  <span class="k">break</span> <span class="k">if</span> <span class="n">records_size</span> <span class="o">&lt;</span> <span class="n">batch_size</span>
+
+  <span class="n">records</span> <span class="o">=</span> <span class="n">relation</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">table</span><span class="o">[</span><span class="n">primary_key</span><span class="o">].</span><span class="n">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">))</span><span class="o">.</span><span class="n">to_a</span>
+<span class="k">end</span></code></pre></div>
+
+<pre><code>primary_key_offset = records.last.id
+relation.where(table[primary_key].gt(primary_key_offset))
+</code></pre>
+
+<p>となっている通り、最初に取得した1000件のうちのlast.idを取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
+
+<h2 id="section">まとめ</h2>
+<ul>
+  <li>find_eachはデフォルトで1000件ずつ処理する</li>
+  <li>find_eachにおいてorderとlimitは無視される</li>
+  <li>where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得して回していく</li>
+</ul>
+
+<h3 id="section-1">参考</h3>
+<ul>
+  <li><a href="http://api.rubyonrails.org/classes/ActiveRecord/Batches.html">ActiveRecord::Batches</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較]]></title>
@@ -1716,151 +1825,6 @@ after_save is called
   <span class="o">[</span><span class="n">message</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\s|-|&#39;/</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_sym</span><span class="p">,</span> <span class="n">code</span><span class="o">]</span>
 <span class="p">}</span><span class="o">.</span><span class="n">flatten</span><span class="o">]</span></code></pre></div>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rubyで独自例外を定義するときはStandardErrorを継承する]]></title>
-    <link href="http://blog.toshimaru.net/ruby-standard-error/"/>
-    <updated>2015-01-21T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/ruby-standard-error</id>
-    <content type="html"><![CDATA[<p>タイトルの通り、Rubyで独自例外を定義するときは<code>Exception</code>ではなく、<code>StandardError</code> を継承するしきたりとなっています。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># `Exception`ではなく</span>
-<span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
-<span class="c1"># `StandardError`.</span>
-<span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></div>
-
-<p>理由をコードでみてみます。</p>
-
-<h2 id="exception-">Exception を継承した場合</h2>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
-
-<span class="k">begin</span>
-  <span class="k">raise</span> <span class="no">MyError1</span>
-<span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="k">end</span>
-
-<span class="c1"># =&gt; MyError1: MyError1</span></code></pre></div>
-
-<p>MyError1 が<code>rescue</code>節でハンドリングされてませんね。こうしてみるとどうでしょう。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
-
-<span class="k">begin</span>
-  <span class="k">raise</span> <span class="no">MyError1</span>
-<span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="k">end</span>
-
-<span class="c1"># =&gt; Exception handled! MyError1</span></code></pre></div>
-
-<p>次は<code>rescue</code>節に入りました。</p>
-
-<h2 id="standarderror-">StandardError を継承した場合</h2>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span>
-
-<span class="k">begin</span>
-  <span class="k">raise</span> <span class="no">MyError2</span>
-<span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="k">end</span>
-
-<span class="c1"># =&gt; Exception handled! MyError2</span></code></pre></div>
-
-<p>こちらは問題なく<code>rescue</code>節でハンドルされました。</p>
-
-<h2 id="section">なぜ？</h2>
-
-<blockquote>
-  <p>rescue は第1引数で指定した例外クラスの下の階層にある例外だけを補足するけど、引数を省略すると StandardErrorクラスを指定したものとみなすからだ。</p>
-</blockquote>
-
-<p>via. <a href="http://d.hatena.ne.jp/yarb/20121005/p1">Rubyで自前の例外クラスを作るときExceptionではなくStandardErrorを継承する理由</a></p>
-
-<p>下記がビルトインのExceptionのサブクラスたちです。<code>rescue</code>のデフォルトが<code>StandardError</code>、<code>raise</code>のデフォルトが<code>RuntimeError</code>となっています。</p>
-
-<blockquote>
-  <ul>
-    <li>NoMemoryError</li>
-    <li>ScriptError
-      <ul>
-        <li>LoadError</li>
-        <li>NotImplementedError</li>
-        <li>SyntaxError</li>
-      </ul>
-    </li>
-    <li>SecurityError</li>
-    <li>SignalException
-      <ul>
-        <li>Interrupt</li>
-      </ul>
-    </li>
-    <li>StandardError – default for <code>rescue</code>
-      <ul>
-        <li>ArgumentError
-          <ul>
-            <li>UncaughtThrowError</li>
-          </ul>
-        </li>
-        <li>EncodingError</li>
-        <li>FiberError</li>
-        <li>IOError
-          <ul>
-            <li>EOFError</li>
-          </ul>
-        </li>
-        <li>IndexError
-          <ul>
-            <li>KeyError
-              <ul>
-                <li>StopIteration</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-        <li>LocalJumpError</li>
-        <li>NameError
-          <ul>
-            <li>NoMethodError</li>
-          </ul>
-        </li>
-        <li>RangeError
-          <ul>
-            <li>FloatDomainError</li>
-          </ul>
-        </li>
-        <li>RegexpError</li>
-        <li>RuntimeError – default for <code>raise</code></li>
-        <li>SystemCallError
-          <ul>
-            <li>Errno::*</li>
-          </ul>
-        </li>
-        <li>ThreadError</li>
-        <li>TypeError</li>
-        <li>ZeroDivisionError</li>
-      </ul>
-    </li>
-    <li>SystemExit</li>
-    <li>SystemStackError</li>
-    <li>fatal – impossible to rescue</li>
-  </ul>
-</blockquote>
-
-<p>via <a href="http://ruby-doc.org/core-2.2.0/Exception.html">Exception</a></p>
-
-<p>よって<code>rescue</code>のデフォルトで拾える<code>StandardError</code>を使って独自例外を定義しましょう。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></div>
-
-<h3 id="section-1">参考</h3>
-<ul>
-  <li><a href="http://d.hatena.ne.jp/yarb/20121005/p1">Rubyで自前の例外クラスを作るときExceptionではなくStandardErrorを継承する理由</a></li>
-</ul>
 ]]></content>
   </entry>
   
