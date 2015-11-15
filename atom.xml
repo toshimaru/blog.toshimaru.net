@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-11-12T17:29:47+00:00</updated>
+  <updated>2015-11-15T15:47:19+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -15,11 +15,11 @@
     <link href="http://blog.toshimaru.net/rails-find_each/"/>
     <updated>2015-11-12T00:00:00+00:00</updated>
     <id>http://blog.toshimaru.net/rails-find_each</id>
-    <content type="html"><![CDATA[<p>Railsのfind_eachがどんな挙動をするか気になったので調べた。</p>
+    <content type="html"><![CDATA[<p>Railsの<a href="http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/find_each">find_each</a>がどんな挙動をするか気になったので調べてみた。</p>
 
 <h2 id="findeach">find_eachとは</h2>
 
-<p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
+<p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
 
 <blockquote>
   <p>Railsには find_each というメソッドが用意されています。通常の each メソッドを使用すると、全データをまとめてメモリに展開してから処理を開始します。そのため、十分にメモリに載るデータ量であれば何も問題ないですが、数百万、数千万というデータ量になってくるとメモリに載りきらずに溢れてしまって大変なことになります。</p>
@@ -36,7 +36,7 @@
 
 <h2 id="findeach-1">素のfind_each</h2>
 
-<p>Userテーブルに1万件くらいデータを作って素直に<code>find_each</code>してみる。</p>
+<p>まずはUserテーブルに1万件くらいデータを作って素直に<code>find_each</code>してみる。</p>
 
 <pre><code>&gt; User.find_each{|a|}
   User Load (2.7ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
@@ -45,11 +45,11 @@
   ...
 </code></pre>
 
-<p>デフォルトでは<code>order by id</code>で全件取得して1000件ずつ<code>limit 1000</code>して処理していくようなかたち。</p>
+<p>デフォルトでは<code>order by id</code>で全件取得して1000件ずつ<code>limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
 
 <h2 id="orderfindeach">order付きfind_each</h2>
 
-<pre><code>&gt; User.order(created_at: :desc).find_each{|a| }
+<pre><code>&gt; User.order(created_at: :desc).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.8ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.0ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
@@ -63,7 +63,7 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p>じゃあlimitも試してみよう。</p>
 
-<pre><code>&gt; User.limit(2000).find_each{|a| }
+<pre><code>&gt; User.limit(2000).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.0ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.5ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 11003)  ORDER BY `users`.`id` ASC LIMIT 1000
@@ -85,7 +85,7 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   ...
 </code></pre>
 
-<p>しっかり全てのクエリに<code>users</code>.<code>notes</code> = ‘1’が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
+<p>しっかり全てのクエリに<code>users</code>.<code>notes</code> = ‘1’という条件が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">while</span> <span class="n">records</span><span class="o">.</span><span class="n">any?</span>
   <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">size</span>
@@ -99,17 +99,19 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   <span class="n">records</span> <span class="o">=</span> <span class="n">relation</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">table</span><span class="o">[</span><span class="n">primary_key</span><span class="o">].</span><span class="n">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">))</span><span class="o">.</span><span class="n">to_a</span>
 <span class="k">end</span></code></pre></div>
 
+<p>ポイントとなっているコード箇所を抜き出すとここ。</p>
+
 <pre><code>primary_key_offset = records.last.id
 relation.where(table[primary_key].gt(primary_key_offset))
 </code></pre>
 
-<p>となっている通り、最初に取得した1000件のうちのlast.idを取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
+<p>最初に取得した1000件のうちの<code>last.id</code>を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
 
 <h2 id="section">まとめ</h2>
 <ul>
   <li>find_eachはデフォルトで1000件ずつ処理する</li>
   <li>find_eachにおいてorderとlimitは無視される</li>
-  <li>where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得して回していく</li>
+  <li>where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得してループを回していく</li>
 </ul>
 
 <h3 id="section-1">参考</h3>
@@ -895,7 +897,7 @@ foo enhancing task
     <link href="http://blog.toshimaru.net/play-m3u8-video-in-browser/"/>
     <updated>2015-05-03T00:00:00+00:00</updated>
     <id>http://blog.toshimaru.net/play-m3u8-video-in-browser</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/videojs/video.js">video.js</a>を使ってm3u8形式の動画ファイルをSafari以外のブラウザでも再生する方法を紹介します。</p>
+    <content type="html"><![CDATA[<p><a href="https://github.com/videojs/video.js">video.js</a>を使ってm3u8形式の動画ファイルをSafari以外のブラウザでも再生する方法を紹介します。デモページは下のボタンから。</p>
 
 <p><a href="http://toshimaru.net/demo/videojs-m3u8/" class="btn btn-primary">Demo</a></p>
 
@@ -913,10 +915,10 @@ foo enhancing task
 <p><strong>※要Flash</strong></p>
 
 <h2 id="js">使うJSライブラリ</h2>
-<ul>
+<ol>
   <li><a href="https://github.com/videojs/video.js">videojs/video.js</a>
     <ul>
-      <li>基本素材. 動画ファイルを様々なブラウザで再生できるようにする。</li>
+      <li>基本素材。動画ファイルを様々なブラウザで再生できるようにする。</li>
     </ul>
   </li>
   <li><a href="https://github.com/videojs/videojs-contrib-media-sources">videojs/videojs-contrib-media-sources</a>
@@ -931,7 +933,7 @@ foo enhancing task
       <li>HLSに対応していないブラウザでもFlash技術を通すことで再生可能にしているよう。</li>
     </ul>
   </li>
-</ul>
+</ol>
 
 <h2 id="usage">Usage</h2>
 
@@ -988,6 +990,14 @@ foo enhancing task
 <h2 id="section-1">最後に</h2>
 
 <p>クロスオリジンな動画リソースを読み込むときは CORS(Cross-Origin Resource Sharing) の設定を適切にしてやる必要があることに注意！</p>
+
+<hr />
+
+<h2 id="section-2">追記</h2>
+
+<p>本記事を参考に書かれた下記の記事も参考になるかもしれません。</p>
+
+<p><a href="http://akiyoko.hatenablog.jp/entry/2015/08/11/015852">Video.js を使って HLS形式の動画をストリーミング再生する - akiyoko blog</a></p>
 ]]></content>
   </entry>
   

@@ -70,11 +70,20 @@
   </div>
 </div>
 
-<p>Railsのfind_eachがどんな挙動をするか気になったので調べた。</p>
+<ul class="section-nav">
+<li><a href="#find_eachとは">find_eachとは</a></li>
+<li><a href="#素のfind_each">素のfind_each</a></li>
+<li><a href="#order付きfind_each">order付きfind_each</a></li>
+<li><a href="#limit付きfind_each">limit付きfind_each</a></li>
+<li><a href="#where付きfind_each">where付きfind_each</a></li>
+<li><a href="#まとめ">まとめ</a></li>
+<li><a href="#参考">参考</a></li>
+</ul><p>Railsの<a href="http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/find_each">find_each</a>がどんな挙動をするか気になったので調べてみた。</p>
 
-<h2 id="findeach">find_eachとは</h2>
+<h2 id="findeach">
+<a id="find_eachとは" class="anchor" href="#find_each%E3%81%A8%E3%81%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>find_eachとは</h2>
 
-<p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
+<p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
 
 <blockquote>
   <p>Railsには find_each というメソッドが用意されています。通常の each メソッドを使用すると、全データをまとめてメモリに展開してから処理を開始します。そのため、十分にメモリに載るデータ量であれば何も問題ないですが、数百万、数千万というデータ量になってくるとメモリに載りきらずに溢れてしまって大変なことになります。</p>
@@ -89,9 +98,10 @@
 
 <p><a href="http://blog.livedoor.jp/sasata299/archives/51882704.html">Railsで大量のデータをまとめて更新するならfind_each使うよね - (ﾟ∀ﾟ)o彡 sasata299’s blog</a></p>
 
-<h2 id="findeach-1">素のfind_each</h2>
+<h2 id="findeach-1">
+<a id="素のfind_each" class="anchor" href="#%E7%B4%A0%E3%81%AEfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>素のfind_each</h2>
 
-<p>Userテーブルに1万件くらいデータを作って素直に<code>find_each</code>してみる。</p>
+<p>まずはUserテーブルに1万件くらいデータを作って素直に<code>find_each</code>してみる。</p>
 
 <pre><code>&gt; User.find_each{|a|}
   User Load (2.7ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
@@ -100,11 +110,12 @@
   ...
 </code></pre>
 
-<p>デフォルトでは<code>order by id</code>で全件取得して1000件ずつ<code>limit 1000</code>して処理していくようなかたち。</p>
+<p>デフォルトでは<code>order by id</code>で全件取得して1000件ずつ<code>limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
 
-<h2 id="orderfindeach">order付きfind_each</h2>
+<h2 id="orderfindeach">
+<a id="order付きfind_each" class="anchor" href="#order%E4%BB%98%E3%81%8Dfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>order付きfind_each</h2>
 
-<pre><code>&gt; User.order(created_at: :desc).find_each{|a| }
+<pre><code>&gt; User.order(created_at: :desc).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.8ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.0ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
@@ -114,11 +125,12 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p><code>Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
 
-<h2 id="limitfindeach">limit付きfind_each</h2>
+<h2 id="limitfindeach">
+<a id="limit付きfind_each" class="anchor" href="#limit%E4%BB%98%E3%81%8Dfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>limit付きfind_each</h2>
 
 <p>じゃあlimitも試してみよう。</p>
 
-<pre><code>&gt; User.limit(2000).find_each{|a| }
+<pre><code>&gt; User.limit(2000).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.0ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.5ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 11003)  ORDER BY `users`.`id` ASC LIMIT 1000
@@ -128,7 +140,8 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p>やっぱりワーニングが出て無視された。</p>
 
-<h2 id="wherefindeach">where付きfind_each</h2>
+<h2 id="wherefindeach">
+<a id="where付きfind_each" class="anchor" href="#where%E4%BB%98%E3%81%8Dfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>where付きfind_each</h2>
 
 <p><code>where</code>を使って処理対象に条件を付けることもできます。</p>
 
@@ -140,12 +153,12 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   ...
 </code></pre>
 
-<p>しっかり全てのクエリに<code>users</code>.<code>notes</code> = ‘1’が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
+<p>しっかり全てのクエリに<code>users</code>.<code>notes</code> = ‘1’という条件が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">while</span> <span class="n">records</span><span class="o">.</span><span class="n">any?</span>
   <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">size</span>
   <span class="n">primary_key_offset</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">id</span>
-  <span class="k">raise</span> <span class="s2">&quot;Primary key not included in the custom select clause&quot;</span> <span class="k">unless</span> <span class="n">primary_key_offset</span>
+  <span class="k">raise</span> <span class="s2">"Primary key not included in the custom select clause"</span> <span class="k">unless</span> <span class="n">primary_key_offset</span>
 
   <span class="k">yield</span> <span class="n">records</span>
 
@@ -154,20 +167,24 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   <span class="n">records</span> <span class="o">=</span> <span class="n">relation</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">table</span><span class="o">[</span><span class="n">primary_key</span><span class="o">].</span><span class="n">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">))</span><span class="o">.</span><span class="n">to_a</span>
 <span class="k">end</span></code></pre></div>
 
+<p>ポイントとなっているコード箇所を抜き出すとここ。</p>
+
 <pre><code>primary_key_offset = records.last.id
 relation.where(table[primary_key].gt(primary_key_offset))
 </code></pre>
 
-<p>となっている通り、最初に取得した1000件のうちのlast.idを取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
+<p>最初に取得した1000件のうちの<code>last.id</code>を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
 
-<h2 id="section">まとめ</h2>
+<h2 id="section">
+<a id="まとめ" class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
 <ul>
   <li>find_eachはデフォルトで1000件ずつ処理する</li>
   <li>find_eachにおいてorderとlimitは無視される</li>
-  <li>where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得して回していく</li>
+  <li>where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得してループを回していく</li>
 </ul>
 
-<h3 id="section-1">参考</h3>
+<h3 id="section-1">
+<a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h3>
 <ul>
   <li><a href="http://api.rubyonrails.org/classes/ActiveRecord/Batches.html">ActiveRecord::Batches</a></li>
 </ul>
