@@ -7,7 +7,7 @@ description: video.jsを使ってm3u8形式の動画ファイルをSafari以外�
 tags: video javascript
 ---
 
-[video.js](https://github.com/videojs/video.js)を使ってm3u8形式の動画ファイルをSafari以外のブラウザでも再生する方法を紹介します。
+[video.js](https://github.com/videojs/video.js)を使ってm3u8形式の動画ファイルをSafari以外のブラウザでも再生する方法を紹介します。デモページは下のボタンから。
 
 [Demo](http://toshimaru.net/demo/videojs-m3u8/){:.btn .btn-primary}
 
@@ -23,12 +23,12 @@ tags: video javascript
 **※要Flash**
 
 ## 使うJSライブラリ
-* [videojs/video.js](https://github.com/videojs/video.js)
-  * 基本素材. 動画ファイルを様々なブラウザで再生できるようにする。
-* [videojs/videojs-contrib-media-sources](https://github.com/videojs/videojs-contrib-media-sources)
+1. [videojs/video.js](https://github.com/videojs/video.js)
+  * 基本素材。動画ファイルを様々なブラウザで再生できるようにする。
+2. [videojs/videojs-contrib-media-sources](https://github.com/videojs/videojs-contrib-media-sources)
   * videoタグに動画ソースを流し込めるようにするvideo.jsプラグイン。
   * W3Cのドラフト仕様[Media Source Extensions](https://w3c.github.io/media-source/)が元のよう。
-* [videojs/videojs-contrib-hls](https://github.com/videojs/videojs-contrib-hls)
+3. [videojs/videojs-contrib-hls](https://github.com/videojs/videojs-contrib-hls)
   * HLS(`m3u8`)形式の動画ファイルを再生可能にするvideo.jsプラグイン。
   * HLSに対応していないブラウザでもFlash技術を通すことで再生可能にしているよう。
 
@@ -95,3 +95,11 @@ player.play();
 ## 最後に
 
 クロスオリジンな動画リソースを読み込むときは CORS(Cross-Origin Resource Sharing) の設定を適切にしてやる必要があることに注意！
+
+---
+
+## 追記
+
+本記事を参考に書かれた下記の記事も参考になるかもしれません。
+
+[Video.js を使って HLS形式の動画をストリーミング再生する - akiyoko blog](http://akiyoko.hatenablog.jp/entry/2015/08/11/015852)
