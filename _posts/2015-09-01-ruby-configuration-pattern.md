@@ -8,6 +8,8 @@ tags: ruby gem rails
 
 railsのgemでよくみかける初期設定ファイル、`config/initializers/foo.rb`。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。
 
+## めざす完成形はコレ！
+
 完成系として、下記を想定してみます。
 
 {% highlight ruby %}
@@ -17,14 +19,20 @@ Konfig.configure do |config|
 end
 {% endhighlight %}
 
+## configureメソッドを用意
+
 まずは`module`と`configure`というクラスメソッドを用意します。
 
 {% highlight ruby %}
 module Konfig
-  def self.configure
+  class << self
+    def configure
+    end
   end
 end
 {% endhighlight %}
+
+## Configurationクラス
 
 次に実際の設定値が入る`Configuration`クラスを用意します。
 
@@ -38,17 +46,20 @@ class Configuration
 end
 {% endhighlight %}
 
+## 完成形
+
 次にこれを組み合わせてみましょう。
 
 {% highlight ruby %}
 module Konfig
   class << self
-    attr_accessor :configuration
-  end
+    def configure
+      yield(configuration)
+    end
 
-  def self.configure
-    self.configuration ||= Configuration.new
-    yield(configuration)
+    def configuration
+      @configuration ||= Configuration.new
+    end
   end
 
   class Configuration
@@ -64,7 +75,7 @@ end
 これでインスタンス化された`Configuration`クラスが出てきます。
 
     > Konfig.configure {|config| p config}
-    #<Konfig::Configuration:0x007fa9730aace8 @my_value="default value">
+    #<Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value">
 
 {% highlight ruby %}
 Konfig.configure do |config|
@@ -76,7 +87,7 @@ Konfig.configuration
 # => #<Konfig::Configuration:0x007fa9730aace8 @my_value="abc">
 {% endhighlight %}
 
-`configure`で`Configuration`インスタンス作っててブロック内の`config`で`Configuration`インスタンスに設定注入していくようなイメージですね。
+`configure`で`Configuration`インスタンス作っててブロック内の`config`変数で`Configuration`インスタンスに設定注入していくようなイメージですね。
 
 ### 参考
 * [MyGem.configure Block](https://robots.thoughtbot.com/mygem-configure-block)
