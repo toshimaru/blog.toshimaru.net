@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-11-15T15:47:19+00:00</updated>
+  <updated>2015-11-26T13:57:46+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -259,6 +259,8 @@ result = ["John","Anna","Peter",]
     <id>http://blog.toshimaru.net/ruby-configuration-pattern</id>
     <content type="html"><![CDATA[<p>railsのgemでよくみかける初期設定ファイル、<code>config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
 
+<h2 id="section">めざす完成形はコレ！</h2>
+
 <p>完成系として、下記を想定してみます。</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
@@ -266,12 +268,18 @@ result = ["John","Anna","Peter",]
   <span class="n">config</span><span class="o">.</span><span class="n">my_value</span> <span class="o">=</span> <span class="s1">&#39;my configuration value&#39;</span>
 <span class="k">end</span></code></pre></div>
 
+<h2 id="configure">configureメソッドを用意</h2>
+
 <p>まずは<code>module</code>と<code>configure</code>というクラスメソッドを用意します。</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">configure</span>
+  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+    <span class="k">def</span> <span class="nf">configure</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span></code></pre></div>
+
+<h2 id="configuration">Configurationクラス</h2>
 
 <p>次に実際の設定値が入る<code>Configuration</code>クラスを用意します。</p>
 
@@ -283,16 +291,19 @@ result = ["John","Anna","Peter",]
   <span class="k">end</span>
 <span class="k">end</span></code></pre></div>
 
+<h2 id="section-1">完成形</h2>
+
 <p>次にこれを組み合わせてみましょう。</p>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
-    <span class="kp">attr_accessor</span> <span class="ss">:configuration</span>
-  <span class="k">end</span>
+    <span class="k">def</span> <span class="nf">configure</span>
+      <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
+    <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">configure</span>
-    <span class="nb">self</span><span class="o">.</span><span class="n">configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="o">.</span><span class="n">new</span>
-    <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">configuration</span>
+      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="o">.</span><span class="n">new</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 
   <span class="k">class</span> <span class="nc">Configuration</span>
@@ -307,7 +318,7 @@ result = ["John","Anna","Peter",]
 <p>これでインスタンス化された<code>Configuration</code>クラスが出てきます。</p>
 
 <pre><code>&gt; Konfig.configure {|config| p config}
-#&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="default value"&gt;
+#&lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value"&gt;
 </code></pre>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
@@ -318,9 +329,9 @@ result = ["John","Anna","Peter",]
 <span class="no">Konfig</span><span class="o">.</span><span class="n">configuration</span>
 <span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value=&quot;abc&quot;&gt;</span></code></pre></div>
 
-<p><code>configure</code>で<code>Configuration</code>インスタンス作っててブロック内の<code>config</code>で<code>Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
+<p><code>configure</code>で<code>Configuration</code>インスタンス作っててブロック内の<code>config</code>変数で<code>Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
 
-<h3 id="section">参考</h3>
+<h3 id="section-2">参考</h3>
 <ul>
   <li><a href="https://robots.thoughtbot.com/mygem-configure-block">MyGem.configure Block</a></li>
   <li><a href="http://jimsei.hatenablog.com/entry/20120721/1342855783">クラスインスタンス変数にアクセサを利用しアクセスする - ひたすら事務</a></li>
