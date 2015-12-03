@@ -6,7 +6,7 @@ description: HashキーのStringアクセスとSymbolアクセスはどっちが
 tags: ruby
 ---
 
-HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。コードは[こちら](http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/)を参照しています。
+HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。コードは[こちら](http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/)を参考にしました。
 
 ## 前提条件
 
@@ -14,6 +14,10 @@ HashキーのStringアクセスとSymbolアクセスはどっちが早いのか�
 
 * Ruby 2.1.6
 * Ruby 2.2.2
+
+またベンチマークには下記のgemを使用しています。
+
+* [evanphx/benchmark-ips](https://github.com/evanphx/benchmark-ips)
 
 ### ベンチマーク・コード
 
