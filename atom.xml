@@ -3,12 +3,253 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-12-03T02:45:15+00:00</updated>
+  <updated>2015-12-09T01:38:08+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JSON Schemaについて発表した]]></title>
+    <link href="http://blog.toshimaru.net/json-schema-collaboration/"/>
+    <updated>2015-12-09T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/json-schema-collaboration</id>
+    <content type="html"><![CDATA[<p>「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題して<a href="http://gunosy-beer.connpass.com/event/22825/">エムスリー x Gunosy Beer bash</a>で発表してきました。</p>
+
+<p>当日ハッシュタグ: <a href="https://twitter.com/hashtag/gunosybeer?src=hash">#gunosybeer hashtag on Twitter</a></p>
+
+<h2 id="img-classemoji-titlepointdown-altpointdown-srchttpsassetsgithubcomimagesiconsemojiunicode1f447png-height20-width20-alignabsmiddle-">発表資料<img class="emoji" title=":point_down:" alt=":point_down:" src="https://assets.github.com/images/icons/emoji/unicode/1f447.png" height="20" width="20" align="absmiddle" /></h2>
+
+<script async="" class="speakerdeck-embed" data-id="ddf8953b3746496a848dd7e4038ece4e" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+
+<h1 id="types-of-json-schema">2 Types of JSON Schema</h1>
+
+<p><a href="http://json-schema.org/">JSON Schema and Hyper-Schema</a></p>
+
+<ul>
+  <li>JSON Schema</li>
+  <li>JSON Hyper-Schema</li>
+</ul>
+
+<p><img src="/images/posts/jsonschema/json-schema.png" alt="" /></p>
+
+<h2 id="json-schema">JSON Schema</h2>
+<ul>
+  <li>JSONの <strong>データフォーマット</strong> を記述する</li>
+  <li>人間にも機械にもわかりやすいドキュメント</li>
+  <li>フォームでサブミットするデータのバリデーションに使える</li>
+  <li>自動テストにも使える</li>
+</ul>
+
+<h2 id="json-hyper-schema">JSON Hyper-Schema</h2>
+<ul>
+  <li><strong>Web APIの仕様</strong> を記述する</li>
+  <li>APIで期待するデータをJSON Schemaの形式で記述</li>
+  <li>日本ではこっちの方がポピュラー？</li>
+</ul>
+
+<p>観測範囲内だと日本のコミュニティでJSON Schemaといったときにこちらを指すことが多い気がする。</p>
+
+<h2 id="section">コラボレーション図</h2>
+
+<p>JSON Schemaでコラボレーションした事例を紹介するよ。</p>
+
+<pre><code>+------------------+
+|                  |
+|  Client-side JS  |
+|     (React)      |
+|                  |
++---+--------+-----+
+    |        ^
+    |        |            +---------------+
+    |  JSON  |  &lt;-------- |  JSON Schema  |
+    |        |            +---------------+
+    v        |
++---+--------+-----+
+|                  |
+| Server-side API  |
+|     (Rails)      |
+|                  |
++------------------+
+</code></pre>
+
+<h2 id="json-schema-for-us">JSON Schema for us</h2>
+<ul>
+  <li>For Humans
+    <ul>
+      <li>Clear specification</li>
+    </ul>
+  </li>
+  <li>For Apps
+    <ul>
+      <li>useful for Validation</li>
+      <li>useful for Test</li>
+      <li>etc.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="repositories">Repositories</h2>
+<ul>
+  <li><img class="emoji" title=":point_down:" alt=":point_down:" src="https://assets.github.com/images/icons/emoji/unicode/1f447.png" height="20" width="20" align="absmiddle" /> Rails API Repo <img class="emoji" title=":point_down:" alt=":point_down:" src="https://assets.github.com/images/icons/emoji/unicode/1f447.png" height="20" width="20" align="absmiddle" /></li>
+  <li><img class="emoji" title=":point_right:" alt=":point_right:" src="https://assets.github.com/images/icons/emoji/unicode/1f449.png" height="20" width="20" align="absmiddle" /> <strong>JSON Schema Repo</strong> <img class="emoji" title=":point_left:" alt=":point_left:" src="https://assets.github.com/images/icons/emoji/unicode/1f448.png" height="20" width="20" align="absmiddle" /></li>
+  <li><img class="emoji" title=":point_up_2:" alt=":point_up_2:" src="https://assets.github.com/images/icons/emoji/unicode/1f446.png" height="20" width="20" align="absmiddle" /> Frontend Repo <img class="emoji" title=":point_up_2:" alt=":point_up_2:" src="https://assets.github.com/images/icons/emoji/unicode/1f446.png" height="20" width="20" align="absmiddle" /></li>
+</ul>
+
+<p>バックエンドAPIのレポジトリ、フロントエンドのJSレポジトリ、共通で使うJSON Schemaのためのレポジトリ、これら３つを用意した。</p>
+
+<h2 id="workflow">Workflow</h2>
+
+<ol>
+  <li>必要なAPIとそこに含まれるべきデータを洗い出し</li>
+  <li>1をJSON Schemaに落としこむ</li>
+  <li>プルリク！</li>
+</ol>
+
+<p>1は仕様・ワイヤーをもとにマークダウンでもスプレッドシートでも荒くアウトプット出す。</p>
+
+<p>バックエンドエンジニアとフロントエンドエンジニアが共通認識を深めながらJSON Schemaレポジトリを育てていく。</p>
+
+<p><img src="/images/posts/jsonschema/schema-pr.png" alt="" /></p>
+
+<h2 id="get-usersid">GET /users/{id}</h2>
+
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># user.schema.yml</span>
+<span class="l-Scalar-Plain">$schema</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://json-schema.org/draft-04/schema#</span>
+<span class="l-Scalar-Plain">title</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">User</span>
+<span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">An User</span>
+<span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">object</span>
+<span class="l-Scalar-Plain">properties</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">id</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">integer</span>
+  <span class="l-Scalar-Plain">email</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">string</span>
+    <span class="l-Scalar-Plain">format</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">email</span>
+  <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">string</span>
+    <span class="l-Scalar-Plain">minLength</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1</span>
+    <span class="l-Scalar-Plain">maxLength</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">32</span>
+<span class="l-Scalar-Plain">required</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">id</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">email</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span></code></pre></div>
+
+<p><code>PUT /users/{id}</code>とかもスキーマ使いまわせる。</p>
+
+<h2 id="json-schema-validation">JSON Schema Validation</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;json-schema&#39;</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;required&quot;</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;a&quot;</span><span class="o">]</span><span class="p">,</span>
+  <span class="s2">&quot;properties&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;integer&quot;</span><span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+<span class="p">}</span>
+
+<span class="no">JSON</span><span class="o">::</span><span class="no">Validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code></pre></div>
+
+<h2 id="rspec-json-schema-matcher">RSpec JSON Schema Matcher</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">&quot;Fetching the current user&quot;</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">&quot;with valid auth token&quot;</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">&quot;returns the current user&quot;</span> <span class="k">do</span>
+      <span class="n">user</span> <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
+      <span class="n">auth_header</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Auth-Token&quot;</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">auth_token</span> <span class="p">}</span>
+
+      <span class="n">get</span> <span class="n">v1_current_user_url</span><span class="p">,</span> <span class="p">{},</span> <span class="n">auth_header</span>
+
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="mi">200</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">match_response_schema</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></div>
+
+<p>参考: <a href="https://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher">Validating JSON Schemas with an RSpec Matcher</a></p>
+
+<h2 id="ruby-json-schema-library">Ruby JSON Schema Library</h2>
+<ul>
+  <li><a href="https://github.com/ruby-json-schema/json-schema">ruby-json-schema/json-schema</a></li>
+  <li><a href="https://github.com/brandur/json_schema">brandur/json_schema</a></li>
+</ul>
+
+<p>ダッシュとアンダースコア！ わかりにくい！！</p>
+
+<h2 id="json-schema-vs-jsonschema">json-schema vs json_schema</h2>
+<ul>
+  <li>depending on <code>json-schema</code>:
+    <ul>
+      <li><a href="https://github.com/airbrake/airbrake">airbrake/airbrake</a></li>
+      <li><a href="https://github.com/square/fdoc">square/fdoc</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="json-schema-vs-jsonschema-1">json-schema vs json_schema</h2>
+<ul>
+  <li>depending on <code>json_schema</code>:
+    <ul>
+      <li><a href="https://github.com/interagent/committee">interagent/committee</a></li>
+      <li><a href="https://github.com/interagent/prmd">interagent/prmd</a></li>
+      <li><a href="https://github.com/increments/qiita-rb">increments/qiita-rb</a></li>
+      <li><a href="https://github.com/r7kamura/rack-json_schema">r7kamura/rack-json_schema</a></li>
+      <li><a href="https://github.com/r7kamura/jdoc">r7kamura/jdoc</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="javascript-json-schema-library">JavaScript JSON Schema Library</h2>
+
+<p>弊社フロンエンドエンジニアのオススメ2つ。</p>
+
+<ul>
+  <li><a href="https://github.com/mafintosh/is-my-json-valid">mafintosh/is-my-json-valid</a></li>
+  <li><a href="https://github.com/epoberezkin/ajv">epoberezkin/ajv</a></li>
+</ul>
+
+<h2 id="json">JSON書くのツラい問題</h2>
+<ul>
+  <li>「閉じカッコがー!!」</li>
+  <li>「カンマがー!!!!」</li>
+  <li>「コメントがー!!!!!!」</li>
+  <li>「クオテーションがー!!!!!!」</li>
+</ul>
+
+<p><strong>黙ってYAMLで書こう。</strong> こっちのが可読性もよいしミスも少ないし書きやすいです。</p>
+
+<h2 id="json-schema-1">JSON Schemaの今とこれから</h2>
+<ul>
+  <li><a href="https://github.com/json-schema/json-schema">json-schema/json-schema</a></li>
+</ul>
+
+<p><img src="/images/posts/jsonschema/ima.png" alt="" /></p>
+
+<ul>
+  <li><a href="https://github.com/json-schema/json-schema/wiki/v5-Proposals">JSON Schema v5 Proposals</a>が出されている段階</li>
+  <li><a href="https://github.com/json-schema/json-schema/issues">Issue</a>や<a href="https://groups.google.com/forum/#!forum/json-schema">Google Groups</a>を追うとよさげ</li>
+  <li>v5への具体的なロードマップは引かれていない模様</li>
+</ul>
+
+<p><img src="/images/posts/jsonschema/korekara.png" alt="" /></p>
+
+<h2 id="json-schema-2">JSON Schemaコラボでよかったこと</h2>
+<ul>
+  <li>バックエンドエンジニアとフロントエンドエンジニアの仕様の共通認識</li>
+  <li>JSON Schemaを先に定義しておくことでバックエンドエンジニアとフロントエンドエンジニアが疎に開発できる</li>
+  <li>JSON Schemaでバグの混入を防ぐ</li>
+</ul>
+
+<hr />
+
+<h2 id="section-1">所感</h2>
+<p>時間にシビアなLT形式だったので発表途中でぶった切られた。もう少し簡潔にすべきだったかもしれない。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Railsのfind_eachの挙動を調べた]]></title>
@@ -1472,386 +1713,6 @@ after_save is called
   <li><a href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">ActiveRecord::Callbacks</a></li>
   <li><a href="http://www.techscore.com/blog/2012/12/25/rails%E3%81%AE%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E3%81%BE%E3%81%A8%E3%82%81/">» Railsのコールバックまとめ TECHSCORE BLOG</a></li>
 </ul>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[RailsのHTTPステータスのシンボル表現まとめ]]></title>
-    <link href="http://blog.toshimaru.net/rails-http-status-symbols/"/>
-    <updated>2015-01-31T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/rails-http-status-symbols</id>
-    <content type="html"><![CDATA[<p>よく忘れるのでメモ。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Response Class</th>
-      <th>HTTP Status Code</th>
-      <th>Symbol</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Informational</strong></td>
-      <td>100</td>
-      <td><code>:continue</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>101</td>
-      <td><code>:switching_protocols</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>102</td>
-      <td><code>:processing</code></td>
-    </tr>
-    <tr>
-      <td><strong>Success</strong></td>
-      <td>200</td>
-      <td><code>:ok</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>201</td>
-      <td><code>:created</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>202</td>
-      <td><code>:accepted</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>203</td>
-      <td><code>:non_authoritative_information</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>204</td>
-      <td><code>:no_content</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>205</td>
-      <td><code>:reset_content</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>206</td>
-      <td><code>:partial_content</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>207</td>
-      <td><code>:multi_status</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>208</td>
-      <td><code>:already_reported</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>226</td>
-      <td><code>:im_used</code></td>
-    </tr>
-    <tr>
-      <td><strong>Redirection</strong></td>
-      <td>300</td>
-      <td><code>:multiple_choices</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>301</td>
-      <td><code>:moved_permanently</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>302</td>
-      <td><code>:found</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>303</td>
-      <td><code>:see_other</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>304</td>
-      <td><code>:not_modified</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>305</td>
-      <td><code>:use_proxy</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>306</td>
-      <td><code>:reserved</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>307</td>
-      <td><code>:temporary_redirect</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>308</td>
-      <td><code>:permanent_redirect</code></td>
-    </tr>
-    <tr>
-      <td><strong>Client Error</strong></td>
-      <td>400</td>
-      <td><code>:bad_request</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>401</td>
-      <td><code>:unauthorized</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>402</td>
-      <td><code>:payment_required</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>403</td>
-      <td><code>:forbidden</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>404</td>
-      <td><code>:not_found</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>405</td>
-      <td><code>:method_not_allowed</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>406</td>
-      <td><code>:not_acceptable</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>407</td>
-      <td><code>:proxy_authentication_required</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>408</td>
-      <td><code>:request_timeout</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>409</td>
-      <td><code>:conflict</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>410</td>
-      <td><code>:gone</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>411</td>
-      <td><code>:length_required</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>412</td>
-      <td><code>:precondition_failed</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>413</td>
-      <td><code>:request_entity_too_large</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>414</td>
-      <td><code>:request_uri_too_long</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>415</td>
-      <td><code>:unsupported_media_type</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>416</td>
-      <td><code>:requested_range_not_satisfiable</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>417</td>
-      <td><code>:expectation_failed</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>422</td>
-      <td><code>:unprocessable_entity</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>423</td>
-      <td><code>:locked</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>424</td>
-      <td><code>:failed_dependency</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>426</td>
-      <td><code>:upgrade_required</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>428</td>
-      <td><code>:precondition_required</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>429</td>
-      <td><code>:too_many_requests</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>431</td>
-      <td><code>:request_header_fields_too_large</code></td>
-    </tr>
-    <tr>
-      <td><strong>Server Error</strong></td>
-      <td>500</td>
-      <td><code>:internal_server_error</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>501</td>
-      <td><code>:not_implemented</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>502</td>
-      <td><code>:bad_gateway</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>503</td>
-      <td><code>:service_unavailable</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>504</td>
-      <td><code>:gateway_timeout</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>505</td>
-      <td><code>:http_version_not_supported</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>506</td>
-      <td><code>:variant_also_negotiates</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>507</td>
-      <td><code>:insufficient_storage</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>508</td>
-      <td><code>:loop_detected</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>510</td>
-      <td><code>:not_extended</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>511</td>
-      <td><code>:network_authentication_required</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<p>ちなみにこれのRuby元コードはどこにあるかというと<a href="https://github.com/rack/rack">rack/rack</a>の<code>/lib/rack/utils.rb</code>にあります。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">HTTP_STATUS_CODES</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="mi">100</span> <span class="o">=&gt;</span> <span class="s1">&#39;Continue&#39;</span><span class="p">,</span>
-  <span class="mi">101</span> <span class="o">=&gt;</span> <span class="s1">&#39;Switching Protocols&#39;</span><span class="p">,</span>
-  <span class="mi">102</span> <span class="o">=&gt;</span> <span class="s1">&#39;Processing&#39;</span><span class="p">,</span>
-  <span class="mi">200</span> <span class="o">=&gt;</span> <span class="s1">&#39;OK&#39;</span><span class="p">,</span>
-  <span class="mi">201</span> <span class="o">=&gt;</span> <span class="s1">&#39;Created&#39;</span><span class="p">,</span>
-  <span class="mi">202</span> <span class="o">=&gt;</span> <span class="s1">&#39;Accepted&#39;</span><span class="p">,</span>
-  <span class="mi">203</span> <span class="o">=&gt;</span> <span class="s1">&#39;Non-Authoritative Information&#39;</span><span class="p">,</span>
-  <span class="mi">204</span> <span class="o">=&gt;</span> <span class="s1">&#39;No Content&#39;</span><span class="p">,</span>
-  <span class="mi">205</span> <span class="o">=&gt;</span> <span class="s1">&#39;Reset Content&#39;</span><span class="p">,</span>
-  <span class="mi">206</span> <span class="o">=&gt;</span> <span class="s1">&#39;Partial Content&#39;</span><span class="p">,</span>
-  <span class="mi">207</span> <span class="o">=&gt;</span> <span class="s1">&#39;Multi-Status&#39;</span><span class="p">,</span>
-  <span class="mi">208</span> <span class="o">=&gt;</span> <span class="s1">&#39;Already Reported&#39;</span><span class="p">,</span>
-  <span class="mi">226</span> <span class="o">=&gt;</span> <span class="s1">&#39;IM Used&#39;</span><span class="p">,</span>
-  <span class="mi">300</span> <span class="o">=&gt;</span> <span class="s1">&#39;Multiple Choices&#39;</span><span class="p">,</span>
-  <span class="mi">301</span> <span class="o">=&gt;</span> <span class="s1">&#39;Moved Permanently&#39;</span><span class="p">,</span>
-  <span class="mi">302</span> <span class="o">=&gt;</span> <span class="s1">&#39;Found&#39;</span><span class="p">,</span>
-  <span class="mi">303</span> <span class="o">=&gt;</span> <span class="s1">&#39;See Other&#39;</span><span class="p">,</span>
-  <span class="mi">304</span> <span class="o">=&gt;</span> <span class="s1">&#39;Not Modified&#39;</span><span class="p">,</span>
-  <span class="mi">305</span> <span class="o">=&gt;</span> <span class="s1">&#39;Use Proxy&#39;</span><span class="p">,</span>
-  <span class="mi">307</span> <span class="o">=&gt;</span> <span class="s1">&#39;Temporary Redirect&#39;</span><span class="p">,</span>
-  <span class="mi">308</span> <span class="o">=&gt;</span> <span class="s1">&#39;Permanent Redirect&#39;</span><span class="p">,</span>
-  <span class="mi">400</span> <span class="o">=&gt;</span> <span class="s1">&#39;Bad Request&#39;</span><span class="p">,</span>
-  <span class="mi">401</span> <span class="o">=&gt;</span> <span class="s1">&#39;Unauthorized&#39;</span><span class="p">,</span>
-  <span class="mi">402</span> <span class="o">=&gt;</span> <span class="s1">&#39;Payment Required&#39;</span><span class="p">,</span>
-  <span class="mi">403</span> <span class="o">=&gt;</span> <span class="s1">&#39;Forbidden&#39;</span><span class="p">,</span>
-  <span class="mi">404</span> <span class="o">=&gt;</span> <span class="s1">&#39;Not Found&#39;</span><span class="p">,</span>
-  <span class="mi">405</span> <span class="o">=&gt;</span> <span class="s1">&#39;Method Not Allowed&#39;</span><span class="p">,</span>
-  <span class="mi">406</span> <span class="o">=&gt;</span> <span class="s1">&#39;Not Acceptable&#39;</span><span class="p">,</span>
-  <span class="mi">407</span> <span class="o">=&gt;</span> <span class="s1">&#39;Proxy Authentication Required&#39;</span><span class="p">,</span>
-  <span class="mi">408</span> <span class="o">=&gt;</span> <span class="s1">&#39;Request Timeout&#39;</span><span class="p">,</span>
-  <span class="mi">409</span> <span class="o">=&gt;</span> <span class="s1">&#39;Conflict&#39;</span><span class="p">,</span>
-  <span class="mi">410</span> <span class="o">=&gt;</span> <span class="s1">&#39;Gone&#39;</span><span class="p">,</span>
-  <span class="mi">411</span> <span class="o">=&gt;</span> <span class="s1">&#39;Length Required&#39;</span><span class="p">,</span>
-  <span class="mi">412</span> <span class="o">=&gt;</span> <span class="s1">&#39;Precondition Failed&#39;</span><span class="p">,</span>
-  <span class="mi">413</span> <span class="o">=&gt;</span> <span class="s1">&#39;Payload Too Large&#39;</span><span class="p">,</span>
-  <span class="mi">414</span> <span class="o">=&gt;</span> <span class="s1">&#39;URI Too Long&#39;</span><span class="p">,</span>
-  <span class="mi">415</span> <span class="o">=&gt;</span> <span class="s1">&#39;Unsupported Media Type&#39;</span><span class="p">,</span>
-  <span class="mi">416</span> <span class="o">=&gt;</span> <span class="s1">&#39;Range Not Satisfiable&#39;</span><span class="p">,</span>
-  <span class="mi">417</span> <span class="o">=&gt;</span> <span class="s1">&#39;Expectation Failed&#39;</span><span class="p">,</span>
-  <span class="mi">422</span> <span class="o">=&gt;</span> <span class="s1">&#39;Unprocessable Entity&#39;</span><span class="p">,</span>
-  <span class="mi">423</span> <span class="o">=&gt;</span> <span class="s1">&#39;Locked&#39;</span><span class="p">,</span>
-  <span class="mi">424</span> <span class="o">=&gt;</span> <span class="s1">&#39;Failed Dependency&#39;</span><span class="p">,</span>
-  <span class="mi">426</span> <span class="o">=&gt;</span> <span class="s1">&#39;Upgrade Required&#39;</span><span class="p">,</span>
-  <span class="mi">428</span> <span class="o">=&gt;</span> <span class="s1">&#39;Precondition Required&#39;</span><span class="p">,</span>
-  <span class="mi">429</span> <span class="o">=&gt;</span> <span class="s1">&#39;Too Many Requests&#39;</span><span class="p">,</span>
-  <span class="mi">431</span> <span class="o">=&gt;</span> <span class="s1">&#39;Request Header Fields Too Large&#39;</span><span class="p">,</span>
-  <span class="mi">500</span> <span class="o">=&gt;</span> <span class="s1">&#39;Internal Server Error&#39;</span><span class="p">,</span>
-  <span class="mi">501</span> <span class="o">=&gt;</span> <span class="s1">&#39;Not Implemented&#39;</span><span class="p">,</span>
-  <span class="mi">502</span> <span class="o">=&gt;</span> <span class="s1">&#39;Bad Gateway&#39;</span><span class="p">,</span>
-  <span class="mi">503</span> <span class="o">=&gt;</span> <span class="s1">&#39;Service Unavailable&#39;</span><span class="p">,</span>
-  <span class="mi">504</span> <span class="o">=&gt;</span> <span class="s1">&#39;Gateway Timeout&#39;</span><span class="p">,</span>
-  <span class="mi">505</span> <span class="o">=&gt;</span> <span class="s1">&#39;HTTP Version Not Supported&#39;</span><span class="p">,</span>
-  <span class="mi">506</span> <span class="o">=&gt;</span> <span class="s1">&#39;Variant Also Negotiates&#39;</span><span class="p">,</span>
-  <span class="mi">507</span> <span class="o">=&gt;</span> <span class="s1">&#39;Insufficient Storage&#39;</span><span class="p">,</span>
-  <span class="mi">508</span> <span class="o">=&gt;</span> <span class="s1">&#39;Loop Detected&#39;</span><span class="p">,</span>
-  <span class="mi">510</span> <span class="o">=&gt;</span> <span class="s1">&#39;Not Extended&#39;</span><span class="p">,</span>
-  <span class="mi">511</span> <span class="o">=&gt;</span> <span class="s1">&#39;Network Authentication Required&#39;</span>
-<span class="p">}</span></code></pre></div>
-
-<p>これをシンボル化してるのが下記。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">SYMBOL_TO_STATUS_CODE</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">[*</span><span class="no">HTTP_STATUS_CODES</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="o">|</span>
-  <span class="o">[</span><span class="n">message</span><span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\s|-|&#39;/</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_sym</span><span class="p">,</span> <span class="n">code</span><span class="o">]</span>
-<span class="p">}</span><span class="o">.</span><span class="n">flatten</span><span class="o">]</span></code></pre></div>
-
 ]]></content>
   </entry>
   
