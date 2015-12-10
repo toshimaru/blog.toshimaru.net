@@ -4,11 +4,12 @@ title: Rubyのinjectを使いこなす
 published: true
 description: Rubyのイテレータメソッドinjectの使い方を紹介してみようと思います。
 tags: ruby
+toc: true
 ---
 
 Rubyのイテレータメソッド`inject`の使い方を紹介してみようと思います。
 
-## inject
+## injectの基本的な使い方
 
 Rubyのinjectはこんなふうに使えます。
 
