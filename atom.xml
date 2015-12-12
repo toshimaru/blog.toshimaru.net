@@ -3,12 +3,79 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2015-12-10T01:23:42+00:00</updated>
+  <updated>2015-12-12T17:22:24+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
   </author>
 
+  
+  <entry>
+    <title type="html"><![CDATA[RubyのJSONパーサーの比較]]></title>
+    <link href="http://blog.toshimaru.net/json-parser-benchmark/"/>
+    <updated>2015-12-13T00:00:00+00:00</updated>
+    <id>http://blog.toshimaru.net/json-parser-benchmark</id>
+    <content type="html"><![CDATA[<p>標準のJSONパーサーとは別に<a href="https://www.ruby-toolbox.com/categories/JSON_Parsers">いくつかのJSONパーサー</a>実装がRuby gemにはある。それらを比較としてベンチマークとってみた。</p>
+
+<h2 id="section">前提</h2>
+<ul>
+  <li>Ruby 2.2.2</li>
+  <li><a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a>でベンチ</li>
+  <li>パースするJSONは30K程度のサイズ</li>
+  <li>比較対象は下記3つ
+    <ul>
+      <li>JSON</li>
+      <li><a href="https://github.com/brianmario/yajl-ruby">yajl</a></li>
+      <li><a href="https://github.com/ohler55/oj">oj</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ruby-code">Ruby code</h2>
+
+<p>書いてみた。</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;net/http&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;yajl&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;oj&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+
+<span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span> <span class="s2">&quot;http://complex/json/url.json&quot;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">get</span> <span class="n">uri</span>
+
+<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;JSON.parse&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Yajl&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">Yajl</span><span class="o">::</span><span class="no">Parser</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Oj&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">Oj</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="o">.</span><span class="n">compare!</span>
+<span class="k">end</span></code></pre></div>
+
+<h2 id="result">Result</h2>
+
+<pre><code>Calculating -------------------------------------
+          JSON.parse    99.000  i/100ms
+                Yajl   108.000  i/100ms
+                  Oj   173.000  i/100ms
+-------------------------------------------------
+          JSON.parse      1.123k (± 8.4%) i/s -      5.643k
+                Yajl      1.105k (± 2.8%) i/s -      5.616k
+                  Oj      1.838k (± 3.2%) i/s -      9.342k
+
+Comparison:
+                  Oj:     1838.3 i/s
+          JSON.parse:     1123.1 i/s - 1.64x slower
+                Yajl:     1105.2 i/s - 1.66x slower
+</code></pre>
+
+<p>OjがJSON.parseやYajlより1.5倍〜1.8倍ほど高速という結果が得られた。</p>
+
+<h2 id="section-1">まとめ</h2>
+
+<p>Oj使ってこ。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JSON Schemaについて発表した]]></title>
@@ -1029,6 +1096,16 @@ foo enhancing task
 <h3 id="section-3">参考</h3>
 <ul>
   <li><a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">Unraveling String Key Performance in Ruby 2.2</a></li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>[Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった</td>
+          <td>69log](http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
 </ul>
 ]]></content>
   </entry>
@@ -1560,159 +1637,6 @@ bash bash_script.bash  0.15s user 0.24s system 72% cpu 0.547 total
 <p>はやい。 <img class="emoji" title=":astonished:" alt=":astonished:" src="https://assets.github.com/images/icons/emoji/unicode/1f632.png" height="20" width="20" align="absmiddle" /></p>
 
 <p>CPUは超使ってる。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ActiveRecordのコールバックの順番・コールバック内のロールバック処理]]></title>
-    <link href="http://blog.toshimaru.net/active-record-callbacks/"/>
-    <updated>2015-03-01T00:00:00+00:00</updated>
-    <id>http://blog.toshimaru.net/active-record-callbacks</id>
-    <content type="html"><![CDATA[<p>ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。</p>
-
-<h2 id="callback-timing">Callback Timing</h2>
-
-<p>まずは順番について。このようなオーダーです。</p>
-
-<ul>
-  <li>(-) save</li>
-  <li>(-) valid</li>
-  <li>(1) before_validation</li>
-  <li>(-) validate</li>
-  <li>(2) after_validation</li>
-  <li>(3) before_save</li>
-  <li>(4) before_create</li>
-  <li>(-) create</li>
-  <li>(5) after_create</li>
-  <li>(6) after_save</li>
-  <li>(7) after_commit</li>
-</ul>
-
-<h2 id="section">試してみる</h2>
-
-<p>それぞれのコールバックをコードで試してみる。こんなコールバックを設定したUserモデルを作る。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_validation is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_validation is called&quot;</span> <span class="p">}</span>
-  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_save is called&quot;</span> <span class="p">}</span>
-  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_create is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_create is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_save is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_commit is called&quot;</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
-
-<h3 id="section-1">新規レコード作成時</h3>
-
-<p>こいつをsaveしてみる。</p>
-
-<pre><code>&gt; User.new.save
-   (0.1ms)  begin transaction
-before_validation is called
-after_validation is called
-before_save is called
-before_create is called
-  SQL (0.6ms)  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-02-28 15:53:53.000058"], ["updated_at", "2015-02-28 15:53:53.000058"]]
-after_create is called
-after_save is called
-   (485.3ms)  commit transaction
-after_commit is called
- =&gt; true
-</code></pre>
-
-<p>コールバックのタイミングとクエリの走るタイミングが可視化された。</p>
-
-<h3 id="section-2">レコード更新時</h3>
-
-<p>updateの場合はこんな感じ。</p>
-
-<pre><code> &gt; user.update(name: "hoge")
-    (0.1ms)  begin transaction
- before_validation is called
- after_validation is called
- before_save is called
-   SQL (0.4ms)  UPDATE "users" SET "name" = ?, "updated_at" = ? WHERE "users"."id" = ?  [["name", "hoge"], ["updated_at", "2015-02-28 15:58:37.577661"], ["id", 6]]
- after_save is called
-    (0.8ms)  commit transaction
- after_commit is called
-  =&gt; true
-</code></pre>
-
-<p>更新なので <code>before_create</code> <code>after_create</code> は呼ばれない。</p>
-
-<h2 id="saveupdate">save,updateはトランザクション内で実行される</h2>
-
-<p><a href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">ドキュメント</a>にはこう書いてある</p>
-
-<blockquote>
-  <p>The entire callback chain of a save, save!, or destroy call runs within a transaction. That includes after_* hooks. If everything goes fine a COMMIT is executed once the chain has been completed.</p>
-</blockquote>
-
-<p><code>save</code>, <code>save!</code>, <code>destroy</code>のコールバック群はトランザクション内で処理されますよ、と。</p>
-
-<h2 id="section-3">特定のコールバックのタイミングで処理をロールバックさせたい</h2>
-
-<p>ではそれらのコールバックでのタイミングでトランザクションをロールバックすることも可能。どうやれば良いのか調べてみた。</p>
-
-<h3 id="before-">before_* のタイミングでロールバック</h3>
-
-<p><code>before_*</code>のタイミングで false を返すと処理はロールバックされる。</p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_validation is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_validation is called&quot;</span> <span class="p">}</span>
-  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_save is called&quot;</span><span class="p">;</span> <span class="kp">false</span> <span class="p">}</span>
-  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_create is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_create is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_save is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_commit is called&quot;</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
-
-<pre><code>&gt; User.new.save
-(0.1ms)  begin transaction
-before_validation is called
-after_validation is called
-before_save is called
-(0.1ms)  rollback transaction
-=&gt; false
-</code></pre>
-
-<p>しかし<code>after_*</code>で false を返しても処理はロールバックされないようだ。</p>
-
-<h3 id="after-">after_* のタイミングでロールバック</h3>
-
-<p>after_* のタイミングでロールバックしたい場合は、明示的にRollbackをraiseしてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
-
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_validation is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_validation is called&quot;</span> <span class="p">}</span>
-  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_save is called&quot;</span> <span class="p">}</span>
-  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_create is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_create is called&quot;</span> <span class="p">}</span>
-  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_save is called&quot;</span><span class="p">;</span> <span class="k">raise</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Rollback</span> <span class="p">}</span>
-  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_commit is called&quot;</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
-
-<pre><code>&gt; User.new.save
-   (0.1ms)  begin transaction
-before_validation is called
-after_validation is called
-before_save is called
-before_create is called
-  SQL (0.4ms)  INSERT INTO "users" ("created_at", "updated_at") VALUES (?, ?)  [["created_at", "2015-02-28 16:49:35.344885"], ["updated_at", "2015-02-28 16:49:35.344885"]]
-after_create is called
-after_save is called
-   (2.4ms)  rollback transaction
- =&gt; nil
-</code></pre>
-
-<p>update も同様にこれでRollbackできます。</p>
-
-<h3 id="section-4">参考</h3>
-<ul>
-  <li><a href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">ActiveRecord::Callbacks</a></li>
-  <li><a href="http://www.techscore.com/blog/2012/12/25/rails%E3%81%AE%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E3%81%BE%E3%81%A8%E3%82%81/">» Railsのコールバックまとめ TECHSCORE BLOG</a></li>
-</ul>
 ]]></content>
   </entry>
   
