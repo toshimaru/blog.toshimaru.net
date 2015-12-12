@@ -3,7 +3,7 @@ layout: post
 title: JSON Schemaについて発表した
 published: true
 description: 「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題してエムスリー x Gunosy Beer bashで発表してきました。
-tags: jsonschema tech
+tags: jsonschema json tech
 ---
 
 「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題して[エムスリー x Gunosy Beer bash](http://gunosy-beer.connpass.com/event/22825/)で発表してきました。
