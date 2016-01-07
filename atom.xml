@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2016-01-07T02:21:28+00:00</updated>
+  <updated>2016-01-07T02:29:08+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -11,7 +11,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[RubyのJSONパーサーの比較]]></title>
+    <title type="html"><![CDATA[RubyのJSONパーサーのパース速度比較]]></title>
     <link href="http://blog.toshimaru.net/json-parser-benchmark/"/>
     <updated>2015-12-13T00:00:00+00:00</updated>
     <id>http://blog.toshimaru.net/json-parser-benchmark</id>
@@ -19,12 +19,12 @@
 
 <h2 id="section">前提</h2>
 <ul>
-  <li>Ruby 2.2.2</li>
-  <li><a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a>でベンチ</li>
-  <li>パースするJSONは30K程度のサイズ</li>
+  <li>Ruby 2.2.2 を使います</li>
+  <li><a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a>でベンチとる</li>
+  <li>パースするJSONは30KB程度のサイズ</li>
   <li>比較対象は下記3つ
     <ul>
-      <li>JSON</li>
+      <li><a href="http://ruby-doc.org/stdlib-2.2.0/libdoc/json/rdoc/JSON.html">Module: JSON</a></li>
       <li><a href="https://github.com/brianmario/yajl-ruby">yajl</a></li>
       <li><a href="https://github.com/ohler55/oj">oj</a></li>
     </ul>
@@ -74,6 +74,10 @@ Comparison:
 <h2 id="section-1">まとめ</h2>
 
 <p>Oj使ってこ。</p>
+
+<h2 id="section-2">追記</h2>
+
+<p>こんなPRを見つけた。 <a href="https://github.com/fluent/fluentd/pull/748">Use ‘oj’ for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd</a></p>
 ]]></content>
   </entry>
   
