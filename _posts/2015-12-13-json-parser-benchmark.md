@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RubyのJSONパーサーの比較
+title: RubyのJSONパーサーのパース速度比較
 published: true
 description: 標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。
 tags: json gem ruby
@@ -9,11 +9,11 @@ tags: json gem ruby
 標準のJSONパーサーとは別に[いくつかのJSONパーサー](https://www.ruby-toolbox.com/categories/JSON_Parsers)実装がRuby gemにはある。それらを比較としてベンチマークとってみた。
 
 ## 前提
-- Ruby 2.2.2
-- [benchmark-ips](https://github.com/evanphx/benchmark-ips)でベンチ
-- パースするJSONは30K程度のサイズ
+- Ruby 2.2.2 を使います
+- [benchmark-ips](https://github.com/evanphx/benchmark-ips)でベンチとる
+- パースするJSONは30KB程度のサイズ
 - 比較対象は下記3つ
-  - JSON
+  - [Module: JSON](http://ruby-doc.org/stdlib-2.2.0/libdoc/json/rdoc/JSON.html)
   - [yajl](https://github.com/brianmario/yajl-ruby)
   - [oj](https://github.com/ohler55/oj)
 
@@ -61,3 +61,7 @@ OjがJSON.parseやYajlより1.5倍〜1.8倍ほど高速という結果が得ら�
 ## まとめ
 
 Oj使ってこ。
+
+## 追記
+
+こんなPRを見つけた。 [Use 'oj' for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd](https://github.com/fluent/fluentd/pull/748)
