@@ -70,15 +70,24 @@ layout: default
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-{% comment -%}
-<!-- TODO: jsonld -->
 <script id="jsonld" type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "BlogPosting",
-  "url": "{{ page.url }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ site.url }}{{ page.url | replace:'index.html','' }}"
+  },
   "headline": "{{ page.title }}",
-  "datePublished": "{{ page.date | date_to_xmlschema }}"
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ site.author }}",
+    "email": "{{ site.mail }}"
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "{% if page.image -%}{% if page.image contains 'http://' or page.image contains 'https://' -%}{{ page.image }}{% else -%}{{ site.url }}{{ page.image }}{% endif -%}{% else -%}{{ site.url }}/images/icon.png{% endif -%}"
+  }
 }
 </script>
-{% endcomment -%}
