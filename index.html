@@ -30,3 +30,26 @@ layout: default
   </div>
   {% endif %}
 </div>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "ItemList",
+  "url": "{{ site.url }}{{ page.url | replace:'index.html','' }}",
+  "numberOfItems": "{{ site.paginate }}",
+  "itemListElement": [
+    {% for post in paginator.posts %}
+    {
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "Blog",
+        "@id": "{{ site.url }}{{ page.url | replace:'index.html','' }}"
+      },
+      "headline": "{{ post.title }}",
+      "datePublished": "{{ post.date | date_to_xmlschema }}",
+      "keywords": "{{ post.tags | join: ', ' }}"
+    } {% if forloop.last == false %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
