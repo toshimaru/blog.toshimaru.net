@@ -3,11 +3,11 @@ layout: post
 title: 認定スクラムマスター研修レポート
 published: true
 image: /images/posts/scrum/scrum.png
-description: スクラムマスター研修を受けてきました。
+description: 昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだこととして社内に共有した内容をこちらにも共有してみようと思います。
 tags: scrum tech
 ---
 
-昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだことを書いていきます。
+昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだこととして社内に共有した内容をこちらにも共有してみようと思います。
 
 ## Scrum vs Agile 〜歴史から学ぶ〜
 
@@ -162,6 +162,6 @@ DONEは Definition of done のことです。そして Definition of done は do
 
 ## 参考になりそうな他の人の体験記
 
-* [makopi23のブログ 認定スクラムマスター研修（CSM）を振り返る](http://makopi23.blog.fc2.com/blog-entry-155.html)
-
 <iframe src="//www.slideshare.net/slideshow/embed_code/key/ohbtp9vAjuJX6L" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/yangiYa/csm2014-1114" title="認定スクラムマスター研修に行ってきました" target="_blank">認定スクラムマスター研修に行ってきました</a> </strong> from <strong><a href="//www.slideshare.net/yangiYa" target="_blank">Hajime Yanagawa</a></strong> </div>
+
+* [makopi23のブログ 認定スクラムマスター研修（CSM）を振り返る](http://makopi23.blog.fc2.com/blog-entry-155.html)
