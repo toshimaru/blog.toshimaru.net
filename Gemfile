@@ -6,3 +6,5 @@ gem 'jekyll-tagging'
 gem 'jekyll-sitemap'
 gem 'jekyll-toc'
 gem 'jemoji'
+
+gem 'nokogiri', '>= 1.6.7.2'
