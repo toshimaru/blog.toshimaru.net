@@ -98,4 +98,4 @@ end
 
 ### 参考
 * [Unraveling String Key Performance in Ruby 2.2](http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/)
-* [Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった | 69log](http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/)
+* [Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった \| 69log](http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/)
