@@ -34,8 +34,10 @@ class User < ActiveRecord::Base
   before_validation -> { puts "before_validation is called" }
   after_validation -> { puts "after_validation is called" }
   before_save -> { puts "before_save is called" }
+  before_update -> { puts "before_update is called" }
   before_create -> { puts "before_create is called" }
   after_create -> { puts "after_create is called" }
+  after_update -> { puts "after_update is called" }
   after_save -> { puts "after_save is called" }
   after_commit -> { puts "after_commit is called" }
 end
@@ -58,26 +60,30 @@ end
     after_commit is called
      => true
 
-コールバックのタイミングとクエリの走るタイミングが可視化された。
+新規作成なので `before_update` `after_update` は呼ばれない。
+
+トランザクションが開始され`before_create`後にクエリが走る。その後、`after_*`系のコールバックが呼ばれトランザクションがコミットされる。
 
 ###  レコード更新時
 
 updateの場合はこんな感じ。
 
-     > user.update(name: "hoge")
+     > user.update(name: "toshi")
         (0.1ms)  begin transaction
      before_validation is called
      after_validation is called
      before_save is called
-       SQL (0.4ms)  UPDATE "users" SET "name" = ?, "updated_at" = ? WHERE "users"."id" = ?  [["name", "hoge"], ["updated_at", "2015-02-28 15:58:37.577661"], ["id", 6]]
+     before_update is called
+       SQL (0.3ms)  UPDATE "users" SET "name" = ?, "updated_at" = ? WHERE "users"."id" = ?  [["name", "toshi"], ["updated_at", "2016-01-21 08:04:19.290079"], ["id", 1]]
+     after_update is called
      after_save is called
-        (0.8ms)  commit transaction
+         (2.5ms)  commit transaction
      after_commit is called
-      => true
+     => true
 
-更新なので `before_create` `after_create` は呼ばれない。
+更新なので `before_create` `after_create` は呼ばれない。その代わりに`before_update`, `after_update`が実行される。
 
-## save,updateはトランザクション内で実行される
+## save/updateはトランザクション内で実行される
 
 [ドキュメント](http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html)にはこう書いてある
 
@@ -87,9 +93,9 @@ updateの場合はこんな感じ。
 
 ## 特定のコールバックのタイミングで処理をロールバックさせたい
 
-ではそれらのコールバックでのタイミングでトランザクションをロールバックすることも可能。どうやれば良いのか調べてみた。
+それらのコールバックでの任意のタイミングでトランザクションをロールバックすることも可能。どうやれば良いのか調べてみた。
 
-### before_* のタイミングでロールバック
+### before_* のタイミングでロールバックする場合
 
 `before_*`のタイミングで false を返すと処理はロールバックされる。
 
@@ -115,7 +121,7 @@ end
 
 しかし`after_*`で false を返しても処理はロールバックされないようだ。
 
-### after_* のタイミングでロールバック
+### after_* のタイミングでロールバックする場合
 
 after_* のタイミングでロールバックしたい場合は、明示的にRollbackをraiseしてやれば :ok:
 
@@ -143,7 +149,7 @@ end
        (2.4ms)  rollback transaction
      => nil
 
-update も同様にこれでRollbackできます。
+update も同様にこの方法でロールバックできます。
 
 ### 参考
 * [ActiveRecord::Callbacks](http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html)
