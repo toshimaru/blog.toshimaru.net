@@ -9,16 +9,16 @@ module Jekyll
 
     # Calculate related posts.
     # Returns [<Post>]
-    def related_posts(posts)
-      return [] unless posts.size > 1
-      highest_freq = tag_freq(posts).values.max
+    def related_posts
+      return [] unless docs.count > 1
+      highest_freq = tag_freq.values.max
       related_scores = Hash.new(0)
 
-      posts.each do |post|
-        post.tags.each do |tag|
-          if self.tags.include?(tag) && post != self
-            cat_freq = tag_freq(posts)[tag]
-            related_scores[post] += (1+highest_freq-cat_freq)
+      docs.each do |doc|
+        doc.data["tags"].each do |tag|
+          if self.data["tags"].include?(tag) && doc != self
+            cat_freq = tag_freq[tag]
+            related_scores[doc] += (1 + highest_freq - cat_freq)
           end
         end
       end
@@ -26,21 +26,21 @@ module Jekyll
       sort_related_posts(related_scores)
     end
 
+    private
+
     # Calculate the frequency of each tag.
     # Returns {tag => freq, tag => freq, ...}
-    def tag_freq(posts)
-      return @tag_freq if @tag_freq
-      @tag_freq = Hash.new(0)
-      posts.each do |post|
-        post.tags.each {|tag| @tag_freq[tag] += 1}
+    def tag_freq
+      @tag_freq ||= docs.inject(Hash.new(0)) do |tag_freq, doc|
+        doc.data["tags"].each {|tag| tag_freq[tag] += 1 }
+        tag_freq
       end
-      @tag_freq
     end
 
     # Sort the related posts in order of their score and date
     # and return just the posts
     def sort_related_posts(related_scores)
-      related_scores.sort do |a,b|
+      related_scores.sort do |a, b|
         if a[1] < b[1]
           1
         elsif a[1] > b[1]
@@ -48,11 +48,15 @@ module Jekyll
         else
           b[0].date <=> a[0].date
         end
-      end.collect {|post,freq| post}
+      end.collect {|post, freq| post}
+    end
+
+    def docs
+      @docs ||= site.posts.docs
     end
   end
 
-  class Post
+  class Document
     include RelatedPostsByTags
   end
 end
