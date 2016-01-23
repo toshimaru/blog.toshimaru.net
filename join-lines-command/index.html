@@ -73,7 +73,7 @@
 
 <p>やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</p>
 
-<pre><code>$ cat text
+<div class="highlighter-rouge"><pre class="highlight"><code>$ cat text
 aaaa
 bbbb
 cccc
@@ -81,16 +81,18 @@ cccc
 $ cat text | tr '\n' ','
 aaaa,bbbb,cccc,%
 </code></pre>
+</div>
 
-<p>こんな感じで<code>tr</code>を使って改行コードを置換してやればカンマ区切りで1行にできる。</p>
+<p>こんな感じで<code class="highlighter-rouge">tr</code>を使って改行コードを置換してやればカンマ区切りで1行にできる。</p>
 
 <h3 id="section">もともと</h3>
 
 <p>もともとやりたかったのはこんな感じのこと。</p>
 
-<pre><code>$ echo '{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }' | jq '.employees[] .firstName' | tr '\n' ',' | awk '{ print "result = [" $1 "]" }'
+<div class="highlighter-rouge"><pre class="highlight"><code>$ echo '{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }' | jq '.employees[] .firstName' | tr '\n' ',' | awk '{ print "result = [" $1 "]" }'
 result = ["John","Anna","Peter",]
 </code></pre>
+</div>
 
 <p>curlでJSONをGETしてそれをjqでパースして出たリストをカンマ区切りで出力する、みたいなやつ。</p>
 

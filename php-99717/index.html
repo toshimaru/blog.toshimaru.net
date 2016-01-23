@@ -73,62 +73,62 @@
 
 <p>事の発端はこれ。Arrayにキーがセットされていて、かつ、そのキーの値をチェックしたい。</p>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// 1.</span>
-<span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;val&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// 処理</span>
-<span class="p">}</span>
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// 1.
+</span><span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 処理
+</span><span class="p">}</span>
 
-<span class="c1">// 2. 1より早いんじゃね？</span>
-<span class="k">if</span> <span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;val&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// でもNoticeでちゃうよ！</span>
-    <span class="c1">// PHP Notice:  Undefined index: index</span>
-<span class="p">}</span>
+<span class="c1">// 2. 1より早いんじゃね？
+</span><span class="k">if</span> <span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// でもNoticeでちゃうよ！
+</span>    <span class="c1">// PHP Notice:  Undefined index: index
+</span><span class="p">}</span>
 
-<span class="c1">// 3. 2の「PHP Notice」の回避策　＠</span>
-<span class="k">if</span> <span class="p">(</span><span class="o">@</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;val&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// 処理</span>
-<span class="p">}</span></code></pre></div>
+<span class="c1">// 3. 2の「PHP Notice」の回避策　＠
+</span><span class="k">if</span> <span class="p">(</span><span class="o">@</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 処理
+</span><span class="p">}</span></code></pre></figure>
 
 <p>１と３なら３のほうが処理早いんじゃね？ってことで試してみたところ、こうなった。 （PHP 5.3.3）</p>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 <span class="nv">$ary</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
-    <span class="k">array</span><span class="p">(</span> <span class="s2">&quot;key1&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;val1&quot;</span><span class="p">,</span> <span class="s2">&quot;key2&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;val2&quot;</span><span class="p">,</span><span class="s2">&quot;key3&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;val3&quot;</span><span class="p">,</span><span class="s2">&quot;key4&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;val4&quot;</span><span class="p">),</span>
-    <span class="k">array</span><span class="p">(</span> <span class="s2">&quot;key1&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;val1&quot;</span><span class="p">,</span> <span class="s2">&quot;key2&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;val2&quot;</span><span class="p">,</span><span class="s2">&quot;key3&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;val3&quot;</span><span class="p">),</span>
+    <span class="k">array</span><span class="p">(</span> <span class="s2">"key1"</span> <span class="o">=&gt;</span> <span class="s2">"val1"</span><span class="p">,</span> <span class="s2">"key2"</span> <span class="o">=&gt;</span> <span class="s2">"val2"</span><span class="p">,</span><span class="s2">"key3"</span> <span class="o">=&gt;</span> <span class="s2">"val3"</span><span class="p">,</span><span class="s2">"key4"</span> <span class="o">=&gt;</span> <span class="s2">"val4"</span><span class="p">),</span>
+    <span class="k">array</span><span class="p">(</span> <span class="s2">"key1"</span> <span class="o">=&gt;</span> <span class="s2">"val1"</span><span class="p">,</span> <span class="s2">"key2"</span> <span class="o">=&gt;</span> <span class="s2">"val2"</span><span class="p">,</span><span class="s2">"key3"</span> <span class="o">=&gt;</span> <span class="s2">"val3"</span><span class="p">),</span>
 <span class="p">);</span>
 
-<span class="nv">$time_start</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+<span class="nv">$time_start</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 
 <span class="nv">$index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="k">foreach</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$count</span><span class="p">)</span> <span class="p">{</span>
     <span class="nv">$index</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="nv">$index</span><span class="p">;</span>
     <span class="nv">$checkedAry</span> <span class="o">=</span> <span class="nv">$ary</span><span class="p">[</span><span class="nv">$index</span><span class="p">];</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">&#39;key4&#39;</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">&#39;key4&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;val4&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key4'</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key4'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val4"</span><span class="p">)</span> <span class="p">{</span>
         <span class="nb">pow</span><span class="p">(</span><span class="nv">$count</span><span class="p">,</span> <span class="nv">$count</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nv">$time</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="o">-</span> <span class="nv">$time_start</span><span class="p">;</span>
-<span class="k">echo</span> <span class="s2">&quot;</span><span class="si">$time</span><span class="s2"> second&quot;</span><span class="p">;</span>
+<span class="nv">$time</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="o">-</span> <span class="nv">$time_start</span><span class="p">;</span>
+<span class="k">echo</span> <span class="s2">"</span><span class="nv">$time</span><span class="s2"> second"</span><span class="p">;</span>
 
-<span class="nv">$time_start</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+<span class="nv">$time_start</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 
 <span class="nv">$index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="k">foreach</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$count</span><span class="p">)</span> <span class="p">{</span>
     <span class="nv">$index</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="nv">$index</span><span class="p">;</span>
     <span class="nv">$checkedAry</span> <span class="o">=</span> <span class="nv">$ary</span><span class="p">[</span><span class="nv">$index</span><span class="p">];</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">@</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">&#39;key4&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;val4&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">@</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key4'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val4"</span><span class="p">)</span> <span class="p">{</span>
         <span class="nb">pow</span><span class="p">(</span><span class="nv">$count</span><span class="p">,</span> <span class="nv">$count</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nv">$time</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="k">true</span><span class="p">)</span> <span class="o">-</span> <span class="nv">$time_start</span><span class="p">;</span>
-<span class="k">echo</span> <span class="s2">&quot;</span><span class="si">$time</span><span class="s2"> second&quot;</span><span class="p">;</span></code></pre></div>
+<span class="nv">$time</span> <span class="o">=</span> <span class="nb">microtime</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="o">-</span> <span class="nv">$time_start</span><span class="p">;</span>
+<span class="k">echo</span> <span class="s2">"</span><span class="nv">$time</span><span class="s2"> second"</span><span class="p">;</span></code></pre></figure>
 
 <p>３回やってみてこんな結果でした。</p>
 
-<pre><code>0.098845958709717 second
+<div class="highlighter-rouge"><pre class="highlight"><code>0.098845958709717 second
 0.19816088676453 second
 
 0.097808122634888 second
@@ -137,6 +137,7 @@
 0.10174417495728 second
 0.16551208496094 second
 </code></pre>
+</div>
 
 <p>つまり<strong>＠付きのほうがそうじゃないほうより１．５倍～２倍程度遅い</strong>、ということになります。</p>
 

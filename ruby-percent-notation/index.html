@@ -82,121 +82,130 @@
   </thead>
   <tbody>
     <tr>
-      <td><code>%</code>, <code>%Q</code></td>
-      <td><code>""</code> (ダブルクオート)</td>
+      <td><code class="highlighter-rouge">%</code>, <code class="highlighter-rouge">%Q</code></td>
+      <td><code class="highlighter-rouge">""</code> (ダブルクオート)</td>
     </tr>
     <tr>
-      <td><code>%q</code></td>
-      <td><code>''</code> (シングルクオート)</td>
+      <td><code class="highlighter-rouge">%q</code></td>
+      <td><code class="highlighter-rouge">''</code> (シングルクオート)</td>
     </tr>
     <tr>
-      <td><code>%w</code></td>
-      <td><code>[]</code> (文字列配列)</td>
+      <td><code class="highlighter-rouge">%w</code></td>
+      <td><code class="highlighter-rouge">[]</code> (文字列配列)</td>
     </tr>
     <tr>
-      <td><code>%W</code></td>
-      <td><code>[]</code> (文字列配列・式展開あり)</td>
+      <td><code class="highlighter-rouge">%W</code></td>
+      <td><code class="highlighter-rouge">[]</code> (文字列配列・式展開あり)</td>
     </tr>
     <tr>
-      <td><code>%i</code></td>
-      <td><code>[]</code> (シンボル配列)</td>
+      <td><code class="highlighter-rouge">%i</code></td>
+      <td><code class="highlighter-rouge">[]</code> (シンボル配列)</td>
     </tr>
     <tr>
-      <td><code>%I</code></td>
-      <td><code>[]</code> (シンボル配列・式展開あり)</td>
+      <td><code class="highlighter-rouge">%I</code></td>
+      <td><code class="highlighter-rouge">[]</code> (シンボル配列・式展開あり)</td>
     </tr>
     <tr>
-      <td><code>%x</code></td>
+      <td><code class="highlighter-rouge">%x</code></td>
       <td><code>``</code> (コマンド実行)</td>
     </tr>
     <tr>
-      <td><code>%s</code></td>
-      <td><code>:</code> (シンボル)</td>
+      <td><code class="highlighter-rouge">%s</code></td>
+      <td><code class="highlighter-rouge">:</code> (シンボル)</td>
     </tr>
     <tr>
-      <td><code>%r</code></td>
-      <td><code>//</code> (正規表現)</td>
+      <td><code class="highlighter-rouge">%r</code></td>
+      <td><code class="highlighter-rouge">//</code> (正規表現)</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>※ %の後には丸括弧（<code>()</code>）や波括弧（<code>{}</code>）などの記号が使えます</strong></p>
+<p><strong>※ %の後には丸括弧（<code class="highlighter-rouge">()</code>）や波括弧（<code class="highlighter-rouge"><span class="p">{}</span></code>）などの記号が使えます</strong></p>
 
 <h2 id="section">文字列表現系</h2>
 
 <h3 id="q">%, %Q</h3>
 
-<pre><code>&gt; %(a b c)
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %(a b c)
  =&gt; "a b c"
 
 &gt; a, b, c = 1, 2, 3
 &gt; %Q(#{a} #{b} #{c})
  =&gt; "1 2 3" # 式展開される
 </code></pre>
+</div>
 
 <h3 id="q-1">%q</h3>
 
-<pre><code>&gt; %q(a b c)
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %q(a b c)
  =&gt; "a b c"
 
 &gt; a, b, c = 1, 2, 3
 &gt; %q(#{a} #{b} #{c})
  =&gt; "\#{a} \#{b} \#{c}" # 式展開されない
 </code></pre>
+</div>
 
 <h2 id="section-1">配列表現系</h2>
 
 <h3 id="w">%w</h3>
 
-<pre><code>&gt; %w(a b c)
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %w(a b c)
  =&gt; ["a", "b", "c"]
 </code></pre>
+</div>
 
 <h3 id="w-1">%W</h3>
 
-<pre><code>&gt; a, b, c = 1, 2, 3
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; a, b, c = 1, 2, 3
 &gt; %W(#{a} #{b} #{c})
  =&gt; ["1", "2", "3"]
 </code></pre>
+</div>
 
 <h3 id="i">%i</h3>
 
-<pre><code>&gt; %i(a b c)
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %i(a b c)
  =&gt; [:a, :b, :c]
 </code></pre>
+</div>
 
 <h3 id="i-1">%I</h3>
 
-<pre><code>&gt; a, b, c = 1, 2, 3
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; a, b, c = 1, 2, 3
 &gt; %I(#{a} #{b} #{c})
  =&gt; [:"1", :"2", :"3"]
 </code></pre>
+</div>
 
 <h2 id="section-2">コマンド実行</h2>
 
 <h3 id="x">%x</h3>
 
-<pre><code>&gt; %x(date)
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %x(date)
  =&gt; "Sun Jan 11 01:01:52 JST 2015\n"
 &gt; `date`
  =&gt; "Sun Jan 11 01:01:54 JST 2015\n"
 </code></pre>
+</div>
 
 <h2 id="section-3">シンボル</h2>
 
 <h3 id="s">%s</h3>
 
-<pre><code>&gt; %s(a b c)
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %s(a b c)
  =&gt; :"a b c"
 </code></pre>
+</div>
 
 <h2 id="section-4">正規表現</h2>
 
 <h3 id="r">%r</h3>
 
-<pre><code>&gt; %r(^http://)
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %r(^http://)
  =&gt; /^http:\/\//
 </code></pre>
+</div>
 
 <h3 id="section-5">参考</h3>
 
