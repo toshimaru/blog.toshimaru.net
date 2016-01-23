@@ -127,31 +127,33 @@
 
 <p><img src="/images/posts/css-animate/browser.png" alt="対応状況" /></p>
 
-<p>IEは10以降、それ以外のメインブラウザの最新版は対応済みですね。ベンダープレフィックスも<code>-webkit-</code>さえつければ大丈夫そうです。IE9以前を気にするかもしれませんが、<a href="http://www.adobe.com/jp/devnet/dreamweaver/articles/html5pack_css3_part6.html">グレースフル・デグラデーション</a>の考え方で＜装飾＞という意味においてはCSSアニメーションプロパティはどんどん使っていい機能かと思います。</p>
+<p>IEは10以降、それ以外のメインブラウザの最新版は対応済みですね。ベンダープレフィックスも<code class="highlighter-rouge">-webkit-</code>さえつければ大丈夫そうです。IE9以前を気にするかもしれませんが、<a href="http://www.adobe.com/jp/devnet/dreamweaver/articles/html5pack_css3_part6.html">グレースフル・デグラデーション</a>の考え方で＜装飾＞という意味においてはCSSアニメーションプロパティはどんどん使っていい機能かと思います。</p>
 
 <h2 id="css-2">CSSアニメーションの書き方</h2>
 
-<p>ではCSSアニメーションはどう書くか？　キーワードは<code>@keyframes</code>と<code>animation</code>の２つです。</p>
+<p>ではCSSアニメーションはどう書くか？　キーワードは<code class="highlighter-rouge">@keyframes</code>と<code class="highlighter-rouge">animation</code>の２つです。</p>
 
-<pre><code>@keyframes &lt;アニメーションの名前&gt; {
+<div class="highlighter-rouge"><pre class="highlight"><code>@keyframes &lt;アニメーションの名前&gt; {
     0% { /* 定義 */ }
     50% { /* 定義 */ }
     100% { /* 定義 */ }
 }
 </code></pre>
+</div>
 
-<p>こんな感じで0%から100%にかけて特定のタイミングでのアニメーションスタイル定義を書いていきます。次にそのアニメーション名を使った<code>animation</code>をクラス内に加えます。</p>
+<p>こんな感じで0%から100%にかけて特定のタイミングでのアニメーションスタイル定義を書いていきます。次にそのアニメーション名を使った<code class="highlighter-rouge">animation</code>をクラス内に加えます。</p>
 
-<pre><code>.&lt;class名&gt; {
+<div class="highlighter-rouge"><pre class="highlight"><code>.&lt;class名&gt; {
     animation: &lt;アニメーションの名前&gt; &lt;秒数&gt;s ;
 }
 </code></pre>
+</div>
 
 <p>あとはこのクラス名をDOM内のアニメーションしたい要素に加えればOKです。</p>
 
 <p>では具体例。実際に本記事タイトル下でフェードインさせている画像のCSSを見てみましょう。</p>
 
-<pre><code>@-webkit-keyframes anim {
+<div class="highlighter-rouge"><pre class="highlight"><code>@-webkit-keyframes anim {
     0%   { opacity: 0; }
     100% { opacity: 1; }
 }
@@ -165,14 +167,15 @@
   animation: anim 2s infinite;
 }
 </code></pre>
+</div>
 
-<p>透過度0から透明度1へのアニメーション（<code>anim</code>）を2秒（<code>2s</code>）毎にループ（<code>infinite</code>）させてます。このアニメーションは<code>post-image</code>クラスに適応されます。実際に使用の際は<code>-webkit-</code>プレフィックス付きの定義も必要なことに注意してください。</p>
+<p>透過度0から透明度1へのアニメーション（<code class="highlighter-rouge">anim</code>）を2秒（<code class="highlighter-rouge">2s</code>）毎にループ（<code class="highlighter-rouge">infinite</code>）させてます。このアニメーションは<code class="highlighter-rouge">post-image</code>クラスに適応されます。実際に使用の際は<code class="highlighter-rouge">-webkit-</code>プレフィックス付きの定義も必要なことに注意してください。</p>
 
 <h2 id="section-1">どこからアニメーションの着想を得るか</h2>
 
 <p>といっても「アニメーションのCSSスタイル定義するの面倒くさい」とか「自分のやりたい動きをどう書けばいいかわからない」という人も多いかと思います。そんな人は<a href="https://daneden.me/animate/">Animate.css</a>のページを見てみるとよいかと思います。</p>
 
-<p>これらのアニメーションは全てCSSにて動いているのですが、使い回しの効きそうなCSSで表現できる典型的なアニメーションは大体網羅されていると思うので、ここからアニメーションスタイルをパクってくると良いかと思います（CSSのサイズを気にしないという方は<code>animate.css</code>をそのままサイトに持ってきてもいいですね）。</p>
+<p>これらのアニメーションは全てCSSにて動いているのですが、使い回しの効きそうなCSSで表現できる典型的なアニメーションは大体網羅されていると思うので、ここからアニメーションスタイルをパクってくると良いかと思います（CSSのサイズを気にしないという方は<code class="highlighter-rouge">animate.css</code>をそのままサイトに持ってきてもいいですね）。</p>
 
 <p>CSSコードは下記のコードから引っ張ってきてください。</p>
 

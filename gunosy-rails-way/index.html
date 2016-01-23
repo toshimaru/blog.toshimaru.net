@@ -125,13 +125,13 @@
   <tbody>
     <tr>
       <td>
-<code>develop</code>ブランチ変更時</td>
-      <td>CircleCIテスト後に、（テストパスすれば）OpsWorksのステージング環境に<code>develop</code> ブランチをデプロイ</td>
+<code class="highlighter-rouge">develop</code>ブランチ変更時</td>
+      <td>CircleCIテスト後に、（テストパスすれば）OpsWorksのステージング環境に<code class="highlighter-rouge">develop</code> ブランチをデプロイ</td>
     </tr>
     <tr>
       <td>
-<code>master</code>ブランチ変更時</td>
-      <td>CircleCIテスト後に、OpsWorksのプロダクション環境に<code>master</code>ブランチをデプロイ</td>
+<code class="highlighter-rouge">master</code>ブランチ変更時</td>
+      <td>CircleCIテスト後に、OpsWorksのプロダクション環境に<code class="highlighter-rouge">master</code>ブランチをデプロイ</td>
     </tr>
   </tbody>
 </table>
@@ -181,17 +181,17 @@
 
 <p>上記に紹介されているように下記のように簡単に複数DBをswitchでき素敵です。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Configuration</span>
-<span class="no">SwitchPoint</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">define_switch_point</span> <span class="ss">:blog</span><span class="p">,</span>
-    <span class="ss">readonly</span><span class="p">:</span> <span class="ss">:"</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="si">}</span><span class="ss">_blog_slave"</span><span class="p">,</span>
-    <span class="ss">writable</span><span class="p">:</span> <span class="ss">:"</span><span class="si">#{</span><span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="si">}</span><span class="ss">_blog_master"</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Configuration</span>
+<span class="no">SwitchPoint</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">define_switch_point</span> <span class="ss">:blog</span><span class="p">,</span>
+    <span class="ss">readonly: :"</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="si">}</span><span class="ss">_blog_slave"</span><span class="p">,</span>
+    <span class="ss">writable: :"</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="si">}</span><span class="ss">_blog_master"</span>
 <span class="k">end</span>
 
 <span class="c1"># Model</span>
 <span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">use_switch_point</span> <span class="ss">:blog</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <p>Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。<a href="http://mozaic.fm/post/104575088493/12-rails">参考: #12 Rails mozaic.fm</a></p>
 
@@ -199,7 +199,7 @@
 <a id="権限管理" class="anchor" href="#%E6%A8%A9%E9%99%90%E7%AE%A1%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>権限管理</h2>
 <p>管理画面の権限管理に関しては<a href="https://github.com/nathanl/authority">authority</a>を使用しています。権限は大まかにそれぞれの機能においてそれを参照できる権限（READ）・更新できる権限（CREATE/UPDATE/DELETE）というような権限分けを行っています。例えば＜ユーザーを閲覧可能＞という権限、＜ユーザーを更新可能＞な権限、これらを組み合わせて管理ユーザーの権限を定義します。</p>
 
-<p>なお、初期の権限設定は<code>seeds.rb</code>で権限をまくようにしています。</p>
+<p>なお、初期の権限設定は<code class="highlighter-rouge">seeds.rb</code>で権限をまくようにしています。</p>
 
 <h2 id="section-5">
 <a id="バッチ" class="anchor" href="#%E3%83%90%E3%83%83%E3%83%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>バッチ</h2>

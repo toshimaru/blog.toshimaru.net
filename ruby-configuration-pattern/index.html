@@ -71,52 +71,52 @@
   </div>
 </div>
 
-<p>railsのgemでよくみかける初期設定ファイル、<code>config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
+<p>railsのgemでよくみかける初期設定ファイル、<code class="highlighter-rouge">config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
 
 <h2 id="section">めざす完成形はコレ！</h2>
 
 <p>完成系として、下記を想定してみます。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
-<span class="no">Konfig</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">my_value</span> <span class="o">=</span> <span class="s1">&#39;my configuration value&#39;</span>
-<span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
+<span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s1">'my configuration value'</span>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="configure">configureメソッドを用意</h2>
 
-<p>まずは<code>module</code>と<code>configure</code>というクラスメソッドを用意します。</p>
+<p>まずは<code class="highlighter-rouge">module</code>と<code class="highlighter-rouge">configure</code>というクラスメソッドを用意します。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
     <span class="k">def</span> <span class="nf">configure</span>
     <span class="k">end</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="configuration">Configurationクラス</h2>
 
-<p>次に実際の設定値が入る<code>Configuration</code>クラスを用意します。</p>
+<p>次に実際の設定値が入る<code class="highlighter-rouge">Configuration</code>クラスを用意します。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
   <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
 
   <span class="k">def</span> <span class="nf">initialize</span>
-    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">&#39;default value&#39;</span>
+    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="section-1">完成形</h2>
 
 <p>次にこれを組み合わせてみましょう。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
     <span class="k">def</span> <span class="nf">configure</span>
       <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="k">def</span> <span class="nf">configuration</span>
-      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="o">.</span><span class="n">new</span>
+      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="p">.</span><span class="nf">new</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
@@ -124,26 +124,27 @@
     <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
 
     <span class="k">def</span> <span class="nf">initialize</span>
-      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">&#39;default value&#39;</span>
+      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
     <span class="k">end</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
-<p>これでインスタンス化された<code>Configuration</code>クラスが出てきます。</p>
+<p>これでインスタンス化された<code class="highlighter-rouge">Configuration</code>クラスが出てきます。</p>
 
-<pre><code>&gt; Konfig.configure {|config| p config}
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; Konfig.configure {|config| p config}
 #&lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value"&gt;
 </code></pre>
+</div>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">my_value</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s2">"abc"</span>
 <span class="k">end</span>
-<span class="c1"># =&gt; &quot;abc&quot;</span>
+<span class="c1"># =&gt; "abc"</span>
 
-<span class="no">Konfig</span><span class="o">.</span><span class="n">configuration</span>
-<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value=&quot;abc&quot;&gt;</span></code></pre></div>
+<span class="no">Konfig</span><span class="p">.</span><span class="nf">configuration</span>
+<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="abc"&gt;</span></code></pre></figure>
 
-<p><code>configure</code>で<code>Configuration</code>インスタンス作っててブロック内の<code>config</code>変数で<code>Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
+<p><code class="highlighter-rouge">configure</code>で<code class="highlighter-rouge">Configuration</code>インスタンス作っててブロック内の<code class="highlighter-rouge">config</code>変数で<code class="highlighter-rouge">Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
 
 <h3 id="section-2">参考</h3>
 <ul>

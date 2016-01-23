@@ -77,17 +77,19 @@
 
 <p>PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！</p>
 
-<pre><code>$ curl -s https://getcomposer.org/installer | php
+<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -s https://getcomposer.org/installer | php
 </code></pre>
+</div>
 
-<p>さてこれで<code>composer.phar</code>が手に入りました。<code>composer</code>コマンドを使えるようにするためにパスの通った場所に<code>composer.phar</code>を移動しましょう。</p>
+<p>さてこれで<code class="highlighter-rouge">composer.phar</code>が手に入りました。<code class="highlighter-rouge">composer</code>コマンドを使えるようにするためにパスの通った場所に<code class="highlighter-rouge">composer.phar</code>を移動しましょう。</p>
 
-<pre><code>$ sudo mv composer.phar /usr/local/bin/composer
+<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo mv composer.phar /usr/local/bin/composer
 </code></pre>
+</div>
 
-<p><code>composer</code>コマンド準備完了です。</p>
+<p><code class="highlighter-rouge">composer</code>コマンド準備完了です。</p>
 
-<pre><code>$ composer
+<div class="highlighter-rouge"><pre class="highlight"><code>$ composer
    ______
   / ____/___  ____ ___  ____  ____  ________  _____
  / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
@@ -96,28 +98,31 @@
                     /_/
 Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
 </code></pre>
+</div>
 
 <h2 id="section">依存関係の記述</h2>
 
-<p>composerはプロジェクトルートの<code>composer.json</code>ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
+<p>composerはプロジェクトルートの<code class="highlighter-rouge">composer.json</code>ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
 
-<pre><code>$ touch composer.json
+<div class="highlighter-rouge"><pre class="highlight"><code>$ touch composer.json
 </code></pre>
+</div>
 
-<p><code>composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
+<p><code class="highlighter-rouge">composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
 
-<pre><code>{
-    "require": {
-        "phpunit/phpunit": "3.7.*"
-    }
-}
-</code></pre>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"require"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"phpunit/phpunit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.7.*"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
 
 <h2 id="section-1">ライブラリのインストール</h2>
 
-<p><code>composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
+<p><code class="highlighter-rouge">composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
 
-<pre><code>$ composer install
+<div class="highlighter-rouge"><pre class="highlight"><code>$ composer install
 Loading composer repositories with package information
 Installing dependencies (including require-dev)
   - Installing symfony/yaml (v2.3.6)
@@ -132,15 +137,17 @@ phpunit/phpunit suggests installing phpunit/php-invoker (&gt;=1.1.0,&lt;1.2.0)
 Writing lock file
 Generating autoload files
 </code></pre>
+</div>
 
-<p>うまいこといきました。ライブラリは<code>vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code>composer.lock</code>ファイルも生成します。</p>
+<p>うまいこといきました。ライブラリは<code class="highlighter-rouge">vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code class="highlighter-rouge">composer.lock</code>ファイルも生成します。</p>
 
 <h2 id="section-2">ライブラリのアップデート</h2>
 
 <p>ライブラリのアップデートに関しては下記のコマンドでOK.</p>
 
-<pre><code>$ composer update
+<div class="highlighter-rouge"><pre class="highlight"><code>$ composer update
 </code></pre>
+</div>
 
 <h2 id="section-3">まとめ</h2>
 

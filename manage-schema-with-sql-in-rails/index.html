@@ -71,30 +71,32 @@
   </div>
 </div>
 
-<p>Railsでは<code>db:migrate</code>すると、デフォルトで<code>db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code>config/application.rb</code>内で<code>active_record.schema_format</code>を<code>:sql</code>と設定することで可能になります（デフォルト値は<code>:ruby</code>）。</p>
+<p>Railsでは<code class="highlighter-rouge">db:migrate</code>すると、デフォルトで<code class="highlighter-rouge">db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code class="highlighter-rouge">config/application.rb</code>内で<code class="highlighter-rouge">active_record.schema_format</code>を<code class="highlighter-rouge">:sql</code>と設定することで可能になります（デフォルト値は<code class="highlighter-rouge">:ruby</code>）。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
 <span class="k">module</span> <span class="nn">Rails4TwitterClone</span>
   <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
+    <span class="n">config</span><span class="p">.</span><span class="nf">active_record</span><span class="p">.</span><span class="nf">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
-<p>これで<code>db/migrate</code>するとデフォルトのschema.rbではなく、<code>db/structure.sql</code>というSQLファイルを吐きます。</p>
+<p>これで<code class="highlighter-rouge">db/migrate</code>するとデフォルトのschema.rbではなく、<code class="highlighter-rouge">db/structure.sql</code>というSQLファイルを吐きます。</p>
 
 <h2 id="structuresql">structure.sqlをロードする</h2>
 
 <p>生成されたstructure.sqlファイルは、下記のコマンドでデータベースへロードできます。</p>
 
-<pre><code>rake db:structure:load
+<div class="highlighter-rouge"><pre class="highlight"><code>rake db:structure:load
 </code></pre>
+</div>
 
 <h2 id="sql">SQLファイルだけ欲しい場合</h2>
 
-<p>sqlダンプファイルのみが欲しい場合は、<code>config.active_record.schema_format</code>の設定を変えずとも下記コマンドでstructure.sqlを生成することができます。</p>
+<p>sqlダンプファイルのみが欲しい場合は、<code class="highlighter-rouge">config.active_record.schema_format</code>の設定を変えずとも下記コマンドでstructure.sqlを生成することができます。</p>
 
-<pre><code>rake db:structure:dump
+<div class="highlighter-rouge"><pre class="highlight"><code>rake db:structure:dump
 </code></pre>
+</div>
 
 <h3 id="section">参考</h3>
 <ul>

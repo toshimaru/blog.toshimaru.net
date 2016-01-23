@@ -73,13 +73,14 @@
 
 <p>Railsのerb内でunderscore.jsのテンプレートを使おうとするとerbのデリミタとunderscoreのデリミタが競合してしまってエラーになってしまう。そういう時は下記のようにunderscoreテンプレートのデリミタを変更してやればよい。</p>
 
-<pre><code>_.templateSettings = {
+<div class="highlighter-rouge"><pre class="highlight"><code>_.templateSettings = {
   interpolate : /\{\{(.+?)\}\}/g,
   escape: /\{\{-(.+?)\}\}/g
 };
 </code></pre>
+</div>
 
-<p>これで<code>{{ hoge }}</code>という<a href="http://mustache.github.io/">mustache</a>ライクなデリミタに変更できる。</p>
+<p>これで<code class="highlighter-rouge"><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">hoge</span><span class="w"> </span><span class="p">}</span><span class="err">}</span></code>という<a href="http://mustache.github.io/">mustache</a>ライクなデリミタに変更できる。</p>
 
 <h2 id="section">参考</h2>
 <ul>

@@ -71,54 +71,54 @@
   </div>
 </div>
 
-<p>タイトルの通り、Rubyで独自例外を定義するときは<code>Exception</code>ではなく、<code>StandardError</code> を継承するしきたりとなっています。</p>
+<p>タイトルの通り、Rubyで独自例外を定義するときは<code class="highlighter-rouge">Exception</code>ではなく、<code class="highlighter-rouge">StandardError</code> を継承するしきたりとなっています。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># `Exception`ではなく</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># `Exception`ではなく</span>
 <span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
 <span class="c1"># `StandardError`.</span>
-<span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></div>
+<span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></figure>
 
 <p>理由をコードでみてみます。</p>
 
 <h2 id="exception-">Exception を継承した場合</h2>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
 
 <span class="k">begin</span>
   <span class="k">raise</span> <span class="no">MyError1</span>
 <span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="nb">puts</span> <span class="s2">"Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
 <span class="k">end</span>
 
-<span class="c1"># =&gt; MyError1: MyError1</span></code></pre></div>
+<span class="c1"># =&gt; MyError1: MyError1</span></code></pre></figure>
 
-<p>MyError1 が<code>rescue</code>節でハンドリングされてませんね。こうしてみるとどうでしょう。</p>
+<p>MyError1 が<code class="highlighter-rouge">rescue</code>節でハンドリングされてませんね。こうしてみるとどうでしょう。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError1</span> <span class="o">&lt;</span> <span class="no">Exception</span><span class="p">;</span> <span class="k">end</span>
 
 <span class="k">begin</span>
   <span class="k">raise</span> <span class="no">MyError1</span>
 <span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="nb">puts</span> <span class="s2">"Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
 <span class="k">end</span>
 
-<span class="c1"># =&gt; Exception handled! MyError1</span></code></pre></div>
+<span class="c1"># =&gt; Exception handled! MyError1</span></code></pre></figure>
 
-<p>次は<code>rescue</code>節に入りました。</p>
+<p>次は<code class="highlighter-rouge">rescue</code>節に入りました。</p>
 
 <h2 id="standarderror-">StandardError を継承した場合</h2>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span>
 
 <span class="k">begin</span>
   <span class="k">raise</span> <span class="no">MyError2</span>
 <span class="k">rescue</span> <span class="o">=&gt;</span> <span class="n">e</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="nb">puts</span> <span class="s2">"Exception handled! </span><span class="si">#{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
 <span class="k">end</span>
 
-<span class="c1"># =&gt; Exception handled! MyError2</span></code></pre></div>
+<span class="c1"># =&gt; Exception handled! MyError2</span></code></pre></figure>
 
-<p>こちらは問題なく<code>rescue</code>節でハンドルされました。</p>
+<p>こちらは問題なく<code class="highlighter-rouge">rescue</code>節でハンドルされました。</p>
 
 <h2 id="section">なぜ？</h2>
 
@@ -128,7 +128,7 @@
 
 <p>via. <a href="http://d.hatena.ne.jp/yarb/20121005/p1">Rubyで自前の例外クラスを作るときExceptionではなくStandardErrorを継承する理由</a></p>
 
-<p>下記がビルトインのExceptionのサブクラスたちです。<code>rescue</code>のデフォルトが<code>StandardError</code>、<code>raise</code>のデフォルトが<code>RuntimeError</code>となっています。</p>
+<p>下記がビルトインのExceptionのサブクラスたちです。<code class="highlighter-rouge">rescue</code>のデフォルトが<code class="highlighter-rouge">StandardError</code>、<code class="highlighter-rouge">raise</code>のデフォルトが<code class="highlighter-rouge">RuntimeError</code>となっています。</p>
 
 <blockquote>
   <ul>
@@ -146,7 +146,7 @@
         <li>Interrupt</li>
       </ul>
     </li>
-    <li>StandardError – default for <code>rescue</code>
+    <li>StandardError – default for <code class="highlighter-rouge">rescue</code>
       <ul>
         <li>ArgumentError
           <ul>
@@ -181,7 +181,7 @@
           </ul>
         </li>
         <li>RegexpError</li>
-        <li>RuntimeError – default for <code>raise</code></li>
+        <li>RuntimeError – default for <code class="highlighter-rouge">raise</code></li>
         <li>SystemCallError
           <ul>
             <li>Errno::*</li>
@@ -200,9 +200,9 @@
 
 <p>via <a href="http://ruby-doc.org/core-2.2.0/Exception.html">Exception</a></p>
 
-<p>よって<code>rescue</code>のデフォルトで拾える<code>StandardError</code>を使って独自例外を定義しましょう。</p>
+<p>よって<code class="highlighter-rouge">rescue</code>のデフォルトで拾える<code class="highlighter-rouge">StandardError</code>を使って独自例外を定義しましょう。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyError2</span> <span class="o">&lt;</span> <span class="no">StandardError</span><span class="p">;</span> <span class="k">end</span></code></pre></figure>
 
 <h3 id="section-1">参考</h3>
 <ul>

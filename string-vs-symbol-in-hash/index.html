@@ -90,37 +90,39 @@
 
 <h3 id="section-1">ベンチマーク・コード</h3>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
-<span class="no">STRING_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;foo&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span> <span class="p">}</span>
-<span class="no">SYMBOL_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span>  <span class="p">}</span>
+<span class="no">STRING_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"foo"</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span> <span class="p">}</span>
+<span class="no">SYMBOL_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span>  <span class="p">}</span>
 
-<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">STRING_HASH</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">]</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">SYMBOL_HASH</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span>  <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)</span> <span class="p">{</span> <span class="no">STRING_HASH</span><span class="p">[</span><span class="s2">"foo"</span><span class="p">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">)</span> <span class="p">{</span> <span class="no">SYMBOL_HASH</span><span class="p">[</span><span class="ss">:foo</span><span class="p">]</span>  <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="ruby-21">Ruby 2.1</h2>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
               string    70.713k i/100ms
               symbol    93.805k i/100ms
 -------------------------------------------------
               string      3.356M (± 7.6%) i/s -     16.688M
               symbol      6.363M (± 8.3%) i/s -     31.612M
 </code></pre>
+</div>
 
 <p>シンボルを使った方がハッシュのアクセスは2倍ほど速い。</p>
 
 <h2 id="ruby-22">Ruby 2.2</h2>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
               string    77.873k i/100ms
               symbol    78.367k i/100ms
 -------------------------------------------------
               string      5.604M (± 7.8%) i/s -     27.879M
               symbol      6.463M (± 8.2%) i/s -     32.130M
 </code></pre>
+</div>
 
 <p>シンボルを使った方がハッシュのアクセスは速いが、Stringでのハッシュのアクセス速度はシンボルのそれと大きく変わらない値となっている。</p>
 
@@ -131,39 +133,41 @@
 
 <h3 id="json">【おまけ】JSONの場合</h3>
 
-<p>JSONをパースした場合。下記のコードで<code>symbolize_names</code>した場合とそうでない場合を比較。</p>
+<p>JSONをパースした場合。下記のコードで<code class="highlighter-rouge">symbolize_names</code>した場合とそうでない場合を比較。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'json'</span>
+<span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
-<span class="no">SAMPLE_JSON</span> <span class="o">=</span> <span class="s1">&#39;{&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3}&#39;</span>
+<span class="no">SAMPLE_JSON</span> <span class="o">=</span> <span class="s1">'{"a": 1, "b": 2, "c": 3}'</span>
 
-<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="s2">&quot;c&quot;</span><span class="o">]</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">,</span> <span class="ss">symbolize_names</span><span class="p">:</span> <span class="kp">true</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:c</span><span class="o">]</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">);</span> <span class="nb">hash</span><span class="p">[</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">,</span> <span class="ss">symbolize_names: </span><span class="kp">true</span><span class="p">);</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:c</span><span class="p">]</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
 
 <h3 id="ruby-21-1">Ruby 2.1</h3>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
           string    11.910k i/100ms
           symbol    11.072k i/100ms
 -------------------------------------------------
           string    148.480k (± 4.5%) i/s -    750.330k
           symbol    141.624k (± 5.3%) i/s -    708.608k
 </code></pre>
+</div>
 
 <h3 id="ruby-22-1">Ruby 2.2</h3>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
               string    11.980k i/100ms
               symbol    11.129k i/100ms
 -------------------------------------------------
               string    150.421k (± 6.5%) i/s -    754.740k
               symbol    137.871k (± 9.1%) i/s -    689.998k
 </code></pre>
+</div>
 
-<p><code>symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
+<p><code class="highlighter-rouge">symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
 
 <h3 id="section-3">参考</h3>
 <ul>

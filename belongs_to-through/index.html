@@ -73,13 +73,13 @@
 
 <h2 id="tldr">TL;DR</h2>
 
-<p>結論は<code>belongs_to</code>,<code>through</code>でなく、<code>delegate</code>, <code>to</code> or <code>has_one</code>, <code>through</code>。</p>
+<p>結論は<code class="highlighter-rouge">belongs_to</code>,<code class="highlighter-rouge">through</code>でなく、<code class="highlighter-rouge">delegate</code>, <code class="highlighter-rouge">to</code> or <code class="highlighter-rouge">has_one</code>, <code class="highlighter-rouge">through</code>。</p>
 
 <h2 id="hasmany-through">has_many, through</h2>
 
 <p>RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
 <span class="k">end</span>
 
@@ -90,13 +90,13 @@
 
 <span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
-<p>特定のUserがどんなTagを持っているかを調べるには<code>through</code>を使うと簡単に実装できます。<code>User</code>モデルに<code>through</code>を追加しましょう。</p>
+<p>特定のUserがどんなTagを持っているかを調べるには<code class="highlighter-rouge">through</code>を使うと簡単に実装できます。<code class="highlighter-rouge">User</code>モデルに<code class="highlighter-rouge">through</code>を追加しましょう。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through: :posts</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
@@ -106,19 +106,19 @@
 
 <span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
-<p>こうすることで、<code>@user.tags</code>でユーザーが所有するタグを取得できます。</p>
+<p>こうすることで、<code class="highlighter-rouge">@user.tags</code>でユーザーが所有するタグを取得できます。</p>
 
-<p>ではここで疑問。逆に<code>Tag</code>から<code>Post</code>を省いて<code>User</code>を導きだすことはできないのでしょうか？</p>
+<p>ではここで疑問。逆に<code class="highlighter-rouge">Tag</code>から<code class="highlighter-rouge">Post</code>を省いて<code class="highlighter-rouge">User</code>を導きだすことはできないのでしょうか？</p>
 
 <h2 id="delegate-">delegate を使う</h2>
 
-<p>結論からいうと<code>delegate</code>を利用することで省けます。具体的には<code>Tag</code>モデルをこうします。</p>
+<p>結論からいうと<code class="highlighter-rouge">delegate</code>を利用することで省けます。具体的には<code class="highlighter-rouge">Tag</code>モデルをこうします。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through: :posts</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
@@ -128,18 +128,18 @@
 
 <span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
-  <span class="n">delegate</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="ss">:post</span>
-<span class="k">end</span></code></pre></div>
+  <span class="n">delegate</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">to: :post</span>
+<span class="k">end</span></code></pre></figure>
 
-<p>これで<code>@tag.user</code>なんて風に当該tagを所有するuserにアクセスできます。</p>
+<p>これで<code class="highlighter-rouge">@tag.user</code>なんて風に当該tagを所有するuserにアクセスできます。</p>
 
 <h2 id="section">追記（2014/11/11）</h2>
 
-<p>このように<code>has_one</code>, <code>through</code>も使えます。</p>
+<p>このように<code class="highlighter-rouge">has_one</code>, <code class="highlighter-rouge">through</code>も使えます。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:posts</span>
+  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through: :posts</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
@@ -149,8 +149,8 @@
 
 <span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
-  <span class="n">has_one</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">through</span><span class="p">:</span> <span class="ss">:post</span>
-<span class="k">end</span></code></pre></div>
+  <span class="n">has_one</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">through: :post</span>
+<span class="k">end</span></code></pre></figure>
 
 <h3 id="section-1">参考</h3>
 <ul>

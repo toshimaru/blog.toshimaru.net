@@ -105,7 +105,7 @@
   </li>
   <li><a href="https://github.com/videojs/videojs-contrib-hls">videojs/videojs-contrib-hls</a>
     <ul>
-      <li>HLS(<code>m3u8</code>)形式の動画ファイルを再生可能にするvideo.jsプラグイン。</li>
+      <li>HLS(<code class="highlighter-rouge">m3u8</code>)形式の動画ファイルを再生可能にするvideo.jsプラグイン。</li>
       <li>HLSに対応していないブラウザでもFlash技術を通すことで再生可能にしているよう。</li>
     </ul>
   </li>
@@ -115,53 +115,53 @@
 
 <p>全体HTMLファイルはこんな感じ。</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
   <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;title&gt;</span>Video.js m3u8<span class="nt">&lt;/title&gt;</span>
-    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/video-js.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs-media-sources.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs.hls.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"css/video-js.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs-media-sources.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs.hls.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
   <span class="nt">&lt;/head&gt;</span>
   <span class="nt">&lt;body&gt;</span>
 
     <span class="nt">&lt;h1&gt;</span>Video.js m3u8 demo page<span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">&quot;test&quot;</span> <span class="na">class=</span><span class="s">&quot;video-js vjs-default-skin&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">width=</span><span class="s">&quot;600&quot;</span> <span class="na">controls</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">&quot;//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8&quot;</span> <span class="na">type=</span><span class="s">&quot;application/x-mpegURL&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">"test"</span> <span class="na">class=</span><span class="s">"video-js vjs-default-skin"</span> <span class="na">height=</span><span class="s">"300"</span> <span class="na">width=</span><span class="s">"600"</span> <span class="na">controls</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">"//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8"</span> <span class="na">type=</span><span class="s">"application/x-mpegURL"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/video&gt;</span>
 
     <span class="nt">&lt;script&gt;</span>
-      <span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">'test'</span><span class="p">);</span>
       <span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span>
     <span class="nt">&lt;/script&gt;</span>
 
   <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span></code></pre></div>
+<span class="nt">&lt;/html&gt;</span></code></pre></figure>
 
 <h3 id="cssjs">CSS/JS読み込み</h3>
 
 <p>video.js, videojs-media-sources.js, videojs.hls.js 以外にもCSSを読み込まないとエラーが出て再生できなかったのでCSSも読み込むこと。</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/video-js.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs-media-sources.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs.hls.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"css/video-js.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs-media-sources.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs.hls.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
 
 <h3 id="video">videoタグ</h3>
 
-<p>適当なクラスを持った<code>&lt;video&gt;</code>をタグに<code>height</code>, <code>width</code>を定義してやって、中に<code>type="application/x-mpegURL"</code>と<code>src</code>を持った<code>&lt;source&gt;</code>タグを入れてやる。</p>
+<p>適当なクラスを持った<code class="highlighter-rouge">&lt;video&gt;</code>をタグに<code class="highlighter-rouge">height</code>, <code class="highlighter-rouge">width</code>を定義してやって、中に<code class="highlighter-rouge">type="application/x-mpegURL"</code>と<code class="highlighter-rouge">src</code>を持った<code class="highlighter-rouge">&lt;source&gt;</code>タグを入れてやる。</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">&quot;test&quot;</span> <span class="na">class=</span><span class="s">&quot;video-js vjs-default-skin&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">width=</span><span class="s">&quot;600&quot;</span> <span class="na">controls</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">&quot;//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8&quot;</span> <span class="na">type=</span><span class="s">&quot;application/x-mpegURL&quot;</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/video&gt;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">"test"</span> <span class="na">class=</span><span class="s">"video-js vjs-default-skin"</span> <span class="na">height=</span><span class="s">"300"</span> <span class="na">width=</span><span class="s">"600"</span> <span class="na">controls</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">"//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8"</span> <span class="na">type=</span><span class="s">"application/x-mpegURL"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/video&gt;</span></code></pre></figure>
 
 <h3 id="javascript">JavaScript</h3>
 
-<p><code>videojs()</code>内にvideoタグのIDでplayerを生成してplay。</p>
+<p><code class="highlighter-rouge">videojs()</code>内にvideoタグのIDでplayerを生成してplay。</p>
 
-<div class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
-<span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">'test'</span><span class="p">);</span>
+<span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span></code></pre></figure>
 
 <h2 id="section-1">最後に</h2>
 

@@ -3,7 +3,7 @@
   <title><![CDATA[Hack Your Design!]]></title>
   <link href="http://blog.toshimaru.net/atom.xml" rel="self"/>
   <link href="http://blog.toshimaru.net/"/>
-  <updated>2016-01-23T06:42:58+00:00</updated>
+  <updated>2016-01-23T14:36:33+00:00</updated>
   <id>http://blog.toshimaru.net/</id>
   <author>
     <name><![CDATA[Toshimaru]]></name>
@@ -284,26 +284,26 @@
 
 <p>書いてみた。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;net/http&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;yajl&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;oj&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'uri'</span>
+<span class="nb">require</span> <span class="s1">'net/http'</span>
+<span class="nb">require</span> <span class="s1">'json'</span>
+<span class="nb">require</span> <span class="s1">'yajl'</span>
+<span class="nb">require</span> <span class="s1">'oj'</span>
+<span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
-<span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span> <span class="s2">&quot;http://complex/json/url.json&quot;</span>
-<span class="n">response</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">get</span> <span class="n">uri</span>
+<span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span> <span class="s2">"http://complex/json/url.json"</span>
+<span class="n">response</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="p">.</span><span class="nf">get</span> <span class="n">uri</span>
 
-<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;JSON.parse&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Yajl&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">Yajl</span><span class="o">::</span><span class="no">Parser</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Oj&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">Oj</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">compare!</span>
-<span class="k">end</span></code></pre></div>
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"JSON.parse"</span><span class="p">)</span> <span class="p">{</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"Yajl"</span><span class="p">)</span> <span class="p">{</span> <span class="no">Yajl</span><span class="o">::</span><span class="no">Parser</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"Oj"</span><span class="p">)</span> <span class="p">{</span> <span class="no">Oj</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">compare!</span>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="result">Result</h2>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
           JSON.parse    99.000  i/100ms
                 Yajl   108.000  i/100ms
                   Oj   173.000  i/100ms
@@ -317,6 +317,7 @@ Comparison:
           JSON.parse:     1123.1 i/s - 1.64x slower
                 Yajl:     1105.2 i/s - 1.66x slower
 </code></pre>
+</div>
 
 <p>OjがJSON.parseやYajlより1.5倍〜1.8倍ほど高速という結果が得られた。</p>
 
@@ -375,7 +376,7 @@ Comparison:
 
 <p>JSON Schemaでコラボレーションした事例を紹介するよ。</p>
 
-<pre><code>+------------------+
+<div class="highlighter-rouge"><pre class="highlight"><code>+------------------+
 |                  |
 |  Client-side JS  |
 |     (React)      |
@@ -393,6 +394,7 @@ Comparison:
 |                  |
 +------------------+
 </code></pre>
+</div>
 
 <h2 id="json-schema-for-us">JSON Schema for us</h2>
 <ul>
@@ -435,60 +437,60 @@ Comparison:
 
 <h2 id="get-usersid">GET /users/{id}</h2>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># user.schema.yml</span>
-<span class="l-Scalar-Plain">$schema</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://json-schema.org/draft-04/schema#</span>
-<span class="l-Scalar-Plain">title</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">User</span>
-<span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">An User</span>
-<span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">object</span>
-<span class="l-Scalar-Plain">properties</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">id</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">integer</span>
-  <span class="l-Scalar-Plain">email</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">string</span>
-    <span class="l-Scalar-Plain">format</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">email</span>
-  <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">string</span>
-    <span class="l-Scalar-Plain">minLength</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1</span>
-    <span class="l-Scalar-Plain">maxLength</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">32</span>
-<span class="l-Scalar-Plain">required</span><span class="p-Indicator">:</span>
-  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">id</span>
-  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">email</span>
-  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># user.schema.yml</span>
+<span class="s">$schema</span><span class="pi">:</span> <span class="s">http://json-schema.org/draft-04/schema#</span>
+<span class="s">title</span><span class="pi">:</span> <span class="s">User</span>
+<span class="s">description</span><span class="pi">:</span> <span class="s">An User</span>
+<span class="s">type</span><span class="pi">:</span> <span class="s">object</span>
+<span class="s">properties</span><span class="pi">:</span>
+  <span class="s">id</span><span class="pi">:</span>
+    <span class="s">type</span><span class="pi">:</span> <span class="s">integer</span>
+  <span class="s">email</span><span class="pi">:</span>
+    <span class="s">type</span><span class="pi">:</span> <span class="s">string</span>
+    <span class="s">format</span><span class="pi">:</span> <span class="s">email</span>
+  <span class="s">name</span><span class="pi">:</span>
+    <span class="s">type</span><span class="pi">:</span> <span class="s">string</span>
+    <span class="s">minLength</span><span class="pi">:</span> <span class="s">1</span>
+    <span class="s">maxLength</span><span class="pi">:</span> <span class="s">32</span>
+<span class="s">required</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">id</span>
+  <span class="pi">-</span> <span class="s">email</span>
+  <span class="pi">-</span> <span class="s">name</span></code></pre></figure>
 
-<p><code>PUT /users/{id}</code>とかもスキーマ使いまわせる。</p>
+<p><code class="highlighter-rouge">PUT /users/{id}</code>とかもスキーマ使いまわせる。</p>
 
 <h2 id="json-schema-validation">JSON Schema Validation</h2>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;json-schema&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'json-schema'</span>
 
 <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;required&quot;</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;a&quot;</span><span class="o">]</span><span class="p">,</span>
-  <span class="s2">&quot;properties&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="s2">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;integer&quot;</span><span class="p">}</span>
+  <span class="s2">"type"</span> <span class="o">=&gt;</span> <span class="s2">"object"</span><span class="p">,</span>
+  <span class="s2">"required"</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">],</span>
+  <span class="s2">"properties"</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">"type"</span> <span class="o">=&gt;</span> <span class="s2">"integer"</span><span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+  <span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="mi">5</span>
 <span class="p">}</span>
 
-<span class="no">JSON</span><span class="o">::</span><span class="no">Validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code></pre></div>
+<span class="no">JSON</span><span class="o">::</span><span class="no">Validator</span><span class="p">.</span><span class="nf">validate</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code></pre></figure>
 
 <h2 id="rspec-json-schema-matcher">RSpec JSON Schema Matcher</h2>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">&quot;Fetching the current user&quot;</span> <span class="k">do</span>
-  <span class="n">context</span> <span class="s2">&quot;with valid auth token&quot;</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="s2">&quot;returns the current user&quot;</span> <span class="k">do</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">"Fetching the current user"</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">"with valid auth token"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"returns the current user"</span> <span class="k">do</span>
       <span class="n">user</span> <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
-      <span class="n">auth_header</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Auth-Token&quot;</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">auth_token</span> <span class="p">}</span>
+      <span class="n">auth_header</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"Auth-Token"</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">auth_token</span> <span class="p">}</span>
 
       <span class="n">get</span> <span class="n">v1_current_user_url</span><span class="p">,</span> <span class="p">{},</span> <span class="n">auth_header</span>
 
-      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="mi">200</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">match_response_schema</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">status</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="mi">200</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">match_response_schema</span><span class="p">(</span><span class="s2">"user"</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <p>参考: <a href="https://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher">Validating JSON Schemas with an RSpec Matcher</a></p>
 
@@ -502,7 +504,7 @@ Comparison:
 
 <h2 id="json-schema-vs-jsonschema">json-schema vs json_schema</h2>
 <ul>
-  <li>depending on <code>json-schema</code>:
+  <li>depending on <code class="highlighter-rouge">json-schema</code>:
     <ul>
       <li><a href="https://github.com/airbrake/airbrake">airbrake/airbrake</a></li>
       <li><a href="https://github.com/square/fdoc">square/fdoc</a></li>
@@ -512,7 +514,7 @@ Comparison:
 
 <h2 id="json-schema-vs-jsonschema-1">json-schema vs json_schema</h2>
 <ul>
-  <li>depending on <code>json_schema</code>:
+  <li>depending on <code class="highlighter-rouge">json_schema</code>:
     <ul>
       <li><a href="https://github.com/interagent/committee">interagent/committee</a></li>
       <li><a href="https://github.com/interagent/prmd">interagent/prmd</a></li>
@@ -597,76 +599,81 @@ Comparison:
 
 <h2 id="findeach-1">素のfind_each</h2>
 
-<p>まずはUserテーブルに1万件くらいデータを作って素直に<code>find_each</code>してみる。</p>
+<p>まずはUserテーブルに1万件くらいデータを作って素直に<code class="highlighter-rouge">find_each</code>してみる。</p>
 
-<pre><code>&gt; User.find_each{|a|}
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; User.find_each{|a|}
   User Load (2.7ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (2.6ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
 </code></pre>
+</div>
 
-<p>デフォルトでは<code>order by id</code>で全件取得して1000件ずつ<code>limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
+<p>デフォルトでは<code class="highlighter-rouge">order by id</code>で全件取得して1000件ずつ<code class="highlighter-rouge">limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
 
 <h2 id="orderfindeach">order付きfind_each</h2>
 
-<pre><code>&gt; User.order(created_at: :desc).find_each{|a|}
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; User.order(created_at: :desc).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.8ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.0ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (2.3ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
 </code></pre>
+</div>
 
-<p><code>Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
+<p><code class="highlighter-rouge">Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
 
 <h2 id="limitfindeach">limit付きfind_each</h2>
 
 <p>じゃあlimitも試してみよう。</p>
 
-<pre><code>&gt; User.limit(2000).find_each{|a|}
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; User.limit(2000).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.0ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.5ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 11003)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.4ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 12003)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
 </code></pre>
+</div>
 
 <p>やっぱりワーニングが出て無視された。</p>
 
 <h2 id="wherefindeach">where付きfind_each</h2>
 
-<p><code>where</code>を使って処理対象に条件を付けることもできます。</p>
+<p><code class="highlighter-rouge">where</code>を使って処理対象に条件を付けることもできます。</p>
 
-<pre><code>&gt; User.where(notes: "1").find_each{|a|}
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; User.where(notes: "1").find_each{|a|}
   User Load (4.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1'  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.8ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 11955)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.9ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 13954)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 18067)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
 </code></pre>
+</div>
 
-<p>しっかり全てのクエリに<code>users</code>.<code>notes</code> = ‘1’という条件が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
+<p>しっかり全てのクエリに<code class="highlighter-rouge">users</code>.<code class="highlighter-rouge">notes</code> = ‘1’という条件が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">while</span> <span class="n">records</span><span class="o">.</span><span class="n">any?</span>
-  <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">size</span>
-  <span class="n">primary_key_offset</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">id</span>
-  <span class="k">raise</span> <span class="s2">&quot;Primary key not included in the custom select clause&quot;</span> <span class="k">unless</span> <span class="n">primary_key_offset</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">while</span> <span class="n">records</span><span class="p">.</span><span class="nf">any?</span>
+  <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">size</span>
+  <span class="n">primary_key_offset</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">last</span><span class="p">.</span><span class="nf">id</span>
+  <span class="k">raise</span> <span class="s2">"Primary key not included in the custom select clause"</span> <span class="k">unless</span> <span class="n">primary_key_offset</span>
 
   <span class="k">yield</span> <span class="n">records</span>
 
   <span class="k">break</span> <span class="k">if</span> <span class="n">records_size</span> <span class="o">&lt;</span> <span class="n">batch_size</span>
 
-  <span class="n">records</span> <span class="o">=</span> <span class="n">relation</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">table</span><span class="o">[</span><span class="n">primary_key</span><span class="o">].</span><span class="n">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">))</span><span class="o">.</span><span class="n">to_a</span>
-<span class="k">end</span></code></pre></div>
+  <span class="n">records</span> <span class="o">=</span> <span class="n">relation</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">primary_key</span><span class="p">].</span><span class="nf">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">)).</span><span class="nf">to_a</span>
+<span class="k">end</span></code></pre></figure>
 
 <p>ポイントとなっているコード箇所を抜き出すとここ。</p>
 
-<pre><code>primary_key_offset = records.last.id
+<div class="highlighter-rouge"><pre class="highlight"><code>primary_key_offset = records.last.id
 relation.where(table[primary_key].gt(primary_key_offset))
 </code></pre>
+</div>
 
-<p>最初に取得した1000件のうちの<code>last.id</code>を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
+<p>最初に取得した1000件のうちの<code class="highlighter-rouge">last.id</code>を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
 
 <h2 id="section">まとめ</h2>
 <ul>
@@ -691,18 +698,19 @@ relation.where(table[primary_key].gt(primary_key_offset))
 
 <p>Rubyのバージョンは2.2です。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;benchmark&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'benchmark'</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">100_000</span>
 
-<span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;非破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="ss">d</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="ss">d</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>  <span class="p">}</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"非破壊的"</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">b: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">c: </span><span class="mi">3</span><span class="p">}.</span><span class="nf">merge</span><span class="p">(</span><span class="ss">d: </span><span class="mi">4</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"破壊的"</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="p">{</span><span class="ss">a: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">b: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">c: </span><span class="mi">3</span><span class="p">}.</span><span class="nf">merge!</span><span class="p">(</span><span class="ss">d: </span><span class="mi">4</span><span class="p">)</span>  <span class="p">}</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
 
-<pre><code>user     system      total        real
+<div class="highlighter-rouge"><pre class="highlight"><code>user     system      total        real
 非破壊的  0.330000   0.010000   0.340000 (  0.337557)
 破壊的  0.170000   0.000000   0.170000 (  0.177394)
 </code></pre>
+</div>
 
 <p>破壊的のほうが速い。</p>
 
@@ -712,17 +720,18 @@ relation.where(table[primary_key].gt(primary_key_offset))
 
 <p>via. <a href="http://i.loveruby.net/w/OptimizingRubyProgram.html">LoveRubyNet Wiki: OptimizingRubyProgram</a></p>
 
-<p>なるほど。<code>gsub</code>でも検証してみよう。</p>
+<p>なるほど。<code class="highlighter-rouge">gsub</code>でも検証してみよう。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Benchmark</span><span class="o">.</span><span class="n">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;非破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="s2">&quot;hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;破壊的&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="s2">&quot;hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">gsub!</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">&quot;&lt;br /&gt;&quot;</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Benchmark</span><span class="p">.</span><span class="nf">bm</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"非破壊的"</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="s2">"hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">"</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">"&lt;br /&gt;"</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"破壊的"</span><span class="p">)</span> <span class="p">{</span> <span class="n">n</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="s2">"hello,</span><span class="se">\n</span><span class="s2">world</span><span class="se">\n</span><span class="s2">"</span><span class="p">.</span><span class="nf">gsub!</span><span class="p">(</span><span class="sr">/(\r\n|\r|\n)/</span><span class="p">,</span> <span class="s2">"&lt;br /&gt;"</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
 
-<pre><code>user     system      total        real
+<div class="highlighter-rouge"><pre class="highlight"><code>user     system      total        real
 非破壊的  0.410000   0.010000   0.420000 (  0.420611)
 破壊的  0.420000   0.000000   0.420000 (  0.418214)
 </code></pre>
+</div>
 
 <p>こちらは結果はほとんど変わらなかった。</p>
 
@@ -784,7 +793,7 @@ relation.where(table[primary_key].gt(primary_key_offset))
     <id>http://blog.toshimaru.net/join-lines-command</id>
     <content type="html"><![CDATA[<p>やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</p>
 
-<pre><code>$ cat text
+<div class="highlighter-rouge"><pre class="highlight"><code>$ cat text
 aaaa
 bbbb
 cccc
@@ -792,16 +801,18 @@ cccc
 $ cat text | tr '\n' ','
 aaaa,bbbb,cccc,%
 </code></pre>
+</div>
 
-<p>こんな感じで<code>tr</code>を使って改行コードを置換してやればカンマ区切りで1行にできる。</p>
+<p>こんな感じで<code class="highlighter-rouge">tr</code>を使って改行コードを置換してやればカンマ区切りで1行にできる。</p>
 
 <h3 id="section">もともと</h3>
 
 <p>もともとやりたかったのはこんな感じのこと。</p>
 
-<pre><code>$ echo '{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }' | jq '.employees[] .firstName' | tr '\n' ',' | awk '{ print "result = [" $1 "]" }'
+<div class="highlighter-rouge"><pre class="highlight"><code>$ echo '{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }' | jq '.employees[] .firstName' | tr '\n' ',' | awk '{ print "result = [" $1 "]" }'
 result = ["John","Anna","Peter",]
 </code></pre>
+</div>
 
 <p>curlでJSONをGETしてそれをjqでパースして出たリストをカンマ区切りで出力する、みたいなやつ。</p>
 
@@ -818,52 +829,52 @@ result = ["John","Anna","Peter",]
     <link href="http://blog.toshimaru.net/ruby-configuration-pattern/"/>
     <updated>2015-09-01T00:00:00+00:00</updated>
     <id>http://blog.toshimaru.net/ruby-configuration-pattern</id>
-    <content type="html"><![CDATA[<p>railsのgemでよくみかける初期設定ファイル、<code>config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
+    <content type="html"><![CDATA[<p>railsのgemでよくみかける初期設定ファイル、<code class="highlighter-rouge">config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
 
 <h2 id="section">めざす完成形はコレ！</h2>
 
 <p>完成系として、下記を想定してみます。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
-<span class="no">Konfig</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">my_value</span> <span class="o">=</span> <span class="s1">&#39;my configuration value&#39;</span>
-<span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
+<span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s1">'my configuration value'</span>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="configure">configureメソッドを用意</h2>
 
-<p>まずは<code>module</code>と<code>configure</code>というクラスメソッドを用意します。</p>
+<p>まずは<code class="highlighter-rouge">module</code>と<code class="highlighter-rouge">configure</code>というクラスメソッドを用意します。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
     <span class="k">def</span> <span class="nf">configure</span>
     <span class="k">end</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="configuration">Configurationクラス</h2>
 
-<p>次に実際の設定値が入る<code>Configuration</code>クラスを用意します。</p>
+<p>次に実際の設定値が入る<code class="highlighter-rouge">Configuration</code>クラスを用意します。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
   <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
 
   <span class="k">def</span> <span class="nf">initialize</span>
-    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">&#39;default value&#39;</span>
+    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="section-1">完成形</h2>
 
 <p>次にこれを組み合わせてみましょう。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
     <span class="k">def</span> <span class="nf">configure</span>
       <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
     <span class="k">end</span>
 
     <span class="k">def</span> <span class="nf">configuration</span>
-      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="o">.</span><span class="n">new</span>
+      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="p">.</span><span class="nf">new</span>
     <span class="k">end</span>
   <span class="k">end</span>
 
@@ -871,26 +882,27 @@ result = ["John","Anna","Peter",]
     <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
 
     <span class="k">def</span> <span class="nf">initialize</span>
-      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">&#39;default value&#39;</span>
+      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
     <span class="k">end</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
-<p>これでインスタンス化された<code>Configuration</code>クラスが出てきます。</p>
+<p>これでインスタンス化された<code class="highlighter-rouge">Configuration</code>クラスが出てきます。</p>
 
-<pre><code>&gt; Konfig.configure {|config| p config}
+<div class="highlighter-rouge"><pre class="highlight"><code>&gt; Konfig.configure {|config| p config}
 #&lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value"&gt;
 </code></pre>
+</div>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">my_value</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s2">"abc"</span>
 <span class="k">end</span>
-<span class="c1"># =&gt; &quot;abc&quot;</span>
+<span class="c1"># =&gt; "abc"</span>
 
-<span class="no">Konfig</span><span class="o">.</span><span class="n">configuration</span>
-<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value=&quot;abc&quot;&gt;</span></code></pre></div>
+<span class="no">Konfig</span><span class="p">.</span><span class="nf">configuration</span>
+<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="abc"&gt;</span></code></pre></figure>
 
-<p><code>configure</code>で<code>Configuration</code>インスタンス作っててブロック内の<code>config</code>変数で<code>Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
+<p><code class="highlighter-rouge">configure</code>で<code class="highlighter-rouge">Configuration</code>インスタンス作っててブロック内の<code class="highlighter-rouge">config</code>変数で<code class="highlighter-rouge">Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
 
 <h3 id="section-2">参考</h3>
 <ul>
@@ -912,9 +924,9 @@ result = ["John","Anna","Peter",]
 
 <ul>
   <li><a href="https://github.com/toshimaru/docomochatter">toshimaru/docomochatter</a>というシンプルなAPIクライアントをまず作り、それを利用するかたちでプラグインを作った</li>
-  <li>既に定義された<code>hubot ping</code>などのコマンドに対しては返答しないようにし、マッチするコマンドが他にない場合にプラグインが反応するようにした。 このへんのやり方についてはこちらを参照した: <a href="http://qiita.com/hiconyan/items/baf6ac56129a26d8ac0c">Hubotで「どのコマンドにも一致しない」ときの処理 - Qiita</a></li>
+  <li>既に定義された<code class="highlighter-rouge">hubot ping</code>などのコマンドに対しては返答しないようにし、マッチするコマンドが他にない場合にプラグインが反応するようにした。 このへんのやり方についてはこちらを参照した: <a href="http://qiita.com/hiconyan/items/baf6ac56129a26d8ac0c">Hubotで「どのコマンドにも一致しない」ときの処理 - Qiita</a></li>
   <li>ルーム毎（SlackでいうところのChannel）にcontextを保存するようにした</li>
-  <li><code>DOCOMO_API_KEY</code>という環境変数使ってAPIアクセスする</li>
+  <li><code class="highlighter-rouge">DOCOMO_API_KEY</code>という環境変数使ってAPIアクセスする</li>
 </ul>
 
 <h3 id="section">参考</h3>
@@ -1070,54 +1082,56 @@ result = ["John","Anna","Peter",]
 
 <p>ある特定のRakeタスクを実行する前に別のタスクを実行したい場合、このようにタスクを書きます。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"x"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"y"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"z"</span> <span class="p">}</span>
 
-<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
-<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
-  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
-<span class="k">end</span></code></pre></div>
+<span class="n">desc</span> <span class="s2">"dependency rake task"</span>
+<span class="n">task</span> <span class="ss">foo: </span><span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="p">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"foo task"</span>
+<span class="k">end</span></code></pre></figure>
 
 <p>結果はこんな感じ。</p>
 
-<pre><code>$ rake foo
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rake foo
 x
 y
 z
 foo task
 </code></pre>
+</div>
 
-<p>タスク<code>x</code>, <code>y</code>, <code>z</code> が実行された後にタスク<code>foo</code>が実行されます。</p>
+<p>タスク<code class="highlighter-rouge">x</code>, <code class="highlighter-rouge">y</code>, <code class="highlighter-rouge">z</code> が実行された後にタスク<code class="highlighter-rouge">foo</code>が実行されます。</p>
 
 <h2 id="rakerake-1">rakeタスクの後に別のrakeタスクを実行</h2>
 
-<p>ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、<code>enhance</code>を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。</p>
+<p>ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、<code class="highlighter-rouge">enhance</code>を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"x"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"y"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"z"</span> <span class="p">}</span>
 
-<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
-<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
-  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
+<span class="n">desc</span> <span class="s2">"dependency rake task"</span>
+<span class="n">task</span> <span class="ss">foo: </span><span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="p">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"foo task"</span>
 <span class="k">end</span>
 
-<span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">].</span><span class="n">enhance</span> <span class="k">do</span>
-  <span class="nb">puts</span> <span class="s2">&quot;foo enhancing task&quot;</span>
-<span class="k">end</span></code></pre></div>
+<span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="p">[</span><span class="s2">"foo"</span><span class="p">].</span><span class="nf">enhance</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"foo enhancing task"</span>
+<span class="k">end</span></code></pre></figure>
 
 <p>結果はこんな感じ。</p>
 
-<pre><code>$ rake foo
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rake foo
 x
 y
 z
 foo task
 foo enhancing task
 </code></pre>
+</div>
 
-<p><code>enhance</code>の中にかいた処理はしっかり<code>foo</code>タスクのあとに実行されていますね。</p>
+<p><code class="highlighter-rouge">enhance</code>の中にかいた処理はしっかり<code class="highlighter-rouge">foo</code>タスクのあとに実行されていますね。</p>
 
 <h3 id="section">参考</h3>
 <ul>
@@ -1262,37 +1276,39 @@ foo enhancing task
 
 <h3 id="section-1">ベンチマーク・コード</h3>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
-<span class="no">STRING_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;foo&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span> <span class="p">}</span>
-<span class="no">SYMBOL_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">&quot;bar&quot;</span>  <span class="p">}</span>
+<span class="no">STRING_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"foo"</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span> <span class="p">}</span>
+<span class="no">SYMBOL_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span>  <span class="p">}</span>
 
-<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">STRING_HASH</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">]</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">SYMBOL_HASH</span><span class="o">[</span><span class="ss">:foo</span><span class="o">]</span>  <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)</span> <span class="p">{</span> <span class="no">STRING_HASH</span><span class="p">[</span><span class="s2">"foo"</span><span class="p">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">)</span> <span class="p">{</span> <span class="no">SYMBOL_HASH</span><span class="p">[</span><span class="ss">:foo</span><span class="p">]</span>  <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
 
 <h2 id="ruby-21">Ruby 2.1</h2>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
               string    70.713k i/100ms
               symbol    93.805k i/100ms
 -------------------------------------------------
               string      3.356M (± 7.6%) i/s -     16.688M
               symbol      6.363M (± 8.3%) i/s -     31.612M
 </code></pre>
+</div>
 
 <p>シンボルを使った方がハッシュのアクセスは2倍ほど速い。</p>
 
 <h2 id="ruby-22">Ruby 2.2</h2>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
               string    77.873k i/100ms
               symbol    78.367k i/100ms
 -------------------------------------------------
               string      5.604M (± 7.8%) i/s -     27.879M
               symbol      6.463M (± 8.2%) i/s -     32.130M
 </code></pre>
+</div>
 
 <p>シンボルを使った方がハッシュのアクセスは速いが、Stringでのハッシュのアクセス速度はシンボルのそれと大きく変わらない値となっている。</p>
 
@@ -1303,39 +1319,41 @@ foo enhancing task
 
 <h3 id="json">【おまけ】JSONの場合</h3>
 
-<p>JSONをパースした場合。下記のコードで<code>symbolize_names</code>した場合とそうでない場合を比較。</p>
+<p>JSONをパースした場合。下記のコードで<code class="highlighter-rouge">symbolize_names</code>した場合とそうでない場合を比較。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;benchmark/ips&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'json'</span>
+<span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
-<span class="no">SAMPLE_JSON</span> <span class="o">=</span> <span class="s1">&#39;{&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3}&#39;</span>
+<span class="no">SAMPLE_JSON</span> <span class="o">=</span> <span class="s1">'{"a": 1, "b": 2, "c": 3}'</span>
 
-<span class="no">Benchmark</span><span class="o">.</span><span class="n">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="s2">&quot;c&quot;</span><span class="o">]</span> <span class="p">}</span>
-  <span class="n">x</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;symbol&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">,</span> <span class="ss">symbolize_names</span><span class="p">:</span> <span class="kp">true</span><span class="p">);</span> <span class="nb">hash</span><span class="o">[</span><span class="ss">:c</span><span class="o">]</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></div>
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">);</span> <span class="nb">hash</span><span class="p">[</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">,</span> <span class="ss">symbolize_names: </span><span class="kp">true</span><span class="p">);</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:c</span><span class="p">]</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></figure>
 
 <h3 id="ruby-21-1">Ruby 2.1</h3>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
           string    11.910k i/100ms
           symbol    11.072k i/100ms
 -------------------------------------------------
           string    148.480k (± 4.5%) i/s -    750.330k
           symbol    141.624k (± 5.3%) i/s -    708.608k
 </code></pre>
+</div>
 
 <h3 id="ruby-22-1">Ruby 2.2</h3>
 
-<pre><code>Calculating -------------------------------------
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
               string    11.980k i/100ms
               symbol    11.129k i/100ms
 -------------------------------------------------
               string    150.421k (± 6.5%) i/s -    754.740k
               symbol    137.871k (± 9.1%) i/s -    689.998k
 </code></pre>
+</div>
 
-<p><code>symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
+<p><code class="highlighter-rouge">symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
 
 <h3 id="section-3">参考</h3>
 <ul>
@@ -1350,25 +1368,27 @@ foo enhancing task
     <link href="http://blog.toshimaru.net/publish-rails-app-in-lan/"/>
     <updated>2015-07-17T00:00:00+00:00</updated>
     <id>http://blog.toshimaru.net/publish-rails-app-in-lan</id>
-    <content type="html"><![CDATA[<p>普通に<code>rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。(Railsのバージョンは4.2.3です)</p>
+    <content type="html"><![CDATA[<p>普通に<code class="highlighter-rouge">rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。(Railsのバージョンは4.2.3です)</p>
 
-<pre><code>$ rails server
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rails server
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://localhost:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
 </code></pre>
+</div>
 
-<p>これをLAN内に公開したい場合はどうするか。下記のように<code>binding</code>オプションを付けてやります。</p>
+<p>これをLAN内に公開したい場合はどうするか。下記のように<code class="highlighter-rouge">binding</code>オプションを付けてやります。</p>
 
-<pre><code>$ rails server --binding=0.0.0.0
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rails server --binding=0.0.0.0
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://0.0.0.0:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
 </code></pre>
+</div>
 
-<p>これで同じLAN内にいるクライアントからローカルIP（e.g. <code>192.168.1.10:3000</code> ）でRailsへとアクセス可能になります。</p>
+<p>これで同じLAN内にいるクライアントからローカルIP（e.g. <code class="highlighter-rouge">192.168.1.10:3000</code> ）でRailsへとアクセス可能になります。</p>
 
 <h3 id="section">参考</h3>
 <ul>
@@ -1382,30 +1402,32 @@ foo enhancing task
     <link href="http://blog.toshimaru.net/manage-schema-with-sql-in-rails/"/>
     <updated>2015-07-03T00:00:00+00:00</updated>
     <id>http://blog.toshimaru.net/manage-schema-with-sql-in-rails</id>
-    <content type="html"><![CDATA[<p>Railsでは<code>db:migrate</code>すると、デフォルトで<code>db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code>config/application.rb</code>内で<code>active_record.schema_format</code>を<code>:sql</code>と設定することで可能になります（デフォルト値は<code>:ruby</code>）。</p>
+    <content type="html"><![CDATA[<p>Railsでは<code class="highlighter-rouge">db:migrate</code>すると、デフォルトで<code class="highlighter-rouge">db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code class="highlighter-rouge">config/application.rb</code>内で<code class="highlighter-rouge">active_record.schema_format</code>を<code class="highlighter-rouge">:sql</code>と設定することで可能になります（デフォルト値は<code class="highlighter-rouge">:ruby</code>）。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
 <span class="k">module</span> <span class="nn">Rails4TwitterClone</span>
   <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
+    <span class="n">config</span><span class="p">.</span><span class="nf">active_record</span><span class="p">.</span><span class="nf">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre></figure>
 
-<p>これで<code>db/migrate</code>するとデフォルトのschema.rbではなく、<code>db/structure.sql</code>というSQLファイルを吐きます。</p>
+<p>これで<code class="highlighter-rouge">db/migrate</code>するとデフォルトのschema.rbではなく、<code class="highlighter-rouge">db/structure.sql</code>というSQLファイルを吐きます。</p>
 
 <h2 id="structuresql">structure.sqlをロードする</h2>
 
 <p>生成されたstructure.sqlファイルは、下記のコマンドでデータベースへロードできます。</p>
 
-<pre><code>rake db:structure:load
+<div class="highlighter-rouge"><pre class="highlight"><code>rake db:structure:load
 </code></pre>
+</div>
 
 <h2 id="sql">SQLファイルだけ欲しい場合</h2>
 
-<p>sqlダンプファイルのみが欲しい場合は、<code>config.active_record.schema_format</code>の設定を変えずとも下記コマンドでstructure.sqlを生成することができます。</p>
+<p>sqlダンプファイルのみが欲しい場合は、<code class="highlighter-rouge">config.active_record.schema_format</code>の設定を変えずとも下記コマンドでstructure.sqlを生成することができます。</p>
 
-<pre><code>rake db:structure:dump
+<div class="highlighter-rouge"><pre class="highlight"><code>rake db:structure:dump
 </code></pre>
+</div>
 
 <h3 id="section">参考</h3>
 <ul>
@@ -1499,7 +1521,7 @@ foo enhancing task
   </li>
   <li><a href="https://github.com/videojs/videojs-contrib-hls">videojs/videojs-contrib-hls</a>
     <ul>
-      <li>HLS(<code>m3u8</code>)形式の動画ファイルを再生可能にするvideo.jsプラグイン。</li>
+      <li>HLS(<code class="highlighter-rouge">m3u8</code>)形式の動画ファイルを再生可能にするvideo.jsプラグイン。</li>
       <li>HLSに対応していないブラウザでもFlash技術を通すことで再生可能にしているよう。</li>
     </ul>
   </li>
@@ -1509,53 +1531,53 @@ foo enhancing task
 
 <p>全体HTMLファイルはこんな感じ。</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
   <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;title&gt;</span>Video.js m3u8<span class="nt">&lt;/title&gt;</span>
-    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/video-js.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs-media-sources.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs.hls.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"css/video-js.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs-media-sources.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs.hls.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
   <span class="nt">&lt;/head&gt;</span>
   <span class="nt">&lt;body&gt;</span>
 
     <span class="nt">&lt;h1&gt;</span>Video.js m3u8 demo page<span class="nt">&lt;/h1&gt;</span>
-    <span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">&quot;test&quot;</span> <span class="na">class=</span><span class="s">&quot;video-js vjs-default-skin&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">width=</span><span class="s">&quot;600&quot;</span> <span class="na">controls</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">&quot;//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8&quot;</span> <span class="na">type=</span><span class="s">&quot;application/x-mpegURL&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">"test"</span> <span class="na">class=</span><span class="s">"video-js vjs-default-skin"</span> <span class="na">height=</span><span class="s">"300"</span> <span class="na">width=</span><span class="s">"600"</span> <span class="na">controls</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">"//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8"</span> <span class="na">type=</span><span class="s">"application/x-mpegURL"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/video&gt;</span>
 
     <span class="nt">&lt;script&gt;</span>
-      <span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">'test'</span><span class="p">);</span>
       <span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span>
     <span class="nt">&lt;/script&gt;</span>
 
   <span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span></code></pre></div>
+<span class="nt">&lt;/html&gt;</span></code></pre></figure>
 
 <h3 id="cssjs">CSS/JS読み込み</h3>
 
 <p>video.js, videojs-media-sources.js, videojs.hls.js 以外にもCSSを読み込まないとエラーが出て再生できなかったのでCSSも読み込むこと。</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/video-js.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs-media-sources.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/videojs.hls.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"css/video-js.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//cdnjs.cloudflare.com/ajax/libs/video.js/4.12.5/video.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs-media-sources.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"js/videojs.hls.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
 
 <h3 id="video">videoタグ</h3>
 
-<p>適当なクラスを持った<code>&lt;video&gt;</code>をタグに<code>height</code>, <code>width</code>を定義してやって、中に<code>type="application/x-mpegURL"</code>と<code>src</code>を持った<code>&lt;source&gt;</code>タグを入れてやる。</p>
+<p>適当なクラスを持った<code class="highlighter-rouge">&lt;video&gt;</code>をタグに<code class="highlighter-rouge">height</code>, <code class="highlighter-rouge">width</code>を定義してやって、中に<code class="highlighter-rouge">type="application/x-mpegURL"</code>と<code class="highlighter-rouge">src</code>を持った<code class="highlighter-rouge">&lt;source&gt;</code>タグを入れてやる。</p>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">&quot;test&quot;</span> <span class="na">class=</span><span class="s">&quot;video-js vjs-default-skin&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span> <span class="na">width=</span><span class="s">&quot;600&quot;</span> <span class="na">controls</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">&quot;//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8&quot;</span> <span class="na">type=</span><span class="s">&quot;application/x-mpegURL&quot;</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/video&gt;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;video</span> <span class="na">id=</span><span class="s">"test"</span> <span class="na">class=</span><span class="s">"video-js vjs-default-skin"</span> <span class="na">height=</span><span class="s">"300"</span> <span class="na">width=</span><span class="s">"600"</span> <span class="na">controls</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">"//solutions.brightcove.com/jwhisenant/hls/apple/bipbop/bipbopall.m3u8"</span> <span class="na">type=</span><span class="s">"application/x-mpegURL"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/video&gt;</span></code></pre></figure>
 
 <h3 id="javascript">JavaScript</h3>
 
-<p><code>videojs()</code>内にvideoタグのIDでplayerを生成してplay。</p>
+<p><code class="highlighter-rouge">videojs()</code>内にvideoタグのIDでplayerを生成してplay。</p>
 
-<div class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
-<span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">'test'</span><span class="p">);</span>
+<span class="nx">player</span><span class="p">.</span><span class="nx">play</span><span class="p">();</span></code></pre></figure>
 
 <h2 id="section-1">最後に</h2>
 
@@ -1617,7 +1639,7 @@ foo enhancing task
 <p data-height="268" data-theme-id="0" data-slug-hash="MYLYxq" data-default-tab="result" data-user="toshimaru" class="codepen">See the Pen <a href="http://codepen.io/toshimaru/pen/MYLYxq/">No `.on` selector </a> by toshi (<a href="http://codepen.io/toshimaru">@toshimaru</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async="" src="//assets.codepen.io/assets/embed/ei.js"></script>
 
-<p>なぜならjQueryのセレクタ<code>$("#list li")</code>では、初期のDOMにしかイベントがアタッチされないから。後から追加されるDOMに対してはイベントアタッチはされない。</p>
+<p>なぜならjQueryのセレクタ<code class="highlighter-rouge">$("#list li")</code>では、初期のDOMにしかイベントがアタッチされないから。後から追加されるDOMに対してはイベントアタッチはされない。</p>
 
 <h2 id="use-event-delegation">Use Event Delegation</h2>
 
@@ -1628,7 +1650,7 @@ foo enhancing task
 <p data-height="259" data-theme-id="0" data-slug-hash="dPaPEY" data-default-tab="result" data-user="toshimaru" class="codepen">See the Pen <a href="http://codepen.io/toshimaru/pen/dPaPEY/">Use `.on` selector</a> by toshi (<a href="http://codepen.io/toshimaru">@toshimaru</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async="" src="//assets.codepen.io/assets/embed/ei.js"></script>
 
-<p><code>$("#list").on</code>の第二引数としてセレクタ（<code>li</code>）を渡すことで、しっかり<code>$("#list")</code>のリスト要素全てにイベントがデリゲートされていますね。 <img class="emoji" title=":on:" alt=":on:" src="https://assets.github.com/images/icons/emoji/unicode/1f51b.png" height="20" width="20" align="absmiddle" /></p>
+<p><code class="highlighter-rouge">$("#list").on</code>の第二引数としてセレクタ（<code class="highlighter-rouge">li</code>）を渡すことで、しっかり<code class="highlighter-rouge">$("#list")</code>のリスト要素全てにイベントがデリゲートされていますね。 <img class="emoji" title=":on:" alt=":on:" src="https://assets.github.com/images/icons/emoji/unicode/1f51b.png" height="20" width="20" align="absmiddle" /></p>
 
 <h3 id="section">参考</h3>
 <ul>
@@ -1694,36 +1716,36 @@ foo enhancing task
 
 <h3 id="set-code-climate-token">Set Code Climate token</h3>
 
-<p>CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを<code>.travis.yml</code>にセット。</p>
+<p>CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを<code class="highlighter-rouge">.travis.yml</code>にセット。</p>
 
-<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">addons</span><span class="p-Indicator">:</span>
-  <span class="l-Scalar-Plain">code_climate</span><span class="p-Indicator">:</span>
-    <span class="l-Scalar-Plain">repo_token</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">adf08323...</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">addons</span><span class="pi">:</span>
+  <span class="s">code_climate</span><span class="pi">:</span>
+    <span class="s">repo_token</span><span class="pi">:</span> <span class="s">adf08323...</span></code></pre></figure>
 
 <h3 id="intall-codeclimate-reporter">Intall CodeClimate reporter</h3>
 
-<p>codeclimate-test-reporter を<code>Gemfile</code>のtest groupに追加する。</p>
+<p>codeclimate-test-reporter を<code class="highlighter-rouge">Gemfile</code>のtest groupに追加する。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gem</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span><span class="p">,</span> <span class="nb">require</span><span class="p">:</span> <span class="kp">false</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gem</span> <span class="s2">"codeclimate-test-reporter"</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span></code></pre></figure>
 
-<p>CodeClimateのセットアップインストラクション通りに書くとこう。<code>spec/rails_helper.rb</code>に書きます。</p>
+<p>CodeClimateのセットアップインストラクション通りに書くとこう。<code class="highlighter-rouge">spec/rails_helper.rb</code>に書きます。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span>
-<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">.</span><span class="n">start</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
+<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="p">.</span><span class="nf">start</span></code></pre></figure>
 
 <h3 id="simplecov">Simplecovと同居させる</h3>
 
 <p>私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;simplecov&#39;</span>
-<span class="nb">require</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span>
-<span class="no">SimpleCov</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">MultiFormatter</span><span class="o">[</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'simplecov'</span>
+<span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
+<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">formatter</span> <span class="o">=</span> <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">MultiFormatter</span><span class="p">[</span>
   <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">HTMLFormatter</span><span class="p">,</span>
   <span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">::</span><span class="no">Formatter</span>
-<span class="o">]</span>
-<span class="no">SimpleCov</span><span class="o">.</span><span class="n">start</span> <span class="s2">&quot;rails&quot;</span></code></pre></div>
+<span class="p">]</span>
+<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">start</span> <span class="s2">"rails"</span></code></pre></figure>
 
-<p>このようにSimpleCovのformatterに<code>CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
+<p>このようにSimpleCovのformatterに<code class="highlighter-rouge">CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
 
 <p><img src="https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png" alt="codeclimate" /></p>
 

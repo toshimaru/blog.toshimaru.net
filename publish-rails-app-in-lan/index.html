@@ -71,25 +71,27 @@
   </div>
 </div>
 
-<p>普通に<code>rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。(Railsのバージョンは4.2.3です)</p>
+<p>普通に<code class="highlighter-rouge">rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。(Railsのバージョンは4.2.3です)</p>
 
-<pre><code>$ rails server
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rails server
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://localhost:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
 </code></pre>
+</div>
 
-<p>これをLAN内に公開したい場合はどうするか。下記のように<code>binding</code>オプションを付けてやります。</p>
+<p>これをLAN内に公開したい場合はどうするか。下記のように<code class="highlighter-rouge">binding</code>オプションを付けてやります。</p>
 
-<pre><code>$ rails server --binding=0.0.0.0
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rails server --binding=0.0.0.0
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://0.0.0.0:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
 </code></pre>
+</div>
 
-<p>これで同じLAN内にいるクライアントからローカルIP（e.g. <code>192.168.1.10:3000</code> ）でRailsへとアクセス可能になります。</p>
+<p>これで同じLAN内にいるクライアントからローカルIP（e.g. <code class="highlighter-rouge">192.168.1.10:3000</code> ）でRailsへとアクセス可能になります。</p>
 
 <h3 id="section">参考</h3>
 <ul>
