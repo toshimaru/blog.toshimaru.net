@@ -19,14 +19,14 @@ layout: default
     {% if paginator.previous_page == 1 %}
       <a href="/"><i class="icon-chevron-left"></i>  Newer</a>
     {% else %}
-      <a href="/page{{paginator.previous_page}}" class="previous"><i class="icon-chevron-left"></i>  Newer</a>
+      <a href="/page{{paginator.previous_page}}/" class="previous"><i class="icon-chevron-left"></i>  Newer</a>
     {% endif %}
     </div>
   {% endif %}
 
   {% if paginator.next_page %}
   <div class="older">
-    <a href="/page{{paginator.next_page}}" class="next ">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/page{{paginator.next_page}}/" class="next ">Older  <i class="icon-chevron-right"></i></a>
   </div>
   {% endif %}
 </div>
@@ -43,7 +43,7 @@ layout: default
       "@type": "BlogPosting",
       "mainEntityOfPage": {
         "@type": "Blog",
-        "@id": "{{ site.url }}{{ page.url | replace:'index.html','' }}"
+        "@id": "{{ site.url }}{{ post.url }}"
       },
       "headline": "{{ post.title }}",
       "datePublished": "{{ post.date | date_to_xmlschema }}",
