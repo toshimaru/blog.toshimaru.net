@@ -8,9 +8,7 @@ before_script:
 script:
   - bundle exec jekyll build
 after_success:
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then
-  - bundle exec rake autodeploy;
-  - fi
+  - ./deploy.bash
 
 env:
   global:
