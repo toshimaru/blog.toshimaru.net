@@ -79,11 +79,11 @@
 
 <script src="https://gist.github.com/toshimaru/6dc602b5ce5db54f8db0.js"></script>
 
-<p>まずは1を見てください。<code class="highlighter-rouge">public</code>なプロパティには普通にアクセスできて、<code class="highlighter-rouge">private</code>なプロパティにはアクセスできない。普通ですね。</p>
+<p>まずは1を見てください。<code>public</code>なプロパティには普通にアクセスできて、<code>private</code>なプロパティにはアクセスできない。普通ですね。</p>
 
-<p>次に2です。未定義の<code class="highlighter-rouge">hoge</code>プロパティにアクセスしてみます。<code class="highlighter-rouge">Undefined property</code>で怒られます。ここもOK.</p>
+<p>次に2です。未定義の<code>hoge</code>プロパティにアクセスしてみます。<code>Undefined property</code>で怒られます。ここもOK.</p>
 
-<p>次に3。未定義の<code class="highlighter-rouge">hoge</code>プロパティを外部からセットしてみます。エラーは起こりません。この辺から少しおかしい。その後、もう一度2でやったことをやってみます。今度はうまくいきます（なんと！）。</p>
+<p>次に3。未定義の<code>hoge</code>プロパティを外部からセットしてみます。エラーは起こりません。この辺から少しおかしい。その後、もう一度2でやったことをやってみます。今度はうまくいきます（なんと！）。</p>
 
 <p>「え、じゃあプロパティ外部から自由に定義し放題じゃないですか」と思ったあなた、その通り、PHPでは自由にプロパティを外部から弄くり回せちゃうわけです。4でやっているように。</p>
 
@@ -93,9 +93,9 @@
 
 <script src="https://gist.github.com/toshimaru/4721470.js"></script>
 
-<p>まず注目してもらいたいのは、<code class="highlighter-rouge">val</code>という変数を<code class="highlighter-rouge">private</code>として宣言しているところです。これにより<code class="highlighter-rouge">val</code>変数はクラスに隠蔽されています。</p>
+<p>まず注目してもらいたいのは、<code>val</code>という変数を<code>private</code>として宣言しているところです。これにより<code>val</code>変数はクラスに隠蔽されています。</p>
 
-<p>ではどう<code class="highlighter-rouge">val</code>変数にアクセスするのか？　通常であれば<code class="highlighter-rouge">getVal()</code>,<code class="highlighter-rouge">setVal()</code>なんていうアクセッサーを用意しちゃうところですが、ここでは<code class="highlighter-rouge">__get</code>, <code class="highlighter-rouge">__set</code>の<a href="http://php.net/manual/ja/language.oop5.magic.php">マジックメソッド</a>を利用することで普遍的に実装しています。</p>
+<p>ではどう<code>val</code>変数にアクセスするのか？　通常であれば<code>getVal()</code>,<code>setVal()</code>なんていうアクセッサーを用意しちゃうところですが、ここでは<code>__get</code>, <code>__set</code>の<a href="http://php.net/manual/ja/language.oop5.magic.php">マジックメソッド</a>を利用することで普遍的に実装しています。</p>
 
 <p>これにより最初に紹介した例の3,4のような自由にプロパティを外部から定義できちゃうようなことは防げます。小さい実装のわりにはこれで得られるメリットが大きく、我ながら素敵な実装と思うんですが、どうでしょう？</p>
 

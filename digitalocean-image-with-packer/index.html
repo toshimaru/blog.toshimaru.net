@@ -86,54 +86,50 @@
 
 <p>今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ mkdir packer-test
+<pre><code>$ mkdir packer-test
 $ cd packer-test
 </code></pre>
-</div>
 
 <p>次にpackerの設定ファイルを用意。ファイル名は何でもよいっぽい。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ touch Packer.json
+<pre><code>$ touch Packer.json
 </code></pre>
-</div>
 
 <p>このように書く。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"builders"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"digitalocean"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"client_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your_client_id"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"api_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"your_api_key"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"image_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1505447</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"region_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"size_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">66</span><span class="w">
-    </span><span class="p">}</span><span class="w">
-  </span><span class="p">],</span><span class="w">
+<pre><code>{
+  "builders": [
+    {
+      "type": "digitalocean",
+      "client_id": "your_client_id",
+      "api_key": "your_api_key",
+      "image_id": 1505447,
+      "region_id": 3,
+      "size_id": 66
+    }
+  ],
 
-  </span><span class="nt">"provisioners"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"shell"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"script"</span><span class="p">:</span><span class="w"> </span><span class="s2">"setup.sh"</span><span class="w">
-    </span><span class="p">}</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
-
-<p><code class="highlighter-rouge">builder</code>でタイプをチョイス。今回は<code class="highlighter-rouge">digitalocean</code>を選択。<code class="highlighter-rouge">client_id</code>, <code class="highlighter-rouge">api_key</code>を設定。<code class="highlighter-rouge">image_id</code>,<code class="highlighter-rouge">region_id</code>,<code class="highlighter-rouge">size_id</code>のint値については<a href="https://developers.digitalocean.com/">こちらのDigitalOcean API</a>を見るとよいっぽい。</p>
-
-<p>プロビジョニングのタイプは今回はシンプルにshellを設定。適当に<code class="highlighter-rouge">setup.sh</code>を作る。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ echo "echo 'hello world'" &gt; setup.sh
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "setup.sh"
+    }
+  ]
+}
 </code></pre>
-</div>
+
+<p><code>builder</code>でタイプをチョイス。今回は<code>digitalocean</code>を選択。<code>client_id</code>, <code>api_key</code>を設定。<code>image_id</code>,<code>region_id</code>,<code>size_id</code>のint値については<a href="https://developers.digitalocean.com/">こちらのDigitalOcean API</a>を見るとよいっぽい。</p>
+
+<p>プロビジョニングのタイプは今回はシンプルにshellを設定。適当に<code>setup.sh</code>を作る。</p>
+
+<pre><code>$ echo "echo 'hello world'" &gt; setup.sh
+</code></pre>
 
 <h2 id="packer-1">Packer!</h2>
 
 <p>packerビルドしてみる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ packer build Packer.json
+<pre><code>$ packer build Packer.json
 digitalocean output will be in this color.
 
 ==&gt; digitalocean: Creating temporary ssh key for droplet...
@@ -154,7 +150,6 @@ Build 'digitalocean' finished.
 ==&gt; Builds finished. The artifacts of successful builds are:
 --&gt; digitalocean: A snapshot was created: 'packer-1395033724' in region 'San Francisco 1'
 </code></pre>
-</div>
 
 <h2 id="section">結果</h2>
 
@@ -168,7 +163,7 @@ Build 'digitalocean' finished.
 
 <p><img src="/images/posts/packer/do-after.png" alt="after" /></p>
 
-<p>イメージのスナップショット（<code class="highlighter-rouge">packer-1395033724</code>）が作成されてますね。</p>
+<p>イメージのスナップショット（<code>packer-1395033724</code>）が作成されてますね。</p>
 
 <h2 id="section-1">最後に</h2>
 
@@ -180,7 +175,7 @@ Build 'digitalocean' finished.
 
 <p>See. <a href="http://www.packer.io/intro/getting-started/build-image.html">http://www.packer.io/intro/getting-started/build-image.html</a></p>
 
-<p>また、<code class="highlighter-rouge">builders</code>の設定を変更することで、<a href="http://www.packer.io/docs/builders/amazon.html">Amazon EC2</a>や<a href="http://www.packer.io/docs/builders/googlecompute.html">Google Compute Engine</a>とかにもイメージ作成できるようですね。</p>
+<p>また、<code>builders</code>の設定を変更することで、<a href="http://www.packer.io/docs/builders/amazon.html">Amazon EC2</a>や<a href="http://www.packer.io/docs/builders/googlecompute.html">Google Compute Engine</a>とかにもイメージ作成できるようですね。</p>
 
 <h3 id="github-repo">Github Repo</h3>
 

@@ -91,46 +91,45 @@
 
 <h2 id="section">導入</h2>
 
-<p>下記をGemfileに追加して<code class="highlighter-rouge">bundle install</code>.</p>
+<p>下記をGemfileに追加して<code>bundle install</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>gem 'pry-byebug', group: :development
+<pre><code>gem 'pry-byebug', group: :development
 </code></pre>
-</div>
 
 <h2 id="section-1">ユースケース</h2>
 
 <p>例えばこんなコントローラーのロジックがあったとする。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="p">.</span><span class="nf">complicated_logic</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">complicated_logic</span>
     <span class="c1">#</span>
     <span class="c1"># ... long logic ...</span>
     <span class="c1">#</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span></code></pre></div>
 
 <p>resultの中身を見たい場合はこうすればよい。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="p">.</span><span class="nf">complicated_logic</span>
-    <span class="nb">binding</span><span class="p">.</span><span class="nf">pry</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="vi">@post</span><span class="o">.</span><span class="n">complicated_logic</span>
+    <span class="nb">binding</span><span class="o">.</span><span class="n">pry</span>
     <span class="c1">#</span>
     <span class="c1"># ... long logic ...</span>
     <span class="c1">#</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span></code></pre></div>
 
-<p>すると<code class="highlighter-rouge">binding.pry</code>を通る処理をした際に、下記のように表示されます。</p>
+<p>すると<code>binding.pry</code>を通る処理をした際に、下記のように表示されます。</p>
 
 <p>From: app/controllers/posts_controller.rb @ line 31 PostsController#create:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>   26: def create
+<pre><code>   26: def create
    27:   @post = Post.new(post_params)
    28:   result = @post.complicated_logic
    29:   binding.pry
@@ -139,40 +138,38 @@
 
 [1] pry(#&lt;PostsController&gt;)&gt;
 </code></pre>
-</div>
 
 <p>この状態で下記のように変数をみたりできます。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>[1] pry(#&lt;PostsController&gt;)&gt; result
+<pre><code>[1] pry(#&lt;PostsController&gt;)&gt; result
 =&gt; true
 [2] pry(#&lt;PostsController&gt;)&gt; post_params
 =&gt; {"title"=&gt;"a", "category"=&gt;"b", "content"=&gt;"c"}
 </code></pre>
-</div>
 
 <h2 id="section-2">その他のコマンド</h2>
 
 <p>ステップ実行に使えるコマンドは下記４つ。</p>
 
 <ol>
-  <li><code class="highlighter-rouge">step</code></li>
-  <li><code class="highlighter-rouge">next</code></li>
-  <li><code class="highlighter-rouge">finish</code></li>
-  <li><code class="highlighter-rouge">continue</code></li>
+  <li><code>step</code></li>
+  <li><code>next</code></li>
+  <li><code>finish</code></li>
+  <li><code>continue</code></li>
 </ol>
 
-<p>次の行を実行したければ<code class="highlighter-rouge">step</code>、Pryセッションから抜けたい場合は<code class="highlighter-rouge">continue</code>を打てばよい。</p>
+<p>次の行を実行したければ<code>step</code>、Pryセッションから抜けたい場合は<code>continue</code>を打てばよい。</p>
 
 <h3 id="section-3">コマンドエイリアス</h3>
 
-<p>それぞれのコマンドをいちいち打つのがダルいので、プロジェクトルートに<code class="highlighter-rouge">.pryrc</code>を置きに下記のように書くとエイリアスを設定できるようだ。</p>
+<p>それぞれのコマンドをいちいち打つのがダルいので、プロジェクトルートに<code>.pryrc</code>を置きに下記のように書くとエイリアスを設定できるようだ。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">PryByebug</span><span class="p">)</span>
-  <span class="no">Pry</span><span class="p">.</span><span class="nf">commands</span><span class="p">.</span><span class="nf">alias_command</span> <span class="s1">'c'</span><span class="p">,</span> <span class="s1">'continue'</span>
-  <span class="no">Pry</span><span class="p">.</span><span class="nf">commands</span><span class="p">.</span><span class="nf">alias_command</span> <span class="s1">'s'</span><span class="p">,</span> <span class="s1">'step'</span>
-  <span class="no">Pry</span><span class="p">.</span><span class="nf">commands</span><span class="p">.</span><span class="nf">alias_command</span> <span class="s1">'n'</span><span class="p">,</span> <span class="s1">'next'</span>
-  <span class="no">Pry</span><span class="p">.</span><span class="nf">commands</span><span class="p">.</span><span class="nf">alias_command</span> <span class="s1">'f'</span><span class="p">,</span> <span class="s1">'finish'</span>
-<span class="k">end</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">PryByebug</span><span class="p">)</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;continue&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;next&#39;</span>
+  <span class="no">Pry</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">alias_command</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;finish&#39;</span>
+<span class="k">end</span></code></pre></div>
 
 <p>本エントリで紹介したpry-byebugなどのデバッグgemを駆使してRailsアプリのデバッグをもっと効率的にしましょう！</p>
 

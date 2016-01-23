@@ -111,7 +111,7 @@
 
 <p>JSON Schemaでコラボレーションした事例を紹介するよ。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>+------------------+
+<pre><code>+------------------+
 |                  |
 |  Client-side JS  |
 |     (React)      |
@@ -129,7 +129,6 @@
 |                  |
 +------------------+
 </code></pre>
-</div>
 
 <h2 id="json-schema-for-us">JSON Schema for us</h2>
 <ul>
@@ -172,60 +171,60 @@
 
 <h2 id="get-usersid">GET /users/{id}</h2>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># user.schema.yml</span>
-<span class="s">$schema</span><span class="pi">:</span> <span class="s">http://json-schema.org/draft-04/schema#</span>
-<span class="s">title</span><span class="pi">:</span> <span class="s">User</span>
-<span class="s">description</span><span class="pi">:</span> <span class="s">An User</span>
-<span class="s">type</span><span class="pi">:</span> <span class="s">object</span>
-<span class="s">properties</span><span class="pi">:</span>
-  <span class="s">id</span><span class="pi">:</span>
-    <span class="s">type</span><span class="pi">:</span> <span class="s">integer</span>
-  <span class="s">email</span><span class="pi">:</span>
-    <span class="s">type</span><span class="pi">:</span> <span class="s">string</span>
-    <span class="s">format</span><span class="pi">:</span> <span class="s">email</span>
-  <span class="s">name</span><span class="pi">:</span>
-    <span class="s">type</span><span class="pi">:</span> <span class="s">string</span>
-    <span class="s">minLength</span><span class="pi">:</span> <span class="s">1</span>
-    <span class="s">maxLength</span><span class="pi">:</span> <span class="s">32</span>
-<span class="s">required</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">id</span>
-  <span class="pi">-</span> <span class="s">email</span>
-  <span class="pi">-</span> <span class="s">name</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># user.schema.yml</span>
+<span class="l-Scalar-Plain">$schema</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://json-schema.org/draft-04/schema#</span>
+<span class="l-Scalar-Plain">title</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">User</span>
+<span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">An User</span>
+<span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">object</span>
+<span class="l-Scalar-Plain">properties</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">id</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">integer</span>
+  <span class="l-Scalar-Plain">email</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">string</span>
+    <span class="l-Scalar-Plain">format</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">email</span>
+  <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">string</span>
+    <span class="l-Scalar-Plain">minLength</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1</span>
+    <span class="l-Scalar-Plain">maxLength</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">32</span>
+<span class="l-Scalar-Plain">required</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">id</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">email</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">name</span></code></pre></div>
 
-<p><code class="highlighter-rouge">PUT /users/{id}</code>とかもスキーマ使いまわせる。</p>
+<p><code>PUT /users/{id}</code>とかもスキーマ使いまわせる。</p>
 
 <h2 id="json-schema-validation">JSON Schema Validation</h2>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'json-schema'</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;json-schema&#39;</span>
 
 <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">"type"</span> <span class="o">=&gt;</span> <span class="s2">"object"</span><span class="p">,</span>
-  <span class="s2">"required"</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">],</span>
-  <span class="s2">"properties"</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">"type"</span> <span class="o">=&gt;</span> <span class="s2">"integer"</span><span class="p">}</span>
+  <span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;required&quot;</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">&quot;a&quot;</span><span class="o">]</span><span class="p">,</span>
+  <span class="s2">&quot;properties&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="s2">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;integer&quot;</span><span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+  <span class="s2">&quot;a&quot;</span> <span class="o">=&gt;</span> <span class="mi">5</span>
 <span class="p">}</span>
 
-<span class="no">JSON</span><span class="o">::</span><span class="no">Validator</span><span class="p">.</span><span class="nf">validate</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code></pre></figure>
+<span class="no">JSON</span><span class="o">::</span><span class="no">Validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code></pre></div>
 
 <h2 id="rspec-json-schema-matcher">RSpec JSON Schema Matcher</h2>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">"Fetching the current user"</span> <span class="k">do</span>
-  <span class="n">context</span> <span class="s2">"with valid auth token"</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="s2">"returns the current user"</span> <span class="k">do</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">&quot;Fetching the current user&quot;</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">&quot;with valid auth token&quot;</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">&quot;returns the current user&quot;</span> <span class="k">do</span>
       <span class="n">user</span> <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
-      <span class="n">auth_header</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"Auth-Token"</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">auth_token</span> <span class="p">}</span>
+      <span class="n">auth_header</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Auth-Token&quot;</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">auth_token</span> <span class="p">}</span>
 
       <span class="n">get</span> <span class="n">v1_current_user_url</span><span class="p">,</span> <span class="p">{},</span> <span class="n">auth_header</span>
 
-      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">status</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="mi">200</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">match_response_schema</span><span class="p">(</span><span class="s2">"user"</span><span class="p">)</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="mi">200</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">match_response_schema</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span></code></pre></div>
 
 <p>参考: <a href="https://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher">Validating JSON Schemas with an RSpec Matcher</a></p>
 
@@ -239,7 +238,7 @@
 
 <h2 id="json-schema-vs-jsonschema">json-schema vs json_schema</h2>
 <ul>
-  <li>depending on <code class="highlighter-rouge">json-schema</code>:
+  <li>depending on <code>json-schema</code>:
     <ul>
       <li><a href="https://github.com/airbrake/airbrake">airbrake/airbrake</a></li>
       <li><a href="https://github.com/square/fdoc">square/fdoc</a></li>
@@ -249,7 +248,7 @@
 
 <h2 id="json-schema-vs-jsonschema-1">json-schema vs json_schema</h2>
 <ul>
-  <li>depending on <code class="highlighter-rouge">json_schema</code>:
+  <li>depending on <code>json_schema</code>:
     <ul>
       <li><a href="https://github.com/interagent/committee">interagent/committee</a></li>
       <li><a href="https://github.com/interagent/prmd">interagent/prmd</a></li>

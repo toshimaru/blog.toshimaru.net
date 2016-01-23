@@ -79,27 +79,25 @@
   <li>rspec (3.1.0)</li>
 </ul>
 
-<p>RSpecを順番に依存させないために<code class="highlighter-rouge">spec_helper.rb</code>でこんな設定がされている。</p>
+<p>RSpecを順番に依存させないために<code>spec_helper.rb</code>でこんな設定がされている。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Run specs in random order to surface order dependencies. If you find an</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Run specs in random order to surface order dependencies. If you find an</span>
 <span class="c1"># order dependency and want to debug it, you can fix the order by providing</span>
 <span class="c1"># the seed, which is printed after each run.</span>
 <span class="c1">#     --seed 1234</span>
-<span class="n">config</span><span class="p">.</span><span class="nf">order</span> <span class="o">=</span> <span class="s2">"random"</span></code></pre></figure>
+<span class="n">config</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span></code></pre></div>
 
 <p>この設定によりテスト実行の順序がランダムになり、順序に依存しないテストの記述が可能となる。シード値はテストの最後に得られる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Randomized with seed 724
+<pre><code>Randomized with seed 724
 </code></pre>
-</div>
 
 <p>Failしたテストのこのシード値を設定してテストを走らせればFailしたテストの順番を再現できる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ bundle exec rspec --seed 724 --fail-fast
+<pre><code>$ bundle exec rspec --seed 724 --fail-fast
 </code></pre>
-</div>
 
-<p><code class="highlighter-rouge">--seed</code>でシード値を指定、<code class="highlighter-rouge">--fail-fast</code>を設定してFailしたときにテストを即時終了させるようにする。</p>
+<p><code>--seed</code>でシード値を指定、<code>--fail-fast</code>を設定してFailしたときにテストを即時終了させるようにする。</p>
 
 <p>こうすればFailするテストを再現できて、どのテストが順番に依存して落ちているのかがわかります。</p>
 

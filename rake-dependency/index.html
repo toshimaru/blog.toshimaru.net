@@ -75,56 +75,54 @@
 
 <p>ある特定のRakeタスクを実行する前に別のタスクを実行したい場合、このようにタスクを書きます。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"x"</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"y"</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"z"</span> <span class="p">}</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
 
-<span class="n">desc</span> <span class="s2">"dependency rake task"</span>
-<span class="n">task</span> <span class="ss">foo: </span><span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="p">]</span> <span class="k">do</span>
-  <span class="nb">puts</span> <span class="s2">"foo task"</span>
-<span class="k">end</span></code></pre></figure>
+<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
+<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
+<span class="k">end</span></code></pre></div>
 
 <p>結果はこんな感じ。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ rake foo
+<pre><code>$ rake foo
 x
 y
 z
 foo task
 </code></pre>
-</div>
 
-<p>タスク<code class="highlighter-rouge">x</code>, <code class="highlighter-rouge">y</code>, <code class="highlighter-rouge">z</code> が実行された後にタスク<code class="highlighter-rouge">foo</code>が実行されます。</p>
+<p>タスク<code>x</code>, <code>y</code>, <code>z</code> が実行された後にタスク<code>foo</code>が実行されます。</p>
 
 <h2 id="rakerake-1">rakeタスクの後に別のrakeタスクを実行</h2>
 
-<p>ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、<code class="highlighter-rouge">enhance</code>を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。</p>
+<p>ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、<code>enhance</code>を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"x"</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"y"</span> <span class="p">}</span>
-<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"z"</span> <span class="p">}</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;x&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;y&quot;</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;z&quot;</span> <span class="p">}</span>
 
-<span class="n">desc</span> <span class="s2">"dependency rake task"</span>
-<span class="n">task</span> <span class="ss">foo: </span><span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="p">]</span> <span class="k">do</span>
-  <span class="nb">puts</span> <span class="s2">"foo task"</span>
+<span class="n">desc</span> <span class="s2">&quot;dependency rake task&quot;</span>
+<span class="n">task</span> <span class="ss">foo</span><span class="p">:</span> <span class="o">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="o">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo task&quot;</span>
 <span class="k">end</span>
 
-<span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="p">[</span><span class="s2">"foo"</span><span class="p">].</span><span class="nf">enhance</span> <span class="k">do</span>
-  <span class="nb">puts</span> <span class="s2">"foo enhancing task"</span>
-<span class="k">end</span></code></pre></figure>
+<span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">].</span><span class="n">enhance</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">&quot;foo enhancing task&quot;</span>
+<span class="k">end</span></code></pre></div>
 
 <p>結果はこんな感じ。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ rake foo
+<pre><code>$ rake foo
 x
 y
 z
 foo task
 foo enhancing task
 </code></pre>
-</div>
 
-<p><code class="highlighter-rouge">enhance</code>の中にかいた処理はしっかり<code class="highlighter-rouge">foo</code>タスクのあとに実行されていますね。</p>
+<p><code>enhance</code>の中にかいた処理はしっかり<code>foo</code>タスクのあとに実行されていますね。</p>
 
 <h3 id="section">参考</h3>
 <ul>

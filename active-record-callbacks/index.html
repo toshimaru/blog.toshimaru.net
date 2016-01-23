@@ -97,23 +97,23 @@
 
 <p>それぞれのコールバックをコードで試してみる。こんなコールバックを設定したUserモデルを作る。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_validation is called"</span> <span class="p">}</span>
-  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_validation is called"</span> <span class="p">}</span>
-  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_save is called"</span> <span class="p">}</span>
-  <span class="n">before_update</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_update is called"</span> <span class="p">}</span>
-  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_create is called"</span> <span class="p">}</span>
-  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_create is called"</span> <span class="p">}</span>
-  <span class="n">after_update</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_update is called"</span> <span class="p">}</span>
-  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_save is called"</span> <span class="p">}</span>
-  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_commit is called"</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_validation is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_validation is called&quot;</span> <span class="p">}</span>
+  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_save is called&quot;</span> <span class="p">}</span>
+  <span class="n">before_update</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_update is called&quot;</span> <span class="p">}</span>
+  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_create is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_create is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_update</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_update is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_save is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_commit is called&quot;</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
 
 <h3 id="section-1">新規レコード作成時</h3>
 
 <p>こいつをsaveしてみる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; User.new.save
+<pre><code>&gt; User.new.save
    (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -126,17 +126,16 @@ after_save is called
 after_commit is called
  =&gt; true
 </code></pre>
-</div>
 
-<p>新規作成なので <code class="highlighter-rouge">before_update</code> <code class="highlighter-rouge">after_update</code> は呼ばれない。</p>
+<p>新規作成なので <code>before_update</code> <code>after_update</code> は呼ばれない。</p>
 
-<p>トランザクションが開始され<code class="highlighter-rouge">before_create</code>後にクエリが走る。その後、<code class="highlighter-rouge">after_*</code>系のコールバックが呼ばれトランザクションがコミットされる。</p>
+<p>トランザクションが開始され<code>before_create</code>後にクエリが走る。その後、<code>after_*</code>系のコールバックが呼ばれトランザクションがコミットされる。</p>
 
 <h3 id="section-2">レコード更新時</h3>
 
 <p>updateの場合はこんな感じ。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> &gt; user.update(name: "toshi")
+<pre><code> &gt; user.update(name: "toshi")
     (0.1ms)  begin transaction
  before_validation is called
  after_validation is called
@@ -149,9 +148,8 @@ after_commit is called
  after_commit is called
  =&gt; true
 </code></pre>
-</div>
 
-<p>更新なので <code class="highlighter-rouge">before_create</code> <code class="highlighter-rouge">after_create</code> は呼ばれない。その代わりに<code class="highlighter-rouge">before_update</code>, <code class="highlighter-rouge">after_update</code>が実行される。</p>
+<p>更新なので <code>before_create</code> <code>after_create</code> は呼ばれない。その代わりに<code>before_update</code>, <code>after_update</code>が実行される。</p>
 
 <h2 id="saveupdate">save/updateはトランザクション内で実行される</h2>
 
@@ -161,7 +159,7 @@ after_commit is called
   <p>The entire callback chain of a save, save!, or destroy call runs within a transaction. That includes after_* hooks. If everything goes fine a COMMIT is executed once the chain has been completed.</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">save</code>, <code class="highlighter-rouge">save!</code>, <code class="highlighter-rouge">destroy</code>のコールバック群はトランザクション内で処理されますよ、と。</p>
+<p><code>save</code>, <code>save!</code>, <code>destroy</code>のコールバック群はトランザクション内で処理されますよ、と。</p>
 
 <h2 id="section-3">特定のコールバックのタイミングで処理をロールバックさせたい</h2>
 
@@ -169,19 +167,19 @@ after_commit is called
 
 <h3 id="before-">before_* のタイミングでロールバックする場合</h3>
 
-<p><code class="highlighter-rouge">before_*</code>のタイミングで false を返すと処理はロールバックされる。</p>
+<p><code>before_*</code>のタイミングで false を返すと処理はロールバックされる。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_validation is called"</span> <span class="p">}</span>
-  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_validation is called"</span> <span class="p">}</span>
-  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_save is called"</span><span class="p">;</span> <span class="kp">false</span> <span class="p">}</span>
-  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_create is called"</span> <span class="p">}</span>
-  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_create is called"</span> <span class="p">}</span>
-  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_save is called"</span> <span class="p">}</span>
-  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_commit is called"</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_validation is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_validation is called&quot;</span> <span class="p">}</span>
+  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_save is called&quot;</span><span class="p">;</span> <span class="kp">false</span> <span class="p">}</span>
+  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_create is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_create is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_save is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_commit is called&quot;</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; User.new.save
+<pre><code>&gt; User.new.save
 (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -189,25 +187,24 @@ before_save is called
 (0.1ms)  rollback transaction
 =&gt; false
 </code></pre>
-</div>
 
-<p>しかし<code class="highlighter-rouge">after_*</code>で false を返しても処理はロールバックされないようだ。</p>
+<p>しかし<code>after_*</code>で false を返しても処理はロールバックされないようだ。</p>
 
 <h3 id="after-">after_* のタイミングでロールバックする場合</h3>
 
 <p>after_* のタイミングでロールバックしたい場合は、明示的にRollbackをraiseしてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_validation is called"</span> <span class="p">}</span>
-  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_validation is called"</span> <span class="p">}</span>
-  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_save is called"</span> <span class="p">}</span>
-  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_create is called"</span> <span class="p">}</span>
-  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_create is called"</span> <span class="p">}</span>
-  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_save is called"</span><span class="p">;</span> <span class="k">raise</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Rollback</span> <span class="p">}</span>
-  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_commit is called"</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_validation is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_validation is called&quot;</span> <span class="p">}</span>
+  <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_save is called&quot;</span> <span class="p">}</span>
+  <span class="n">before_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;before_create is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_create is called&quot;</span> <span class="p">}</span>
+  <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_save is called&quot;</span><span class="p">;</span> <span class="k">raise</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Rollback</span> <span class="p">}</span>
+  <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">&quot;after_commit is called&quot;</span> <span class="p">}</span>
+<span class="k">end</span></code></pre></div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; User.new.save
+<pre><code>&gt; User.new.save
    (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -219,7 +216,6 @@ after_save is called
    (2.4ms)  rollback transaction
  =&gt; nil
 </code></pre>
-</div>
 
 <p>update も同様にこの方法でロールバックできます。</p>
 

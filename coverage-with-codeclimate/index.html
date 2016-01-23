@@ -124,36 +124,36 @@
 
 <h3 id="set-code-climate-token">Set Code Climate token</h3>
 
-<p>CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを<code class="highlighter-rouge">.travis.yml</code>にセット。</p>
+<p>CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを<code>.travis.yml</code>にセット。</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">addons</span><span class="pi">:</span>
-  <span class="s">code_climate</span><span class="pi">:</span>
-    <span class="s">repo_token</span><span class="pi">:</span> <span class="s">adf08323...</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="l-Scalar-Plain">addons</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">code_climate</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">repo_token</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">adf08323...</span></code></pre></div>
 
 <h3 id="intall-codeclimate-reporter">Intall CodeClimate reporter</h3>
 
-<p>codeclimate-test-reporter を<code class="highlighter-rouge">Gemfile</code>のtest groupに追加する。</p>
+<p>codeclimate-test-reporter を<code>Gemfile</code>のtest groupに追加する。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gem</span> <span class="s2">"codeclimate-test-reporter"</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gem</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span><span class="p">,</span> <span class="nb">require</span><span class="p">:</span> <span class="kp">false</span></code></pre></div>
 
-<p>CodeClimateのセットアップインストラクション通りに書くとこう。<code class="highlighter-rouge">spec/rails_helper.rb</code>に書きます。</p>
+<p>CodeClimateのセットアップインストラクション通りに書くとこう。<code>spec/rails_helper.rb</code>に書きます。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
-<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="p">.</span><span class="nf">start</span></code></pre></figure>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span>
+<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">.</span><span class="n">start</span></code></pre></div>
 
 <h3 id="simplecov">Simplecovと同居させる</h3>
 
 <p>私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'simplecov'</span>
-<span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
-<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">formatter</span> <span class="o">=</span> <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">MultiFormatter</span><span class="p">[</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;simplecov&#39;</span>
+<span class="nb">require</span> <span class="s2">&quot;codeclimate-test-reporter&quot;</span>
+<span class="no">SimpleCov</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">MultiFormatter</span><span class="o">[</span>
   <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">HTMLFormatter</span><span class="p">,</span>
   <span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">::</span><span class="no">Formatter</span>
-<span class="p">]</span>
-<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">start</span> <span class="s2">"rails"</span></code></pre></figure>
+<span class="o">]</span>
+<span class="no">SimpleCov</span><span class="o">.</span><span class="n">start</span> <span class="s2">&quot;rails&quot;</span></code></pre></div>
 
-<p>このようにSimpleCovのformatterに<code class="highlighter-rouge">CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
+<p>このようにSimpleCovのformatterに<code>CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></p>
 
 <p><img src="https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png" alt="codeclimate" /></p>
 
