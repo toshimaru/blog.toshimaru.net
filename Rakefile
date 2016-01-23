@@ -59,7 +59,6 @@ task :post do
 
   content = <<EOF
 ---
-layout: post
 title: #{title}
 published: true
 image: /images/posts/
