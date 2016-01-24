@@ -71,26 +71,51 @@ layout: default
 <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <script id="jsonld" type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "BlogPosting",
-  "mainEntityOfPage": {
-    "@type": "Blog",
-    "@id": "{{ site.url }}{{ page.url | replace:'index.html','' }}"
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "{{ site.url }}{{ page.url | replace:'index.html','' }}"
+    },
+    "headline": "{{ page.title }}",
+    "datePublished": "{{ page.date | date_to_xmlschema }}",
+    "author": {
+      "@type": "Person",
+      "name": "{{ site.author }}",
+      "email": "{{ site.mail }}"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "{% if page.image -%}{% if page.image contains 'http://' or page.image contains 'https://' -%}{{ page.image }}{% else -%}{{ site.url }}{{ page.image }}{% endif -%}{% else -%}{{ site.url }}/images/icon.png{% endif -%}"
+    },
+    "keywords": "{{ page.tags | join: ', ' }}"
   },
-  "headline": "{{ page.title }}",
-  "datePublished": "{{ page.date | date_to_xmlschema }}",
-  "author": {
-    "@type": "Person",
-    "name": "{{ site.author }}",
-    "email": "{{ site.mail }}"
-  },
-  "image": {
-    "@type": "ImageObject",
-    "url": "{% if page.image -%}{% if page.image contains 'http://' or page.image contains 'https://' -%}{{ page.image }}{% else -%}{{ site.url }}{{ page.image }}{% endif -%}{% else -%}{{ site.url }}/images/icon.png{% endif -%}"
-  },
-  "keywords": "{{ page.tags | join: ', ' }}"
-}
+  {
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "{{ site.url }}/archive/",
+        "name": "Posts"
+      }
+    }
+    {% if page.tags.size >= 1 -%}
+    ,{
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "{{ site.url }}/tag/{{ page.tags | first }}/",
+        "name": "{{ page.tags | first }}"
+      }
+    }
+    {% endif -%}
+    ]
+  }
+]
 </script>
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
