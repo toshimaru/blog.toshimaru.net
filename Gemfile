@@ -7,6 +7,7 @@ gem 'jekyll-tagging'
 gem 'jekyll-toc'
 gem 'jekyll', '~> 3.0'
 gem 'jemoji'
+gem 'jekyll-tagging-related_posts'
 
 gem 'byebug'
 gem 'nokogiri', '>= 1.6.7.2'
