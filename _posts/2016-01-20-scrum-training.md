@@ -2,7 +2,7 @@
 layout: post
 title: 認定スクラムマスター研修に行ってきました
 published: true
-image: /images/posts/scrum/scrum.png
+image: /images/posts/scrum/scrum.jpg
 description: 昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだこととして社内に共有した内容をこちらにも共有してみようと思います。
 tags: scrum tech
 ---
