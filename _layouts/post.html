@@ -96,14 +96,16 @@ layout: default
     {% if page.tags.size >= 1 -%}
     "@context": "http://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [{
-      "@type": "ListItem",
-      "position": 2,
-      "item": {
-        "@id": "{{ site.url }}/tag/{{ page.tags | first }}/",
-        "name": "{{ page.tags | first }}"
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "{{ site.url }}/tag/{{ page.tags | first }}/",
+          "name": "{{ page.tags | first }}"
+        }
       }
-    }]
+    ]
     {% endif -%}
   }
 ]
