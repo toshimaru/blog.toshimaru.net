@@ -4,7 +4,7 @@ title: AWS Summit Tokyo 2015で発表してきました
 published: true
 image: /images/posts/aws_summit_tokyo_2015.png
 description: AWS Summit Tokyo 2015でGunosyのモバイルプッシュ通知基盤について発表してきました。下記が当日の発表スライドになります。900万ダウンロードアプリ『Gunosy』を支える大規模モバイルプッシュ通知基盤 // Speaker Deck
-tags: aws tech
+tags: aws presentation
 ---
 
 [AWS Summit Tokyo 2015](http://www.awssummit.tokyo/)でGunosyのモバイルプッシュ通知基盤について発表してきました。下記が当日の発表スライドになります。

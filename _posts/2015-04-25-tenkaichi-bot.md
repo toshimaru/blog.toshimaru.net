@@ -3,7 +3,7 @@ layout: post
 title: 天下一bot武闘会でクソbotたちを発表してきました
 published: true
 description: 先日天下一bot武闘会で僕が作ったクソbotたちを発表してきました。
-tags: hubot
+tags: hubot presentation
 ---
 
 先日[天下一bot武闘会](http://connpass.com/event/12689/)で僕が作った :shit: botたちを発表してきました。

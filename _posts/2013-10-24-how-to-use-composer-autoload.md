@@ -3,12 +3,12 @@ layout: post
 title: Composerで始める PHPのライブラリ管理
 published: true
 description: PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。
-tags: php
+tags: php composer
 ---
 
 PHPも[Composer](http://getcomposer.org/)の登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。
 
-##Composerのインストール
+## Composerのインストール
 
 PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！
 
@@ -29,9 +29,9 @@ PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと�
                         /_/
     Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
 
-##依存関係の記述
+## 依存関係の記述
 
-composerはプロジェクトルートの`composer.json`ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。
+composerはプロジェクトルートの `composer.json` ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。
 
     $ touch composer.json
 
@@ -43,7 +43,7 @@ composerはプロジェクトルートの`composer.json`ファイルにライブ
         }
     }
 
-##ライブラリのインストール
+## ライブラリのインストール
 
 `composer.json`ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。
 
@@ -64,13 +64,13 @@ composerはプロジェクトルートの`composer.json`ファイルにライブ
 
 うまいこといきました。ライブラリは`vendor`ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた`composer.lock`ファイルも生成します。
 
-##ライブラリのアップデート
+## ライブラリのアップデート
 
 ライブラリのアップデートに関しては下記のコマンドでOK.
 
     $ composer update
 
-##まとめ
+## まとめ
 
 モダンなPHPパッケージ管理であればComposer一択でしょう。PEARとの使い分けに関しては[PHP Right Way](http://ja.phptherightway.com/#依存関係の管理)にはこのように書いてあります。
 
