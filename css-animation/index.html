@@ -92,19 +92,19 @@
 
 <p><a href="http://www.adventar.org/calendars/57">CSS Property Advent Calendar 2013</a>の11日目の記事としてCSSアニメーションのプロパティを紹介をします。</p>
 
-<h2 id="css">なぜCSSアニメーションなのか？</h2>
+<p>##なぜCSSアニメーションなのか？</p>
 
 <p>さて本ブログでもタイトルやアイキャッチ画像のイメージの表示にちょっとしたCSS3アニメーションを採用しています。ほんのちょっとのCSSの記述なんですがサイトがイイ感じにリッチに見えてとても気に入ってます。</p>
 
 <p>jQueryなんかでも<a href="http://api.jquery.com/animate/">.animate()</a>を使えばアニメーションができますね。ではなぜCSS3アニメーションなのか？　そこからエントリを始めてみたいと思います。</p>
 
-<h3 id="css-vs-jquery">パフォーマンス的観点 CSS vs jQuery</h3>
+<p>###パフォーマンス的観点 CSS vs jQuery</p>
 
 <p>DEV.OPERAにて<a href="http://dev.opera.com/articles/view/css3-vs-jquery-animations/">CSS3 vs jQueryアニメーションの比較</a>が行われています。ここではjQueryとCSS3によるアニメーションどちらが優れているかがレポートされており、最終的な勝者はCSS3だとして記事を結んでいます。本比較において使われている<a href="http://devfiles.myopera.com/articles/10262/CSS3-300-boxes.html">CSS3のアニメーションサンプル</a>と<a href="http://devfiles.myopera.com/articles/10262/jQuery-300-boxes.html">jQueryのアニメーションサンプル</a>を私のChrome(Canary)上でも比較してみました。</p>
 
 <p>肉眼でもCSSアニメーションのほうが綺麗に見える気がします。DevTools上でも実際、Rendering、Paintイベントをフィルターしてみたところ、実際jQueryのほうがイベントの粒度が荒いことが見て取れます。</p>
 
-<h4 id="css-1">1. CSSによるアニメーション</h4>
+<h4 id="css">1. CSSによるアニメーション</h4>
 <p><img src="/images/posts/css-animate/1.png" alt="比較１" /></p>
 
 <p><img src="/images/posts/css-animate/A.png" alt="比較A" /></p>
@@ -122,7 +122,7 @@
 
 <p>上記の結果からCSSアニメーションを使って良いシーンであれば、<strong>パフォーマンス的にCSSはjQueryよりも優れている</strong>と言えます。</p>
 
-<h3 id="section">ブラウザ対応は？</h3>
+<p>###ブラウザ対応は？</p>
 
 <p>CSS3プロパティだとブラウザ対応が心配なところ。<a href="http://caniuse.com/#search=keyframes">サポート状況はこんな感じ</a>です。</p>
 
@@ -130,7 +130,7 @@
 
 <p>IEは10以降、それ以外のメインブラウザの最新版は対応済みですね。ベンダープレフィックスも<code class="highlighter-rouge">-webkit-</code>さえつければ大丈夫そうです。IE9以前を気にするかもしれませんが、<a href="http://www.adobe.com/jp/devnet/dreamweaver/articles/html5pack_css3_part6.html">グレースフル・デグラデーション</a>の考え方で＜装飾＞という意味においてはCSSアニメーションプロパティはどんどん使っていい機能かと思います。</p>
 
-<h2 id="css-2">CSSアニメーションの書き方</h2>
+<p>##CSSアニメーションの書き方</p>
 
 <p>ではCSSアニメーションはどう書くか？　キーワードは<code class="highlighter-rouge">@keyframes</code>と<code class="highlighter-rouge">animation</code>の２つです。</p>
 
@@ -172,7 +172,7 @@
 
 <p>透過度0から透明度1へのアニメーション（<code class="highlighter-rouge">anim</code>）を2秒（<code class="highlighter-rouge">2s</code>）毎にループ（<code class="highlighter-rouge">infinite</code>）させてます。このアニメーションは<code class="highlighter-rouge">post-image</code>クラスに適応されます。実際に使用の際は<code class="highlighter-rouge">-webkit-</code>プレフィックス付きの定義も必要なことに注意してください。</p>
 
-<h2 id="section-1">どこからアニメーションの着想を得るか</h2>
+<p>##どこからアニメーションの着想を得るか</p>
 
 <p>といっても「アニメーションのCSSスタイル定義するの面倒くさい」とか「自分のやりたい動きをどう書けばいいかわからない」という人も多いかと思います。そんな人は<a href="https://daneden.me/animate/">Animate.css</a>のページを見てみるとよいかと思います。</p>
 
@@ -182,17 +182,15 @@
 
 <p><a href="https://github.com/daneden/animate.css/blob/master/animate.css">animate.css/animate.css at master</a></p>
 
-<h3 id="section-2">最後に</h3>
+<p>###最後に</p>
 
 <p>皆さんもCSSアニメーションをサイトのちょっとしたところに取り入れてサイトをリッチにみせてみてはいかがでしょうか。</p>
 
 <p>ただ１つ注意したいのが、基本的に人の目は動いているものに行きやすく、過度なアニメーションの使用、または派手すぎるアニメーションの動きはユーザー体験を著しく下げるので「使いすぎ注意」ということを忘れずに。</p>
 
-<h3 id="section-3">参考</h3>
-<ul>
-  <li><a href="https://developer.mozilla.org/ja/docs/Web/CSS/@keyframes">@keyframes - CSS / MDN</a></li>
-  <li><a href="https://github.com/daneden/animate.css">daneden/animate.css - GitHub</a></li>
-</ul>
+<p>###参考
+* <a href="https://developer.mozilla.org/ja/docs/Web/CSS/@keyframes">@keyframes - CSS / MDN</a>
+* <a href="https://github.com/daneden/animate.css">daneden/animate.css - GitHub</a></p>
 
 
 <ul id="social-buttons">
