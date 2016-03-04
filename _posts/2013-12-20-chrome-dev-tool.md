@@ -11,7 +11,7 @@ tags: chrome
 
 （※写真は公式ページから引用）
 
-##console.log以外にも便利なconsoleメソッドがある
+## `console.log`以外にも便利なconsoleメソッドがある
 
 `console.log()`とかは常識でしょうが、それ以外にも実はconsole系メソッドが多くあります。下記のような感じ。
 
@@ -28,7 +28,7 @@ tags: chrome
 
 ![assert](/images/posts/chromedev/result.png)
 
-###console.assert
+### `console.assert`
 
 簡易的な`true`/`false`テストであれば`console.assert()`が使えます。例えばこんなコード。
 
@@ -39,7 +39,7 @@ tags: chrome
 
 ![assert](/images/posts/chromedev/assert.png)
 
-##CSSマッピングでChromeからCSS変更を直接反映！
+## CSSマッピングでChromeからCSS変更を直接反映！
 
 CSSマッピングの機能を使うことでChrome上のCSS変更を直接反映することができます。簡単な手順はこうです。
 
@@ -52,7 +52,7 @@ CSSマッピングの機能を使うことでChrome上のCSS変更を直接反�
 
 これで準備OK！ Chrome上で直接ヴィジュアルを確認しながらいい具合に変更を加えてれば、ローカル上のファイルも変更されます。
 
-##ソースマッピングにSASSを使う！
+## ソースマッピングにSASSを使う！
 
 CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサーですよねー。ということで実はCSSマッピングにSASSも使えるんです。ただし下記の点に注意してください。
 
@@ -66,7 +66,7 @@ CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサー�
 
 詳しい手順は[こちら（Chrome CanaryでSCSS(Sass)のデバックを試してみました。）](http://dev.classmethod.jp/etc/scss-source-maps-debug/)で確認してみてください。良きCSSライフを！
 
-##AndroidをChromeでリモートデバック可能
+## AndroidをChromeでリモートデバック可能
 
 下記動画でPaul Irish氏がリモートデバッギングを簡単に解説してくれてます。この動画でどんなことができるか簡単に把握することができます。
 
@@ -80,7 +80,7 @@ CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサー�
 
 詳しい解説は[こちら（Remote Debugging Chrome on Android）](https://developers.google.com/chrome-developer-tools/docs/remote-debugging)を参照。
 
-##FPSを確認してヌルヌル動作を目指そう！
+## FPSを確認してヌルヌル動作を目指そう！
 
 たとえば下記のかなりリッチなパララックスウェブサイト。ちょっと見てみてください。
 
@@ -94,11 +94,11 @@ CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサー�
 
 （※本機能の使い方もPaul Irish氏が[Fluent 2013](http://www.youtube.com/watch?v=bqfoYaKCYUI)の講演で紹介しています。）
 
-##おわりに
+## おわりに
 
 ここで紹介した以外にもまだまだ便利な使い方がChromeDeveloperツールにはあります。自分もまだ全然把握できていません。もし「この機能が便利！」ってのがありましたら是非とも教えてくださいまし〜。
 
-###参考
+### 参考
 * [Wait, DevTools could do THAT?](http://www.igvita.com/slides/2012/devtools-tips-and-tricks/)
 * [【Javascript】consoleオブジェクトが持つlog以外の便利メソッド18（前編）](http://blog.asial.co.jp/1036)
 * [Using the Console](https://developers.google.com/chrome-developer-tools/docs/console)
