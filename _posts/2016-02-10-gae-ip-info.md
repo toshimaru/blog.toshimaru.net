@@ -3,7 +3,7 @@ title: 接続元のグローバルIP出すやつ作った
 published: true
 image: /images/posts/ip.png
 description: 確認くんとかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。
-tags: gae php
+tags: google_app_engine php
 ---
 
 [確認くん](http://www.ugtop.com/spill.shtml)とかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。
