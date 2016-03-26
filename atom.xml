@@ -1,4 +1,299 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-03-25T01:34:05+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>接続元のグローバルIP出すやつ作った</title><link href="http://blog.toshimaru.net/gae-ip-info/" rel="alternate" type="text/html" title="接続元のグローバルIP出すやつ作った" /><published>2016-02-10T00:00:00+09:00</published><updated>2016-02-10T00:00:00+09:00</updated><id>http://blog.toshimaru.net/gae-ip-info</id><content type="html" xml:base="http://blog.toshimaru.net/gae-ip-info/">&lt;p&gt;&lt;a href=&quot;http://www.ugtop.com/spill.shtml&quot;&gt;確認くん&lt;/a&gt;とかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-03-26T20:01:35+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Ruby on Rails を Google App Engine 上で動かしてみる</title><link href="http://blog.toshimaru.net/ruby-on-google-app-engine/" rel="alternate" type="text/html" title="Ruby on Rails を Google App Engine 上で動かしてみる" /><published>2016-03-26T00:00:00+09:00</published><updated>2016-03-26T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-on-google-app-engine</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-on-google-app-engine/">&lt;p&gt;&lt;a href=&quot;http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html&quot;&gt;［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は &lt;a href=&quot;https://cloud.google.com/ruby/getting-started/hello-world&quot;&gt;How to run Hello World - Ruby — Google Cloud Platform&lt;/a&gt; を参考に進めていきます。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;前提&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;gcloud コマンドが使えること - &lt;a href=&quot;https://cloud.google.com/sdk/&quot;&gt;Google Cloud SDK&lt;/a&gt;に含まれています&lt;/li&gt;
+  &lt;li&gt;Google Cloud Platformにログイン済みでかつ今回のデプロイ先となるプロジェクトが作成済みであること&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;手順&lt;/h2&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;プロジェクトセットアップ&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/getting-started-ruby&quot;&gt;GoogleCloudPlatform/getting-started-ruby&lt;/a&gt; のHello World Appを今回は動かしますのでまずはプロジェクトをクローンします。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git clone https://github.com/GoogleCloudPlatform/getting-started-ruby.git
+$ cd 1-hello-world
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;まずは通常のRuby on Railsアプリと同じくbundle installしてRailsサーバーを立てましょう。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bundle install
+$ rails server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これで&lt;code class=&quot;highlighter-rouge&quot;&gt;localhost:3000&lt;/code&gt;でデプロイされるHello World Appが見れました。&lt;/p&gt;
+
+&lt;h3 id=&quot;gcloud-&quot;&gt;gcloud セットアップ&lt;/h3&gt;
+
+&lt;p&gt;gcloud を使って行きますがいくつか事前の設定が必要あります。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 初期化
+$ gcloud init
+
+# Googleログインする
+$ gcloud auth login
+
+# 今回作成したプロジェクトIDをセット
+$ gcloud config set project your-project-id
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これでapp deploy コマンドが動作しました。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gcloud preview app deploy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;デプロイされたあとは AppEngine Console のバージョンの一覧に出てきます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ruby-gae/deploy-version.png&quot; alt=&quot;deploy-version&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;デプロイ時のログ&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Beginning deployment...
+If this is your first deployment, this may take a while...done.
+
+Using Ruby 2.2.4 as requested in the .ruby-version file
+Verifying that Managed VMs are enabled and ready.
+Building and pushing image for module [default]
+Started cloud build [789f0d61-dc0a-4994-8292-02a5ff9f65de].
+To see logs in the Cloud Console: https://console.developers.google.com/logs?project=your-project-id&amp;amp;service=cloudbuild.googleapis.com&amp;amp;key1=789f0d61-dc0a-4994-8292-02a5ff9f65de&amp;amp;logName=projects/your-project-id/logs/cloudbuild
+--------------------------------- REMOTE BUILD OUTPUT ----------------------------------
+starting build &quot;789f0d61-dc0a-4994-8292-02a5ff9f65de&quot;
+
+FETCHSOURCE
+Fetching storage object: gs://staging.your-project-id.appspot.com/your-project-id.default.20160326t100408#1458954328349000
+Copying gs://staging.your-project-id.appspot.com/your-project-id.default.20160326t100408#1458954328349000...
+Downloading file:///tmp/source-archive.tgz:                      13.32 KiB/13.32 KiB
+FETCHBUILDER
+Using default tag: latest
+latest: Pulling from cloud-builders/dockerizer
+bf61d14f65db: Pulling fs layer
+3ea15286bc1a: Pulling fs layer
+515285067dbf: Pulling fs layer
+5e89b839ecfa: Pulling fs layer
+e63e5abf57a3: Pulling fs layer
+ec858f8c1767: Pulling fs layer
+51d0afdd2ff8: Pulling fs layer
+415319aa0c90: Pulling fs layer
+51d0afdd2ff8: Verifying Checksum
+51d0afdd2ff8: Download complete
+415319aa0c90: Verifying Checksum
+415319aa0c90: Download complete
+5e89b839ecfa: Verifying Checksum
+5e89b839ecfa: Download complete
+3ea15286bc1a: Verifying Checksum
+3ea15286bc1a: Download complete
+515285067dbf: Verifying Checksum
+515285067dbf: Download complete
+e63e5abf57a3: Verifying Checksum
+e63e5abf57a3: Download complete
+ec858f8c1767: Verifying Checksum
+ec858f8c1767: Download complete
+bf61d14f65db: Verifying Checksum
+bf61d14f65db: Download complete
+bf61d14f65db: Pull complete
+3ea15286bc1a: Pull complete
+515285067dbf: Pull complete
+5e89b839ecfa: Pull complete
+e63e5abf57a3: Pull complete
+ec858f8c1767: Pull complete
+51d0afdd2ff8: Pull complete
+415319aa0c90: Pull complete
+Digest: sha256:b80a8cc7ed504307717c7530e795b0c2dea1ff99957806e0785ae831309084ae
+Status: Downloaded newer image for gcr.io/cloud-builders/dockerizer:latest
+BUILD
+Client:
+ Version:      1.9.1
+ API version:  1.21
+ Go version:   go1.4.3
+ Git commit:   a34a1d5
+ Built:        Fri Nov 20 17:56:04 UTC 2015
+ OS/Arch:      linux/amd64
+
+Server:
+ Version:      1.9.1
+ API version:  1.21
+ Go version:   go1.4.2
+ Git commit:   a34a1d5
+ Built:        Fri Nov 20 13:12:04 UTC 2015
+ OS/Arch:      linux/amd64
+Sending build context to Docker daemon 90.62 kB
+Step 1 : FROM gcr.io/google_appengine/ruby
+ ---&amp;gt; 3e6d0d6d0575
+Step 2 : RUN cd /rbenv/plugins/ruby-build &amp;amp;&amp;amp;     git pull &amp;amp;&amp;amp;     rbenv install -s 2.2.4 &amp;amp;&amp;amp;     rbenv global 2.2.4 &amp;amp;&amp;amp;     gem install -q --no-rdoc --no-ri bundler --version 1.11.2 &amp;amp;&amp;amp;     gem install -q --no-rdoc --no-ri foreman --version 0.78.0
+ ---&amp;gt; Running in 451faee44d37
+Already up-to-date.
+Successfully installed bundler-1.11.2
+1 gem installed
+Successfully installed foreman-0.78.0
+1 gem installed
+ ---&amp;gt; 5da2526068cb
+Removing intermediate container 451faee44d37
+Step 3 : ENV RBENV_VERSION 2.2.4
+ ---&amp;gt; Running in 1e6f8d74782b
+ ---&amp;gt; 416110028d7d
+Removing intermediate container 1e6f8d74782b
+Step 4 : COPY Gemfile Gemfile.lock /app/
+ ---&amp;gt; 0ab134d54690
+Removing intermediate container 7337fb40c45b
+Step 5 : RUN bundle install &amp;amp;&amp;amp; rbenv rehash
+ ---&amp;gt; Running in 0c258ea5a1be
+Don&#39;t run Bundler as root. Bundler can ask for sudo if it is needed, and
+installing your bundle as root will break this application for all non-root
+users on this machine.
+Fetching gem metadata from https://rubygems.org/...........
+Fetching version metadata from https://rubygems.org/...
+Fetching dependency metadata from https://rubygems.org/..
+Using rake 10.4.2
+Installing i18n 0.7.0
+Installing json 1.8.3 with native extensions
+Installing minitest 5.7.0
+Installing thread_safe 0.3.5
+Installing builder 3.2.2
+Installing erubis 2.7.0
+Installing mini_portile 0.6.2
+Installing rack 1.6.4
+Installing mime-types 2.6.1
+Installing arel 6.0.0
+Installing cliver 0.3.2
+Installing diff-lcs 1.2.5
+Installing multi_json 1.11.2
+Installing websocket-extensions 0.1.2
+Using bundler 1.11.2
+Using thor 0.19.1
+Installing rspec-support 3.3.0
+Installing tzinfo 1.2.2
+Installing nokogiri 1.6.6.2 with native extensions
+Installing rack-test 0.6.3
+Installing sprockets 3.2.0
+Installing mail 2.6.3
+Installing websocket-driver 0.6.3 with native extensions
+Installing rspec-core 3.3.1
+Installing rspec-expectations 3.3.0
+Installing rspec-mocks 3.3.1
+Installing activesupport 4.2.2
+Installing tzinfo-data 1.2015.6
+Installing loofah 2.0.2
+Installing xpath 2.0.0
+Installing rails-deprecated_sanitizer 1.0.3
+Installing globalid 0.3.5
+Installing activemodel 4.2.2
+Installing rails-html-sanitizer 1.0.2
+Installing capybara 2.4.4
+Installing rails-dom-testing 1.0.6
+Installing activejob 4.2.2
+Installing activerecord 4.2.2
+Installing poltergeist 1.8.1
+Installing actionview 4.2.2
+Installing actionpack 4.2.2
+Installing actionmailer 4.2.2
+Installing railties 4.2.2
+Installing sprockets-rails 2.3.2
+Installing rspec-rails 3.3.2
+Installing rails 4.2.2
+Bundle complete! 6 Gemfile dependencies, 47 gems now installed.
+Use `bundle show [gemname]` to see where a bundled gem is installed.
+ ---&amp;gt; 9fde5c5bec0c
+Removing intermediate container 0c258ea5a1be
+Step 6 : COPY . /app/
+ ---&amp;gt; 05eb1e2b6b90
+Removing intermediate container e885ebd8251c
+Step 7 : ENTRYPOINT bundle exec rackup -p 8080 -E production config.ru
+ ---&amp;gt; Running in 1b616e80361d
+ ---&amp;gt; 0695731649da
+Removing intermediate container 1b616e80361d
+Successfully built 0695731649da
+PUSH
+The push refers to a repository [appengine.gcr.io/gcloud/your-project-id.default.20160326t100408] (len: 1)
+Sending image list
+Pushing repository appengine.gcr.io/gcloud/your-project-id.default.20160326t100408 (1 tags)
+Image 3bc7cdb36864 already pushed, skipping
+Image 4bfc20f0ed66 already pushed, skipping
+Image ff52712bb308 already pushed, skipping
+Image 5880acd9ad50 already pushed, skipping
+Image 096d9403d234 already pushed, skipping
+Image 956eb41cd003 already pushed, skipping
+Image 01eaa1a367c4 already pushed, skipping
+Image 943d779f0853 already pushed, skipping
+Image 3cc9009b6572 already pushed, skipping
+Image b19c39f03dbb already pushed, skipping
+Image ca6428f24e68 already pushed, skipping
+Image 7b90390ae965 already pushed, skipping
+Image cb10a2abbe53 already pushed, skipping
+Image 31bee42bdd8a already pushed, skipping
+Image a04427afe410 already pushed, skipping
+Image 8f70e181ae11 already pushed, skipping
+Image 72b1839f75eb already pushed, skipping
+Image 0ea63ea23bf2 already pushed, skipping
+Image 86100fe6deed already pushed, skipping
+Image 45ab69b78373 already pushed, skipping
+Image 32066980c48e already pushed, skipping
+Image fc85fe8bcbac already pushed, skipping
+Image 76b185852e95 already pushed, skipping
+Image eec69d4fcd9a already pushed, skipping
+Image 17402d207077 already pushed, skipping
+Image 27bea8c63202 already pushed, skipping
+Image 3e6d0d6d0575 already pushed, skipping
+5da2526068cb: Pushing
+5da2526068cb: Image successfully pushed
+416110028d7d: Pushing
+416110028d7d: Image successfully pushed
+0ab134d54690: Pushing
+0ab134d54690: Image successfully pushed
+9fde5c5bec0c: Pushing
+9fde5c5bec0c: Image successfully pushed
+05eb1e2b6b90: Pushing
+05eb1e2b6b90: Image successfully pushed
+0695731649da: Pushing
+0695731649da: Image successfully pushed
+Pushing tag for rev [0695731649da] on {https://appengine.gcr.io/v1/repositories/gcloud/your-project-id.default.20160326t100408/tags/latest}
+DONE
+----------------------------------------------------------------------------------------
+
+Updating module [default]...done.
+Deployed module [default] to [https://your-project-id.appspot.com]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;appyml&quot;&gt;app.yml&lt;/h2&gt;
+
+&lt;p&gt;今回使われている&lt;code class=&quot;highlighter-rouge&quot;&gt;app.yml&lt;/code&gt;はこんな感じでした。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# [START runtime]&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;runtime&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;entrypoint&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rackup -p 8080 -E production config.ru&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# [END runtime]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# [START resources]&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;cpu&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.5&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;memory_gb&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1.3&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;disk_size_gb&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;10&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# [END resources]&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# [START scaling]&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;automatic_scaling&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;min_num_instances&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;max_num_instances&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;5&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;cool_down_period_sec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;60&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;cpu_utilization&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;target_utilization&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;0.5&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# [END scaling]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;runtime&lt;/code&gt;の設定がrubyプロジェクトに共通の設定で&lt;code class=&quot;highlighter-rouge&quot;&gt;resources&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;scaling&lt;/code&gt;は環境に合わせて適宜チューニングしてください。デフォルトの状態はミニマルな設定になっているようです。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/ruby-docker&quot;&gt;GoogleCloudPlatform/ruby-docker: Docker images for Ruby&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/ruby-docker/blob/master/appengine/Dockerfile&quot;&gt;ruby-docker/Dockerfile at master · GoogleCloudPlatform/ruby-docker&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="google_app_engine" /><category term="rails" /><summary>［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey</summary></entry><entry><title>接続元のグローバルIP出すやつ作った</title><link href="http://blog.toshimaru.net/gae-ip-info/" rel="alternate" type="text/html" title="接続元のグローバルIP出すやつ作った" /><published>2016-02-10T00:00:00+09:00</published><updated>2016-02-10T00:00:00+09:00</updated><id>http://blog.toshimaru.net/gae-ip-info</id><content type="html" xml:base="http://blog.toshimaru.net/gae-ip-info/">&lt;p&gt;&lt;a href=&quot;http://www.ugtop.com/spill.shtml&quot;&gt;確認くん&lt;/a&gt;とかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://ip.toshimaru.net/&quot;&gt;Your IP address info&lt;/a&gt;&lt;/p&gt;
 
@@ -15,7 +310,7 @@ xx.xx.xx.xx
 
 &lt;p&gt;Google App Engine、一昔前はとっつきにくかったけど今は管理画面も使いやすくなってドキュメントも丁寧になってきたしデプロイ周りのCLIツールも整ってきているので良い感じである。&lt;/p&gt;
 
-&lt;p&gt;Herokuが有料になった今、個人サービスでなにかさっと作りたいときはGAEは良さそう。&lt;/p&gt;</content><category term="gae" /><category term="php" /><summary>確認くんとかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。</summary></entry><entry><title>ひどいコードを書いてもよいとき</title><link href="http://blog.toshimaru.net/why-you-should-write-shitty-code/" rel="alternate" type="text/html" title="ひどいコードを書いてもよいとき" /><published>2016-02-08T00:00:00+09:00</published><updated>2016-02-08T00:00:00+09:00</updated><id>http://blog.toshimaru.net/why-you-should-write-shitty-code</id><content type="html" xml:base="http://blog.toshimaru.net/why-you-should-write-shitty-code/">&lt;p&gt;&lt;a href=&quot;http://hitode909.hatenablog.com/entry/2016/02/08/140232&quot;&gt;なぜひどいコードを書いてはいけないか - hitode909の日記&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Herokuが有料になった今、個人サービスでなにかさっと作りたいときはGAEは良さそう。&lt;/p&gt;</content><category term="google_app_engine" /><category term="php" /><summary>確認くんとかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。</summary></entry><entry><title>ひどいコードを書いてもよいとき</title><link href="http://blog.toshimaru.net/why-you-should-write-shitty-code/" rel="alternate" type="text/html" title="ひどいコードを書いてもよいとき" /><published>2016-02-08T00:00:00+09:00</published><updated>2016-02-08T00:00:00+09:00</updated><id>http://blog.toshimaru.net/why-you-should-write-shitty-code</id><content type="html" xml:base="http://blog.toshimaru.net/why-you-should-write-shitty-code/">&lt;p&gt;&lt;a href=&quot;http://hitode909.hatenablog.com/entry/2016/02/08/140232&quot;&gt;なぜひどいコードを書いてはいけないか - hitode909の日記&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;ひどいコードを書いてもよいときとは:question:&lt;/p&gt;
 
@@ -828,33 +1123,4 @@ relation.where(table[primary_key].gt(primary_key_offset))
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;http://inforati.jp/apple/mac-tips-techniques/hardware-hints/how-to-reset-the-system-management-controller-of-mac.html&quot;&gt;MacのSMCを初期化してスリープやバッテリーのトラブルなどに対処する方法 / Inforati&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://digitalnetcreate.com/blog/mac/mbafan/&quot;&gt;MacBookAirのファンが止まらない⇒解決しました！ | フリーランスの話のタネ&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="mac" /><summary>ファンが周り続けたときにSMCリセットしたら解決したよ、という話。</summary></entry><entry><title>コマンドラインで複数行を1行にまとめる</title><link href="http://blog.toshimaru.net/join-lines-command/" rel="alternate" type="text/html" title="コマンドラインで複数行を1行にまとめる" /><published>2015-09-30T00:00:00+09:00</published><updated>2015-09-30T00:00:00+09:00</updated><id>http://blog.toshimaru.net/join-lines-command</id><content type="html" xml:base="http://blog.toshimaru.net/join-lines-command/">&lt;p&gt;やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cat text
-aaaa
-bbbb
-cccc
-
-$ cat text | tr &#39;\n&#39; &#39;,&#39;
-aaaa,bbbb,cccc,%
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;こんな感じで&lt;code class=&quot;highlighter-rouge&quot;&gt;tr&lt;/code&gt;を使って改行コードを置換してやればカンマ区切りで1行にできる。&lt;/p&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;もともと&lt;/h3&gt;
-
-&lt;p&gt;もともとやりたかったのはこんな感じのこと。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ echo &#39;{ &quot;employees&quot;:[{&quot;firstName&quot;:&quot;John&quot;, &quot;lastName&quot;:&quot;Doe&quot;}, {&quot;firstName&quot;:&quot;Anna&quot;, &quot;lastName&quot;:&quot;Smith&quot;}, {&quot;firstName&quot;:&quot;Peter&quot;,&quot;lastName&quot;:&quot;Jones&quot;} ] }&#39; | jq &#39;.employees[] .firstName&#39; | tr &#39;\n&#39; &#39;,&#39; | awk &#39;{ print &quot;result = [&quot; $1 &quot;]&quot; }&#39;
-result = [&quot;John&quot;,&quot;Anna&quot;,&quot;Peter&quot;,]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;curlでJSONをGETしてそれをjqでパースして出たリストをカンマ区切りで出力する、みたいなやつ。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;参考&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/2764051/how-to-join-multiple-lines-of-file-names-into-one-with-custom-delimiter&quot;&gt;linux - How to join multiple lines of file names into one with custom delimiter? - Stack Overflow&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://tbpgr.hatenablog.com/entry/20120309/1331314857&quot;&gt;tr | 標準入力の内容を置換、削除する - Tbpgr Blog&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="shell" /><category term="api" /><summary>やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</summary></entry></feed>
+&lt;/ul&gt;</content><category term="mac" /><summary>ファンが周り続けたときにSMCリセットしたら解決したよ、という話。</summary></entry></feed>
