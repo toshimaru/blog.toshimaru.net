@@ -1,4 +1,135 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-03-26T20:01:35+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Ruby on Rails を Google App Engine 上で動かしてみる</title><link href="http://blog.toshimaru.net/ruby-on-google-app-engine/" rel="alternate" type="text/html" title="Ruby on Rails を Google App Engine 上で動かしてみる" /><published>2016-03-26T00:00:00+09:00</published><updated>2016-03-26T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-on-google-app-engine</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-on-google-app-engine/">&lt;p&gt;&lt;a href=&quot;http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html&quot;&gt;［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey&lt;/a&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-04-05T01:18:03+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>terraformでDigitalOceanに簡単ドロップレット作成</title><link href="http://blog.toshimaru.net/terraform/" rel="alternate" type="text/html" title="terraformでDigitalOceanに簡単ドロップレット作成" /><published>2016-04-05T00:00:00+09:00</published><updated>2016-04-05T00:00:00+09:00</updated><id>http://blog.toshimaru.net/terraform</id><content type="html" xml:base="http://blog.toshimaru.net/terraform/">&lt;p&gt;&lt;a href=&quot;https://www.terraform.io/&quot;&gt;Terraform&lt;/a&gt;を使って1円クラウド、&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;DigitalOcean&lt;/a&gt;にドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;環境&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform version
+Terraform v0.6.14
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;上記のバージョンの terraform を使っていきます。&lt;/p&gt;
+
+&lt;h2 id=&quot;tf&quot;&gt;tfファイル作成&lt;/h2&gt;
+
+&lt;p&gt;terraformファイル、例えば&lt;code class=&quot;highlighter-rouge&quot;&gt;test.tf&lt;/code&gt;ファイルを下記のように作成します（&lt;code class=&quot;highlighter-rouge&quot;&gt;.tf&lt;/code&gt;という拡張子でファイル名はなんでもよいようです）。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Configure the DigitalOcean Provider
+provider &quot;digitalocean&quot; {
+  token = &quot;your_digitalocean_token&quot;
+}
+
+# Create a web server
+resource &quot;digitalocean_droplet&quot; &quot;web&quot; {
+  image = &quot;ubuntu-14-04-x64&quot;
+  name = &quot;web-1&quot;
+  region = &quot;sfo1&quot;
+  size = &quot;512mb&quot;
+  ssh_keys = [123456]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;token&lt;/code&gt;にはDigitalOceanのあなた自身のトークンをセットしてください。&lt;/p&gt;
+
+&lt;p&gt;ちなみに上記にある &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh_keys&lt;/code&gt; の id は下記のようにAPI経由で取得できます（jqを使ってます）。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl &quot;https://api.digitalocean.com/v2/account/keys&quot; -H &quot;Authorization: Bearer your_token&quot; | jq &quot;.ssh_keys[0].id&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;terraform-&quot;&gt;terraform 実行プラン表示&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;terraform plan&lt;/code&gt;で実行プランを表示できます。これで何が作成されるかを確認しましょう。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform plan
+Refreshing Terraform state prior to plan...
+
+
+The Terraform execution plan has been generated and is shown below.
+Resources are shown in alphabetical order for quick scanning. Green resources
+will be created (or destroyed and then created if an existing resource
+exists), yellow resources are being changed in-place, and red resources
+will be destroyed.
+
+Note: You didn&#39;t specify an &quot;-out&quot; parameter to save this plan, so when
+&quot;apply&quot; is called, Terraform can&#39;t guarantee this is what will execute.
+
++ digitalocean_droplet.web
+    image:                &quot;&quot; =&amp;gt; &quot;ubuntu-14-04-x64&quot;
+    ipv4_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    ipv4_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    ipv6_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    ipv6_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    locked:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    name:                 &quot;&quot; =&amp;gt; &quot;web-1&quot;
+    region:               &quot;&quot; =&amp;gt; &quot;sfo1&quot;
+    size:                 &quot;&quot; =&amp;gt; &quot;512mb&quot;
+    ssh_keys.#:           &quot;&quot; =&amp;gt; &quot;1&quot;
+    ssh_keys.0:           &quot;&quot; =&amp;gt; &quot;123456&quot;
+    status:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;プラン実行&lt;/h2&gt;
+
+&lt;p&gt;確認後は&lt;code class=&quot;highlighter-rouge&quot;&gt;terraform apply&lt;/code&gt;で実際に作成を行えます。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform apply
+digitalocean_droplet.web: Creating...
+image:                &quot;&quot; =&amp;gt; &quot;ubuntu-14-04-x64&quot;
+ipv4_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+ipv4_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+ipv6_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+ipv6_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+locked:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+name:                 &quot;&quot; =&amp;gt; &quot;web-1&quot;
+region:               &quot;&quot; =&amp;gt; &quot;sfo1&quot;
+size:                 &quot;&quot; =&amp;gt; &quot;512mb&quot;
+ssh_keys.#:           &quot;&quot; =&amp;gt; &quot;1&quot;
+ssh_keys.0:           &quot;&quot; =&amp;gt; &quot;123456&quot;
+status:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+digitalocean_droplet.web: Creation complete
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+The state of your infrastructure has been saved to the path
+below. This state is required to modify and destroy your
+infrastructure, so keep it safe. To inspect the complete state
+use the `terraform show` command.
+
+State path: terraform.tfstate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;作成物の情報表示&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;terraform show&lt;/code&gt; で作成物の情報を表示できます。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform show
+digitalocean_droplet.web:
+  id = 12808253
+  image = ubuntu-14-04-x64
+  ipv4_address = 1.2.3.4
+  locked = false
+  name = web-1
+  region = sfo1
+  size = 512mb
+  ssh_keys.# = 1
+  ssh_keys.0 = 123456
+  status = active
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;確かにできあがってます。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;この記事を気に入っていただけたなら、下記よりリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;&lt;img src=&quot;/images/digitalocean.png&quot; alt=&quot;digitalocean&quot; /&gt;&lt;/a&gt;&lt;/p&gt;</content><category term="digitalocean" /><category term="terraform" /><summary>Terraformを使って1円クラウド、DigitalOceanにドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。</summary></entry><entry><title>Ruby on Rails を Google App Engine 上で動かしてみる</title><link href="http://blog.toshimaru.net/ruby-on-google-app-engine/" rel="alternate" type="text/html" title="Ruby on Rails を Google App Engine 上で動かしてみる" /><published>2016-03-26T00:00:00+09:00</published><updated>2016-03-26T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-on-google-app-engine</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-on-google-app-engine/">&lt;p&gt;&lt;a href=&quot;http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html&quot;&gt;［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は &lt;a href=&quot;https://cloud.google.com/ruby/getting-started/hello-world&quot;&gt;How to run Hello World - Ruby — Google Cloud Platform&lt;/a&gt; を参考に進めていきます。&lt;/p&gt;
 
@@ -1087,40 +1218,4 @@ relation.where(table[primary_key].gt(primary_key_offset))
 
 &lt;h2 id=&quot;section&quot;&gt;まとめ&lt;/h2&gt;
 
-&lt;p&gt;多くの場合、破壊的メソッドのほうが速い。&lt;/p&gt;</content><category term="ruby" /><summary>Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。</summary></entry><entry><title>Macbookでファン・照明・電源に問題が生じたときはSMCリセット</title><link href="http://blog.toshimaru.net/macbook-smc-reset/" rel="alternate" type="text/html" title="Macbookでファン・照明・電源に問題が生じたときはSMCリセット" /><published>2015-10-07T00:00:00+09:00</published><updated>2015-10-07T00:00:00+09:00</updated><id>http://blog.toshimaru.net/macbook-smc-reset</id><content type="html" xml:base="http://blog.toshimaru.net/macbook-smc-reset/">&lt;p&gt;ファンが周り続けたときにSMCリセットしたら解決したよ、という話。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;発生した問題&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;熱持ってるわけでもないし、CPU食いつぶされているわけでもないのに、&lt;strong&gt;ファンがフル回転&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;バッテリーの残り容量が出なくなる&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;そんなときはSMCリセット。&lt;/p&gt;
-
-&lt;h2 id=&quot;smc&quot;&gt;SMCリセットとは&lt;/h2&gt;
-
-&lt;p&gt;SMCとはSystem Management Controllerの略。System Management Controllerとはシステム管理コントローラのこと。&lt;/p&gt;
-
-&lt;p&gt;SMCはMacの電源関係を処理するコンピュータチップのことで、システム起動、スリープ、バッテリーなど、電源関係のハードウエアをコントロールします。&lt;/p&gt;
-
-&lt;h2 id=&quot;smc-1&quot;&gt;SMCリセット手順&lt;/h2&gt;
-
-&lt;p&gt;公式の下記ドキュメントが最も参考になります。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://support.apple.com/ja-jp/HT201295&quot;&gt;Mac の SMC (システム管理コントローラ) をリセットする - Apple サポート&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;具体的にはMacbook Airで以下の手順となります。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;コンピュータをシステム終了します。&lt;/li&gt;
-  &lt;li&gt;MagSafe 電源アダプタまたは USB-C 電源アダプタをコンセントに接続し、コンピュータに接続します。&lt;/li&gt;
-  &lt;li&gt;内蔵キーボードで、「(左の) shift + control + option」キーを押しながら、電源ボタンを押します。&lt;/li&gt;
-  &lt;li&gt;3 つのキー全部と電源ボタンを同時に放します。&lt;/li&gt;
-  &lt;li&gt;電源ボタンを押してコンピュータを起動します。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;参考&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://inforati.jp/apple/mac-tips-techniques/hardware-hints/how-to-reset-the-system-management-controller-of-mac.html&quot;&gt;MacのSMCを初期化してスリープやバッテリーのトラブルなどに対処する方法 / Inforati&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://digitalnetcreate.com/blog/mac/mbafan/&quot;&gt;MacBookAirのファンが止まらない⇒解決しました！ | フリーランスの話のタネ&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><category term="mac" /><summary>ファンが周り続けたときにSMCリセットしたら解決したよ、という話。</summary></entry></feed>
+&lt;p&gt;多くの場合、破壊的メソッドのほうが速い。&lt;/p&gt;</content><category term="ruby" /><summary>Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。</summary></entry></feed>
