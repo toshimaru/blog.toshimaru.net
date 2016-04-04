@@ -4,7 +4,7 @@ title: 1円クラウド・DigitalOceanのインスタンスをVagrantで上げ�
 published: true
 image: /images/posts/vagrant/vagrant.png
 description: 流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
-tags: vagrant digitalocean
+tags: digitalocean vagrant
 ---
 
 流行りの1円クラウド、[DigitalOcean](https://m.do.co/c/a79091850c6e)上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
@@ -151,3 +151,5 @@ Githubに今回のサンプルの最終形を置いておく。
 
 * [Simple Cloud Computing, Built for Developers | DigitalOcean](https://m.do.co/c/a79091850c6e)
 * [VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する](http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/)
+
+{% include digitalocean.html %}

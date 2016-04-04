@@ -112,3 +112,5 @@ See. <http://www.packer.io/intro/getting-started/build-image.html>
 ### 参考
 
 * [Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)](http://rebuild.fm/25/)
+
+{% include digitalocean.html %}
