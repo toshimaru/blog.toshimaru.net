@@ -121,4 +121,21 @@ terraformファイル、例えば`test.tf`ファイルを下記のように作�
 
 確かにできあがってます。
 
+## ドロップレット削除
+
+ほっとくとどんどん課金されていきますので使い終わったら削除しましょう。
+
+    $ terraform destroy
+    Do you really want to destroy?
+      Terraform will delete all your managed infrastructure.
+      There is no undo. Only 'yes' will be accepted to confirm.
+
+      Enter a value: yes
+
+    digitalocean_droplet.web: Refreshing state... (ID: 12808253)
+    digitalocean_droplet.web: Destroying...
+    digitalocean_droplet.web: Destruction complete
+
+    Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
+
 {% include digitalocean.html %}
