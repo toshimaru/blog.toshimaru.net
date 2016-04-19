@@ -79,10 +79,10 @@ inject を利用したフィボナッチ数列ロジック。
 
 {% highlight ruby %}
 (1..10).each_with_index.inject do |result, (element, index)|
-  # 
+  #
 end
 {% endhighlight %}
 
-### 参考
+## 参考
 * [ruby の inject をわかりやすく説明してみる](http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject)
 * [inject (Enumerable)](http://ref.xaio.jp/ruby/classes/enumerable/inject)

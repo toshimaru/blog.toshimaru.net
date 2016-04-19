@@ -97,5 +97,5 @@ end
 * find_eachにおいてorderとlimitは無視される
 * where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得してループを回していく
 
-### 参考
+## 参考
 * [ActiveRecord::Batches](http://api.rubyonrails.org/classes/ActiveRecord/Batches.html)
