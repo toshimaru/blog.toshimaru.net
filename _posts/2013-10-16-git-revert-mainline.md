@@ -8,7 +8,7 @@ tags: git
 
 `git revert`しているとこんなエラーに出くわしました。
 
-    $ g revert xxxxx
+    $ git revert xxxxx
     error: Commit xxxxx is a merge but no -m option was given.
     fatal: revert failed
 
@@ -27,10 +27,9 @@ tags: git
 
 このmainlineは1から始まり「1がマージされた側のブランチ」「2がマージする側のブランチ」になるようなので多くの場合、前者に戻したいと思うので1を指定しとけばよいということになります。結果としては下記のコマンド。
 
-    $ g revert -m 1 1459267
+    $ git revert -m 1 1459267
 
 以上でした。
 
-###参考
-
+### 参考
 * [gitのmerge-commitをrevertする](http://d.hatena.ne.jp/koba04/20121122/1353512656)
