@@ -3,14 +3,15 @@ source 'https://rubygems.org'
 gem 'jekyll', '~> 3.0'
 
 group :jekyll_plugins do
-  gem 'jemoji'
-  gem 'jekyll-toc'
-  gem 'jekyll-tagging-related_posts'
-  gem 'jekyll-tagging'
-  gem 'jekyll-sitemap'
-  gem 'jekyll-paginate'
-  gem 'jekyll-feed'
   gem 'jekyll-coffeescript'
+  gem 'jekyll-compose', github: 'toshimaru/jekyll-compose', branch: 'feature/post-template'
+  gem 'jekyll-feed'
+  gem 'jekyll-paginate'
+  gem 'jekyll-sitemap'
+  gem 'jekyll-tagging'
+  gem 'jekyll-tagging-related_posts'
+  gem 'jekyll-toc'
+  gem 'jemoji'
 end
 
 group :development do
