@@ -5,17 +5,11 @@
 
 My blog repository powered by Jekyll.
 
+# Create new post
+
+    $ jekyll post YOUR_POST_TITLE
+
 # Rake Tasks
-
-## Create new post
-
-    $ rake post
-
-or
-
-    $ rake new
-
-Then, title your new post.
 
 ## Initial setup
 
@@ -28,6 +22,3 @@ Then, title your new post.
 ## Deploy to gh-pages
 
     $ rake deploy
-
-## TODO
-* Bump up font-awesome
