@@ -3,24 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Ruby Gem Configuration Pattern - Hack Your Design!</title>
+  <title>rails new するときによく使うオプション - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Ruby Gem Configuration Pattern - Hack Your Design!">
-  <meta property="og:title" content="Ruby Gem Configuration Pattern - Hack Your Design!">
-  <meta name="description" content="railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。">
-  <meta name="twitter:description" content="railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。">
-  <meta property="og:description" content="railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。">
+  <meta name="twitter:title" content="rails new するときによく使うオプション - Hack Your Design!">
+  <meta property="og:title" content="rails new するときによく使うオプション - Hack Your Design!">
+  <meta name="description" content="rails new するときによく使うオプション。turbolinksをOFFって、データベースをmysqlに変更して、testをRSpec使うためにskipする。">
+  <meta name="twitter:description" content="rails new するときによく使うオプション。turbolinksをOFFって、データベースをmysqlに変更して、testをRSpec使うためにskipする。">
+  <meta property="og:description" content="rails new するときによく使うオプション。turbolinksをOFFって、データベースをmysqlに変更して、testをRSpec使うためにskipする。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <meta property="article:published_time" content="2015-09-01T00:00:00+09:00">
+  <meta property="article:published_time" content="2016-06-04T00:00:00+09:00">
   
-  <link rel="canonical" href="http://blog.toshimaru.net/ruby-configuration-pattern/">
+  <link rel="canonical" href="http://blog.toshimaru.net/rails-new-options/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({
@@ -69,103 +69,72 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Ruby Gem Configuration Pattern</h1>
+  <h1 class="fadeInLeft">rails new するときによく使うオプション</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2015-09-01T00:00:00+09:00" pubdate>01 Sep 2015</time>
-      <i class="icon-tags"></i><a href="/tag/ruby/" rel="tag">ruby</a>, <a href="/tag/gem/" rel="tag">gem</a>, <a href="/tag/rails/" rel="tag">rails</a>
+      <i class="icon-calendar"></i><time datetime="2016-06-04T00:00:00+09:00" pubdate>04 Jun 2016</time>
+      <i class="icon-tags"></i><a href="/tag/rails/" rel="tag">rails</a>
     </div>
     
   </div>
 </div>
 
-<p>railsのgemでよくみかける初期設定ファイル、<code class="highlighter-rouge">config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
+<p><code class="highlighter-rouge">rails new</code> するときによく使うオプション。</p>
 
-<h2 id="section">めざす完成形はコレ！</h2>
+<table>
+  <thead>
+    <tr>
+      <th>オプション</th>
+      <th>意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">-d</code> / <code class="highlighter-rouge">--database=mysql</code></td>
+      <td>データベースの指定。 mysql とか postgresql などを指定する</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">--skip-turbolinks</code></td>
+      <td>turbolinks を無効化して<code class="highlighter-rouge">rails new</code>する</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">--skip-test-unit</code></td>
+      <td>testを作成しない。RSpecに変更したいときに使うと良い。Rails4 で有効なオプション。</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">--skip-test</code></td>
+      <td>同上。 <strong>Rails5 で有効なオプション</strong>。</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>完成系として、下記を想定してみます。</p>
+<p>turbolinksをOFFって、データベースをmysqlに変更して、testをRSpec使うためにskipする。これらをまとめると下記のようになる。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
-<span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s1">'my configuration value'</span>
-<span class="k">end</span></code></pre></figure>
+<h2 id="rails4">Rails4</h2>
 
-<h2 id="configure">configureメソッドを用意</h2>
-
-<p>まずは<code class="highlighter-rouge">module</code>と<code class="highlighter-rouge">configure</code>というクラスメソッドを用意します。</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
-  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
-    <span class="k">def</span> <span class="nf">configure</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
-
-<h2 id="configuration">Configurationクラス</h2>
-
-<p>次に実際の設定値が入る<code class="highlighter-rouge">Configuration</code>クラスを用意します。</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
-
-  <span class="k">def</span> <span class="nf">initialize</span>
-    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
-
-<h2 id="section-1">完成形</h2>
-
-<p>次にこれを組み合わせてみましょう。</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
-  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
-    <span class="k">def</span> <span class="nf">configure</span>
-      <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
-    <span class="k">end</span>
-
-    <span class="k">def</span> <span class="nf">configuration</span>
-      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="p">.</span><span class="nf">new</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="k">class</span> <span class="nc">Configuration</span>
-    <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
-
-    <span class="k">def</span> <span class="nf">initialize</span>
-      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
-
-<p>これでインスタンス化された<code class="highlighter-rouge">Configuration</code>クラスが出てきます。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; Konfig.configure {|config| p config}
-#&lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value"&gt;
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rails new --database=mysql --skip-turbolinks --skip-test-unit
 </code></pre>
 </div>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s2">"abc"</span>
-<span class="k">end</span>
-<span class="c1"># =&gt; "abc"</span>
+<h2 id="rails5-">Rails5 以降</h2>
 
-<span class="no">Konfig</span><span class="p">.</span><span class="nf">configuration</span>
-<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="abc"&gt;</span></code></pre></figure>
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rails new --database=mysql --skip-turbolinks --skip-test
+</code></pre>
+</div>
 
-<p><code class="highlighter-rouge">configure</code>で<code class="highlighter-rouge">Configuration</code>インスタンス作っててブロック内の<code class="highlighter-rouge">config</code>変数で<code class="highlighter-rouge">Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
+<h2 id="section">その他のオプション</h2>
 
-<h3 id="section-2">参考</h3>
-<ul>
-  <li><a href="https://robots.thoughtbot.com/mygem-configure-block">MyGem.configure Block</a></li>
-  <li><a href="http://jimsei.hatenablog.com/entry/20120721/1342855783">クラスインスタンス変数にアクセサを利用しアクセスする - ひたすら事務</a></li>
-  <li><a href="http://o.inchiki.jp/obbr/168">Rubyのクラスインスタンス変数をアクセサで定義する</a></li>
-</ul>
+<div class="highlighter-rouge"><pre class="highlight"><code>$ rails new -h
+</code></pre>
+</div>
+
+<p>で見るべし。</p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-configuration-pattern/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-new-options/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -183,15 +152,15 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/json-parser-benchmark/" title="RubyのJSONパーサーのパース速度比較">RubyのJSONパーサーのパース速度比較</a></li>
+    <li><a href="/ruby-on-google-app-engine/" title="Ruby on Rails を Google App Engine 上で動かしてみる">Ruby on Rails を Google App Engine 上で動かしてみる</a></li>
   
-    <li><a href="/ruby-standard-error/" title="Rubyで独自例外を定義するときはStandardErrorを継承する">Rubyで独自例外を定義するときはStandardErrorを継承する</a></li>
+    <li><a href="/rails-find_each/" title="Railsのfind_eachの挙動を調べた">Railsのfind_eachの挙動を調べた</a></li>
   
-    <li><a href="/destructive-method-performance/" title="rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較">rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較</a></li>
+    <li><a href="/ruby-configuration-pattern/" title="Ruby Gem Configuration Pattern">Ruby Gem Configuration Pattern</a></li>
   
-    <li><a href="/string-vs-symbol-in-hash/" title="HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較">HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較</a></li>
+    <li><a href="/publish-rails-app-in-lan/" title="RailsアプリケーションをLAN内に公開する">RailsアプリケーションをLAN内に公開する</a></li>
   
-    <li><a href="/ruby-vs-go/" title="RubyとGolang で並行処理のパフォーマンス比較してみた">RubyとGolang で並行処理のパフォーマンス比較してみた</a></li>
+    <li><a href="/manage-schema-with-sql-in-rails/" title="SQLファイルでRailsのスキーマ情報管理">SQLファイルでRailsのスキーマ情報管理</a></li>
   
   </ul>
   </div>
@@ -199,14 +168,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/join-lines-command/" title="Newer Post: コマンドラインで複数行を1行にまとめる"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/hubot-docomo-chatter/" title="Older Post: docomo雑談対話APIでリプライ返すhubotプラグイン作った">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/docker-compose-rails/" title="Older Post: docker-compose で Rails 環境を構築する">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -250,10 +215,10 @@
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "http://blog.toshimaru.net/ruby-configuration-pattern/"
+      "@id": "http://blog.toshimaru.net/rails-new-options/"
     },
-    "headline": "Ruby Gem Configuration Pattern",
-    "datePublished": "2015-09-01T00:00:00+09:00",
+    "headline": "rails new するときによく使うオプション",
+    "datePublished": "2016-06-04T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -263,7 +228,7 @@
       "@type": "ImageObject",
       "url": "http://blog.toshimaru.net/images/icon.png"
     },
-    "keywords": "ruby, gem, rails"
+    "keywords": "rails"
   },
   {
     
@@ -274,8 +239,8 @@
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "http://blog.toshimaru.net/tag/ruby/",
-          "name": "ruby"
+          "@id": "http://blog.toshimaru.net/tag/rails/",
+          "name": "rails"
         }
       }
     ]
