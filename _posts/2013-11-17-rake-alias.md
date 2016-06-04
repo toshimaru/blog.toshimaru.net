@@ -6,7 +6,7 @@ description: RubyのRakeタスクにエイリアス付けたいときってあ�
 tags: ruby rake
 ---
 
-RubyのRakeタスクにエイリアス付けたいときってありません？
+RubyのRakeタスクにエイリアス付けたいときってありませんか？
 
 僕はあります。`rake create`なんていうタスクがあったとしたら、何らかの手癖のせいで`rake new`とか打っちゃうことがあるんですよ。
 
@@ -14,23 +14,23 @@ RubyのRakeタスクにエイリアス付けたいときってありません？
 
 {% highlight ruby %}
 def alias_task(tasks)
-    tasks.each do |new_name, old_name|
-        task new_name, [*Rake.application[old_name].arg_names] => [old_name]
-    end
+  tasks.each do |new_name, old_name|
+    task new_name, [*Rake.application[old_name].arg_names] => [old_name]
+  end
 end
 
 alias_task [
-    [:new, :create],
-    [:dc,  :db_create]
+  [:new, :create],
+  [:dc,  :db_create]
 ]
 {% endhighlight %}
 
-ここでは
+ここでは、
 
 - `create`タスクに`new`というエイリアス名を
 - `db_create`タスクに`dc`というエイリアス名を
 
 割り当てています。
 
-###参考
+## 参考
 * [The alias of task name in rake](http://stackoverflow.com/questions/7656541/the-alias-of-task-name-in-rake)

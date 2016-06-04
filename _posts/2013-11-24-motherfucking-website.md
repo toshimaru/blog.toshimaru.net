@@ -13,10 +13,10 @@ tags: design 翻訳
 
 <iframe src="http://toshimaru.net/motherfuckingwebsite/"></iframe>
 
-##あわせて読みたい
+## あわせて読みたい
 
 [これはウェブページです｡](http://justinjackson.ca/words_japan.html)
 
-##翻訳後記
+## 翻訳後記
 
 余談になるが、今回の記事は mother fucker, fucking, son-of-bitch などかなりのswear wordsを含むのでその勢いを消さずに翻訳することに努めた。日本語だとあんまりこのような罵倒語にはバリエーションがないのでなかなか難しかったが、原文の勢いはそれなりに保てたように思う。

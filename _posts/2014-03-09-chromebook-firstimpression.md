@@ -11,7 +11,7 @@ tags: chrome
 
 Chromebookが日本にも来るようですね。カナダにて一足先にChromebookを一週間ほど触ってみたので、その感想を書いてみようと思います。
 
-##スペック
+## スペック
 
 購入したのはSamsungのChromebook. ３万円くらいでした。安い。
 
@@ -31,7 +31,7 @@ via. [Samsung Chromebook](https://www.google.com/intl/ms/chrome/devices/samsung-
 
 何より驚いたのは起動の早さでした。本当に10秒くらいで起動するんですよ、これが。見てて気持ちよかった。
 
-##Chrome OSの思想
+## Chrome OSの思想
 
 ChromeOSは全ての作業がブラウザ/WEBで実行可能になりつつある昨今、生まれるべくして生まれたOSだと思う。僕らが日々パソコンの前に座って行う作業はウェブ上で可能な作業へとシフトしていっている。メールチェックはOutlookからGmailへと、ドキュメント作成はWord/ExcelからGoogleDocsへと、各種データはローカル保存からEvernote,DropBoxなどのクラウドストレージへと移行している。プログラミングですら[Cloud9 IDE](https://c9.io/)などのサービスでウェブ上で可能になっている。
 
@@ -47,7 +47,7 @@ ChromeOSには従来のようなデスクトップやファイルといった発
 
 基本的にアプリケーションはChrome上で動作するアプリケーションのみなので、下部にズラって並んでるのはChromeアプリのショートカットアイコン。クリックするとChromeが開きWEBアプリが起動する感じ。
 
-##開発者マシンとして利用可能？
+## 開発者マシンとして利用可能？
 
 自分は開発者なので開発者マシンとして利用可能かも試してみた。
 
@@ -72,11 +72,11 @@ via. [Developing apps on your Chromebook](http://www.chromium.org/chromium-os/de
 
 どれも悪くはないけど痒いところには手が届かない感じ。
 
-###その他
+### その他
 
 他にも[Setting Up a Local Development Environment in Chrome OS](http://jeremyckahn.github.io/blog/2013/02/09/setting-up-a-local-development-environment-in-chrome-os/)や[How to Install Linux on a Chromebook and Unlock Its Full Potential](http://lifehacker.com/how-to-install-linux-on-a-chromebook-and-unlock-its-ful-509039343)なんかを参考に[crouton](https://github.com/dnschneid/crouton)を使ってみたりしたけど、まだまだ発展途中という印象だった。
 
-###Tips
+### Tips
 
 [100 Tips for Your Google Chromebook](http://www.chromestory.com/google-chromebook/)
 

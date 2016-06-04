@@ -10,7 +10,7 @@ tags: jquery
 
 日本との時差の関係で更新が24日になっているでしょうが気にせずいきましょう。
 
-##1. jQuery 2.x vs 1.x
+## 1. jQuery 2.x vs 1.x
 
 １つ目はテクニックというよりTipsです。jQueryには最新版の2.x系と1.x系があります。さてどのようにバージョンを選べばいいでしょう？
 
@@ -18,7 +18,7 @@ tags: jquery
 
 よってまとめると**IE6/7/8をサポートしたいのであれば1.x系を使用、サポートしないのであれば2.x系を使用**しましょう。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。
 
-##2.　イベントハンドリングには`on()`を使うべし
+## 2.　イベントハンドリングには`on()`を使うべし
 
 イベントハンドリングのメソッドがjQuery1.7以前だと`bind()`,`live()`,`delegate()`やらいろいろあったのが、jQuery1.7で`on()`でまとめられました。
 
@@ -68,7 +68,7 @@ $.ajax({
 
 こっちのほうがPromiseなモダン形式です。
 
-##4. `ajax()`だけじゃなくショートカットメソッドも活用すべし
+## 4. `ajax()`だけじゃなくショートカットメソッドも活用すべし
 
 `ajax()`がオプションで色々出来過ぎちゃってついつい`ajax()`を使いがちですが、jQueryには[AJAXショートカットメソッド](http://api.jquery.com/category/ajax/shorthand-methods/)があるんです！　例えばデータをPOSTするAJAX。下記に`ajax()`と`post()`の二通り書き方を載せましたが、`post()`のほうがシンプルでよさ気ですね。
 
@@ -124,6 +124,6 @@ $('<ul>').html(links)
 
 <iframe width="100%" height="130" src="http://jsfiddle.net/toshimaru/3GG3c/3/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-###参考
+## 参考
 
 * [jQuery 2.0 Released](http://blog.jquery.com/2013/04/18/jquery-2-0-released/)

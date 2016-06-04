@@ -19,7 +19,7 @@ Twitter search API をJSを使って呼ぶ簡単なサンプルを作ってみ�
 * JS: jQuery, [hogan.js(template engine)](http://twitter.github.com/hogan.js/)
 * CSS: [bootstrap](http://twitter.github.com/bootstrap/)
 
-###参考
+## 参考
 
 * <a href="https://dev.twitter.com/docs/api/1/get/search">GET search</a>
 * <a href="http://blog.asial.co.jp/659">Twitter-APIを使ってみました</a>
