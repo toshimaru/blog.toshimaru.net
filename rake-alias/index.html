@@ -79,24 +79,24 @@
   </div>
 </div>
 
-<p>RubyのRakeタスクにエイリアス付けたいときってありません？</p>
+<p>RubyのRakeタスクにエイリアス付けたいときってありませんか？</p>
 
 <p>僕はあります。<code class="highlighter-rouge">rake create</code>なんていうタスクがあったとしたら、何らかの手癖のせいで<code class="highlighter-rouge">rake new</code>とか打っちゃうことがあるんですよ。</p>
 
 <p>そういうときは<code class="highlighter-rouge">alias_task</code>なんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。具体的にはこんな感じです。</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">alias_task</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
-    <span class="n">tasks</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">new_name</span><span class="p">,</span> <span class="n">old_name</span><span class="o">|</span>
-        <span class="n">task</span> <span class="n">new_name</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="no">Rake</span><span class="p">.</span><span class="nf">application</span><span class="p">[</span><span class="n">old_name</span><span class="p">].</span><span class="nf">arg_names</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
-    <span class="k">end</span>
+  <span class="n">tasks</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">new_name</span><span class="p">,</span> <span class="n">old_name</span><span class="o">|</span>
+    <span class="n">task</span> <span class="n">new_name</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="no">Rake</span><span class="p">.</span><span class="nf">application</span><span class="p">[</span><span class="n">old_name</span><span class="p">].</span><span class="nf">arg_names</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="n">alias_task</span> <span class="p">[</span>
-    <span class="p">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">],</span>
-    <span class="p">[</span><span class="ss">:dc</span><span class="p">,</span>  <span class="ss">:db_create</span><span class="p">]</span>
+  <span class="p">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">],</span>
+  <span class="p">[</span><span class="ss">:dc</span><span class="p">,</span>  <span class="ss">:db_create</span><span class="p">]</span>
 <span class="p">]</span></code></pre></figure>
 
-<p>ここでは</p>
+<p>ここでは、</p>
 
 <ul>
   <li><code class="highlighter-rouge">create</code>タスクに<code class="highlighter-rouge">new</code>というエイリアス名を</li>
@@ -105,8 +105,10 @@
 
 <p>割り当てています。</p>
 
-<p>###参考
-* <a href="http://stackoverflow.com/questions/7656541/the-alias-of-task-name-in-rake">The alias of task name in rake</a></p>
+<h2 id="section">参考</h2>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/7656541/the-alias-of-task-name-in-rake">The alias of task name in rake</a></li>
+</ul>
 
 
 <ul id="social-buttons">
