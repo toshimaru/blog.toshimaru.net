@@ -84,7 +84,7 @@
 <li class="toc-entry toc-h2"><a href="#rails4でトランザクション分離レベルを設定">Rails4でトランザクション分離レベルを設定</a></li>
 <li class="toc-entry toc-h2"><a href="#有効なトランザクション分離レベル">有効なトランザクション分離レベル</a></li>
 <li class="toc-entry toc-h2"><a href="#分離レベルとダーティリードファジーリードファントムリードの関係">分離レベルとダーティリード、ファジーリード、ファントムリードの関係</a></li>
-<li class="toc-entry toc-h3"><a href="#参考">参考</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
 </ul><h2 id="mysql">
 <a id="mysqlのトランザクション分離レベル" class="anchor" href="#mysql%E3%81%AE%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>MySQLのトランザクション分離レベル</h2>
 
@@ -111,17 +111,23 @@
 
 <p>Rails 3.x 時代までは、</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span>
   <span class="nf">execute</span><span class="p">(</span><span class="s1">'SET TRANSACTION ISOLATION LEVEL READ COMMITTED'</span><span class="p">)</span>
 <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
   <span class="c1"># ...</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span>
+</code></pre>
+</div>
 
 <p>のように書かなければなりませんでしたが、Rails 4 でトランザクションごとに分離レベルを指定できるようになりました：</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">isolation: :read_committed</span><span class="p">)</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">isolation: :read_committed</span><span class="p">)</span> <span class="k">do</span>
   <span class="c1"># ...</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span>
+</code></pre>
+</div>
 
 <p><em>（引用ここまで）</em></p>
 
@@ -189,9 +195,8 @@
 
 <p>適切なトランザクション分離レベルで適切なトランザクション処理をしましょう！</p>
 
-<h3 id="section-2">
-<a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h3>
-
+<h2 id="section-2">
+<a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
 <ul>
   <li><a href="http://d.hatena.ne.jp/tkrd/20131121/1385044179">Rails &amp; MySQL: トランザクション分離レベルをグローバルに設定する</a></li>
   <li><a href="http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html">Rails 4 - Transaction isolation level</a></li>

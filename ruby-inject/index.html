@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Rubyのinjectを使いこなす - Hack Your Design!</title>
+  <title>Ruby の inject を使いこなす - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Rubyのinjectを使いこなす - Hack Your Design!">
-  <meta property="og:title" content="Rubyのinjectを使いこなす - Hack Your Design!">
-  <meta name="description" content="Rubyのイテレータメソッドinjectの使い方を紹介してみようと思います。">
-  <meta name="twitter:description" content="Rubyのイテレータメソッドinjectの使い方を紹介してみようと思います。">
-  <meta property="og:description" content="Rubyのイテレータメソッドinjectの使い方を紹介してみようと思います。">
+  <meta name="twitter:title" content="Ruby の inject を使いこなす - Hack Your Design!">
+  <meta property="og:title" content="Ruby の inject を使いこなす - Hack Your Design!">
+  <meta name="description" content="Rubyのイテレータメソッド・injectの使い方を紹介してみようと思います。">
+  <meta name="twitter:description" content="Rubyのイテレータメソッド・injectの使い方を紹介してみようと思います。">
+  <meta property="og:description" content="Rubyのイテレータメソッド・injectの使い方を紹介してみようと思います。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
@@ -69,7 +69,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Rubyのinjectを使いこなす</h1>
+  <h1 class="fadeInLeft">Ruby の inject を使いこなす</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2015-01-08T00:00:00+09:00" pubdate>08 Jan 2015</time>
@@ -83,6 +83,7 @@
 <li class="toc-entry toc-h2"><a href="#injectの基本的な使い方">injectの基本的な使い方</a></li>
 <li class="toc-entry toc-h2"><a href="#sum合計を出す">Sum（合計）を出す</a></li>
 <li class="toc-entry toc-h2"><a href="#応用編1-配列内の要素数をハッシュに">応用編1: 配列内の要素数をハッシュに</a></li>
+<li class="toc-entry toc-h3"><a href="#each_with_object-を使う">each_with_object を使う</a></li>
 <li class="toc-entry toc-h2"><a href="#応用編2-フィボナッチ数列">応用編2: フィボナッチ数列</a></li>
 <li class="toc-entry toc-h2"><a href="#番外編-each_with_index">番外編: each_with_index</a></li>
 <li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
@@ -91,12 +92,13 @@
 <h2 id="inject">
 <a id="injectの基本的な使い方" class="anchor" href="#inject%E3%81%AE%E5%9F%BA%E6%9C%AC%E7%9A%84%E3%81%AA%E4%BD%BF%E3%81%84%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>injectの基本的な使い方</h2>
 
-<p>Rubyのinjectはこんなふうに使えます。</p>
+<p>Rubyの<code class="highlighter-rouge">inject</code>はこんなふうに使えます。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">enum</span><span class="p">.</span><span class="nf">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
-<span class="n">enum</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span></code></pre></figure>
-
-<p><a href="http://ref.xaio.jp/ruby/classes/enumerable/inject">http://ref.xaio.jp/ruby/classes/enumerable/inject</a></p>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="n">enum</span><span class="p">.</span><span class="nf">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
+<span class="n">enum</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
+</code></pre>
+</div>
 
 <h2 id="sum">
 <a id="sum合計を出す" class="anchor" href="#sum%E5%90%88%E8%A8%88%E3%82%92%E5%87%BA%E3%81%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sum（合計）を出す</h2>
@@ -105,57 +107,90 @@
 
 <p>まずは<code class="highlighter-rouge">inject</code>を使わないパターン。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">each</span> <span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-<span class="nb">puts</span> <span class="n">sum</span> <span class="c1"># =&gt; 55</span></code></pre></figure>
+<span class="nb">puts</span> <span class="n">sum</span> <span class="c1"># =&gt; 55</span>
+</code></pre>
+</div>
 
 <p>これを<code class="highlighter-rouge">inject</code>で書き直すとこう。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-<span class="c1"># =&gt; 55</span></code></pre></figure>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+<span class="c1"># =&gt; 55</span>
+</code></pre>
+</div>
 
 <p>この場合、sumの初期値は0ですがそれを明示的にかくならこう。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
-<span class="c1"># =&gt; 55</span></code></pre></figure>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+<span class="c1"># =&gt; 55</span>
+</code></pre>
+</div>
 
 <p>さらにinjectにはシンボルで演算子をわたしてうまいようにやってくれる。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">(:</span><span class="o">+</span><span class="p">)</span>
-<span class="c1"># =&gt; 55</span></code></pre></figure>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">(:</span><span class="o">+</span><span class="p">)</span>
+<span class="c1"># =&gt; 55</span>
+</code></pre>
+</div>
 
 <p>これが一番シンプルでエレガント。</p>
 
 <h2 id="section">
 <a id="応用編1-配列内の要素数をハッシュに" class="anchor" href="#%E5%BF%9C%E7%94%A8%E7%B7%A81-%E9%85%8D%E5%88%97%E5%86%85%E3%81%AE%E8%A6%81%E7%B4%A0%E6%95%B0%E3%82%92%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>応用編1: 配列内の要素数をハッシュに</h2>
 
-<p>Hash.new(0)で初期化してinject.</p>
+<p><code class="highlighter-rouge">Hash.new(0)</code>で初期化して<code class="highlighter-rouge">inject</code>.</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="p">].</span><span class="nf">inject</span><span class="p">(</span><span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span><span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span> <span class="nb">hash</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">hash</span><span class="p">}</span>
-<span class="c1"># =&gt; {:great=&gt;2, :good=&gt;3, :bad=&gt;2, :awesome=&gt;1}</span></code></pre></figure>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="p">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="p">].</span><span class="nf">inject</span><span class="p">(</span><span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span><span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span> <span class="nb">hash</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">hash</span><span class="p">}</span>
+<span class="c1"># =&gt; {:great=&gt;2, :good=&gt;3, :bad=&gt;2, :awesome=&gt;1}</span>
+</code></pre>
+</div>
+
+<h3 id="eachwithobject-">
+<a id="each_with_object-を使う" class="anchor" href="#each_with_object-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>each_with_object を使う</h3>
+
+<p>上記の例だと<code class="highlighter-rouge">hash[key] += 1; hash</code>とやや冗長な書き方となっていますが、<code class="highlighter-rouge">each_with_object</code>使うともう少しシンプルに書けます。</p>
+
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="p">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="p">].</span><span class="nf">each_with_object</span><span class="p">(</span><span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span><span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="nb">hash</span><span class="o">|</span> <span class="nb">hash</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">}</span>
+<span class="c1"># =&gt; {:great=&gt;2, :good=&gt;3, :bad=&gt;2, :awesome=&gt;1}</span>
+</code></pre>
+</div>
 
 <h2 id="section-1">
 <a id="応用編2-フィボナッチ数列" class="anchor" href="#%E5%BF%9C%E7%94%A8%E7%B7%A82-%E3%83%95%E3%82%A3%E3%83%9C%E3%83%8A%E3%83%83%E3%83%81%E6%95%B0%E5%88%97" aria-hidden="true"><span class="octicon octicon-link"></span></a>応用編2: フィボナッチ数列</h2>
 
-<p>inject を利用したフィボナッチ数列ロジック。</p>
+<p><code class="highlighter-rouge">inject</code> を利用したフィボナッチ数列ロジック。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span><span class="o">|</span><span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">fib</span> <span class="o">&lt;&lt;</span> <span class="n">fib</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">fib</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">}</span>
-<span class="c1"># =&gt; [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]</span></code></pre></figure>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span><span class="o">|</span><span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">fib</span> <span class="o">&lt;&lt;</span> <span class="n">fib</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">fib</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">}</span>
+<span class="c1"># =&gt; [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]</span>
+</code></pre>
+</div>
 
 <h2 id="eachwithindex">
 <a id="番外編-each_with_index" class="anchor" href="#%E7%95%AA%E5%A4%96%E7%B7%A8-each_with_index" aria-hidden="true"><span class="octicon octicon-link"></span></a>番外編: each_with_index</h2>
 
 <p><code class="highlighter-rouge">each_with_index</code>でも<code class="highlighter-rouge">inject</code>は使える。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">each_with_index</span><span class="p">.</span><span class="nf">inject</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span>
-  <span class="c1">#</span>
-<span class="k">end</span></code></pre></figure>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">each_with_index</span><span class="p">.</span><span class="nf">inject</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
 <h2 id="section-2">
 <a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
 <ul>
   <li><a href="http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject">ruby の inject をわかりやすく説明してみる</a></li>
   <li><a href="http://ref.xaio.jp/ruby/classes/enumerable/inject">inject (Enumerable)</a></li>
+  <li><a href="http://qiita.com/Kta-M/items/c9781e09d96601687767">injectとeach_with_objectって何が違うのさ？ - Qiita</a></li>
 </ul>
 
 
@@ -249,7 +284,7 @@
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/ruby-inject/"
     },
-    "headline": "Rubyのinjectを使いこなす",
+    "headline": "Ruby の inject を使いこなす",
     "datePublished": "2015-01-08T00:00:00+09:00",
     "author": {
       "@type": "Person",
