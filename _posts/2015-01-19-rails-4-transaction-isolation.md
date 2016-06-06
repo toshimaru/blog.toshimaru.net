@@ -31,21 +31,21 @@ Rails4でトランザクション分離レベルを設定
 
 Rails 3.x 時代までは、
 
-{% highlight ruby %}
+```rb
 ActiveRecord::Base.connection.
   execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED')
 ActiveRecord::Base.transaction do
   # ...
 end
-{% endhighlight %}
+```
 
 のように書かなければなりませんでしたが、Rails 4 でトランザクションごとに分離レベルを指定できるようになりました：
 
-{% highlight ruby %}
+```rb
 ActiveRecord::Base.transaction(isolation: :read_committed) do
   # ...
 end
-{% endhighlight %}
+```
 
 *（引用ここまで）*
 
@@ -79,8 +79,8 @@ via. [トランザクション分離レベルについて極力分かりやす�
 
 適切なトランザクション分離レベルで適切なトランザクション処理をしましょう！
 
-### 参考
-
+参考
+---
 * [Rails & MySQL: トランザクション分離レベルをグローバルに設定する](http://d.hatena.ne.jp/tkrd/20131121/1385044179)
 * [Rails 4 - Transaction isolation level](http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html)
 * [トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]](http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838)
