@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Rubyのinjectを使いこなす
+title: Ruby の inject を使いこなす
 published: true
-description: Rubyのイテレータメソッドinjectの使い方を紹介してみようと思います。
+description: Rubyのイテレータメソッド・injectの使い方を紹介してみようと思います。
 tags: ruby
 toc: true
 ---
@@ -11,14 +11,12 @@ Rubyのイテレータメソッド`inject`の使い方を紹介してみよう�
 
 ## injectの基本的な使い方
 
-Rubyのinjectはこんなふうに使えます。
+Rubyの`inject`はこんなふうに使えます。
 
 ```rb
 enum.inject {|memo, item| block }
 enum.inject(init) {|memo, item| block }
 ```
-
-<http://ref.xaio.jp/ruby/classes/enumerable/inject>
 
 ## Sum（合計）を出す
 
@@ -57,22 +55,25 @@ puts sum # => 55
 
 ## 応用編1: 配列内の要素数をハッシュに
 
-Hash.new(0)で初期化してinject.
+`Hash.new(0)`で初期化して`inject`.
 
 ```rb
 [:great, :good, :bad, :good, :good, :bad, :awesome, :great].inject(Hash.new(0)) {|hash, key| hash[key] += 1; hash}
 # => {:great=>2, :good=>3, :bad=>2, :awesome=>1}
 ```
 
-### each_with_object
+### each_with_object を使う
+
+上記の例だと`hash[key] += 1; hash`とやや冗長な書き方となっていますが、`each_with_object`使うともう少しシンプルに書けます。
 
 ```rb
 [:great, :good, :bad, :good, :good, :bad, :awesome, :great].each_with_object(Hash.new(0)) {|key, hash| hash[key] += 1}
+# => {:great=>2, :good=>3, :bad=>2, :awesome=>1}
 ```
 
 ## 応用編2: フィボナッチ数列
 
-inject を利用したフィボナッチ数列ロジック。
+`inject` を利用したフィボナッチ数列ロジック。
 
 ```rb
 (0..10).inject([1, 1]) {|fib, i| fib << fib[i] + fib[i+1] }
@@ -92,3 +93,4 @@ end
 ## 参考
 * [ruby の inject をわかりやすく説明してみる](http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject)
 * [inject (Enumerable)](http://ref.xaio.jp/ruby/classes/enumerable/inject)
+* [injectとeach_with_objectって何が違うのさ？ - Qiita](http://qiita.com/Kta-M/items/c9781e09d96601687767)
