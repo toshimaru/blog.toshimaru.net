@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>[Java] Dom4Jを使ってXML操作 - Hack Your Design!</title>
+  <title>Dom4j を使ってXML操作 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="[Java] Dom4Jを使ってXML操作 - Hack Your Design!">
-  <meta property="og:title" content="[Java] Dom4Jを使ってXML操作 - Hack Your Design!">
-  <meta name="description" content="Javaを使ってXMLを処理したい。しかしJava標準パッケージのDomはどうもいけていない（参考：JavaでXMLを操作の４種類方法とサンプルソース）。ということでdom4jを使用してXMLを操作することにした。">
-  <meta name="twitter:description" content="Javaを使ってXMLを処理したい。しかしJava標準パッケージのDomはどうもいけていない（参考：JavaでXMLを操作の４種類方法とサンプルソース）。ということでdom4jを使用してXMLを操作することにした。">
-  <meta property="og:description" content="Javaを使ってXMLを処理したい。しかしJava標準パッケージのDomはどうもいけていない（参考：JavaでXMLを操作の４種類方法とサンプルソース）。ということでdom4jを使用してXMLを操作することにした。">
+  <meta name="twitter:title" content="Dom4j を使ってXML操作 - Hack Your Design!">
+  <meta property="og:title" content="Dom4j を使ってXML操作 - Hack Your Design!">
+  <meta name="description" content="Javaを使ってXMLを処理したい。しかしJava標準パッケージのDom操作はどうもいけていない。ということでDom4jを使用してXMLを操作することにした。">
+  <meta name="twitter:description" content="Javaを使ってXMLを処理したい。しかしJava標準パッケージのDom操作はどうもいけていない。ということでDom4jを使用してXMLを操作することにした。">
+  <meta property="og:description" content="Javaを使ってXMLを処理したい。しかしJava標準パッケージのDom操作はどうもいけていない。ということでDom4jを使用してXMLを操作することにした。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
@@ -69,7 +69,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">[Java] Dom4Jを使ってXML操作</h1>
+  <h1 class="fadeInLeft">Dom4j を使ってXML操作</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2011-12-18T00:00:00+09:00" pubdate>18 Dec 2011</time>
@@ -79,13 +79,35 @@
   </div>
 </div>
 
-<p>Javaを使ってXMLを処理したい。しかしJava標準パッケージのDomはどうもいけていない（参考：<a href="http://digitechlog.com/2009/02/25/4-ways-to-read-and-write-xml.html">JavaでXMLを操作の４種類方法とサンプルソース</a>）。ということでdom4jを使用してXMLを操作することにした。</p>
+<p>Javaを使ってXMLを処理したい。しかしJava標準パッケージのDom操作はどうもいけていない（参考：<a href="http://digitechlog.com/2009/02/25/4-ways-to-read-and-write-xml.html">JavaでXMLを操作の４種類方法とサンプルソース</a> ）。ということで Dom4j を使用してXMLを操作することにした。</p>
+
 <p>結果、下記のようにイケてる感じで処理できました。</p>
 
-<script src="https://gist.github.com/2904049.js?file=Dom4j.java"></script>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.dom4j.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.dom4j.DocumentException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.dom4j.DocumentHelper</span><span class="o">;</span>
 
-<h3>参考</h3>
-<p><a href="http://www5.ocn.ne.jp/~coast/programming/java/dom4j.html">http://www5.ocn.ne.jp/~coast/programming/java/dom4j.html</a></p>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Dom4jTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"start"</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">xml</span> <span class="o">=</span> <span class="s">"&lt;root&gt;&lt;element name='toshi'&gt;text1&lt;/element&gt;&lt;element2&gt;text2&lt;/element2&gt;&lt;/root&gt;"</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">DocumentHelper</span><span class="o">.</span><span class="na">parseText</span><span class="o">(</span><span class="n">xml</span><span class="o">);</span>
+            <span class="c1">// String s = doc.getRootElement().element("element").getText(); //Textとして取得</span>
+            <span class="c1">// String s = doc.getRootElement().element("element").asXML(); //XMLとして取得</span>
+            <span class="c1">// String s = doc.getRootElement().element("element").attributeValue("name");//nameのvalueを取得</span>
+            <span class="n">doc</span><span class="o">.</span><span class="na">getRootElement</span><span class="o">().</span><span class="na">element</span><span class="o">(</span><span class="s">"element"</span><span class="o">).</span><span class="na">setText</span><span class="o">(</span><span class="s">"set text!"</span><span class="o">);</span><span class="c1">//Textをセット</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">doc</span><span class="o">.</span><span class="na">asXML</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">DocumentException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<h2 id="section">参考</h2>
+<ul>
+  <li><a href="https://github.com/dom4j/dom4j">dom4j/dom4j: flexible XML framework for Java</a></li>
+</ul>
 
 
 <ul id="social-buttons">
@@ -161,7 +183,7 @@
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/87271912/"
     },
-    "headline": "[Java] Dom4Jを使ってXML操作",
+    "headline": "Dom4j を使ってXML操作",
     "datePublished": "2011-12-18T00:00:00+09:00",
     "author": {
       "@type": "Person",
@@ -226,11 +248,11 @@
           <li><a href="/jquery-8-tips/">jQuery使いが知っておくべき8つのjQueryテクニック</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-8-tips/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-8-tips/"></a>
 </li>
-          <li><a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
-<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
-</li>
           <li><a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-http-status-symbols/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li><a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
 </li>
           <li><a href="/gunosy-rails-way/">GunosyでのRails開発フロー</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/gunosy-rails-way/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/gunosy-rails-way/"></a>
