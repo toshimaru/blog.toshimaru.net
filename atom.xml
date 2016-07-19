@@ -1,4 +1,333 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-07-19T21:33:30+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>rails new するときによく使うオプション</title><link href="http://blog.toshimaru.net/rails-new-options/" rel="alternate" type="text/html" title="rails new するときによく使うオプション" /><published>2016-06-04T00:00:00+09:00</published><updated>2016-06-04T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-new-options</id><content type="html" xml:base="http://blog.toshimaru.net/rails-new-options/">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; するときによく使うオプション。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-07-20T01:57:41+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Roppongi.rb #1 で「Rails高速化戦略」を発表しました</title><link href="http://blog.toshimaru.net/roppongirb-speeding-up-rails/" rel="alternate" type="text/html" title="Roppongi.rb #1 で「Rails高速化戦略」を発表しました" /><published>2016-07-19T00:00:00+09:00</published><updated>2016-07-19T00:00:00+09:00</updated><id>http://blog.toshimaru.net/roppongirb-speeding-up-rails</id><content type="html" xml:base="http://blog.toshimaru.net/roppongirb-speeding-up-rails/">&lt;p&gt;自分がオーガナイザーを務めた &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/&quot;&gt;Roppongi.rb #1&lt;/a&gt;で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;37881a2ec2214ef39d85820f3327bbc2&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;発表内容をこちらのブログでも文章形式でざっとまとめてみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-ruby-&quot;&gt;Rails (Ruby) 遅いよね&lt;/h2&gt;
+
+&lt;p&gt;RailsないしRubyはプログラミング言語の中では速くはない言語であることは言うまでもないと思う&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。 実際に「Rails/Ruby遅いよねって今まで思ったことある方どれくらいいますか？」と会場でも聞いてみたところ、予想では半数以上手を挙げてくれると思ったのだけど、実際は30人中3~4人くらい。あまりにも意外な結果だったので自分なりに理由を分析してみると２つあるかなと思う。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;パフォーマンスを求められないから&lt;/h3&gt;
+
+&lt;p&gt;例えば社内の数人が使うような管理画面の場合。この場合、パフォーマンスよりも機能性（ちゃんと検索・閲覧できるかとかCRUD操作ができるかとか）などが優先されると思います。数人だけが使うのでアクセススパイクもないし、パフォーマンスが問題にもなりにくい。&lt;/p&gt;
+
+&lt;h3 id=&quot;rails&quot;&gt;Railsをフレームワークとして使っていないから&lt;/h3&gt;
+
+&lt;p&gt;すごくパフォーマンスを求められるWebアプリの場合、それが事前にわかっているならまずは言語選択レベルでRailsを選択しないかもしれない。今ならGoとかElixirとかScalaとか代替言語もあるのでそちらを選択した場合はRails使わないことになるのでRailsの遅さで困ることもない。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-1&quot;&gt;それでもやっぱりRailsだ…!&lt;/h2&gt;
+
+&lt;p&gt;それでもやっぱりRuby好きのRubyっ子であれば、Rubyは使いたい… ということで、Railsの高速化をする上での戦略を紹介。&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-version-up&quot;&gt;Ruby Version Up&lt;/h2&gt;
+
+&lt;p&gt;まずはRubyバージョンアップ。Rubyバージョンの歴史はこんな感じになっている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;2013.2: Ruby 2.0&lt;/li&gt;
+  &lt;li&gt;2013.12: Ruby 2.1&lt;/li&gt;
+  &lt;li&gt;2014.12: Ruby 2.2&lt;/li&gt;
+  &lt;li&gt;2015.12: Ruby 2.3&lt;/li&gt;
+  &lt;li&gt;20xx: Ruby 3.0&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;去年matzの口からRuby3のコンセプトが発表された。その驚くべき内容が &lt;strong&gt;Ruby 3 x 3&lt;/strong&gt; 。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/ruby3x3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=E9bO1uqs4Oc&quot;&gt;Ruby3 challenges - RubyKaigi 2015 Keynote - YouTube&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-2&quot;&gt;とあるRailsアプリの場合&lt;/h2&gt;
+
+&lt;p&gt;会社で取り組んでいるプロダクトのRubyのバージョンは基本的に最新を使うようにしているものの、中にはレガシーな環境もある。下記はそのプロダクトでRuby2.0 から Ruby2.1に上げた例。結果としては、Ruby 2.0 =&amp;gt; 2.1 Ruby Version Up だけで レスポンス速度が約2倍向上した。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/ruby2_0-to-2_1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;このようにRubyバージョンアップによりアプリケーションコード変更ゼロでも&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;、Rubyバージョン上げることで速度改善が期待できる。古いRubyお使いの方は今すぐRubyのバージョンアップ！&lt;/p&gt;
+
+&lt;h2 id=&quot;what-about-rails&quot;&gt;What about Rails?&lt;/h2&gt;
+
+&lt;p&gt;じゃあRailsはどうだろうか。下記はmatzのRuby 3x3 を受けてのマツダさんの発表。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/rails3x.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://speakerdeck.com/a_matsuda/3x-rails&quot;&gt;3x Rails // Speaker Deck&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、という発表でした。&lt;/p&gt;
+
+&lt;p&gt;下記は同じマツダさんが発表された&lt;a href=&quot;http://togetter.com/li/955629&quot;&gt;Rails Upgrade Casual Talks&lt;/a&gt;での資料です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/rails-verup1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://speakerdeck.com/a_matsuda/rails-upgrade-casual-talks&quot;&gt;Rails Upgrade Casual Talks // Speaker Deck&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;たしかに色んな機能が追加されている中、Railsが劇的に速くなることは考えにくい。解決策は…?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/rails-verup2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;歯を食いしばってRails/Rubyをバージョンアップ&lt;/strong&gt;:innocent:&lt;/p&gt;
+
+&lt;p&gt;Rails 遅くなってもRuby は速くなっているので、どちらも最新版をしっかり追っかけていけば、遅くなることなくRailsの機能拡張も追っかけていけるのでOK.&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;ボトルネックを潰す&lt;/h2&gt;
+
+&lt;p&gt;Railsアプリをどうボトルネックを発見し潰していくか？&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;推測するな、計測せよ　&lt;/h3&gt;
+
+&lt;p&gt;ボトルネックは計測して数値で示すもの。ボトルネックを発見するためのサービス・ツールをいくつか紹介。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://newrelic.com/&quot;&gt;New Relic&lt;/a&gt;: 無料で使えて導入もラクでよい&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/MiniProfiler/rack-mini-profiler&quot;&gt;rack-mini-profiler&lt;/a&gt;: 開発環境導入する。クエリやpartialレンダー時間を表示。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/kainosnoema/rack-lineprof&quot;&gt;rack-lineprof&lt;/a&gt;: Rubyのコードを行単位で計測したい場合に有効&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ツールを使った結果ボトルネックになりやすい箇所というとRDBまわり。それを解決するgem・機能を紹介。&lt;/p&gt;
+
+&lt;h2 id=&quot;activerecord-optimization&quot;&gt;ActiveRecord Optimization&lt;/h2&gt;
+
+&lt;h3 id=&quot;magright-&quot;&gt;:mag_right: 問題発見型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/flyerhzm/bullet&quot;&gt;bullet&lt;/a&gt;: Kill &lt;code class=&quot;highlighter-rouge&quot;&gt;N+1&lt;/code&gt; issue!&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/joker1007/activerecord-cause&quot;&gt;activerecord-cause&lt;/a&gt;: Logs where ActiveRecord actually loads record&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;key-db&quot;&gt;:key: DBスキーマ最適化型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/pboling/flag_shih_tzu&quot;&gt;flag_shih_tzu&lt;/a&gt;: Bit fields for ActiveRecord&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://guides.rubyonrails.org/association_basics.html#counter-cache&quot;&gt;counter-cache&lt;/a&gt;: cacheing count query result
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/magnusvk/counter_culture&quot;&gt;counter_culture&lt;/a&gt;: Better counter-cache&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;zap-&quot;&gt;:zap: クエリ効率化型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/k0kubun/activerecord-precount&quot;&gt;activerecord-precount&lt;/a&gt;: Yet another counter_cache alternative.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt;: bulk inserting data&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;activerecord&quot;&gt;クエリを意識してActiveRecord使いこなそう&lt;/h2&gt;
+
+&lt;p&gt;ActiveRecordもといORマッパの良さってDBを意識しなくて済むところ。でも高速化を行う上でクエリは避けられない壁。DBを意識せずコードを書いている最近のワカモノはもっとクエリを意識しよう！ &lt;del&gt;老害っぽい発言だ&lt;/del&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;パーシャルレンダリングを減らす&lt;/h2&gt;
+
+&lt;h3 id=&quot;n1-partial-rendering&quot;&gt;N+1 partial rendering&lt;/h3&gt;
+
+&lt;p&gt;データN個分&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;処理が走ってしまうのを、個人的に &lt;strong&gt;N+1 rendering&lt;/strong&gt; と呼んでいる。データの数N+親のビュー1回で &lt;code class=&quot;highlighter-rouge&quot;&gt;N+1&lt;/code&gt;. 例えばこんなコード。&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/index --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/_item --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Show&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Edit&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;edit_item_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Destroy&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;method: :delete&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;この場合のログはこうなる。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Processing by ItemsController#index as HTML
+  Rendering items/index.html.erb within layouts/application
+  Item Load (0.3ms)  SELECT &quot;items&quot;.* FROM &quot;items&quot;
+  Rendered items/_item.html.erb (0.5ms)
+  Rendered items/_item.html.erb (0.3ms)
+  ...snip...
+  Rendered items/_item.html.erb (0.5ms)
+  Rendered items/_item.html.erb (0.3ms)
+  Rendered items/index.html.erb within layouts/application (57.7ms)
+Completed 200 OK in 80ms (Views: 77.1ms | ActiveRecord: 0.3ms)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Viewで80msくらいかかっている。&lt;/p&gt;
+
+&lt;h3 id=&quot;collection-rendering&quot;&gt;Collection rendering&lt;/h3&gt;
+
+&lt;p&gt;上記の場合、Collectionレンダーの機能を使えばもっと効率的にrenderできる。&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/index --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@items&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/_item --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Show&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Edit&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;edit_item_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Destroy&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;method: :delete&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;この場合のログはこうなる。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Processing by ItemsController#index as HTML
+  Rendering items/index.html.erb within layouts/application
+  Item Load (0.4ms)  SELECT &quot;items&quot;.* FROM &quot;items&quot;
+  Rendered collection of items/_item.html.erb [29 times] (6.9ms)
+  Rendered items/index.html.erb within layouts/application (10.3ms)
+Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;ビューで25msくらい。だいたい上記の例と比べると1/3くらいになっている。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-caching&quot;&gt;Rails caching&lt;/h2&gt;
+
+&lt;p&gt;RailsのCacheの仕組みとして&lt;a href=&quot;http://guides.rubyonrails.org/caching_with_rails.html&quot;&gt;公式ガイド&lt;/a&gt;で3つ紹介されているのだが、ご存知だろうか。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Fragment Cache&lt;/strong&gt;: View fragment caching.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Action Cache&lt;/strong&gt;: Controller’s action caching (removed in Rails4).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Page Cache&lt;/strong&gt;: Static page caching (removed in Rails4).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;fragment-cache&quot;&gt;1. Fragment Cache&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/cache-fragment.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;グローバルナビ・サイドバーなどの多く呼ばれる共通コンテンツに有効&lt;/li&gt;
+  &lt;li&gt;重い処理が走るビューの一部分であればあるほど高速化が期待できる&lt;/li&gt;
+  &lt;li&gt;Advanced Usage: &lt;strong&gt;Russian Doll Caching&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;action-cache&quot;&gt;2. Action Cache&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/action-cache.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rails4で削除されてgem化: &lt;a href=&quot;https://github.com/rails/actionpack-action_caching&quot;&gt;actionpack-action_caching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Viewの手前のControllerのAction自体の処理が重い場合に有効&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cache_path&lt;/code&gt; でキャッシュキーをカスタマイズ可能
+    &lt;ul&gt;
+      &lt;li&gt;モデルのupdated_at を組み込んだり、PC/スマフォでキャッシュビュー出し分け可能&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;page-cache&quot;&gt;3. Page Cache&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Rails4で削除されてgem化: &lt;a href=&quot;https://github.com/rails/actionpack-page_caching&quot;&gt;actionpack-page_caching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;キャッシュ対象となるControllerのActionの生成するHTMLをまるっと静的ファイルに吐き出す&lt;/li&gt;
+  &lt;li&gt;その静的ファイルをNGINXなどのWeb Server/Reverse Proxyでハンドリング&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;rails-3&quot;&gt;Railsのキャッシュ戦略&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Railsデフォルトの FragmentCache を使ってビューのレンダリングを高速化&lt;/li&gt;
+  &lt;li&gt;それでもダメな場合や Controller 自体の処理が重い場合なら、ActionCache/PageCache を検討&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;warning-&quot;&gt;:warning: 注意&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;キャッシュしても根っこの問題は消えない&lt;/li&gt;
+  &lt;li&gt;キャッシュのライフサイクル管理&lt;/li&gt;
+  &lt;li&gt;用法用量を守って正しくお使いください&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;キャッシュによって大きなボトルネックが隠蔽されてしまう場合もある。キャッシュは高速化戦略における&lt;臭いものには蓋&gt;の逃げの戦略。&lt;/臭いものには蓋&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;静的ファイル配信&lt;/h2&gt;
+
+&lt;h3 id=&quot;nginx&quot;&gt;NGINX&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/nginx.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cdn&quot;&gt;CDN&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/nginx-cdn.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;http2&quot;&gt;レイテンシに負けないプロトコル = HTTP/2&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/http2-latency.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;バンド幅大きくなってもページロード時間は大きく変わらない。光の速度はこれ以上速くならない。じゃあどうするか。それがHTTP/2.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.slideshare.net/kazuho/dena-http2&quot;&gt;ウェブを速くするためにDeNAがやっていること - HTTP/2と、さらにその先&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;下記のBEFORE/AFTERは画像の配信をHTTPからHTTP/2に変更した場合のリクエストをキャプチャしたもの。&lt;/p&gt;
+
+&lt;h3 id=&quot;before-http2&quot;&gt;Before HTTP/2&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/before-http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;after-http2&quot;&gt;After HTTP/2&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/after-http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;リクエストが多重化されている。&lt;a href=&quot;https://www.httpvshttps.com/&quot;&gt;こちらのページ&lt;/a&gt;ではHTTPSの画像ロードの速度の速さを体感できる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/HTTP_vs_HTTPS.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-5&quot;&gt;ユーザーの体感速度=サーバーサイドレスポンス+クライアントサイド・スピード&lt;/h2&gt;
+
+&lt;p&gt;仮にサーバーレスポンスタイムを1msにしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。&lt;/p&gt;
+
+&lt;h3 id=&quot;rails-helloworld-app-&quot;&gt;Rails HelloWorld App の場合&lt;/h3&gt;
+
+&lt;p&gt;Rails5をほぼ素の状態でHello Worldという文字列を出力するアプリをHerokuにデプロイして&lt;a href=&quot;https://developers.google.com/speed/pagespeed/insights/&quot;&gt;Google PageSpeed Insights&lt;/a&gt;で計測してみた。&lt;/p&gt;
+
+&lt;p&gt;結果は80点以下… :weary:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/render-block-js.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Should Fix&lt;/code&gt;として報告されているのは、headタグ内にあるJS読み込みがRender Blockingしてますよ、という内容のもの。高速化はサーバーサイドだけで済むようなラクなもんじゃない。&lt;/p&gt;
+
+&lt;h2 id=&quot;amp-zap&quot;&gt;AMP :zap:&lt;/h2&gt;
+&lt;p&gt;AMPはWeb高速化のベストプラクティスを詰め込んだ仕様/制限のこと。詳しくは下記が参考になる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@cramforce/why-amp-is-fast-7d2ff1f48597#.tcozirlt5&quot;&gt;Why AMP is fast — Medium&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://mozaic.fm/episodes/22/amp.html&quot;&gt;ep22 AMP | mozaic.fm&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;またAMPに対応するとページが速くなる他にもおいしいことがあって、GoogleがAMPページをキャッシュしてコンテンツ配信を肩代わりしてくれるのだ。いうなればAMPのためのGoogle無料CDN。これでオーガニック検索のトラフィックはだいぶラクになるかも？&lt;/p&gt;
+
+&lt;p&gt;僕も自分の&lt;a href=&quot;[Toshimaru’s Blog - Where there’s a will, there’s a way.](http://blog.toshima.ru/)&quot;&gt;英語Tipsブログ&lt;/a&gt;をAMP化してみたが非常に高速にページが表示できている。(完全にAMP化はできていないのだけど) まだAMP試していない人は、AMPすげーはやいのでぜひその速さを体感してみてほしい。そしてWebの高速化にまっすぐ向き合ってもらいたいと思う。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-6&quot;&gt;その他の参考資料&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/mirakui/high-performance-rails-long-edition&quot;&gt;High Performance Rails (long edition) // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/joker1007/railspahuomansuji-ben-falseki&quot;&gt;Railsパフォーマンス基本のキ // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://parashuto.com/rriver/development/page-speed-optimization&quot;&gt;デザイナーやディレクターも知っておきたい、ページ表示速度の高速化の基本 – Rriver&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;roppongirb-&quot;&gt;Roppongi.rb イベントについて&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://twitter.com/hashtag/roppongirb?f=tweets&amp;amp;vertical=default&quot;&gt;#roppongirb hashtag on Twitter&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;イベント発表資料: &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/presentation/&quot;&gt;Roppongi.rb 資料一覧 - connpass&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://www.techempower.com/benchmarks/&quot;&gt;Round 12 results - TechEmpower Framework Benchmarks&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;ただしRubyバージョン差異による非互換性を解消するための変更は必要だけどね。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="presentation" /><summary>自分がオーガナイザーを務めた Roppongi.rb #1で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb/title.png" /></entry><entry><title>rails new するときによく使うオプション</title><link href="http://blog.toshimaru.net/rails-new-options/" rel="alternate" type="text/html" title="rails new するときによく使うオプション" /><published>2016-06-04T00:00:00+09:00</published><updated>2016-06-04T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-new-options</id><content type="html" xml:base="http://blog.toshimaru.net/rails-new-options/">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; するときによく使うオプション。&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -1135,237 +1464,4 @@ Comparison:
 
 &lt;h2 id=&quot;section-2&quot;&gt;追記&lt;/h2&gt;
 
-&lt;p&gt;こんなPRを見つけた。 &lt;a href=&quot;https://github.com/fluent/fluentd/pull/748&quot;&gt;Use ‘oj’ for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="json" /><category term="gem" /><category term="ruby" /><summary>標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。</summary></entry><entry><title>JSON Schemaについて発表した</title><link href="http://blog.toshimaru.net/json-schema-collaboration/" rel="alternate" type="text/html" title="JSON Schemaについて発表した" /><published>2015-12-09T00:00:00+09:00</published><updated>2015-12-09T00:00:00+09:00</updated><id>http://blog.toshimaru.net/json-schema-collaboration</id><content type="html" xml:base="http://blog.toshimaru.net/json-schema-collaboration/">&lt;p&gt;「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題して&lt;a href=&quot;http://gunosy-beer.connpass.com/event/22825/&quot;&gt;エムスリー x Gunosy Beer bash&lt;/a&gt;で発表してきました。&lt;/p&gt;
-
-&lt;p&gt;当日ハッシュタグ: &lt;a href=&quot;https://twitter.com/hashtag/gunosybeer?src=hash&quot;&gt;#gunosybeer hashtag on Twitter&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;pointdown&quot;&gt;発表資料:point_down:&lt;/h2&gt;
-
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;ddf8953b3746496a848dd7e4038ece4e&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
-
-&lt;h1 id=&quot;types-of-json-schema&quot;&gt;2 Types of JSON Schema&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://json-schema.org/&quot;&gt;JSON Schema and Hyper-Schema&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;JSON Schema&lt;/li&gt;
-  &lt;li&gt;JSON Hyper-Schema&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/json-schema.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;json-schema&quot;&gt;JSON Schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;JSONの &lt;strong&gt;データフォーマット&lt;/strong&gt; を記述する&lt;/li&gt;
-  &lt;li&gt;人間にも機械にもわかりやすいドキュメント&lt;/li&gt;
-  &lt;li&gt;フォームでサブミットするデータのバリデーションに使える&lt;/li&gt;
-  &lt;li&gt;自動テストにも使える&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;json-hyper-schema&quot;&gt;JSON Hyper-Schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Web APIの仕様&lt;/strong&gt; を記述する&lt;/li&gt;
-  &lt;li&gt;APIで期待するデータをJSON Schemaの形式で記述&lt;/li&gt;
-  &lt;li&gt;日本ではこっちの方がポピュラー？&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;観測範囲内だと日本のコミュニティでJSON Schemaといったときにこちらを指すことが多い気がする。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;コラボレーション図&lt;/h2&gt;
-
-&lt;p&gt;JSON Schemaでコラボレーションした事例を紹介するよ。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+------------------+
-|                  |
-|  Client-side JS  |
-|     (React)      |
-|                  |
-+---+--------+-----+
-    |        ^
-    |        |            +---------------+
-    |  JSON  |  &amp;lt;-------- |  JSON Schema  |
-    |        |            +---------------+
-    v        |
-+---+--------+-----+
-|                  |
-| Server-side API  |
-|     (Rails)      |
-|                  |
-+------------------+
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;json-schema-for-us&quot;&gt;JSON Schema for us&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;For Humans
-    &lt;ul&gt;
-      &lt;li&gt;Clear specification&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;For Apps
-    &lt;ul&gt;
-      &lt;li&gt;useful for Validation&lt;/li&gt;
-      &lt;li&gt;useful for Test&lt;/li&gt;
-      &lt;li&gt;etc.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;repositories&quot;&gt;Repositories&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;:point_down: Rails API Repo :point_down:&lt;/li&gt;
-  &lt;li&gt;:point_right: &lt;strong&gt;JSON Schema Repo&lt;/strong&gt; :point_left:&lt;/li&gt;
-  &lt;li&gt;:point_up_2: Frontend Repo :point_up_2:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;バックエンドAPIのレポジトリ、フロントエンドのJSレポジトリ、共通で使うJSON Schemaのためのレポジトリ、これら３つを用意した。&lt;/p&gt;
-
-&lt;h2 id=&quot;workflow&quot;&gt;Workflow&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;必要なAPIとそこに含まれるべきデータを洗い出し&lt;/li&gt;
-  &lt;li&gt;1をJSON Schemaに落としこむ&lt;/li&gt;
-  &lt;li&gt;プルリク！&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;1は仕様・ワイヤーをもとにマークダウンでもスプレッドシートでも荒くアウトプット出す。&lt;/p&gt;
-
-&lt;p&gt;バックエンドエンジニアとフロントエンドエンジニアが共通認識を深めながらJSON Schemaレポジトリを育てていく。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/schema-pr.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;get-usersid&quot;&gt;GET /users/{id}&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# user.schema.yml&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;$schema&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;http://json-schema.org/draft-04/schema#&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;User&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;An User&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;object&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;properties&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;integer&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;email&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;minLength&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;maxLength&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;32&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;id&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;email&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;PUT /users/{id}&lt;/code&gt;とかもスキーマ使いまわせる。&lt;/p&gt;
-
-&lt;h2 id=&quot;json-schema-validation&quot;&gt;JSON Schema Validation&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;json-schema&#39;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;type&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;object&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;required&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;properties&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;type&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;integer&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Validator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;validate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;rspec-json-schema-matcher&quot;&gt;RSpec JSON Schema Matcher&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Fetching the current user&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;with valid auth token&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;returns the current user&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;auth_header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Auth-Token&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;auth_token&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-      &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v1_current_user_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;auth_header&lt;/span&gt;
-
-      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;match_response_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;user&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;参考: &lt;a href=&quot;https://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher&quot;&gt;Validating JSON Schemas with an RSpec Matcher&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;ruby-json-schema-library&quot;&gt;Ruby JSON Schema Library&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/ruby-json-schema/json-schema&quot;&gt;ruby-json-schema/json-schema&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/brandur/json_schema&quot;&gt;brandur/json_schema&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;ダッシュとアンダースコア！ わかりにくい！！&lt;/p&gt;
-
-&lt;h2 id=&quot;json-schema-vs-jsonschema&quot;&gt;json-schema vs json_schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;depending on &lt;code class=&quot;highlighter-rouge&quot;&gt;json-schema&lt;/code&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/airbrake/airbrake&quot;&gt;airbrake/airbrake&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/square/fdoc&quot;&gt;square/fdoc&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;json-schema-vs-jsonschema-1&quot;&gt;json-schema vs json_schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;depending on &lt;code class=&quot;highlighter-rouge&quot;&gt;json_schema&lt;/code&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/interagent/committee&quot;&gt;interagent/committee&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/interagent/prmd&quot;&gt;interagent/prmd&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/increments/qiita-rb&quot;&gt;increments/qiita-rb&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/r7kamura/rack-json_schema&quot;&gt;r7kamura/rack-json_schema&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/r7kamura/jdoc&quot;&gt;r7kamura/jdoc&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;javascript-json-schema-library&quot;&gt;JavaScript JSON Schema Library&lt;/h2&gt;
-
-&lt;p&gt;弊社フロンエンドエンジニアのオススメ2つ。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/mafintosh/is-my-json-valid&quot;&gt;mafintosh/is-my-json-valid&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/epoberezkin/ajv&quot;&gt;epoberezkin/ajv&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;json&quot;&gt;JSON書くのツラい問題&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;「閉じカッコがー!!」&lt;/li&gt;
-  &lt;li&gt;「カンマがー!!!!」&lt;/li&gt;
-  &lt;li&gt;「コメントがー!!!!!!」&lt;/li&gt;
-  &lt;li&gt;「クオテーションがー!!!!!!」&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;黙ってYAMLで書こう。&lt;/strong&gt; こっちのが可読性もよいしミスも少ないし書きやすいです。&lt;/p&gt;
-
-&lt;h2 id=&quot;json-schema-1&quot;&gt;JSON Schemaの今とこれから&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema&quot;&gt;json-schema/json-schema&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/ima.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema/wiki/v5-Proposals&quot;&gt;JSON Schema v5 Proposals&lt;/a&gt;が出されている段階&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema/issues&quot;&gt;Issue&lt;/a&gt;や&lt;a href=&quot;https://groups.google.com/forum/#!forum/json-schema&quot;&gt;Google Groups&lt;/a&gt;を追うとよさげ&lt;/li&gt;
-  &lt;li&gt;v5への具体的なロードマップは引かれていない模様&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/korekara.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;json-schema-2&quot;&gt;JSON Schemaコラボでよかったこと&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;バックエンドエンジニアとフロントエンドエンジニアの仕様の共通認識&lt;/li&gt;
-  &lt;li&gt;JSON Schemaを先に定義しておくことでバックエンドエンジニアとフロントエンドエンジニアが疎に開発できる&lt;/li&gt;
-  &lt;li&gt;JSON Schemaでバグの混入を防ぐ&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;所感&lt;/h2&gt;
-&lt;p&gt;時間にシビアなLT形式だったので発表途中でぶった切られた。もう少し簡潔にすべきだったかもしれない。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jsonschema" /><category term="json" /><category term="presentation" /><summary>「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題してエムスリー x Gunosy Beer bashで発表してきました。</summary></entry></feed>
+&lt;p&gt;こんなPRを見つけた。 &lt;a href=&quot;https://github.com/fluent/fluentd/pull/748&quot;&gt;Use ‘oj’ for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="json" /><category term="gem" /><category term="ruby" /><summary>標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。</summary></entry></feed>
