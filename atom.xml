@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-07-20T01:57:41+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Roppongi.rb #1 で「Rails高速化戦略」を発表しました</title><link href="http://blog.toshimaru.net/roppongirb-speeding-up-rails/" rel="alternate" type="text/html" title="Roppongi.rb #1 で「Rails高速化戦略」を発表しました" /><published>2016-07-19T00:00:00+09:00</published><updated>2016-07-19T00:00:00+09:00</updated><id>http://blog.toshimaru.net/roppongirb-speeding-up-rails</id><content type="html" xml:base="http://blog.toshimaru.net/roppongirb-speeding-up-rails/">&lt;p&gt;自分がオーガナイザーを務めた &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/&quot;&gt;Roppongi.rb #1&lt;/a&gt;で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-07-20T09:05:04+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Roppongi.rbで「Rails高速化戦略」を発表しました</title><link href="http://blog.toshimaru.net/roppongirb-speeding-up-rails/" rel="alternate" type="text/html" title="Roppongi.rbで「Rails高速化戦略」を発表しました" /><published>2016-07-19T00:00:00+09:00</published><updated>2016-07-19T00:00:00+09:00</updated><id>http://blog.toshimaru.net/roppongirb-speeding-up-rails</id><content type="html" xml:base="http://blog.toshimaru.net/roppongirb-speeding-up-rails/">&lt;p&gt;自分がオーガナイザーを務めた &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/&quot;&gt;Roppongi.rb #1&lt;/a&gt;で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。&lt;/p&gt;
 
 &lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;37881a2ec2214ef39d85820f3327bbc2&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
 
@@ -10,11 +10,11 @@
 
 &lt;h3 id=&quot;section&quot;&gt;パフォーマンスを求められないから&lt;/h3&gt;
 
-&lt;p&gt;例えば社内の数人が使うような管理画面の場合。この場合、パフォーマンスよりも機能性（ちゃんと検索・閲覧できるかとかCRUD操作ができるかとか）などが優先されると思います。数人だけが使うのでアクセススパイクもないし、パフォーマンスが問題にもなりにくい。&lt;/p&gt;
+&lt;p&gt;例えば社内の数人が使うような管理画面の場合。この場合、パフォーマンスよりも機能性（ちゃんと検索・閲覧できるかとかCRUD操作ができるかとか）などが優先されると思う。数人だけが使うのでアクセススパイクもないし、パフォーマンスが問題にもなりにくい。&lt;/p&gt;
 
 &lt;h3 id=&quot;rails&quot;&gt;Railsをフレームワークとして使っていないから&lt;/h3&gt;
 
-&lt;p&gt;すごくパフォーマンスを求められるWebアプリの場合、それが事前にわかっているならまずは言語選択レベルでRailsを選択しないかもしれない。今ならGoとかElixirとかScalaとか代替言語もあるのでそちらを選択した場合はRails使わないことになるのでRailsの遅さで困ることもない。&lt;/p&gt;
+&lt;p&gt;すごくパフォーマンスを求められるWebアプリの場合、それが事前にわかっているならまずは言語選択レベルでRailsを選択しないかもしれない。今ならGoとかElixirとかScalaとか代替言語もあるのでそちらを選択した場合はRailsは使わないことになるのでRailsの遅さで困ることもない。&lt;/p&gt;
 
 &lt;h2 id=&quot;rails-1&quot;&gt;それでもやっぱりRailsだ…!&lt;/h2&gt;
 
@@ -40,21 +40,21 @@
 
 &lt;h2 id=&quot;rails-2&quot;&gt;とあるRailsアプリの場合&lt;/h2&gt;
 
-&lt;p&gt;会社で取り組んでいるプロダクトのRubyのバージョンは基本的に最新を使うようにしているものの、中にはレガシーな環境もある。下記はそのプロダクトでRuby2.0 から Ruby2.1に上げた例。結果としては、Ruby 2.0 =&amp;gt; 2.1 Ruby Version Up だけで レスポンス速度が約2倍向上した。&lt;/p&gt;
+&lt;p&gt;会社で取り組んでいるプロダクトのRubyのバージョンは基本的に最新バージョンを使うようにしているものの、中にはレガシーな環境もある。下記はあるプロダクトでRuby2.0 から Ruby2.1に上げた例。結果としては、Ruby 2.0 =&amp;gt; 2.1 Ruby Version Up だけで レスポンス速度が約2倍向上した。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/ruby2_0-to-2_1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;このようにRubyバージョンアップによりアプリケーションコード変更ゼロでも&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;、Rubyバージョン上げることで速度改善が期待できる。古いRubyお使いの方は今すぐRubyのバージョンアップ！&lt;/p&gt;
+&lt;p&gt;このようにRubyバージョンアップによりアプリケーションコード変更ゼロでも&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;、速度改善が期待できる。古いRubyお使いの方は今すぐRubyのバージョンアップ！&lt;/p&gt;
 
 &lt;h2 id=&quot;what-about-rails&quot;&gt;What about Rails?&lt;/h2&gt;
 
-&lt;p&gt;じゃあRailsはどうだろうか。下記はmatzのRuby 3x3 を受けてのマツダさんの発表。&lt;/p&gt;
+&lt;p&gt;じゃあRailsはどうだろうか。下記はマツダさんのmatzのRuby 3x3 を受けての発表。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/rails3x.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://speakerdeck.com/a_matsuda/3x-rails&quot;&gt;3x Rails // Speaker Deck&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、という発表でした。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt;が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、というような発表。&lt;/p&gt;
 
 &lt;p&gt;下記は同じマツダさんが発表された&lt;a href=&quot;http://togetter.com/li/955629&quot;&gt;Rails Upgrade Casual Talks&lt;/a&gt;での資料です。&lt;/p&gt;
 
@@ -231,10 +231,10 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;rails-3&quot;&gt;Railsのキャッシュ戦略&lt;/h2&gt;
-&lt;ul&gt;
+&lt;ol&gt;
   &lt;li&gt;Railsデフォルトの FragmentCache を使ってビューのレンダリングを高速化&lt;/li&gt;
   &lt;li&gt;それでもダメな場合や Controller 自体の処理が重い場合なら、ActionCache/PageCache を検討&lt;/li&gt;
-&lt;/ul&gt;
+&lt;/ol&gt;
 
 &lt;h3 id=&quot;warning-&quot;&gt;:warning: 注意&lt;/h3&gt;
 &lt;ul&gt;
@@ -243,7 +243,7 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
   &lt;li&gt;用法用量を守って正しくお使いください&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;キャッシュによって大きなボトルネックが隠蔽されてしまう場合もある。キャッシュは高速化戦略における&lt;臭いものには蓋&gt;の逃げの戦略。&lt;/臭いものには蓋&gt;&lt;/p&gt;
+&lt;p&gt;キャッシュによって大きなボトルネックが隠蔽されてしまう場合もある。ネガティヴな言い方をするとキャッシュは高速化戦略における&lt;臭いものには蓋&gt;式の逃げの戦略とも言える。&lt;/臭いものには蓋&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;section-4&quot;&gt;静的ファイル配信&lt;/h2&gt;
 
@@ -279,7 +279,7 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
 
 &lt;p&gt;&lt;img src=&quot;https://dl.dropboxusercontent.com/u/2521564/image/HTTP_vs_HTTPS.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;section-5&quot;&gt;ユーザーの体感速度=サーバーサイドレスポンス+クライアントサイド・スピード&lt;/h2&gt;
+&lt;h2 id=&quot;section-5&quot;&gt;ユーザーの体感速度 = サーバーサイドレスポンス + クライアントサイド・スピード&lt;/h2&gt;
 
 &lt;p&gt;仮にサーバーレスポンスタイムを1msにしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。&lt;/p&gt;
 
@@ -303,7 +303,7 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
 
 &lt;p&gt;またAMPに対応するとページが速くなる他にもおいしいことがあって、GoogleがAMPページをキャッシュしてコンテンツ配信を肩代わりしてくれるのだ。いうなればAMPのためのGoogle無料CDN。これでオーガニック検索のトラフィックはだいぶラクになるかも？&lt;/p&gt;
 
-&lt;p&gt;僕も自分の&lt;a href=&quot;[Toshimaru’s Blog - Where there’s a will, there’s a way.](http://blog.toshima.ru/)&quot;&gt;英語Tipsブログ&lt;/a&gt;をAMP化してみたが非常に高速にページが表示できている。(完全にAMP化はできていないのだけど) まだAMP試していない人は、AMPすげーはやいのでぜひその速さを体感してみてほしい。そしてWebの高速化にまっすぐ向き合ってもらいたいと思う。&lt;/p&gt;
+&lt;p&gt;僕も自分の&lt;a href=&quot;http://blog.toshima.ru/&quot;&gt;英語Tipsブログ&lt;/a&gt;をAMP化してみたが非常に高速にページが表示できている。(完全にAMP化はできていないのだけど) まだAMP試していない人は、AMPすげーはやいのでぜひその速さを体感してみてほしい。そしてWebの高速化にまっすぐ向き合ってもらいたいと思う。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-6&quot;&gt;その他の参考資料&lt;/h2&gt;
 &lt;ul&gt;
