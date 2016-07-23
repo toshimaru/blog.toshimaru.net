@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Ruby2.3 で導入された frozen_string_literal オプションを試す
-description:
+description: Immutable String in Ruby3 / Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。
 tags: ruby
 ---
 
@@ -17,7 +17,7 @@ via. [[Ruby] Ruby 3.0 の特大の非互換について - まめめも](http://d
 
 ## Immutable String in Ruby2.3+
 
-Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。良い。やり方はRubyファイルの行頭に下記のように書けばよい。
+Ruby2.3 では既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のように書けばよい。
 
 ```rb
 # frozen_string_literal: true
@@ -25,7 +25,7 @@ Ruby2.3 で既にこの Immutable String を有効にする機能が入ってい
 
 ## frozen_string_literal の機能を試す
 
-下記の２ファイルを用意して実行する。
+実際に試してみよう。下記の２ファイルを用意して実行する。
 
 ### string_with_frozen_option.rb
 
