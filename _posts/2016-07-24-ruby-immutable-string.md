@@ -58,7 +58,7 @@ $ ruby string_with_frozen_option.rb
 全て違う object_id が返ってくる。
 
 ```
-ruby string_without_frozen_option.rb
+$ ruby string_without_frozen_option.rb
 70277165754460
 70277165754200
 70277165754080
@@ -69,7 +69,6 @@ ruby string_without_frozen_option.rb
 ## frozen_string_literal はファイル毎に設定される
 
 たとえば`frozen_string_literal`の設定が入ったものと入っていないファイルが実行された場合はどうなるだろうか。Railsで試してみる。
-
 
 ```rb
 class ApplicationController < ActionController::Base
@@ -97,7 +96,7 @@ end
 70346238890280
 70346238889340
 70346238888420
-
+...
 70346229343820
 70346229343820
 70346229343820
@@ -105,11 +104,11 @@ end
 70346229343820
 ```
 
-つまり、`WelcomeController`だけ文字列が frozen されていることがわかる。
+つまり`WelcomeController`で定義された文字列だけが frozen されていることがわかる。
 
 ## まとめ
 
-Ruby3 に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に`frozen_string_literal: true`の設定をしていくべき。
+Ruby3 の Immutable String に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に`frozen_string_literal: true`の設定をしていくべき。
 
 ## 参考
 [Immutable strings in Ruby 2.3](https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3)
