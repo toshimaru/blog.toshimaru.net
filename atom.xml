@@ -1,4 +1,112 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-07-24T01:59:03+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Roppongi.rbで「Rails高速化戦略」を発表しました</title><link href="http://blog.toshimaru.net/roppongirb-speeding-up-rails/" rel="alternate" type="text/html" title="Roppongi.rbで「Rails高速化戦略」を発表しました" /><published>2016-07-19T00:00:00+09:00</published><updated>2016-07-19T00:00:00+09:00</updated><id>http://blog.toshimaru.net/roppongirb-speeding-up-rails</id><content type="html" xml:base="http://blog.toshimaru.net/roppongirb-speeding-up-rails/">&lt;p&gt;自分がオーガナイザーを務めた &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/&quot;&gt;Roppongi.rb #1&lt;/a&gt;で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-07-24T03:13:00+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Ruby2.3 で導入された frozen_string_literal オプションを試す</title><link href="http://blog.toshimaru.net/ruby-immutable-string/" rel="alternate" type="text/html" title="Ruby2.3 で導入された frozen_string_literal オプションを試す" /><published>2016-07-24T00:00:00+09:00</published><updated>2016-07-24T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-immutable-string</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-immutable-string/">&lt;h2 id=&quot;immutable-string-in-ruby3&quot;&gt;Immutable String in Ruby3&lt;/h2&gt;
+
+&lt;p&gt;Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;http://d.hatena.ne.jp/ku-ma-me/20151004/p1&quot;&gt;[Ruby] Ruby 3.0 の特大の非互換について - まめめも&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ&lt;code class=&quot;highlighter-rouge&quot;&gt;.freeze&lt;/code&gt;を付けてプルリクエストを投げる輩が大挙してきたことだ。&lt;/p&gt;
+
+&lt;h2 id=&quot;immutable-string-in-ruby23&quot;&gt;Immutable String in Ruby2.3+&lt;/h2&gt;
+
+&lt;p&gt;Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。良い。やり方はRubyファイルの行頭に下記のように書けばよい。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;frozenstringliteral-&quot;&gt;frozen_string_literal の機能を試す&lt;/h2&gt;
+
+&lt;p&gt;下記の２ファイルを用意して実行する。&lt;/p&gt;
+
+&lt;h3 id=&quot;stringwithfrozenoptionrb&quot;&gt;string_with_frozen_option.rb&lt;/h3&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;結果&lt;/h3&gt;
+
+&lt;p&gt;全て同じ object_id が返ってくる。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ruby string_with_frozen_option.rb
+70212460463280
+70212460463280
+70212460463280
+70212460463280
+70212460463280
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;stringwithoutfrozenoptionrb&quot;&gt;string_without_frozen_option.rb&lt;/h3&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;結果&lt;/h3&gt;
+
+&lt;p&gt;全て違う object_id が返ってくる。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby string_without_frozen_option.rb
+70277165754460
+70277165754200
+70277165754080
+70277165754000
+70277165753940
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;frozenstringliteral--1&quot;&gt;frozen_string_literal はファイル毎に設定される&lt;/h2&gt;
+
+&lt;p&gt;たとえば&lt;code class=&quot;highlighter-rouge&quot;&gt;frozen_string_literal&lt;/code&gt;の設定が入ったものと入っていないファイルが実行された場合はどうなるだろうか。Railsで試してみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ApplicationController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActionController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;before_action&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:not_frozen&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;not_frozen&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WelcomeController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これで&lt;code class=&quot;highlighter-rouge&quot;&gt;WelcomeController#index&lt;/code&gt;が実行された場合、ログは下記のようになる。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;70346238891860
+70346238891080
+70346238890280
+70346238889340
+70346238888420
+
+70346229343820
+70346229343820
+70346229343820
+70346229343820
+70346229343820
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;つまり、&lt;code class=&quot;highlighter-rouge&quot;&gt;WelcomeController&lt;/code&gt;だけ文字列が frozen されていることがわかる。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;Ruby3 に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に&lt;code class=&quot;highlighter-rouge&quot;&gt;frozen_string_literal: true&lt;/code&gt;の設定をしていくべき。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;参考&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3&quot;&gt;Immutable strings in Ruby 2.3&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary>Immutable String in Ruby3</summary></entry><entry><title>Roppongi.rbで「Rails高速化戦略」を発表しました</title><link href="http://blog.toshimaru.net/roppongirb-speeding-up-rails/" rel="alternate" type="text/html" title="Roppongi.rbで「Rails高速化戦略」を発表しました" /><published>2016-07-19T00:00:00+09:00</published><updated>2016-07-19T00:00:00+09:00</updated><id>http://blog.toshimaru.net/roppongirb-speeding-up-rails</id><content type="html" xml:base="http://blog.toshimaru.net/roppongirb-speeding-up-rails/">&lt;p&gt;自分がオーガナイザーを務めた &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/&quot;&gt;Roppongi.rb #1&lt;/a&gt;で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。&lt;/p&gt;
 
 &lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;37881a2ec2214ef39d85820f3327bbc2&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
 
@@ -338,7 +446,7 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
       &lt;p&gt;ただしRubyバージョン差異による非互換性を解消するための変更は必要だけどね。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="presentation" /><summary>自分がオーガナイザーを務めた Roppongi.rb #1で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb/title.png" /></entry><entry><title>rails new するときによく使うオプション</title><link href="http://blog.toshimaru.net/rails-new-options/" rel="alternate" type="text/html" title="rails new するときによく使うオプション" /><published>2016-06-04T00:00:00+09:00</published><updated>2016-06-04T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-new-options</id><content type="html" xml:base="http://blog.toshimaru.net/rails-new-options/">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; するときによく使うオプション。&lt;/p&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="ruby" /><category term="presentation" /><category term="web" /><summary>自分がオーガナイザーを務めた Roppongi.rb #1で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb/title.png" /></entry><entry><title>rails new するときによく使うオプション</title><link href="http://blog.toshimaru.net/rails-new-options/" rel="alternate" type="text/html" title="rails new するときによく使うオプション" /><published>2016-06-04T00:00:00+09:00</published><updated>2016-06-04T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-new-options</id><content type="html" xml:base="http://blog.toshimaru.net/rails-new-options/">&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; するときによく使うオプション。&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -1412,67 +1520,4 @@ Server running... press ctrl-c to stop.
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;http://makopi23.blog.fc2.com/blog-entry-155.html&quot;&gt;makopi23のブログ 認定スクラムマスター研修（CSM）を振り返る&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="scrum" /><category term="tech" /><summary>昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだこととして社内に共有した内容をこちらにも共有してみようと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/scrum/scrum.jpg" /></entry><entry><title>RubyのJSONパーサーのパース速度比較</title><link href="http://blog.toshimaru.net/json-parser-benchmark/" rel="alternate" type="text/html" title="RubyのJSONパーサーのパース速度比較" /><published>2015-12-13T00:00:00+09:00</published><updated>2015-12-13T00:00:00+09:00</updated><id>http://blog.toshimaru.net/json-parser-benchmark</id><content type="html" xml:base="http://blog.toshimaru.net/json-parser-benchmark/">&lt;p&gt;標準のJSONパーサーとは別に&lt;a href=&quot;https://www.ruby-toolbox.com/categories/JSON_Parsers&quot;&gt;いくつかのJSONパーサー&lt;/a&gt;実装がRuby gemにはある。それらを比較としてベンチマークとってみた。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;前提&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Ruby 2.2.2 を使います&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/evanphx/benchmark-ips&quot;&gt;benchmark-ips&lt;/a&gt;でベンチとる&lt;/li&gt;
-  &lt;li&gt;パースするJSONは30KB程度のサイズ&lt;/li&gt;
-  &lt;li&gt;比較対象は下記3つ
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;http://ruby-doc.org/stdlib-2.2.0/libdoc/json/rdoc/JSON.html&quot;&gt;Module: JSON&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/brianmario/yajl-ruby&quot;&gt;yajl&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/ohler55/oj&quot;&gt;oj&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ruby-code&quot;&gt;Ruby code&lt;/h2&gt;
-
-&lt;p&gt;書いてみた。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;uri&#39;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;net/http&#39;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;json&#39;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;yajl&#39;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;oj&#39;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;benchmark/ips&#39;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;URI&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;http://complex/json/url.json&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt;
-
-&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ips&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;JSON.parse&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Yajl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Yajl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Parser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Oj&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Oj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;compare!&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;result&quot;&gt;Result&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Calculating -------------------------------------
-          JSON.parse    99.000  i/100ms
-                Yajl   108.000  i/100ms
-                  Oj   173.000  i/100ms
--------------------------------------------------
-          JSON.parse      1.123k (± 8.4%) i/s -      5.643k
-                Yajl      1.105k (± 2.8%) i/s -      5.616k
-                  Oj      1.838k (± 3.2%) i/s -      9.342k
-
-Comparison:
-                  Oj:     1838.3 i/s
-          JSON.parse:     1123.1 i/s - 1.64x slower
-                Yajl:     1105.2 i/s - 1.66x slower
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;OjがJSON.parseやYajlより1.5倍〜1.8倍ほど高速という結果が得られた。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;まとめ&lt;/h2&gt;
-
-&lt;p&gt;Oj使ってこ。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;追記&lt;/h2&gt;
-
-&lt;p&gt;こんなPRを見つけた。 &lt;a href=&quot;https://github.com/fluent/fluentd/pull/748&quot;&gt;Use ‘oj’ for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="json" /><category term="gem" /><category term="ruby" /><summary>標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="scrum" /><category term="tech" /><summary>昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだこととして社内に共有した内容をこちらにも共有してみようと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/scrum/scrum.jpg" /></entry></feed>
