@@ -223,23 +223,29 @@ RailsのCacheの仕組みとして[公式ガイド](http://guides.rubyonrails.or
 * キャッシュのライフサイクル管理
 * 用法用量を守って正しくお使いください
 
-キャッシュによって大きなボトルネックが隠蔽されてしまう場合もある。ネガティヴな言い方をするとキャッシュは高速化戦略における<臭いものには蓋>式の逃げの戦略とも言える。
+キャッシュしても根っこの問題はバイパスされるだけでそれ自体が解決されるわけではないので、本質的にはその根っこの問題を潰すほうがキャッシュより優先すべき。キャッシュによって**臭いものには蓋**をしていないか。キャッシュによって大きなボトルネックが隠蔽されていないか。本質的な問題を潰した上でなお高速化したい場合にキャッシュを利用するのが筋の良いキャッシュ戦略だと思う。
+
+またキャッシュを行うことでそのライフサイクル管理も必要になってくることはアタマに入れておきたい。どういう場合にキャッシュがexpireすべきなのか(あるいはexpireすべきでないのか)、updateすべきなのか、削除すべきなのか。この辺もきちんと考えた上でキャッシュに取り組みたい。
 
 ## 静的ファイル配信
 
 ### NGINX
 
+プロダクション運用においては実際Railsが静的ファイルまでサーブすることはなくて、下記のようにNGINXに静的ファイルをサーブさせることが多い。
+
 ![](/images/posts/roppongirb/nginx.png)
 
 ### CDN
+
+さらに言うと、Railsの吐く assets:precompile の成果物は、CDNに乗せちゃって配信を最適化してやるともっとよい。
 
 ![](/images/posts/roppongirb/nginx-cdn.png)
 
 ## レイテンシに負けないプロトコル = HTTP/2
 
-![](/images/posts/roppongirb/http2-latency.png)
+バンド幅大きくなってもページロード時間は大きく変わらない。**光の速度はこれ以上速くならない**。じゃあどうするか。解決策がHTTP/2.
 
-バンド幅大きくなってもページロード時間は大きく変わらない。光の速度はこれ以上速くならない。じゃあどうするか。それがHTTP/2.
+![](/images/posts/roppongirb/http2-latency.png)
 
 ![](/images/posts/roppongirb/http2.png)
 
@@ -249,19 +255,23 @@ RailsのCacheの仕組みとして[公式ガイド](http://guides.rubyonrails.or
 
 ### Before HTTP/2
 
+HTTP/2前の状態。リクエストが順番に走っていることが見て取れる。
+
 ![](/images/posts/roppongirb/before-http2.png)
 
 ### After HTTP/2
 
+HTTP/2後の状態。リクエストが見事に多重化されている。
+
 ![](/images/posts/roppongirb/after-http2.png)
 
-リクエストが多重化されている。[こちらのページ](https://www.httpvshttps.com/)ではHTTPSの画像ロードの速度の速さを体感できる。
+[こちらのページ](https://www.httpvshttps.com/)ではHTTPSの画像ロードの速度の速さを体感できる。
 
 ![](/images/posts/roppongirb/HTTP_vs_HTTPS.png)
 
 ## ユーザーの体感速度 = サーバーサイドレスポンス + クライアントサイド・スピード
 
-仮にサーバーレスポンスタイムを1msにしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。
+仮にサーバーレスポンスタイムを`1ms`にしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。
 
 ### Rails HelloWorld App の場合
 
@@ -271,7 +281,7 @@ Rails5をほぼ素の状態でHello Worldという文字列を出力するアプ
 
 ![](/images/posts/roppongirb/render-block-js.png)
 
-`Should Fix`として報告されているのは、headタグ内にあるJS読み込みがRender Blockingしてますよ、という内容のもの。高速化はサーバーサイドだけで済むようなラクなもんじゃない。
+`Should Fix`として報告されているのは、headタグ内にあるJS読み込みが Render Blocking してますよ、という内容のもの。Webの高速化はサーバーサイドだけで済むようなラクなもんじゃない。
 
 ## AMP :zap:
 AMPはWeb高速化のベストプラクティスを詰め込んだ仕様/制限のこと。詳しくは下記が参考になる。
@@ -291,6 +301,7 @@ AMPはWeb高速化のベストプラクティスを詰め込んだ仕様/制限�
 ## Roppongi.rb イベントについて
 - [#roppongirb hashtag on Twitter](https://twitter.com/hashtag/roppongirb?f=tweets&vertical=default)
 - イベント発表資料: [Roppongi.rb 資料一覧 - connpass](http://roppongirb.connpass.com/event/33502/presentation/)
+- [Roppongi.rb #1 発表の密度が濃くて楽しかったYO! - 酒と泪とRubyとRailsと](http://morizyun.github.io/blog/roppongi-rb-ruby-rails/)
 
 [^1]: [Round 12 results - TechEmpower Framework Benchmarks](https://www.techempower.com/benchmarks/)
 [^2]: ただしRubyバージョン差異による非互換性を解消するための変更は必要だけどね。
