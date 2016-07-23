@@ -11,9 +11,10 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="Ruby2.3 で導入された frozen_string_literal オプションを試す - Hack Your Design!">
   <meta property="og:title" content="Ruby2.3 で導入された frozen_string_literal オプションを試す - Hack Your Design!">
-  <meta name="description" content="toshimaruの技術系なブログ">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ">
-  <meta property="og:description" content="toshimaruの技術系なブログ">
+  <meta name="description" content="Immutable String in Ruby3 / Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
+  <meta name="twitter:description" content="Immutable String in Ruby3 / Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
+  <meta property="og:description" content="Immutable String in Ruby3 / Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
+  
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
@@ -92,7 +93,7 @@
 
 <h2 id="immutable-string-in-ruby23">Immutable String in Ruby2.3+</h2>
 
-<p>Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。良い。やり方はRubyファイルの行頭に下記のように書けばよい。</p>
+<p>Ruby2.3 では既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のように書けばよい。</p>
 
 <div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 </code></pre>
@@ -100,7 +101,7 @@
 
 <h2 id="frozenstringliteral-">frozen_string_literal の機能を試す</h2>
 
-<p>下記の２ファイルを用意して実行する。</p>
+<p>実際に試してみよう。下記の２ファイルを用意して実行する。</p>
 
 <h3 id="stringwithfrozenoptionrb">string_with_frozen_option.rb</h3>
 
@@ -132,7 +133,7 @@
 
 <p>全て違う object_id が返ってくる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ruby string_without_frozen_option.rb
+<div class="highlighter-rouge"><pre class="highlight"><code>$ ruby string_without_frozen_option.rb
 70277165754460
 70277165754200
 70277165754080
@@ -170,7 +171,7 @@
 70346238890280
 70346238889340
 70346238888420
-
+...
 70346229343820
 70346229343820
 70346229343820
@@ -179,11 +180,11 @@
 </code></pre>
 </div>
 
-<p>つまり、<code class="highlighter-rouge">WelcomeController</code>だけ文字列が frozen されていることがわかる。</p>
+<p>つまり<code class="highlighter-rouge">WelcomeController</code>で定義された文字列だけが frozen されていることがわかる。</p>
 
 <h2 id="section-2">まとめ</h2>
 
-<p>Ruby3 に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に<code class="highlighter-rouge">frozen_string_literal: true</code>の設定をしていくべき。</p>
+<p>Ruby3 の Immutable String に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に<code class="highlighter-rouge">frozen_string_literal: true</code>の設定をしていくべき。</p>
 
 <h2 id="section-3">参考</h2>
 <p><a href="https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3">Immutable strings in Ruby 2.3</a></p>
