@@ -40,7 +40,7 @@ RailsないしRubyはプログラミング言語の中では速くはない言�
 
 去年matzの口からRuby3のコンセプトが発表された。その驚くべき内容が **Ruby 3 x 3** 。
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/ruby3x3.png)
+![](/images/posts/roppongirb/ruby3x3.png)
 
 [Ruby3 challenges - RubyKaigi 2015 Keynote - YouTube](https://www.youtube.com/watch?v=E9bO1uqs4Oc)
 
@@ -48,7 +48,7 @@ RailsないしRubyはプログラミング言語の中では速くはない言�
 
 会社で取り組んでいるプロダクトのRubyのバージョンは基本的に最新バージョンを使うようにしているものの、中にはレガシーな環境もある。下記はあるプロダクトでRuby2.0 から Ruby2.1に上げた例。結果としては、Ruby 2.0 => 2.1 Ruby Version Up だけで レスポンス速度が約2倍向上した。
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/ruby2_0-to-2_1.png)
+![](/images/posts/roppongirb/ruby2_0-to-2_1.png)
 
 このようにRubyバージョンアップによりアプリケーションコード変更ゼロでも[^2]、速度改善が期待できる。古いRubyお使いの方は今すぐRubyのバージョンアップ！
 
@@ -56,7 +56,7 @@ RailsないしRubyはプログラミング言語の中では速くはない言�
 
 じゃあRailsはどうだろうか。下記はマツダさんのmatzのRuby 3x3 を受けての発表。
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/rails3x.png)
+![](/images/posts/roppongirb/rails3x.png)
 
 [3x Rails // Speaker Deck](https://speakerdeck.com/a_matsuda/3x-rails)
 
@@ -64,13 +64,13 @@ RailsないしRubyはプログラミング言語の中では速くはない言�
 
 下記は同じマツダさんが発表された[Rails Upgrade Casual Talks](http://togetter.com/li/955629)での資料です。
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/rails-verup1.png)
+![](/images/posts/roppongirb/rails-verup1.png)
 
 [Rails Upgrade Casual Talks // Speaker Deck](https://speakerdeck.com/a_matsuda/rails-upgrade-casual-talks)
 
 たしかに色んな機能が追加されている中、Railsが劇的に速くなることは考えにくい。解決策は...?
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/rails-verup2.png)
+![](/images/posts/roppongirb/rails-verup2.png)
 
 **歯を食いしばってRails/Rubyをバージョンアップ**:innocent:
 
@@ -194,7 +194,7 @@ RailsのCacheの仕組みとして[公式ガイド](http://guides.rubyonrails.or
 
 ### 1. Fragment Cache
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/cache-fragment.png)
+![](/images/posts/roppongirb/cache-fragment.png)
 
 * グローバルナビ・サイドバーなどの多く呼ばれる共通コンテンツに有効
 * 重い処理が走るビューの一部分であればあるほど高速化が期待できる
@@ -202,7 +202,7 @@ RailsのCacheの仕組みとして[公式ガイド](http://guides.rubyonrails.or
 
 ### 2. Action Cache
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/action-cache.png)
+![](/images/posts/roppongirb/action-cache.png)
 
 * Rails4で削除されてgem化: [actionpack-action_caching](https://github.com/rails/actionpack-action_caching)
 * Viewの手前のControllerのAction自体の処理が重い場合に有効
@@ -229,19 +229,19 @@ RailsのCacheの仕組みとして[公式ガイド](http://guides.rubyonrails.or
 
 ### NGINX
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/nginx.png)
+![](/images/posts/roppongirb/nginx.png)
 
 ### CDN
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/nginx-cdn.png)
+![](/images/posts/roppongirb/nginx-cdn.png)
 
 ## レイテンシに負けないプロトコル = HTTP/2
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/http2-latency.png)
+![](/images/posts/roppongirb/http2-latency.png)
 
 バンド幅大きくなってもページロード時間は大きく変わらない。光の速度はこれ以上速くならない。じゃあどうするか。それがHTTP/2.
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/http2.png)
+![](/images/posts/roppongirb/http2.png)
 
 [ウェブを速くするためにDeNAがやっていること - HTTP/2と、さらにその先](http://www.slideshare.net/kazuho/dena-http2)
 
@@ -249,15 +249,15 @@ RailsのCacheの仕組みとして[公式ガイド](http://guides.rubyonrails.or
 
 ### Before HTTP/2
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/before-http2.png)
+![](/images/posts/roppongirb/before-http2.png)
 
 ### After HTTP/2
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/after-http2.png)
+![](/images/posts/roppongirb/after-http2.png)
 
 リクエストが多重化されている。[こちらのページ](https://www.httpvshttps.com/)ではHTTPSの画像ロードの速度の速さを体感できる。
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/HTTP_vs_HTTPS.png)
+![](/images/posts/roppongirb/HTTP_vs_HTTPS.png)
 
 ## ユーザーの体感速度 = サーバーサイドレスポンス + クライアントサイド・スピード
 
@@ -269,7 +269,7 @@ Rails5をほぼ素の状態でHello Worldという文字列を出力するアプ
 
 結果は80点以下... :weary:
 
-![](https://dl.dropboxusercontent.com/u/2521564/image/render-block-js.png)
+![](/images/posts/roppongirb/render-block-js.png)
 
 `Should Fix`として報告されているのは、headタグ内にあるJS読み込みがRender Blockingしてますよ、という内容のもの。高速化はサーバーサイドだけで済むようなラクなもんじゃない。
 
