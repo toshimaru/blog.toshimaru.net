@@ -8,13 +8,13 @@ tags: rails
 
 ## TL;DR
 
-結論は`belongs_to`,`through`でなく、`delegate`, `to` or `has_one`, `through`。
+結論は`belongs_to`,`through`でなく、`delegate`, `to` もしくは `has_one`, `through`。
 
 ## has_many, through
 
 RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。
 
-{% highlight ruby %}
+```rb
 class User < ActiveRecord::Base
   has_many :posts
 end
@@ -27,11 +27,11 @@ end
 class Tag < ActiveRecord::Base
   belongs_to :post
 end
-{% endhighlight %}
+```
 
 特定のUserがどんなTagを持っているかを調べるには`through`を使うと簡単に実装できます。`User`モデルに`through`を追加しましょう。
 
-{% highlight ruby %}
+```rb
 class User < ActiveRecord::Base
   has_many :posts
   has_many :tags, through: :posts
@@ -45,17 +45,17 @@ end
 class Tag < ActiveRecord::Base
   belongs_to :post
 end
-{% endhighlight %}
+```
 
 こうすることで、`@user.tags`でユーザーが所有するタグを取得できます。
 
 ではここで疑問。逆に`Tag`から`Post`を省いて`User`を導きだすことはできないのでしょうか？
 
-## delegate を使う
+## 1. delegate を使う
 
 結論からいうと`delegate`を利用することで省けます。具体的には`Tag`モデルをこうします。
 
-{% highlight ruby %}
+```rb
 class User < ActiveRecord::Base
   has_many :posts
   has_many :tags, through: :posts
@@ -70,15 +70,15 @@ class Tag < ActiveRecord::Base
   belongs_to :post
   delegate :user, to: :post
 end
-{% endhighlight %}
+```
 
 これで`@tag.user`なんて風に当該tagを所有するuserにアクセスできます。
 
-## 追記（2014/11/11）
+## 2. has_one, through を使う
 
 このように`has_one`, `through`も使えます。
 
-{% highlight ruby %}
+```rb
 class User < ActiveRecord::Base
   has_many :posts
   has_many :tags, through: :posts
@@ -93,7 +93,7 @@ class Tag < ActiveRecord::Base
   belongs_to :post
   has_one :user, through: :post
 end
-{% endhighlight %}
+```
 
 ### 参考
 * [belongs_to through associations](http://stackoverflow.com/questions/4021322/belongs-to-through-associations)
