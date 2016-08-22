@@ -1,4 +1,126 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-07-24T03:21:33+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>Ruby2.3 で導入された frozen_string_literal オプションを試す</title><link href="http://blog.toshimaru.net/ruby-immutable-string/" rel="alternate" type="text/html" title="Ruby2.3 で導入された frozen_string_literal オプションを試す" /><published>2016-07-24T00:00:00+09:00</published><updated>2016-07-24T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-immutable-string</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-immutable-string/">&lt;h2 id=&quot;immutable-string-in-ruby3&quot;&gt;Immutable String in Ruby3&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-08-23T01:35:00+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>AWS S3 + CloudFront のCORS設定手順</title><link href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用。）&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;フォントファイルの豆腐化問題&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://fontawesome.io/&quot;&gt;Font Awesome&lt;/a&gt;のようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin&lt;/code&gt;のヘッダでAllowされていないOriginからのリクエストの場合、いわゆるフォントの豆腐現象が起きます。これは&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control&quot;&gt;CORS(Cross-Origin Resource Sharing)&lt;/a&gt;
+の設定が正しくなされていないためです。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明します。&lt;/p&gt;
+
+&lt;h2 id=&quot;s3&quot;&gt;S3の設定&lt;/h2&gt;
+
+&lt;p&gt;CROSの設定はS3のバケットのプロパティ設定から行えます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/cors/s3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;XMLをサンプルとして下記のように設定できます。&lt;/p&gt;
+
+&lt;h3 id=&quot;cors-configuration&quot;&gt;CORS Configuration&lt;/h3&gt;
+
+&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;CORSConfiguration&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;CORSRule&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;http://sample.jp/&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;https://sample.jp/&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedMethod&amp;gt;&lt;/span&gt;HEAD&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedMethod&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedMethod&amp;gt;&lt;/span&gt;GET&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedMethod&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;MaxAgeSeconds&amp;gt;&lt;/span&gt;3600&lt;span class=&quot;nt&quot;&gt;&amp;lt;/MaxAgeSeconds&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;ExposeHeader&amp;gt;&lt;/span&gt;ETag&lt;span class=&quot;nt&quot;&gt;&amp;lt;/ExposeHeader&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedHeader&amp;gt;&lt;/span&gt;*&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedHeader&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/CORSRule&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/CORSConfiguration&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AllowedOrigin&lt;/code&gt;で許可したいOriginのURLを設定、&lt;code class=&quot;highlighter-rouge&quot;&gt;AllowedMethod&lt;/code&gt;で許可したいHTTPリクエストメソッドを指定します。それぞれ複数並べることで複数の値を設定することが可能となっています。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;確認手順&lt;/h3&gt;
+
+&lt;p&gt;正しく設定されているかを確認するために下記のように&lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt;で検証してみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp/&quot; https://s3-ap-northeast-1.amazonaws.com/bucket/path
+HTTP/1.1 200 OK
+x-amz-id-2: xxx
+x-amz-request-id: xxx
+Date: xxx
+Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Methods: GET
+Access-Control-Expose-Headers: ETag
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Credentials: true
+Vary: Origin, Access-Control-Request-Headers, Access-Control-Request-Method
+Last-Modified: xxx
+ETag: &quot;xxx&quot;
+Accept-Ranges: bytes
+Content-Type: application/json
+Content-Length: 14356
+Server: AmazonS3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin: http://sample.jp/&lt;/code&gt; で正しく AllowOrigin されていることが確認できました。&lt;/p&gt;
+
+&lt;h2 id=&quot;cloudfront&quot;&gt;CloudFront&lt;/h2&gt;
+
+&lt;p&gt;実運用の際はS3から配信ではなく、CloudFrontと組み合わせて利用するケースが多いかと思います。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/MigrateS3ToCloudFront.html&quot;&gt;Amazon S3 での CloudFront  の設定&lt;/a&gt;が済んでいることを前提として進めていいきます。&lt;/p&gt;
+
+&lt;h3 id=&quot;cors-&quot;&gt;CORS 設定&lt;/h3&gt;
+
+&lt;p&gt;CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。Origin のヘッダーがS3まで通る必要があるので&lt;code class=&quot;highlighter-rouge&quot;&gt;Origin&lt;/code&gt;ヘッダーを Whitelist Headers に加えてやります。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/cors/cloudfront.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;確認手順&lt;/h3&gt;
+
+&lt;p&gt;S3と同じく、&lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt;で確認してみます。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp/&quot;  https://xxx.cloudfront.net/bucket/path
+HTTP/1.1 200 OK
+Content-Type: binary/octet-stream
+Content-Length: 123
+Connection: keep-alive
+Date: xxx
+Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Methods: GET
+Access-Control-Expose-Headers: ETag
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Credentials: true
+Last-Modified: xxx
+ETag: &quot;xxx&quot;
+Accept-Ranges: bytes
+Server: AmazonS3
+Vary: Origin
+Age: 9
+X-Cache: Hit from cloudfront
+Via: 1.1 xxxx.cloudfront.net (CloudFront)
+X-Amz-Cf-Id: xxx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;S3と同じく&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin&lt;/code&gt;ヘッダが設定されていることを確認できました。めでたしめでたし。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;注意事項&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
+    &lt;ul&gt;
+      &lt;li&gt;その場合は &lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html&quot;&gt;Invalidation&lt;/a&gt;を行い、キャッシュをCloudFrontから消してみると解決するかも&lt;/li&gt;
+      &lt;li&gt;Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;現時点ではクラウドフロントは HTTP/2 未対応
+    &lt;ul&gt;
+      &lt;li&gt;2017年くらいには対応してきそうな予感がある（あくまで予想）&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/cors.html&quot;&gt;Cross-Origin Resource Sharing (CORS) - Amazon Simple Storage Service&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-cors&quot;&gt;リクエストヘッダーに基づいてオブジェクトをキャッシュするように CloudFront を設定する - Amazon CloudFront&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary>（画像はAWS-CloudDesignPatternから引用。）</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/cors/cache-distribution.png" /></entry><entry><title>Ruby2.3 で導入された frozen_string_literal オプションを試す</title><link href="http://blog.toshimaru.net/ruby-immutable-string/" rel="alternate" type="text/html" title="Ruby2.3 で導入された frozen_string_literal オプションを試す" /><published>2016-07-24T00:00:00+09:00</published><updated>2016-07-24T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-immutable-string</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-immutable-string/">&lt;h2 id=&quot;immutable-string-in-ruby3&quot;&gt;Immutable String in Ruby3&lt;/h2&gt;
 
 &lt;p&gt;Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。&lt;/p&gt;
 
@@ -1280,244 +1402,4 @@ Server running... press ctrl-c to stop.
 
 &lt;hr /&gt;
 
-&lt;p&gt;追記: 上げた。 &lt;a href=&quot;https://github.com/toshimaru/blog.toshimaru.net/pull/34&quot;&gt;Bundle Update on 2016-01-30 by deppbot · Pull Request #34 · toshimaru/blog.toshimaru.net&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><summary>本サイトはGitHub Pagesの上にスタティックサイトジェネレーターであるところのJekyllを使ってサイト構築しているのだが、それを先日Jekyll 2からJekyll 3へと上げた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/jekyll/jekyll.png" /></entry><entry><title>認定スクラムマスター研修に行ってきました</title><link href="http://blog.toshimaru.net/scrum-training/" rel="alternate" type="text/html" title="認定スクラムマスター研修に行ってきました" /><published>2016-01-20T00:00:00+09:00</published><updated>2016-01-20T00:00:00+09:00</updated><id>http://blog.toshimaru.net/scrum-training</id><content type="html" xml:base="http://blog.toshimaru.net/scrum-training/">&lt;p&gt;昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだこととして社内に共有した内容をこちらにも共有してみようと思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;scrum-vs-agile-&quot;&gt;Scrum vs Agile 〜歴史から学ぶ〜&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;1993年: スクラム誕生&lt;/li&gt;
-  &lt;li&gt;2001年: アジャイルソフトウェア開発宣言
-    &lt;ul&gt;
-      &lt;li&gt;アジャイルマニフェスト: &lt;a href=&quot;http://agilemanifesto.org/iso/ja/manifesto.html&quot;&gt;アジャイルソフトウェア開発宣言&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;アジャイル原則:  &lt;a href=&quot;http://agilemanifesto.org/iso/ja/principles.html&quot;&gt;アジャイル宣言の背後にある原則&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;アジャイルは「より良い開発/方法を探している」という状態のことです。状態なので原理的には「アジャイル開発をしている」という表現は正しくありません。振り返ってみて「あのプロジェクトはアジャイルだった」と評価できるもの。極端に言うといわゆるウォーターフォール型の開発も１つのアジャイルと定義することもできます。&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Don’t do agile, be agile&lt;/em&gt; （訳: アジャイル開発をするな、アジャイルであれ）&lt;/p&gt;
-
-&lt;p&gt;スクラムのほうがアジャイルより歴史的には古く、アジャイルの定義が曖昧な一方、スクラムはきちんと確立された方法論で現在もアップデートされ続けているフレームワークです(年２回)。ただ出版社のマーケティング戦略的に「アジャイル」というバズワードを使わなきゃ本が売れないという理由もあってか、世の中には＜アジャイルという皮を被った何か＞が氾濫しています。「アジャイル」という魔法のコトバに惑わされてはいけないのです。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;スクラムとは何か？&lt;/h2&gt;
-
-&lt;p&gt;スクラムとは &lt;strong&gt;＜現状を把握するためのフレームワーク＞&lt;/strong&gt;。どのプロジェクトにおいても現状を把握した結果、大体において問題はあることから &lt;strong&gt;＜問題を発見するフレームワーク＞&lt;/strong&gt; と言われることもあります。&lt;/p&gt;
-
-&lt;p&gt;なのでポイント（超重要！）は、スクラムをやったからといって&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;生産性は向上しません&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;人が成長することはありません&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;プロダクトが改善することはありません&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;あくまでもこれらは、現状を把握した結果として期待できるものであって、スクラムをやれば必ず得られる結果というわけではありません。スクラムもまた、銀の弾丸ではないのです。&lt;/p&gt;
-
-&lt;p&gt;逆にチームの現状を把握できていないのであれば、それはスクラムとは呼べない。そして「スクラムは優秀な人じゃなければできない」というのも間違い。優秀じゃない人でも現状を把握してそこそこの成果を出せるようにするのがスクラムのフレームワークです。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;スクラムのルール&lt;/h2&gt;
-
-&lt;p&gt;全部で19コあります。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/scrum/scrum1.png&quot; alt=&quot;scrum&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;スクラムの三本柱&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;透明性&lt;/strong&gt; – Transparency&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;検証&lt;/strong&gt; – Inspect&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;適合&lt;/strong&gt; (検証に基づいた適合) – Adapt&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;スクラムの３つの役割&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;プロダクトオーナー&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;チームのROIを最大化させる（ビジネスのROIではないということに注意）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;スクラムマスター&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;開発が Scrum と呼べる状態にする&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;スクラムじゃない方法を提案するのもまた、スクラムマスターの役割&lt;/strong&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;チーム&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;strong&gt;7人±2人&lt;/strong&gt; が１つのスクラムチームを構成するのがのぞましい。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-4&quot;&gt;スクラムの5つのセレモニー&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;Sprint Planning – スプリント計画&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;短期計画&lt;/li&gt;
-      &lt;li&gt;何を実現しようとしているのかを明確に&lt;/li&gt;
-      &lt;li&gt;どの順番（優先順位）で開発を進めるのか&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Daily Scrum – デイリースクラム/朝会（朝じゃなくてもよい）&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;15分間&lt;/li&gt;
-      &lt;li&gt;毎日の学習を共有&lt;/li&gt;
-      &lt;li&gt;議論は行わない&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Product Backlog Refinement – プロダクトバックログ見直し&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;中長期計画（現在のスプリントは含まれないことに注意）&lt;/li&gt;
-      &lt;li&gt;スプリントの5-10%使って見直しを行う&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Sprint Review – スプリントレビュー&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;動くプロダクト・ドキュメントで成果を確認する&lt;/li&gt;
-      &lt;li&gt;プロダクト触ってもっとプロダクトを良くする&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Sprint Retrospective – スプリントレトロスペクティブ/振り返り&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;チームが生産性を高めるために取らなきゃいけないアクションを1つ以上決める&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/scrum/scrum2.jpeg&quot; alt=&quot;scrum sprint&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;section-5&quot;&gt;アーチファクト&lt;/h3&gt;
-
-&lt;p&gt;アーティファクト、成果物とでも訳しましょうか。下記４つ。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;スプリントバックログ&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;プロダクトバックログ&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Impediment List&lt;/strong&gt; - 障害リスト&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Acceptance Criteria&lt;/strong&gt; - 受け入れ条件&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;section-6&quot;&gt;その他&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Sprint&lt;/strong&gt; - スプリント&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Sprint Stop&lt;/strong&gt; - スプリント停止&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;DONE&lt;/strong&gt; - 製品が完了する&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Potentially shippable product increment&lt;/strong&gt; – 出荷可能な製品をリリースする&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-7&quot;&gt;スクラムが適さないシーン&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;プロダクトの生産期間が短い
-    &lt;ul&gt;
-      &lt;li&gt;例) 2ヶ月で終わってしまうプロジェクト&lt;/li&gt;
-      &lt;li&gt;スクラムはチームビルディングで最低３ヶ月かかる。そしてその３ヶ月を反復してチームを改善させていく。つまり３ヶ月以内のプロジェクトでスクラムを行うのは難しい。（やれなくもないが）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;要件・技術が単純なプロダクト
-    &lt;ul&gt;
-      &lt;li&gt;スクラムは要件・技術的要素が複雑な場合に適したアプローチ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-8&quot;&gt;自律的なチームとは&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;チームの明確なゴールがある&lt;/li&gt;
-  &lt;li&gt;チームの明確なバウンダリー（境界線）がある&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;「自律的なチームかどうかの判断基準は何？」への回答は「&lt;strong&gt;個人がチームのゴールを達成するために何をすべきか0.1秒以内に判別し行動できる&lt;/strong&gt;」といえます。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-9&quot;&gt;見積もり方法&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;相対見積もり&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;一番簡単なタスクのポイントが1だとしてそれに対する相対的な見積もり&lt;/li&gt;
-      &lt;li&gt;プロダクトバックログアイテムはこちらの見積もり方法が適している&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;絶対見積もり&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;xx時間とかの見積もり&lt;/li&gt;
-      &lt;li&gt;スプリントバックログアイテムにはこちらの方法が適している&lt;/li&gt;
-      &lt;li&gt;1スプリントバックログアイテムが0.5時間〜1時間になるのが理想的な状態&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;ここで重要なポイントとしては &lt;strong&gt;スクラムマスターは絶対に計画せずにチームが進むことを許容してはいけません&lt;/strong&gt; 。スクラムをやるなら &lt;strong&gt;徹底的に計画してください。妥協は許されません&lt;/strong&gt; ここがスクラムをやる上でのチームが持たなければならない＜覚悟＞となります。逆に言うとこの覚悟が持てないならスクラムをやるべきではありません。&lt;/p&gt;
-
-&lt;h2 id=&quot;done&quot;&gt;DONE&lt;/h2&gt;
-
-&lt;p&gt;DONEは Definition of done のことです。そして Definition of done は doneとundoneの２つが含まれます。&lt;/p&gt;
-
-&lt;p&gt;説明します。例えば１つのタスクに関して、例えばログイン機能としましょう。ログイン機能のDONEとして何をイメージしますか？「フォームに正しい値を入力して正しくログインできること」「間違った値を入力してログインできないこと」「変な値でバリデーションエラーメッセージがでること」などが簡単に思い浮かぶと思います。&lt;/p&gt;
-
-&lt;p&gt;ではそれが本当にログイン機能はDONEなのでしょうか。違います、DONEにはログイン機能の単体テストやその結合テスト、さらにはセキュリティテスト、負荷テスト、またはその機能のドキュメンテーションも全て含めてdoneです。そしてDONEにはそれで完了しているdoneとそれで完了しなかった、例えばこのケースで言うと「テストは後でかこう」「セキュリティ試験は全ての機能が完成してから実施」などのundoneも含まれています。&lt;/p&gt;
-
-&lt;p&gt;このundoneを後回しになって積み上がった状態がプロジェクトの炎上状態であり、スクラムとして不健全な状態です。健全なスクラムは１スプリント毎にこのundoenを着実に消化していきます。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-10&quot;&gt;プロダクトバックログの書き方&lt;/h2&gt;
-
-&lt;p&gt;研修ではユーザーストーリーとAcceptance Criteriaの２つを書いて１つのプロダクトバックログアイテムとしました。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;ユーザーストーリー&lt;/strong&gt;: {who}として {what}がほしい なぜなら{why}だから&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Acceptance Criteria&lt;/strong&gt;: 受け入れ条件 ユーザーストーリーが達成できたといえる &lt;strong&gt;誰が見てもわかる明確な条件&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-11&quot;&gt;ベロシティ&lt;/h2&gt;
-
-&lt;p&gt;これらのプロダクトバックログアイテムに対して先ほどの見積もりのポイントを付けていきます。そして&lt;strong&gt;1スプリント中にチームが消化できるポイント数のことをベロシティ&lt;/strong&gt;といいます。&lt;/p&gt;
-
-&lt;p&gt;このベロシティは安定させるべきです。もし安定していないのならば、それはポイントの付け方が間違っているかチームに何か問題がある可能性が高いです。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-12&quot;&gt;スクラムが成功している状態とは？&lt;/h2&gt;
-
-&lt;p&gt;スクラムチームとして3ヶ月で46%生産性が向上している状態がスクラムが成功している状態です。じゃあ46%向上している状態とはどう測ったらよいかというと、講師曰く先ほど言及したundoneが3ヶ月というスパンで1つでも消化できていれば46%生産性が上がったと言っていいとのことでした。しかしこれは非常に難しいことで、どんなに成功しているスクラムチームでも1年に1回でもそれが達成できていればうまくできているほうだとのことでした。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-13&quot;&gt;スクラムマスター役割・スキル&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;状況分析&lt;/strong&gt;: シチュエーショニング&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;ティーチング&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;ファシリテーティング&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;メンタリング&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;コーチング&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;そしてスクラムマスターはこれらの行為をやるだけで満足してはいけません。やった上で &lt;strong&gt;結果が出ないと意味がありません。&lt;/strong&gt; つまりティーチングをやったからスクラムマスターの役割を果たしたとはいえず、ティーチングをやった結果、それを受けた者の行動が変わることも含めてスクラムマスターの役割ということです。&lt;/p&gt;
-
-&lt;p&gt;「謙虚さ」と同時に「屈強さ」がスクラムマスターには必要です。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-14&quot;&gt;受講してみての感想&lt;/h2&gt;
-
-&lt;p&gt;今回のスクラムマスター研修では「スクラムとは何か」を原理的な立場から学びました。&lt;/p&gt;
-
-&lt;p&gt;受講してわかったことは世の開発現場には似非スクラムが溢れているなーってことでした。スプリント回しているからスクラムですとか、カンバンでタスク管理して朝会やってスクラムですとか、リソース足りないのでうちはチームとスクラムマスター兼任してますとか…。&lt;/p&gt;
-
-&lt;p&gt;スクラムの基本原則から言うと、スクラムマスターなどの役割の兼任はNGですし、スクラムは具体的なタスク管理手法は規定していないのでカンバンでやろうとJIRAでやろうとGithub Issueでやろうとそれはスクラムと関係ありません。朝会以外にもスクラムの大事なセレモニーはあって必ずそれらはスキップしてはいけないものとなってますし、スプリント回すにしても、ちゃんとそのスプリントは計画とあっていたのかとか、ちゃんとスプリントの成果物として受け入れ条件をクリアする品質で成果が上がってるかとか、その間に差し込みタスクがないかとかいろいろやらなきゃいけないこと・考えることはあります。&lt;/p&gt;
-
-&lt;p&gt;そして感じたこととしては、スタートアップのアーリーフェーズだとなかなか原理的な意味でのスクラムは難しいのではということでした。スクラムやりたくともリソースが全然足りないのでスクラムマスター、プロダクトオーナーはそもそも置けないとか、スクラムチームを兼任せざるを得ないとか。&lt;/p&gt;
-
-&lt;p&gt;また人の出入り（特に新しいメンバーを迎えるパターン）も激しいと思うのでそうなるとスクラムチームは再度チームビルディングからやり直さなければなりません（このチームビルディングで1Sprintは消費すると言われています）。&lt;/p&gt;
-
-&lt;p&gt;なのでこういった開発現場で出来ることとしてはスクラムのフレームワークの中で良いと思うもの、有効だと思うものを選択して＜スクラムエッセンスを取り入れた開発＞を実践することではないでしょうか。&lt;/p&gt;
-
-&lt;p&gt;一方で上記に書いたように「スクラムじゃない別の方法を提案するのもスクラムマスターの役割」と書きました。なのでスクラムにこだわる必要は全然なくて、スクラムがチームにマッチしないと思うならスクラムマスターは別の手法を提案できなきゃダメです。例えばそれがウォーターフォールでもいいしDDDでもいいしリーンスタートアップだっていいのです。&lt;/p&gt;
-
-&lt;p&gt;そういう意味でスクラムマスターは(おそらく皆が)思っている以上にその役割を全うすることが難しいものだと感じました。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-15&quot;&gt;参考になりそうな他の人の体験記&lt;/h2&gt;
-
-&lt;p&gt;スクラムマスター研修に行かれた他の方の体験記を紹介します。&lt;/p&gt;
-
-&lt;iframe src=&quot;//www.slideshare.net/slideshow/embed_code/key/ohbtp9vAjuJX6L&quot; width=&quot;595&quot; height=&quot;485&quot; frameborder=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; style=&quot;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&quot; allowfullscreen=&quot;&quot;&gt; &lt;/iframe&gt;
-&lt;div style=&quot;margin-bottom:5px&quot;&gt; &lt;strong&gt; &lt;a href=&quot;//www.slideshare.net/yangiYa/csm2014-1114&quot; title=&quot;認定スクラムマスター研修に行ってきました&quot; target=&quot;_blank&quot;&gt;認定スクラムマスター研修に行ってきました&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&quot;//www.slideshare.net/yangiYa&quot; target=&quot;_blank&quot;&gt;Hajime Yanagawa&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://makopi23.blog.fc2.com/blog-entry-155.html&quot;&gt;makopi23のブログ 認定スクラムマスター研修（CSM）を振り返る&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="scrum" /><category term="tech" /><summary>昨年末にスクラムマスター研修を受けてきて、認定スクラムマスター (CSM)となりました。スクラムマスター研修で学んだこととして社内に共有した内容をこちらにも共有してみようと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/scrum/scrum.jpg" /></entry></feed>
+&lt;p&gt;追記: 上げた。 &lt;a href=&quot;https://github.com/toshimaru/blog.toshimaru.net/pull/34&quot;&gt;Bundle Update on 2016-01-30 by deppbot · Pull Request #34 · toshimaru/blog.toshimaru.net&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><summary>本サイトはGitHub Pagesの上にスタティックサイトジェネレーターであるところのJekyllを使ってサイト構築しているのだが、それを先日Jekyll 2からJekyll 3へと上げた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/jekyll/jekyll.png" /></entry></feed>
