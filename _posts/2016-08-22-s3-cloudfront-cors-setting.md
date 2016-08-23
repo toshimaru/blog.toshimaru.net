@@ -1,7 +1,7 @@
 ---
 layout: post
 title: AWS S3 + CloudFront のCORS設定手順
-image: "/images/posts/cors/cache-distribution.png"
+image: /images/posts/cors/cache-distribution.png
 description: Font Awesomeのようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、Access-Control-Allow-OriginのヘッダでAllowされていないOriginからのリクエストの場合いわゆるフォントの豆腐現象が起きる。これはCORS(Cross-Origin Resource Sharing) の設定が正しくなされていないためだ。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明する。
 tags: aws s3
 ---
@@ -27,8 +27,8 @@ XMLをサンプルとして下記のように設定できます。
 <?xml version="1.0" encoding="UTF-8"?>
 <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
     <CORSRule>
-        <AllowedOrigin>http://sample.jp/</AllowedOrigin>
-        <AllowedOrigin>https://sample.jp/</AllowedOrigin>
+        <AllowedOrigin>http://sample.jp</AllowedOrigin>
+        <AllowedOrigin>https://sample.jp</AllowedOrigin>
         <AllowedMethod>HEAD</AllowedMethod>
         <AllowedMethod>GET</AllowedMethod>
         <MaxAgeSeconds>3600</MaxAgeSeconds>
@@ -45,12 +45,12 @@ XMLをサンプルとして下記のように設定できます。
 正しく設定されているかを確認するために下記のように`curl`で検証してみましょう。
 
 ```
-$ curl -X GET -I -H "Origin: http://sample.jp/" https://s3-ap-northeast-1.amazonaws.com/bucket/path
+$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
 HTTP/1.1 200 OK
 x-amz-id-2: xxx
 x-amz-request-id: xxx
 Date: xxx
-Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Origin: http://sample.jp
 Access-Control-Allow-Methods: GET
 Access-Control-Expose-Headers: ETag
 Access-Control-Max-Age: 3600
@@ -64,7 +64,7 @@ Content-Length: 14356
 Server: AmazonS3
 ```
 
-`Access-Control-Allow-Origin: http://sample.jp/` で正しく AllowOrigin されていることが確認できました。
+`Access-Control-Allow-Origin: http://sample.jp` で正しく AllowOrigin されていることが確認できました。
 
 ## CloudFront
 
@@ -83,13 +83,13 @@ CORSの設定のためには、対象クラウドフロント設定から Behavi
 S3と同じく、`curl`で確認してみます。
 
 ```
-$ curl -X GET -I -H "Origin: http://sample.jp/"  https://xxx.cloudfront.net/bucket/path
+$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
 HTTP/1.1 200 OK
 Content-Type: binary/octet-stream
 Content-Length: 123
 Connection: keep-alive
 Date: xxx
-Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Origin: http://sample.jp
 Access-Control-Allow-Methods: GET
 Access-Control-Expose-Headers: ETag
 Access-Control-Max-Age: 3600
@@ -112,8 +112,9 @@ S3と同じく`Access-Control-Allow-Origin`ヘッダが設定されているこ�
 * 不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
   * その場合は [Invalidation](http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html)を行い、キャッシュをCloudFrontから消してみると解決するかも
   * Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）
-* 現時点ではクラウドフロントは HTTP/2 未対応
-  * 2017年くらいには対応してきそうな予感がある（あくまで予想）
+* 現時点ではCloudFrontは HTTP/2 未対応
+  * 2017年くらいには対応してきそうな予感がある（あくまで個人的予想）
+* ブラウザからアクセスされるOriginヘッダは**末尾スラッシュ無し**である点に注意
 
 ## 参考
 
