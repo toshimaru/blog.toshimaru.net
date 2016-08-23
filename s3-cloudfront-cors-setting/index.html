@@ -101,8 +101,8 @@
 <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;CORSConfiguration</span> <span class="na">xmlns=</span><span class="s">"http://s3.amazonaws.com/doc/2006-03-01/"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;CORSRule&gt;</span>
-        <span class="nt">&lt;AllowedOrigin&gt;</span>http://sample.jp/<span class="nt">&lt;/AllowedOrigin&gt;</span>
-        <span class="nt">&lt;AllowedOrigin&gt;</span>https://sample.jp/<span class="nt">&lt;/AllowedOrigin&gt;</span>
+        <span class="nt">&lt;AllowedOrigin&gt;</span>http://sample.jp<span class="nt">&lt;/AllowedOrigin&gt;</span>
+        <span class="nt">&lt;AllowedOrigin&gt;</span>https://sample.jp<span class="nt">&lt;/AllowedOrigin&gt;</span>
         <span class="nt">&lt;AllowedMethod&gt;</span>HEAD<span class="nt">&lt;/AllowedMethod&gt;</span>
         <span class="nt">&lt;AllowedMethod&gt;</span>GET<span class="nt">&lt;/AllowedMethod&gt;</span>
         <span class="nt">&lt;MaxAgeSeconds&gt;</span>3600<span class="nt">&lt;/MaxAgeSeconds&gt;</span>
@@ -119,12 +119,12 @@
 
 <p>正しく設定されているかを確認するために下記のように<code class="highlighter-rouge">curl</code>で検証してみましょう。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp/" https://s3-ap-northeast-1.amazonaws.com/bucket/path
+<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
 HTTP/1.1 200 OK
 x-amz-id-2: xxx
 x-amz-request-id: xxx
 Date: xxx
-Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Origin: http://sample.jp
 Access-Control-Allow-Methods: GET
 Access-Control-Expose-Headers: ETag
 Access-Control-Max-Age: 3600
@@ -139,7 +139,7 @@ Server: AmazonS3
 </code></pre>
 </div>
 
-<p><code class="highlighter-rouge">Access-Control-Allow-Origin: http://sample.jp/</code> で正しく AllowOrigin されていることが確認できました。</p>
+<p><code class="highlighter-rouge">Access-Control-Allow-Origin: http://sample.jp</code> で正しく AllowOrigin されていることが確認できました。</p>
 
 <h2 id="cloudfront">CloudFront</h2>
 
@@ -157,13 +157,13 @@ Server: AmazonS3
 
 <p>S3と同じく、<code class="highlighter-rouge">curl</code>で確認してみます。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp/"  https://xxx.cloudfront.net/bucket/path
+<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
 HTTP/1.1 200 OK
 Content-Type: binary/octet-stream
 Content-Length: 123
 Connection: keep-alive
 Date: xxx
-Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Origin: http://sample.jp
 Access-Control-Allow-Methods: GET
 Access-Control-Expose-Headers: ETag
 Access-Control-Max-Age: 3600
@@ -191,11 +191,12 @@ X-Amz-Cf-Id: xxx
       <li>Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）</li>
     </ul>
   </li>
-  <li>現時点ではクラウドフロントは HTTP/2 未対応
+  <li>現時点ではCloudFrontは HTTP/2 未対応
     <ul>
-      <li>2017年くらいには対応してきそうな予感がある（あくまで予想）</li>
+      <li>2017年くらいには対応してきそうな予感がある（あくまで個人的予想）</li>
     </ul>
   </li>
+  <li>ブラウザからアクセスされるOriginヘッダは<strong>末尾スラッシュ無し</strong>である点に注意</li>
 </ul>
 
 <h2 id="section-4">参考</h2>

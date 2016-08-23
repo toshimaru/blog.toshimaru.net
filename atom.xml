@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-08-23T01:35:00+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>AWS S3 + CloudFront のCORS設定手順</title><link href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用。）&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.1.6">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-08-23T10:52:45+09:00</updated><id>http://blog.toshimaru.net/</id><title>Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title>AWS S3 + CloudFront のCORS設定手順</title><link href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用。）&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;フォントファイルの豆腐化問題&lt;/h2&gt;
 
@@ -18,8 +18,8 @@
 &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;&amp;lt;CORSConfiguration&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
     &lt;span class=&quot;nt&quot;&gt;&amp;lt;CORSRule&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;http://sample.jp/&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;https://sample.jp/&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;http://sample.jp&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;https://sample.jp&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedMethod&amp;gt;&lt;/span&gt;HEAD&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedMethod&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedMethod&amp;gt;&lt;/span&gt;GET&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedMethod&amp;gt;&lt;/span&gt;
         &lt;span class=&quot;nt&quot;&gt;&amp;lt;MaxAgeSeconds&amp;gt;&lt;/span&gt;3600&lt;span class=&quot;nt&quot;&gt;&amp;lt;/MaxAgeSeconds&amp;gt;&lt;/span&gt;
@@ -36,12 +36,12 @@
 
 &lt;p&gt;正しく設定されているかを確認するために下記のように&lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt;で検証してみましょう。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp/&quot; https://s3-ap-northeast-1.amazonaws.com/bucket/path
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp&quot; https://s3-ap-northeast-1.amazonaws.com/bucket/path
 HTTP/1.1 200 OK
 x-amz-id-2: xxx
 x-amz-request-id: xxx
 Date: xxx
-Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Origin: http://sample.jp
 Access-Control-Allow-Methods: GET
 Access-Control-Expose-Headers: ETag
 Access-Control-Max-Age: 3600
@@ -56,7 +56,7 @@ Server: AmazonS3
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin: http://sample.jp/&lt;/code&gt; で正しく AllowOrigin されていることが確認できました。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin: http://sample.jp&lt;/code&gt; で正しく AllowOrigin されていることが確認できました。&lt;/p&gt;
 
 &lt;h2 id=&quot;cloudfront&quot;&gt;CloudFront&lt;/h2&gt;
 
@@ -74,13 +74,13 @@ Server: AmazonS3
 
 &lt;p&gt;S3と同じく、&lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt;で確認してみます。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp/&quot;  https://xxx.cloudfront.net/bucket/path
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp&quot;  https://xxx.cloudfront.net/bucket/path
 HTTP/1.1 200 OK
 Content-Type: binary/octet-stream
 Content-Length: 123
 Connection: keep-alive
 Date: xxx
-Access-Control-Allow-Origin: http://sample.jp/
+Access-Control-Allow-Origin: http://sample.jp
 Access-Control-Allow-Methods: GET
 Access-Control-Expose-Headers: ETag
 Access-Control-Max-Age: 3600
@@ -108,11 +108,12 @@ X-Amz-Cf-Id: xxx
       &lt;li&gt;Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;現時点ではクラウドフロントは HTTP/2 未対応
+  &lt;li&gt;現時点ではCloudFrontは HTTP/2 未対応
     &lt;ul&gt;
-      &lt;li&gt;2017年くらいには対応してきそうな予感がある（あくまで予想）&lt;/li&gt;
+      &lt;li&gt;2017年くらいには対応してきそうな予感がある（あくまで個人的予想）&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
+  &lt;li&gt;ブラウザからアクセスされるOriginヘッダは&lt;strong&gt;末尾スラッシュ無し&lt;/strong&gt;である点に注意&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;section-4&quot;&gt;参考&lt;/h2&gt;
