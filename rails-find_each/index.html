@@ -73,24 +73,24 @@
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2015-11-12T00:00:00+09:00" pubdate>12 Nov 2015</time>
-      <i class="icon-tags"></i><a href="/tag/rails/" rel="tag">rails</a>
+      <i class="icon-tags"></i><a href="/tag/rails/" rel="tag">rails</a>, <a href="/tag/activerecord/" rel="tag">activerecord</a>
     </div>
     
   </div>
 </div>
 
 <ul class="section-nav">
-<li class="toc-entry toc-h2"><a href="#find_eachとは">find_eachとは</a></li>
-<li class="toc-entry toc-h2"><a href="#素のfind_each">素のfind_each</a></li>
-<li class="toc-entry toc-h2"><a href="#order付きfind_each">order付きfind_each</a></li>
-<li class="toc-entry toc-h2"><a href="#limit付きfind_each">limit付きfind_each</a></li>
-<li class="toc-entry toc-h2"><a href="#where付きfind_each">where付きfind_each</a></li>
+<li class="toc-entry toc-h2"><a href="#find_each-とは">find_each とは</a></li>
+<li class="toc-entry toc-h2"><a href="#素の-find_each">素の find_each</a></li>
+<li class="toc-entry toc-h2"><a href="#order付き-find_each">order付き find_each</a></li>
+<li class="toc-entry toc-h2"><a href="#limit付き-find_each">limit付き find_each</a></li>
+<li class="toc-entry toc-h2"><a href="#where付き-find_each">where付き find_each</a></li>
 <li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
 <li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
 </ul><p>Railsの<a href="http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/find_each">find_each</a>がどんな挙動をするか気になったので調べてみた。</p>
 
-<h2 id="findeach">
-<a id="find_eachとは" class="anchor" href="#find_each%E3%81%A8%E3%81%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>find_eachとは</h2>
+<h2 id="findeach-">
+<a id="find_each-とは" class="anchor" href="#find_each-%E3%81%A8%E3%81%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>find_each とは</h2>
 
 <p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
 
@@ -107,8 +107,8 @@
 
 <p><a href="http://blog.livedoor.jp/sasata299/archives/51882704.html">Railsで大量のデータをまとめて更新するならfind_each使うよね - (ﾟ∀ﾟ)o彡 sasata299’s blog</a></p>
 
-<h2 id="findeach-1">
-<a id="素のfind_each" class="anchor" href="#%E7%B4%A0%E3%81%AEfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>素のfind_each</h2>
+<h2 id="findeach">
+<a id="素の-find_each" class="anchor" href="#%E7%B4%A0%E3%81%AE-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>素の find_each</h2>
 
 <p>まずはUserテーブルに1万件くらいデータを作って素直に<code class="highlighter-rouge">find_each</code>してみる。</p>
 
@@ -123,8 +123,8 @@
 
 <p>デフォルトでは<code class="highlighter-rouge">order by id</code>で全件取得して1000件ずつ<code class="highlighter-rouge">limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
 
-<h2 id="orderfindeach">
-<a id="order付きfind_each" class="anchor" href="#order%E4%BB%98%E3%81%8Dfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>order付きfind_each</h2>
+<h2 id="order-findeach">
+<a id="order付き-find_each" class="anchor" href="#order%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>order付き find_each</h2>
 
 <div class="highlighter-rouge">
 <pre class="highlight"><code>&gt; User.order(created_at: :desc).find_each{|a|}
@@ -138,8 +138,8 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p><code class="highlighter-rouge">Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
 
-<h2 id="limitfindeach">
-<a id="limit付きfind_each" class="anchor" href="#limit%E4%BB%98%E3%81%8Dfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>limit付きfind_each</h2>
+<h2 id="limit-findeach">
+<a id="limit付き-find_each" class="anchor" href="#limit%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>limit付き find_each</h2>
 
 <p>じゃあlimitも試してみよう。</p>
 
@@ -155,8 +155,8 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p>やっぱりワーニングが出て無視された。</p>
 
-<h2 id="wherefindeach">
-<a id="where付きfind_each" class="anchor" href="#where%E4%BB%98%E3%81%8Dfind_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>where付きfind_each</h2>
+<h2 id="where-findeach">
+<a id="where付き-find_each" class="anchor" href="#where%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>where付き find_each</h2>
 
 <p><code class="highlighter-rouge">where</code>を使って処理対象に条件を付けることもできます。</p>
 
@@ -172,7 +172,8 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p>しっかり全てのクエリに<code class="highlighter-rouge">users</code>.<code class="highlighter-rouge">notes</code> = ‘1’という条件が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">while</span> <span class="n">records</span><span class="p">.</span><span class="nf">any?</span>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="k">while</span> <span class="n">records</span><span class="p">.</span><span class="nf">any?</span>
   <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">size</span>
   <span class="n">primary_key_offset</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">last</span><span class="p">.</span><span class="nf">id</span>
   <span class="k">raise</span> <span class="s2">"Primary key not included in the custom select clause"</span> <span class="k">unless</span> <span class="n">primary_key_offset</span>
@@ -182,7 +183,9 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   <span class="k">break</span> <span class="k">if</span> <span class="n">records_size</span> <span class="o">&lt;</span> <span class="n">batch_size</span>
 
   <span class="n">records</span> <span class="o">=</span> <span class="n">relation</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">primary_key</span><span class="p">].</span><span class="nf">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">)).</span><span class="nf">to_a</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span>
+</code></pre>
+</div>
 
 <p>ポイントとなっているコード箇所を抜き出すとここ。</p>
 
@@ -230,15 +233,15 @@ relation.where(table[primary_key].gt(primary_key_offset))
   <h3>関連エントリ</h3>
   <ul>
   
+    <li><a href="/manage-schema-with-sql-in-rails/" title="SQLファイルでRailsのスキーマ情報管理">SQLファイルでRailsのスキーマ情報管理</a></li>
+  
+    <li><a href="/active-record-callbacks/" title="ActiveRecordのコールバックの順番・コールバック内のロールバック処理">ActiveRecordのコールバックの順番・コールバック内のロールバック処理</a></li>
+  
+    <li><a href="/rails-4-transaction-isolation/" title="Rails4 でトランザクション分離レベルを設定する">Rails4 でトランザクション分離レベルを設定する</a></li>
+  
+    <li><a href="/belongs_to-through/" title="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</a></li>
+  
     <li><a href="/roppongirb-speeding-up-rails/" title="Roppongi.rbで「Rails高速化戦略」を発表しました">Roppongi.rbで「Rails高速化戦略」を発表しました</a></li>
-  
-    <li><a href="/rails-new-options/" title="rails new するときによく使うオプション">rails new するときによく使うオプション</a></li>
-  
-    <li><a href="/ruby-on-google-app-engine/" title="Ruby on Rails を Google App Engine 上で動かしてみる">Ruby on Rails を Google App Engine 上で動かしてみる</a></li>
-  
-    <li><a href="/ruby-configuration-pattern/" title="Ruby Gem Configuration Pattern">Ruby Gem Configuration Pattern</a></li>
-  
-    <li><a href="/publish-rails-app-in-lan/" title="RailsアプリケーションをLAN内に公開する">RailsアプリケーションをLAN内に公開する</a></li>
   
   </ul>
   </div>
@@ -310,7 +313,7 @@ relation.where(table[primary_key].gt(primary_key_offset))
       "@type": "ImageObject",
       "url": "http://blog.toshimaru.net/images/icon.png"
     },
-    "keywords": "rails"
+    "keywords": "rails, activerecord"
   },
   {
     
@@ -370,9 +373,6 @@ relation.where(table[primary_key].gt(primary_key_offset))
           <li><a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
 </li>
-          <li><a href="/gunosy-rails-way/">GunosyでのRails開発フロー</a>
-<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/gunosy-rails-way/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/gunosy-rails-way/"></a>
-</li>
           <li><a href="/belongs_to-through/">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/belongs_to-through/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/belongs_to-through/"></a>
 </li>
@@ -384,7 +384,7 @@ relation.where(table[primary_key].gt(primary_key_offset))
       </div>
       <div class="right">
         <h2>Tag</h2>
-        <div class="tags"><a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-2">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/docker-compose/" class="set-1">docker-compose</a> <a href="/tag/docker-machine/" class="set-1">docker-machine</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-4">git</a> <a href="/tag/github/" class="set-2">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google_app_engine/" class="set-1">google_app_engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-4">javascript</a> <a href="/tag/jekyll/" class="set-2">jekyll</a> <a href="/tag/jquery/" class="set-3">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-3">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-2">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-5">php</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/ruby/" class="set-5">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sinatra/" class="set-1">sinatra</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-4">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/underscore/" class="set-1">underscore</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-3">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-3">雑記</a></div>
+        <div class="tags"><a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-2">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/docker-compose/" class="set-1">docker-compose</a> <a href="/tag/docker-machine/" class="set-1">docker-machine</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-4">git</a> <a href="/tag/github/" class="set-2">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google_app_engine/" class="set-1">google_app_engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-4">javascript</a> <a href="/tag/jekyll/" class="set-2">jekyll</a> <a href="/tag/jquery/" class="set-3">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-3">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-2">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-5">php</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/ruby/" class="set-5">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sinatra/" class="set-1">sinatra</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-4">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/underscore/" class="set-1">underscore</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-3">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-3">雑記</a></div>
       </div>
     </div>
     <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
