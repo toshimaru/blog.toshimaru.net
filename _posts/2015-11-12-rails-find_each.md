@@ -3,13 +3,13 @@ layout: post
 title: Railsのfind_eachの挙動を調べた
 published: true
 description: Railsのfind_eachの挙動を調べた。find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。
-tags: rails
+tags: rails activerecord
 toc: true
 ---
 
 Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/find_each)がどんな挙動をするか気になったので調べてみた。
 
-## find_eachとは
+## find_each とは
 
 バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。
 
@@ -22,7 +22,7 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
 
 [Railsで大量のデータをまとめて更新するならfind_each使うよね - (ﾟ∀ﾟ)o彡 sasata299's blog](http://blog.livedoor.jp/sasata299/archives/51882704.html)
 
-## 素のfind_each
+## 素の find_each
 
 まずはUserテーブルに1万件くらいデータを作って素直に`find_each`してみる。
 
@@ -34,7 +34,7 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
 
 デフォルトでは`order by id`で全件取得して1000件ずつ`limit 1000`して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。
 
-## order付きfind_each
+## order付き find_each
 
     > User.order(created_at: :desc).find_each{|a|}
     Scoped order and limit are ignored, it's forced to be batch order and batch size
@@ -45,7 +45,7 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
 
 `Scoped order and limit are ignored`ということでorderとlimitは無視されるようです。
 
-## limit付きfind_each
+## limit付き find_each
 
 じゃあlimitも試してみよう。
 
@@ -58,7 +58,7 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
 
 やっぱりワーニングが出て無視された。
 
-## where付きfind_each
+## where付き find_each
 
 `where`を使って処理対象に条件を付けることもできます。
 
@@ -71,7 +71,7 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
 
 しっかり全てのクエリに`users`.`notes` = '1'という条件が付いていますね。ところで、この\`users\`.\`id\` > 11955 の11955というidはどこから出てきたんだろう？
 
-{% highlight ruby %}
+```rb
 while records.any?
   records_size = records.size
   primary_key_offset = records.last.id
@@ -83,7 +83,7 @@ while records.any?
 
   records = relation.where(table[primary_key].gt(primary_key_offset)).to_a
 end
-{% endhighlight %}
+```
 
 ポイントとなっているコード箇所を抜き出すとここ。
 

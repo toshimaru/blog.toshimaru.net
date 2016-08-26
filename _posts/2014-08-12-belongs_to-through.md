@@ -3,7 +3,7 @@ layout: post
 title: 【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through
 published: true
 description: RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。
-tags: rails
+tags: rails activerecord
 ---
 
 ## TL;DR

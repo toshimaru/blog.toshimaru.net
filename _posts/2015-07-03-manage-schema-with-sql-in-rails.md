@@ -3,7 +3,7 @@ layout: post
 title: SQLファイルでRailsのスキーマ情報管理
 published: true
 description: Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。
-tags: rails rake
+tags: rails activerecord
 ---
 
 Railsでは`db:migrate`すると、デフォルトで`db/schema.rb`を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように`config/application.rb`内で`active_record.schema_format`を`:sql`と設定することで可能になります（デフォルト値は`:ruby`）。

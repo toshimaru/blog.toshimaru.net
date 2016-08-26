@@ -3,7 +3,7 @@ layout: post
 title: ActiveRecordのコールバックの順番・コールバック内のロールバック処理
 published: true
 description: ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。
-tags: rails
+tags: rails activerecord
 ---
 
 ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。

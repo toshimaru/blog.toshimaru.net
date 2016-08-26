@@ -3,7 +3,7 @@ layout: post
 title: Rails4 でトランザクション分離レベルを設定する
 published: true
 description: Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょう？ 実はRails3.xとRails4ではトランザクション分離レベルの設定方法は異なっています。
-tags: rails mysql
+tags: rails mysql activerecord
 toc: true
 ---
 
