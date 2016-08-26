@@ -2,34 +2,29 @@
 layout: post
 title: ActiveRecordのコールバックの順番・コールバック内のロールバック処理
 published: true
-image: https://cloud.githubusercontent.com/assets/803398/6426418/93196ff6-bf9c-11e4-8c17-22313b481b8d.png
 description: ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。
 tags: rails
 ---
 
 ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。
 
-## Callback Timing
+## Callback タイミング
 
-まずは順番について。このようなオーダーです。
+まずは順番について。下記のようになっています。
 
-* (-) save
-* (-) valid
-* (1) before_validation
-* (-) validate
-* (2) after_validation
-* (3) before_save
-* (4) before_create
-* (-) create
-* (5) after_create
-* (6) after_save
-* (7) after_commit
+1. `before_validation`
+1. `after_validation`
+1. `before_save`
+1. `before_create` / `before_update`
+1. `after_create` / `after_update`
+1. `after_save`
+1. `after_commit`
 
-## 試してみる
+## 実際にコードで試してみる
 
 それぞれのコールバックをコードで試してみる。こんなコールバックを設定したUserモデルを作る。
 
-{% highlight ruby %}
+```rb
 class User < ActiveRecord::Base
   before_validation -> { puts "before_validation is called" }
   after_validation -> { puts "after_validation is called" }
@@ -41,11 +36,11 @@ class User < ActiveRecord::Base
   after_save -> { puts "after_save is called" }
   after_commit -> { puts "after_commit is called" }
 end
-{% endhighlight %}
+```
 
-###  新規レコード作成時
+### 新規レコード作成時
 
-こいつをsaveしてみる。
+このモデルをnewしてsaveしてみる。
 
     > User.new.save
        (0.1ms)  begin transaction
@@ -66,7 +61,7 @@ end
 
 ###  レコード更新時
 
-updateの場合はこんな感じ。
+同モデルのupdateの場合はこんな感じ。
 
      > user.update(name: "toshi")
         (0.1ms)  begin transaction
@@ -83,7 +78,7 @@ updateの場合はこんな感じ。
 
 更新なので `before_create` `after_create` は呼ばれない。その代わりに`before_update`, `after_update`が実行される。
 
-## save/updateはトランザクション内で実行される
+## save/update はトランザクション内で実行される
 
 [ドキュメント](http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html)にはこう書いてある
 
@@ -99,7 +94,7 @@ updateの場合はこんな感じ。
 
 `before_*`のタイミングで false を返すと処理はロールバックされる。
 
-{% highlight ruby %}
+```rb
 class User < ActiveRecord::Base
   before_validation -> { puts "before_validation is called" }
   after_validation -> { puts "after_validation is called" }
@@ -109,7 +104,7 @@ class User < ActiveRecord::Base
   after_save -> { puts "after_save is called" }
   after_commit -> { puts "after_commit is called" }
 end
-{% endhighlight %}
+```
 
     > User.new.save
     (0.1ms)  begin transaction
@@ -125,7 +120,7 @@ end
 
 after_* のタイミングでロールバックしたい場合は、明示的にRollbackをraiseしてやれば :ok:
 
-{% highlight ruby %}
+```rb
 class User < ActiveRecord::Base
   before_validation -> { puts "before_validation is called" }
   after_validation -> { puts "after_validation is called" }
@@ -135,7 +130,7 @@ class User < ActiveRecord::Base
   after_save -> { puts "after_save is called"; raise ActiveRecord::Rollback }
   after_commit -> { puts "after_commit is called" }
 end
-{% endhighlight %}
+```
 
     > User.new.save
        (0.1ms)  begin transaction
@@ -151,6 +146,6 @@ end
 
 update も同様にこの方法でロールバックできます。
 
-### 参考
+## 参考
 * [ActiveRecord::Callbacks](http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html)
 * [» Railsのコールバックまとめ TECHSCORE BLOG](http://www.techscore.com/blog/2012/12/25/rails%E3%81%AE%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E3%81%BE%E3%81%A8%E3%82%81/)
