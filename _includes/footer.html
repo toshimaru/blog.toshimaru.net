@@ -3,24 +3,24 @@
     <div class="wrapper clearfix">
       <div class="about">
         {% if page.path == 'about.html' %}
-        <h2>Recent</h2>
-        <ul>
-          {% for post in site.posts limit:7 %}
-          <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
-          {% endfor %}
-        </ul>
+          <h2>Recent</h2>
+          <ul>
+            {% for post in site.posts limit:7 %}
+            <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
+            {% endfor %}
+          </ul>
         {% else %}
-        <h2>About</h2>
-        <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
-        <dl class="about-dl">
-          <dt>{{ site.author }}</dt>
-          <dd>{{ site.info }}</dd>
-        </dl>
-        <ul class="externallinks">
-          <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
-          <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
-          <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
-        </ul>
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>{{ site.author }}</dt>
+            <dd>{{ site.info }}</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+            <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
+          </ul>
         {% endif %}
       </div>
       <div class="center popular">
@@ -38,7 +38,11 @@
       </div>
       <div class="right">
         <h2>Tag</h2>
-        <div class="tags">{{ site | tag_cloud }}</div>
+        <div class="tags">
+          {% for tag in site.tags %}
+            <a href="/tag/{{ tag.first }}/" rel="tag">{{ tag.first }}</a>
+          {% endfor %}
+        </div>
       </div>
     </div>
     <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
