@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)が使えないことがある - Hack Your Design!</title>
+  <title>メールアドレス登録時に安心して使える文字列 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)が使えないことがある - Hack Your Design!">
-  <meta property="og:title" content="メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)が使えないことがある - Hack Your Design!">
+  <meta name="twitter:title" content="メールアドレス登録時に安心して使える文字列 - Hack Your Design!">
+  <meta property="og:title" content="メールアドレス登録時に安心して使える文字列 - Hack Your Design!">
   <meta name="description" content="メールアドレスのローカル部に使用できる記号について調べた。調べるきっかけはGmailの+（プラス）付アドレスを使おうとして使えなかったこと。">
   <meta name="twitter:description" content="メールアドレスのローカル部に使用できる記号について調べた。調べるきっかけはGmailの+（プラス）付アドレスを使おうとして使えなかったこと。">
   <meta property="og:description" content="メールアドレスのローカル部に使用できる記号について調べた。調べるきっかけはGmailの+（プラス）付アドレスを使おうとして使えなかったこと。">
@@ -69,7 +69,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)が使えないことがある</h1>
+  <h1 class="fadeInLeft">メールアドレス登録時に安心して使える文字列</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2012-07-11T00:00:00+09:00" pubdate>11 Jul 2012</time>
@@ -81,9 +81,9 @@
 
 <h2 id="section">追記</h2>
 
-<p>タイトルが誤解を招きそうなので少し修正しておきました。</p>
+<p>タイトルが少し誤解を招きそうなので本文とともに修正しておきました。</p>
 
-<p>本エントリでは「メールアドレス登録のさいに安心して使える文字列」を紹介していますが、本文中にも書いてある通り、本来RFC的に使ってよい文字列は広範です。詳しくは下記エントリを参照してください。</p>
+<p>本エントリでは <strong>メールアドレス登録時に安心して使える文字列</strong> を紹介していますが、本文中にも書いてある通り本来RFC的に使ってよい文字列は広範です。詳しくは下記エントリを参照してください。</p>
 
 <p><a href="http://orgachem.hatenablog.com/entry/2013/11/26/015343">「メールアドレスのルール」系まとめがそろって間違ってるのでご注意を - 若き JavaScripter の悩み</a></p>
 
@@ -91,7 +91,7 @@
 
 <h2 id="tldr">TL;DR</h2>
 
-<p>メールアドレスとして安心して使える使用可能文字は <strong>アルファベット、数字、-（ハイフン）、_（アンダースコア）、.（ドット）</strong>。</p>
+<p>メールアドレスとして安心して使える使用可能文字は <strong>アルファベット、数字、<code class="highlighter-rouge">-</code>（ハイフン）、<code class="highlighter-rouge">_</code>（アンダースコア）、<code class="highlighter-rouge">.</code>（ドット）</strong>。</p>
 
 <h2 id="gmail">Gmailのプラス付アドレス</h2>
 
@@ -108,11 +108,11 @@
 
 <p>via. <a href="http://blog.livedoor.jp/lalha/archives/50158699.html">Gmail における .(ドット/ピリオド) と +(プラス) の扱いの不思議</a></p>
 
-<p>上記のようなgmail仕様から、例えば会員登録機能を開発したときに、１つのgmailアカウントをとってそれを使い回せばテストするのにいろいろと便利なのです。<code class="highlighter-rouge">myaddress+test1@gmail.com</code>、 <code class="highlighter-rouge">myaddress+test2@gmail.com</code>という具合に１つのメールアドレスでサービスに複数アカウント登録できます。</p>
+<p>上記のようなGmailの仕様から、例えば会員登録機能を開発したときに１つのGmailアカウントをとってそれを使い回せばテストするのにいろいろと便利なのです。<code class="highlighter-rouge">myaddress+test1@gmail.com</code>、 <code class="highlighter-rouge">myaddress+test2@gmail.com</code>という具合に。こうすることで１つのメールアドレスで１つのサービスに対して複数アカウントを登録できます。</p>
 
 <h2 id="section-1">プラス記号が使えなかった</h2>
 
-<p>ということで自分が作った会員登録機能でこのプラスアドレスを使おうと思ったが、どういうわけか不正なメールアドレスとして弾かれる。調べてみると、開発においてとあるバリデーションのライブラリを使用していたのだが、そのバリデーション機構がプラスを弾いているらしいことがわかった。</p>
+<p>ということで自分が作った会員登録機能でこのプラスアドレスを使おうと思ったが、どういうわけか不正なメールアドレスとして弾かれる。調べてみると、開発においてとあるバリデーションのライブラリを使用していたのだが、そのバリデーション機構が<code class="highlighter-rouge">+</code>の文字列を弾いているらしいことがわかった。</p>
 
 <p><a href="http://n.h7a.org/blog/entry/1509">メールアドレスに + を使うと危ない件</a></p>
 
@@ -134,11 +134,15 @@
 
 <p>via. <a href="http://www.go5.jp/~nyomo/net/mailaddr.html">メールアドレスで使える記号</a></p>
 
-<p>RFCの仕様的には使える記号はけっこうあるようだ。</p>
+<p>つまりRFCでは下記の記号は使って良いとされており、<strong>RFCの仕様的には使える記号はけっこうある</strong> んです。</p>
 
-<h2 id="section-2">リアル・ワールドで安心して使えそうな文字</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code>! # $ % &amp; ’ * + - / = ? ^ _ ` { | } ~ .
+</code></pre>
+</div>
 
-<p>だが実際のところ同記事に書いてあるとおり、<strong>プロバイダ側で使える文字を制限している</strong>のが現実です。</p>
+<h2 id="section-2">リアルワールドで安心して使えそうな文字</h2>
+
+<p>しかし実際のところ同記事に書いてあるとおり、<strong>プロバイダ側で使える文字を制限している</strong> のが現実です。</p>
 
 <blockquote>
   <p>メールでの利用やwebサイトに掲載の際に安心して利用できる文字種は以下の通り</p>
@@ -146,24 +150,32 @@
   <ul>
     <li>アルファベットの大文字と小文字</li>
     <li>数字</li>
-    <li>-(ハイフン)</li>
-    <li>_(アンダーバー)</li>
-    <li>.(ピリオド)但し利用制限あり(@の直前は不可、連続しての利用も不可)</li>
+    <li><code class="highlighter-rouge">-</code>(ハイフン)</li>
+    <li><code class="highlighter-rouge">_</code>(アンダーバー)</li>
+    <li><code class="highlighter-rouge">.</code>(ピリオド)但し利用制限あり(@の直前は不可、連続しての利用も不可)</li>
   </ul>
 </blockquote>
 
 <p>via. <a href="http://www.go5.jp/~nyomo/net/mailaddr.html">メールアドレスで使える記号</a></p>
 
-<p>結局のところ安心して使えるのは上記の文字、となるようです。</p>
+<p>結局のところ安心して使えるのは上記の文字となるようです。</p>
 
-<p>RFCは個人的にはネットワークにおける聖典、絶対的な価値基準だと思っていたけどそんなことはないようです。<a href="http://ke-tai.org/blog/2009/09/25/aurfc/">RFCを守らない大手通信キャリアさん</a>もあったようですので（そのメールアドレスにメールを送ろうとする度にiPhoneに不正なメールアドレスですと怒られる）、まだRFCの基準の範囲内にあるだけよいのかもしれません。</p>
+<p>RFCは個人的にはネットワークにおける聖典、絶対的な価値基準だと思っていたけどそんなことはないようです。<a href="http://ke-tai.org/blog/2009/09/25/aurfc/">RFCをそもそも守らない大手通信キャリアさん</a>もあったようですので<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> まだRFCの基準の範囲内にあるだけよいのかもしれません。</p>
 
 <h2 id="section-3">まとめ</h2>
 
 <ul>
-  <li>メールアドレスとして安心して使える使用可能文字はアルファベット、数字、-（ハイフン）、_（アンダースコア）、.（ドット）</li>
-  <li>RFC仕様的には使用可能な文字はもっと広範だが、プロバイダや通信キャリアの制限などによって使えない場合もある</li>
+  <li>メールアドレスとして安心して使える使用可能文字はアルファベット、数字、<code class="highlighter-rouge">-</code>（ハイフン）、<code class="highlighter-rouge">_</code>（アンダースコア）、<code class="highlighter-rouge">.</code>（ドット）</li>
+  <li>RFC仕様的に使用可能な文字にもかかわらず、プロバイダや通信キャリアの制限などによって使えない場合もある</li>
 </ul>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>RFC準拠ではないメールアドレスにメールを送ろうとする度にiPhoneのメールクライアントに宛先メールアドレスは不正なメールアドレスですと怒られる <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
 
 
 <ul id="social-buttons">
@@ -239,7 +251,7 @@
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/rfc/"
     },
-    "headline": "メールアドレスにはRFC的に使用可能な文字(!#$%&'*+-/=?^_`{|}~)が使えないことがある",
+    "headline": "メールアドレス登録時に安心して使える文字列",
     "datePublished": "2012-07-11T00:00:00+09:00",
     "author": {
       "@type": "Person",
