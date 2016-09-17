@@ -6,7 +6,7 @@ layout: default
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date_to_string }}</time>
-      <i class="icon-tags"></i>{{ page | tags }}
+      <i class="icon-tags"></i> {% include tags.html tags=page.tags %}
     </div>
     {% if page.image %}<img class="post-image flipInX" src="{{ page.image }}" alt="(image){{ page.title }}" title="{{ page.title }}" />{% endif %}
   </div>
@@ -74,15 +74,15 @@ layout: default
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
 
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
 </script>
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
@@ -105,12 +105,12 @@ layout: default
     },
     "image": {
       "@type": "ImageObject",
-      "url": "{% if page.image -%}{% if page.image contains 'http://' or page.image contains 'https://' -%}{{ page.image }}{% else -%}{{ site.url }}{{ page.image }}{% endif -%}{% else -%}{{ site.url }}/images/icon.png{% endif -%}"
+      "url": "{% if page.image %}{% if page.image contains 'http://' or page.image contains 'https://' %}{{ page.image }}{% else -%}{{ site.url }}{{ page.image }}{% endif -%}{% else -%}{{ site.url }}/images/icon.png{% endif -%}"
     },
     "keywords": "{{ page.tags | join: ', ' }}"
   },
   {
-    {% if page.tags.size >= 1 -%}
+    {% if page.tags.size >= 1 %}
     "@context": "http://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
