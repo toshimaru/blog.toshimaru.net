@@ -3,26 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AWS S3 + CloudFront のCORS設定手順 - Hack Your Design!</title>
+  <title>Railsでデバイス判定するrack-simple_user_agentというgemを作った - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="AWS S3 + CloudFront のCORS設定手順 - Hack Your Design!">
-  <meta property="og:title" content="AWS S3 + CloudFront のCORS設定手順 - Hack Your Design!">
-  <meta name="description" content="Font Awesomeのようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、Access-Control-Allow-OriginのヘッダでAllowされていないOriginからのリクエストの場合いわゆるフォントの豆腐現象が起きる。これはCORS(Cross-Origin Resource Sharing) の設定が正しくなされていないためだ。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明する。">
-  <meta name="twitter:description" content="Font Awesomeのようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、Access-Control-Allow-OriginのヘッダでAllowされていないOriginからのリクエストの場合いわゆるフォントの豆腐現象が起きる。これはCORS(Cross-Origin Resource Sharing) の設定が正しくなされていないためだ。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明する。">
-  <meta property="og:description" content="Font Awesomeのようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、Access-Control-Allow-OriginのヘッダでAllowされていないOriginからのリクエストの場合いわゆるフォントの豆腐現象が起きる。これはCORS(Cross-Origin Resource Sharing) の設定が正しくなされていないためだ。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明する。">
+  <meta name="twitter:title" content="Railsでデバイス判定するrack-simple_user_agentというgemを作った - Hack Your Design!">
+  <meta property="og:title" content="Railsでデバイス判定するrack-simple_user_agentというgemを作った - Hack Your Design!">
+  <meta name="description" content="rack-simple_user_agent というgemを作った。 同じコンセプトのgemとしては、k0kubunさんのrack-user_agentがある。ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとしてwootheeを使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。">
+  <meta name="twitter:description" content="rack-simple_user_agent というgemを作った。 同じコンセプトのgemとしては、k0kubunさんのrack-user_agentがある。ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとしてwootheeを使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。">
+  <meta property="og:description" content="rack-simple_user_agent というgemを作った。 同じコンセプトのgemとしては、k0kubunさんのrack-user_agentがある。ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとしてwootheeを使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。">
   
-  
-  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/cors/cache-distribution.png" />
-  <meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/cors/cache-distribution.png" />
-  
+  <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
+  <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:type" content="article">
-  <meta property="article:published_time" content="2016-08-22T00:00:00+09:00">
+  <meta property="article:published_time" content="2016-10-02T00:00:00+09:00">
   
-  <link rel="canonical" href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">
+  <link rel="canonical" href="http://blog.toshimaru.net/gem-rack-simple-user-agent/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({
@@ -72,152 +70,91 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">AWS S3 + CloudFront のCORS設定手順</h1>
+  <h1 class="fadeInLeft">Railsでデバイス判定するrack-simple_user_agentというgemを作った</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2016-08-22T00:00:00+09:00" pubdate>22 Aug 2016</time>
+      <i class="icon-calendar"></i><time datetime="2016-10-02T00:00:00+09:00" pubdate>02 Oct 2016</time>
       <i class="icon-tags"></i> 
-<a href="/tag/aws/" rel="tag">aws</a>
-
-<a href="/tag/s3/" rel="tag">s3</a>
+<a href="/tag/gem/" rel="tag">gem</a>
 
 
     </div>
-    <img class="post-image flipInX" src="/images/posts/cors/cache-distribution.png" alt="(image)AWS S3 + CloudFront のCORS設定手順" title="AWS S3 + CloudFront のCORS設定手順" />
+    
   </div>
 </div>
 
-<p>（画像は<a href="http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">AWS-CloudDesignPattern</a>から引用）</p>
+<p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>というgemを作った。</p>
 
-<h2 id="section">フォントファイルの豆腐化問題</h2>
+<h2 id="section">なぜ作ったか</h2>
 
-<p><a href="http://fontawesome.io/">Font Awesome</a>のようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、<code class="highlighter-rouge">Access-Control-Allow-Origin</code>のヘッダでAllowされていないOriginからのリクエストの場合、いわゆるフォントの豆腐現象が起きます。これは<a href="https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control">CORS(Cross-Origin Resource Sharing)</a>
-の設定が正しくなされていないためです。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明します。</p>
+<p>同じコンセプトのgemとしては、<a href="https://github.com/k0kubun">k0kubun</a>さんの<a href="https://github.com/k0kubun/rack-user_agent">rack-user_agent</a>がある。詳細については下記のブログエントリに詳しい。</p>
 
-<h2 id="s3">S3の設定</h2>
+<p><a href="http://k0kubun.hatenablog.com/entry/2014/11/21/041949">Railsでデバイスの判定をするのに便利なgemを作った - k0kubun’s blog</a></p>
 
-<p>CROSの設定はS3のバケットのプロパティ設定から行えます。</p>
+<p>ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして<a href="https://github.com/woothee/woothee">woothee</a>を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。</p>
 
-<p><img src="/images/posts/cors/s3.png" alt="" /></p>
+<h3 id="tablet-">tablet 判定したい</h3>
 
-<p>XMLをサンプルとして下記のように設定できます。</p>
+<p>昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。</p>
 
-<h3 id="cors-configuration">CORS Configuration</h3>
+<p>wootheeの場合、残念ながらcategoryとしてtabletは用意されていない。実際にwootheeを使ってiPadを判定した場合、カテゴリはsmartphoneと判定されてしまう。</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;CORSConfiguration</span> <span class="na">xmlns=</span><span class="s">"http://s3.amazonaws.com/doc/2006-03-01/"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;CORSRule&gt;</span>
-        <span class="nt">&lt;AllowedOrigin&gt;</span>http://sample.jp<span class="nt">&lt;/AllowedOrigin&gt;</span>
-        <span class="nt">&lt;AllowedOrigin&gt;</span>https://sample.jp<span class="nt">&lt;/AllowedOrigin&gt;</span>
-        <span class="nt">&lt;AllowedMethod&gt;</span>HEAD<span class="nt">&lt;/AllowedMethod&gt;</span>
-        <span class="nt">&lt;AllowedMethod&gt;</span>GET<span class="nt">&lt;/AllowedMethod&gt;</span>
-        <span class="nt">&lt;MaxAgeSeconds&gt;</span>3600<span class="nt">&lt;/MaxAgeSeconds&gt;</span>
-        <span class="nt">&lt;ExposeHeader&gt;</span>ETag<span class="nt">&lt;/ExposeHeader&gt;</span>
-        <span class="nt">&lt;AllowedHeader&gt;</span>*<span class="nt">&lt;/AllowedHeader&gt;</span>
-    <span class="nt">&lt;/CORSRule&gt;</span>
-<span class="nt">&lt;/CORSConfiguration&gt;</span>
+<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="no">Woothee</span><span class="p">.</span><span class="nf">parse</span> <span class="s2">"Mozilla/5.0 (iPad; CPU OS 9_0_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A404 Safari/601.1"</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span><span class="o">=&gt;</span><span class="s2">"Safari"</span><span class="p">,</span> <span class="ss">:category</span><span class="o">=&gt;</span><span class="ss">:smartphone</span><span class="p">,</span> <span class="ss">:os</span><span class="o">=&gt;</span><span class="s2">"iPad"</span><span class="p">,</span> <span class="ss">:os_version</span><span class="o">=&gt;</span><span class="s2">"9.0.1"</span><span class="p">,</span> <span class="ss">:version</span><span class="o">=&gt;</span><span class="s2">"9.0"</span><span class="p">,</span> <span class="ss">:vendor</span><span class="o">=&gt;</span><span class="s2">"Apple"</span><span class="p">}</span>
 </code></pre>
 </div>
 
-<p><code class="highlighter-rouge">AllowedOrigin</code>で許可したいOriginのURLを設定、<code class="highlighter-rouge">AllowedMethod</code>で許可したいHTTPリクエストメソッドを指定します。それぞれ複数並べることで複数の値を設定することが可能となっています。</p>
+<p>この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。</p>
 
-<h3 id="section-1">確認手順</h3>
+<h3 id="bot">無条件にbot判定されたくない</h3>
 
-<p>正しく設定されているかを確認するために下記のように<code class="highlighter-rouge">curl</code>で検証してみましょう。</p>
+<p>また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば<a href="https://www.google.com/webmasters/tools/mobile-friendly/">Mobile-Friendly Test</a>でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが<code class="highlighter-rouge">crawler</code>と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
-HTTP/1.1 200 OK
-x-amz-id-2: xxx
-x-amz-request-id: xxx
-Date: xxx
-Access-Control-Allow-Origin: http://sample.jp
-Access-Control-Allow-Methods: GET
-Access-Control-Expose-Headers: ETag
-Access-Control-Max-Age: 3600
-Access-Control-Allow-Credentials: true
-Vary: Origin, Access-Control-Request-Headers, Access-Control-Request-Method
-Last-Modified: xxx
-ETag: "xxx"
-Accept-Ranges: bytes
-Content-Type: application/json
-Content-Length: 14356
-Server: AmazonS3
+<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="no">Woothee</span><span class="p">.</span><span class="nf">parse</span> <span class="s2">"​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span><span class="o">=&gt;</span><span class="s2">"Googlebot"</span><span class="p">,</span> <span class="ss">:category</span><span class="o">=&gt;</span><span class="ss">:crawler</span><span class="p">,</span> <span class="ss">:os</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:os_version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:vendor</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">}</span>
 </code></pre>
 </div>
 
-<p><code class="highlighter-rouge">Access-Control-Allow-Origin: http://sample.jp</code> で正しく AllowOrigin されていることが確認できました。</p>
+<h2 id="rack-simpleuseragent">rack-simple_user_agentというソリューション</h2>
 
-<h2 id="cloudfront">CloudFront</h2>
+<p>これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは <strong>stupidly simple UA detector</strong> と称することにした。</p>
 
-<p>実運用の際はS3から配信ではなく、CloudFrontと組み合わせて利用するケースが多いかと思います。</p>
-
-<p><a href="http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/MigrateS3ToCloudFront.html">Amazon S3 での CloudFront  の設定</a>が済んでいることを前提として進めていいきます。</p>
-
-<h3 id="cors-">CORS 設定</h3>
-
-<p>CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。Origin のヘッダーがS3まで通る必要があるので<code class="highlighter-rouge">Origin</code>ヘッダーを Whitelist Headers に加えてやります。</p>
-
-<p><img src="/images/posts/cors/cloudfront.png" alt="" /></p>
-
-<h3 id="section-2">確認手順</h3>
-
-<p>S3と同じく、<code class="highlighter-rouge">curl</code>で確認してみます。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
-HTTP/1.1 200 OK
-Content-Type: binary/octet-stream
-Content-Length: 123
-Connection: keep-alive
-Date: xxx
-Access-Control-Allow-Origin: http://sample.jp
-Access-Control-Allow-Methods: GET
-Access-Control-Expose-Headers: ETag
-Access-Control-Max-Age: 3600
-Access-Control-Allow-Credentials: true
-Last-Modified: xxx
-ETag: "xxx"
-Accept-Ranges: bytes
-Server: AmazonS3
-Vary: Origin
-Age: 9
-X-Cache: Hit from cloudfront
-Via: 1.1 xxxx.cloudfront.net (CloudFront)
-X-Amz-Cf-Id: xxx
-</code></pre>
-</div>
-
-<p>S3と同じく<code class="highlighter-rouge">Access-Control-Allow-Origin</code>ヘッダが設定されていることを確認できました。めでたしめでたし。</p>
-
-<h3 id="section-3">設定にあたっての注意事項</h3>
+<h2 id="rack-simpleuseragent-1">rack-simple_user_agentで可能な判定</h2>
 
 <ul>
-  <li>不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
+  <li><code class="highlighter-rouge">request.from_smartphone?</code>
     <ul>
-      <li>その場合は <a href="http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html">Invalidation</a>を行い、キャッシュをCloudFrontから消してみると解決するかも</li>
-      <li>Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）</li>
+      <li>iPhone, Android, Windows Phone の判定</li>
     </ul>
   </li>
-  <li><del>現時点ではCloudFrontは HTTP/2 未対応</del>
+  <li><code class="highlighter-rouge">request.from_tablet?</code>
     <ul>
-      <li><del>2017年くらいには対応してきそうな予感がある（あくまで個人的予想）</del></li>
-      <li>2016年９月にCloudFrontがHTTP/2に対応しました <a href="https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/">New – HTTP/2 Support for Amazon CloudFront | AWS Blog</a></li>
+      <li>iPad, Android Tablet の判定</li>
     </ul>
   </li>
-  <li>ブラウザからアクセスされるOriginヘッダは<strong>末尾スラッシュ無し</strong>である点に注意</li>
+  <li><code class="highlighter-rouge">request.from_smartdevice?</code>
+    <ul>
+      <li>上記のsmartphone, tabletを含む判定</li>
+    </ul>
+  </li>
+  <li><code class="highlighter-rouge">from_googlebot?</code>
+    <ul>
+      <li>googlebot かどうかの判定</li>
+    </ul>
+  </li>
 </ul>
 
-<h2 id="section-4">参考</h2>
+<p>2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.</p>
 
-<ul>
-  <li><a href="https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/cors.html">Cross-Origin Resource Sharing (CORS) - Amazon Simple Storage Service</a></li>
-  <li><a href="http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-cors">リクエストヘッダーに基づいてオブジェクトをキャッシュするように CloudFront を設定する - Amazon CloudFront</a></li>
-</ul>
+<h2 id="section-1">まとめ</h2>
+
+<p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。</p>
 
 
 <ul id="social-buttons">
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/s3-cloudfront-cors-setting/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/gem-rack-simple-user-agent/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   <div id="fb-root"></div>
@@ -235,13 +172,9 @@ X-Amz-Cf-Id: xxx
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/ruby-pipe-s3/" title="GZip形式のS3上のファイルをRubyのIO.pipeでストリーム読み出し">GZip形式のS3上のファイルをRubyのIO.pipeでストリーム読み出し</a></li>
+    <li><a href="/json-parser-benchmark/" title="RubyのJSONパーサーのパース速度比較">RubyのJSONパーサーのパース速度比較</a></li>
   
-    <li><a href="/windows-s3-sync/" title="WindowsコマンドでAmazon S3上にバックアップする">WindowsコマンドでAmazon S3上にバックアップする</a></li>
-  
-    <li><a href="/aws-summit-tokyo-2015/" title="AWS Summit Tokyo 2015で発表してきました">AWS Summit Tokyo 2015で発表してきました</a></li>
-  
-    <li><a href="/opsworks-rails/" title="Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング">Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング</a></li>
+    <li><a href="/ruby-configuration-pattern/" title="Ruby Gem Configuration Pattern">Ruby Gem Configuration Pattern</a></li>
   
   </ul>
   </div>
@@ -249,14 +182,10 @@ X-Amz-Cf-Id: xxx
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/gem-rack-simple-user-agent/" title="Newer Post: Railsでデバイス判定するrack-simple_user_agentというgemを作った"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/ruby-immutable-string/" title="Older Post: Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/s3-cloudfront-cors-setting/" title="Older Post: AWS S3 + CloudFront のCORS設定手順">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -300,10 +229,10 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "http://blog.toshimaru.net/s3-cloudfront-cors-setting/"
+      "@id": "http://blog.toshimaru.net/gem-rack-simple-user-agent/"
     },
-    "headline": "AWS S3 + CloudFront のCORS設定手順",
-    "datePublished": "2016-08-22T00:00:00+09:00",
+    "headline": "Railsでデバイス判定するrack-simple_user_agentというgemを作った",
+    "datePublished": "2016-10-02T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -311,9 +240,9 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     },
     "image": {
       "@type": "ImageObject",
-      "url": "http://blog.toshimaru.net/images/posts/cors/cache-distribution.png"
+      "url": "http://blog.toshimaru.net/images/icon.png"
     },
-    "keywords": "aws, s3"
+    "keywords": "gem"
   },
   {
     
@@ -324,8 +253,8 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "http://blog.toshimaru.net/tag/aws/",
-          "name": "aws"
+          "@id": "http://blog.toshimaru.net/tag/gem/",
+          "name": "gem"
         }
       }
     ]

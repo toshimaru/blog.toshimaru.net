@@ -1,4 +1,69 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://blog.toshimaru.net/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-10-01T22:29:32+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">AWS S3 + CloudFront のCORS設定手順</title><link href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用）&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://blog.toshimaru.net/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-10-02T00:51:15+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="http://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>http://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="http://blog.toshimaru.net/gem-rack-simple-user-agent/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;というgemを作った。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;なぜ作ったか&lt;/h2&gt;
+
+&lt;p&gt;同じコンセプトのgemとしては、&lt;a href=&quot;https://github.com/k0kubun&quot;&gt;k0kubun&lt;/a&gt;さんの&lt;a href=&quot;https://github.com/k0kubun/rack-user_agent&quot;&gt;rack-user_agent&lt;/a&gt;がある。詳細については下記のブログエントリに詳しい。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://k0kubun.hatenablog.com/entry/2014/11/21/041949&quot;&gt;Railsでデバイスの判定をするのに便利なgemを作った - k0kubun’s blog&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして&lt;a href=&quot;https://github.com/woothee/woothee&quot;&gt;woothee&lt;/a&gt;を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。&lt;/p&gt;
+
+&lt;h3 id=&quot;tablet-&quot;&gt;tablet 判定したい&lt;/h3&gt;
+
+&lt;p&gt;昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。&lt;/p&gt;
+
+&lt;p&gt;wootheeの場合、残念ながらcategoryとしてtabletは用意されていない。実際にwootheeを使ってiPadを判定した場合、カテゴリはsmartphoneと判定されてしまう。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Mozilla/5.0 (iPad; CPU OS 9_0_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A404 Safari/601.1&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Safari&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:smartphone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;iPad&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Apple&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。&lt;/p&gt;
+
+&lt;h3 id=&quot;bot&quot;&gt;無条件にbot判定されたくない&lt;/h3&gt;
+
+&lt;p&gt;また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば&lt;a href=&quot;https://www.google.com/webmasters/tools/mobile-friendly/&quot;&gt;Mobile-Friendly Test&lt;/a&gt;でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが&lt;code class=&quot;highlighter-rouge&quot;&gt;crawler&lt;/code&gt;と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Googlebot&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:crawler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;rack-simpleuseragent&quot;&gt;rack-simple_user_agentというソリューション&lt;/h2&gt;
+
+&lt;p&gt;これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは &lt;strong&gt;stupidly simple UA detector&lt;/strong&gt; と称することにした。&lt;/p&gt;
+
+&lt;h2 id=&quot;rack-simpleuseragent-1&quot;&gt;rack-simple_user_agentで可能な判定&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;request.from_smartphone?&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;iPhone, Android, Windows Phone の判定&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;request.from_tablet?&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;iPad, Android Tablet の判定&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;request.from_smartdevice?&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;上記のsmartphone, tabletを含む判定&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;from_googlebot?&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;googlebot かどうかの判定&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="gem" /><summary type="html">rack-simple_user_agentというgemを作った。</summary></entry><entry><title type="html">AWS S3 + CloudFront のCORS設定手順</title><link href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用）&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;フォントファイルの豆腐化問題&lt;/h2&gt;
 
@@ -111,16 +176,7 @@ X-Amz-Cf-Id: xxx
   &lt;li&gt;&lt;del&gt;現時点ではCloudFrontは HTTP/2 未対応&lt;/del&gt;
     &lt;ul&gt;
       &lt;li&gt;&lt;del&gt;2017年くらいには対応してきそうな予感がある（あくまで個人的予想）&lt;/del&gt;&lt;/li&gt;
-      &lt;li&gt;
-        &lt;table&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;
-              &lt;td&gt;2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront&lt;/td&gt;
-              &lt;td&gt;AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)&lt;/td&gt;
-            &lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/li&gt;
+      &lt;li&gt;2016年９月にCloudFrontがHTTP/2に対応しました &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/&quot;&gt;New – HTTP/2 Support for Amazon CloudFront | AWS Blog&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;ブラウザからアクセスされるOriginヘッダは&lt;strong&gt;末尾スラッシュ無し&lt;/strong&gt;である点に注意&lt;/li&gt;
@@ -1356,63 +1412,4 @@ xx.xx.xx.xx
       &lt;p&gt;&lt;a href=&quot;https://gist.github.com/nikcub/3833406&quot;&gt;Facebook PHP Source Code from August 2007&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><summary type="html">なぜひどいコードを書いてはいけないか - hitode909の日記</summary></entry><entry><title type="html">Jekyll 3にアップデートした</title><link href="http://blog.toshimaru.net/jekyll-3/" rel="alternate" type="text/html" title="Jekyll 3にアップデートした" /><published>2016-01-28T00:00:00+09:00</published><updated>2016-01-28T00:00:00+09:00</updated><id>http://blog.toshimaru.net/jekyll-3</id><content type="html" xml:base="http://blog.toshimaru.net/jekyll-3/">&lt;p&gt;本サイトは&lt;a href=&quot;https://pages.github.com/&quot;&gt;GitHub Pages&lt;/a&gt;の上にスタティックサイトジェネレーターであるところの&lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;を使ってサイト構築しているのだが、それを先日Jekyll 2からJekyll 3へと上げた。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://jekyllrb.com/news/2015/10/26/jekyll-3-0-released/&quot;&gt;Jekyll 3.0 Released&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Jekyll 3の主な変更点は以下だ。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;インクリメンタルビルドのサポート&lt;/h2&gt;
-
-&lt;p&gt;これにより10秒かかってたページ再生成の処理が3秒くらいで終わるようになった。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ jekyll serve
-...
-Server address: http://127.0.0.1:4000/
-Server running... press ctrl-c to stop.
-  Regenerating: 1 file(s) changed at 2016-01-28 23:26:28 ...done in 10.443565 seconds.
-  Regenerating: 1 file(s) changed at 2016-01-28 23:26:39 ...done in 10.440658 seconds.
-
-$ jekyll serve --incremental
-...
-Server address: http://127.0.0.1:4000/
-Server running... press ctrl-c to stop.
-  Regenerating: 1 file(s) changed at 2016-01-28 23:28:47 ...done in 3.404143 seconds.
-  Regenerating: 1 file(s) changed at 2016-01-28 23:29:01 ...done in 3.478217 seconds.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;ruby-193&quot;&gt;Ruby 1.9.3のサポートドロップ&lt;/h2&gt;
-
-&lt;p&gt;そろそろRuby 1.9.3以上ではなく、Ruby 2.0以上が当たり前な世界観になってきつつある。&lt;/p&gt;
-
-&lt;h2 id=&quot;gem&quot;&gt;いくつかのgemファイルが分離された&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/jekyll/jekyll-coffeescript&quot;&gt;jekyll-coffeescript&lt;/a&gt;や&lt;a href=&quot;https://github.com/jekyll/jekyll-paginate&quot;&gt;jekyll-paginate&lt;/a&gt;など、静的サイト作成において必須でない機能はgemとして分離され必要であればプラガブルに導入する形式になった。正しい進化。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;ファイル名によるタイトル付が可能に&lt;/h2&gt;
-
-&lt;p&gt;日本語タイトル使っている僕にはあんまり関係なさそう。&lt;/p&gt;
-
-&lt;h2 id=&quot;jekyll-3--pull-request&quot;&gt;Jekyll 3 対応 Pull Request&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/blog.toshimaru.net/pull/31&quot;&gt;Jekyll3 by toshimaru · Pull Request #31 · toshimaru/blog.toshimaru.net&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;jekyll-gem-&quot;&gt;jekyll gem 作ってる&lt;/h2&gt;
-
-&lt;p&gt;余談だがサイト構築の上で必要なgemを２つほど作った。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/jekyll-tagging-related_posts&quot;&gt;jekyll-tagging-related_posts&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/jekyll-toc&quot;&gt;jekyll-toc&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;road-to-jekyll-31&quot;&gt;Road to Jekyll 3.1&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://jekyllrb.com/news/2016/01/24/jekyll-3-1-0-released/&quot;&gt;Jekyll 3.1.0 Released&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;もう出てるので近いうちに上げる。&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;追記: 上げた。 &lt;a href=&quot;https://github.com/toshimaru/blog.toshimaru.net/pull/34&quot;&gt;Bundle Update on 2016-01-30 by deppbot · Pull Request #34 · toshimaru/blog.toshimaru.net&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><summary type="html">本サイトはGitHub Pagesの上にスタティックサイトジェネレーターであるところのJekyllを使ってサイト構築しているのだが、それを先日Jekyll 2からJekyll 3へと上げた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/jekyll/jekyll.png" /></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><summary type="html">なぜひどいコードを書いてはいけないか - hitode909の日記</summary></entry></feed>
