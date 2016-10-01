@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'jekyll', '~> 3.0'
+gem 'jekyll', '~> 3.2'
 
 group :jekyll_plugins do
+  # gem 'jekyll-admin'
   gem 'jekyll-coffeescript'
   gem 'jekyll-compose', github: 'toshimaru/jekyll-compose', branch: 'feature/post-template'
   gem 'jekyll-feed'
