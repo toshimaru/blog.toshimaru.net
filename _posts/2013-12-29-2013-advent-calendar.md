@@ -14,7 +14,7 @@ tags: tech
 * [カナディアンビールの紹介](http://blog.toshimaru.net/canadian-beers/) ([ビール Advent Calendar 2013](http://www.adventar.org/calendars/86))
 * [CSS3アニメーションを使ってサイトをリッチに](http://blog.toshimaru.net/css-animation/) ([CSS Property Advent Calendar 2013](http://www.adventar.org/calendars/57))
 * [細かすぎて伝わりにくいChrome Developerツールを使いこなそう！](http://blog.toshimaru.net/chrome-dev-tool/) ([Frontrend Advent Calendar 2013](http://www.adventar.org/calendars/62))
-* [jQuery使いが知っておくべき8つのjQueryテクニック](http://blog.toshimaru.net/jquery-8-tips/) ([jQuery Advent Calendar 2013](http://www.adventar.org/calendars/135))
+* [jQuery使いが知っておくべきjQueryテクニック8選](http://blog.toshimaru.net/jquery-8-tips/) ([jQuery Advent Calendar 2013](http://www.adventar.org/calendars/135))
 
 合計７本。思ったよりも多く書くことができました。
 
