@@ -33,6 +33,31 @@ foo task
 
 タスク`x`, `y`, `z` が実行された後にタスク`foo`が実行されます。
 
+### 別の方法
+
+また下記のように`foo`タスクのみ先に定期して、別のtaskとして依存を定義することも可能です。
+
+```rb
+task(:x) { puts "x" }
+task(:y) { puts "y" }
+task(:z) { puts "z" }
+
+desc "dependency rake task"
+task(:foo) do
+  puts "foo task"
+end
+
+task foo: [:x, :y, :z]
+```
+
+```
+$ rake foo
+x
+y
+z
+foo task
+```
+
 ## rakeタスクの後に別のrakeタスクを実行
 
 ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、`enhance`を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。
@@ -69,3 +94,4 @@ foo enhancing task
 
 * [Modifying Rake Tasks - Dan Manges's Blog](http://www.dan-manges.com/blog/modifying-rake-tasks)
 * [ruby/rake](https://github.com/ruby/rake)
+* [Rake で before task をフックする - northaven](http://yamayo.github.io/blog/2014/06/06/rake-before-task-hook/)
