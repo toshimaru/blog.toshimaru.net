@@ -40,9 +40,9 @@ RailsないしRubyはプログラミング言語の中では速くはない言�
 
 去年matzの口からRuby3のコンセプトが発表された。その驚くべき内容が **Ruby 3 x 3** 。
 
-![](/images/posts/roppongirb/ruby3x3.png)
+![ruby 3 x 3](/images/posts/roppongirb/ruby3x3.png)
 
-[Ruby3 challenges - RubyKaigi 2015 Keynote - YouTube](https://www.youtube.com/watch?v=E9bO1uqs4Oc)
+via. [Ruby3 challenges - RubyKaigi 2015 Keynote - YouTube](https://www.youtube.com/watch?v=E9bO1uqs4Oc)
 
 ## とあるRailsアプリの場合
 
@@ -54,7 +54,7 @@ RailsないしRubyはプログラミング言語の中では速くはない言�
 
 ## What about Rails?
 
-じゃあRailsはどうだろうか。下記はマツダさんのmatzのRuby 3x3 を受けての発表。
+じゃあRailsはどうだろうか。下記は[amatsuda](https://github.com/amatsuda)さんのmatzのRuby 3x3 を受けての発表。
 
 ![](/images/posts/roppongirb/rails3x.png)
 
@@ -62,17 +62,17 @@ RailsないしRubyはプログラミング言語の中では速くはない言�
 
 `?`が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、というような発表。
 
-下記は同じマツダさんが発表された[Rails Upgrade Casual Talks](http://togetter.com/li/955629)での資料です。
+下記は同じ[amatsuda](https://github.com/amatsuda)さんが発表された[Rails Upgrade Casual Talks](http://togetter.com/li/955629)での資料です。
 
 ![](/images/posts/roppongirb/rails-verup1.png)
 
-[Rails Upgrade Casual Talks // Speaker Deck](https://speakerdeck.com/a_matsuda/rails-upgrade-casual-talks)
+via. [Rails Upgrade Casual Talks // Speaker Deck](https://speakerdeck.com/a_matsuda/rails-upgrade-casual-talks)
 
 たしかに色んな機能が追加されている中、Railsが劇的に速くなることは考えにくい。解決策は...?
 
 ![](/images/posts/roppongirb/rails-verup2.png)
 
-**歯を食いしばってRails/Rubyをバージョンアップ**:innocent:
+**歯を食いしばってRails/Rubyをバージョンアップ** :innocent:
 
 Rails 遅くなってもRuby は速くなっているので、どちらも最新版をしっかり追っかけていけば、遅くなることなくRailsの機能拡張も追っかけていけるのでOK.
 
@@ -249,7 +249,7 @@ RailsのCacheの仕組みとして[公式ガイド](http://guides.rubyonrails.or
 
 ![](/images/posts/roppongirb/http2.png)
 
-[ウェブを速くするためにDeNAがやっていること - HTTP/2と、さらにその先](http://www.slideshare.net/kazuho/dena-http2)
+via. [ウェブを速くするためにDeNAがやっていること - HTTP/2と、さらにその先](http://www.slideshare.net/kazuho/dena-http2)
 
 下記のBEFORE/AFTERは画像の配信をHTTPからHTTP/2に変更した場合のリクエストをキャプチャしたもの。
 
@@ -284,6 +284,7 @@ Rails5をほぼ素の状態でHello Worldという文字列を出力するアプ
 `Should Fix`として報告されているのは、headタグ内にあるJS読み込みが Render Blocking してますよ、という内容のもの。Webの高速化はサーバーサイドだけで済むようなラクなもんじゃない。
 
 ## AMP :zap:
+
 AMPはWeb高速化のベストプラクティスを詰め込んだ仕様/制限のこと。詳しくは下記が参考になる。
 
 * [Why AMP is fast — Medium](https://medium.com/@cramforce/why-amp-is-fast-7d2ff1f48597#.tcozirlt5)
