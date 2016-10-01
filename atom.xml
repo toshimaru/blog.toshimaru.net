@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-10-01T13:35:02+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">AWS S3 + CloudFront のCORS設定手順</title><link href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用。）&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-10-01T14:28:54+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">AWS S3 + CloudFront のCORS設定手順</title><link href="http://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="http://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用）&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;フォントファイルの豆腐化問題&lt;/h2&gt;
 
@@ -99,7 +99,7 @@ X-Amz-Cf-Id: xxx
 
 &lt;p&gt;S3と同じく&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin&lt;/code&gt;ヘッダが設定されていることを確認できました。めでたしめでたし。&lt;/p&gt;
 
-&lt;h3 id=&quot;section-3&quot;&gt;注意事項&lt;/h3&gt;
+&lt;h3 id=&quot;section-3&quot;&gt;設定にあたっての注意事項&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
@@ -108,9 +108,19 @@ X-Amz-Cf-Id: xxx
       &lt;li&gt;Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;現時点ではCloudFrontは HTTP/2 未対応
+  &lt;li&gt;&lt;del&gt;現時点ではCloudFrontは HTTP/2 未対応&lt;/del&gt;
     &lt;ul&gt;
-      &lt;li&gt;2017年くらいには対応してきそうな予感がある（あくまで個人的予想）&lt;/li&gt;
+      &lt;li&gt;&lt;del&gt;2017年くらいには対応してきそうな予感がある（あくまで個人的予想）&lt;/del&gt;&lt;/li&gt;
+      &lt;li&gt;
+        &lt;table&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront&lt;/td&gt;
+              &lt;td&gt;AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)&lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;ブラウザからアクセスされるOriginヘッダは&lt;strong&gt;末尾スラッシュ無し&lt;/strong&gt;である点に注意&lt;/li&gt;
@@ -121,7 +131,7 @@ X-Amz-Cf-Id: xxx
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/cors.html&quot;&gt;Cross-Origin Resource Sharing (CORS) - Amazon Simple Storage Service&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-cors&quot;&gt;リクエストヘッダーに基づいてオブジェクトをキャッシュするように CloudFront を設定する - Amazon CloudFront&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html">（画像はAWS-CloudDesignPatternから引用。）</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/cors/cache-distribution.png" /></entry><entry><title type="html">Ruby2.3 で導入された frozen_string_literal オプションを試す</title><link href="http://blog.toshimaru.net/ruby-immutable-string/" rel="alternate" type="text/html" title="Ruby2.3 で導入された frozen_string_literal オプションを試す" /><published>2016-07-24T00:00:00+09:00</published><updated>2016-07-24T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-immutable-string</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-immutable-string/">&lt;h2 id=&quot;immutable-string-in-ruby3&quot;&gt;Immutable String in Ruby3&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html">（画像はAWS-CloudDesignPatternから引用）</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/cors/cache-distribution.png" /></entry><entry><title type="html">Ruby2.3 で導入された frozen_string_literal オプションを試す</title><link href="http://blog.toshimaru.net/ruby-immutable-string/" rel="alternate" type="text/html" title="Ruby2.3 で導入された frozen_string_literal オプションを試す" /><published>2016-07-24T00:00:00+09:00</published><updated>2016-07-24T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-immutable-string</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-immutable-string/">&lt;h2 id=&quot;immutable-string-in-ruby3&quot;&gt;Immutable String in Ruby3&lt;/h2&gt;
 
 &lt;p&gt;Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。&lt;/p&gt;
 

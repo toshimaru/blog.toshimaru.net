@@ -86,7 +86,7 @@
   </div>
 </div>
 
-<p>（画像は<a href="http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">AWS-CloudDesignPattern</a>から引用。）</p>
+<p>（画像は<a href="http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">AWS-CloudDesignPattern</a>から引用）</p>
 
 <h2 id="section">フォントファイルの豆腐化問題</h2>
 
@@ -187,7 +187,7 @@ X-Amz-Cf-Id: xxx
 
 <p>S3と同じく<code class="highlighter-rouge">Access-Control-Allow-Origin</code>ヘッダが設定されていることを確認できました。めでたしめでたし。</p>
 
-<h3 id="section-3">注意事項</h3>
+<h3 id="section-3">設定にあたっての注意事項</h3>
 
 <ul>
   <li>不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
@@ -196,9 +196,19 @@ X-Amz-Cf-Id: xxx
       <li>Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）</li>
     </ul>
   </li>
-  <li>現時点ではCloudFrontは HTTP/2 未対応
+  <li><del>現時点ではCloudFrontは HTTP/2 未対応</del>
     <ul>
-      <li>2017年くらいには対応してきそうな予感がある（あくまで個人的予想）</li>
+      <li><del>2017年くらいには対応してきそうな予感がある（あくまで個人的予想）</del></li>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront</td>
+              <td>AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
     </ul>
   </li>
   <li>ブラウザからアクセスされるOriginヘッダは<strong>末尾スラッシュ無し</strong>である点に注意</li>
