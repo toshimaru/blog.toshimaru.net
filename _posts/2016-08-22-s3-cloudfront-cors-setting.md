@@ -6,7 +6,7 @@ description: Font Awesomeのようなフォントファイルを外部ホスト�
 tags: aws s3
 ---
 
-（画像は[AWS-CloudDesignPattern](http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3)から引用。）
+（画像は[AWS-CloudDesignPattern](http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3)から引用）
 
 ## フォントファイルの豆腐化問題
 
@@ -107,13 +107,14 @@ X-Amz-Cf-Id: xxx
 
 S3と同じく`Access-Control-Allow-Origin`ヘッダが設定されていることを確認できました。めでたしめでたし。
 
-### 注意事項
+### 設定にあたっての注意事項
 
 * 不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
   * その場合は [Invalidation](http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html)を行い、キャッシュをCloudFrontから消してみると解決するかも
   * Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）
-* 現時点ではCloudFrontは HTTP/2 未対応
-  * 2017年くらいには対応してきそうな予感がある（あくまで個人的予想）
+* ~~現時点ではCloudFrontは HTTP/2 未対応~~
+  * ~~2017年くらいには対応してきそうな予感がある（あくまで個人的予想）~~
+  * 2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront | AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)
 * ブラウザからアクセスされるOriginヘッダは**末尾スラッシュ無し**である点に注意
 
 ## 参考
