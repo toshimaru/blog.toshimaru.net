@@ -114,7 +114,7 @@ S3と同じく`Access-Control-Allow-Origin`ヘッダが設定されているこ�
   * Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）
 * ~~現時点ではCloudFrontは HTTP/2 未対応~~
   * ~~2017年くらいには対応してきそうな予感がある（あくまで個人的予想）~~
-  * 2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront | AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)
+  * 2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront \| AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)
 * ブラウザからアクセスされるOriginヘッダは**末尾スラッシュ無し**である点に注意
 
 ## 参考
