@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>RSpecが通ったり落ちたりしたときに - Hack Your Design!</title>
+  <title>RSpecが通ったり落ちたりしたときにはseed値を指定する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="RSpecが通ったり落ちたりしたときに - Hack Your Design!">
-  <meta property="og:title" content="RSpecが通ったり落ちたりしたときに - Hack Your Design!">
+  <meta name="twitter:title" content="RSpecが通ったり落ちたりしたときにはseed値を指定する - Hack Your Design!">
+  <meta property="og:title" content="RSpecが通ったり落ちたりしたときにはseed値を指定する - Hack Your Design!">
   <meta name="description" content="RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。">
   <meta name="twitter:description" content="RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。">
   <meta property="og:description" content="RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。">
@@ -30,9 +30,10 @@
   </script>
 </head>
 <body>
-  <!--[if lt IE 8]>
-      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <!--[if lte IE 9]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
   <![endif]-->
+
   <!-- Google Tag Manager -->
   <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P34X4D"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -56,9 +57,9 @@
   <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
   <a class="icon search-area">
     <i class="icon-search"></i>
-    <form id="search-form" action="//google.com/search" method="get">
+    <form id="search-form" action="https://google.com/search" method="get">
       <input type="hidden" name="query" value="site:blog.toshimaru.net" />
-      <input type="text" class="search-txt" name="q" results="0" placeholder="Search"/>
+      <input type="text" class="search-txt" name="q" placeholder="Search"/>
     </form>
   </a>
   </div>
@@ -69,7 +70,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">RSpecが通ったり落ちたりしたときに</h1>
+  <h1 class="fadeInLeft">RSpecが通ったり落ちたりしたときにはseed値を指定する</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2014-09-23T00:00:00+09:00" pubdate>23 Sep 2014</time>
@@ -84,25 +85,32 @@
 
 <p>RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。</p>
 
-<h3 id="section">バージョン情報</h3>
+<h2 id="section">バージョン情報</h2>
+
 <ul>
   <li>rails (4.1.5)</li>
   <li>rspec (3.1.0)</li>
 </ul>
 
+<h2 id="random-order-rspec">Random order RSpec</h2>
+
 <p>RSpecを順番に依存させないために<code class="highlighter-rouge">spec_helper.rb</code>でこんな設定がされている。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Run specs in random order to surface order dependencies. If you find an</span>
+<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># Run specs in random order to surface order dependencies. If you find an</span>
 <span class="c1"># order dependency and want to debug it, you can fix the order by providing</span>
 <span class="c1"># the seed, which is printed after each run.</span>
 <span class="c1">#     --seed 1234</span>
-<span class="n">config</span><span class="p">.</span><span class="nf">order</span> <span class="o">=</span> <span class="s2">"random"</span></code></pre></figure>
+<span class="n">config</span><span class="p">.</span><span class="nf">order</span> <span class="o">=</span> <span class="s2">"random"</span>
+</code></pre>
+</div>
 
 <p>この設定によりテスト実行の順序がランダムになり、順序に依存しないテストの記述が可能となる。シード値はテストの最後に得られる。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>Randomized with seed 724
 </code></pre>
 </div>
+
+<h2 id="section-1">シード値を指定して実行</h2>
 
 <p>Failしたテストのこのシード値を設定してテストを走らせればFailしたテストの順番を再現できる。</p>
 
@@ -112,9 +120,10 @@
 
 <p><code class="highlighter-rouge">--seed</code>でシード値を指定、<code class="highlighter-rouge">--fail-fast</code>を設定してFailしたときにテストを即時終了させるようにする。</p>
 
-<p>こうすればFailするテストを再現できて、どのテストが順番に依存して落ちているのかがわかります。</p>
+<p>こうすればFailするテストを再現できて、どのテストがどこでテスト実行順番に依存して落ちているのかがわかります。</p>
 
-<h3 id="section-1">参考</h3>
+<h2 id="section-2">参考</h2>
+
 <p><a href="http://ikm.hatenablog.jp/entry/2013/03/26/003838">ランダムに落ちるspecの修正で便利だったRSpecの2つの設定</a></p>
 
 
@@ -202,7 +211,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/rspec-occasional-fail/"
     },
-    "headline": "RSpecが通ったり落ちたりしたときに",
+    "headline": "RSpecが通ったり落ちたりしたときにはseed値を指定する",
     "datePublished": "2014-09-23T00:00:00+09:00",
     "author": {
       "@type": "Person",
@@ -436,7 +445,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
 </footer>
 
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>
