@@ -4,17 +4,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ActiveRecordのコールバックの順番・コールバック内のロールバック処理 - Hack Your Design!</title>
+  <title>ActiveRecordのコールバックの順序・コールバック内のロールバック処理について - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="ActiveRecordのコールバックの順番・コールバック内のロールバック処理 - Hack Your Design!">
-  <meta property="og:title" content="ActiveRecordのコールバックの順番・コールバック内のロールバック処理 - Hack Your Design!">
-  <meta name="description" content="ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。">
-  <meta name="twitter:description" content="ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。">
-  <meta property="og:description" content="ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。">
+  <meta name="twitter:title" content="ActiveRecordのコールバックの順序・コールバック内のロールバック処理について - Hack Your Design!">
+  <meta property="og:title" content="ActiveRecordのコールバックの順序・コールバック内のロールバック処理について - Hack Your Design!">
+  <meta name="description" content="ActiveRecordのコールバックが実行される順序、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。">
+  <meta name="twitter:description" content="ActiveRecordのコールバックが実行される順序、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。">
+  <meta property="og:description" content="ActiveRecordのコールバックが実行される順序、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png">
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png">
@@ -70,7 +70,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">ActiveRecordのコールバックの順番・コールバック内のロールバック処理</h1>
+  <h1 class="fadeInLeft">ActiveRecordのコールバックの順序・コールバック内のロールバック処理について</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2015-03-01T00:00:00+09:00" pubdate>01 Mar 2015</time>
@@ -85,21 +85,21 @@
   </div>
 </div>
 
-<p>ActiveRecordのコールバックが実行される順番、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。</p>
+<p>ActiveRecordのコールバックが実行される順序、およびそれらのタイミングでのロールバックするためのやり方をまとめてみました。</p>
 
 <h2 id="callback-">Callback タイミング</h2>
 
-<p>まずは順番について。下記のようになっています。</p>
+<p>まずは順序について。下記のようになっています。</p>
 
 <ol>
   <li><code class="highlighter-rouge">before_validation</code></li>
   <li><code class="highlighter-rouge">after_validation</code></li>
   <li><code class="highlighter-rouge">before_save</code></li>
   <li>
-<code class="highlighter-rouge">before_create</code> / <code class="highlighter-rouge">before_update</code>
+<code class="highlighter-rouge">before_create</code> or <code class="highlighter-rouge">before_update</code>
 </li>
   <li>
-<code class="highlighter-rouge">after_create</code> / <code class="highlighter-rouge">after_update</code>
+<code class="highlighter-rouge">after_create</code> or <code class="highlighter-rouge">after_update</code>
 </li>
   <li><code class="highlighter-rouge">after_save</code></li>
   <li><code class="highlighter-rouge">after_commit</code></li>
@@ -144,27 +144,27 @@ after_commit is called
 </code></pre>
 </div>
 
-<p>新規作成なので <code class="highlighter-rouge">before_update</code> <code class="highlighter-rouge">after_update</code> は呼ばれない。</p>
+<p>新規作成なので、更新時のコールバックである<code class="highlighter-rouge">before_update</code>, <code class="highlighter-rouge">after_update</code>は呼ばれない。</p>
 
-<p>トランザクションが開始され<code class="highlighter-rouge">before_create</code>後にクエリが走る。その後、<code class="highlighter-rouge">after_*</code>系のコールバックが呼ばれトランザクションがコミットされる。</p>
+<p>トランザクションが開始され<code class="highlighter-rouge">before_create</code>後にクエリが走る。その後、<code class="highlighter-rouge">after_save</code>のコールバックが呼ばれトランザクションがコミットされる。</p>
 
 <h3 id="section-2">レコード更新時</h3>
 
 <p>同モデルのupdateの場合はこんな感じ。</p>
 
 <div class="highlighter-rouge">
-<pre class="highlight"><code> &gt; user.update(name: "toshi")
-    (0.1ms)  begin transaction
- before_validation is called
- after_validation is called
- before_save is called
- before_update is called
-   SQL (0.3ms)  UPDATE "users" SET "name" = ?, "updated_at" = ? WHERE "users"."id" = ?  [["name", "toshi"], ["updated_at", "2016-01-21 08:04:19.290079"], ["id", 1]]
- after_update is called
- after_save is called
-     (2.5ms)  commit transaction
- after_commit is called
- =&gt; true
+<pre class="highlight"><code>&gt; user.update(name: "toshi")
+  (0.1ms)  begin transaction
+before_validation is called
+after_validation is called
+before_save is called
+before_update is called
+ SQL (0.3ms)  UPDATE "users" SET "name" = ?, "updated_at" = ? WHERE "users"."id" = ?  [["name", "toshi"], ["updated_at", "2016-01-21 08:04:19.290079"], ["id", 1]]
+after_update is called
+after_save is called
+   (2.5ms)  commit transaction
+after_commit is called
+=&gt; true
 </code></pre>
 </div>
 
@@ -172,13 +172,13 @@ after_commit is called
 
 <h2 id="saveupdate-">save/update はトランザクション内で実行される</h2>
 
-<p><a href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">ドキュメント</a>にはこう書いてある</p>
+<p><a href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">ドキュメント</a>にはこう書いてある。</p>
 
 <blockquote>
   <p>The entire callback chain of a save, save!, or destroy call runs within a transaction. That includes after_* hooks. If everything goes fine a COMMIT is executed once the chain has been completed.</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">save</code>, <code class="highlighter-rouge">save!</code>, <code class="highlighter-rouge">destroy</code>のコールバック群はトランザクション内で処理されますよ、と。</p>
+<p>つまり、<code class="highlighter-rouge">save</code>, <code class="highlighter-rouge">save!</code>, <code class="highlighter-rouge">destroy</code>のコールバック群はトランザクション内で処理され、全てのコールバックが問題なく通ればコミットされますよ、と。</p>
 
 <h2 id="section-3">特定のコールバックのタイミングで処理をロールバックさせたい</h2>
 
@@ -249,6 +249,7 @@ after_save is called
 <p>update も同様にこの方法でロールバックできます。</p>
 
 <h2 id="section-4">参考</h2>
+
 <ul>
   <li><a href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">ActiveRecord::Callbacks</a></li>
   <li><a href="http://www.techscore.com/blog/2012/12/25/rails%E3%81%AE%E3%82%B3%E3%83%BC%E3%83%AB%E3%83%90%E3%83%83%E3%82%AF%E3%81%BE%E3%81%A8%E3%82%81/">» Railsのコールバックまとめ TECHSCORE BLOG</a></li>
@@ -284,7 +285,7 @@ after_save is called
   
     <li><a href="/belongs_to-through/" title="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</a></li>
   
-    <li><a href="/roppongirb-speeding-up-rails/" title="Roppongi.rbで「Rails高速化戦略」を発表しました">Roppongi.rbで「Rails高速化戦略」を発表しました</a></li>
+    <li><a href="/gem-rack-simple-user-agent/" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った">Railsでデバイス判定するrack-simple_user_agentというgemを作った</a></li>
   
   </ul>
   </div>
@@ -340,7 +341,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/active-record-callbacks/"
     },
-    "headline": "ActiveRecordのコールバックの順番・コールバック内のロールバック処理",
+    "headline": "ActiveRecordのコールバックの順序・コールバック内のロールバック処理について",
     "datePublished": "2015-03-01T00:00:00+09:00",
     "author": {
       "@type": "Person",
