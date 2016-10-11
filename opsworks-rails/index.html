@@ -105,8 +105,8 @@
 <li class="toc-entry toc-h3"><a href="#gemfile">Gemfile</a></li>
 <li class="toc-entry toc-h3"><a href="#databaseyml">database.yml</a></li>
 <li class="toc-entry toc-h3"><a href="#css%E3%81%8C%E9%81%A9%E5%BF%9C%E3%81%95%E3%82%8C%E3%81%A6%E3%81%84%E3%81%AA%E3%81%84%E5%95%8F%E9%A1%8C">CSSが適応されていない問題</a></li>
-<li class="toc-entry toc-h3"><a href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%95%E3%82%8C%E3%82%8B%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA">デプロイされるディレクトリ</a></li>
-<li class="toc-entry toc-h3"><a href="#%E3%83%AD%E3%82%B0%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA">ログディレクトリ</a></li>
+<li class="toc-entry toc-h3"><a href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA">デプロイ・ディレクトリ</a></li>
+<li class="toc-entry toc-h3"><a href="#%E3%83%AD%E3%82%B0%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA">ログ・ディレクトリ</a></li>
 <li class="toc-entry toc-h2"><a href="#%E3%81%BE%E3%81%A8%E3%82%81">まとめ</a></li>
 <li class="toc-entry toc-h2"><a href="#%E3%81%95%E3%81%84%E3%81%94%E3%81%AB">さいごに</a></li>
 <li class="toc-entry toc-h2"><a href="#link-%E5%8F%82%E8%80%83"><img class="emoji" title=":link:" alt=":link:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f517.png" height="20" width="20" align="absmiddle"> 参考</a></li>
@@ -118,7 +118,7 @@
 <p>公式サイトの説明は下記です。</p>
 
 <blockquote>
-  <p>AWS OpsWorks は、すべての種類およびサイズのアプリケーションを容易にデプロイおよび運用できるクラウドアプリケーション管理サービスです。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。</p>
+  <p>設定管理サービスである AWS OpsWorks を使用すると、ユーザーは Chef を使用して、あらゆる種類およびサイズのアプリケーションを簡単に設定および運用できます。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。</p>
 
   <p><a href="http://aws.amazon.com/jp/opsworks/">AWS OpsWorks</a></p>
 </blockquote>
@@ -133,17 +133,17 @@
   <li>OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能</li>
 </ul>
 
-<p><img src="/images/posts/opsworks/stack.png" alt=""></p>
+<p><img src="/images/posts/opsworks/stack.png" alt="stack image"></p>
 
 <p><strong>【↑図】OpsWorksのStack &amp; Layerの関係</strong></p>
 
 <h2 id="section">
 <a id="料金" class="anchor" href="#%E6%96%99%E9%87%91" aria-hidden="true"><span class="octicon octicon-link"></span></a>料金</h2>
-<p>OpsWorksの使用自体にかかる料金は<strong>＜0円＞</strong>です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。</p>
+<p>OpsWorksの使用自体にかかる料金は <strong>0円</strong> です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。</p>
 
 <h2 id="railsopsworks">
 <a id="railsをopsworksにデプロイしてみよう" class="anchor" href="#rails%E3%82%92opsworks%E3%81%AB%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>RailsをOpsWorksにデプロイしてみよう</h2>
-<p>OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。</p>
+<p>OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2のアプリケーションをOpsWorksにデプロイしてみようと思います。</p>
 
 <p>今回デプロイするRailsアプリケーションのコードの最終形は下記になります。</p>
 
@@ -157,31 +157,31 @@
 
 <p>まずはAWS ConsoleからOpsWorksにいきAdd Stackしましょう。RegionとかVPCとかIAMとかは適宜設定してね。</p>
 
-<p><img src="/images/posts/opsworks/add_stack.png" alt=""></p>
+<p><img src="/images/posts/opsworks/add_stack.png" alt="add stack"></p>
 
 <p>こんなのがStackのトップ画面。</p>
 
-<p><img src="/images/posts/opsworks/top.png" alt=""></p>
+<p><img src="/images/posts/opsworks/top.png" alt="stack top"></p>
 
 <h3 id="section-3">
 <a id="レイヤーの定義" class="anchor" href="#%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC%E3%81%AE%E5%AE%9A%E7%BE%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>レイヤーの定義</h3>
 
-<p><img src="/images/posts/opsworks/layer.png" alt=""></p>
+<p><img src="/images/posts/opsworks/layer.png" alt="layer"></p>
 
 <p>Layer TypeはRails App、Ruby versionは2.1、nginx+unicornを選択する</p>
 
-<p><img src="/images/posts/opsworks/add_layer.png" alt=""></p>
+<p><img src="/images/posts/opsworks/add_layer.png" alt="add layer"></p>
 
 <p>追加されました。</p>
 
-<p><img src="/images/posts/opsworks/layer_done.png" alt=""></p>
+<p><img src="/images/posts/opsworks/layer_done.png" alt="layer done"></p>
 
 <h3 id="section-4">
 <a id="レシピ" class="anchor" href="#%E3%83%AC%E3%82%B7%E3%83%94" aria-hidden="true"><span class="octicon octicon-link"></span></a>レシピ</h3>
 
 <p>RecipesでOpsWorksにどんなレシピが設定されているかがわかります。レシピ名がGithubへのリンクになっており、どんなレシピが書かれているかを確認できます。</p>
 
-<p><img src="/images/posts/opsworks/recipes.png" alt=""></p>
+<p><img src="/images/posts/opsworks/recipes.png" alt="recipes"></p>
 
 <p>今回はこのままでOK.</p>
 
@@ -190,48 +190,48 @@
 
 <p>では次にAppインスタンスを追加。t1.microインスタンスで。</p>
 
-<p><img src="/images/posts/opsworks/add_instance.png" alt=""></p>
+<p><img src="/images/posts/opsworks/add_instance.png" alt="add instance"></p>
 
 <p>AddInstanceするとステータスがStoppedなのでstartで起動します。</p>
 
-<p><img src="/images/posts/opsworks/instance_stopped.png" alt=""></p>
+<p><img src="/images/posts/opsworks/instance_stopped.png" alt="instance stop"></p>
 
 <p>10分くらいでセットアップが完了します。Statusがonlineでグリーンになれば準備OK.</p>
 
-<p><img src="/images/posts/opsworks/instance_online.png" alt=""></p>
+<p><img src="/images/posts/opsworks/instance_online.png" alt="online"></p>
 
 <h3 id="app">
 <a id="appの設定" class="anchor" href="#app%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>Appの設定</h3>
 
 <p>次にデプロイするAppの設定を追加していきます。</p>
 
-<p><img src="/images/posts/opsworks/apps.png" alt=""></p>
+<p><img src="/images/posts/opsworks/apps.png" alt="setting app"></p>
 
 <p>こんな感じでAppを設定。</p>
 
 <ul>
-  <li>Type: RoR</li>
-  <li>DataSource: 今回は特にないのでNoneで</li>
-  <li>Applicationソース: Githubから持ってきたいのでGithubのレポジトリURLを指定</li>
+  <li>Type: Ruby on Rails</li>
+  <li>DataSource: 今回は特にないのでNone</li>
+  <li>Applicationソース: GithubからデプロイしたいGithubのレポジトリURLを指定</li>
 </ul>
 
-<p><img src="/images/posts/opsworks/add_apps.png" alt=""></p>
+<p><img src="/images/posts/opsworks/add_apps.png" alt="add app"></p>
 
 <p><code class="highlighter-rouge">SECRET_KEY_BASE</code>(Rails4.2の<code class="highlighter-rouge">secrets.yml</code>で必要になる)もあわせてセットしましょう。</p>
 
-<p><img src="/images/posts/opsworks/add_envvar.png" alt=""></p>
+<p><img src="/images/posts/opsworks/add_envvar.png" alt="env var"></p>
 
-<p>DeploymentsでDeploy Appしてみよう。</p>
+<p>Deployments で Deploy Appしてみよう。</p>
 
-<p><img src="/images/posts/opsworks/deploy_app.png" alt=""></p>
+<p><img src="/images/posts/opsworks/deploy_app.png" alt="deploy app"></p>
 
 <p>Appは先ほど設定したApp、CommandはDeployを指定してDeploy App!（マイグレーションが必要であればここでMigration ON）</p>
 
-<p><img src="/images/posts/opsworks/deploy_app2.png" alt=""></p>
+<p><img src="/images/posts/opsworks/deploy_app2.png" alt="deploy app 2"></p>
 
 <p>SuccessすればOK.</p>
 
-<p><img src="/images/posts/opsworks/deploy_app3.png" alt=""></p>
+<p><img src="/images/posts/opsworks/deploy_app3.png" alt="deploy finished"></p>
 
 <h2 id="section-6">
 <a id="幾つかのハマりポイント" class="anchor" href="#%E5%B9%BE%E3%81%A4%E3%81%8B%E3%81%AE%E3%83%8F%E3%83%9E%E3%82%8A%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>幾つかのハマりポイント</h2>
@@ -254,14 +254,18 @@ gem 'unicorn'
 
 <div class="highlighter-rouge">
 <pre class="highlight"><code>[root@rails-app1 current]# cat config/database.yml
-default: &amp;default
-  adapter: sqlite3
-  pool: 5
-  timeout: 5000
+</code></pre>
+</div>
 
-production:
-  &lt;&lt;: *default
-  database: db/production.sqlite3
+<div class="language-yml highlighter-rouge">
+<pre class="highlight"><code><span class="s">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
+  <span class="s">adapter</span><span class="pi">:</span> <span class="s">sqlite3</span>
+  <span class="s">pool</span><span class="pi">:</span> <span class="s">5</span>
+  <span class="s">timeout</span><span class="pi">:</span> <span class="s">5000</span>
+
+<span class="s">production</span><span class="pi">:</span>
+  <span class="s">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="s">database</span><span class="pi">:</span> <span class="s">db/production.sqlite3</span>
 </code></pre>
 </div>
 
@@ -270,7 +274,7 @@ production:
 
 <p>「アレ、なんかCSSが効いていないっぽい！？」</p>
 
-<p><img src="/images/posts/opsworks/before_css.png" alt=""></p>
+<p><img src="/images/posts/opsworks/before_css.png" alt="css"></p>
 
 <p>これは<code class="highlighter-rouge">asset:precompile</code>が走っていないため。</p>
 
@@ -282,7 +286,8 @@ production:
 
 <p>下記を<code class="highlighter-rouge">deploy/before_migrate.rb</code>に設定する。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Running deploy/before_migrate.rb"</span><span class="p">)</span>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Running deploy/before_migrate.rb"</span><span class="p">)</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="ss">:deploy</span><span class="p">][</span><span class="ss">:rails_opsworks</span><span class="p">][</span><span class="ss">:rails_env</span><span class="p">]</span>
 <span class="n">current_release</span> <span class="o">=</span> <span class="n">release_path</span>
 
@@ -290,45 +295,51 @@ production:
   <span class="n">cwd</span> <span class="n">current_release</span>
   <span class="n">command</span> <span class="s2">"bundle exec rake assets:precompile"</span>
   <span class="n">environment</span> <span class="s2">"RAILS_ENV"</span> <span class="o">=&gt;</span> <span class="n">env</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span>
+</code></pre>
+</div>
 
 <p>これでデプロイ。</p>
 
-<p><img src="/images/posts/opsworks/after_css.png" alt=""></p>
+<p><img src="/images/posts/opsworks/after_css.png" alt="css 2"></p>
 
 <p>OK.</p>
 
 <h3 id="section-7">
-<a id="デプロイされるディレクトリ" class="anchor" href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%95%E3%82%8C%E3%82%8B%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA" aria-hidden="true"><span class="octicon octicon-link"></span></a>デプロイされるディレクトリ</h3>
+<a id="デプロイディレクトリ" class="anchor" href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA" aria-hidden="true"><span class="octicon octicon-link"></span></a>デプロイ・ディレクトリ</h3>
 
 <p><code class="highlighter-rouge">/srv/www/rails_opsworks/current</code>に最新の状態がデプロイされます。</p>
 
 <h3 id="section-8">
-<a id="ログディレクトリ" class="anchor" href="#%E3%83%AD%E3%82%B0%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA" aria-hidden="true"><span class="octicon octicon-link"></span></a>ログディレクトリ</h3>
+<a id="ログディレクトリ" class="anchor" href="#%E3%83%AD%E3%82%B0%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA" aria-hidden="true"><span class="octicon octicon-link"></span></a>ログ・ディレクトリ</h3>
 
 <p><code class="highlighter-rouge">/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
 
 <h2 id="section-9">
 <a id="まとめ" class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
+
 <p>さてOpsWorksでのデプロイ手順を紹介してきましたが一体何が嬉しいのでしょうか。個人的なメリットは以下です。</p>
 
 <ul>
-  <li>インスタンスがDisposable・Repeatableである
+  <li>インスタンスが Disposable（廃棄可能）・Reproducible（再現可能） である
     <ul>
+      <li>いわゆる immutable infrastructure</li>
       <li>= サーバーをいつでも潰して全く同じ環境を再現できる！</li>
-      <li>「サーバーを増やしたい！」→Add Instanceの作業だけで完了</li>
+      <li>「サーバーを増やしたい！」 → Add Instanceをポチるだけ</li>
     </ul>
   </li>
   <li>
-<a href="https://github.com/capistrano/capistrano">Capistrano</a>などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks&amp;Chefに一任できる</li>
+<a href="https://github.com/capistrano/capistrano">Capistrano</a>などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks &amp; Chefに一任できる</li>
 </ul>
 
 <h2 id="section-10">
 <a id="さいごに" class="anchor" href="#%E3%81%95%E3%81%84%E3%81%94%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>さいごに</h2>
-<p>Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、<strong>OpsWorksレシピ+Custom Chefレシピ</strong>の２つを組み合わせて運用していくのが現実的かと思います。</p>
+
+<p>Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、<strong>OpsWorksレシピ+Custom Chefレシピ</strong> の２つを組み合わせて運用していくのが現実的かと思います。</p>
 
 <h2 id="link-">
 <a id="link-参考" class="anchor" href="#link-%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a><img class="emoji" title=":link:" alt=":link:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f517.png" height="20" width="20" align="absmiddle"> 参考</h2>
+
 <ul>
   <li><a href="http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks">Deploying Ruby on Rails Applications to AWS OpsWorks</a></li>
 </ul>
