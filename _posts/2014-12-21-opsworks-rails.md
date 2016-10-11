@@ -14,7 +14,7 @@ OpsWorksとは？
 ----
 公式サイトの説明は下記です。
 
-> AWS OpsWorks は、すべての種類およびサイズのアプリケーションを容易にデプロイおよび運用できるクラウドアプリケーション管理サービスです。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。
+> 設定管理サービスである AWS OpsWorks を使用すると、ユーザーは Chef を使用して、あらゆる種類およびサイズのアプリケーションを簡単に設定および運用できます。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。
 >
 > [AWS OpsWorks](http://aws.amazon.com/jp/opsworks/)
 
@@ -26,17 +26,17 @@ OpsWorksとは？
 * OpsWorksで使われているレシピは[Githubで公開](https://github.com/aws/opsworks-cookbooks)されており実行コードが追える
 * OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能
 
-![](/images/posts/opsworks/stack.png)
+![stack image](/images/posts/opsworks/stack.png)
 
 **【↑図】OpsWorksのStack & Layerの関係**
 
 料金
 ----
-OpsWorksの使用自体にかかる料金は**＜0円＞**です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。
+OpsWorksの使用自体にかかる料金は **0円** です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。
 
 RailsをOpsWorksにデプロイしてみよう
 ---
-OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2.0のアプリケーションをOpsWorksにデプロイしてみようと思います。
+OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2のアプリケーションをOpsWorksにデプロイしてみようと思います。
 
 今回デプロイするRailsアプリケーションのコードの最終形は下記になります。
 
@@ -49,29 +49,29 @@ OpsWorksはとくにRailsアプリケーションとの相性が良く、今回�
 
 まずはAWS ConsoleからOpsWorksにいきAdd Stackしましょう。RegionとかVPCとかIAMとかは適宜設定してね。
 
-![](/images/posts/opsworks/add_stack.png)
+![add stack](/images/posts/opsworks/add_stack.png)
 
 こんなのがStackのトップ画面。
 
-![](/images/posts/opsworks/top.png)
+![stack top](/images/posts/opsworks/top.png)
 
 ### レイヤーの定義
 
-![](/images/posts/opsworks/layer.png)
+![layer](/images/posts/opsworks/layer.png)
 
 Layer TypeはRails App、Ruby versionは2.1、nginx+unicornを選択する
 
-![](/images/posts/opsworks/add_layer.png)
+![add layer](/images/posts/opsworks/add_layer.png)
 
 追加されました。
 
-![](/images/posts/opsworks/layer_done.png)
+![layer done](/images/posts/opsworks/layer_done.png)
 
 ### レシピ
 
 RecipesでOpsWorksにどんなレシピが設定されているかがわかります。レシピ名がGithubへのリンクになっており、どんなレシピが書かれているかを確認できます。
 
-![](/images/posts/opsworks/recipes.png)
+![recipes](/images/posts/opsworks/recipes.png)
 
 今回はこのままでOK.
 
@@ -79,45 +79,45 @@ RecipesでOpsWorksにどんなレシピが設定されているかがわかり�
 
 では次にAppインスタンスを追加。t1.microインスタンスで。
 
-![](/images/posts/opsworks/add_instance.png)
+![add instance](/images/posts/opsworks/add_instance.png)
 
 AddInstanceするとステータスがStoppedなのでstartで起動します。
 
-![](/images/posts/opsworks/instance_stopped.png)
+![instance stop](/images/posts/opsworks/instance_stopped.png)
 
 10分くらいでセットアップが完了します。Statusがonlineでグリーンになれば準備OK.
 
-![](/images/posts/opsworks/instance_online.png)
+![online](/images/posts/opsworks/instance_online.png)
 
 ### Appの設定
 
 次にデプロイするAppの設定を追加していきます。
 
-![](/images/posts/opsworks/apps.png)
+![setting app](/images/posts/opsworks/apps.png)
 
 こんな感じでAppを設定。
 
-* Type: RoR
-* DataSource: 今回は特にないのでNoneで
-* Applicationソース: Githubから持ってきたいのでGithubのレポジトリURLを指定
+* Type: Ruby on Rails
+* DataSource: 今回は特にないのでNone
+* Applicationソース: GithubからデプロイしたいGithubのレポジトリURLを指定
 
-![](/images/posts/opsworks/add_apps.png)
+![add app](/images/posts/opsworks/add_apps.png)
 
 `SECRET_KEY_BASE`(Rails4.2の`secrets.yml`で必要になる)もあわせてセットしましょう。
 
-![](/images/posts/opsworks/add_envvar.png)
+![env var](/images/posts/opsworks/add_envvar.png)
 
-DeploymentsでDeploy Appしてみよう。
+Deployments で Deploy Appしてみよう。
 
-![](/images/posts/opsworks/deploy_app.png)
+![deploy app](/images/posts/opsworks/deploy_app.png)
 
 Appは先ほど設定したApp、CommandはDeployを指定してDeploy App!（マイグレーションが必要であればここでMigration ON）
 
-![](/images/posts/opsworks/deploy_app2.png)
+![deploy app 2](/images/posts/opsworks/deploy_app2.png)
 
 SuccessすればOK.
 
-![](/images/posts/opsworks/deploy_app3.png)
+![deploy finished](/images/posts/opsworks/deploy_app3.png)
 
 ## 幾つかのハマりポイント
 
@@ -132,21 +132,27 @@ SuccessすればOK.
 
 RDSを設定していれば自動的に設定されるのですが、今回の場合設定していないので別途手で`database.yml`を作りました。
 
-    [root@rails-app1 current]# cat config/database.yml
-    default: &default
-      adapter: sqlite3
-      pool: 5
-      timeout: 5000
 
-    production:
-      <<: *default
-      database: db/production.sqlite3
+```
+[root@rails-app1 current]# cat config/database.yml
+```
+
+```yml
+default: &default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+production:
+  <<: *default
+  database: db/production.sqlite3
+```
 
 ### CSSが適応されていない問題
 
 「アレ、なんかCSSが効いていないっぽい！？」
 
-![](/images/posts/opsworks/before_css.png)
+![css](/images/posts/opsworks/before_css.png)
 
 これは`asset:precompile`が走っていないため。
 
@@ -156,7 +162,7 @@ RDSを設定していれば自動的に設定されるのですが、今回の�
 
 下記を`deploy/before_migrate.rb`に設定する。
 
-{% highlight ruby %}
+```rb
 Chef::Log.info("Running deploy/before_migrate.rb")
 env = node[:deploy][:rails_opsworks][:rails_env]
 current_release = release_path
@@ -166,35 +172,39 @@ execute "rake assets:precompile" do
   command "bundle exec rake assets:precompile"
   environment "RAILS_ENV" => env
 end
-{% endhighlight %}
+```
 
 これでデプロイ。
 
-![](/images/posts/opsworks/after_css.png)
+![css 2](/images/posts/opsworks/after_css.png)
 
 OK.
 
-### デプロイされるディレクトリ
+### デプロイ・ディレクトリ
 
 `/srv/www/rails_opsworks/current`に最新の状態がデプロイされます。
 
-### ログディレクトリ
+### ログ・ディレクトリ
 
 `/var/lib/aws/opsworks/chef` Chefのログ、OpsWorksの設定JSONが格納されています。
 
 まとめ
 ---
+
 さてOpsWorksでのデプロイ手順を紹介してきましたが一体何が嬉しいのでしょうか。個人的なメリットは以下です。
 
-* インスタンスがDisposable・Repeatableである
+* インスタンスが Disposable（廃棄可能）・Reproducible（再現可能） である
+  * いわゆる immutable infrastructure
   * = サーバーをいつでも潰して全く同じ環境を再現できる！
-  * 「サーバーを増やしたい！」→Add Instanceの作業だけで完了
-* [Capistrano](https://github.com/capistrano/capistrano)などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks&Chefに一任できる
+  * 「サーバーを増やしたい！」 → Add Instanceをポチるだけ
+* [Capistrano](https://github.com/capistrano/capistrano)などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks & Chefに一任できる
 
 さいごに
 ---
-Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、**OpsWorksレシピ+Custom Chefレシピ**の２つを組み合わせて運用していくのが現実的かと思います。
+
+Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、**OpsWorksレシピ+Custom Chefレシピ** の２つを組み合わせて運用していくのが現実的かと思います。
 
 :link: 参考
 ----
+
 * [Deploying Ruby on Rails Applications to AWS OpsWorks](http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks)
