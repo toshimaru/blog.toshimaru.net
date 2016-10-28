@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Ruby の inject を使いこなす
+title: Ruby の inject メソッドを使いこなす
 published: true
-description: Rubyのイテレータメソッド・injectの使い方を紹介してみようと思います。
+description: Rubyのイテレータメソッド・injectの使い方を紹介します。合計の出し方、配列内の要素数をハッシュにしたり、each_with_objectの使い方など。
 tags: ruby
 toc: true
 ---
