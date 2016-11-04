@@ -1,16 +1,15 @@
 ---
 layout: post
-title: jQueryのモダンなAjaxの書き方 〜jQuery.Deferredを用いたAjax〜
+title: jQueryのDeferredを用いたモダンなAjax処理の書き方
 published: true
-description: jQeuryにおけるモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。
+description: jQeuryにおけるDeferredを用いたモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。
 tags: jquery javascript
+toc: true
 ---
 
-本エントリは[軽めのjQuery Advent Calendar 2012](http://www.adventar.org/calendars/29)の14日目の記事として書きます。
+本エントリは[軽めのjQuery Advent Calendar 2012](http://www.adventar.org/calendars/29)の14日目の記事として書きます。軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。
 
-軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。。。
-
-**※ Twitter API仕様変更によりTwitter APIを使ったコードは動かなくなっていることにご注意。**{:.red}
+**※ Twitter API仕様変更によりTwitter APIを使ったコード例は現在動作しなくなっていることにご注意。**{:.red}
 
 ## jQuery 1.4以前の書き方
 
@@ -35,9 +34,9 @@ $.ajax({
 ```js
 $.ajax({
     url: "ajax.html",
-}).success(function(data){
+}).success(function(data) {
     alert('success!!');
-}).error(function(data){
+}).error(function(data) {
     alert('error!!!');
 });
 ```
@@ -61,9 +60,9 @@ $.ajax({
 ```js
 $.ajax({
     url: "ajax.html",
-}).done(function(data){
+}).done(function(data) {
     alert('success!!');
-}).fail(function(data){
+}).fail(function(data) {
     alert('error!!!');
 });
 ```
@@ -74,8 +73,8 @@ $.ajax({
 $.ajax({
     url: "ajax.html",
 }).then(
-    function(data){ alert('success!!'); },
-    function(data){ alert('error!!');   }
+    function(data) { alert('success!!'); },
+    function(data) { alert('error!!');   }
 );
 ```
 
@@ -132,7 +131,13 @@ $('#button').on('click', function() {
 
 見てわかるとおり、Deferredを使うことでtwitterの検索を行うAjax部分と結果取得時のイベント処理部分が分離できます。
 
-これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは `Twitter.search('query hoge').done(function(){//code...})` と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。
+これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは
+
+```js
+Twitter.search('query hoge').done(function() { /* code... */ })
+```
+
+と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。
 
 ## 【発展編2】$.when() を用いた書き方
 
@@ -161,7 +166,7 @@ when内のDeferredオブジェクト全ての処理が完了すると、その�
 
 本日紹介したコードは[gist](https://gist.github.com/4269484)にも上げております。
 
-### 参考
+## 参考
 
 * [jQueryのDeferredオブジェクトについて調べてみた](http://d.hatena.ne.jp/aoe-tk/20110515/1305471586)
 * [jQueryのDeferredとPromiseで応答性の良いアプリをー実践編](http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/how-happy-with-jquery-deferred-for-your-applications/)
