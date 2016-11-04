@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>jQueryのモダンなAjaxの書き方 〜jQuery.Deferredを用いたAjax〜 - Hack Your Design!</title>
+  <title>jQueryのDeferredを用いたモダンなAjax処理の書き方 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="jQueryのモダンなAjaxの書き方 〜jQuery.Deferredを用いたAjax〜 - Hack Your Design!">
-  <meta property="og:title" content="jQueryのモダンなAjaxの書き方 〜jQuery.Deferredを用いたAjax〜 - Hack Your Design!">
-  <meta name="description" content="jQeuryにおけるモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。">
-  <meta name="twitter:description" content="jQeuryにおけるモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。">
-  <meta property="og:description" content="jQeuryにおけるモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。">
+  <meta name="twitter:title" content="jQueryのDeferredを用いたモダンなAjax処理の書き方 - Hack Your Design!">
+  <meta property="og:title" content="jQueryのDeferredを用いたモダンなAjax処理の書き方 - Hack Your Design!">
+  <meta name="description" content="jQeuryにおけるDeferredを用いたモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。">
+  <meta name="twitter:description" content="jQeuryにおけるDeferredを用いたモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。">
+  <meta property="og:description" content="jQeuryにおけるDeferredを用いたモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
@@ -70,7 +70,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">jQueryのモダンなAjaxの書き方 〜jQuery.Deferredを用いたAjax〜</h1>
+  <h1 class="fadeInLeft">jQueryのDeferredを用いたモダンなAjax処理の書き方</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2012-12-13T00:00:00+09:00" pubdate>13 Dec 2012</time>
@@ -85,17 +85,25 @@
   </div>
 </div>
 
-<p>本エントリは<a href="http://www.adventar.org/calendars/29">軽めのjQuery Advent Calendar 2012</a>の14日目の記事として書きます。</p>
+<ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#jquery-14以前の書き方">jQuery 1.4以前の書き方</a></li>
+<li class="toc-entry toc-h2"><a href="#jquery-15以上の書き方">jQuery 1.5以上の書き方</a></li>
+<li class="toc-entry toc-h2"><a href="#jquery-18以上の書き方">jQuery 1.8以上の書き方</a></li>
+<li class="toc-entry toc-h2"><a href="#発展編1deferredを用いた書き方">【発展編1】Deferredを用いた書き方</a></li>
+<li class="toc-entry toc-h3"><a href="#deferredとは何か">deferredとは何か？</a></li>
+<li class="toc-entry toc-h2"><a href="#発展編2when-を用いた書き方">【発展編2】$.when() を用いた書き方</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul><p>本エントリは<a href="http://www.adventar.org/calendars/29">軽めのjQuery Advent Calendar 2012</a>の14日目の記事として書きます。軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。</p>
 
-<p>軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。。。</p>
+<p><strong class="red">※ Twitter API仕様変更によりTwitter APIを使ったコード例は現在動作しなくなっていることにご注意。</strong></p>
 
-<p><strong class="red">※ Twitter API仕様変更によりTwitter APIを使ったコードは動かなくなっていることにご注意。</strong></p>
-
-<h2 id="jquery-14">jQuery 1.4以前の書き方</h2>
+<h2 id="jquery-14">
+<a id="jquery-14以前の書き方" class="anchor" href="#jquery-14%E4%BB%A5%E5%89%8D%E3%81%AE%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>jQuery 1.4以前の書き方</h2>
 
 <p>まずは、少し古めのコード、昔のjQueryの本とかでよく見る書き方。</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge">
+<pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
     <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
        <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span>
@@ -107,15 +115,17 @@
 </code></pre>
 </div>
 
-<h2 id="jquery-15">jQuery 1.5以上の書き方</h2>
+<h2 id="jquery-15">
+<a id="jquery-15以上の書き方" class="anchor" href="#jquery-15%E4%BB%A5%E4%B8%8A%E3%81%AE%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>jQuery 1.5以上の書き方</h2>
 
 <p>1.5以降だと、<code class="highlighter-rouge">$.ajax()</code> は<a href="http://api.jquery.com/jQuery.ajax/#jqXHR">jqXHRオブジェクト</a>を返すようになります。それを利用した書き方はこう。</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge">
+<pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
-<span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+<span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span>
-<span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+<span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!!'</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre>
@@ -123,7 +133,8 @@
 
 <p>成功時の処理と失敗時の処理が<code class="highlighter-rouge">ajax()</code>と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。</p>
 
-<h2 id="jquery-18">jQuery 1.8以上の書き方</h2>
+<h2 id="jquery-18">
+<a id="jquery-18以上の書き方" class="anchor" href="#jquery-18%E4%BB%A5%E4%B8%8A%E3%81%AE%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>jQuery 1.8以上の書き方</h2>
 
 <p><a href="http://api.jquery.com/jQuery.ajax/">公式リファレンス</a>いわく、</p>
 
@@ -134,18 +145,22 @@
 <p>つまり要約するとjQuery1.8から</p>
 
 <ul>
-  <li><code class="highlighter-rouge">success()</code> は <code class="highlighter-rouge">done()</code> に、</li>
-  <li><code class="highlighter-rouge">error()</code> は <code class="highlighter-rouge">fail()</code> に、</li>
-  <li><code class="highlighter-rouge">complete()</code> は <code class="highlighter-rouge">always()</code>を</li>
+  <li>
+<code class="highlighter-rouge">success()</code> は <code class="highlighter-rouge">done()</code> に、</li>
+  <li>
+<code class="highlighter-rouge">error()</code> は <code class="highlighter-rouge">fail()</code> に、</li>
+  <li>
+<code class="highlighter-rouge">complete()</code> は <code class="highlighter-rouge">always()</code>を</li>
 </ul>
 
 <p>代わりに使ってね、ってことです。ということで、<code class="highlighter-rouge">success()</code>,<code class="highlighter-rouge">error()</code>は使わない。</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge">
+<pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
-<span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+<span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span>
-<span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+<span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!!'</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre>
@@ -153,22 +168,25 @@
 
 <p>あるいは<code class="highlighter-rouge">then()</code>を用いてこう書いてもいいでしょう。</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge">
+<pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
 <span class="p">}).</span><span class="nx">then</span><span class="p">(</span>
-    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span> <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span> <span class="p">},</span>
-    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span> <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!'</span><span class="p">);</span>   <span class="p">}</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span> <span class="p">},</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!'</span><span class="p">);</span>   <span class="p">}</span>
 <span class="p">);</span>
 </code></pre>
 </div>
 
 <p><code class="highlighter-rouge">then()</code>の一個目の関数が成功時、二個目の関数が失敗時となります。</p>
 
-<h2 id="deferred">【発展編1】Deferredを用いた書き方</h2>
+<h2 id="deferred">
+<a id="発展編1deferredを用いた書き方" class="anchor" href="#%E7%99%BA%E5%B1%95%E7%B7%A81deferred%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>【発展編1】Deferredを用いた書き方</h2>
 
 <p>上述した例の中でさりげなくDeferredな書き方を使っていましたが、発展編ということでこのDeferredな書き方をさらに突き詰めてみましょう。</p>
 
-<h3 id="deferred-1">deferredとは何か？</h3>
+<h3 id="deferred-1">
+<a id="deferredとは何か" class="anchor" href="#deferred%E3%81%A8%E3%81%AF%E4%BD%95%E3%81%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>deferredとは何か？</h3>
 
 <blockquote>
   <p>jQuery.Deferred() introduces several enhancements to the way callbacks are managed and invoked. In particular, jQuery.Deferred() provides flexible ways to provide multiple callbacks, and these callbacks can be invoked regardless of whether the original callback dispatch has already occurred. jQuery Deferred is based on the CommonJS Promises/A design.</p>
@@ -182,14 +200,17 @@
 
 <ul>
   <li><a href="http://msdn.microsoft.com/en-us/magazine/gg723713.aspx">Creating Responsive Applications Using jQuery Deferred and Promises</a></li>
-  <li><a href="https://twitter.com/tokkonopapa">@tokkonoPapa</a>さんによる上記事の翻訳はこちら → <a href="http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/jquery-deferred-for-responsive-applications-basic/">jQueryのDeferredとPromiseで応答性の良いアプリをー基本編</a></li>
+  <li>
+<a href="https://twitter.com/tokkonopapa">@tokkonoPapa</a>さんによる上記事の翻訳はこちら → <a href="http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/jquery-deferred-for-responsive-applications-basic/">jQueryのDeferredとPromiseで応答性の良いアプリをー基本編</a>
+</li>
 </ul>
 
 <p>論より実践。deferredをうまく使ったAjaxコードを見てみましょう。</p>
 
 <p><a href="http://jsfiddle.net/toshimaru/yP58L/1/light/">jsfiddleでの実例はこちら</a></p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">Twitter</span> <span class="o">=</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge">
+<pre class="highlight"><code><span class="kd">var</span> <span class="nx">Twitter</span> <span class="o">=</span> <span class="p">{</span>
     <span class="na">search</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
         <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
@@ -219,15 +240,24 @@
 
 <p>見てわかるとおり、Deferredを使うことでtwitterの検索を行うAjax部分と結果取得時のイベント処理部分が分離できます。</p>
 
-<p>これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは <code class="highlighter-rouge">Twitter.search('query hoge').done(function(){//code...})</code> と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。</p>
+<p>これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは</p>
 
-<h2 id="when-">【発展編2】$.when() を用いた書き方</h2>
+<div class="language-js highlighter-rouge">
+<pre class="highlight"><code><span class="nx">Twitter</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="s1">'query hoge'</span><span class="p">).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* code... */</span> <span class="p">})</span>
+</code></pre>
+</div>
+
+<p>と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。</p>
+
+<h2 id="when-">
+<a id="発展編2when-を用いた書き方" class="anchor" href="#%E7%99%BA%E5%B1%95%E7%B7%A82when-%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>【発展編2】$.when() を用いた書き方</h2>
 
 <p><code class="highlighter-rouge">$.when()</code>を用いると複数のdeferredオブジェクトをまとめて管理できます。</p>
 
 <p><a href="http://jsfiddle.net/toshimaru/nNMae/">jsfiddleでの実例はこちら</a></p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="c1">// "Twitter" のコードは同上</span>
+<div class="language-js highlighter-rouge">
+<pre class="highlight"><code><span class="c1">// "Twitter" のコードは同上</span>
 <span class="c1">// var Twitter = { ... }</span>
 
 <span class="nx">$</span><span class="p">(</span><span class="s1">'#button'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -242,13 +272,14 @@
 
 <p>when内のDeferredオブジェクト全ての処理が完了すると、その後の処理が発火します。複数のAJAX結果をまとめて処理したいってときに使えます。</p>
 
-<hr />
+<hr>
 
 <p>いかがだったでしょうか？ Deferredオブジェクトを使うことでより楽しいAjaxライフが送れそうですね。ワクワクしますね。</p>
 
 <p>本日紹介したコードは<a href="https://gist.github.com/4269484">gist</a>にも上げております。</p>
 
-<h3 id="section">参考</h3>
+<h2 id="section">
+<a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
 
 <ul>
   <li><a href="http://d.hatena.ne.jp/aoe-tk/20110515/1305471586">jQueryのDeferredオブジェクトについて調べてみた</a></li>
@@ -346,7 +377,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/jquery-ajaxdeferredajax/"
     },
-    "headline": "jQueryのモダンなAjaxの書き方 〜jQuery.Deferredを用いたAjax〜",
+    "headline": "jQueryのDeferredを用いたモダンなAjax処理の書き方",
     "datePublished": "2012-12-13T00:00:00+09:00",
     "author": {
       "@type": "Person",
@@ -405,7 +436,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
           <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/"></a>
 </li>
-          <li><a href="/jquery-ajaxdeferredajax/">jQueryのモダンなAjaxの書き方 〜jQuery.Deferredを用いたAjax〜</a>
+          <li><a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
 </li>
           <li><a href="/jquery-8-tips/">jQuery使いが知っておくべきjQueryテクニック8選</a>
