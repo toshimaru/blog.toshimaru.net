@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://blog.toshimaru.net/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-11-07T01:05:50+09:00</updated><id>http://blog.toshimaru.net//</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Roppongi.rb #2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</title><link href="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/" rel="alternate" type="text/html" title="Roppongi.rb #2で「Infrastructure as (Ruby) Code の現状確認」を発表しました" /><published>2016-11-06T00:00:00+09:00</published><updated>2016-11-06T00:00:00+09:00</updated><id>http://blog.toshimaru.net/infrastructure-as-ruby-code-2016</id><content type="html" xml:base="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/">&lt;p&gt;第二回Roppongi.rbを&lt;a href=&quot;http://roppongirb.connpass.com/event/42633/&quot;&gt;「Infrastructure x Ruby」というテーマで開催&lt;/a&gt;した。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://blog.toshimaru.net/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.0">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-11-09T03:31:16+09:00</updated><id>http://blog.toshimaru.net//</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Roppongi.rb #2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</title><link href="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/" rel="alternate" type="text/html" title="Roppongi.rb #2で「Infrastructure as (Ruby) Code の現状確認」を発表しました" /><published>2016-11-06T00:00:00+09:00</published><updated>2016-11-06T00:00:00+09:00</updated><id>http://blog.toshimaru.net/infrastructure-as-ruby-code-2016</id><content type="html" xml:base="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/">&lt;p&gt;第二回Roppongi.rbを&lt;a href=&quot;http://roppongirb.connpass.com/event/42633/&quot;&gt;「Infrastructure x Ruby」というテーマで開催&lt;/a&gt;した。&lt;/p&gt;
 
-&lt;p&gt;僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容で発表したので、その内容をブログにもまとめておく（前回発表分は&lt;a href=&quot;/roppongirb-speeding-up-rails/&quot;&gt;こちら&lt;/a&gt;）。&lt;/p&gt;
+&lt;p&gt;僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容でオープニングLTとして発表したので、その内容をブログにもまとめておく（前回発表分の発表内容まとめはこちら:&lt;a href=&quot;http://blog.toshimaru.net/roppongirb-speeding-up-rails/&quot;&gt;Roppongi.rbで「Rails高速化戦略」を発表しました - Hack Your Design!&lt;/a&gt;）。&lt;/p&gt;
 
 &lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;786983b0a1f94d1ca1250aa48ce94ed0&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;目的&lt;/h2&gt;
 
-&lt;p&gt;発表の目的としてはInfrastructure as Code の認識を参加者であわせること。&lt;/p&gt;
+&lt;p&gt;発表の目的としては世に言われる &lt;strong&gt;Infrastructure as Code&lt;/strong&gt; の認識・理解を参加者であわせること。&lt;/p&gt;
 
 &lt;h2 id=&quot;infrastructure-as-code&quot;&gt;Infrastructure as Codeの意義&lt;/h2&gt;
+
+&lt;p&gt;大きく３つあると思っている。&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;インフラ構築手順を秘伝のタレ化させない&lt;/li&gt;
@@ -18,35 +20,39 @@
 
 &lt;h3 id=&quot;section-1&quot;&gt;秘伝のタレ&lt;/h3&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;まるで秘伝のタレのように継ぎ足し継ぎ足し変更が入り代々受け継がれてきたサーバー&lt;/li&gt;
-  &lt;li&gt;メンテナンスされているかどうかまるでわからない「サーバー構築手順書.xls」&lt;/li&gt;
-  &lt;li&gt;インフラ担当者のアタマにしか入っていない隠し味 ＼(^o^)／&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;秘伝のタレ。一体どういう意味だろうか。まるで秘伝のタレのように継ぎ足し継ぎ足し変更が入り代々受け継がれてきたサーバーを形容する表現が &lt;strong&gt;秘伝のタレ&lt;/strong&gt; だ。&lt;/p&gt;
+
+&lt;p&gt;秘伝のタレが代々受け継がれている環境なんかでは、メンテナンスされているかどうかまるでわからない「サーバー構築手順書.xls」なんてモノがあったりする。そしてそれは大体において手順書通りにはうまくいかないのが常だ。&lt;/p&gt;
+
+&lt;p&gt;インフラ担当者のアタマにしか入っていない隠し味なんかがあったりするとオワタ状態＼(^o^)／。その担当者が退職したりすると誰も現プロダクション環境は再現できません、という状況が出来上がる。&lt;/p&gt;
 
 &lt;h3 id=&quot;section-2&quot;&gt;コード化するということ&lt;/h3&gt;
+
+&lt;p&gt;秘伝のタレ化を防ぐために、コード化という行為を行う。ではコード化されることで良い事とはなんだろうか。&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;コード化される&lt;/li&gt;
   &lt;li&gt;➜ Gitでトラック可能になる&lt;/li&gt;
   &lt;li&gt;➜ Githubでプルリク可能になる&lt;/li&gt;
   &lt;li&gt;➜ Githubでレビュー可能になる&lt;/li&gt;
-  &lt;li&gt;➜ :blush:&lt;/li&gt;
+  &lt;li&gt;➜ :blush: = HAPPY!&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;:point_right: Github Workflow&lt;/p&gt;
+&lt;p&gt;:point_right: このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。:surfer:&lt;/p&gt;
 
 &lt;h2 id=&quot;immutable-infrastructure&quot;&gt;Immutable Infrastructure&lt;/h2&gt;
 
-&lt;p&gt;Immutable Infrastructure については、&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;rebuild.fmでnaoyaさんやmizzyさんがmiyagawaさんと話して&lt;/a&gt;いたり、&lt;a href=&quot;https://speakerdeck.com/naoya/immutable-infrastructure-number-jawsdays&quot;&gt;naoyaさんが発表していたり&lt;/a&gt;したあたりで日本でも浸透した言葉だったと記憶している。&lt;/p&gt;
+&lt;p&gt;次に手順を不変（Immutable）にするということについて。Immutableという言葉はインフラ的文脈ではImmutable Infrastructureという言葉が有名かと思う。&lt;/p&gt;
 
-&lt;p&gt;出自はというと、Chad Fowlerが書いた下記の記事。&lt;/p&gt;
+&lt;p&gt;Immutable Infrastructureについては、&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;rebuild.fmでnaoyaさんやmizzyさんがmiyagawaさんと話して&lt;/a&gt;いたり、&lt;a href=&quot;https://speakerdeck.com/naoya/immutable-infrastructure-number-jawsdays&quot;&gt;naoyaさんが発表していたり&lt;/a&gt;したあたりを契機に日本でも浸透した言葉だと思っている。&lt;/p&gt;
+
+&lt;p&gt;出自はChad Fowler氏が書いた下記の記事。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://chadfowler.com/2013/06/23/immutable-deployments.html&quot;&gt;Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components&lt;/a&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;immutable-infrastructure-keywords&quot;&gt;Immutable Infrastructure Keywords&lt;/h3&gt;
 
-&lt;p&gt;Immutable Infrastructure の本質は下記のキーワードで表せると思う。&lt;/p&gt;
+&lt;p&gt;Immutable Infrastructureを僕なりに解釈すると、その言葉の本質は下記のキーワードで表せると思う。&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Immutable （不変）&lt;/li&gt;
@@ -55,10 +61,9 @@
   &lt;li&gt;Idempotence（冪等性）&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaaSの登場が大きいと思っている。どういうことかというと、IaaSでボタン１つでサーバーを上げて必要なくなったら捨てるダイナミックなサーバー、つまり &lt;strong&gt;Disposable&lt;/strong&gt; なサーバーが誕生したということ。&lt;/p&gt;
+&lt;p&gt;Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaaSの登場が大きいと思っている。どういうことかというとIaaSでボタン１つでサーバーを上げて必要なくなったら捨てるダイナミックなサーバー、つまり &lt;strong&gt;Disposable&lt;/strong&gt; なサーバーが誕生したということが背景の１つにある。&lt;/p&gt;
 
-&lt;p&gt;そして、オートスケーリングの恩恵を享受するためにはサーバー・プロビジョニング自動化作業が必要。いつ何時でも既存のサーバーと同じ状態のサーバーが立ち上がる必要があります&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。
-つまり、構築手順を &lt;strong&gt;Immutable&lt;/strong&gt; にし、&lt;strong&gt;Reproducible&lt;/strong&gt; なサーバー環境にする(= Idempotenceを担保する)ことが必要です。&lt;/p&gt;
+&lt;p&gt;そして、オートスケーリングの恩恵を享受するためにはサーバー・プロビジョニング自動化作業が必要となる。スケール前提のサーバー群はいつ何時でも既存のサーバーと同じ状態のサーバーが立ち上がる必要がある&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。つまり、構築手順を &lt;strong&gt;Immutable&lt;/strong&gt; にし &lt;strong&gt;Reproducible&lt;/strong&gt; なサーバー環境にする(= &lt;strong&gt;Idempotence&lt;/strong&gt; を担保する)ことが必要。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-3&quot;&gt;構成管理ツールの歴史&lt;/h2&gt;
 
@@ -85,7 +90,7 @@
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;Puppet&lt;br /&gt;Chef&lt;br /&gt;Itamae&lt;br /&gt;Serverkit&lt;/td&gt;
+      &lt;td&gt;Puppet, Chef, Itamae, Serverkit&lt;/td&gt;
       &lt;td&gt;Terraform&lt;/td&gt;
       &lt;td&gt;Ansible&lt;/td&gt;
     &lt;/tr&gt;
@@ -106,39 +111,31 @@
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;Puppet&lt;br /&gt;Chef&lt;br /&gt;Itamae&lt;/td&gt;
+      &lt;td&gt;Puppet, Chef, Itamae&lt;/td&gt;
       &lt;td&gt;Terraform&lt;/td&gt;
-      &lt;td&gt;Ansible&lt;br /&gt;Serverkit&lt;/td&gt;
+      &lt;td&gt;Ansible, Serverkit&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
 &lt;h3 id=&quot;why-yaml&quot;&gt;Why YAML?&lt;/h3&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;XML/JSONより記述がラク&lt;/li&gt;
-  &lt;li&gt;特徴: よみやすい、かきやすい、わかりやすい&lt;/li&gt;
-  &lt;li&gt;一般的に使われている記述フォーマットなので、学習コストが低い！&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;なぜYAMLで表現するのか？ まずはXML/JSONより記述がラクという点がある。そしてYAMLは人間にとってよみやすい、かきやすい、わかりやすいという特徴がある。そしてRailsの設定ファイルなどで一般的に使われている記述フォーマットなので、学習コストが低いという点が利点である。&lt;/p&gt;
 
 &lt;h3 id=&quot;why-hcl&quot;&gt;Why HCL?&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/hashicorp/hcl&quot;&gt;HCL&lt;/a&gt; とは HashiCorp configuration language の略。HCLの&lt;a href=&quot;https://github.com/hashicorp/hcl#why&quot;&gt;READMEではHLCについてこう説明&lt;/a&gt;されている。&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;❌ JSONダメ &amp;lt; コメントかけない。しんどい。&lt;/li&gt;
-  &lt;li&gt;❌ YAMLもダメ &amp;lt; 初心者には記法むずかしい！&lt;/li&gt;
-  &lt;li&gt;❌ Rubyとかもダメ &amp;lt; 自由度高すぎぃ！複雑すぎぃ！&lt;/li&gt;
-  &lt;li&gt;◯ HCL  &amp;lt; よろしい、ならば独自言語だ。&lt;/li&gt;
+  &lt;li&gt;:x: JSONダメ。なぜならコメントかけない。しんどい。&lt;/li&gt;
+  &lt;li&gt;:x: YAMLもダメ。なぜなら初心者には記法むずかしい！&lt;/li&gt;
+  &lt;li&gt;:x: Rubyとかもダメ。なぜなら自由度高すぎぃ！複雑すぎぃ！&lt;/li&gt;
+  &lt;li&gt;:o: よろしい、ならば独自言語だ。ということで生まれたのが &lt;strong&gt;HCL&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;why-ruby&quot;&gt;Why Ruby?&lt;/h3&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;DSLの書きやすさ&lt;/li&gt;
-  &lt;li&gt;宣言的な記述&lt;/li&gt;
-  &lt;li&gt;自由度が高い&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;なぜRubyを採用するか？ まずはDSLが書きやすいという点。そしてRSpecなどのRuby DSLに代表されるようにRuby DSLは宣言的な記述が可能である。宣言的ということはコードを読んだだけでそのコードの意図が伝わりやすいということだ。そしてDSLといってもRubyはRuby。RubyなのでRubyでできることは何でもできちゃうので、自由度が高い（これは悪い意味に作用することもあってやりすぎるとChefのレシピそのものが秘伝のタレ化する可能性があるので注意）。&lt;/p&gt;
 
 &lt;h2 id=&quot;infrastructure-as-code-&quot;&gt;Infrastructure as Code の概念整理&lt;/h2&gt;
 
@@ -168,19 +165,21 @@
 
 &lt;h3 id=&quot;gui-configuration-is-hard&quot;&gt;GUI Configuration is hard…&lt;/h3&gt;
 
-&lt;p&gt;さきほどのImmutable Infrastructureの文脈でいうと、GUIによる操作はImmutableではない。なぜならGUIは変わるかもしれないし、GUI操作は明確な言語化できないほどにファジーだからだ。では重要な設定をそのGUI任せにしていいのだろうか。&lt;/p&gt;
+&lt;p&gt;さきほどのImmutable Infrastructureの文脈でいうと、GUIによる操作はImmutableではない。なぜならGUIは変わるかもしれないし、GUI操作は明確な言語化できないほどにファジーだからだ。では重要な設定をそのGUI任せにしていいのだろうか？&lt;/p&gt;
 
-&lt;p&gt;じゃあAPIを叩けばいいじゃない。というところで、&lt;strong&gt;Configuration as Code&lt;/strong&gt; という考え方でInfrastructure as Codeの概念を敷衍できるのではないかと考えた。&lt;/p&gt;
+&lt;p&gt;Route53やSecurityGroupなどオペレーションミスで一歩間違うと大障害になりかねない。これらのGUIの設定をimmutableにはできないだろうか。じゃあimmutableなインターフェースであるAPIを叩けばいいじゃない。というところで、&lt;strong&gt;Configuration as Code&lt;/strong&gt; という言葉が出て来る。&lt;/p&gt;
+
+&lt;p&gt;この考え方を使えばInfrastructure as Codeの概念をさらに良い感じに敷衍できるのではないかと僕は考えた。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/configuratino-as-code.png&quot; alt=&quot;Configuration as Code*&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;こう考えるとがIaaSの各種サービス群もコード化の対象として捉えることができる。&lt;/p&gt;
+&lt;p&gt;こう考えるとIaaSの各種サービス群もコード化の対象として捉えることができる。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-7&quot;&gt;全てがコードになる例&lt;/h2&gt;
 
 &lt;h3 id=&quot;route53-configuration&quot;&gt;Route53 Configuration&lt;/h3&gt;
 
-&lt;p&gt;Route53のコード化例。&lt;/p&gt;
+&lt;p&gt;Route53のコード化例。こんな感じにRuby DSLになる&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;hosted_zone&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;example.com.&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;rrset&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;example.com.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;A&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
@@ -194,6 +193,8 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/roadworker&quot;&gt;roadworker&lt;/a&gt;&lt;/p&gt;
+
 &lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aws_route53_record&quot;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;www&quot;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zone_id&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;${aws_route53_zone.primary.zone_id}&quot;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;www.example.com&quot;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
@@ -204,9 +205,33 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;powered by &lt;a href=&quot;https://www.terraform.io/docs/providers/aws/r/route.html&quot;&gt;AWS: aws_route - Terraform by HashiCorp&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cloudwatch-alarm&quot;&gt;CloudWatch Alarm&lt;/h3&gt;
+
+&lt;p&gt;CloudWatchのAlarmだってDSLになる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;alarm&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;alarm1&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;AWS/EC2&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;metric_name&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CPUUtilization&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;dimensions&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;InstanceId&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;i-XXXXXXXX&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;period&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;statistic&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:average&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;threshold&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;gt;=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;evaluation_periods&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;actions_enabled&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;alarm_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ok_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;insufficient_data_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;arn:aws:sns:us-east-1:123456789012:my_topic&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/radiosonde&quot;&gt;radiosonde&lt;/a&gt;&lt;/p&gt;
+
 &lt;h3 id=&quot;datadog-alert-configuration&quot;&gt;Datadog Alert Configuration&lt;/h3&gt;
 
-&lt;p&gt;Datadogアラート設定のコード化例。&lt;/p&gt;
+&lt;p&gt;さらにコード化される対象はIaaSだけではない。Datadogという監視のアラート設定もコード化される。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;monitor&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Check load avg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;metric alert&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;avg(last_5m):avg:ddstat.load_avg.1m{host:i-XXXXXXXX} &amp;gt; 1&quot;&lt;/span&gt;
@@ -223,9 +248,11 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/barkdog&quot;&gt;barkdog&lt;/a&gt;&lt;/p&gt;
+
 &lt;h3 id=&quot;github-member-management&quot;&gt;Github Member Management&lt;/h3&gt;
 
-&lt;p&gt;Githubのメンバー管理のコード化例。&lt;/p&gt;
+&lt;p&gt;Githubのメンバー管理だってTerraformでできちゃうんだぜ。&lt;/p&gt;
 
 &lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;github_membership&quot;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;membership_for_some_user&quot;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
     &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SomeUser&quot;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
@@ -247,16 +274,20 @@
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;p&gt;powered by &lt;a href=&quot;https://www.terraform.io/docs/providers/github/&quot;&gt;Provider: GitHub - Terraform by HashiCorp&lt;/a&gt;&lt;/p&gt;
+
 &lt;h2 id=&quot;section-8&quot;&gt;全てがプルリクになる&lt;/h2&gt;
+
+&lt;p&gt;冒頭に述べたように、コード化されるということはGithubに乗せてプルリクエストを出せるということだ。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/pull-request.png&quot; alt=&quot;Pull Request&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;こんなふうにプルリクになっているとレビューも可能。&lt;/p&gt;
+&lt;p&gt;こんなふうにプルリクになっているとレビューも簡単。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-9&quot;&gt;コード化するメリット&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;レビューによるチェック体制により、より安全なConfigurationオペレーションを実現&lt;/li&gt;
+  &lt;li&gt;レビューによるチェック体制により、より安全なConfigurationオペレーションを実現できる&lt;/li&gt;
   &lt;li&gt;CIサービスと連携させてテスト・CDの自動化も可能となる&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -270,7 +301,7 @@
 &lt;h2 id=&quot;section-11&quot;&gt;感想&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Keynoteでスライド作ったけどレイアウトとかテーマの設定が自由にできて、Decksetよりはデザイン凝ろうと思うと便利。&lt;/li&gt;
+  &lt;li&gt;今回の発表はKeynoteでスライド作ったけど、Keynoteはレイアウトとかテーマの設定が自由にできてDecksetよりはデザイン凝ろうと思ったときに便利。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;section-12&quot;&gt;参考&lt;/h2&gt;
@@ -290,7 +321,7 @@
       &lt;p&gt;特定のサーバーにデータに依存してしまわないように、データ的にはステートレスなサーバー構成が前提となる &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="aws" /><category term="presentation" /><summary type="html">第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。</summary></entry><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="http://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>http://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="http://blog.toshimaru.net/gem-rack-simple-user-agent/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;というgemを作った。&lt;/p&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="aws" /><category term="presentation" /><summary type="html">第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb2/og.png" /></entry><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="http://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>http://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="http://blog.toshimaru.net/gem-rack-simple-user-agent/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;というgemを作った。&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;なぜ作ったか&lt;/h2&gt;
 
