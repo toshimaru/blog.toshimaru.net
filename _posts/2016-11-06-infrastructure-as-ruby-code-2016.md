@@ -2,20 +2,23 @@
 layout: post
 title: "Roppongi.rb #2で「Infrastructure as (Ruby) Code の現状確認」を発表しました"
 description: 第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。 僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容で発表したので、その内容をブログにもまとめておく。
+image: /images/posts/roppongirb2/og.png
 tags: ruby aws presentation
 ---
 
 第二回Roppongi.rbを[「Infrastructure x Ruby」というテーマで開催](http://roppongirb.connpass.com/event/42633/)した。
 
-僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容で発表したので、その内容をブログにもまとめておく（前回発表分は[こちら](/roppongirb-speeding-up-rails/)）。
+僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容でオープニングLTとして発表したので、その内容をブログにもまとめておく（前回発表分の発表内容まとめはこちら:[Roppongi.rbで「Rails高速化戦略」を発表しました - Hack Your Design!](http://blog.toshimaru.net/roppongirb-speeding-up-rails/)）。
 
 <script async class="speakerdeck-embed" data-id="786983b0a1f94d1ca1250aa48ce94ed0" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
 ## 目的
 
-発表の目的としてはInfrastructure as Code の認識を参加者であわせること。
+発表の目的としては世に言われる **Infrastructure as Code** の認識・理解を参加者であわせること。
 
 ## Infrastructure as Codeの意義
+
+大きく３つあると思っている。
 
 1. インフラ構築手順を秘伝のタレ化させない
 1. 手順をコードに落としてインフラへの変更をトラッキングする
@@ -23,41 +26,46 @@ tags: ruby aws presentation
 
 ### 秘伝のタレ
 
-* まるで秘伝のタレのように継ぎ足し継ぎ足し変更が入り代々受け継がれてきたサーバー
-* メンテナンスされているかどうかまるでわからない「サーバー構築手順書.xls」
-* インフラ担当者のアタマにしか入っていない隠し味 ＼(^o^)／
+秘伝のタレ。一体どういう意味だろうか。まるで秘伝のタレのように継ぎ足し継ぎ足し変更が入り代々受け継がれてきたサーバーを形容する表現が **秘伝のタレ** だ。
+
+秘伝のタレが代々受け継がれている環境なんかでは、メンテナンスされているかどうかまるでわからない「サーバー構築手順書.xls」なんてモノがあったりする。そしてそれは大体において手順書通りにはうまくいかないのが常だ。
+
+インフラ担当者のアタマにしか入っていない隠し味なんかがあったりするとオワタ状態＼(^o^)／。その担当者が退職したりすると誰も現プロダクション環境は再現できません、という状況が出来上がる。
 
 ### コード化するということ
+
+秘伝のタレ化を防ぐために、コード化という行為を行う。ではコード化されることで良い事とはなんだろうか。
 
 - コード化される
 - ➜ Gitでトラック可能になる
 - ➜ Githubでプルリク可能になる
 - ➜ Githubでレビュー可能になる
-- ➜ :blush:
+- ➜ :blush: = HAPPY!
 
-:point_right: Github Workflow
+:point_right: このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。:surfer:
 
 ## Immutable Infrastructure
 
-Immutable Infrastructure については、[rebuild.fmでnaoyaさんやmizzyさんがmiyagawaさんと話して](http://rebuild.fm/25/)いたり、[naoyaさんが発表していたり](https://speakerdeck.com/naoya/immutable-infrastructure-number-jawsdays)したあたりで日本でも浸透した言葉だったと記憶している。
+次に手順を不変（Immutable）にするということについて。Immutableという言葉はインフラ的文脈ではImmutable Infrastructureという言葉が有名かと思う。
 
-出自はというと、Chad Fowlerが書いた下記の記事。
+Immutable Infrastructureについては、[rebuild.fmでnaoyaさんやmizzyさんがmiyagawaさんと話して](http://rebuild.fm/25/)いたり、[naoyaさんが発表していたり](https://speakerdeck.com/naoya/immutable-infrastructure-number-jawsdays)したあたりを契機に日本でも浸透した言葉だと思っている。
+
+出自はChad Fowler氏が書いた下記の記事。
 
 [Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components](http://chadfowler.com/2013/06/23/immutable-deployments.html)
 
 ### Immutable Infrastructure Keywords
 
-Immutable Infrastructure の本質は下記のキーワードで表せると思う。
+Immutable Infrastructureを僕なりに解釈すると、その言葉の本質は下記のキーワードで表せると思う。
 
 - Immutable （不変）
 - Disposable（使い捨て）
 - Reproducible （再現可能）
 - Idempotence（冪等性）
 
-Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaaSの登場が大きいと思っている。どういうことかというと、IaaSでボタン１つでサーバーを上げて必要なくなったら捨てるダイナミックなサーバー、つまり **Disposable** なサーバーが誕生したということ。
+Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaaSの登場が大きいと思っている。どういうことかというとIaaSでボタン１つでサーバーを上げて必要なくなったら捨てるダイナミックなサーバー、つまり **Disposable** なサーバーが誕生したということが背景の１つにある。
 
-そして、オートスケーリングの恩恵を享受するためにはサーバー・プロビジョニング自動化作業が必要。いつ何時でも既存のサーバーと同じ状態のサーバーが立ち上がる必要があります[^1]。
-つまり、構築手順を **Immutable** にし、**Reproducible** なサーバー環境にする(= Idempotenceを担保する)ことが必要です。
+そして、オートスケーリングの恩恵を享受するためにはサーバー・プロビジョニング自動化作業が必要となる。スケール前提のサーバー群はいつ何時でも既存のサーバーと同じ状態のサーバーが立ち上がる必要がある[^1]。つまり、構築手順を **Immutable** にし **Reproducible** なサーバー環境にする(= **Idempotence** を担保する)ことが必要。
 
 ## 構成管理ツールの歴史
 
@@ -74,7 +82,7 @@ Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaa
 
 | Ruby実装 | Go実装 | Python実装 |  
 | --- | --- | --- |  
-| Puppet<br>Chef<br>Itamae<br>Serverkit | Terraform | Ansible |  
+| Puppet, Chef, Itamae, Serverkit | Terraform | Ansible |  
 
 ## 表現別分類
 
@@ -82,28 +90,24 @@ Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaa
 
 | RubyによるDSL | HCLによるDSL | YAML |
 | --- | --- | --- |  
-| Puppet<br>Chef<br>Itamae | Terraform | Ansible<br>Serverkit |  
+| Puppet, Chef, Itamae | Terraform | Ansible, Serverkit |  
 
 ### Why YAML?
 
-- XML/JSONより記述がラク
-- 特徴: よみやすい、かきやすい、わかりやすい
-- 一般的に使われている記述フォーマットなので、学習コストが低い！
+なぜYAMLで表現するのか？ まずはXML/JSONより記述がラクという点がある。そしてYAMLは人間にとってよみやすい、かきやすい、わかりやすいという特徴がある。そしてRailsの設定ファイルなどで一般的に使われている記述フォーマットなので、学習コストが低いという点が利点である。
 
 ### Why HCL?
 
 [HCL](https://github.com/hashicorp/hcl) とは HashiCorp configuration language の略。HCLの[READMEではHLCについてこう説明](https://github.com/hashicorp/hcl#why)されている。
 
-- ❌ JSONダメ < コメントかけない。しんどい。
-- ❌ YAMLもダメ < 初心者には記法むずかしい！
-- ❌ Rubyとかもダメ < 自由度高すぎぃ！複雑すぎぃ！
-- ◯ HCL  < よろしい、ならば独自言語だ。
+- :x: JSONダメ。なぜならコメントかけない。しんどい。
+- :x: YAMLもダメ。なぜなら初心者には記法むずかしい！
+- :x: Rubyとかもダメ。なぜなら自由度高すぎぃ！複雑すぎぃ！
+- :o: よろしい、ならば独自言語だ。ということで生まれたのが **HCL**
 
 ### Why Ruby?
 
-- DSLの書きやすさ
-- 宣言的な記述
-- 自由度が高い
+なぜRubyを採用するか？ まずはDSLが書きやすいという点。そしてRSpecなどのRuby DSLに代表されるようにRuby DSLは宣言的な記述が可能である。宣言的ということはコードを読んだだけでそのコードの意図が伝わりやすいということだ。そしてDSLといってもRubyはRuby。RubyなのでRubyでできることは何でもできちゃうので、自由度が高い（これは悪い意味に作用することもあってやりすぎるとChefのレシピそのものが秘伝のタレ化する可能性があるので注意）。
 
 ## Infrastructure as Code の概念整理
 
@@ -133,19 +137,21 @@ IaaSは仮想サーバ以外にもさまざまなサービスを提供してい�
 
 ### GUI Configuration is hard...
 
-さきほどのImmutable Infrastructureの文脈でいうと、GUIによる操作はImmutableではない。なぜならGUIは変わるかもしれないし、GUI操作は明確な言語化できないほどにファジーだからだ。では重要な設定をそのGUI任せにしていいのだろうか。
+さきほどのImmutable Infrastructureの文脈でいうと、GUIによる操作はImmutableではない。なぜならGUIは変わるかもしれないし、GUI操作は明確な言語化できないほどにファジーだからだ。では重要な設定をそのGUI任せにしていいのだろうか？
 
-じゃあAPIを叩けばいいじゃない。というところで、**Configuration as Code** という考え方でInfrastructure as Codeの概念を敷衍できるのではないかと考えた。
+Route53やSecurityGroupなどオペレーションミスで一歩間違うと大障害になりかねない。これらのGUIの設定をimmutableにはできないだろうか。じゃあimmutableなインターフェースであるAPIを叩けばいいじゃない。というところで、**Configuration as Code** という言葉が出て来る。
+
+この考え方を使えばInfrastructure as Codeの概念をさらに良い感じに敷衍できるのではないかと僕は考えた。
 
 ![Configuration as Code*](/images/posts/roppongirb2/configuratino-as-code.png)
 
-こう考えるとがIaaSの各種サービス群もコード化の対象として捉えることができる。
+こう考えるとIaaSの各種サービス群もコード化の対象として捉えることができる。
 
 ## 全てがコードになる例
 
 ### Route53 Configuration
 
-Route53のコード化例。
+Route53のコード化例。こんな感じにRuby DSLになる
 
 ```rb
 hosted_zone "example.com." do
@@ -159,6 +165,8 @@ hosted_zone "example.com." do
 end
 ```
 
+powered by [roadworker](https://github.com/winebarrel/roadworker)
+
 ```go
 resource "aws_route53_record" "www" {
  zone_id = "${aws_route53_zone.primary.zone_id}"
@@ -169,9 +177,33 @@ resource "aws_route53_record" "www" {
 }
 ```
 
+powered by [AWS: aws_route - Terraform by HashiCorp](https://www.terraform.io/docs/providers/aws/r/route.html)
+
+### CloudWatch Alarm
+
+CloudWatchのAlarmだってDSLになる。
+
+```rb
+alarm "alarm1" do
+  namespace "AWS/EC2"
+  metric_name "CPUUtilization"
+  dimensions "InstanceId"=>"i-XXXXXXXX"
+  period 300
+  statistic :average
+  threshold ">=", 50.0
+  evaluation_periods 1
+  actions_enabled true
+  alarm_actions []
+  ok_actions []
+  insufficient_data_actions ["arn:aws:sns:us-east-1:123456789012:my_topic"]
+end
+```
+
+powered by [radiosonde](https://github.com/winebarrel/radiosonde)
+
 ### Datadog Alert Configuration
 
-Datadogアラート設定のコード化例。
+さらにコード化される対象はIaaSだけではない。Datadogという監視のアラート設定もコード化される。
 
 ```rb
 monitor "Check load avg", :type=>"metric alert" do
@@ -188,9 +220,11 @@ monitor "Check load avg", :type=>"metric alert" do
 end
 ```
 
+powered by [barkdog](https://github.com/winebarrel/barkdog)
+
 ### Github Member Management
 
-Githubのメンバー管理のコード化例。
+Githubのメンバー管理だってTerraformでできちゃうんだぜ。
 
 ```go
 resource "github_membership" "membership_for_some_user" {
@@ -212,15 +246,19 @@ resource "github_repository_collaborator" "a_repo_collaborator" {
 }
 ```
 
+powered by [Provider: GitHub - Terraform by HashiCorp](https://www.terraform.io/docs/providers/github/)
+
 ## 全てがプルリクになる
+
+冒頭に述べたように、コード化されるということはGithubに乗せてプルリクエストを出せるということだ。
 
 ![Pull Request](/images/posts/roppongirb2/pull-request.png)
 
-こんなふうにプルリクになっているとレビューも可能。
+こんなふうにプルリクになっているとレビューも簡単。
 
 ## コード化するメリット
 
-* レビューによるチェック体制により、より安全なConfigurationオペレーションを実現
+* レビューによるチェック体制により、より安全なConfigurationオペレーションを実現できる
 * CIサービスと連携させてテスト・CDの自動化も可能となる
 
 ## まとめ
@@ -230,7 +268,7 @@ resource "github_repository_collaborator" "a_repo_collaborator" {
 
 ## 感想
 
-* Keynoteでスライド作ったけどレイアウトとかテーマの設定が自由にできて、Decksetよりはデザイン凝ろうと思うと便利。
+* 今回の発表はKeynoteでスライド作ったけど、Keynoteはレイアウトとかテーマの設定が自由にできてDecksetよりはデザイン凝ろうと思ったときに便利。
 
 ## 参考
 
