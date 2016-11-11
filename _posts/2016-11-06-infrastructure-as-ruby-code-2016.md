@@ -8,7 +8,7 @@ tags: ruby aws presentation
 
 第二回Roppongi.rbを[「Infrastructure x Ruby」というテーマで開催](http://roppongirb.connpass.com/event/42633/)した。
 
-僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容でオープニングLTとして発表したので、その内容をブログにもまとめておく（前回発表分の発表内容まとめはこちら:[Roppongi.rbで「Rails高速化戦略」を発表しました - Hack Your Design!](http://blog.toshimaru.net/roppongirb-speeding-up-rails/)）。
+僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容でオープニングLTとして発表したので、その内容をブログにもまとめておく（前回発表分の発表内容まとめはこちら: [Roppongi.rbで「Rails高速化戦略」を発表しました](http://blog.toshimaru.net/roppongirb-speeding-up-rails/)）。
 
 <script async class="speakerdeck-embed" data-id="786983b0a1f94d1ca1250aa48ce94ed0" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
