@@ -42,7 +42,7 @@ tags: ruby aws presentation
 - ➜ Githubでレビュー可能になる
 - ➜ :blush: = HAPPY!
 
-:point_right: このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。:surfer:
+このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。:surfer:
 
 ## Immutable Infrastructure
 
@@ -50,11 +50,11 @@ tags: ruby aws presentation
 
 Immutable Infrastructureについては、[rebuild.fmでnaoyaさんやmizzyさんがmiyagawaさんと話して](http://rebuild.fm/25/)いたり、[naoyaさんが発表していたり](https://speakerdeck.com/naoya/immutable-infrastructure-number-jawsdays)したあたりを契機に日本でも浸透した言葉だと思っている。
 
-出自はChad Fowler氏が書いた下記の記事。
+出自はというとChad Fowler氏が書いた下記の記事。
 
 [Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components](http://chadfowler.com/2013/06/23/immutable-deployments.html)
 
-### Immutable Infrastructure Keywords
+### Immutable Infrastructure のキーワード
 
 Immutable Infrastructureを僕なりに解釈すると、その言葉の本質は下記のキーワードで表せると思う。
 
@@ -264,7 +264,7 @@ powered by [Provider: GitHub - Terraform by HashiCorp](https://www.terraform.io/
 ## まとめ
 
 * コード化することによりGithubワークフロー（プルリク→レビュー→マージ）に乗ることができてハッピー :smile:
-* Infrastructure as Code = (Server Configuration + Service Configuration) as Code
+* Infrastructure as Code = Server Configuration as Code + Service Configuration as Code ➜ サーバーだけではなく、サービスそれ自体もコード化されていく。
 
 ## 感想
 
