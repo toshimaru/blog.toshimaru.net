@@ -93,11 +93,11 @@
 
 <p>via. <a href="http://d.hatena.ne.jp/ku-ma-me/20151004/p1">[Ruby] Ruby 3.0 の特大の非互換について - まめめも</a></p>
 
-<p>この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ<code class="highlighter-rouge">.freeze</code>を付けてプルリクエストを投げる輩が大挙してきたことだ。</p>
+<p>この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに<code class="highlighter-rouge">.freeze</code>を付けてプルリクエストを投げる輩が大挙してきたことだ。</p>
 
 <h2 id="immutable-string-in-ruby23">Immutable String in Ruby2.3+</h2>
 
-<p>Ruby2.3 では既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のように書けばよい。</p>
+<p>Ruby2.3 では既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のようにマジックコメントを書けばよい。</p>
 
 <div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 </code></pre>
@@ -105,9 +105,11 @@
 
 <h2 id="frozenstringliteral-">frozen_string_literal の機能を試す</h2>
 
-<p>実際に試してみよう。下記の２ファイルを用意して実行する。</p>
+<p>実際に試してみよう。<code class="highlighter-rouge">frozen_string_literal</code>の設定が入っているRubyコードと入っていないRubyコードの２つを用意して実行してみる。</p>
 
-<h3 id="stringwithfrozenoptionrb">string_with_frozen_option.rb</h3>
+<h3 id="frozenstringliteral">frozen_string_literal入りのコード</h3>
+
+<p><code class="highlighter-rouge">string_with_frozen_option.rb</code></p>
 
 <div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 <span class="mi">5</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"a"</span><span class="p">.</span><span class="nf">object_id</span> <span class="p">}</span>
@@ -127,7 +129,9 @@
 </code></pre>
 </div>
 
-<h3 id="stringwithoutfrozenoptionrb">string_without_frozen_option.rb</h3>
+<h3 id="frozenstringliteral-1">frozen_string_literal無しのコード</h3>
+
+<p><code class="highlighter-rouge">string_without_frozen_option.rb</code></p>
 
 <div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="mi">5</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"a"</span><span class="p">.</span><span class="nf">object_id</span> <span class="p">}</span>
 </code></pre>
@@ -186,13 +190,38 @@
 
 <p>つまり<code class="highlighter-rouge">WelcomeController</code>で定義された文字列だけが frozen されていることがわかる。</p>
 
+<h2 id="mutablestring">mutableなStringを定義するにはどうしたらよい？</h2>
+
+<p>一度 <code class="highlighter-rouge">frozen_string_literal: true</code> のコードを入れると全ての文字列が<code class="highlighter-rouge">.freeze</code>されるので、下記のようなコードは<code class="highlighter-rouge">RuntimeError</code>となる。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># frozen_string_literal: true
+str = "a"
+str &lt;&lt; "bc"
+puts str
+# =&gt; test.rb:3:in `&lt;main&gt;': can't modify frozen String (RuntimeError)
+</code></pre>
+</div>
+
+<p>この場合の対処法としてはfreezeを解除したい文字列に対して、<code class="highlighter-rouge">.dup</code>を付けてやれば解決する。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># frozen_string_literal: true
+str = "a".dup
+str &lt;&lt; "bc"
+puts str
+# =&gt; abc
+</code></pre>
+</div>
+
 <h2 id="section-2">まとめ</h2>
 
 <p>Ruby3 の Immutable String に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に<code class="highlighter-rouge">frozen_string_literal: true</code>の設定をしていくべき。</p>
 
 <h2 id="section-3">参考</h2>
 
-<p><a href="https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3">Immutable strings in Ruby 2.3</a></p>
+<ul>
+  <li><a href="https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3">Immutable strings in Ruby 2.3</a></li>
+  <li><a href="https://bugs.ruby-lang.org/issues/8976">Feature #8976: file-scope freeze_string directive - Ruby trunk - Ruby Issue Tracking System</a></li>
+</ul>
 
 
 <ul id="social-buttons">
