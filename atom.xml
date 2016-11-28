@@ -1,4 +1,142 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://blog.toshimaru.net/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-11-26T17:57:38+09:00</updated><id>http://blog.toshimaru.net//</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</title><link href="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/" rel="alternate" type="text/html" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました" /><published>2016-11-06T00:00:00+09:00</published><updated>2016-11-06T00:00:00+09:00</updated><id>http://blog.toshimaru.net/infrastructure-as-ruby-code-2016</id><content type="html" xml:base="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/">&lt;p&gt;第二回Roppongi.rbを&lt;a href=&quot;http://roppongirb.connpass.com/event/42633/&quot;&gt;「Infrastructure x Ruby」というテーマで開催&lt;/a&gt;した。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://blog.toshimaru.net/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2016-11-29T03:16:52+09:00</updated><id>http://blog.toshimaru.net//</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">SEOという言葉の醜悪さ、SEOではなくクローラー・人間のための最適化を</title><link href="http://blog.toshimaru.net/goodbye-seo-hello-gco/" rel="alternate" type="text/html" title="SEOという言葉の醜悪さ、SEOではなくクローラー・人間のための最適化を" /><published>2016-11-29T00:00:00+09:00</published><updated>2016-11-29T00:00:00+09:00</updated><id>http://blog.toshimaru.net/goodbye-seo-hello-gco</id><content type="html" xml:base="http://blog.toshimaru.net/goodbye-seo-hello-gco/">&lt;p&gt;SEOという言葉が嫌いだ。そこにはビジネスがあり、カネがあり、カネの匂いを嗅ぎつけたSEO業者たちがいる。&lt;/p&gt;
+
+&lt;p&gt;最近、DeNAの運営するキュレーションメディア、&lt;a href=&quot;https://welq.jp/&quot;&gt;WELQ&lt;/a&gt;でこんなニュースがあった。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.itmedia.co.jp/news/articles/1610/26/news117.html&quot;&gt;「死にたい」検索トップの「welq」の記事、DeNAが広告削除　「不適切」指摘受け - ITmedia ニュース&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.landerblue.co.jp/blog/?p=30141&quot;&gt;DeNAがやってるウェルク（Welq）っていうのが企業としてやってはいけない一線を完全に越えてる件（第１回）&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;このような指摘を受け、DeNAは下記のような発表を出した。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;【WELQからのお知らせ】「専門家による記事確認および記事内容に関する通報フォームの設置」について&lt;a href=&quot;https://t.co/73waKiYTpg&quot;&gt;https://t.co/73waKiYTpg&lt;/a&gt; &lt;a href=&quot;https://t.co/0TvY7psRlu&quot;&gt;https://t.co/0TvY7psRlu&lt;/a&gt;&lt;/p&gt;&amp;mdash; WELQ - ウェルク (@welq_pr) &lt;a href=&quot;https://twitter.com/welq_pr/status/802082119552004096&quot;&gt;November 25, 2016&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;僕はこの一連の件に関してあれこれうるさく言うつもりもないしその言葉も持ち合わせてないが、SEOについて最近ぼんやり考えていることを再考するきっかけとなったのでそこらへんを書いてみるとする。&lt;/p&gt;
+
+&lt;h2 id=&quot;seo&quot;&gt;SEOという言葉の醜悪さ&lt;/h2&gt;
+
+&lt;p&gt;SEO、サーチエンジン最適化という言葉にどことなく醜悪さを感じてしまうのは僕だけだろうか。&lt;/p&gt;
+
+&lt;p&gt;サーチエンジン最適化という行為そのものは必要なことだ。Googleに適切にページを評価してもらうために最適化を行う。Webサイト運営者であれば誰もがすべきことであろう。しかしその最適化のテクニックが逆手に取られ＜招かれざるページ＞が検索順位の上位に上がってしまうことが往々にしてある。&lt;/p&gt;
+
+&lt;p&gt;あなたもこんな経験はないだろうか。あなたは検索したい物事があってキーワードを検索フォームに入れて検索する。一番上に出てくるそれらしき見出しをクリックする。しかしそのページは広告、アフィリエイト、外部リンクで埋め尽くされている。まともに読めるコンテンツはファーストビューには全くない。スクロールを進める。どうやらここから本文だ、とあなたは読み進める。そのコンテンツは内容スカスカの低品質記事だった。&lt;/p&gt;
+
+&lt;p&gt;このように上がってくるページはいわゆる&lt;a href=&quot;https://ja.wikipedia.org/wiki/%E6%A4%9C%E7%B4%A2%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%B3%E3%82%B9%E3%83%91%E3%83%A0&quot;&gt;検索エンジンスパム&lt;/a&gt;と呼ばれユーザーから忌み嫌われるものだ。&lt;/p&gt;
+
+&lt;p&gt;もちろんこういった低品質ページを弾くためのアルゴリズム改善にGoogleは日々心血注いでいる。そしてそのアルゴリズムのアップデート・スパム対策は一定の効果をもたらしている（参考: &lt;a href=&quot;https://www.google.com/intl/ja_ALL/insidesearch/howsearchworks/fighting-spam.html&quot;&gt;スパム対策 – 検索サービス – Google&lt;/a&gt;）。&lt;/p&gt;
+
+&lt;p&gt;一方でアルゴリズムで全てのスパムを弾くことはできていないのが現実だ。今でもGoogleの検索結果上位にスパムページが上がってくることは散見される事象だ。このようなGoogleのアルゴリズムの隙間を縫ってページを上げることを&lt;a href=&quot;https://ferret-plus.com/1924&quot;&gt;ブラックハットSEO&lt;/a&gt;という（反対語はホワイトハットSEO）。&lt;/p&gt;
+
+&lt;p&gt;このようなブラックハットSEOが横行すると、低品質ページが検索結果の上位を占めることとなり、検索の主体としてのユーザーがヘイトを溜めていくこととなる。そしてユーザーはSEOという行為にある種の悪どさを感じてしまう。&lt;/p&gt;
+
+&lt;h2 id=&quot;google-crawler-optimization&quot;&gt;Google Crawler Optimization&lt;/h2&gt;
+
+&lt;p&gt;僕はそのどことなく小賢しい響きのあるSEOに代えて別な言葉を提唱したい。&lt;strong&gt;Google Crawler Optimization&lt;/strong&gt;（以下GCO）、つまりGoogleクローラのための最適化だ。といっても表面的に言っていることはSEOと同じである。&lt;/p&gt;
+
+&lt;p&gt;SEOの文脈でサーチエンジンといった場合、たいていの場合がGoogleの検索エンジンのことを指すので、サーチエンジン最適化はGoogle検索エンジン最適化とも言える。そして検索エンジン最適化のためにはサイトを巡回してくるクローラー（Googlebot）を相手に最適化をするのでそれはクローラー最適化とも言える。&lt;/p&gt;
+
+&lt;p&gt;ではなぜSEOとGCO区別したいかというと、それぞれが目指すゴール・目的をはっきりと分けたかったからだ。&lt;/p&gt;
+
+&lt;h2 id=&quot;seogco&quot;&gt;SEOとGCOの違い&lt;/h2&gt;
+
+&lt;p&gt;SEOとGCOの違いはこうだ&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;SEO&lt;/th&gt;
+      &lt;th&gt;GCO&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;目的&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;ページの順位を上げること&lt;/td&gt;
+      &lt;td&gt;ページを適切にGoolgeクローラーに適切に解釈させること&lt;br /&gt;（その結果として順位が上がろうが下がろうが関係ない）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;やり方&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;1. 正攻法なホワイトハットSEOによって順位を上げる&lt;br /&gt;2. 不正なブラックハットSEOによって順位を上げる&lt;/td&gt;
+      &lt;td&gt;- ホワイトハットSEOの手法のみを許容する&lt;br /&gt;- Googleの公式ガイドライン（&lt;a href=&quot;https://static.googleusercontent.com/media/www.Google.com/ja//intl/ja/webmasters/docs/search-engine-optimization-starter-guide-ja.pdf&quot;&gt;検索エンジン最適化スターターガイド&lt;/a&gt;, &lt;a href=&quot;https://support.google.com/webmasters/answer/35769?hl=ja&quot;&gt;ウェブマスター向けガイドライン&lt;/a&gt;）を忠実に実施、その他世に溢れるSEOテクニック情報などは無視&lt;br /&gt;- クローラー最適化の一環としてTwitterクローラ最適化・Facebookクローラ最適化なども行う（OGタグなどの各種タグ設定）&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;僕も本ブログなどはそれなりにSEOを意識して作っている。しかしその目的はサイトランクを上げることではない。サイトを適切にGoogleに評価してもらうためだ。評価の結果別にランクが下になろうとあまり気にしない。それがGoogleの下した評価であり勝負の結果だからだ&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;みんながGoogleの推奨する最適化を行って同じ土俵に立った上で勝敗はGoogleのアルゴリズムに任せようね、ってスタンスが僕は一番スッキリする。&lt;/p&gt;
+
+&lt;p&gt;とは言っても全ての人が土俵に立てるわけでもないし、土俵の立ち方がわからない人もいる。そういう人たちをサポートするためにSEOビジネスは今後も必要だし、生き続けていく必要があるだろう。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;ユーザーファーストを貫こう&lt;/h2&gt;
+
+&lt;p&gt;最終的にGoogleが見据えるのはユーザーだ。ユーザーにとって価値のある記事を届けるためのアルゴリズムだ。なので我々もGoogleのための最適化を行うならば、基本的にはその先にいるユーザーのことを考え、ユーザーファーストを貫くべきだろう。&lt;/p&gt;
+
+&lt;p&gt;「&lt;strong&gt;HTTPS化するとページランク上がるらしいから、HTTPSにしとこうぜ&lt;/strong&gt;」&lt;/p&gt;
+
+&lt;p&gt;違う。ユーザーの通信をよりセキュアなものにするためにHTTPS化をするのであって、順位を上げるためではない。&lt;/p&gt;
+
+&lt;p&gt;日本ではあまり大きな声で言う人は少ないが、スノーデン事件以降、HTTPS/TLSでユーザーの通信内容を守るということは個人情報保護において極めて重要だ。&lt;/p&gt;
+
+&lt;p&gt;「&lt;strong&gt;検索結果に露出増えるらしいからAMP対応しようぜ&lt;/strong&gt;」&lt;/p&gt;
+
+&lt;p&gt;違う。高速なWebブラウジング体験を実現するためにAMPというフォーマットを使うのであって、検索結果への露出は副次的効果だ。&lt;/p&gt;
+
+&lt;p&gt;Googleは高速なWeb体験を重要視する。なぜならGoogleはWebページのレスポンスが遅くなると多くのユーザーがページを離脱することを数字的なエビデンスをもとに知っているからだ。そして世界を見渡せば通信環境が劣悪な国・地域に住むユーザーがたくさんいることも知っている。彼らのためな高速なHTMLサブセットがAMPだ。&lt;/p&gt;
+
+&lt;p&gt;そう考えるとAMPだけ速ければ良いという考えにはならず、AMP以外の通常ページだってユーザー・ファーストという点で速くあるべきだ。&lt;/p&gt;
+
+&lt;h2 id=&quot;seo-1&quot;&gt;正しいSEOへと向かうために&lt;/h2&gt;
+
+&lt;p&gt;真摯にSEOと向き合いきちんとSEOが良い方向にいくように情報発信しているSEOの専門家の方もいる。名前を挙げるとたとえば&lt;a href=&quot;https://twitter.com/tsuj&quot;&gt;@tsuj&lt;/a&gt;さんだ。&lt;/p&gt;
+
+&lt;p&gt;辻さんのような方がSEO専門家という立場から、モラルのないSEO業者を監視・批判していくことでSEO業界全体が適切な良い方向に向かうことを期待したい。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;昔、医師監修に関わった事がありますし、いまやっている人の話も聞きますが、大変。専門医監修を十分な品質で行うのは大きなコストがかかりますし、医師不足ですのでそもそも困難です。&lt;br /&gt;記事の大量掲載をするサイトで十分な品質での医師監修の体制を作るのは、無理な気がします。&lt;/p&gt;&amp;mdash; 辻正浩 | Masahiro Tsuji (@tsuj) &lt;a href=&quot;https://twitter.com/tsuj/status/802472803983179776&quot;&gt;November 26, 2016&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Googleで行われる全検索の5%は健康関係というのは周知の事実なのでそこに金脈があることは明らかでしたがモラルの壁があったのですよね。&lt;br /&gt;ですが大手がその壁を無視して大儲けしたので今は二匹目のドジョウ狙いが次々と産まれている所。このままだと悪質な医療情報が更にネットに蔓延します。&lt;/p&gt;&amp;mdash; 辻正浩 | Masahiro Tsuji (@tsuj) &lt;a href=&quot;https://twitter.com/tsuj/status/802477361555849216&quot;&gt;November 26, 2016&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;医療情報関連の問題の大きさを認識していない人たちが作った劣化welqみたいなサイトも既にあるみたいですけど。welqだけで終わる問題ではないはずなので、早めに諦めて撤退しちゃったほうがいいんじゃないですかね。最低でもwelqと同程度かそれ以下の品質の所は。&lt;/p&gt;&amp;mdash; 辻正浩 | Masahiro Tsuji (@tsuj) &lt;a href=&quot;https://twitter.com/tsuj/status/802480245202792449&quot;&gt;November 26, 2016&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;独立してから5年間、わたしは健康・医療関連の仕事は色々と判断が難しいので全部断ってきた位ですので、気軽にやっちゃう人／会社が信じられないのですが。医療関連の情報に関わるのは本当に怖いし覚悟が必要と思っていますし、逸脱したところがうまくいくべきとは思えません。&lt;/p&gt;&amp;mdash; 辻正浩 | Masahiro Tsuji (@tsuj) &lt;a href=&quot;https://twitter.com/tsuj/status/802481887545462784&quot;&gt;November 26, 2016&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;またライターという立場から朽木さん（&lt;a href=&quot;twitter.com/amanojerk&quot;&gt;@amanojerk&lt;/a&gt;）も積極的に本件に関して情報発信・問題提起をしている。&lt;/p&gt;
+
+&lt;p&gt;&lt;a class=&quot;twitter-moment&quot; href=&quot;https://twitter.com/i/moments/803077459264450562&quot;&gt;【随時更新】信頼性の高い医療情報サイトまとめ&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;朽木さんのようにしっかりとライティング活動をしている方もいるので、本件によって変にライターが貶められないことを祈るばかりだ。&lt;/p&gt;
+
+&lt;h2 id=&quot;web&quot;&gt;よりよいWEBへと向かうために&lt;/h2&gt;
+
+&lt;p&gt;インターネットの海にある情報は今も昔も玉石混交だ。それをGoogleが圧倒的なテクノロジーを武器に情報フィルタリングをかけてくれている。Googleのふるいが正しく機能している限りにおいて、情報の絶対量が多くなることは良い事だ。問題は玉に混じった石ころたちで、これにどう対処していくべきか。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/google-result.jpg&quot; alt=&quot;google result&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;:point_up:&lt;strong&gt;ページに遷移する手前の検索結果画面でGoogleがユーザーへ情報を提供するケースも増えてきている&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;正直言うと検索エンジンスパムに関しては僕は楽観的だ。アルファ碁やGoogle Photo、Google翻訳でご存字の通り、昨今のGoogleのディープラーニング技術の進化は目を見張るものがある。人間にしかできなかった行為が次々に機械に置き換えられていく。スパムも結局精度の問題でしっかり機械が学習してスパム判定精度が上がっていけばスパムは適切に弾けるだろう。&lt;/p&gt;
+
+&lt;p&gt;ただ今回のWELQの記事はどうかというとちょっと疑問で、WELQの提供する圧倒的な分量で一部の専門家にしかその真偽がわからないような内容をGoogleが正しく真偽も含めてランク付けできるか？というと僕にはよくわからない（剽窃行為は判定できそうだが）。&lt;/p&gt;
+
+&lt;p&gt;そうなると、情報発信者としてのモラルの問題になってくる。適当な情報は発信しない、引用と自分の文章を区別する、きちんと一次情報に当たる、情報ソースを明記する、など。そこはやっぱり、ビジネスという軸とは別に情報発信者としてモラルが必要だ。&lt;/p&gt;
+
+&lt;p&gt;より良いWEBへと向かうためにキュレーションメディア各位には石な情報を量産するのではなく、きちんと玉な情報を発信していってもらいたいと願います。&lt;/p&gt;
+
+&lt;h2 id=&quot;welq&quot;&gt;WELQについて&lt;/h2&gt;
+
+&lt;p&gt;まぁここまで書いたのでWELQについて一言いっておくと、DeNAくらいの規模の会社がSEOノウハウ・人・モノ・金を総動員させてパワープレイすればそりゃページのランクは上がる。しかし医療・健康というテーマ・分野においては人の命がかかわってくる場合もあるので、そこは情報発信の立場として慎重になるべきでしょう。&lt;a href=&quot;http://dena-palette.jp/&quot;&gt;DeNAパレットメディア&lt;/a&gt;含め、良い情報がウェブに増えていくことは良いことですので頑張ってください。&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;あくまでも上定義は僕個人が考えた定義であって一般的なSEOの定義とは異なる点に留意 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;とはいえ気合を入れて書いた記事が他のページに負けたりするのはちょっと悔しい &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="seo" /><category term="web" /><summary type="html">SEOという言葉が嫌いだ。そこにはビジネスがあり、カネがあり、カネの匂いを嗅ぎつけたSEO業者たちがいる。</summary></entry><entry><title type="html">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</title><link href="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/" rel="alternate" type="text/html" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました" /><published>2016-11-06T00:00:00+09:00</published><updated>2016-11-06T00:00:00+09:00</updated><id>http://blog.toshimaru.net/infrastructure-as-ruby-code-2016</id><content type="html" xml:base="http://blog.toshimaru.net/infrastructure-as-ruby-code-2016/">&lt;p&gt;第二回Roppongi.rbを&lt;a href=&quot;http://roppongirb.connpass.com/event/42633/&quot;&gt;「Infrastructure x Ruby」というテーマで開催&lt;/a&gt;した。&lt;/p&gt;
 
 &lt;p&gt;僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容でオープニングLTとして発表したので、その内容をブログにもまとめておく（前回発表分の発表内容まとめはこちら: &lt;a href=&quot;http://blog.toshimaru.net/roppongirb-speeding-up-rails/&quot;&gt;Roppongi.rbで「Rails高速化戦略」を発表しました&lt;/a&gt;）。&lt;/p&gt;
 
@@ -1715,21 +1853,4 @@ Deployed module [default] to [https://your-project-id.appspot.com]
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/ruby-docker&quot;&gt;GoogleCloudPlatform/ruby-docker: Docker images for Ruby&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/ruby-docker/blob/master/appengine/Dockerfile&quot;&gt;ruby-docker/Dockerfile at master · GoogleCloudPlatform/ruby-docker&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google_app_engine" /><category term="rails" /><category term="docker" /><summary type="html">［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/ruby-gae/ruby.png" /></entry><entry><title type="html">接続元のグローバルIP出すやつ作った</title><link href="http://blog.toshimaru.net/gae-ip-info/" rel="alternate" type="text/html" title="接続元のグローバルIP出すやつ作った" /><published>2016-02-10T00:00:00+09:00</published><updated>2016-02-10T00:00:00+09:00</updated><id>http://blog.toshimaru.net/gae-ip-info</id><content type="html" xml:base="http://blog.toshimaru.net/gae-ip-info/">&lt;p&gt;&lt;a href=&quot;http://www.ugtop.com/spill.shtml&quot;&gt;確認くん&lt;/a&gt;とかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://ip.toshimaru.net/&quot;&gt;Your IP address info&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;裏機能&lt;/h2&gt;
-
-&lt;p&gt;コマンドラインで簡単に抽出できるように&lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt;で叩いたらIPだけ出力するような裏機能付けた。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl ip.toshimaru.net
-xx.xx.xx.xx
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;google-app-engine&quot;&gt;Google App Engine&lt;/h2&gt;
-
-&lt;p&gt;Google App Engine、一昔前はとっつきにくかったけど今は管理画面も使いやすくなってドキュメントも丁寧になってきたしデプロイ周りのCLIツールも整ってきているので良い感じである。&lt;/p&gt;
-
-&lt;p&gt;Herokuが有料になった今、個人サービスでなにかさっと作りたいときはGAEは良さそう。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="google_app_engine" /><category term="php" /><summary type="html">確認くんとかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/ip.png" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google_app_engine" /><category term="rails" /><category term="docker" /><summary type="html">［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/ruby-gae/ruby.png" /></entry></feed>
