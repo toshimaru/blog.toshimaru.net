@@ -95,7 +95,7 @@
 <li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
 </ul><p>Railsの<a href="http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/find_each">find_each</a>がどんな挙動をするか気になったので調べてみた。</p>
 
-<h2 id="findeach-">
+<h2 id="find_each-とは">
 <a id="find_each-とは" class="anchor" href="#find_each-%E3%81%A8%E3%81%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>find_each とは</h2>
 
 <p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
@@ -113,7 +113,7 @@
 
 <p><a href="http://blog.livedoor.jp/sasata299/archives/51882704.html">Railsで大量のデータをまとめて更新するならfind_each使うよね - (ﾟ∀ﾟ)o彡 sasata299’s blog</a></p>
 
-<h2 id="findeach">
+<h2 id="素の-find_each">
 <a id="素の-find_each" class="anchor" href="#%E7%B4%A0%E3%81%AE-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>素の find_each</h2>
 
 <p>まずはUserテーブルに1万件くらいデータを作って素直に<code class="highlighter-rouge">find_each</code>してみる。</p>
@@ -129,7 +129,7 @@
 
 <p>デフォルトでは<code class="highlighter-rouge">order by id</code>で全件取得して1000件ずつ<code class="highlighter-rouge">limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
 
-<h2 id="order-findeach">
+<h2 id="order付き-find_each">
 <a id="order付き-find_each" class="anchor" href="#order%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>order付き find_each</h2>
 
 <div class="highlighter-rouge">
@@ -144,7 +144,7 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p><code class="highlighter-rouge">Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
 
-<h2 id="limit-findeach">
+<h2 id="limit付き-find_each">
 <a id="limit付き-find_each" class="anchor" href="#limit%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>limit付き find_each</h2>
 
 <p>じゃあlimitも試してみよう。</p>
@@ -161,7 +161,7 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p>やっぱりワーニングが出て無視された。</p>
 
-<h2 id="where-findeach">
+<h2 id="where付き-find_each">
 <a id="where付き-find_each" class="anchor" href="#where%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>where付き find_each</h2>
 
 <p><code class="highlighter-rouge">where</code>を使って処理対象に条件を付けることもできます。</p>
@@ -203,7 +203,7 @@ relation.where(table[primary_key].gt(primary_key_offset))
 
 <p>最初に取得した1000件のうちの<code class="highlighter-rouge">last.id</code>を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
 
-<h2 id="section">
+<h2 id="まとめ">
 <a id="まとめ" class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
 <ul>
   <li>find_eachはデフォルトで1000件ずつ処理する</li>
@@ -211,7 +211,7 @@ relation.where(table[primary_key].gt(primary_key_offset))
   <li>where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得してループを回していく</li>
 </ul>
 
-<h2 id="section-1">
+<h2 id="参考">
 <a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
 <ul>
   <li><a href="http://api.rubyonrails.org/classes/ActiveRecord/Batches.html">ActiveRecord::Batches</a></li>

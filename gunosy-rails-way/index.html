@@ -101,13 +101,13 @@
 
 <p>こんにちは、Gunosyの<a href="https://twitter.com/toshimaru_e">toshimaru</a>です。Gunosyでは主にRuby on Railsアプリを担当しています。</p>
 
-<h2 id="section">
+<h2 id="はじめに">
 <a id="はじめに" class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに</h2>
 <p>Gunosyでは昨年度よりAPIの実装を<a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">Rails実装からGo実装へと変えた</a>ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです<sup id="fnref:2"><a href="#fn:2" class="footnote">1</a></sup>。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも<a href="http://blog.gopheracademy.com/advent-2014/atlas/">Railsは手放せない</a>ようですしね。</p>
 
 <p>本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います<sup id="fnref:1"><a href="#fn:1" class="footnote">2</a></sup>。</p>
 
-<h2 id="section-1">
+<h2 id="ブランチの運用">
 <a id="ブランチの運用" class="anchor" href="#%E3%83%96%E3%83%A9%E3%83%B3%E3%83%81%E3%81%AE%E9%81%8B%E7%94%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>ブランチの運用</h2>
 <p>基本は<a href="http://danielkummer.github.io/git-flow-cheatsheet/index.ja_JP.html">Git flow</a>に則って開発を進めています。ただGit flowにおけるリリースブランチの運用はフローの簡易化のため、またスモールチーム（２〜３人）での開発ということもあり省いています。これによりdevelop→master間のフローがラクになりスピーディな開発が可能になります。</p>
 
@@ -115,7 +115,7 @@
 
 <p><strong>【↑図】developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ</strong></p>
 
-<h2 id="section-2">
+<h2 id="デプロイ">
 <a id="デプロイ" class="anchor" href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4" aria-hidden="true"><span class="octicon octicon-link"></span></a>デプロイ</h2>
 <p>デプロイフローは下記のようになっています。</p>
 
@@ -152,11 +152,11 @@
 
 <p>アプリケーションレポジトリの責任範囲がCircleCIでテストを実行してOpsWorksにデプロイリクエストを投げるまでで、その後のデプロイは別レポジトリとして管理されているChefのレシピの責任範囲として役割が分けられています。デプロイ環境が一通り揃ってしまえば、アプリケーション開発者はほとんどデプロイに関するアレコレを考える必要がなく本来の開発に集中できます。</p>
 
-<h2 id="rails">
+<h2 id="railsのバージョン">
 <a id="railsのバージョン" class="anchor" href="#rails%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Railsのバージョン</h2>
 <p>入社以来、Gunosyでは２つのRailsプロジェクトにかかわってきましたが（どちらも入社後にゼロから開始したプロジェクトです）両プロジェクトともにバージョン4.1.8です。まだ現時点で最新のバージョン4.2.0には上げてませんが今後も最新のRailsに追従していく所存です。</p>
 
-<h2 id="section-3">
+<h2 id="テスト">
 <a id="テスト" class="anchor" href="#%E3%83%86%E3%82%B9%E3%83%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>テスト</h2>
 <p>Railsのテストに関してはRSpec, FactoryGirl, Capybaraあたりを使っています。</p>
 
@@ -182,7 +182,7 @@
 
 <p>ただ「テストカバレッジを上げること」が目的化してしまっては本末転倒なので（いわゆる「テスト書きすぎ問題」）、「どこまでテストを書くか」は今後も考えていきたいテーマではあります。</p>
 
-<h2 id="db">
+<h2 id="複数db">
 <a id="複数db" class="anchor" href="#%E8%A4%87%E6%95%B0db" aria-hidden="true"><span class="octicon octicon-link"></span></a>複数DB</h2>
 <p>Railsの悩みとして１つ大きいのは複数DBの扱いではないでしょうか？ Gunosyでももちろん複数DBを使い分ける必要があり、そのときはCookpadさん, DeNAさんで実績のある<a href="https://github.com/eagletmt/switch_point">swith_point</a> gemを使用しています。</p>
 
@@ -209,28 +209,28 @@
 
 <p>Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。<a href="http://mozaic.fm/post/104575088493/12-rails">参考: #12 Rails mozaic.fm</a></p>
 
-<h2 id="section-4">
+<h2 id="権限管理">
 <a id="権限管理" class="anchor" href="#%E6%A8%A9%E9%99%90%E7%AE%A1%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>権限管理</h2>
 <p>管理画面の権限管理に関しては<a href="https://github.com/nathanl/authority">authority</a>を使用しています。権限は大まかにそれぞれの機能においてそれを参照できる権限（READ）・更新できる権限（CREATE/UPDATE/DELETE）というような権限分けを行っています。例えば＜ユーザーを閲覧可能＞という権限、＜ユーザーを更新可能＞な権限、これらを組み合わせて管理ユーザーの権限を定義します。</p>
 
 <p>なお、初期の権限設定は<code class="highlighter-rouge">seeds.rb</code>で権限をまくようにしています。</p>
 
-<h2 id="section-5">
+<h2 id="バッチ">
 <a id="バッチ" class="anchor" href="#%E3%83%90%E3%83%83%E3%83%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>バッチ</h2>
 <p>cronの管理に関しては<a href="https://github.com/javan/whenever">whenever</a>を使用しています。こちらはOpsWorkのデプロイ実行時にChefのwheneverレシビが定義してあり、そこでcronがデプロイ時に更新されるようになっています。</p>
 
-<h2 id="section-6">
+<h2 id="非同期ジョブ">
 <a id="非同期ジョブ" class="anchor" href="#%E9%9D%9E%E5%90%8C%E6%9C%9F%E3%82%B8%E3%83%A7%E3%83%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>非同期ジョブ</h2>
 <p>重い処理に関してはSidekiqを使いRails側ではSidekiqにキューイングするまでにして、その後の処理はSidekiqで行うようにしてます。例えばGunosyの場合何が重い処理にあたるかというと「全ユーザーにプッシュ通知を送るぞ！」みたいなケース。そのような時間のかかる処理に関してはSidekiqで処理を行っています<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup>。</p>
 
-<h2 id="section-7">
+<h2 id="その他今後の課題">
 <a id="その他今後の課題" class="anchor" href="#%E3%81%9D%E3%81%AE%E4%BB%96%E4%BB%8A%E5%BE%8C%E3%81%AE%E8%AA%B2%E9%A1%8C" aria-hidden="true"><span class="octicon octicon-link"></span></a>その他・今後の課題</h2>
 <ul>
   <li>僕が携わったプロジェクトはどちらもRails4系だが、歴史が積み重なったRails3系プロジェクトもあるので今後どうアップデートしていくか。</li>
   <li>Hubotは遊びで飼ってるけど<a href="https://speakerdeck.com/jnewland/chatops-at-github">ChatOps</a>といえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？</li>
 </ul>
 
-<h2 id="section-8">
+<h2 id="最後に">
 <a id="最後に" class="anchor" href="#%E6%9C%80%E5%BE%8C%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>最後に</h2>
 <p>Ruby/Rails業務経験歴半年足らずのヒヨッコではありますが、僕がかかわった範囲内でのGunosyでのRailsの開発の方法を紹介してみました。もし「うちはこんなRailsの開発してるよ！」とか「これ使うともっと便利になるよ！」とか教えていただけたら嬉しいです。</p>
 

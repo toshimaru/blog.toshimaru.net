@@ -85,7 +85,7 @@
 
 <p>HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。コードは<a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">こちら</a>を参考にしました。</p>
 
-<h2 id="section">前提条件</h2>
+<h2 id="前提条件">前提条件</h2>
 
 <p>比較として使用したRubyのバージョンは下記です。</p>
 
@@ -100,7 +100,7 @@
   <li><a href="https://github.com/evanphx/benchmark-ips">evanphx/benchmark-ips</a></li>
 </ul>
 
-<h3 id="section-1">ベンチマーク・コード</h3>
+<h3 id="ベンチマークコード">ベンチマーク・コード</h3>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
@@ -138,12 +138,12 @@
 
 <p>シンボルを使った方がハッシュのアクセスは速いが、Stringでのハッシュのアクセス速度はシンボルのそれと大きく変わらない値となっている。</p>
 
-<h2 id="section-2">結論</h2>
+<h2 id="結論">結論</h2>
 <p>シンボルを使ったキーの方がHashのアクセスは速い。2.1だとそれが顕著。しかし2.2以降はそう変わらない速度になってきている。</p>
 
 <hr />
 
-<h3 id="json">【おまけ】JSONの場合</h3>
+<h3 id="おまけjsonの場合">【おまけ】JSONの場合</h3>
 
 <p>JSONをパースした場合。下記のコードで<code class="highlighter-rouge">symbolize_names</code>した場合とそうでない場合を比較。</p>
 
@@ -181,7 +181,7 @@
 
 <p><code class="highlighter-rouge">symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
 
-<h3 id="section-3">参考</h3>
+<h3 id="参考">参考</h3>
 <ul>
   <li><a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">Unraveling String Key Performance in Ruby 2.2</a></li>
   <li><a href="http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/">Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった | 69log</a></li>

@@ -93,7 +93,7 @@
 
 <p>ここでは、deferredおよびjQueryによって提供されるAPIについて概観する。読者が理解できるよう多くの例を掲載した。あなたはこの記事を読み終わる頃にはdeferredとは何か、いつ使うべきものかが知ることができよう。</p>
 
-<h2 id="section">概要</h2>
+<h2 id="概要">概要</h2>
 
 <p>“Deferred”パターンとは、完了するかもしれない、あるいは完了しないかもしれない処理単位のプロキシのように振る舞うオブジェクトを表す。このパターンはどんな非同期処理にでも適応することができる。少し例をあげると、Ajaxリクエスト、アニメーション、Webワーカーだ。ユーザの行動さえも「遅延処理(delayed computation)」の対象とみなすことができるのである。</p>
 
@@ -101,25 +101,25 @@
 
 <p>おそらく既に読者はこのDefrredパターンを使っている。なぜならjQuery Ajax関数はdeferredインターフェースを実装したオブジェクトを返すからだ。それはAjaxリクエストが成功したときにresolveされ、HTTPリクエストが失敗したときにrejectされる。</p>
 
-<h2 id="section-1">理解すべき１つの重要なこと</h2>
+<h2 id="理解すべき１つの重要なこと">理解すべき１つの重要なこと</h2>
 <p>deferredは非同期処理における「いつ」を抽象化する。deferredは無制限に繰り返すことができる。この挙動のポイントは、もしdeferredが既にresolveならば、直ちに登録されているコールバックを実行することだ。処理単位(たとえばAjaxリクエスト)が終わっているかどうかは気にする必要がない。単純にコールバックをdeferredにバインドし、それが既にresolveであれば実行し、あるいはそれが未来にresolve状態になったときに実行する。</p>
 
-<h2 id="jquerydeferred">jQueryでdeferredを使ってみる</h2>
+<h2 id="jqueryでdeferredを使ってみる">jQueryでdeferredを使ってみる</h2>
 
-<h3 id="resolution--rejection">解決(resolution) &amp; 拒否(rejection)</h3>
+<h3 id="解決resolution--拒否rejection">解決(resolution) &amp; 拒否(rejection)</h3>
 <p>jQuery deferred関数の中核は、deferredの解決(resolve)/拒否(reject)を処理することだ。<code class="highlighter-rouge">$.Deferred().</code>でdeferredオブジェクトを作成できる。deferredオブジェクトの<code class="highlighter-rouge">done()</code>、<code class="highlighter-rouge">fail()</code>はそれぞれオブジェクトのresolveされたとき、rejectされたときに実行される関数を登録できる。</p>
 
 <p>deferredをresolve/rejectすることは実際、<code class="highlighter-rouge">resolve()</code>,<code class="highlighter-rouge">reject()</code>を使うことで実現できる。<code class="highlighter-rouge">jQuery.ajax()</code>メソッドは内部的には、リクエストが正常に完了したときにdeferredの<code class="highlighter-rouge">resolve()</code>をコールし、リクエストが失敗したとき（例えばhttpステータスコードの404）に<code class="highlighter-rouge">reject()</code>をコールする。</p>
 
-<h3 id="deferred-notifyprogress">deferredへ通知する: notify()とprogress()</h3>
+<h3 id="deferredへ通知する-notifyとprogress">deferredへ通知する: notify()とprogress()</h3>
 <p>jQuery1.7からresolve/rejectに加えて、<code class="highlighter-rouge">progress</code>が導入された。、<code class="highlighter-rouge">progress()</code>により、deferred内で<code class="highlighter-rouge">notify()</code>がコールされたときに実行されるコールバック関数を登録することができ、resolved状態に対する「進捗(progress)」を表現できるようになった。<code class="highlighter-rouge">notify()</code>で事前にコールバックを登録しておくことで例えば、ロードに時間がかかるリソースを持つdeferredオブジェクトの定期的に更新されるプログレスバーを描画できる。deferredはロード中に通知(notify)され、ロード完了時に解決(resolve)される。</p>
 
-<h3 id="promise">promise()を返す</h3>
+<h3 id="promiseを返す">promise()を返す</h3>
 <p>deferred利用時のほとんどの場合、deferredの利用者にresolve/rejectを決めてほしくはないだろう。あなた自身でそれを管理したいはずだ。そのような場合には、<code class="highlighter-rouge">promise()</code>を返すのがよい。</p>
 
 <p>jQuery用語的にいうと、promiseは「read-only deferred」だ。promiseはコールバック登録、deferred状態への問い合わせを可能にするが、状態の変更は不可だ(たとえばresolve/reject状態の変更)。 <code class="highlighter-rouge">jQuery.ajax()</code>メソッドはpromise()を返す。なぜならAJAXリクエストが成功したか失敗したかを決定するのは、その内部のコードで完結する話だからだ。</p>
 
-<h3 id="when">非同期イベントの同期化：when()</h3>
+<h3 id="非同期イベントの同期化when">非同期イベントの同期化：when()</h3>
 
 <p><code class="highlighter-rouge">$.when()</code>は１つ以上のdeferredを受け入れ可能で、それら全てのdeferredオブジェクトが正常に完了(resove)したときにのみresolve状態となる新たなdeferredを作り出す。つまり<code class="highlighter-rouge">when()</code>により、非同期イベントを一つに統合することが可能になるのだ。</p>
 
@@ -137,7 +137,7 @@
 
 <iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/wJ4bm/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<h3 id="section-2">人間もまた非同期だ</h3>
+<h3 id="人間もまた非同期だ">人間もまた非同期だ</h3>
 
 <p>Webサイトやアプリーケーション上の数多くのモノは非同期である。これにはあなた自身さえも含まれている。考えてみよう、あなたのサイトはユーザにプロフィールを作成するように依頼する。プロフィールを十分にユーザに埋めさせるよう、あなたはどれくらい入力が完了しているかプログレスバーを表示させる。それらの入力が完了するとプログレスバーを変更させ、全て入力し終えたときには「ありがとうございます」というメッセージを表示させる。</p>
 
@@ -149,7 +149,7 @@
 
 <iframe width="100%" height="300" src="http://jsfiddle.net/TTUrQ/10/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<h3 id="section-3">最後に（訳者より）</h3>
+<h3 id="最後に訳者より">最後に（訳者より）</h3>
 
 <p>原文にはdeferredの面白い使い方、<code class="highlighter-rouge">pipe()</code>も紹介されています。是非こちらも参照してみてください。</p>
 

@@ -85,13 +85,13 @@
 
 <p>この記事は<a href="http://www.adventar.org/calendars/101">PHP Advent Calendar 2013</a>の8日目の記事です。本エントリではphp5.4の注目機能の１つである<a href="http://php.net/manual/ja/language.oop5.traits.php">trait</a>をどうやって扱うべきかを書いてみようと思います。</p>
 
-<h2 id="trait">Traitとは</h2>
+<h2 id="traitとは">Traitとは</h2>
 
 <p>Traitとは継承関係と関係なく実装を再利用できる仕組みのことです<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>。言い換えるならば、「多重継承」であったり「Mix-in」を可能にする仕組みと言えるでしょう。Rubyistの間ではMix-inの概念は当たり前のことでしょうが、PHP界隈ではTraitは新しい機能ということもあり浸透していない概念かと思います（Ruby以外にもTraitと似た機構はあるみたいですね<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>）。</p>
 
 <p>本エントリではPHPerの間では未だ聞き慣れないであろうTraitの概念を実コードとともに紹介してみようと思います。</p>
 
-<h2 id="trait-1">Traitの特徴</h2>
+<h2 id="traitの特徴">Traitの特徴</h2>
 
 <p>Traitの簡単な特徴は以下の通りです。</p>
 
@@ -101,7 +101,7 @@
   <li>振る舞いを継承関係のような上下方向ではなく水平方向に定義可能</li>
 </ul>
 
-<h2 id="trait-2">Traitを使うと嬉しくなる状況</h2>
+<h2 id="traitを使うと嬉しくなる状況">Traitを使うと嬉しくなる状況</h2>
 
 <p>ではTraitを使うべき状況、使うと嬉しい状況とはどんな状況でしょうか？　まずは下記を満たす実装を普通にPHPで書いてみます。</p>
 
@@ -153,13 +153,13 @@
 
 <p>基本行動可能な<code class="highlighter-rouge">Human</code>クラスがあってそれを継承した<code class="highlighter-rouge">Warrior</code>,<code class="highlighter-rouge">Wizard</code>がいて…。普通のコードかと思います。</p>
 
-<h3 id="section">追加要件：「魔法戦士を追加したい！」</h3>
+<h3 id="追加要件魔法戦士を追加したい">追加要件：「魔法戦士を追加したい！」</h3>
 
 <p>こんな要望がきました。「魔法戦士も追加したいんだよねー！」　さて上記のような実装に魔法戦士を加えるとしたらどうなるでしょうか？</p>
 
 <p>魔法も攻撃もできなきゃいけないから、まず<code class="highlighter-rouge">Warrior</code>を継承してその次に<code class="highlighter-rouge">Wizard</code>も継承して…と、ここで多重継承の問題が出てきますね。愚直に<code class="highlighter-rouge">Human</code>を継承した魔法戦士を作ってもいいのですが、同じコードを二度は書きたくないですよね。DRYに行きたいですよね、ね？</p>
 
-<h3 id="trait-3">Traitを使ってみる</h3>
+<h3 id="traitを使ってみる">Traitを使ってみる</h3>
 
 <p>そこでTraitの出番です。<code class="highlighter-rouge">trait</code>であれば振る舞いを水平方向に構成できちゃうんです。え？よくわからない？　コードを見てください。</p>
 
@@ -212,7 +212,7 @@
 
 <p>ね？簡単でしょ？</p>
 
-<h2 id="traittrait">今後のTrait事情―まだ来ないであろうTraitの波　</h2>
+<h2 id="今後のtrait事情まだ来ないであろうtraitの波">今後のTrait事情―まだ来ないであろうTraitの波　</h2>
 
 <p>今回紹介したTraitはフレームワークの設計を根本から変えうる素晴らしい機能なのですが、<a href="http://w3techs.com/technologies/details/pl-php/5/all">PHP5.4の使用率がまだ10%</a>なこと、まだまだTraitを使ったコード使用例が少ないこと、これらを考えるとTraitがPHPerに広く普及するにはあと2,3年はかかるのかな、と考えています。</p>
 

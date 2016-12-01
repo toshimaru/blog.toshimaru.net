@@ -87,7 +87,7 @@
 
 <p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>というgemを作った。</p>
 
-<h2 id="section">なぜ作ったか</h2>
+<h2 id="なぜ作ったか">なぜ作ったか</h2>
 
 <p>同じコンセプトのgemとしては、<a href="https://github.com/k0kubun">k0kubun</a>さんの<a href="https://github.com/k0kubun/rack-user_agent">rack-user_agent</a>がある。詳細については下記のブログエントリに詳しい。</p>
 
@@ -95,7 +95,7 @@
 
 <p>ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして<a href="https://github.com/woothee/woothee">woothee</a>を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。</p>
 
-<h3 id="tablet-">tablet 判定したい</h3>
+<h3 id="tablet-判定したい">tablet 判定したい</h3>
 
 <p>昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。</p>
 
@@ -108,7 +108,7 @@
 
 <p>この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。</p>
 
-<h3 id="bot">無条件にbot判定されたくない</h3>
+<h3 id="無条件にbot判定されたくない">無条件にbot判定されたくない</h3>
 
 <p>また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば<a href="https://www.google.com/webmasters/tools/mobile-friendly/">Mobile-Friendly Test</a>でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが<code class="highlighter-rouge">crawler</code>と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。</p>
 
@@ -117,11 +117,11 @@
 </code></pre>
 </div>
 
-<h2 id="rack-simpleuseragent">rack-simple_user_agentというソリューション</h2>
+<h2 id="rack-simple_user_agentというソリューション">rack-simple_user_agentというソリューション</h2>
 
 <p>これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは <strong>stupidly simple UA detector</strong> と称することにした。</p>
 
-<h2 id="rack-simpleuseragent-1">rack-simple_user_agentで可能な判定</h2>
+<h2 id="rack-simple_user_agentで可能な判定">rack-simple_user_agentで可能な判定</h2>
 
 <ul>
   <li><code class="highlighter-rouge">request.from_smartphone?</code>
@@ -148,7 +148,7 @@
 
 <p>2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.</p>
 
-<h2 id="section-1">まとめ</h2>
+<h2 id="まとめ">まとめ</h2>
 
 <p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。</p>
 

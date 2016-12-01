@@ -95,11 +95,11 @@
 
 <script async="" class="speakerdeck-embed" data-id="786983b0a1f94d1ca1250aa48ce94ed0" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
-<h2 id="section">目的</h2>
+<h2 id="目的">目的</h2>
 
 <p>発表の目的としては世に言われる <strong>Infrastructure as Code</strong> の認識・理解を参加者であわせること。</p>
 
-<h2 id="infrastructure-as-code">Infrastructure as Codeの意義</h2>
+<h2 id="infrastructure-as-codeの意義">Infrastructure as Codeの意義</h2>
 
 <p>大きく３つあると思っている。</p>
 
@@ -109,7 +109,7 @@
   <li>手順を不変（immutable）にする</li>
 </ol>
 
-<h3 id="section-1">秘伝のタレ</h3>
+<h3 id="秘伝のタレ">秘伝のタレ</h3>
 
 <p>秘伝のタレ。一体どういう意味だろうか。まるで秘伝のタレのように継ぎ足し継ぎ足し変更が入り代々受け継がれてきたサーバーを形容する表現が <strong>秘伝のタレ</strong> だ。</p>
 
@@ -117,7 +117,7 @@
 
 <p>インフラ担当者のアタマにしか入っていない隠し味なんかがあったりするとオワタ状態＼(^o^)／。その担当者が退職したりすると誰も現プロダクション環境は再現できません、という状況が出来上がる。</p>
 
-<h3 id="section-2">コード化するということ</h3>
+<h3 id="コード化するということ">コード化するということ</h3>
 
 <p>秘伝のタレ化を防ぐために、コード化という行為を行う。ではコード化されることで良い事とはなんだろうか。</p>
 
@@ -141,7 +141,7 @@
 
 <p><a href="http://chadfowler.com/2013/06/23/immutable-deployments.html">Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components</a></p>
 
-<h3 id="immutable-infrastructure-">Immutable Infrastructure のキーワード</h3>
+<h3 id="immutable-infrastructure-のキーワード">Immutable Infrastructure のキーワード</h3>
 
 <p>Immutable Infrastructureを僕なりに解釈すると、その言葉の本質は下記のキーワードで表せると思う。</p>
 
@@ -156,7 +156,7 @@
 
 <p>そして、オートスケーリングの恩恵を享受するためにはサーバー・プロビジョニング自動化作業が必要となる。スケール前提のサーバー群はいつ何時でも既存のサーバーと同じ状態のサーバーが立ち上がる必要がある<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>。つまり、構築手順を <strong>Immutable</strong> にし <strong>Reproducible</strong> なサーバー環境にする(= <strong>Idempotence</strong> を担保する)ことが必要。</p>
 
-<h2 id="section-3">構成管理ツールの歴史</h2>
+<h2 id="構成管理ツールの歴史">構成管理ツールの歴史</h2>
 
 <p>メジャーなプロビジョニングツール(構成管理ツール)の歴史を追ってみる。</p>
 
@@ -171,7 +171,7 @@
 </li>
 </ul>
 
-<h2 id="section-4">実装言語別分類</h2>
+<h2 id="実装言語別分類">実装言語別分類</h2>
 
 <p>実装言語別に分類してみる。</p>
 
@@ -192,7 +192,7 @@
   </tbody>
 </table>
 
-<h2 id="section-5">表現別分類</h2>
+<h2 id="表現別分類">表現別分類</h2>
 
 <p>インフラストラクチャをどうコードで表現しているかの表現体形で分類してみる。</p>
 
@@ -237,13 +237,13 @@
 
 <p>なぜRubyを採用するか？ まずはDSLが書きやすいという点。そしてRSpecなどのRuby DSLに代表されるようにRuby DSLは宣言的な記述が可能である。宣言的ということはコードを読んだだけでそのコードの意図が伝わりやすいということだ。そしてDSLといってもRubyはRuby。RubyなのでRubyでできることは何でもできちゃうので、自由度が高い（これは悪い意味に作用することもあってやりすぎるとChefのレシピそのものが秘伝のタレ化する可能性があるので注意）。</p>
 
-<h2 id="infrastructure-as-code-">Infrastructure as Code の概念整理</h2>
+<h2 id="infrastructure-as-code-の概念整理">Infrastructure as Code の概念整理</h2>
 
 <p>Infrastructure as Code の概念を整理してみたい。<a href="http://mizzy.org/blog/2013/10/29/1/">mizzyさんのブログでは</a>、プロビジョニングのレイヤーを下記のように分けるような考え方が紹介されていた。</p>
 
 <p><img src="/images/posts/roppongirb2/provisioning-tools.png" alt="provisioning layers"></p>
 
-<h2 id="section-6">シンプルなプロビジョニング・レイヤーの考え方</h2>
+<h2 id="シンプルなプロビジョニングレイヤーの考え方">シンプルなプロビジョニング・レイヤーの考え方</h2>
 
 <p>オーケストレーションなどというと抽象的なのとInfrastructure as Codeのスコープが広くなってしまうと思うので、シンプルにこんな風に考えてみるのはどうだろうか。</p>
 
@@ -257,7 +257,7 @@
 
 <p><img src="/images/posts/roppongirb2/aws-services.png" alt="AWS services"></p>
 
-<h2 id="infrastructure-as-code--1">Infrastructure as Code のカバー範囲</h2>
+<h2 id="infrastructure-as-code-のカバー範囲">Infrastructure as Code のカバー範囲</h2>
 
 <p>IaaSは仮想サーバ以外にもさまざまなサービスを提供している。AWSの例でいうと、ELB, RDS, VPC, S3, CloudFront, IAM, SecurityGroup などなど。</p>
 
@@ -275,7 +275,7 @@
 
 <p>こう考えるとIaaSの各種サービス群もコード化の対象として捉えることができる。</p>
 
-<h2 id="section-7">全てがコードになる例</h2>
+<h2 id="全てがコードになる例">全てがコードになる例</h2>
 
 <h3 id="route53-configuration">Route53 Configuration</h3>
 
@@ -381,7 +381,7 @@
 
 <p>powered by <a href="https://www.terraform.io/docs/providers/github/">Provider: GitHub - Terraform by HashiCorp</a></p>
 
-<h2 id="section-8">全てがプルリクになる</h2>
+<h2 id="全てがプルリクになる">全てがプルリクになる</h2>
 
 <p>冒頭に述べたように、コード化されるということはGithubに乗せてプルリクエストを出せるということだ。</p>
 
@@ -389,14 +389,14 @@
 
 <p>こんなふうにプルリクになっているとレビューも簡単。</p>
 
-<h2 id="section-9">コード化するメリット</h2>
+<h2 id="コード化するメリット">コード化するメリット</h2>
 
 <ul>
   <li>レビューによるチェック体制により、より安全なConfigurationオペレーションを実現できる</li>
   <li>CIサービスと連携させてテスト・CDの自動化も可能となる</li>
 </ul>
 
-<h2 id="section-10">まとめ</h2>
+<h2 id="まとめ">まとめ</h2>
 
 <ul>
   <li>コード化することによりGithubワークフロー（プルリク→レビュー→マージ）に乗ることができてハッピー <img class="emoji" title=":smile:" alt=":smile:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle">
@@ -404,13 +404,13 @@
   <li>Infrastructure as Code = Server Configuration as Code + Service Configuration as Code ➜ サーバーだけではなく、サービスそれ自体もコード化されていく。</li>
 </ul>
 
-<h2 id="section-11">感想</h2>
+<h2 id="感想">感想</h2>
 
 <ul>
   <li>今回の発表はKeynoteでスライド作ったけど、Keynoteはレイアウトとかテーマの設定が自由にできてDecksetよりはデザイン凝ろうと思ったときに便利。</li>
 </ul>
 
-<h2 id="section-12">参考</h2>
+<h2 id="参考">参考</h2>
 
 <ul>
   <li><a href="https://speakerdeck.com/ryotarai/itamae-infra-as-code-xian-zhuang-que-ren-hui">Itamae - Infra as Code 現状確認会</a></li>
