@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Hatena Engineer Seminar に行って来ました
+title: Hatena Engineer Seminar に行ってきた
 description: Hatena Engineer Seminarにいって来ました。下記にその際のメモを掲載しておきます。
 published: true
 tags: tech
