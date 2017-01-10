@@ -8,9 +8,10 @@ group :jekyll_plugins do
   gem 'jekyll-compose', github: 'toshimaru/jekyll-compose', branch: 'feature/post-template'
   gem 'jekyll-feed'
   gem 'jekyll-paginate'
+  gem 'jekyll-seo-tag'
   gem 'jekyll-sitemap'
-  gem 'jekyll-tagging'
   gem 'jekyll-tagging-related_posts'
+  gem 'jekyll-tagging'
   gem 'jekyll-toc'
   gem 'jemoji'
 end
