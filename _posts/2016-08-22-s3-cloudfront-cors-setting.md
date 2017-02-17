@@ -15,9 +15,9 @@ tags: aws s3
 
 ## S3の設定
 
-CROSの設定はS3のバケットのプロパティ設定から行えます。
+CORSの設定はS3のバケットのプロパティ設定から行えます。
 
-![](/images/posts/cors/s3.png)
+![s3 bucket property](/images/posts/cors/s3.png)
 
 XMLをサンプルとして下記のように設定できます。
 
@@ -42,7 +42,7 @@ XMLをサンプルとして下記のように設定できます。
 
 ### 確認手順
 
-正しく設定されているかを確認するために下記のように`curl`で検証してみましょう。
+正しく設定されているかを確認するために下記のように`curl`コマンドを使って検証してみましょう。
 
 ```
 $ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
@@ -64,7 +64,7 @@ Content-Length: 14356
 Server: AmazonS3
 ```
 
-`Access-Control-Allow-Origin: http://sample.jp` で正しく AllowOrigin されていることが確認できました。
+`Access-Control-Allow-Origin: http://sample.jp` のレスポンスがヘッダが返ってきており、正しく AllowOrigin されていることが確認できました。
 
 ## CloudFront
 
@@ -72,9 +72,9 @@ Server: AmazonS3
 
 [Amazon S3 での CloudFront  の設定](http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/MigrateS3ToCloudFront.html)が済んでいることを前提として進めていいきます。
 
-### CORS 設定
+### CloudFrontの CORS 設定
 
-CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。Origin のヘッダーがS3まで通る必要があるので`Origin`ヘッダーを Whitelist Headers に加えてやります。
+CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。OriginヘッダーがS3まで通る必要があるので`Origin`ヘッダーを Whitelist Headers に加えてやります。
 
 ![](/images/posts/cors/cloudfront.png)
 
@@ -111,10 +111,10 @@ S3と同じく`Access-Control-Allow-Origin`ヘッダが設定されているこ�
 
 * 不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
   * その場合は [Invalidation](http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html)を行い、キャッシュをCloudFrontから消してみると解決するかも
-  * Invalidation や設定変更反映はけっこう時間かかるので注意（もっと速くしてほしいところ）
+  * Invalidation や設定変更反映はけっこう時間かかるので注意（試行錯誤のスピード落ちるのでもっと速くしてほしいところ...）
 * ~~現時点ではCloudFrontは HTTP/2 未対応~~
   * ~~2017年くらいには対応してきそうな予感がある（あくまで個人的予想）~~
-  * 2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront \| AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)
+  * :new: 2016年９月にCloudFrontがHTTP/2に対応しました [New – HTTP/2 Support for Amazon CloudFront \| AWS Blog](https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/)
 * ブラウザからアクセスされるOriginヘッダは**末尾スラッシュ無し**である点に注意
 
 ## 参考
