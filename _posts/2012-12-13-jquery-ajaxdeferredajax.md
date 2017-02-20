@@ -2,8 +2,8 @@
 layout: post
 title: jQueryのDeferredを用いたモダンなAjax処理の書き方
 published: true
-description: jQeuryにおけるDeferredを用いたモダンなAjaxの書き方を目指して、ステップ・バイ・ステップでコード付きで解説していきます。
-tags: jquery javascript
+description: jQeuryにおけるDeferredを用いたモダンなAjaxの書き方を目指して、jQueryのバージョン毎にステップ・バイ・ステップでコード付きで解説していきます。
+tags: jquery javascript ajax
 toc: true
 ---
 
@@ -134,7 +134,7 @@ $('#button').on('click', function() {
 これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは
 
 ```js
-Twitter.search('query hoge').done(function() { /* code... */ })
+Twitter.search('query hoge').done(function() { /* ...code... */ });
 ```
 
 と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。
@@ -146,7 +146,7 @@ Twitter.search('query hoge').done(function() { /* code... */ })
 [jsfiddleでの実例はこちら](http://jsfiddle.net/toshimaru/nNMae/)
 
 ```js
-// "Twitter" のコードは同上
+// `Twitter`のコードは同上
 // var Twitter = { ... }
 
 $('#button').on('click', function() {
