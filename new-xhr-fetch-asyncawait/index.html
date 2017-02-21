@@ -198,7 +198,7 @@
 
 <p>最後のXHRは<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/async_function">async/await</a>になります。Chrome55からのサポートなので最近追加された機能ということになります。</p>
 
-<p>コードとしては下記のようになります。</p>
+<p>さきほどの<code class="highlighter-rouge">fetch</code>のコードをasync/awaitの機能を使って書き換えてみましょう。</p>
 
 <div class="language-js highlighter-rouge">
 <pre class="highlight"><code><span class="p">(</span><span class="nx">async</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
@@ -212,7 +212,9 @@
 </code></pre>
 </div>
 
-<p>コンソールで動かして結果は下記の通り。</p>
+<p>ポイントとしては <code class="highlighter-rouge">async</code>を使ってまず無名関数を作ります。これでその関数内に<code class="highlighter-rouge">await</code>を使う準備ができました。<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await">await</a>はPromiseが返されるのを待機するので、先程のPromiseを返す<code class="highlighter-rouge">fetch</code>関数の手前に<code class="highlighter-rouge">await</code>を宣言します。これで<code class="highlighter-rouge">fetch</code>関数は<code class="highlighter-rouge">then</code>でコールバックをチェインする必要がなくなり、<code class="highlighter-rouge">response</code>変数にダイレクトに結果が代入されます。エラー処理に関してはtryで処理内容を囲み、catchでエラーを補足します。</p>
+
+<p>コンソールで動かしてみた結果は下記の通り。</p>
 
 <p><img src="/images/posts/xhr/4.png" alt=""></p>
 
