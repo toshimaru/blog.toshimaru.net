@@ -93,7 +93,7 @@ Chrome Dev Toolコンソールで動かした結果。
 
 最後のXHRは[async/await](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/async_function)になります。Chrome55からのサポートなので最近追加された機能ということになります。
 
-コードとしては下記のようになります。
+さきほどの`fetch`のコードをasync/awaitの機能を使って書き換えてみましょう。
 
 ```js
 (async() => {
@@ -106,7 +106,9 @@ Chrome Dev Toolコンソールで動かした結果。
 })();
 ```
 
-コンソールで動かして結果は下記の通り。
+ポイントとしては `async`を使ってまず無名関数を作ります。これでその関数内に`await`を使う準備ができました。[await](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await)はPromiseが返されるのを待機するので、先程のPromiseを返す`fetch`関数の手前に`await`を宣言します。これで`fetch`関数は`then`でコールバックをチェインする必要がなくなり、`response`変数にダイレクトに結果が代入されます。エラー処理に関してはtryで処理内容を囲み、catchでエラーを補足します。
+
+コンソールで動かしてみた結果は下記の通り。
 
 ![](/images/posts/xhr/4.png)
 
