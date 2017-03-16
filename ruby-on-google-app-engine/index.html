@@ -11,9 +11,9 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="Ruby on Rails を Google App Engine 上で動かしてみる - Hack Your Design!">
   <meta property="og:title" content="Ruby on Rails を Google App Engine 上で動かしてみる - Hack Your Design!">
-  <meta name="description" content="Ruby on RailsをGoogle App Engine 上で動かしてみました。手順は How to run Hello World - Ruby — Google Cloud Platform を参考に進めていきます。">
-  <meta name="twitter:description" content="Ruby on RailsをGoogle App Engine 上で動かしてみました。手順は How to run Hello World - Ruby — Google Cloud Platform を参考に進めていきます。">
-  <meta property="og:description" content="Ruby on RailsをGoogle App Engine 上で動かしてみました。手順は How to run Hello World - Ruby — Google Cloud Platform を参考に進めていきます。">
+  <meta name="description" content="Ruby on RailsをGoogle App Engine 上で動かしてみました。手順はGoogle公式ドキュメントの「How to run Hello World - Ruby — Google Cloud Platform」を参考に進めていきます。">
+  <meta name="twitter:description" content="Ruby on RailsをGoogle App Engine 上で動かしてみました。手順はGoogle公式ドキュメントの「How to run Hello World - Ruby — Google Cloud Platform」を参考に進めていきます。">
+  <meta property="og:description" content="Ruby on RailsをGoogle App Engine 上で動かしてみました。手順はGoogle公式ドキュメントの「How to run Hello World - Ruby — Google Cloud Platform」を参考に進めていきます。">
   
   
   <meta property="og:image" content="http://blog.toshimaru.net/images/posts/ruby-gae/ruby.png" />
@@ -92,12 +92,13 @@
 
 <p><a href="http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html">［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey</a></p>
 
-<p>ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は <a href="https://cloud.google.com/ruby/getting-started/hello-world">How to run Hello World - Ruby — Google Cloud Platform</a> を参考に進めていきます。</p>
+<p>ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は公式ドキュメント・ <a href="https://cloud.google.com/ruby/getting-started/hello-world">How to run Hello World - Ruby — Google Cloud Platform</a> を参考に進めていきます。</p>
 
 <h2 id="前提">前提</h2>
+
 <ul>
-  <li>gcloud コマンドが使えること - <a href="https://cloud.google.com/sdk/">Google Cloud SDK</a>に含まれています</li>
-  <li>Google Cloud Platformにログイン済みでかつ今回のデプロイ先となるプロジェクトが作成済みであること</li>
+  <li>gcloud コマンドが使えること（<a href="https://cloud.google.com/sdk/">Google Cloud SDK</a>に含まれています）</li>
+  <li>Google Cloud Platformにログイン済みであり、今回のデプロイ先となるプロジェクトが作成済みであること</li>
 </ul>
 
 <h2 id="手順">手順</h2>
@@ -111,7 +112,7 @@ $ cd 1-hello-world
 </code></pre>
 </div>
 
-<p>まずは通常のRuby on Railsアプリと同じくbundle installしてRailsサーバーを立てましょう。</p>
+<p>まずは通常のRuby on Railsアプリと同じく<code class="highlighter-rouge">bundle install</code>してRailsサーバーを立てましょう。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>$ bundle install
 $ rails server
@@ -131,11 +132,11 @@ $ gcloud init
 $ gcloud auth login
 
 # 今回作成したプロジェクトIDをセット
-$ gcloud config set project your-project-id
+$ gcloud config set project {your-project-id}
 </code></pre>
 </div>
 
-<p>これでapp deploy コマンドが動作しました。</p>
+<p>これでapp deployコマンドが動作しました。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>$ gcloud preview app deploy
 </code></pre>
@@ -357,7 +358,7 @@ Deployed module [default] to [https://your-project-id.appspot.com]
 
 <p>今回使われている<code class="highlighter-rouge">app.yml</code>はこんな感じでした。</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># [START runtime]</span>
+<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="c1"># [START runtime]</span>
 <span class="s">runtime</span><span class="pi">:</span> <span class="s">ruby</span>
 <span class="s">vm</span><span class="pi">:</span> <span class="s">true</span>
 <span class="s">entrypoint</span><span class="pi">:</span> <span class="s">bundle exec rackup -p 8080 -E production config.ru</span>
@@ -377,11 +378,14 @@ Deployed module [default] to [https://your-project-id.appspot.com]
   <span class="s">cool_down_period_sec</span><span class="pi">:</span> <span class="s">60</span>
   <span class="s">cpu_utilization</span><span class="pi">:</span>
     <span class="s">target_utilization</span><span class="pi">:</span> <span class="s">0.5</span>
-<span class="c1"># [END scaling]</span></code></pre></figure>
+<span class="c1"># [END scaling]</span>
+</code></pre>
+</div>
 
-<p><code class="highlighter-rouge">runtime</code>の設定がrubyプロジェクトに共通の設定で<code class="highlighter-rouge">resources</code>, <code class="highlighter-rouge">scaling</code>は環境に合わせて適宜チューニングしてください。デフォルトの状態はミニマルな設定になっているようです。</p>
+<p><code class="highlighter-rouge">runtime</code>の設定がrubyプロジェクトに共通の設定で<code class="highlighter-rouge">resources</code>, <code class="highlighter-rouge">scaling</code>は環境に合わせて適宜チューニングしてください。デフォルトの状態としてはミニマルな設定になっているようです。</p>
 
 <h2 id="参考">参考</h2>
+
 <ul>
   <li><a href="https://github.com/GoogleCloudPlatform/ruby-docker">GoogleCloudPlatform/ruby-docker: Docker images for Ruby</a></li>
   <li><a href="https://github.com/GoogleCloudPlatform/ruby-docker/blob/master/appengine/Dockerfile">ruby-docker/Dockerfile at master · GoogleCloudPlatform/ruby-docker</a></li>
