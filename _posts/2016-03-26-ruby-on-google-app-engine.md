@@ -2,17 +2,18 @@
 title: Ruby on Rails を Google App Engine 上で動かしてみる
 published: true
 image: /images/posts/ruby-gae/ruby.png
-description: Ruby on RailsをGoogle App Engine 上で動かしてみました。手順は How to run Hello World - Ruby — Google Cloud Platform を参考に進めていきます。
+description: Ruby on RailsをGoogle App Engine 上で動かしてみました。手順はGoogle公式ドキュメントの「How to run Hello World - Ruby — Google Cloud Platform」を参考に進めていきます。
 tags: google_app_engine rails docker
 ---
 
 [［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey](http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html)
 
-ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は [How to run Hello World - Ruby — Google Cloud Platform](https://cloud.google.com/ruby/getting-started/hello-world) を参考に進めていきます。
+ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は公式ドキュメント・ [How to run Hello World - Ruby — Google Cloud Platform](https://cloud.google.com/ruby/getting-started/hello-world) を参考に進めていきます。
 
 ## 前提
-* gcloud コマンドが使えること - [Google Cloud SDK](https://cloud.google.com/sdk/)に含まれています
-* Google Cloud Platformにログイン済みでかつ今回のデプロイ先となるプロジェクトが作成済みであること
+
+* gcloud コマンドが使えること（[Google Cloud SDK](https://cloud.google.com/sdk/)に含まれています）
+* Google Cloud Platformにログイン済みであり、今回のデプロイ先となるプロジェクトが作成済みであること
 
 ## 手順
 
@@ -23,7 +24,7 @@ tags: google_app_engine rails docker
     $ git clone https://github.com/GoogleCloudPlatform/getting-started-ruby.git
     $ cd 1-hello-world
 
-まずは通常のRuby on Railsアプリと同じくbundle installしてRailsサーバーを立てましょう。
+まずは通常のRuby on Railsアプリと同じく`bundle install`してRailsサーバーを立てましょう。
 
     $ bundle install
     $ rails server
@@ -41,9 +42,9 @@ gcloud を使って行きますがいくつか事前の設定が必要ありま�
     $ gcloud auth login
 
     # 今回作成したプロジェクトIDをセット
-    $ gcloud config set project your-project-id
+    $ gcloud config set project {your-project-id}
 
-これでapp deploy コマンドが動作しました。
+これでapp deployコマンドが動作しました。
 
     $ gcloud preview app deploy
 
@@ -257,12 +258,11 @@ gcloud を使って行きますがいくつか事前の設定が必要ありま�
     Updating module [default]...done.
     Deployed module [default] to [https://your-project-id.appspot.com]
 
-
 ## app.yml
 
 今回使われている`app.yml`はこんな感じでした。
 
-{% highlight yaml %}
+```yaml
 # [START runtime]
 runtime: ruby
 vm: true
@@ -284,10 +284,11 @@ automatic_scaling:
   cpu_utilization:
     target_utilization: 0.5
 # [END scaling]
-{% endhighlight %}
+```
 
-`runtime`の設定がrubyプロジェクトに共通の設定で`resources`, `scaling`は環境に合わせて適宜チューニングしてください。デフォルトの状態はミニマルな設定になっているようです。
+`runtime`の設定がrubyプロジェクトに共通の設定で`resources`, `scaling`は環境に合わせて適宜チューニングしてください。デフォルトの状態としてはミニマルな設定になっているようです。
 
 ## 参考
+
 * [GoogleCloudPlatform/ruby-docker: Docker images for Ruby](https://github.com/GoogleCloudPlatform/ruby-docker)
 * [ruby-docker/Dockerfile at master · GoogleCloudPlatform/ruby-docker](https://github.com/GoogleCloudPlatform/ruby-docker/blob/master/appengine/Dockerfile)
