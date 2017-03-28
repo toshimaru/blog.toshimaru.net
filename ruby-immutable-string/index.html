@@ -11,9 +11,9 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する - Hack Your Design!">
   <meta property="og:title" content="Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する - Hack Your Design!">
-  <meta name="description" content="Immutable String in Ruby3 / Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
-  <meta name="twitter:description" content="Immutable String in Ruby3 / Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
-  <meta property="og:description" content="Immutable String in Ruby3 / Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
+  <meta name="description" content="Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
+  <meta name="twitter:description" content="Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
+  <meta property="og:description" content="Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
@@ -98,7 +98,7 @@
 
 <h2 id="immutable-string-in-ruby23">Immutable String in Ruby2.3+</h2>
 
-<p>Ruby2.3 では既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のようにマジックコメントを書けばよい。</p>
+<p>実は Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のようにマジックコメントを書けばよい。</p>
 
 <div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 </code></pre>
@@ -189,7 +189,7 @@
 </code></pre>
 </div>
 
-<p>つまり<code class="highlighter-rouge">WelcomeController</code>で定義された文字列だけが frozen されていることがわかる。</p>
+<p>つまり<code class="highlighter-rouge">WelcomeController</code>で定義された文字列だけが<code class="highlighter-rouge">freeze</code>されていることがわかる。</p>
 
 <h2 id="mutableなstringを定義するにはどうしたらよい">mutableなStringを定義するにはどうしたらよい？</h2>
 
