@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2017-03-28T13:50:19+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await</title><link href="http://blog.toshimaru.net/new-xhr-fetch-asyncawait/" rel="alternate" type="text/html" title="JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await" /><published>2017-02-20T00:00:00+09:00</published><updated>2017-02-20T00:00:00+09:00</updated><id>http://blog.toshimaru.net/new-xhr-fetch-asyncawait</id><content type="html" xml:base="http://blog.toshimaru.net/new-xhr-fetch-asyncawait/">&lt;p&gt;JavaSciriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2017-03-28T13:51:05+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await</title><link href="http://blog.toshimaru.net/new-xhr-fetch-asyncawait/" rel="alternate" type="text/html" title="JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await" /><published>2017-02-20T00:00:00+09:00</published><updated>2017-02-20T00:00:00+09:00</updated><id>http://blog.toshimaru.net/new-xhr-fetch-asyncawait</id><content type="html" xml:base="http://blog.toshimaru.net/new-xhr-fetch-asyncawait/">&lt;p&gt;JavaSciriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。&lt;/p&gt;
 
 &lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
 
@@ -1158,21 +1158,21 @@ X-Amz-Cf-Id: xxx
 
 &lt;p&gt;一度 &lt;code class=&quot;highlighter-rouge&quot;&gt;frozen_string_literal: true&lt;/code&gt; のコードを入れると全ての文字列が&lt;code class=&quot;highlighter-rouge&quot;&gt;.freeze&lt;/code&gt;されるので、下記のようなコードは&lt;code class=&quot;highlighter-rouge&quot;&gt;RuntimeError&lt;/code&gt;となる。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# frozen_string_literal: true
-str = &quot;a&quot;
-str &amp;lt;&amp;lt; &quot;bc&quot;
-puts str
-# =&amp;gt; test.rb:3:in `&amp;lt;main&amp;gt;': can't modify frozen String (RuntimeError)
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bc&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; test.rb:3:in `&amp;lt;main&amp;gt;': can't modify frozen String (RuntimeError)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
 &lt;p&gt;この場合の対処法としてはfreezeを解除したい文字列に対して、&lt;code class=&quot;highlighter-rouge&quot;&gt;.dup&lt;/code&gt;を付けてやれば解決する。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# frozen_string_literal: true
-str = &quot;a&quot;.dup
-str &amp;lt;&amp;lt; &quot;bc&quot;
-puts str
-# =&amp;gt; abc
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dup&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bc&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; abc&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
