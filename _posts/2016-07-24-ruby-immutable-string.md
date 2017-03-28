@@ -114,7 +114,7 @@ end
 
 一度 `frozen_string_literal: true` のコードを入れると全ての文字列が`.freeze`されるので、下記のようなコードは`RuntimeError`となる。
 
-```
+```rb
 # frozen_string_literal: true
 str = "a"
 str << "bc"
@@ -124,7 +124,7 @@ puts str
 
 この場合の対処法としてはfreezeを解除したい文字列に対して、`.dup`を付けてやれば解決する。
 
-```
+```rb
 # frozen_string_literal: true
 str = "a".dup
 str << "bc"
