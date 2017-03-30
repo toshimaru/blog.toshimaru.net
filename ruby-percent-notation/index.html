@@ -11,9 +11,9 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="Rubyの%(パーセント)を使った記法まとめ - Hack Your Design!">
   <meta property="og:title" content="Rubyの%(パーセント)を使った記法まとめ - Hack Your Design!">
-  <meta name="description" content="Rubyでつかわれる%（パーセント）を使った記法をまとめてみます">
-  <meta name="twitter:description" content="Rubyでつかわれる%（パーセント）を使った記法をまとめてみます">
-  <meta property="og:description" content="Rubyでつかわれる%（パーセント）を使った記法をまとめてみます">
+  <meta name="description" content="Rubyでつかわれる%（パーセント）を使った記法をよく忘れるのでメモがてらにまとめてみる。">
+  <meta name="twitter:description" content="Rubyでつかわれる%（パーセント）を使った記法をよく忘れるのでメモがてらにまとめてみる。">
+  <meta property="og:description" content="Rubyでつかわれる%（パーセント）を使った記法をよく忘れるのでメモがてらにまとめてみる。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
@@ -84,7 +84,23 @@
   </div>
 </div>
 
-<p>Rubyでつかわれる%（パーセント）を使った記法、たまに忘れることがあるのでメモがてらにまとめてみる。</p>
+<ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#文字列表現系">文字列表現系</a></li>
+<li class="toc-entry toc-h3"><a href="#-q">%, %Q</a></li>
+<li class="toc-entry toc-h3"><a href="#q">%q</a></li>
+<li class="toc-entry toc-h2"><a href="#配列表現系">配列表現系</a></li>
+<li class="toc-entry toc-h3"><a href="#w">%w</a></li>
+<li class="toc-entry toc-h3"><a href="#w-1">%W</a></li>
+<li class="toc-entry toc-h3"><a href="#i">%i</a></li>
+<li class="toc-entry toc-h3"><a href="#i-1">%I</a></li>
+<li class="toc-entry toc-h2"><a href="#コマンド実行">コマンド実行</a></li>
+<li class="toc-entry toc-h3"><a href="#x">%x</a></li>
+<li class="toc-entry toc-h2"><a href="#シンボル">シンボル</a></li>
+<li class="toc-entry toc-h3"><a href="#s">%s</a></li>
+<li class="toc-entry toc-h2"><a href="#正規表現">正規表現</a></li>
+<li class="toc-entry toc-h3"><a href="#r">%r</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul><p>Rubyでつかわれる<code class="highlighter-rouge">%</code>（パーセント）を使った記法をよく忘れるのでメモがてらにまとめてみる。</p>
 
 <table>
   <thead>
@@ -95,51 +111,67 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">%</code>, <code class="highlighter-rouge">%Q</code></td>
-      <td><code class="highlighter-rouge">""</code> (ダブルクオート)</td>
+      <td>
+<code class="highlighter-rouge">%</code>, <code class="highlighter-rouge">%Q</code>
+</td>
+      <td>
+<code class="highlighter-rouge">""</code> (ダブルクオート)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%q</code></td>
-      <td><code class="highlighter-rouge">''</code> (シングルクオート)</td>
+      <td>
+<code class="highlighter-rouge">''</code> (シングルクオート)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%w</code></td>
-      <td><code class="highlighter-rouge">[]</code> (文字列配列)</td>
+      <td>
+<code class="highlighter-rouge">[]</code> (文字列配列)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%W</code></td>
-      <td><code class="highlighter-rouge">[]</code> (文字列配列・式展開あり)</td>
+      <td>
+<code class="highlighter-rouge">[]</code> (文字列配列・式展開あり)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%i</code></td>
-      <td><code class="highlighter-rouge">[]</code> (シンボル配列)</td>
+      <td>
+<code class="highlighter-rouge">[]</code> (シンボル配列)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%I</code></td>
-      <td><code class="highlighter-rouge">[]</code> (シンボル配列・式展開あり)</td>
+      <td>
+<code class="highlighter-rouge">[]</code> (シンボル配列・式展開あり)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%x</code></td>
-      <td><code>``</code> (コマンド実行)</td>
+      <td>
+<code>``</code> (コマンド実行)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%s</code></td>
-      <td><code class="highlighter-rouge">:</code> (シンボル)</td>
+      <td>
+<code class="highlighter-rouge">:</code> (シンボル)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">%r</code></td>
-      <td><code class="highlighter-rouge">//</code> (正規表現)</td>
+      <td>
+<code class="highlighter-rouge">//</code> (正規表現)</td>
     </tr>
   </tbody>
 </table>
 
 <p><strong>※ %の後には丸括弧（<code class="highlighter-rouge">()</code>）や波括弧（<code class="highlighter-rouge"><span class="p">{}</span></code>）などの記号が使えます</strong></p>
 
-<h2 id="文字列表現系">文字列表現系</h2>
+<h2 id="文字列表現系">
+<a id="文字列表現系" class="anchor" href="#%E6%96%87%E5%AD%97%E5%88%97%E8%A1%A8%E7%8F%BE%E7%B3%BB" aria-hidden="true"><span class="octicon octicon-link"></span></a>文字列表現系</h2>
 
-<h3 id="-q">%, %Q</h3>
+<h3 id="-q">
+<a id="-q" class="anchor" href="#-q" aria-hidden="true"><span class="octicon octicon-link"></span></a>%, %Q</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %(a b c)
+<p>記法内で式展開することが可能です。</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; %(a b c)
  =&gt; "a b c"
 
 &gt; a, b, c = 1, 2, 3
@@ -148,9 +180,13 @@
 </code></pre>
 </div>
 
-<h3 id="q">%q</h3>
+<h3 id="q">
+<a id="q" class="anchor" href="#q" aria-hidden="true"><span class="octicon octicon-link"></span></a>%q</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %q(a b c)
+<p>こちらは式展開ができないバージョン。</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; %q(a b c)
  =&gt; "a b c"
 
 &gt; a, b, c = 1, 2, 3
@@ -159,68 +195,99 @@
 </code></pre>
 </div>
 
-<h2 id="配列表現系">配列表現系</h2>
+<h2 id="配列表現系">
+<a id="配列表現系" class="anchor" href="#%E9%85%8D%E5%88%97%E8%A1%A8%E7%8F%BE%E7%B3%BB" aria-hidden="true"><span class="octicon octicon-link"></span></a>配列表現系</h2>
 
-<h3 id="w">%w</h3>
+<h3 id="w">
+<a id="w" class="anchor" href="#w" aria-hidden="true"><span class="octicon octicon-link"></span></a>%w</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %w(a b c)
+<p>記法内でスペース区切ったそれぞれが文字列のArrayとなる。</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; %w(a b c)
  =&gt; ["a", "b", "c"]
 </code></pre>
 </div>
 
-<h3 id="w-1">%W</h3>
+<h3 id="w-1">
+<a id="w-1" class="anchor" href="#w-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>%W</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; a, b, c = 1, 2, 3
+<p>大文字のほうは記法内で式展開が可能。</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; a, b, c = 1, 2, 3
 &gt; %W(#{a} #{b} #{c})
  =&gt; ["1", "2", "3"]
 </code></pre>
 </div>
 
-<h3 id="i">%i</h3>
+<h3 id="i">
+<a id="i" class="anchor" href="#i" aria-hidden="true"><span class="octicon octicon-link"></span></a>%i</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %i(a b c)
+<p>こちはシンボルのArrayとなる。</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; %i(a b c)
  =&gt; [:a, :b, :c]
 </code></pre>
 </div>
 
-<h3 id="i-1">%I</h3>
+<h3 id="i-1">
+<a id="i-1" class="anchor" href="#i-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>%I</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; a, b, c = 1, 2, 3
+<p>式展開可能なシンボルArray。</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; a, b, c = 1, 2, 3
 &gt; %I(#{a} #{b} #{c})
  =&gt; [:"1", :"2", :"3"]
 </code></pre>
 </div>
 
-<h2 id="コマンド実行">コマンド実行</h2>
+<h2 id="コマンド実行">
+<a id="コマンド実行" class="anchor" href="#%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E5%AE%9F%E8%A1%8C" aria-hidden="true"><span class="octicon octicon-link"></span></a>コマンド実行</h2>
 
-<h3 id="x">%x</h3>
+<h3 id="x">
+<a id="x" class="anchor" href="#x" aria-hidden="true"><span class="octicon octicon-link"></span></a>%x</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %x(date)
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; %x(date)
  =&gt; "Sun Jan 11 01:01:52 JST 2015\n"
 &gt; `date`
  =&gt; "Sun Jan 11 01:01:54 JST 2015\n"
 </code></pre>
 </div>
 
-<h2 id="シンボル">シンボル</h2>
+<h2 id="シンボル">
+<a id="シンボル" class="anchor" href="#%E3%82%B7%E3%83%B3%E3%83%9C%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>シンボル</h2>
 
-<h3 id="s">%s</h3>
+<p>一つのシンボルとして解釈させる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %s(a b c)
+<h3 id="s">
+<a id="s" class="anchor" href="#s" aria-hidden="true"><span class="octicon octicon-link"></span></a>%s</h3>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; %s(a b c)
  =&gt; :"a b c"
 </code></pre>
 </div>
 
-<h2 id="正規表現">正規表現</h2>
+<h2 id="正規表現">
+<a id="正規表現" class="anchor" href="#%E6%AD%A3%E8%A6%8F%E8%A1%A8%E7%8F%BE" aria-hidden="true"><span class="octicon octicon-link"></span></a>正規表現</h2>
 
-<h3 id="r">%r</h3>
+<p>正規表現。こちらはURLの正規表現を作るときなどにラクで良い。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; %r(^http://)
+<h3 id="r">
+<a id="r" class="anchor" href="#r" aria-hidden="true"><span class="octicon octicon-link"></span></a>%r</h3>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>&gt; %r(^http://)
  =&gt; /^http:\/\//
 </code></pre>
 </div>
 
-<h3 id="参考">参考</h3>
+<h2 id="参考">
+<a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
 
 <ul>
   <li><a href="http://qiita.com/mogulla3/items/46bb876391be07921743">Rubyで%記法（パーセント記法）を使う</a></li>
