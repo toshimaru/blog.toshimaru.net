@@ -11,9 +11,9 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="RailsアプリケーションをLAN内に公開する - Hack Your Design!">
   <meta property="og:title" content="RailsアプリケーションをLAN内に公開する - Hack Your Design!">
-  <meta name="description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
-  <meta name="twitter:description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
-  <meta property="og:description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
+  <meta name="description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
+  <meta name="twitter:description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
+  <meta property="og:description" content="普通に`rails server`した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからLocal IPではアクセスすることができません。これを解決するためにはどうしたらよいでしょうか。">
   
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" />
@@ -86,7 +86,7 @@
   </div>
 </div>
 
-<p>普通に<code class="highlighter-rouge">rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN内の外部のクライアントからLocal IPではアクセスすることができません。(Railsのバージョンは4.2.3です)</p>
+<p>普通に<code class="highlighter-rouge">rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからローカルIPではアクセスすることができません。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>$ rails server
 =&gt; Booting WEBrick
@@ -96,7 +96,7 @@
 </code></pre>
 </div>
 
-<p>これをLAN内に公開したい場合はどうするか。下記のように<code class="highlighter-rouge">binding</code>オプションを付けてやります。</p>
+<p>これをLAN内に公開したい場合はどうするか。下記のように<code class="highlighter-rouge">binding</code>のオプションを付けてその値として<code class="highlighter-rouge">0.0.0.0</code>を指定します。</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>$ rails server --binding=0.0.0.0
 =&gt; Booting WEBrick
@@ -106,11 +106,35 @@
 </code></pre>
 </div>
 
-<p>これで同じLAN内にいるクライアントからローカルIP（e.g. <code class="highlighter-rouge">192.168.1.10:3000</code> ）でRailsへとアクセス可能になります。</p>
+<p>このコマンドを使うことで同じLAN内にいるクライアントからRailsが起動しているマシンのローカルIPをポート番号とともに（例: <code class="highlighter-rouge">192.168.1.xx:3000</code>）を叩けば、アプリケーションへとアクセス可能になります。</p>
 
-<h3 id="参考">参考</h3>
+<h2 id="なぜ0000">なぜ0.0.0.0？</h2>
+
+<p><code class="highlighter-rouge">rails server</code>コマンドはデフォルトで<strong>ループバックアドレス</strong>、つまりlocalhost(<code class="highlighter-rouge">127.0.0.1</code>)にバインドされます。ループバックアドレスは自分自身を指し示すアドレスなのでなので外部からのアクセスは弾かれます。</p>
+
+<blockquote>
+  <p>常に「自分自身」を指すIPアドレスは、当然ですが、他のコンピュータとの通信などには使えません。</p>
+
+  <p><a href="http://www.arearesearch.co.jp/learn/ip/09.html">ローカルループバックアドレス | IPラーニング</a></p>
+</blockquote>
+
+<p>よってデフォルトの<code class="highlighter-rouge">rails server</code>起動コマンドではでは外部からのアクセスは遮断されます。</p>
+
+<p>一方、<code class="highlighter-rouge">0.0.0.0</code>はどうかというと、<code class="highlighter-rouge">0.0.0.0</code>のアドレスには複数の意味があり文脈によって意味が異なっています。今回の場合、ループバックアドレス含む全てのIPアドレスという意味です。ときに<code class="highlighter-rouge">0.0.0.0</code>のアドレスは<strong>ワイルドカードアドレス</strong>と言われることもあります。</p>
+
+<blockquote>
+  <p>システムにおけるすべてのインタフェースのすべてのIPアドレス</p>
+
+  <p><a href="http://news.mynavi.jp/news/2016/10/25/414/">IPv4アドレス「0.0.0.0」の意味は? | マイナビニュース</a></p>
+</blockquote>
+
+<p>本記事で紹介した<code class="highlighter-rouge">rails server</code>のコマンドは<code class="highlighter-rouge">binding</code>オプションによって<code class="highlighter-rouge">0.0.0.0</code>に明示的にバインドすることにより、外部からのアクセスも許可しています。</p>
+
+<h2 id="参考">参考</h2>
+
 <ul>
   <li><a href="http://stackoverflow.com/questions/29132719/rails-application-not-visible-to-local-network">osx yosemite - Rails application not visible to local network - Stack Overflow</a></li>
+  <li><a href="https://fossbytes.com/ip-address-0-0-0-0-meaning-default-route-uses/">What Does The IP Address 0.0.0.0 Really Mean? What Are Its Different Uses?</a></li>
 </ul>
 
 
