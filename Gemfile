@@ -11,11 +11,10 @@ group :jekyll_plugins do
   gem 'jekyll-sitemap'
   gem 'jekyll-tagging'
   gem 'jekyll-tagging-related_posts'
-  gem 'jekyll-toc'
+  gem 'jekyll-toc', '0.2.0'
   gem 'jemoji'
 end
 
 group :development do
   gem 'rake'
 end
-gem 'nokogiri', '>= 1.7.1'
