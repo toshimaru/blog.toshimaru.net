@@ -1,38 +1,63 @@
 ---
 layout: post
 title: Railsフロントエンド技術の今とこれから
-image: "/images/posts/roppongirb-3.png"
+image: "/images/posts/roppongirb3/roppongirb-3.jpg"
 description:
 tags: rails frontend
 ---
 
-Railsフロントエンドの大きな転換点とも言えるRails5.1のリリースに寄せて書く。
+Yarnサポートの入ったRails5.1が2017年４月にリリースされました。
 
-## DisられてきたRailsフロントエンド
+[Ruby on Rails 5.1 Release Notes — Ruby on Rails Guides](http://edgeguides.rubyonrails.org/5_1_release_notes.html)
 
-- jQuery?
-- CoffeeScrit? 時代はES6, TypeScript
-- Assets Pipeline?
+yarnサポート以外にもjQueryをdefault dependencyから外したり、Optionalでwebpackサポートが入ったりしており、Railsのフロントエンド技術は大きな転換点を迎えようとしています。本エントリではRailsのフロントエンド技術の今を振返り今後どうなっていくかをまとめたいと思います。
 
-## Railsのフロントエンドの取り組み
+## DisられてきたRailsフロントエンド :no_good:
 
-歴史・経緯を追う。
+Railsのフロントエンド技術スタックはフロントエンドエンジニアにとってDisられるものでした。具体的には下記の技術要素です。
 
-- 2016年5月
-  - Rails v5.1 で jQueryを依存性としてDropするIssueをDHHが上げる: [Drop jQuery as a dependency · Issue #25208 · rails/rails](https://github.com/rails/rails/issues/25208)
-- 2016年10月
-  - Rails npm supportを開始するPRが上げられる: [Add Yarn support in new apps using --yarn option by Liceth · Pull Request #26836 · rails/rails](https://github.com/rails/rails/pull/26836)
-  - sprockets 側でNPMをsupportするPRが上げられる [NPM support: Add support for resolving main from npm's package.json by guilleiguaran · Pull Request #405 · rails/sprockets](https://github.com/rails/sprockets/pull/405)
-- 2016年11月
-  - 同PRにてnpmではなくyarnを採用することを決める <https://github.com/rails/rails/pull/26836#issuecomment-257426850>
-  - jquery-rails をrailsから外すPRが上げられる [Drop jQuery as a dependency by guilleiguaran · Pull Request #27113 · rails/rails](https://github.com/rails/rails/pull/27113)
-- 2016年12月
-  - DHH自らwebpacker gemを作成開始、v0.1としてgemを公開 [FIRST!1! · rails/webpacker@f4cc31d](https://github.com/rails/webpacker/commit/f4cc31d)
-- 2017年2月
-  - Rails 5.1.beta1 リリース: [Rails 5.1.0.beta1: Loving JavaScript, System Tests, Encrypted Secrets, and more \| Riding Rails](http://weblog.rubyonrails.org/2017/2/23/Rails-5-1-beta1/)
-  - webpacker 1.0 がリリースされる https://rubygems.org/gems/webpacker/versions/1.0
-  - rails-ujs が actionview の１機能としてRails本体に取り込まれるhttps://github.com/rails/rails/commit/41c33bd4b2ec3f4a482e6030b6fda15091d81e4a
-- 2017年4月 Rails 5.1 リリース [Rails 5.1: Loving JavaScript, System Tests, Encrypted Secrets, and more \| Riding Rails](http://weblog.rubyonrails.org/2017/4/27/Rails-5-1-final/)
+- jQuery
+- CoffeeScript
+- Assets Pipeline (sprockets)
+- gemのエコシステムに乗ったJSライブラリ(jquery-railsなど)
+
+jQueryはもう時代遅れとされてますし、時代はES6、AltJS使うにしても今はTypeScriptが有力候補でしょうか。gemのエコシステムにのってAsset Pipelineで各環境にシップされるJS,CSSも嫌われます。JSにはnpmというエコシステムがあるからです。
+
+## Railsのフロントエンド刷新の歩み :walking:
+
+しかし2016年春頃からRailsの作者・DHHの上げたIssueを皮切りに、フロントエンド技術刷新の歩みが始まります。その歴史・経緯を追ってみましょう。
+
+### 2016年5月
+- Rails v5.1 で jQueryを依存性としてDropするIssueをDHHが上げる
+  - [Drop jQuery as a dependency · Issue #25208 · rails/rails](https://github.com/rails/rails/issues/25208)
+
+### 2016年10月
+- Rails npm supportを開始するPRが上げられる
+  - [Add Yarn support in new apps using --yarn option by Liceth · Pull Request #26836 · rails/rails](https://github.com/rails/rails/pull/26836)
+- sprockets 側でNPMをsupportするPRが上げられる
+  - [NPM support: Add support for resolving main from npm's package.json by guilleiguaran · Pull Request #405 · rails/sprockets](https://github.com/rails/sprockets/pull/405)
+
+### 2016年11月
+- 同PRにてnpmではなくyarnを採用することを決める
+  - <https://github.com/rails/rails/pull/26836#issuecomment-257426850>
+- jquery-rails をrailsから外すPRが上げられる
+  - [Drop jQuery as a dependency by guilleiguaran · Pull Request #27113 · rails/rails](https://github.com/rails/rails/pull/27113)
+
+### 2016年12月
+- DHH自らwebpacker gemを作成開始、v0.1としてgemを公開
+  - [FIRST!1! · rails/webpacker@f4cc31d](https://github.com/rails/webpacker/commit/f4cc31d)
+
+### 2017年2月
+- Rails 5.1.beta1 リリース
+  - [Rails 5.1.0.beta1: Loving JavaScript, System Tests, Encrypted Secrets, and more \| Riding Rails](http://weblog.rubyonrails.org/2017/2/23/Rails-5-1-beta1/)
+- webpacker 1.0 がリリースされる
+  - <https://rubygems.org/gems/webpacker/versions/1.0>
+- rails-ujs が actionview の１機能としてRails本体に取り込まれる
+  - <https://github.com/rails/rails/commit/41c33bd4b2ec3f4a482e6030b6fda15091d81e4a>
+
+### 2017年4月
+- :tada: Rails 5.1 リリース
+  - [Rails 5.1: Loving JavaScript, System Tests, Encrypted Secrets, and more \| Riding Rails](http://weblog.rubyonrails.org/2017/4/27/Rails-5-1-final/)
 
 2016年5月のDHHの問題提起からわずか（?）一年足らずでここまで進化したのは純粋にすごいなーと思いました。
 
@@ -63,7 +88,7 @@ Railsフロントエンドの大きな転換点とも言えるRails5.1のリリ�
     - 薄い実装も登場している https://github.com/shakacode/webpacker_lite
 6. react_on_rails
   - SSR
-    - 参考: http://r7kamura.hatenablog.com/entry/2016/10/10/173610
+  - 参考 http://r7kamura.hatenablog.com/entry/2016/10/10/173610
   - https://github.com/sstephenson/execjs 依存
   - webpacker integration アリ
   - [shakacode/webpacker_lite: Slimmed down version of Webpacker with only the asset helpers optimized for React on Rails](https://github.com/shakacode/webpacker_lite) な実装も生まれていた
@@ -95,6 +120,8 @@ jQueryの複雑なDOM操作は限界があるしいつかは破綻する。そ�
 ## Turbolinks
 
 ~~黙ってDisableすべし~~
+
+![](/images/posts/roppongirb3/turbolinks.png)
 
 リッチなレンダリングUXを提供するためのRailsチーム(DHH)の苦肉の策がTurbolinksという理解でいるのだが、上述したようなフロントエンド開発がリッチにできるようになっているのでそっちを採用していくなら、turbolinksはますます不要になった。
 
