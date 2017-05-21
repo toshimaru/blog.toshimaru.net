@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html class="no-js" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Railsフロントエンド技術の今とこれから - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="Railsフロントエンド技術の今とこれから - Hack Your Design!">
+  <meta property="og:title" content="Railsフロントエンド技術の今とこれから - Hack Your Design!">
+  <meta name="description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:description" content="toshimaruの技術系なブログ">
+  <meta property="og:description" content="toshimaruの技術系なブログ">
+  
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/roppongirb3/roppongirb-3.jpg">
+  <meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/roppongirb3/roppongirb-3.jpg">
+  
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2017-05-22T00:00:00+09:00">
+  
+  <link rel="canonical" href="http://blog.toshimaru.net/rails-frontend/">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-8616720383995770",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link type="application/atom+xml" rel="alternate" href="http://blog.toshimaru.net/atom.xml" title="Hack Your Design!">
+</head>
+<body>
+  <!--[if lte IE 9]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Google Tag Manager -->
+  <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P34X4D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="https://google.com/search" method="get">
+      <input type="hidden" name="query" value="site:blog.toshimaru.net">
+      <input type="text" class="search-txt" name="q" placeholder="Search">
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">Railsフロントエンド技術の今とこれから</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2017-05-22T00:00:00+09:00" pubdate>22 May 2017</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/rails/" rel="tag">rails</a>
+
+<a href="/tag/frontend/" rel="tag">frontend</a>
+
+
+    </div>
+    <img class="post-image flipInX" src="/images/posts/roppongirb3/roppongirb-3.jpg" alt="(image)Railsフロントエンド技術の今とこれから" title="Railsフロントエンド技術の今とこれから">
+  </div>
+</div>
+
+<p>待望されたYarnサポートの入ったRails5.1が2017年4月にリリースされました。</p>
+
+<p><a href="http://edgeguides.rubyonrails.org/5_1_release_notes.html">Ruby on Rails 5.1 Release Notes — Ruby on Rails Guides</a></p>
+
+<p>他にもjQueryがデフォルトdependencyから外されたり、Optionalでwebpackサポートが入ったりしており、Railsのフロントエンドは大きな転換点を迎えたと言ってよいでしょう。本エントリではRailsのフロントエンド技術の今を振り返り、今後どうなっていくかをまとめてみたいと思います。</p>
+
+<h2 id="disられてきたrailsフロントエンド-no_good">DisられてきたRailsフロントエンド <img class="emoji" title=":no_good:" alt=":no_good:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f645.png" height="20" width="20" align="absmiddle">
+</h2>
+
+<p>Railsのフロントエンド技術スタックは、フロントエンドを専業とするエンジニアにDisられるものでした。具体的には下記の技術要素です。</p>
+
+<ul>
+  <li>jQuery</li>
+  <li>CoffeeScript</li>
+  <li>Assets Pipeline (sprockets)</li>
+  <li>gemのエコシステムに乗ったJSライブラリ(jquery-railsなど)</li>
+</ul>
+
+<p>複雑化するWebアプリケーションにおいてjQueryはもう時代遅れとされてますし、CoffeeScriptよりも時代はES6、AltJS使うにしても今はTypeScriptが有力候補でしょうか。gemのエコシステムに乗っかっているJSライブラリがAsset Pipelineを通して各環境にシップされるていることも嫌われます。なぜならJSにはnpmというエコシステムがあるからです。</p>
+
+<h2 id="railsのフロントエンド刷新の歩み-walking">Railsのフロントエンド刷新の歩み <img class="emoji" title=":walking:" alt=":walking:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f6b6.png" height="20" width="20" align="absmiddle">
+</h2>
+
+<p>しかし2016年春頃<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>からRailsの作者・DHHの上げたIssueを皮切りに、フロントエンド技術刷新の歩みが始まります。その歴史・経緯を追ってみましょう。</p>
+
+<h3 id="2016年5月">2016年5月</h3>
+<ul>
+  <li>Rails v5.1 で jQueryを依存性としてDropしようというIssueをDHHが上げる
+    <ul>
+      <li><a href="https://github.com/rails/rails/issues/25208">Drop jQuery as a dependency · Issue #25208 · rails/rails</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2016年10月">2016年10月</h3>
+<ul>
+  <li>npm supportを追加するPRが上げられる
+    <ul>
+      <li><a href="https://github.com/rails/rails/pull/26836">Add Yarn support in new apps using –yarn option by Liceth · Pull Request #26836 · rails/rails</a></li>
+    </ul>
+  </li>
+  <li>sprockets 側でNPMをsupportするPRが上げられる
+    <ul>
+      <li><a href="https://github.com/rails/sprockets/pull/405">NPM support: Add support for resolving main from npm’s package.json by guilleiguaran · Pull Request #405 · rails/sprockets</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2016年11月">2016年11月</h3>
+<ul>
+  <li>npm support PRにてnpmではなくyarnを採用することが決められる
+    <ul>
+      <li><a href="https://github.com/rails/rails/pull/26836#issuecomment-257426850">https://github.com/rails/rails/pull/26836#issuecomment-257426850</a></li>
+    </ul>
+  </li>
+  <li>jquery-rails をRailsから外すPRが上げられる
+    <ul>
+      <li><a href="https://github.com/rails/rails/pull/27113">Drop jQuery as a dependency by guilleiguaran · Pull Request #27113 · rails/rails</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2016年12月">2016年12月</h3>
+<ul>
+  <li>DHH自らwebpacker gemを作成開始、v0.1としてgemを公開
+    <ul>
+      <li><a href="https://github.com/rails/webpacker/commit/f4cc31d">FIRST!1! · rails/webpacker@f4cc31d</a></li>
+    </ul>
+  </li>
+  <li>同gemをRailsに取り込む
+    <ul>
+      <li><a href="https://github.com/rails/rails/pull/27288">Basic –webpack delegation to new webpacker gem by dhh · Pull Request #27288 · rails/rails</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2017年2月">2017年2月</h3>
+<ul>
+  <li>Rails 5.1.beta1 リリース
+    <ul>
+      <li><a href="http://weblog.rubyonrails.org/2017/2/23/Rails-5-1-beta1/">Rails 5.1.0.beta1: Loving JavaScript, System Tests, Encrypted Secrets, and more | Riding Rails</a></li>
+    </ul>
+  </li>
+  <li>webpacker 1.0 がリリースされる
+    <ul>
+      <li><a href="https://rubygems.org/gems/webpacker/versions/1.0">https://rubygems.org/gems/webpacker/versions/1.0</a></li>
+    </ul>
+  </li>
+  <li>jQueryに依存しないujsである rails-ujs が actionview の1機能としてRails本体に取り込まれる
+    <ul>
+      <li><a href="https://github.com/rails/rails/commit/41c33bd4b2ec3f4a482e6030b6fda15091d81e4a">https://github.com/rails/rails/commit/41c33bd4b2ec3f4a482e6030b6fda15091d81e4a</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2017年4月">2017年4月</h3>
+<ul>
+  <li>
+<img class="emoji" title=":tada:" alt=":tada:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f389.png" height="20" width="20" align="absmiddle"> Rails 5.1 リリース
+    <ul>
+      <li><a href="http://weblog.rubyonrails.org/2017/4/27/Rails-5-1-final/">Rails 5.1: Loving JavaScript, System Tests, Encrypted Secrets, and more | Riding Rails</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>以上が今に至るRailsフロントエンド進化の軌跡となります。2016年5月のDHHの問題提起からわずか(?)一年足らずでここまで進化したのは純粋にすごいなーと思いました。</p>
+
+<h2 id="railsのフロントエンド実装の選択肢">Railsのフロントエンド実装の選択肢</h2>
+
+<p>Rails5.1のフロントエンド刷新以降、<strong>今Railsにはどんなフロントエンド実装の選択肢があるのか</strong>、ざっと見てみます。</p>
+
+<h3 id="1-asset-pipeline">1. <a href="https://railsguides.jp/asset_pipeline.html">Asset Pipeline</a>
+</h3>
+<ul>
+  <li>Sprockets + CoffeeScript, SASS, jQuery</li>
+  <li>今まで通りの古き良きassets管理</li>
+  <li>知見も多く転がっており、枯れているのでハマりにくい</li>
+</ul>
+
+<h3 id="2-sprockets-4">2. <a href="https://github.com/rails/sprockets">Sprockets 4</a>
+</h3>
+<ul>
+  <li>ES6 support <a href="https://github.com/rails/sprockets/blob/master/UPGRADING.md#es6-support">https://github.com/rails/sprockets/blob/master/UPGRADING.md#es6-support</a>
+</li>
+  <li>Sprockets4の開発自体は停滞気味 <a href="https://github.com/rails/sprockets/blob/master/CHANGELOG.md">https://github.com/rails/sprockets/blob/master/CHANGELOG.md</a>
+</li>
+</ul>
+
+<h3 id="3-browserify-rails">3. <a href="https://github.com/browserify-rails/browserify-rails">browserify-rails</a>
+</h3>
+<ul>
+  <li>sprockets のコールバックとして動作
+    <ul>
+      <li>つまりsprocketsに依存している</li>
+    </ul>
+  </li>
+  <li>導入のための参考記事: <a href="http://techlife.cookpad.com/entry/2015/12/14/130041">モダンJavaScript開発環境 on Rails - クックパッド開発者ブログ</a>
+</li>
+</ul>
+
+<h3 id="5-webpacker">5. <a href="https://github.com/rails/webpacker">webpacker</a>
+</h3>
+<ul>
+  <li>絶賛開発中
+    <ul>
+      <li>活発に変更が入っているので導入に際しては現時点ではREADMEを参考にするのが良さそう</li>
+      <li>まだ小慣れていない印象</li>
+    </ul>
+  </li>
+  <li>最初はwebpack+railsのシームレスな統合のための薄い実装だと思ったが、現在ゴテゴテな実装…
+    <ul>
+      <li>react, angular, elm, vue などの初期インストールタスクが１つのレポジトリに全部のっている
+        <ul>
+          <li>
+<a href="https://github.com/rails/webpacker/issues/20#issuecomment-266347480">plugable にしようぜ</a>という話はあるができていない</li>
+        </ul>
+      </li>
+      <li>初回インストール時の生成ファイル・パッケージ構成はたぶんフロントエンドガチ勢からみたらクソの山っぽい: <a href="https://github.com/rails/webpacker/blob/5003a5de0222c1f5b0f3c2b887064039e06f7eae/lib/install/template.rb#L25-L30">https://github.com/rails/webpacker/blob/5003a5de0222c1f5b0f3c2b887064039e06f7eae/lib/install/template.rb#L25-L30</a>
+</li>
+      <li>レールにのったwebpack利用という意味のカジュアルな利用だったら良いかもしれない</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="4-webpack-rails">4. <a href="https://github.com/mipearson/webpack-rails">webpack-rails</a>
+</h3>
+<ul>
+  <li>Sprockets 非依存</li>
+  <li>webpack利用のための薄い実装
+    <ul>
+      <li>初期のwebpackerに似てる印象</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="6-react_on_rails">6. <a href="https://github.com/shakacode/react_on_rails">react_on_rails</a>
+</h3>
+<ul>
+  <li>SSRサポート</li>
+  <li>
+<a href="https://github.com/sstephenson/execjs">execjs</a> 依存</li>
+  <li>webpacker integration アリ
+    <ul>
+      <li>webpackerの薄い実装も登場 <a href="https://github.com/shakacode/webpacker_lite">shakacode/webpacker_lite</a>
+</li>
+    </ul>
+  </li>
+  <li>参考記事: <a href="http://r7kamura.hatenablog.com/entry/2016/10/10/173610">Ruby on Rails on React on SSR on SPA - ✘╹◡╹✘</a>
+</li>
+</ul>
+
+<h3 id="7-react-rails">7. <a href="https://github.com/reactjs/react-rails">react-rails</a>
+</h3>
+<ul>
+  <li>SSRサポート</li>
+  <li>
+<a href="https://github.com/sstephenson/execjs">execjs</a> 依存</li>
+  <li>integration の選択肢として Rails Assets Pipline もしくは webpacker が選べる</li>
+</ul>
+
+<h3 id="9-独自に導入">9. 独自に導入</h3>
+<ul>
+  <li>独自にJSアプリケーションをRailsに統合させる構成を考えRails上にのっける</li>
+  <li>例: <a href="http://techlife.cookpad.com/entry/2016/07/27/101015">webpackを使った Rails上でのReact開発 - クックパッド開発者ブログ</a>
+</li>
+</ul>
+
+<h2 id="どうすべきか">どうすべきか</h2>
+
+<p>上記に紹介したように様々な実装があるわけですが、我々はどれをどのように選択すべきでしょうか。僕なりにまとめてみました。</p>
+
+<p><img src="/images/posts/roppongirb3/flowchart.png" alt="chart"></p>
+
+<p>まず最初にあるのが、Railsが嫌い/宗教的にあわない/フロントエンドをレールにのらせたくないのであれば無理してRailsを使うことはないと思っています。Railsをやめる、あるいはRailsはWebAPIに徹して独立したフロントエンドの世界観を築くのもアリだと思ってます。</p>
+
+<p>また現状のAsset管理に満足していて、かつビジネス上の要件としてリッチなJS実装が求められないのであれば無理してモダンなフロントエンド機構を構築する必要はありません。無理してwebpackだのbrowserifyだの導入せずに、古き良きAsset Pipelineでいいのです（技術そのものが目的な場合はこの限りではない）。</p>
+
+<h2 id="今後どうなるか">今後どうなるか</h2>
+
+<p>Railsコミュニティの流れとして、<strong>今後どうなっていくか</strong> も考えてみたいと思います。</p>
+
+<h3 id="1-gemからnpmへ">1. gemからnpmへ</h3>
+
+<p><img src="/images/posts/roppongirb3/rails-npm.png" alt="bridge"></p>
+
+<p>RailsからNPM(yarn)のブリッジがRailsのコア機能の１つとして提供されたことはとても意義深いことだと思っています。その結果起こりうることとしては以下でしょうか。</p>
+
+<ul>
+  <li>jquery-rails, underscore-rails のような Asset Pipeline に載せるタイプのgemは廃れていく(npm管理に移っていく)</li>
+  <li>Railsエンジニアがnpmライブラリを今後どんどん活用することによって、RailsエンジニアのJS界隈進出が増えるかも…?
+    <ul>
+      <li>railsコミュニティにとってもnpmコミュニティにとっても良い事</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2-reactへの大潮流">2. Reactへの大潮流</h3>
+
+<p>今までJSライブラリのデファクトと言ったらjQueryでしたが、フロントエンド実装の複雑化にともないReactを採用する企業が増えその状況が変わってきました（少なくとも僕の観測範囲内では）。jQueryを使っての複雑なDOM操作のコードは破綻しがちですし限界があります。その結果のReact採用なのでしょう。</p>
+
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="ja" dir="ltr">反省会というからReact導入が一般的に浸透し導入後一巡したってことだろうなぁ<br>Twitterトレンド入り！ 「<a href="https://twitter.com/hashtag/React%E5%8F%8D%E7%9C%81%E4%BC%9A?src=hash">#React反省会</a>」登壇資料一挙公開！ | Wantedly Engineer Blog <a href="https://t.co/PbG49aclqa">https://t.co/PbG49aclqa</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/862817538022883328">May 11, 2017</a>
+</blockquote>
+
+<p>上記のようにReactが導入されやすい環境が整ってきている昨今、今後ますますRails+Reactの採用事例は増えていくと思われます<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>。</p>
+
+<h3 id="3-turbolinks-がますます下火に">3. Turbolinks がますます下火に</h3>
+
+<p><del>黙ってDisableすべし。</del> 無効化されることの多いturbolinks機能ですがますます下火になっていくと思われます。</p>
+
+<p><img src="/images/posts/roppongirb3/turbolinks.png" alt=""></p>
+
+<p>リッチなレンダリングUXを提供するためのRailsチーム(DHH)の苦肉の策がTurbolinksという理解でいますが、上述したようにフロントエンド開発の機構が整ってきている今、わざわざturbolinksを使う必要性もなくなってきました。</p>
+
+<p>とはいえ、絶対にJS書きたくないでござる！というJS書きたくないマンなRailsエンジニアの選択肢の１つとしてはアリだと思います。</p>
+
+<h2 id="フロントエンドというマイクロサービスがもたらす複雑性">フロントエンドというマイクロサービスがもたらす複雑性</h2>
+
+<p>と、ここまでRailsとフロントエンドの話をしてきましたが、一方で安易なフロントエンド技術の導入は負債を生み出す危険性もあることも付しておきます。</p>
+
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="ja" dir="ltr">このツラミわかるなぁ | ReactSPAをRailsに戻している話 // Speaker Deck <a href="https://t.co/G3Ln3NbmCQ">https://t.co/G3Ln3NbmCQ</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/857758278830350337">April 28, 2017</a>
+</blockquote>
+
+<p>このケースのように複雑なフロントエンド実装が逆に負債となり足かせとなる場合もあります。<a href="http://anond.hatelabo.jp/20170501085956">全くメンテされないクソJSコードの塊を作る</a>ような状況は避けなければなりません。</p>
+
+<p>高度に専業化したフロントエンド技術はもはやいちサーバーサイドエンジニアが片手間に開発・メンテナンスできるレベルのものでもなくなってきています。うまく作ったとしてもその後のアップデートに追従していくのは至難の業でしょう。</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" data-cards="hidden" data-lang="en">
+<p lang="ja" dir="ltr">紹介されているこっちのスライドもよくわかるなぁ。「フロントエンドは一個のマイクロサービス(ただのViewじゃない)」「マイクロサービス作っているのだから辛いの当然」 <a href="https://t.co/YqkrIYSXxf">https://t.co/YqkrIYSXxf</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/857790990496616448">April 28, 2017</a>
+</blockquote>
+
+<p>このようにフロントエンドを１つのマイクロサービスと捉える見方もあります。マイクロサービスであるからこそ、モノリシックサービスよりもアーキテクチャ・実装が複雑になりがちです。高度なフロントエンド技術導入の際はチームとしてその複雑性を受け入れる覚悟が必要でしょう。</p>
+
+<h2 id="イベント告知">イベント告知</h2>
+
+<p>そんなわけで随分と長い前置きでしたが、次回のRoppongi.rb#3のテーマは”Rails x Frontend”で開催します。</p>
+
+<p><a href="https://roppongirb.connpass.com/event/56456/">【増枠】Roppongi.rb #3 “Rails x Frontend-Tech” - connpass</a></p>
+
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="ja" dir="ltr">Roppongi.rb #3 "Rails x Frontend-Tech" 〜これからのRails Frontendの話をしよう〜 を公開しました！ <a href="https://t.co/hOjXX7J8dC">https://t.co/hOjXX7J8dC</a> <a href="https://twitter.com/hashtag/roppongirb?src=hash">#roppongirb</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/861725918552707072">May 8, 2017</a>
+</blockquote>
+
+<p>既に参加枠（抽選）は埋まっており参加登録いただいた方を全員ご案内できないのが恐縮ですが、もしよければ登録して遊びにきてください。</p>
+
+<h2 id="参考リンク">参考リンク</h2>
+
+<ul>
+  <li><a href="http://qiita.com/itkrt2y/items/7e999836f460fb9c005d">Rails5.1に向けてフロントエンド周りで起こっている革命まとめ - Qiita</a></li>
+  <li><a href="http://qiita.com/yuroyoro/items/a29e39989f4469ef5e41">Rails5.1から導入されるwebpacker.gemは本当にRailsのフロントエンド開発に福音をもたらすのか? - Qiita</a></li>
+</ul>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>ちょうど<a href="http://railsconf.com/2016">RailsConf 2016</a>の後くらいのタイミングでしょうか。 <a href="#fnref:1" class="reversefootnote">↩</a></p>
+    </li>
+    <li id="fn:2">
+      <p>一方で、複雑でないアプリケーションに対しReactを導入するのはオーバーキルなのでごく一部分の小さなイベント制御JSコードであればjQueryで十分な場面も未だ多くあると思います。 <a href="#fnref:2" class="reversefootnote">↩</a></p>
+    </li>
+  </ol>
+</div>
+
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-frontend/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+<div id="adsense">
+  <!-- post-rectangle1 -->
+  <ins class="adsbygoogle adslot_1" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7891449048"></ins>
+  <!-- post-rectangle2 -->
+  <ins class="adsbygoogle adslot_2" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="4798381840"></ins>
+  <!-- post-rectangle-smartphone -->
+  <ins class="adsbygoogle adslot_mobile" style="width:300px;height:250px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="5264827844"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+
+  <div class="related">
+  <h3>関連エントリ</h3>
+  <ul>
+  
+    <li><a href="/gem-rack-simple-user-agent/" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った">Railsでデバイス判定するrack-simple_user_agentというgemを作った</a></li>
+  
+    <li><a href="/roppongirb-speeding-up-rails/" title="Roppongi.rbで「Rails高速化戦略」を発表しました">Roppongi.rbで「Rails高速化戦略」を発表しました</a></li>
+  
+    <li><a href="/rails-new-options/" title="rails new するときによく使うオプション">rails new するときによく使うオプション</a></li>
+  
+    <li><a href="/ruby-on-google-app-engine/" title="Ruby on Rails を Google App Engine 上で動かしてみる">Ruby on Rails を Google App Engine 上で動かしてみる</a></li>
+  
+    <li><a href="/rails-find_each/" title="Railsのfind_eachの挙動を調べた">Railsのfind_eachの挙動を調べた</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/new-xhr-fetch-asyncawait/" title="Older Post: JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "http://blog.toshimaru.net/rails-frontend/"
+    },
+    "headline": "Railsフロントエンド技術の今とこれから",
+    "datePublished": "2017-05-22T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "http://blog.toshimaru.net/images/posts/roppongirb3/roppongirb-3.jpg"
+    },
+    "keywords": "rails, frontend"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "http://blog.toshimaru.net/tag/rails/",
+          "name": "rails"
+        }
+      }
+    ]
+    
+  }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+            <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li>
+<a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li>
+<a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li>
+<a href="/jquery-8-tips/">jQuery使いが知っておくべきjQueryテクニック8選</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-8-tips/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-8-tips/"></a>
+</li>
+          <li>
+<a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-http-status-symbols/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li>
+<a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
+</li>
+          <li>
+<a href="/belongs_to-through/">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/belongs_to-through/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/belongs_to-through/"></a>
+</li>
+          <li>
+<a href="/php-trait/">PHP5.4のtrait機能を理解する</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/php-trait/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/php-trait/"></a>
+</li>
+        </ul>
+        <p><a href="http://b.hatena.ne.jp/entrylist?sort=count&amp;url=http%3A%2F%2Fblog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+          
+            <a href="/tag/markdown/" rel="tag">markdown</a>
+          
+            <a href="/tag/linux/" rel="tag">linux</a>
+          
+            <a href="/tag/network/" rel="tag">network</a>
+          
+            <a href="/tag/vim/" rel="tag">vim</a>
+          
+            <a href="/tag/php/" rel="tag">php</a>
+          
+            <a href="/tag/windows/" rel="tag">windows</a>
+          
+            <a href="/tag/mysql/" rel="tag">mysql</a>
+          
+            <a href="/tag/apache/" rel="tag">apache</a>
+          
+            <a href="/tag/svn/" rel="tag">svn</a>
+          
+            <a href="/tag/html/" rel="tag">html</a>
+          
+            <a href="/tag/security/" rel="tag">security</a>
+          
+            <a href="/tag/java/" rel="tag">java</a>
+          
+            <a href="/tag/iphone/" rel="tag">iphone</a>
+          
+            <a href="/tag/python/" rel="tag">python</a>
+          
+            <a href="/tag/mac/" rel="tag">mac</a>
+          
+            <a href="/tag/mail/" rel="tag">mail</a>
+          
+            <a href="/tag/rfc/" rel="tag">rfc</a>
+          
+            <a href="/tag/css/" rel="tag">css</a>
+          
+            <a href="/tag/git/" rel="tag">git</a>
+          
+            <a href="/tag/tech/" rel="tag">tech</a>
+          
+            <a href="/tag/github/" rel="tag">github</a>
+          
+            <a href="/tag/javascript/" rel="tag">javascript</a>
+          
+            <a href="/tag/jquery/" rel="tag">jquery</a>
+          
+            <a href="/tag/google_app_engine/" rel="tag">google_app_engine</a>
+          
+            <a href="/tag/android/" rel="tag">android</a>
+          
+            <a href="/tag/design/" rel="tag">design</a>
+          
+            <a href="/tag/perl/" rel="tag">perl</a>
+          
+            <a href="/tag/scala/" rel="tag">scala</a>
+          
+            <a href="/tag/shell/" rel="tag">shell</a>
+          
+            <a href="/tag/ruby/" rel="tag">ruby</a>
+          
+            <a href="/tag/ajax/" rel="tag">ajax</a>
+          
+            <a href="/tag/sublimetext/" rel="tag">sublimetext</a>
+          
+            <a href="/tag/rails/" rel="tag">rails</a>
+          
+            <a href="/tag/sinatra/" rel="tag">sinatra</a>
+          
+            <a href="/tag/npm/" rel="tag">npm</a>
+          
+            <a href="/tag/jekyll/" rel="tag">jekyll</a>
+          
+            <a href="/tag/%E9%9B%91%E8%A8%98/" rel="tag">雑記</a>
+          
+            <a href="/tag/facebook/" rel="tag">facebook</a>
+          
+            <a href="/tag/aws/" rel="tag">aws</a>
+          
+            <a href="/tag/s3/" rel="tag">s3</a>
+          
+            <a href="/tag/%E7%BF%BB%E8%A8%B3/" rel="tag">翻訳</a>
+          
+            <a href="/tag/vancouver/" rel="tag">vancouver</a>
+          
+            <a href="/tag/chrome/" rel="tag">chrome</a>
+          
+            <a href="/tag/zsh/" rel="tag">zsh</a>
+          
+            <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" rel="tag">海外就労</a>
+          
+            <a href="/tag/composer/" rel="tag">composer</a>
+          
+            <a href="/tag/rake/" rel="tag">rake</a>
+          
+            <a href="/tag/seo/" rel="tag">seo</a>
+          
+            <a href="/tag/digitalocean/" rel="tag">digitalocean</a>
+          
+            <a href="/tag/vagrant/" rel="tag">vagrant</a>
+          
+            <a href="/tag/packer/" rel="tag">packer</a>
+          
+            <a href="/tag/%E5%B0%B1%E6%B4%BB/" rel="tag">就活</a>
+          
+            <a href="/tag/rspec/" rel="tag">rspec</a>
+          
+            <a href="/tag/activerecord/" rel="tag">activerecord</a>
+          
+            <a href="/tag/chef/" rel="tag">chef</a>
+          
+            <a href="/tag/opsworks/" rel="tag">opsworks</a>
+          
+            <a href="/tag/go/" rel="tag">go</a>
+          
+            <a href="/tag/ci/" rel="tag">ci</a>
+          
+            <a href="/tag/hubot/" rel="tag">hubot</a>
+          
+            <a href="/tag/presentation/" rel="tag">presentation</a>
+          
+            <a href="/tag/video/" rel="tag">video</a>
+          
+            <a href="/tag/gem/" rel="tag">gem</a>
+          
+            <a href="/tag/api/" rel="tag">api</a>
+          
+            <a href="/tag/jsonschema/" rel="tag">jsonschema</a>
+          
+            <a href="/tag/json/" rel="tag">json</a>
+          
+            <a href="/tag/scrum/" rel="tag">scrum</a>
+          
+            <a href="/tag/docker/" rel="tag">docker</a>
+          
+            <a href="/tag/terraform/" rel="tag">terraform</a>
+          
+            <a href="/tag/docker-compose/" rel="tag">docker-compose</a>
+          
+            <a href="/tag/docker-machine/" rel="tag">docker-machine</a>
+          
+            <a href="/tag/web/" rel="tag">web</a>
+          
+            <a href="/tag/podcast/" rel="tag">podcast</a>
+          
+            <a href="/tag/frontend/" rel="tag">frontend</a>
+          
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
