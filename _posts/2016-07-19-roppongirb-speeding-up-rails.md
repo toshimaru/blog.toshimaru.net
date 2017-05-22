@@ -3,7 +3,7 @@ layout: post
 title: "Roppongi.rbで「Rails高速化戦略」を発表しました"
 image: "/images/posts/roppongirb/title.png"
 description: "自分がオーガナイザーを務めた Roppongi.rb #1で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。発表内容をこちらのブログでも文章形式でざっとまとめてみたいと思います。"
-tags: rails ruby presentation web
+tags: rails ruby roppongirb presentation web
 ---
 
 自分がオーガナイザーを務めた [Roppongi.rb #1](http://roppongirb.connpass.com/event/33502/)で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。

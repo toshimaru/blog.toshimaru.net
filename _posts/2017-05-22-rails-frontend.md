@@ -3,7 +3,7 @@ layout: post
 title: Railsフロントエンド技術の今とこれから
 image: "/images/posts/roppongirb3/roppongirb-3.jpg"
 description:
-tags: rails frontend
+tags: rails frontend roppongirb
 ---
 
 待望されたYarnサポートの入ったRails5.1が2017年4月にリリースされました。
@@ -61,7 +61,7 @@ Railsのフロントエンド技術スタックは、フロントエンドを専
 - :tada: Rails 5.1 リリース
   - [Rails 5.1: Loving JavaScript, System Tests, Encrypted Secrets, and more \| Riding Rails](http://weblog.rubyonrails.org/2017/4/27/Rails-5-1-final/)
 
-以上が今に至るRailsフロントエンド進化の軌跡となります。2016年5月のDHHの問題提起からわずか(?)一年足らずでここまで進化したのは純粋にすごいなーと思いました。
+以上が現在に至るRailsフロントエンド進化の軌跡となります。2016年5月のDHHの問題提起からわずか(?)一年足らずでここまで進化したのは純粋にすごいなーと思いました。
 
 ## Railsのフロントエンド実装の選択肢
 
@@ -108,7 +108,7 @@ Rails5.1のフロントエンド刷新以降、**今Railsにはどんなフロ�
 - [execjs](https://github.com/sstephenson/execjs) 依存
 - integration の選択肢として Rails Assets Pipline もしくは webpacker が選べる
 
-### 9. 独自に導入
+### 8. 独自に導入
 - 独自にJSアプリケーションをRailsに統合させる構成を考えRails上にのっける
 - 例: [webpackを使った Rails上でのReact開発 - クックパッド開発者ブログ](http://techlife.cookpad.com/entry/2016/07/27/101015)
 
@@ -146,7 +146,7 @@ RailsからNPM(yarn)のブリッジがRailsのコア機能の１つとして提�
 
 ### 3. Turbolinks がますます下火に
 
-~~黙ってDisableすべし。~~ 無効化されることの多いturbolinks機能ですがますます下火になっていくと思われます。
+~~黙って無効化すべし~~ 無効化されることの多いturbolinks機能ですがますます下火になっていくと思われます。
 
 ![](/images/posts/roppongirb3/turbolinks.png)
 
@@ -172,7 +172,7 @@ RailsからNPM(yarn)のブリッジがRailsのコア機能の１つとして提�
 
 そんなわけで随分と長い前置きでしたが、次回のRoppongi.rb#3のテーマは”Rails x Frontend”で開催します。
 
-[【増枠】Roppongi.rb #3 "Rails x Frontend-Tech" - connpass](https://roppongirb.connpass.com/event/56456/)
+[Roppongi.rb #3 "Rails x Frontend-Tech"](https://roppongirb.connpass.com/event/56456/)
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">Roppongi.rb #3 &quot;Rails x Frontend-Tech&quot; 〜これからのRails Frontendの話をしよう〜 を公開しました！ <a href="https://t.co/hOjXX7J8dC">https://t.co/hOjXX7J8dC</a> <a href="https://twitter.com/hashtag/roppongirb?src=hash">#roppongirb</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/861725918552707072">May 8, 2017</a></blockquote>
 

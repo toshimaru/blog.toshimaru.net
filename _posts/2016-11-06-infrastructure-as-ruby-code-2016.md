@@ -3,7 +3,7 @@ layout: post
 title: "Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました"
 description: 第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。 僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容で発表したので、その内容をブログにもまとめておく。
 image: /images/posts/roppongirb2/og.png
-tags: ruby aws presentation
+tags: ruby roppongirb aws presentation
 ---
 
 第二回Roppongi.rbを[「Infrastructure x Ruby」というテーマで開催](http://roppongirb.connpass.com/event/42633/)した。
