@@ -2,7 +2,7 @@
 layout: post
 title: Railsフロントエンド技術の今とこれから
 image: "/images/posts/roppongirb3/roppongirb-3.jpg"
-description:
+description: 待望されたYarnサポートの入ったRails5.1が2017年4月にリリースされました。他にもjQueryがデフォルトdependencyから外されたり、Optionalでwebpackサポートが入ったりしており、Railsのフロントエンドは大きな転換点を迎えたと言ってよいでしょう。本エントリではRailsのフロントエンド技術の今を振り返り、今後どうなっていくかをまとめてみたいと思います。
 tags: rails frontend roppongirb
 ---
 
@@ -25,16 +25,16 @@ Railsのフロントエンド技術スタックは、フロントエンドを専
 
 ## Railsのフロントエンド刷新の歩み :walking:
 
-しかし2016年春頃[^1]からRailsの作者・DHHの上げたIssueを皮切りに、フロントエンド技術刷新の歩みが始まります。その歴史・経緯を追ってみましょう。
+しかし2016年春頃[^1]からRailsの作者・[DHH](https://github.com/dhh)の上げたIssueを皮切りに、フロントエンド技術刷新の歩みが始まります。その歴史・経緯を追ってみましょう。
 
 ### 2016年5月
 - Rails v5.1 で jQueryを依存性としてDropしようというIssueをDHHが上げる
   - [Drop jQuery as a dependency · Issue #25208 · rails/rails](https://github.com/rails/rails/issues/25208)
 
 ### 2016年10月
-- npm supportを追加するPRが上げられる
+- Railsにnpm supportを追加するPRが上げられる
   - [Add Yarn support in new apps using --yarn option by Liceth · Pull Request #26836 · rails/rails](https://github.com/rails/rails/pull/26836)
-- sprockets 側でNPMをsupportするPRが上げられる
+- Sprockets 側でNPMをsupportするPRが上げられる
   - [NPM support: Add support for resolving main from npm's package.json by guilleiguaran · Pull Request #405 · rails/sprockets](https://github.com/rails/sprockets/pull/405)
 
 ### 2016年11月
@@ -46,15 +46,15 @@ Railsのフロントエンド技術スタックは、フロントエンドを専
 ### 2016年12月
 - DHH自らwebpacker gemを作成開始、v0.1としてgemを公開
   - [FIRST!1! · rails/webpacker@f4cc31d](https://github.com/rails/webpacker/commit/f4cc31d)
-- 同gemをRailsに取り込む
+- 同gemをRails本体の機能に取り込む
   - [Basic --webpack delegation to new webpacker gem by dhh · Pull Request #27288 · rails/rails](https://github.com/rails/rails/pull/27288)
 
 ### 2017年2月
 - Rails 5.1.beta1 リリース
   - [Rails 5.1.0.beta1: Loving JavaScript, System Tests, Encrypted Secrets, and more \| Riding Rails](http://weblog.rubyonrails.org/2017/2/23/Rails-5-1-beta1/)
-- webpacker 1.0 がリリースされる
+- webpacker 1.0 リリース
   - <https://rubygems.org/gems/webpacker/versions/1.0>
-- jQueryに依存しないujsである rails-ujs が actionview の1機能としてRails本体に取り込まれる
+- jQueryに依存しないujsである rails-ujs が actionview の一機能としてRails本体に取り込まれる
   - <https://github.com/rails/rails/commit/41c33bd4b2ec3f4a482e6030b6fda15091d81e4a>
 
 ### 2017年4月
@@ -81,20 +81,21 @@ Rails5.1のフロントエンド刷新以降、**今Railsにはどんなフロ�
   - つまりsprocketsに依存している
 - 導入のための参考記事: [モダンJavaScript開発環境 on Rails - クックパッド開発者ブログ](http://techlife.cookpad.com/entry/2015/12/14/130041)
 
-### 5. [webpacker](https://github.com/rails/webpacker)
+### 4. [webpacker](https://github.com/rails/webpacker)
 - 絶賛開発中
   - 活発に変更が入っているので導入に際しては現時点ではREADMEを参考にするのが良さそう
   - まだ小慣れていない印象
 - 最初はwebpack+railsのシームレスな統合のための薄い実装だと思ったが、現在ゴテゴテな実装…
   - react, angular, elm, vue などの初期インストールタスクが１つのレポジトリに全部のっている
-    - [plugable にしようぜ](https://github.com/rails/webpacker/issues/20#issuecomment-266347480)という話はあるができていない
-  - 初回インストール時の生成ファイル・パッケージ構成はたぶんフロントエンドガチ勢からみたらクソの山っぽい: <https://github.com/rails/webpacker/blob/5003a5de0222c1f5b0f3c2b887064039e06f7eae/lib/install/template.rb#L25-L30>
+    - [plugable にしようぜ](https://github.com/rails/webpacker/issues/20#issuecomment-266347480)という話はあるが現在そうはなっていない
+  - 初回インストール時の生成ファイル・パッケージ構成はたぶんフロントエンドガチ勢からみたら[クソの山っぽい](https://github.com/rails/webpacker/blob/5003a5de0222c1f5b0f3c2b887064039e06f7eae/lib/install/template.rb#L25-L30)
   - レールにのったwebpack利用という意味のカジュアルな利用だったら良いかもしれない
 
-### 4. [webpack-rails](https://github.com/mipearson/webpack-rails)
+### 5. [webpack-rails](https://github.com/mipearson/webpack-rails)
 - Sprockets 非依存
 - webpack利用のための薄い実装
   - 初期のwebpackerに似てる印象
+  - 個人的にはwebpackerよりは筋が良い印象を受けた
 
 ### 6. [react_on_rails](https://github.com/shakacode/react_on_rails)
 - SSRサポート
@@ -106,11 +107,18 @@ Rails5.1のフロントエンド刷新以降、**今Railsにはどんなフロ�
 ### 7. [react-rails](https://github.com/reactjs/react-rails)
 - SSRサポート
 - [execjs](https://github.com/sstephenson/execjs) 依存
-- integration の選択肢として Rails Assets Pipline もしくは webpacker が選べる
+- react_on_railsと異なる点は、integration の選択肢として Rails Assets Pipline もしくは webpacker が選べること
+  - Asset Pipelineにのりたかったらこちらを選択
 
 ### 8. 独自に導入
 - 独自にJSアプリケーションをRailsに統合させる構成を考えRails上にのっける
 - 例: [webpackを使った Rails上でのReact開発 - クックパッド開発者ブログ](http://techlife.cookpad.com/entry/2016/07/27/101015)
+
+### 9. [sprockets-commoner](https://github.com/Shopify/sprockets-commoner)
+- Shopify製
+- コンセプトとしてはRails Wayを壊さずにBabelを利用すること
+- Sprocketsに依存
+- 導入に際してはitkrt2yさんのこちらの記事を参考に: [顧客が本当に求めていたsprockets、sprockets-commonerの紹介 - Qiita](http://qiita.com/itkrt2y/items/18ea41828e1c22fc31e3)
 
 ## どうすべきか
 
