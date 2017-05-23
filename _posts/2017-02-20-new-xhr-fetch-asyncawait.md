@@ -1,12 +1,12 @@
 ---
 layout: post
 title: "JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await"
-description: JavaSciriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。jQuery, superagent, axiosなどのAJAX系ライブラリは使用しないこととする。 検証に使うブラウザは最新版のChrome (現在はVersion56.0) 今回リクエストを送る先は仮想的に下記のURLとする。
+description: JavaScriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。jQuery, superagent, axiosなどのAJAX系ライブラリは使用しないこととする。 検証に使うブラウザは最新版のChrome (現在はVersion56.0) 今回リクエストを送る先は仮想的に下記のURLとする。
 tags: javascript ajax
 toc: true
 ---
 
-JavaSciriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。
+JavaScriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。
 
 ## 前提
 
@@ -36,7 +36,7 @@ xhr.send();
 
 Chrome Dev Toolのコンソールで動かしてみましょう。
 
-![](/images/posts/xhr/1.png)
+![xhr1](/images/posts/xhr/1.png)
 
 ### モダンな書き方にしてみよう！
 
@@ -65,7 +65,7 @@ xhr.send();
 
 この書き方でも動くかChrome Dev Toolのコンソールで動かしてみましょう。
 
-![](/images/posts/xhr/2.png)
+![xhr2](/images/posts/xhr/2.png)
 
 :ok: でした。
 
@@ -85,7 +85,7 @@ fetch(url).then((response) => {
 
 Chrome Dev Toolコンソールで動かした結果。
 
-![](/images/posts/xhr/3.png)
+![xhr3](/images/posts/xhr/3.png)
 
 `fetch`は[Promise](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise)を返す点がポイントですね。
 
@@ -110,7 +110,7 @@ Chrome Dev Toolコンソールで動かした結果。
 
 コンソールで動かしてみた結果は下記の通り。
 
-![](/images/posts/xhr/4.png)
+![xhr4](/images/posts/xhr/4.png)
 
 ## 結論
 
