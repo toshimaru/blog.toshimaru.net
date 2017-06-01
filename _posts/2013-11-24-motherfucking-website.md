@@ -9,9 +9,7 @@ tags: design 翻訳
 
 最近のエントリでクソクソ言ってたらHackers Newsから[Motherfucking Website](http://motherfuckingwebsite.com/)というクソ記事が流れてきたので翻訳してみた。
 
-[クソ酷いウェブサイト](http://toshimaru.net/motherfuckingwebsite/)
-
-<iframe src="http://toshimaru.net/motherfuckingwebsite/"></iframe>
+:link:[クソ酷いウェブサイト](http://toshimaru.net/motherfuckingwebsite/)
 
 ## あわせて読みたい
 
