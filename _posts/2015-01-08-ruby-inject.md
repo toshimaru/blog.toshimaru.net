@@ -14,13 +14,15 @@ Rubyのイテレータメソッド`inject`の使い方を紹介してみよう�
 Rubyの`inject`はこんなふうに使えます。
 
 ```rb
-enum.inject {|memo, item| block }
-enum.inject(init) {|memo, item| block }
+enum.inject { |memo, item| block }
+enum.inject(init) { |memo, item| block }
 ```
 
 ## Sum（合計）を出す
 
 これだけではわかりにくいと思うので合計を出す処理を書いてみましょう。
+
+### injectを使わないパターン
 
 まずは`inject`を使わないパターン。
 
@@ -30,17 +32,19 @@ sum = 0
 puts sum # => 55
 ```
 
+### injectを使うパターン
+
 これを`inject`で書き直すとこう。
 
 ```rb
-(1..10).inject {|sum, i| sum += i }
+(1..10).inject(0) {|sum, i| sum + i }
 # => 55
 ```
 
-この場合、sumの初期値は0ですがそれを明示的にかくならこう。
+この場合、sumの初期値をinjectの引数の`0`で初期化しています。ただinjectのデフォルト引数設定はゼロなので下記のように 省略することができます。
 
 ```rb
-(1..10).inject(0) {|sum, i| sum += i }
+(1..10).inject {|sum, i| sum + i }
 # => 55
 ```
 
@@ -85,12 +89,15 @@ puts sum # => 55
 `each_with_index`でも`inject`は使える。
 
 ```rb
-(1..10).each_with_index.inject do |result, (element, index)|
-  # ...
-end
+(1..10).each_with_index.inject(0) { |sum, (value, index)| sum + value }
+# => 55
+
+(1..10).each_with_index.inject(0) { |sum, (value, index)| sum + value + index}
+# => 100
 ```
 
 ## 参考
 * [ruby の inject をわかりやすく説明してみる](http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject)
 * [inject (Enumerable)](http://ref.xaio.jp/ruby/classes/enumerable/inject)
 * [injectとeach_with_objectって何が違うのさ？ - Qiita](http://qiita.com/Kta-M/items/c9781e09d96601687767)
+* [Enumerable#each_with_indexが便利すぎる - 永遠に未完成](http://thinca.hatenablog.com/entry/20090410/1239374983)
