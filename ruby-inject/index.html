@@ -83,7 +83,12 @@
 
 <ul class="section-nav">
 <li class="toc-entry toc-h2"><a href="#injectの基本的な使い方">injectの基本的な使い方</a></li>
-<li class="toc-entry toc-h2"><a href="#sum合計を出す">Sum（合計）を出す</a></li>
+<li class="toc-entry toc-h2"><a href="#sum合計を出す">Sum（合計）を出す</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#injectを使わないパターン">injectを使わないパターン</a></li>
+<li class="toc-entry toc-h3"><a href="#injectを使うパターン">injectを使うパターン</a></li>
+</ul>
+</li>
 <li class="toc-entry toc-h2"><a href="#応用編1-配列内の要素数をハッシュに">応用編1: 配列内の要素数をハッシュに</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#each_with_object-を使う">each_with_object を使う</a></li>
@@ -100,8 +105,8 @@
 <p>Rubyの<code class="highlighter-rouge">inject</code>はこんなふうに使えます。</p>
 
 <div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="n">enum</span><span class="p">.</span><span class="nf">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
-<span class="n">enum</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
+<pre class="highlight"><code><span class="n">enum</span><span class="p">.</span><span class="nf">inject</span> <span class="p">{</span> <span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
+<span class="n">enum</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
 </code></pre>
 </div>
 
@@ -109,6 +114,9 @@
 <a id="sum合計を出す" class="anchor" href="#sum%E5%90%88%E8%A8%88%E3%82%92%E5%87%BA%E3%81%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sum（合計）を出す</h2>
 
 <p>これだけではわかりにくいと思うので合計を出す処理を書いてみましょう。</p>
+
+<h3 id="injectを使わないパターン">
+<a id="injectを使わないパターン" class="anchor" href="#inject%E3%82%92%E4%BD%BF%E3%82%8F%E3%81%AA%E3%81%84%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>injectを使わないパターン</h3>
 
 <p>まずは<code class="highlighter-rouge">inject</code>を使わないパターン。</p>
 
@@ -119,18 +127,21 @@
 </code></pre>
 </div>
 
+<h3 id="injectを使うパターン">
+<a id="injectを使うパターン" class="anchor" href="#inject%E3%82%92%E4%BD%BF%E3%81%86%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>injectを使うパターン</h3>
+
 <p>これを<code class="highlighter-rouge">inject</code>で書き直すとこう。</p>
 
 <div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">i</span> <span class="p">}</span>
 <span class="c1"># =&gt; 55</span>
 </code></pre>
 </div>
 
-<p>この場合、sumの初期値は0ですがそれを明示的にかくならこう。</p>
+<p>この場合、sumの初期値をinjectの引数の<code class="highlighter-rouge">0</code>で初期化しています。ただinjectのデフォルト引数設定はゼロなので下記のように 省略することができます。</p>
 
 <div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
+<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">i</span> <span class="p">}</span>
 <span class="c1"># =&gt; 55</span>
 </code></pre>
 </div>
@@ -184,9 +195,11 @@
 <p><code class="highlighter-rouge">each_with_index</code>でも<code class="highlighter-rouge">inject</code>は使える。</p>
 
 <div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">each_with_index</span><span class="p">.</span><span class="nf">inject</span> <span class="k">do</span> <span class="o">|</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span>
-  <span class="c1"># ...</span>
-<span class="k">end</span>
+<pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">each_with_index</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">value</span> <span class="p">}</span>
+<span class="c1"># =&gt; 55</span>
+
+<span class="p">(</span><span class="mi">1</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">each_with_index</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">value</span> <span class="o">+</span> <span class="n">index</span><span class="p">}</span>
+<span class="c1"># =&gt; 100</span>
 </code></pre>
 </div>
 
@@ -196,6 +209,7 @@
   <li><a href="http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject">ruby の inject をわかりやすく説明してみる</a></li>
   <li><a href="http://ref.xaio.jp/ruby/classes/enumerable/inject">inject (Enumerable)</a></li>
   <li><a href="http://qiita.com/Kta-M/items/c9781e09d96601687767">injectとeach_with_objectって何が違うのさ？ - Qiita</a></li>
+  <li><a href="http://thinca.hatenablog.com/entry/20090410/1239374983">Enumerable#each_with_indexが便利すぎる - 永遠に未完成</a></li>
 </ul>
 
 
