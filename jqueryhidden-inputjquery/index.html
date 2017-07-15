@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>hidden inputタグをjQueryで追加 - Hack Your Design!</title>
+  <title>jQueryでHTMLタグ要素をcreateElement使わずに生成する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="hidden inputタグをjQueryで追加 - Hack Your Design!">
-  <meta property="og:title" content="hidden inputタグをjQueryで追加 - Hack Your Design!">
-  <meta name="description" content="document.createElementで要素をJS内でhiddenフィールドを動的に生成しているコードを見てjQueryで簡潔に書けないかと調べた。">
-  <meta name="twitter:description" content="document.createElementで要素をJS内でhiddenフィールドを動的に生成しているコードを見てjQueryで簡潔に書けないかと調べた。">
-  <meta property="og:description" content="document.createElementで要素をJS内でhiddenフィールドを動的に生成しているコードを見てjQueryで簡潔に書けないかと調べた。">
+  <meta name="twitter:title" content="jQueryでHTMLタグ要素をcreateElement使わずに生成する - Hack Your Design!">
+  <meta property="og:title" content="jQueryでHTMLタグ要素をcreateElement使わずに生成する - Hack Your Design!">
+  <meta name="description" content="とある<form>があってその中にjQueryで動的にinput hiddenタグ要素を生成&追加して送信したい。要素を生成しようと思ったときにぱっと思いつくのは、document.createElementだが、jQueryを使うと簡潔にかける。">
+  <meta name="twitter:description" content="とある<form>があってその中にjQueryで動的にinput hiddenタグ要素を生成&追加して送信したい。要素を生成しようと思ったときにぱっと思いつくのは、document.createElementだが、jQueryを使うと簡潔にかける。">
+  <meta property="og:description" content="とある<form>があってその中にjQueryで動的にinput hiddenタグ要素を生成&追加して送信したい。要素を生成しようと思ったときにぱっと思いつくのは、document.createElementだが、jQueryを使うと簡潔にかける。">
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2013-01-17T00:00:00+09:00">
+  <meta property="article:published_time" content="2016-01-17T00:00:00+09:00">
   <link rel="canonical" href="http://blog.toshimaru.net/jqueryhidden-inputjquery/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
@@ -68,10 +68,10 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">hidden inputタグをjQueryで追加</h1>
+  <h1 class="fadeInLeft">jQueryでHTMLタグ要素をcreateElement使わずに生成する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-01-17T00:00:00+09:00" pubdate>17 Jan 2013</time>
+      <i class="icon-calendar"></i><time datetime="2016-01-17T00:00:00+09:00" pubdate>17 Jan 2016</time>
       <i class="icon-tags"></i> 
 <a href="/tag/javascript/" rel="tag">javascript</a>
 
@@ -83,16 +83,43 @@
   </div>
 </div>
 
-<p><code>document.createElement</code>で要素をJS内でhiddenフィールドを動的に生成しているコードを見てjQueryで簡潔に書けないかと調べた。</p>
+<h2 id="やりたいこと">やりたいこと</h2>
 
-<p><script src="https://gist.github.com/1044d12b5de8d920cdd9.js"></script></p>
+<p>とある<code class="highlighter-rouge">&lt;form&gt;</code>があってその中にjQueryで動的にinput hiddenタグ要素を生成&amp;追加して送信したい。</p>
 
-<p><code>document.createElement</code>よりは直感的にスッキリかけていいかな。</p>
+<h2 id="方法">方法</h2>
 
-<h3>参考</h3>
+<p>要素を生成しようと思ったときにぱっと思いつくのは、<code class="highlighter-rouge">document.createElement</code>だが、jQueryを使うと下記のように簡潔にかける。</p>
+
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"targetId"</span><span class="nt">&gt;</span>
+  ...
+<span class="nt">&lt;/form&gt;</span>
+</code></pre>
+</div>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;input&gt;'</span><span class="p">).</span><span class="nx">attr</span><span class="p">({</span>
+  <span class="na">type</span><span class="p">:</span> <span class="s1">'hidden'</span><span class="p">,</span>
+  <span class="na">id</span><span class="p">:</span> <span class="s1">'input_id'</span><span class="p">,</span>
+  <span class="na">value</span><span class="p">:</span> <span class="mi">12345</span>
+<span class="p">}).</span><span class="nx">appendTo</span><span class="p">(</span><span class="s1">'#targetId'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>また下記のように<code class="highlighter-rouge">attr</code>を使わずに書くことができる（コメントで教えていただきました taku hhara さん、ありがとうございます）。</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;input&gt;"</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">type</span><span class="p">:</span> <span class="s1">'hidden'</span><span class="p">,</span>
+  <span class="na">id</span><span class="p">:</span> <span class="s1">'input_id'</span><span class="p">,</span>
+  <span class="na">value</span><span class="p">:</span> <span class="mi">12345</span>
+<span class="p">}).</span><span class="nx">appendTo</span><span class="p">(</span><span class="s1">'#targetId'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<h2 id="参考">参考</h2>
+
 <ul>
-<li><a href="http://stackoverflow.com/questions/2408043/jquery-create-hidden-form-element-on-the-fly">Jquery - Create hidden form element on the fly</a></li>
-<li><a href="http://stackoverflow.com/questions/268490/jquery-document-createelement-equivalent">jQuery document.createElement equivalent?</a></li>
+  <li><a href="http://stackoverflow.com/questions/2408043/jquery-create-hidden-form-element-on-the-fly">Jquery - Create hidden form element on the fly</a></li>
+  <li><a href="http://stackoverflow.com/questions/268490/jquery-document-createelement-equivalent">jQuery document.createElement equivalent?</a></li>
 </ul>
 
 
@@ -168,13 +195,13 @@
 <div class="post-pagination clearfix">
   
   <div class="newer">
-    <a href="/macmkmfrb-cant-find-header-files-for-ruby/" title="Newer Post: mkmf.rb can't find header files for ruby"><i class="icon-chevron-left"></i>  Newer</a>
+    <a href="/scrum-training/" title="Newer Post: 認定スクラムマスター研修に行ってきました"><i class="icon-chevron-left"></i>  Newer</a>
   </div>
   
 
   
   <div class="older">
-    <a href="/sh3iz/" title="Older Post: 「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/json-parser-benchmark/" title="Older Post: RubyのJSONパーサーのパース速度比較">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -205,8 +232,8 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/jqueryhidden-inputjquery/"
     },
-    "headline": "hidden inputタグをjQueryで追加",
-    "datePublished": "2013-01-17T00:00:00+09:00",
+    "headline": "jQueryでHTMLタグ要素をcreateElement使わずに生成する",
+    "datePublished": "2016-01-17T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
