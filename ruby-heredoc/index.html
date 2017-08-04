@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Ruby Gem Configuration Pattern - Hack Your Design!</title>
+  <title>Rubyのヒアドキュメントの書き方いろいろ - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/main.css">
   <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Ruby Gem Configuration Pattern - Hack Your Design!">
-  <meta property="og:title" content="Ruby Gem Configuration Pattern - Hack Your Design!">
-  <meta name="description" content="railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。">
-  <meta name="twitter:description" content="railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。">
-  <meta property="og:description" content="railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。">
+  <meta name="twitter:title" content="Rubyのヒアドキュメントの書き方いろいろ - Hack Your Design!">
+  <meta property="og:title" content="Rubyのヒアドキュメントの書き方いろいろ - Hack Your Design!">
+  <meta name="description" content="Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。 <<識別子 これがRubyのヒアドキュメントの基本型となります。識別子であるEOSの始点の<<EOSから次に出てくるEOSまでの囲まれている部分が文字列となります。">
+  <meta name="twitter:description" content="Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。 <<識別子 これがRubyのヒアドキュメントの基本型となります。識別子であるEOSの始点の<<EOSから次に出てくるEOSまでの囲まれている部分が文字列となります。">
+  <meta property="og:description" content="Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。 <<識別子 これがRubyのヒアドキュメントの基本型となります。識別子であるEOSの始点の<<EOSから次に出てくるEOSまでの囲まれている部分が文字列となります。">
   <meta name="twitter:image" content="http://blog.toshimaru.net/images/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/images/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2015-09-01T00:00:00+09:00">
-  <link rel="canonical" href="http://blog.toshimaru.net/ruby-configuration-pattern/">
+  <meta property="article:published_time" content="2017-08-04T00:00:00+09:00">
+  <link rel="canonical" href="http://blog.toshimaru.net/ruby-heredoc/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({
@@ -68,16 +68,12 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Ruby Gem Configuration Pattern</h1>
+  <h1 class="fadeInLeft">Rubyのヒアドキュメントの書き方いろいろ</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2015-09-01T00:00:00+09:00" pubdate>01 Sep 2015</time>
+      <i class="icon-calendar"></i><time datetime="2017-08-04T00:00:00+09:00" pubdate>04 Aug 2017</time>
       <i class="icon-tags"></i> 
 <a href="/tag/ruby/" rel="tag">ruby</a>
-
-<a href="/tag/gem/" rel="tag">gem</a>
-
-<a href="/tag/rails/" rel="tag">rails</a>
 
 
     </div>
@@ -85,91 +81,112 @@
   </div>
 </div>
 
-<p>railsのgemでよくみかける初期設定ファイル、<code class="highlighter-rouge">config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
+<ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#識別子"><<識別子</a></li>
+<li class="toc-entry toc-h2"><a href="#-識別子"><<-識別子</a></li>
+<li class="toc-entry toc-h2"><a href="#識別子-1"><<~識別子</a></li>
+<li class="toc-entry toc-h2"><a href="#豆知識-github-syntax-highlight">豆知識. GitHub Syntax Highlight</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul><p>Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。</p>
 
-<h2 id="めざす完成形はコレ">めざす完成形はコレ！</h2>
+<h2 id="識別子">
+<a id="識別子" class="anchor" href="#%E8%AD%98%E5%88%A5%E5%AD%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>&lt;&lt;識別子</h2>
 
-<p>完成系として、下記を想定してみます。</p>
+<p>これがRubyのヒアドキュメントの基本型となります。識別子である<code class="highlighter-rouge">EOS</code>の始点の<code class="highlighter-rouge">&lt;&lt;EOS</code>から次に出てくる<code class="highlighter-rouge">EOS</code>までの囲まれている部分が文字列となります。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
-<span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s1">'my configuration value'</span>
-<span class="k">end</span></code></pre></figure>
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
+  <span class="nb">puts</span> <span class="o">&lt;&lt;</span><span class="no">EOS</span><span class="sh">
+    Hello,
 
-<h2 id="configureメソッドを用意">configureメソッドを用意</h2>
+    World!
+</span><span class="no">EOS</span>
+<span class="k">end</span>
 
-<p>まずは<code class="highlighter-rouge">module</code>と<code class="highlighter-rouge">configure</code>というクラスメソッドを用意します。</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
-  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
-    <span class="k">def</span> <span class="nf">configure</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
-
-<h2 id="configurationクラス">Configurationクラス</h2>
-
-<p>次に実際の設定値が入る<code class="highlighter-rouge">Configuration</code>クラスを用意します。</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
-
-  <span class="k">def</span> <span class="nf">initialize</span>
-    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
-
-<h2 id="完成形">完成形</h2>
-
-<p>次にこれを組み合わせてみましょう。</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
-  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
-    <span class="k">def</span> <span class="nf">configure</span>
-      <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
-    <span class="k">end</span>
-
-    <span class="k">def</span> <span class="nf">configuration</span>
-      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="p">.</span><span class="nf">new</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="k">class</span> <span class="nc">Configuration</span>
-    <span class="kp">attr_accessor</span> <span class="ss">:my_value</span>
-
-    <span class="k">def</span> <span class="nf">initialize</span>
-      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
-
-<p>これでインスタンス化された<code class="highlighter-rouge">Configuration</code>クラスが出てきます。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; Konfig.configure {|config| p config}
-#&lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value"&gt;
+<span class="n">hello</span>
+<span class="c1">#    Hello,</span>
+<span class="c1">#</span>
+<span class="c1">#    World!</span>
 </code></pre>
 </div>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s2">"abc"</span>
+<p>上記のコードのコメントアウトされている箇所が定義した<code class="highlighter-rouge">hello</code>メソッドの出力結果となります。</p>
+
+<h2 id="-識別子">
+<a id="-識別子" class="anchor" href="#-%E8%AD%98%E5%88%A5%E5%AD%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>&lt;&lt;-識別子</h2>
+
+<p>上記のコードは終端の<code class="highlighter-rouge">EOS</code>の位置が気に食わないですか？　たしかにdef~endの中で一段ネストさせたいですね。<code class="highlighter-rouge">-</code>（ダッシュ）を識別子の手前に置けば、こんな書き方が可能です。</p>
+
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
+  <span class="nb">puts</span> <span class="o">&lt;&lt;-</span><span class="no">EOS</span><span class="sh">
+    Hello,
+
+    World!
+</span><span class="no">  EOS</span>
 <span class="k">end</span>
-<span class="c1"># =&gt; "abc"</span>
 
-<span class="no">Konfig</span><span class="p">.</span><span class="nf">configuration</span>
-<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="abc"&gt;</span></code></pre></figure>
+<span class="n">hello</span>
+<span class="c1">#    Hello,</span>
+<span class="c1">#</span>
+<span class="c1">#    World!</span>
+</code></pre>
+</div>
 
-<p><code class="highlighter-rouge">configure</code>で<code class="highlighter-rouge">Configuration</code>インスタンス作っててブロック内の<code class="highlighter-rouge">config</code>変数で<code class="highlighter-rouge">Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
+<p>これで終端の<code class="highlighter-rouge">EOS</code>がメソッドの内部でネストされて可読性が上がりましたね。</p>
 
-<h3 id="参考">参考</h3>
+<h2 id="識別子-1">
+<a id="識別子-1" class="anchor" href="#%E8%AD%98%E5%88%A5%E5%AD%90-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>&lt;&lt;~識別子</h2>
+
+<p>でもちょっと待って下さい。本当にほしい文字列は先頭に空白のない文字列だったんです。でも安心してください、Ruby2.3以降は<code class="highlighter-rouge">~</code>（チルダ）を識別子の手前に置いてこう書けるんです。</p>
+
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
+  <span class="nb">puts</span> <span class="o">&lt;&lt;~</span><span class="no">EOS</span><span class="sh">
+    Hello,
+
+    World!
+</span><span class="no">  EOS</span>
+<span class="k">end</span>
+
+<span class="n">hello</span>
+<span class="c1">#Hello,</span>
+<span class="c1">#</span>
+<span class="c1">#World!</span>
+</code></pre>
+</div>
+
+<p>これでHelloという文字列の手前にあるネストの空白も消してくれました。</p>
+
+<h2 id="豆知識-github-syntax-highlight">
+<a id="豆知識-github-syntax-highlight" class="anchor" href="#%E8%B1%86%E7%9F%A5%E8%AD%98-github-syntax-highlight" aria-hidden="true"><span class="octicon octicon-link"></span></a>豆知識. GitHub Syntax Highlight</h2>
+
+<p>下記のようにGitHub上にてヒアドキュメントの識別子にsyntaxの指定をすると、GitHub syntax highlightが効くようになります。</p>
+
+<div class="language-rb highlighter-rouge">
+<pre class="highlight"><code><span class="k">def</span> <span class="nf">a</span>
+  <span class="n">doc</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="no">RUBY</span><span class="sh">
+    def hello
+      puts "Hello World!"
+    end
+</span><span class="no">  RUBY</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p><img src="/images/posts/heredoc_rb.png" alt="heredoc"></p>
+
+<h2 id="参考">
+<a id="参考" class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+
 <ul>
-  <li><a href="https://robots.thoughtbot.com/mygem-configure-block">MyGem.configure Block</a></li>
-  <li><a href="http://jimsei.hatenablog.com/entry/20120721/1342855783">クラスインスタンス変数にアクセサを利用しアクセスする - ひたすら事務</a></li>
-  <li><a href="http://o.inchiki.jp/obbr/168">Rubyのクラスインスタンス変数をアクセサで定義する</a></li>
+  <li><a href="https://docs.ruby-lang.org/ja/latest/doc/spec=2fliteral.html#here">リテラル (Ruby 2.4.0) ヒアドキュメント (行指向文字列リテラル)</a></li>
+  <li><a href="http://qiita.com/Linda_pp/items/32fddbbe117cf03fef0f">Ruby のヒアドキュメントすごい - Qiita</a></li>
 </ul>
 
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-configuration-pattern/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-heredoc/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -212,15 +229,15 @@
   <h3>関連エントリ</h3>
   <ul>
   
-    <li><a href="/gem-rack-simple-user-agent/" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った">Railsでデバイス判定するrack-simple_user_agentというgemを作った</a></li>
+    <li><a href="/infrastructure-as-ruby-code-2016/" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</a></li>
   
-    <li><a href="/json-parser-benchmark/" title="RubyのJSONパーサーのパース速度比較">RubyのJSONパーサーのパース速度比較</a></li>
+    <li><a href="/ruby-immutable-string/" title="Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する">Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する</a></li>
   
     <li><a href="/roppongirb-speeding-up-rails/" title="Roppongi.rbで「Rails高速化戦略」を発表しました">Roppongi.rbで「Rails高速化戦略」を発表しました</a></li>
   
-    <li><a href="/ruby-standard-error/" title="Rubyで独自例外を定義するときはStandardErrorを継承する">Rubyで独自例外を定義するときはStandardErrorを継承する</a></li>
+    <li><a href="/json-parser-benchmark/" title="RubyのJSONパーサーのパース速度比較">RubyのJSONパーサーのパース速度比較</a></li>
   
-    <li><a href="/ruby-heredoc/" title="Rubyのヒアドキュメントの書き方いろいろ">Rubyのヒアドキュメントの書き方いろいろ</a></li>
+    <li><a href="/destructive-method-performance/" title="rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較">rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較</a></li>
   
   </ul>
   </div>
@@ -239,14 +256,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/join-lines-command/" title="Newer Post: コマンドラインで複数行を1行にまとめる"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/hubot-docomo-chatter/" title="Older Post: docomo雑談対話APIでリプライ返すhubotプラグイン作った">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/the-pragmatic-programmer/" title="Older Post: 『達人プログラマー（新装版）』 読んだ">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -275,10 +288,10 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "http://blog.toshimaru.net/ruby-configuration-pattern/"
+      "@id": "http://blog.toshimaru.net/ruby-heredoc/"
     },
-    "headline": "Ruby Gem Configuration Pattern",
-    "datePublished": "2015-09-01T00:00:00+09:00",
+    "headline": "Rubyのヒアドキュメントの書き方いろいろ",
+    "datePublished": "2017-08-04T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -288,7 +301,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
       "@type": "ImageObject",
       "url": "http://blog.toshimaru.net/images/icon.png"
     },
-    "keywords": "ruby, gem, rails"
+    "keywords": "ruby"
   },
   {
     

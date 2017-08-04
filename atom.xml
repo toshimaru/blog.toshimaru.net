@@ -1,4 +1,90 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2017-07-25T08:19:43+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">『達人プログラマー（新装版）』 読んだ</title><link href="http://blog.toshimaru.net/the-pragmatic-programmer/" rel="alternate" type="text/html" title="『達人プログラマー（新装版）』 読んだ" /><published>2017-07-13T00:00:00+09:00</published><updated>2017-07-13T00:00:00+09:00</updated><id>http://blog.toshimaru.net/the-pragmatic-programmer</id><content type="html" xml:base="http://blog.toshimaru.net/the-pragmatic-programmer/">&lt;p&gt;&lt;a href=&quot;https://www.amazon.co.jp/dp/427421933X/ref=as_li_ss_il?ie=UTF8&amp;amp;linkCode=li3&amp;amp;tag=toshimaru-22&amp;amp;linkId=d4315939a647434d71937a28ec97f0a6&quot; target=&quot;_blank&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;amp;ASIN=427421933X&amp;amp;Format=_SL250_&amp;amp;ID=AsinImage&amp;amp;MarketPlace=JP&amp;amp;ServiceVersion=20070822&amp;amp;WS=1&amp;amp;tag=toshimaru-22&quot; /&gt;&lt;/a&gt;&lt;img src=&quot;https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;amp;l=li3&amp;amp;o=9&amp;amp;a=427421933X&quot; width=&quot;1&quot; height=&quot;1&quot; border=&quot;0&quot; alt=&quot;&quot; style=&quot;border:none !important; margin:0px !important;&quot; /&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.1">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2017-08-05T00:54:57+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rubyのヒアドキュメントの書き方いろいろ</title><link href="http://blog.toshimaru.net/ruby-heredoc/" rel="alternate" type="text/html" title="Rubyのヒアドキュメントの書き方いろいろ" /><published>2017-08-04T00:00:00+09:00</published><updated>2017-08-04T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-heredoc</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-heredoc/">&lt;p&gt;Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;識別子&quot;&gt;&amp;lt;&amp;lt;識別子&lt;/h2&gt;
+
+&lt;p&gt;これがRubyのヒアドキュメントの基本型となります。識別子である&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;の始点の&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&amp;lt;EOS&lt;/code&gt;から次に出てくる&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;までの囲まれている部分が文字列となります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    Hello,
+
+    World!
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    Hello,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    World!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;上記のコードのコメントアウトされている箇所が定義した&lt;code class=&quot;highlighter-rouge&quot;&gt;hello&lt;/code&gt;メソッドの出力結果となります。&lt;/p&gt;
+
+&lt;h2 id=&quot;-識別子&quot;&gt;&amp;lt;&amp;lt;-識別子&lt;/h2&gt;
+
+&lt;p&gt;上記のコードは終端の&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;の位置が気に食わないですか？　たしかにdef~endの中で一段ネストさせたいですね。&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;（ダッシュ）を識別子の手前に置けば、こんな書き方が可能です。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    Hello,
+
+    World!
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  EOS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    Hello,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    World!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これで終端の&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;がメソッドの内部でネストされて可読性が上がりましたね。&lt;/p&gt;
+
+&lt;h2 id=&quot;識別子-1&quot;&gt;&amp;lt;&amp;lt;~識別子&lt;/h2&gt;
+
+&lt;p&gt;でもちょっと待って下さい。本当にほしい文字列は先頭に空白のない文字列だったんです。でも安心してください、Ruby2.3以降は&lt;code class=&quot;highlighter-rouge&quot;&gt;~&lt;/code&gt;（チルダ）を識別子の手前に置いてこう書けるんです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;~&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    Hello,
+
+    World!
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  EOS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#Hello,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#World!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これでHelloという文字列の手前にあるネストの空白も消してくれました。&lt;/p&gt;
+
+&lt;h2 id=&quot;豆知識-github-syntax-highlight&quot;&gt;豆知識. GitHub Syntax Highlight&lt;/h2&gt;
+
+&lt;p&gt;下記のようにGitHub上にてヒアドキュメントの識別子にsyntaxの指定をすると、GitHub syntax highlightが効くようになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;a&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RUBY&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    def hello
+      puts &quot;Hello World!&quot;
+    end
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  RUBY&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/heredoc_rb.png&quot; alt=&quot;heredoc&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.ruby-lang.org/ja/latest/doc/spec=2fliteral.html#here&quot;&gt;リテラル (Ruby 2.4.0) ヒアドキュメント (行指向文字列リテラル)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://qiita.com/Linda_pp/items/32fddbbe117cf03fef0f&quot;&gt;Ruby のヒアドキュメントすごい - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。</summary></entry><entry><title type="html">『達人プログラマー（新装版）』 読んだ</title><link href="http://blog.toshimaru.net/the-pragmatic-programmer/" rel="alternate" type="text/html" title="『達人プログラマー（新装版）』 読んだ" /><published>2017-07-13T00:00:00+09:00</published><updated>2017-07-13T00:00:00+09:00</updated><id>http://blog.toshimaru.net/the-pragmatic-programmer</id><content type="html" xml:base="http://blog.toshimaru.net/the-pragmatic-programmer/">&lt;p&gt;&lt;a href=&quot;https://www.amazon.co.jp/dp/427421933X/ref=as_li_ss_il?ie=UTF8&amp;amp;linkCode=li3&amp;amp;tag=toshimaru-22&amp;amp;linkId=d4315939a647434d71937a28ec97f0a6&quot; target=&quot;_blank&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;amp;ASIN=427421933X&amp;amp;Format=_SL250_&amp;amp;ID=AsinImage&amp;amp;MarketPlace=JP&amp;amp;ServiceVersion=20070822&amp;amp;WS=1&amp;amp;tag=toshimaru-22&quot; /&gt;&lt;/a&gt;&lt;img src=&quot;https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;amp;l=li3&amp;amp;o=9&amp;amp;a=427421933X&quot; width=&quot;1&quot; height=&quot;1&quot; border=&quot;0&quot; alt=&quot;&quot; style=&quot;border:none !important; margin:0px !important;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;きっかけは&lt;a href=&quot;https://rebuild.fm/&quot;&gt;Rebuild.fm&lt;/a&gt;。&lt;/p&gt;
 
@@ -1638,142 +1724,4 @@ X-Amz-Cf-Id: xxx
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/cors.html&quot;&gt;Cross-Origin Resource Sharing (CORS) - Amazon Simple Storage Service&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-cors&quot;&gt;リクエストヘッダーに基づいてオブジェクトをキャッシュするように CloudFront を設定する - Amazon CloudFront&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html">（画像はAWS-CloudDesignPatternから引用）</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/cors/cache-distribution.png" /></entry><entry><title type="html">Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する</title><link href="http://blog.toshimaru.net/ruby-immutable-string/" rel="alternate" type="text/html" title="Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する" /><published>2016-07-24T00:00:00+09:00</published><updated>2016-07-24T00:00:00+09:00</updated><id>http://blog.toshimaru.net/ruby-immutable-string</id><content type="html" xml:base="http://blog.toshimaru.net/ruby-immutable-string/">&lt;h2 id=&quot;immutable-string-in-ruby3&quot;&gt;Immutable String in Ruby3&lt;/h2&gt;
-
-&lt;p&gt;Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;via. &lt;a href=&quot;http://d.hatena.ne.jp/ku-ma-me/20151004/p1&quot;&gt;[Ruby] Ruby 3.0 の特大の非互換について - まめめも&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに&lt;code class=&quot;highlighter-rouge&quot;&gt;.freeze&lt;/code&gt;を付けてプルリクエストを投げる輩が大挙してきたことだ。&lt;/p&gt;
-
-&lt;h2 id=&quot;immutable-string-in-ruby23&quot;&gt;Immutable String in Ruby2.3+&lt;/h2&gt;
-
-&lt;p&gt;実は Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のようにマジックコメントを書けばよい。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;frozen_string_literal-の機能を試す&quot;&gt;frozen_string_literal の機能を試す&lt;/h2&gt;
-
-&lt;p&gt;実際に試してみよう。&lt;code class=&quot;highlighter-rouge&quot;&gt;frozen_string_literal&lt;/code&gt;の設定が入っているRubyコードと入っていないRubyコードの２つを用意して実行してみる。&lt;/p&gt;
-
-&lt;h3 id=&quot;frozen_string_literal入りのコード&quot;&gt;frozen_string_literal入りのコード&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string_with_frozen_option.rb&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;結果&quot;&gt;結果&lt;/h3&gt;
-
-&lt;p&gt;全て同じ object_id が返ってくる。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ruby string_with_frozen_option.rb
-70212460463280
-70212460463280
-70212460463280
-70212460463280
-70212460463280
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;frozen_string_literal無しのコード&quot;&gt;frozen_string_literal無しのコード&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;string_without_frozen_option.rb&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;結果-1&quot;&gt;結果&lt;/h3&gt;
-
-&lt;p&gt;全て違う object_id が返ってくる。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ruby string_without_frozen_option.rb
-70277165754460
-70277165754200
-70277165754080
-70277165754000
-70277165753940
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;frozen_string_literal-はファイル毎に設定される&quot;&gt;frozen_string_literal はファイル毎に設定される&lt;/h2&gt;
-
-&lt;p&gt;たとえば&lt;code class=&quot;highlighter-rouge&quot;&gt;frozen_string_literal&lt;/code&gt;の設定が入ったものと入っていないファイルが実行された場合はどうなるだろうか。Railsで試してみる。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ApplicationController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActionController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;before_action&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:not_frozen&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;not_frozen&lt;/span&gt;
-    &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WelcomeController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;
-    &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;これで&lt;code class=&quot;highlighter-rouge&quot;&gt;WelcomeController#index&lt;/code&gt;が実行された場合、ログは下記のようになる。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;70346238891860
-70346238891080
-70346238890280
-70346238889340
-70346238888420
-...
-70346229343820
-70346229343820
-70346229343820
-70346229343820
-70346229343820
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;つまり&lt;code class=&quot;highlighter-rouge&quot;&gt;WelcomeController&lt;/code&gt;で定義された文字列だけが&lt;code class=&quot;highlighter-rouge&quot;&gt;freeze&lt;/code&gt;されていることがわかる。&lt;/p&gt;
-
-&lt;h2 id=&quot;mutableなstringを定義するにはどうしたらよい&quot;&gt;mutableなStringを定義するにはどうしたらよい？&lt;/h2&gt;
-
-&lt;p&gt;一度 &lt;code class=&quot;highlighter-rouge&quot;&gt;frozen_string_literal: true&lt;/code&gt; のコードを入れると全ての文字列が&lt;code class=&quot;highlighter-rouge&quot;&gt;.freeze&lt;/code&gt;されるので、下記のようなコードは&lt;code class=&quot;highlighter-rouge&quot;&gt;RuntimeError&lt;/code&gt;となる。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bc&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; test.rb:3:in `&amp;lt;main&amp;gt;': can't modify frozen String (RuntimeError)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;この場合の対処法としてはfreezeを解除したい文字列に対して、&lt;code class=&quot;highlighter-rouge&quot;&gt;.dup&lt;/code&gt;を付けてやれば解決する。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dup&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bc&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; abc&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
-
-&lt;p&gt;Ruby3 の Immutable String に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に&lt;code class=&quot;highlighter-rouge&quot;&gt;frozen_string_literal: true&lt;/code&gt;の設定をしていくべき。&lt;/p&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3&quot;&gt;Immutable strings in Ruby 2.3&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://bugs.ruby-lang.org/issues/8976&quot;&gt;Feature #8976: file-scope freeze_string directive - Ruby trunk - Ruby Issue Tracking System&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Immutable String in Ruby3</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html">（画像はAWS-CloudDesignPatternから引用）</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/cors/cache-distribution.png" /></entry></feed>
