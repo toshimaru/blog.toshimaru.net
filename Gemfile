@@ -11,7 +11,7 @@ group :jekyll_plugins do
   gem 'jekyll-sitemap'
   gem 'jekyll-tagging'
   gem 'jekyll-tagging-related_posts'
-  gem 'jekyll-toc', '~> 0.3.0.pre1'
+  gem 'jekyll-toc'
   gem 'jemoji'
 end
 
