@@ -18,3 +18,4 @@ end
 group :development do
   gem 'rake'
 end
+gem 'nokogiri', '>= 1.8.1'
