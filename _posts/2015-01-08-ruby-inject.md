@@ -84,6 +84,18 @@ puts sum # => 55
 # => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]
 ```
 
+## 応用編3: ループを止める
+
+途中でループを止めて処理を終えたい場合、`break`を使えば可能。
+
+```rb
+(1..5).inject([]) do |ary, number|
+  break ary if number == 4
+  ary << number
+end
+# => [1, 2, 3]
+```
+
 ## 番外編: each_with_index
 
 `each_with_index`でも`inject`は使える。
@@ -97,7 +109,9 @@ puts sum # => 55
 ```
 
 ## 参考
+
 * [ruby の inject をわかりやすく説明してみる](http://kenkiti.hatenadiary.jp/entry/20090114/ruby_inject)
 * [inject (Enumerable)](http://ref.xaio.jp/ruby/classes/enumerable/inject)
 * [injectとeach_with_objectって何が違うのさ？ - Qiita](http://qiita.com/Kta-M/items/c9781e09d96601687767)
 * [Enumerable#each_with_indexが便利すぎる - 永遠に未完成](http://thinca.hatenablog.com/entry/20090410/1239374983)
+* [Rubyで Enumerable#reduce / inject で処理を中断して結果を返す - Qiita](https://qiita.com/minoritea/items/daf8ee91f2de1725b9b0)
