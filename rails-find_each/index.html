@@ -116,29 +116,25 @@
 
 <p>まずはUserテーブルに1万件くらいデータを作って素直に<code class="highlighter-rouge">find_each</code>してみる。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; User.find_each{|a|}
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.find_each{|a|}
   User Load (2.7ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (2.6ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>デフォルトでは<code class="highlighter-rouge">order by id</code>で全件取得して1000件ずつ<code class="highlighter-rouge">limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
 
 <h2 id="order付き-find_each">
 <a id="order付き-find_each" class="anchor" href="#order%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>order付き find_each</h2>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; User.order(created_at: :desc).find_each{|a|}
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.order(created_at: :desc).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.8ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.0ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 1001)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (2.3ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
 
@@ -147,15 +143,13 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p>じゃあlimitも試してみよう。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; User.limit(2000).find_each{|a|}
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.limit(2000).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
   User Load (3.0ms)  SELECT  `users`.* FROM `users`  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.5ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 11003)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (3.4ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` &gt; 12003)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>やっぱりワーニングが出て無視された。</p>
 
@@ -164,20 +158,17 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p><code class="highlighter-rouge">where</code>を使って処理対象に条件を付けることもできます。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; User.where(notes: "1").find_each{|a|}
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.where(notes: "1").find_each{|a|}
   User Load (4.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1'  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.8ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 11955)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.9ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 13954)  ORDER BY `users`.`id` ASC LIMIT 1000
   User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` &gt; 18067)  ORDER BY `users`.`id` ASC LIMIT 1000
   ...
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>しっかり全てのクエリに<code class="highlighter-rouge">users</code>.<code class="highlighter-rouge">notes</code> = ‘1’という条件が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">while</span> <span class="n">records</span><span class="p">.</span><span class="nf">any?</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="n">records</span><span class="p">.</span><span class="nf">any?</span>
   <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">size</span>
   <span class="n">primary_key_offset</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">last</span><span class="p">.</span><span class="nf">id</span>
   <span class="k">raise</span> <span class="s2">"Primary key not included in the custom select clause"</span> <span class="k">unless</span> <span class="n">primary_key_offset</span>
@@ -188,16 +179,13 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
   <span class="n">records</span> <span class="o">=</span> <span class="n">relation</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">primary_key</span><span class="p">].</span><span class="nf">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">)).</span><span class="nf">to_a</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>ポイントとなっているコード箇所を抜き出すとここ。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>primary_key_offset = records.last.id
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>primary_key_offset = records.last.id
 relation.where(table[primary_key].gt(primary_key_offset))
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>最初に取得した1000件のうちの<code class="highlighter-rouge">last.id</code>を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
 

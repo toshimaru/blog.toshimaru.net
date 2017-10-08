@@ -110,18 +110,15 @@
   <li>今回リクエストを送る先は仮想的に下記のURLとする</li>
 </ul>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">"https://your.domain.net/"</span>
-</code></pre>
-</div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">"https://your.domain.net/"</span>
+</code></pre></div></div>
 
 <h2 id="1-xmlhttprequest">
 <a id="1-xmlhttprequest" class="anchor" href="#1-xmlhttprequest" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. XMLHttpRequest</h2>
 
 <p>さぁ,まずは古き良き<a href="https://developer.mozilla.org/ja/docs/Web/API/XMLHttpRequest">XMLHttpRequest</a>。ローレベルなAPIでAJAX処理が書きにくいのですが、歴史がある分多くのブラウザで動作します。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
 <span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span>
 <span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
@@ -130,8 +127,7 @@
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"error!"</span><span class="p">);</span>
 <span class="p">};</span>
 <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Chrome Dev Toolのコンソールで動かしてみましょう。</p>
 
@@ -153,8 +149,7 @@
 
 <p>上記の2つで1のXMLHttpRequestのコードを書き直すとこのようになります。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="kr">const</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
 <span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span>
 <span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
@@ -163,8 +158,7 @@
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"error!"</span><span class="p">);</span>
 <span class="p">};</span>
 <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">var</code>は<code class="highlighter-rouge">const</code>に、<code class="highlighter-rouge">function</code>は<code class="highlighter-rouge">=&gt;</code>へと変更しています。わかりやすくなってスッキリしましたね。</p>
 
@@ -172,21 +166,19 @@
 
 <p><img src="/images/posts/xhr/2.png" alt="xhr2"></p>
 
-<p><img class="emoji" title=":ok:" alt=":ok:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle"> でした。</p>
+<p><img class="emoji" title=":ok:" alt=":ok:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20"> でした。</p>
 
 <h2 id="2-fetch-api">
 <a id="2-fetch-api" class="anchor" href="#2-fetch-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. fetch API</h2>
 
 <p>次は<code class="highlighter-rouge">fetch</code> APIを使ってXHRしてみましょう。ちなみにfetch APIはChrome Version 42よりサポートされています。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
 <span class="p">}).</span><span class="k">catch</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"error caught!"</span><span class="p">);</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>コードとしてはurlを<code class="highlighter-rouge">fetch</code>して<code class="highlighter-rouge">then</code>, <code class="highlighter-rouge">catch</code>をチェインさせてそれぞれの処理内容を書いていくというものになります。</p>
 
@@ -203,17 +195,15 @@
 
 <p>さきほどの<code class="highlighter-rouge">fetch</code>のコードをasync/awaitの機能を使って書き換えてみましょう。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="p">(</span><span class="nx">async</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">async</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="k">try</span> <span class="p">{</span>
-    <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"error!"</span><span class="p">)</span>
   <span class="p">}</span>
 <span class="p">})();</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>ポイントとしては <code class="highlighter-rouge">async</code>を使ってまず無名関数を作ります。これでその関数内に<code class="highlighter-rouge">await</code>を使う準備ができました。<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await">await</a>はPromiseが返されるのを待機するので、先程のPromiseを返す<code class="highlighter-rouge">fetch</code>関数の手前に<code class="highlighter-rouge">await</code>を宣言します。これで<code class="highlighter-rouge">fetch</code>関数は<code class="highlighter-rouge">then</code>でコールバックをチェインする必要がなくなり、<code class="highlighter-rouge">response</code>変数にダイレクトに結果が代入されます。エラー処理に関してはtryで処理内容を囲み、catchでエラーを補足します。</p>
 

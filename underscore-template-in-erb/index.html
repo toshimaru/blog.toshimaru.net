@@ -83,14 +83,13 @@
 
 <p>Railsのerb内でunderscore.jsのテンプレートを使おうとするとerbのデリミタとunderscoreのデリミタが競合してしまってエラーになってしまう。そういう時は下記のようにunderscoreテンプレートのデリミタを<code class="highlighter-rouge">templateSettings</code>を使って変更してやればよい。</p>
 
-<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">_</span><span class="p">.</span><span class="nx">templateSettings</span> <span class="o">=</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">_</span><span class="p">.</span><span class="nx">templateSettings</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">interpolate</span> <span class="p">:</span> <span class="sr">/</span><span class="se">\{\{(</span><span class="sr">.+</span><span class="se">?)\}\}</span><span class="sr">/g</span><span class="p">,</span>
   <span class="na">escape</span><span class="p">:</span> <span class="sr">/</span><span class="se">\{\{</span><span class="sr">-</span><span class="se">(</span><span class="sr">.+</span><span class="se">?)\}\}</span><span class="sr">/g</span>
 <span class="p">};</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>これで <code class="highlighter-rouge"><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">hoge</span><span class="w"> </span><span class="p">}</span><span class="err">}</span></code> という<a href="http://mustache.github.io/">mustache</a>ライクなデリミタに変更できる。</p>
+<p>これで <code class="highlighter-rouge">{{ hoge }}</code> という<a href="http://mustache.github.io/">mustache</a>ライクなデリミタに変更できる。</p>
 
 <h2 id="参考">参考</h2>
 

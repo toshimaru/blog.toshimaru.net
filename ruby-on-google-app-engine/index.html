@@ -102,17 +102,15 @@
 
 <p><a href="https://github.com/GoogleCloudPlatform/getting-started-ruby">GoogleCloudPlatform/getting-started-ruby</a> のHello World Appを今回は動かしますのでまずはプロジェクトをクローンします。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ git clone https://github.com/GoogleCloudPlatform/getting-started-ruby.git
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/GoogleCloudPlatform/getting-started-ruby.git
 $ cd 1-hello-world
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>まずは通常のRuby on Railsアプリと同じく<code class="highlighter-rouge">bundle install</code>してRailsサーバーを立てましょう。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ bundle install
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bundle install
 $ rails server
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>これで<code class="highlighter-rouge">localhost:3000</code>でデプロイされるHello World Appが見れました。</p>
 
@@ -120,7 +118,7 @@ $ rails server
 
 <p>gcloud を使って行きますがいくつか事前の設定が必要あります。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 初期化
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 初期化
 $ gcloud init
 
 # Googleログインする
@@ -128,14 +126,12 @@ $ gcloud auth login
 
 # 今回作成したプロジェクトIDをセット
 $ gcloud config set project {your-project-id}
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>これでapp deployコマンドが動作しました。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ gcloud preview app deploy
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcloud preview app deploy
+</code></pre></div></div>
 
 <p>デプロイされたあとは AppEngine Console のバージョンの一覧に出てきます。</p>
 
@@ -143,7 +139,7 @@ $ gcloud config set project {your-project-id}
 
 <h3 id="デプロイ時のログ">デプロイ時のログ</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Beginning deployment...
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Beginning deployment...
 If this is your first deployment, this may take a while...done.
 
 Using Ruby 2.2.4 as requested in the .ruby-version file
@@ -346,36 +342,34 @@ DONE
 
 Updating module [default]...done.
 Deployed module [default] to [https://your-project-id.appspot.com]
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="appyml">app.yml</h2>
 
 <p>今回使われている<code class="highlighter-rouge">app.yml</code>はこんな感じでした。</p>
 
-<div class="language-yaml highlighter-rouge"><pre class="highlight"><code><span class="c1"># [START runtime]</span>
-<span class="s">runtime</span><span class="pi">:</span> <span class="s">ruby</span>
-<span class="s">vm</span><span class="pi">:</span> <span class="s">true</span>
-<span class="s">entrypoint</span><span class="pi">:</span> <span class="s">bundle exec rackup -p 8080 -E production config.ru</span>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># [START runtime]</span>
+<span class="na">runtime</span><span class="pi">:</span> <span class="s">ruby</span>
+<span class="na">vm</span><span class="pi">:</span> <span class="no">true</span>
+<span class="na">entrypoint</span><span class="pi">:</span> <span class="s">bundle exec rackup -p 8080 -E production config.ru</span>
 <span class="c1"># [END runtime]</span>
 
 <span class="c1"># [START resources]</span>
-<span class="s">resources</span><span class="pi">:</span>
-  <span class="s">cpu</span><span class="pi">:</span> <span class="s">.5</span>
-  <span class="s">memory_gb</span><span class="pi">:</span> <span class="s">1.3</span>
-  <span class="s">disk_size_gb</span><span class="pi">:</span> <span class="s">10</span>
+<span class="na">resources</span><span class="pi">:</span>
+  <span class="na">cpu</span><span class="pi">:</span> <span class="s">.5</span>
+  <span class="na">memory_gb</span><span class="pi">:</span> <span class="s">1.3</span>
+  <span class="na">disk_size_gb</span><span class="pi">:</span> <span class="s">10</span>
 <span class="c1"># [END resources]</span>
 
 <span class="c1"># [START scaling]</span>
-<span class="s">automatic_scaling</span><span class="pi">:</span>
-  <span class="s">min_num_instances</span><span class="pi">:</span> <span class="s">1</span>
-  <span class="s">max_num_instances</span><span class="pi">:</span> <span class="s">5</span>
-  <span class="s">cool_down_period_sec</span><span class="pi">:</span> <span class="s">60</span>
-  <span class="s">cpu_utilization</span><span class="pi">:</span>
-    <span class="s">target_utilization</span><span class="pi">:</span> <span class="s">0.5</span>
+<span class="na">automatic_scaling</span><span class="pi">:</span>
+  <span class="na">min_num_instances</span><span class="pi">:</span> <span class="s">1</span>
+  <span class="na">max_num_instances</span><span class="pi">:</span> <span class="s">5</span>
+  <span class="na">cool_down_period_sec</span><span class="pi">:</span> <span class="s">60</span>
+  <span class="na">cpu_utilization</span><span class="pi">:</span>
+    <span class="na">target_utilization</span><span class="pi">:</span> <span class="s">0.5</span>
 <span class="c1"># [END scaling]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">runtime</code>の設定がrubyプロジェクトに共通の設定で<code class="highlighter-rouge">resources</code>, <code class="highlighter-rouge">scaling</code>は環境に合わせて適宜チューニングしてください。デフォルトの状態としてはミニマルな設定になっているようです。</p>
 

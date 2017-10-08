@@ -101,8 +101,7 @@
 
 <h3 id="cors-configuration">CORS Configuration</h3>
 
-<div class="language-xml highlighter-rouge">
-<pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;CORSConfiguration</span> <span class="na">xmlns=</span><span class="s">"http://s3.amazonaws.com/doc/2006-03-01/"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;CORSRule&gt;</span>
         <span class="nt">&lt;AllowedOrigin&gt;</span>http://sample.jp<span class="nt">&lt;/AllowedOrigin&gt;</span>
@@ -114,8 +113,7 @@
         <span class="nt">&lt;AllowedHeader&gt;</span>*<span class="nt">&lt;/AllowedHeader&gt;</span>
     <span class="nt">&lt;/CORSRule&gt;</span>
 <span class="nt">&lt;/CORSConfiguration&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">AllowedOrigin</code>で許可したいOriginのURLを設定、<code class="highlighter-rouge">AllowedMethod</code>で許可したいHTTPリクエストメソッドを指定します。それぞれ複数並べることで複数の値を設定することが可能となっています。</p>
 
@@ -123,8 +121,7 @@
 
 <p>正しく設定されているかを確認するために下記のように<code class="highlighter-rouge">curl</code>コマンドを使って検証してみましょう。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
 HTTP/1.1 200 OK
 x-amz-id-2: xxx
 x-amz-request-id: xxx
@@ -141,8 +138,7 @@ Accept-Ranges: bytes
 Content-Type: application/json
 Content-Length: 14356
 Server: AmazonS3
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">Access-Control-Allow-Origin: http://sample.jp</code> のレスポンスがヘッダが返ってきており、正しく AllowOrigin されていることが確認できました。</p>
 
@@ -162,8 +158,7 @@ Server: AmazonS3
 
 <p>S3と同じく、<code class="highlighter-rouge">curl</code>で確認してみます。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
 HTTP/1.1 200 OK
 Content-Type: binary/octet-stream
 Content-Length: 123
@@ -183,8 +178,7 @@ Age: 9
 X-Cache: Hit from cloudfront
 Via: 1.1 xxxx.cloudfront.net (CloudFront)
 X-Amz-Cf-Id: xxx
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>S3と同じく<code class="highlighter-rouge">Access-Control-Allow-Origin</code>ヘッダが設定されていることを確認できました。めでたしめでたし。</p>
 
@@ -202,7 +196,7 @@ X-Amz-Cf-Id: xxx
     <ul>
       <li><del>2017年くらいには対応してきそうな予感がある（あくまで個人的予想）</del></li>
       <li>
-<img class="emoji" title=":new:" alt=":new:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f195.png" height="20" width="20" align="absmiddle"> 2016年９月にCloudFrontがHTTP/2に対応しました <a href="https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/">New – HTTP/2 Support for Amazon CloudFront | AWS Blog</a>
+<img class="emoji" title=":new:" alt=":new:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f195.png" height="20" width="20"> 2016年９月にCloudFrontがHTTP/2に対応しました <a href="https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/">New – HTTP/2 Support for Amazon CloudFront | AWS Blog</a>
 </li>
     </ul>
   </li>

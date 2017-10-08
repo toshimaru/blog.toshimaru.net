@@ -141,27 +141,25 @@
 
 <p>ではCSSアニメーションはどう書くか？　キーワードは<code class="highlighter-rouge">@keyframes</code>と<code class="highlighter-rouge">animation</code>の２つです。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>@keyframes &lt;アニメーションの名前&gt; {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@keyframes &lt;アニメーションの名前&gt; {
     0% { /* 定義 */ }
     50% { /* 定義 */ }
     100% { /* 定義 */ }
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>こんな感じで0%から100%にかけて特定のタイミングでのアニメーションスタイル定義を書いていきます。次にそのアニメーション名を使った<code class="highlighter-rouge">animation</code>をクラス内に加えます。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>.&lt;class名&gt; {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.&lt;class名&gt; {
     animation: &lt;アニメーションの名前&gt; &lt;秒数&gt;s ;
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>あとはこのクラス名をDOM内のアニメーションしたい要素に加えればOKです。</p>
 
 <p>では具体例。実際に本記事タイトル下でフェードインさせている画像のCSSを見てみましょう。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>@-webkit-keyframes anim {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@-webkit-keyframes anim {
     0%   { opacity: 0; }
     100% { opacity: 1; }
 }
@@ -174,8 +172,7 @@
   -webkit-animation: anim 2s infinite;
   animation: anim 2s infinite;
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>透過度0から透明度1へのアニメーション（<code class="highlighter-rouge">anim</code>）を2秒（<code class="highlighter-rouge">2s</code>）毎にループ（<code class="highlighter-rouge">infinite</code>）させてます。このアニメーションは<code class="highlighter-rouge">post-image</code>クラスに適応されます。実際に使用の際は<code class="highlighter-rouge">-webkit-</code>プレフィックス付きの定義も必要なことに注意してください。</p>
 

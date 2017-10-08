@@ -117,23 +117,19 @@
 
 <p>Rails 3.x 時代までは、</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span>
   <span class="nf">execute</span><span class="p">(</span><span class="s1">'SET TRANSACTION ISOLATION LEVEL READ COMMITTED'</span><span class="p">)</span>
 <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
   <span class="c1"># ...</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>のように書かなければなりませんでしたが、Rails 4 でトランザクションごとに分離レベルを指定できるようになりました：</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">isolation: :read_committed</span><span class="p">)</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">isolation: :read_committed</span><span class="p">)</span> <span class="k">do</span>
   <span class="c1"># ...</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><em>（引用ここまで）</em></p>
 

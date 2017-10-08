@@ -89,34 +89,30 @@
 
 <p>Mac使っているのであれば<a href="https://github.com/phinze/homebrew-cask">homebrew-cask</a>を使うのが便利。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ brew cask install vagrant
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ brew cask install vagrant
+</code></pre></div></div>
 
 <p>バージョンは1.5.1</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ vagrant -v
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vagrant -v
 Vagrant 1.5.1
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="install-vagrant-digitalocean-plugin">Install vagrant-digitalocean plugin</h2>
 
 <p>そのままではDigitalOceanは使えないので、次にvagrantのDigitalOceanプラグインをインストール。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ vagrant plugin install vagrant-digitalocean
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vagrant plugin install vagrant-digitalocean
+</code></pre></div></div>
 
 <h2 id="vagrantfile-configuration">Vagrantfile Configuration</h2>
 
 <p>まずはVagrantfileを用意。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ mkdir vagrant-digitalocean-test
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir vagrant-digitalocean-test
 $ cd vagrant-digitalocean-test
 $ touch Vagrantfile
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>次に<code class="highlighter-rouge">Vagrantfile</code>に書く設定。</p>
 
@@ -147,20 +143,18 @@ $ touch Vagrantfile
 
 <p>あとはこのコマンドのみ。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ vagrant up --provider digital_ocean
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vagrant up --provider digital_ocean
+</code></pre></div></div>
 
 <p>これで一分くらい待つと立ち上がりました。動いてます。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ vagrant status
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vagrant status
 Current machine states:
 
 default                   active (digital_ocean)
 
 active
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>あとは<code class="highlighter-rouge">vagrant ssh</code>するなり<code class="highlighter-rouge">vagrant destroy</code>（インスタンス破棄[重要！]）するなり。</p>
 
@@ -196,28 +190,25 @@ active
 
 <p>puppetのmanifestファイルを定義します。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ mkdir manifests
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir manifests
 $ touch manifests/default.pp
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">manifests/default.pp</code>はこう。vimとgitのパッケージを追加。必要に応じて追加したりする。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>package {
-  [
-    'vim-enhanced',
-    'git',
-  ]:
-  ensure =&gt; installed
-}
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="p">{</span>
+  <span class="p">[</span>
+    <span class="s1">'vim-enhanced'</span><span class="p">,</span>
+    <span class="s1">'git'</span><span class="p">,</span>
+  <span class="p">]:</span>
+  <span class="n">ensure</span> <span class="p">=&gt;</span> <span class="n">installed</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <h2 id="lets-provision">Let’s provision!</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ vagrant provision
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vagrant provision
+</code></pre></div></div>
 
 <p>これでpuppet経由で、vimやらgitが入る。良い。</p>
 

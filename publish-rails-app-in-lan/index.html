@@ -85,23 +85,21 @@
 
 <p>普通に<code class="highlighter-rouge">rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからローカルIPではアクセスすることができません。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ rails server
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails server
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://localhost:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>これをLAN内に公開したい場合はどうするか。下記のように<code class="highlighter-rouge">binding</code>のオプションを付けてその値として<code class="highlighter-rouge">0.0.0.0</code>を指定します。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ rails server --binding=0.0.0.0
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails server --binding=0.0.0.0
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://0.0.0.0:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>このコマンドを使うことで同じLAN内にいるクライアントからRailsが起動しているマシンのローカルIPをポート番号とともに（例: <code class="highlighter-rouge">192.168.1.xx:3000</code>）を叩けば、アプリケーションへとアクセス可能になります。</p>
 

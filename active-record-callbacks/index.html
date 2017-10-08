@@ -108,8 +108,7 @@
 
 <p>それぞれのコールバックをコードで試してみる。こんなコールバックを設定したUserモデルを作る。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_validation is called"</span> <span class="p">}</span>
   <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_validation is called"</span> <span class="p">}</span>
   <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_save is called"</span> <span class="p">}</span>
@@ -120,15 +119,13 @@
   <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_save is called"</span> <span class="p">}</span>
   <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_commit is called"</span> <span class="p">}</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="新規レコード作成時">新規レコード作成時</h3>
 
 <p>このモデルをnewしてsaveしてみる。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; User.new.save
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
    (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -140,8 +137,7 @@ after_save is called
    (485.3ms)  commit transaction
 after_commit is called
  =&gt; true
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>新規作成なので、更新時のコールバックである<code class="highlighter-rouge">before_update</code>, <code class="highlighter-rouge">after_update</code>は呼ばれない。</p>
 
@@ -151,8 +147,7 @@ after_commit is called
 
 <p>同モデルのupdateの場合はこんな感じ。</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; user.update(name: "toshi")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; user.update(name: "toshi")
   (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -164,8 +159,7 @@ after_save is called
    (2.5ms)  commit transaction
 after_commit is called
 =&gt; true
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>更新なので <code class="highlighter-rouge">before_create</code> <code class="highlighter-rouge">after_create</code> は呼ばれない。その代わりに<code class="highlighter-rouge">before_update</code>, <code class="highlighter-rouge">after_update</code>が実行される。</p>
 
@@ -187,8 +181,7 @@ after_commit is called
 
 <p><code class="highlighter-rouge">before_*</code>のタイミングで false を返すと処理はロールバックされる。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_validation is called"</span> <span class="p">}</span>
   <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_validation is called"</span> <span class="p">}</span>
   <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_save is called"</span><span class="p">;</span> <span class="kp">false</span> <span class="p">}</span>
@@ -197,28 +190,24 @@ after_commit is called
   <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_save is called"</span> <span class="p">}</span>
   <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_commit is called"</span> <span class="p">}</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; User.new.save
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
 (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
 before_save is called
 (0.1ms)  rollback transaction
 =&gt; false
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>しかし<code class="highlighter-rouge">after_*</code>で false を返しても処理はロールバックされないようだ。</p>
 
 <h3 id="after_-のタイミングでロールバックする場合">after_* のタイミングでロールバックする場合</h3>
 
-<p>after_* のタイミングでロールバックしたい場合は、明示的にRollbackをraiseしてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle"></p>
+<p>after_* のタイミングでロールバックしたい場合は、明示的にRollbackをraiseしてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20"></p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_validation is called"</span> <span class="p">}</span>
   <span class="n">after_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_validation is called"</span> <span class="p">}</span>
   <span class="n">before_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_save is called"</span> <span class="p">}</span>
@@ -227,11 +216,9 @@ before_save is called
   <span class="n">after_save</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_save is called"</span><span class="p">;</span> <span class="k">raise</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Rollback</span> <span class="p">}</span>
   <span class="n">after_commit</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"after_commit is called"</span> <span class="p">}</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>&gt; User.new.save
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
    (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -242,8 +229,7 @@ after_create is called
 after_save is called
    (2.4ms)  rollback transaction
  =&gt; nil
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>update も同様にこの方法でロールバックできます。</p>
 

@@ -94,8 +94,7 @@
 
 <p>これがRubyのヒアドキュメントの基本型となります。識別子である<code class="highlighter-rouge">EOS</code>の始点の<code class="highlighter-rouge">&lt;&lt;EOS</code>から次に出てくる<code class="highlighter-rouge">EOS</code>までの囲まれている部分が文字列となります。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
   <span class="nb">puts</span> <span class="o">&lt;&lt;</span><span class="no">EOS</span><span class="sh">
     Hello,
 
@@ -107,8 +106,7 @@
 <span class="c1">#    Hello,</span>
 <span class="c1">#</span>
 <span class="c1">#    World!</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>上記のコードのコメントアウトされている箇所が定義した<code class="highlighter-rouge">hello</code>メソッドの出力結果となります。</p>
 
@@ -117,8 +115,7 @@
 
 <p>上記のコードは終端の<code class="highlighter-rouge">EOS</code>の位置が気に食わないですか？　たしかにdef~endの中で一段ネストさせたいですね。<code class="highlighter-rouge">-</code>（ダッシュ）を識別子の手前に置けば、こんな書き方が可能です。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
   <span class="nb">puts</span> <span class="o">&lt;&lt;-</span><span class="no">EOS</span><span class="sh">
     Hello,
 
@@ -130,8 +127,7 @@
 <span class="c1">#    Hello,</span>
 <span class="c1">#</span>
 <span class="c1">#    World!</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>これで終端の<code class="highlighter-rouge">EOS</code>がメソッドの内部でネストされて可読性が上がりましたね。</p>
 
@@ -140,8 +136,7 @@
 
 <p>でもちょっと待って下さい。本当にほしい文字列は先頭に空白のない文字列だったんです。でも安心してください、Ruby2.3以降は<code class="highlighter-rouge">~</code>（チルダ）を識別子の手前に置いてこう書けるんです。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">hello</span>
   <span class="nb">puts</span> <span class="o">&lt;&lt;~</span><span class="no">EOS</span><span class="sh">
     Hello,
 
@@ -153,8 +148,7 @@
 <span class="c1">#Hello,</span>
 <span class="c1">#</span>
 <span class="c1">#World!</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>これでHelloという文字列の手前にあるネストの空白も消してくれました。</p>
 
@@ -163,16 +157,14 @@
 
 <p>下記のようにGitHub上にてヒアドキュメントの識別子にsyntaxの指定をすると、GitHub syntax highlightが効くようになります。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="k">def</span> <span class="nf">a</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">a</span>
   <span class="n">doc</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="no">RUBY</span><span class="sh">
     def hello
       puts "Hello World!"
     end
 </span><span class="no">  RUBY</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><img src="/images/posts/heredoc_rb.png" alt="heredoc"></p>
 

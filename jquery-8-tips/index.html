@@ -130,8 +130,7 @@
 
 <p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">去年のjQuery Advent Calendar</a>で書いた通りです。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
     <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
        <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span>
@@ -140,21 +139,18 @@
        <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!!'</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>上記の書き方よりも、</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
 <span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
     <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span>
 <span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
     <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!!'</span><span class="p">);</span>
 <span class="p">});</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>こっちのほうがPromiseでモダンな形式です。</p>
 
@@ -172,17 +168,13 @@
 
 <p>これもわりと有名ですかね。下記のセレクタは、</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'.foo #bar'</span><span class="p">)</span>
-</code></pre>
-</div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'.foo #bar'</span><span class="p">)</span>
+</code></pre></div></div>
 
 <p><code class="highlighter-rouge">find()</code>を使ったほうが良いとされています。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'.foo'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">'#bar'</span><span class="p">)</span>
-</code></pre>
-</div>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'.foo'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">'#bar'</span><span class="p">)</span>
+</code></pre></div></div>
 
 <h2 id="6-カスタムイベントを定義する">
 <a id="6-カスタムイベントを定義する" class="anchor" href="#6-%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%82%92%E5%AE%9A%E7%BE%A9%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. カスタムイベントを定義する</h2>
@@ -196,16 +188,13 @@
 
 <p>こんな感じでAタグが生成できます。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;a&gt;'</span><span class="p">,</span> <span class="p">{</span><span class="na">href</span><span class="p">:</span> <span class="s1">'http://google.com/'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'google'</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="s1">'google'</span><span class="p">)</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;a&gt;'</span><span class="p">,</span> <span class="p">{</span><span class="na">href</span><span class="p">:</span> <span class="s1">'http://google.com/'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'google'</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="s1">'google'</span><span class="p">)</span>
 <span class="c1">// [&lt;a href=​"http:​/​/​google.com/​" title=​"google"&gt;​google​&lt;/a&gt;​ ]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>$.mapと組み合わせるとなかなかよいかもしれません。</p>
 
-<div class="language-js highlighter-rouge">
-<pre class="highlight"><code><span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">map</span><span class="p">([</span><span class="s1">'google.com'</span><span class="p">,</span> <span class="s1">'yahoo.com'</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">link</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">map</span><span class="p">([</span><span class="s1">'google.com'</span><span class="p">,</span> <span class="s1">'yahoo.com'</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">link</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;li&gt;'</span><span class="p">);</span>
     <span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;a&gt;&lt;/a&gt;'</span><span class="p">,</span> <span class="p">{</span><span class="na">href</span><span class="p">:</span> <span class="nx">link</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="s1">'LINK'</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">list</span><span class="p">);</span>
     <span class="k">return</span> <span class="nx">list</span><span class="p">;</span>
@@ -220,8 +209,7 @@
 <span class="c1">//        &lt;a href=​"yahoo.com"&gt;​LINK​&lt;/a&gt;​</span>
 <span class="c1">//        &lt;/li&gt;​</span>
 <span class="c1">//    &lt;/ul&gt;​ ]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="8-form送信時は-serialize-を使って値をまとめて取得すべし">
 <a id="8-form送信時は-serialize-を使って値をまとめて取得すべし" class="anchor" href="#8-form%E9%80%81%E4%BF%A1%E6%99%82%E3%81%AF-serialize-%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E5%80%A4%E3%82%92%E3%81%BE%E3%81%A8%E3%82%81%E3%81%A6%E5%8F%96%E5%BE%97%E3%81%99%E3%81%B9%E3%81%97" aria-hidden="true"><span class="octicon octicon-link"></span></a>8. form送信時は serialize() を使って値をまとめて取得すべし</h2>

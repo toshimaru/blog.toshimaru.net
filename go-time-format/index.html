@@ -85,7 +85,7 @@
 
 <h2 id="今日の日付の取得">今日の日付の取得</h2>
 
-<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
 
 </span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
 	</span><span class="s">"fmt"</span><span class="x">
@@ -95,8 +95,7 @@
 </span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
 	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="s">"2006-01-02"</span><span class="p">))</span><span class="x">
 </span><span class="p">}</span><span class="x">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>これで今日の日付を取得することができる。</p>
 
@@ -122,7 +121,7 @@
 
 <p>Goでどのように実装されているかを覗いてみる。それぞれの<code class="highlighter-rouge">const</code>がどの数値とマッピングするかがコメントで表現されている。</p>
 
-<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
 	</span><span class="n">_</span><span class="x">                        </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x">
 	</span><span class="n">stdLongMonth</span><span class="x">             </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">stdNeedDate</span><span class="x">  </span><span class="c">// "January"</span><span class="x">
 	</span><span class="n">stdMonth</span><span class="x">                                       </span><span class="c">// "Jan"</span><span class="x">
@@ -163,8 +162,7 @@
 	</span><span class="n">stdArgShift</span><span class="x">  </span><span class="o">=</span><span class="x"> </span><span class="m">16</span><span class="x">                 </span><span class="c">// extra argument in high bits, above low stdArgShift</span><span class="x">
 	</span><span class="n">stdMask</span><span class="x">      </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="o">&lt;&lt;</span><span class="n">stdArgShift</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="m">1</span><span class="x"> </span><span class="c">// mask out argument</span><span class="x">
 </span><span class="p">)</span><span class="x">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p><a href="https://github.com/golang/go/blob/master/src/time/format.go">https://github.com/golang/go/blob/master/src/time/format.go</a></p>
 
@@ -174,7 +172,7 @@
 
 <p>RFCなどの標準的な時刻フォーマットもgoが用意してくれている。</p>
 
-<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
 	</span><span class="n">ANSIC</span><span class="x">       </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon Jan _2 15:04:05 2006"</span><span class="x">
 	</span><span class="n">UnixDate</span><span class="x">    </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon Jan _2 15:04:05 MST 2006"</span><span class="x">
 	</span><span class="n">RubyDate</span><span class="x">    </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon Jan 02 15:04:05 -0700 2006"</span><span class="x">
@@ -192,12 +190,11 @@
 	</span><span class="n">StampMicro</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"Jan _2 15:04:05.000000"</span><span class="x">
 	</span><span class="n">StampNano</span><span class="x">  </span><span class="o">=</span><span class="x"> </span><span class="s">"Jan _2 15:04:05.000000000"</span><span class="x">
 </span><span class="p">)</span><span class="x">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>これを使って下記のように書くことができる。</p>
 
-<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
 
 </span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
 	</span><span class="s">"fmt"</span><span class="x">
@@ -207,8 +204,7 @@
 </span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
 	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">RFC822Z</span><span class="p">))</span><span class="x">
 </span><span class="p">}</span><span class="x">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 
 <ul id="social-buttons">

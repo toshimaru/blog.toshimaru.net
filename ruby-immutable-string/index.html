@@ -97,9 +97,8 @@
 
 <p>実は Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のようにマジックコメントを書けばよい。</p>
 
-<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
-</code></pre>
-</div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
+</code></pre></div></div>
 
 <h2 id="frozen_string_literal-の機能を試す">frozen_string_literal の機能を試す</h2>
 
@@ -109,70 +108,64 @@
 
 <p><code class="highlighter-rouge">string_with_frozen_option.rb</code></p>
 
-<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 <span class="mi">5</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"a"</span><span class="p">.</span><span class="nf">object_id</span> <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="結果">結果</h3>
 
 <p>全て同じ object_id が返ってくる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ ruby string_with_frozen_option.rb
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ruby string_with_frozen_option.rb
 70212460463280
 70212460463280
 70212460463280
 70212460463280
 70212460463280
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="frozen_string_literal無しのコード">frozen_string_literal無しのコード</h3>
 
 <p><code class="highlighter-rouge">string_without_frozen_option.rb</code></p>
 
-<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="mi">5</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"a"</span><span class="p">.</span><span class="nf">object_id</span> <span class="p">}</span>
-</code></pre>
-</div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">5</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"a"</span><span class="p">.</span><span class="nf">object_id</span> <span class="p">}</span>
+</code></pre></div></div>
 
 <h3 id="結果-1">結果</h3>
 
 <p>全て違う object_id が返ってくる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ ruby string_without_frozen_option.rb
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ruby string_without_frozen_option.rb
 70277165754460
 70277165754200
 70277165754080
 70277165754000
 70277165753940
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="frozen_string_literal-はファイル毎に設定される">frozen_string_literal はファイル毎に設定される</h2>
 
 <p>たとえば<code class="highlighter-rouge">frozen_string_literal</code>の設定が入ったものと入っていないファイルが実行された場合はどうなるだろうか。Railsで試してみる。</p>
 
-<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_action</span> <span class="ss">:not_frozen</span>
   <span class="k">def</span> <span class="nf">not_frozen</span>
     <span class="mi">5</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="n">logger</span><span class="p">.</span><span class="nf">debug</span><span class="p">(</span><span class="s2">"a"</span><span class="p">.</span><span class="nf">object_id</span><span class="p">)</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 <span class="k">class</span> <span class="nc">WelcomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">index</span>
     <span class="mi">5</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="n">logger</span><span class="p">.</span><span class="nf">debug</span><span class="p">(</span><span class="s2">"a"</span><span class="p">.</span><span class="nf">object_id</span><span class="p">)</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>これで<code class="highlighter-rouge">WelcomeController#index</code>が実行された場合、ログは下記のようになる。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>70346238891860
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>70346238891860
 70346238891080
 70346238890280
 70346238889340
@@ -183,8 +176,7 @@
 70346229343820
 70346229343820
 70346229343820
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>つまり<code class="highlighter-rouge">WelcomeController</code>で定義された文字列だけが<code class="highlighter-rouge">freeze</code>されていることがわかる。</p>
 
@@ -192,23 +184,21 @@
 
 <p>一度 <code class="highlighter-rouge">frozen_string_literal: true</code> のコードを入れると全ての文字列が<code class="highlighter-rouge">.freeze</code>されるので、下記のようなコードは<code class="highlighter-rouge">RuntimeError</code>となる。</p>
 
-<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 <span class="n">str</span> <span class="o">=</span> <span class="s2">"a"</span>
 <span class="n">str</span> <span class="o">&lt;&lt;</span> <span class="s2">"bc"</span>
 <span class="nb">puts</span> <span class="n">str</span>
 <span class="c1"># =&gt; test.rb:3:in `&lt;main&gt;': can't modify frozen String (RuntimeError)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>この場合の対処法としてはfreezeを解除したい文字列に対して、<code class="highlighter-rouge">.dup</code>を付けてやれば解決する。</p>
 
-<div class="language-rb highlighter-rouge"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># frozen_string_literal: true</span>
 <span class="n">str</span> <span class="o">=</span> <span class="s2">"a"</span><span class="p">.</span><span class="nf">dup</span>
 <span class="n">str</span> <span class="o">&lt;&lt;</span> <span class="s2">"bc"</span>
 <span class="nb">puts</span> <span class="n">str</span>
 <span class="c1"># =&gt; abc</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="まとめ">まとめ</h2>
 

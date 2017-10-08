@@ -125,10 +125,10 @@
   <li>➜ Gitでトラック可能になる</li>
   <li>➜ Githubでプルリク可能になる</li>
   <li>➜ Githubでレビュー可能になる</li>
-  <li>➜ <img class="emoji" title=":blush:" alt=":blush:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f60a.png" height="20" width="20" align="absmiddle"> = HAPPY!</li>
+  <li>➜ <img class="emoji" title=":blush:" alt=":blush:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f60a.png" height="20" width="20"> = HAPPY!</li>
 </ul>
 
-<p>このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。<img class="emoji" title=":surfer:" alt=":surfer:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c4.png" height="20" width="20" align="absmiddle"></p>
+<p>このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。<img class="emoji" title=":surfer:" alt=":surfer:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f3c4.png" height="20" width="20"></p>
 
 <h2 id="immutable-infrastructure">Immutable Infrastructure</h2>
 
@@ -222,13 +222,13 @@
 
 <ul>
   <li>
-<img class="emoji" title=":x:" alt=":x:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle"> JSONダメ。なぜならコメントかけない。しんどい。</li>
+<img class="emoji" title=":x:" alt=":x:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20"> JSONダメ。なぜならコメントかけない。しんどい。</li>
   <li>
-<img class="emoji" title=":x:" alt=":x:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle"> YAMLもダメ。なぜなら初心者には記法むずかしい！</li>
+<img class="emoji" title=":x:" alt=":x:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20"> YAMLもダメ。なぜなら初心者には記法むずかしい！</li>
   <li>
-<img class="emoji" title=":x:" alt=":x:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle"> Rubyとかもダメ。なぜなら自由度高すぎぃ！複雑すぎぃ！</li>
+<img class="emoji" title=":x:" alt=":x:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20"> Rubyとかもダメ。なぜなら自由度高すぎぃ！複雑すぎぃ！</li>
   <li>
-<img class="emoji" title=":o:" alt=":o:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b55.png" height="20" width="20" align="absmiddle"> よろしい、ならば独自言語だ。ということで生まれたのが <strong>HCL</strong>
+<img class="emoji" title=":o:" alt=":o:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/2b55.png" height="20" width="20"> よろしい、ならば独自言語だ。ということで生まれたのが <strong>HCL</strong>
 </li>
 </ul>
 
@@ -280,8 +280,7 @@
 
 <p>Route53のコード化例。こんな感じにRuby DSLになる</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="n">hosted_zone</span> <span class="s2">"example.com."</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hosted_zone</span> <span class="s2">"example.com."</span> <span class="k">do</span>
   <span class="n">rrset</span> <span class="s2">"example.com."</span><span class="p">,</span> <span class="s2">"A"</span> <span class="k">do</span>
     <span class="n">ttl</span> <span class="mi">300</span>
     <span class="n">resource_records</span><span class="p">(</span>
@@ -290,21 +289,18 @@
     <span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>powered by <a href="https://github.com/winebarrel/roadworker">roadworker</a></p>
 
-<div class="language-go highlighter-rouge">
-<pre class="highlight"><code><span class="n">resource</span><span class="x"> </span><span class="s">"aws_route53_record"</span><span class="x"> </span><span class="s">"www"</span><span class="x"> </span><span class="p">{</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resource</span><span class="x"> </span><span class="s">"aws_route53_record"</span><span class="x"> </span><span class="s">"www"</span><span class="x"> </span><span class="p">{</span><span class="x">
  </span><span class="n">zone_id</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"${aws_route53_zone.primary.zone_id}"</span><span class="x">
  </span><span class="n">name</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"www.example.com"</span><span class="x">
  </span><span class="k">type</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"A"</span><span class="x">
  </span><span class="n">ttl</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"300"</span><span class="x">
  </span><span class="n">records</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="p">[</span><span class="s">"${aws_eip.lb.public_ip}"</span><span class="p">]</span><span class="x">
 </span><span class="p">}</span><span class="x">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>powered by <a href="https://www.terraform.io/docs/providers/aws/r/route.html">AWS: aws_route - Terraform by HashiCorp</a></p>
 
@@ -312,22 +308,20 @@
 
 <p>CloudWatchのAlarmだってDSLになる。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="n">alarm</span> <span class="s2">"alarm1"</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alarm</span> <span class="s2">"alarm1"</span> <span class="k">do</span>
   <span class="n">namespace</span> <span class="s2">"AWS/EC2"</span>
   <span class="n">metric_name</span> <span class="s2">"CPUUtilization"</span>
   <span class="n">dimensions</span> <span class="s2">"InstanceId"</span><span class="o">=&gt;</span><span class="s2">"i-XXXXXXXX"</span>
   <span class="n">period</span> <span class="mi">300</span>
   <span class="n">statistic</span> <span class="ss">:average</span>
-  <span class="n">threshold</span> <span class="s2">"&gt;="</span><span class="p">,</span> <span class="mi">50</span><span class="o">.</span><span class="mi">0</span>
+  <span class="n">threshold</span> <span class="s2">"&gt;="</span><span class="p">,</span> <span class="mf">50.0</span>
   <span class="n">evaluation_periods</span> <span class="mi">1</span>
   <span class="n">actions_enabled</span> <span class="kp">true</span>
   <span class="n">alarm_actions</span> <span class="p">[]</span>
   <span class="n">ok_actions</span> <span class="p">[]</span>
   <span class="n">insufficient_data_actions</span> <span class="p">[</span><span class="s2">"arn:aws:sns:us-east-1:123456789012:my_topic"</span><span class="p">]</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>powered by <a href="https://github.com/winebarrel/radiosonde">radiosonde</a></p>
 
@@ -335,8 +329,7 @@
 
 <p>さらにコード化される対象はIaaSだけではない。Datadogという監視のアラート設定もコード化される。</p>
 
-<div class="language-rb highlighter-rouge">
-<pre class="highlight"><code><span class="n">monitor</span> <span class="s2">"Check load avg"</span><span class="p">,</span> <span class="ss">:type</span><span class="o">=&gt;</span><span class="s2">"metric alert"</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monitor</span> <span class="s2">"Check load avg"</span><span class="p">,</span> <span class="ss">:type</span><span class="o">=&gt;</span><span class="s2">"metric alert"</span> <span class="k">do</span>
   <span class="n">query</span> <span class="s2">"avg(last_5m):avg:ddstat.load_avg.1m{host:i-XXXXXXXX} &gt; 1"</span>
   <span class="n">message</span> <span class="s2">"@winebarrel@example.net"</span>
   <span class="n">options</span> <span class="k">do</span>
@@ -348,8 +341,7 @@
     <span class="n">silenced</span><span class="p">({})</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>powered by <a href="https://github.com/winebarrel/barkdog">barkdog</a></p>
 
@@ -357,8 +349,7 @@
 
 <p>Githubのメンバー管理だってTerraformでできちゃうんだぜ。</p>
 
-<div class="language-go highlighter-rouge">
-<pre class="highlight"><code><span class="n">resource</span><span class="x"> </span><span class="s">"github_membership"</span><span class="x"> </span><span class="s">"membership_for_some_user"</span><span class="x"> </span><span class="p">{</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resource</span><span class="x"> </span><span class="s">"github_membership"</span><span class="x"> </span><span class="s">"membership_for_some_user"</span><span class="x"> </span><span class="p">{</span><span class="x">
     </span><span class="n">username</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"SomeUser"</span><span class="x">
     </span><span class="n">role</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"member"</span><span class="x">
 </span><span class="p">}</span><span class="x">
@@ -375,8 +366,7 @@
     </span><span class="n">username</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"SomeUser"</span><span class="x">
     </span><span class="n">permission</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"admin"</span><span class="x">
 </span><span class="p">}</span><span class="x">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>powered by <a href="https://www.terraform.io/docs/providers/github/">Provider: GitHub - Terraform by HashiCorp</a></p>
 
@@ -398,7 +388,7 @@
 <h2 id="まとめ">まとめ</h2>
 
 <ul>
-  <li>コード化することによりGithubワークフロー（プルリク→レビュー→マージ）に乗ることができてハッピー <img class="emoji" title=":smile:" alt=":smile:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle">
+  <li>コード化することによりGithubワークフロー（プルリク→レビュー→マージ）に乗ることができてハッピー <img class="emoji" title=":smile:" alt=":smile:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20">
 </li>
   <li>Infrastructure as Code = Server Configuration as Code + Service Configuration as Code ➜ サーバーだけではなく、サービスそれ自体もコード化されていく。</li>
 </ul>

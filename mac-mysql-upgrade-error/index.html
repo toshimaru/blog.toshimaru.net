@@ -85,20 +85,18 @@
 
 <p><code class="highlighter-rouge">brew upgrade mysql</code>したらmysqlが起動しなくなり、<code class="highlighter-rouge">mysql.server start</code> ができない。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mysql.server start
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mysql.server start
 Starting MySQL
-. ERROR! The server quit without updating PID file <span class="o">(</span>/usr/local/var/mysql/Toshimac.local.pid<span class="o">)</span>.
-</code></pre>
-</div>
+<span class="nb">.</span> ERROR! The server quit without updating PID file <span class="o">(</span>/usr/local/var/mysql/Toshimac.local.pid<span class="o">)</span><span class="nb">.</span>
+</code></pre></div></div>
 
 <p>ググるといろいろ出てきて30分くらい調査した結果、結局下記コマンド一発で起動できた。</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>sudo mysql.server start
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>mysql.server start
 Password:
 Starting MySQL
-. SUCCESS!
-</code></pre>
-</div>
+<span class="nb">.</span> SUCCESS!
+</code></pre></div></div>
 
 <p>ただの権限周りの問題だったようです…。</p>
 
