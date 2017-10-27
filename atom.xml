@@ -1,4 +1,212 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2017-10-28T02:02:58+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Goの日付フォーマット ―2006年1月2日の謎―</title><link href="http://blog.toshimaru.net/go-time-format/" rel="alternate" type="text/html" title="Goの日付フォーマット ―2006年1月2日の謎―" /><published>2017-09-15T00:00:00+09:00</published><updated>2017-09-15T00:00:00+09:00</updated><id>http://blog.toshimaru.net/go-time-format</id><content type="html" xml:base="http://blog.toshimaru.net/go-time-format/">&lt;p&gt;Goの現在時刻は&lt;code class=&quot;highlighter-rouge&quot;&gt;time.Now()&lt;/code&gt;で取得することができるがフォーマットされた現在日時はどのように取得すればよいだろうか。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2017-10-28T02:24:00+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">ISUCON7に参加してきました</title><link href="http://blog.toshimaru.net/isucon7/" rel="alternate" type="text/html" title="ISUCON7に参加してきました" /><published>2017-10-28T00:00:00+09:00</published><updated>2017-10-28T00:00:00+09:00</updated><id>http://blog.toshimaru.net/isucon7</id><content type="html" xml:base="http://blog.toshimaru.net/isucon7/">&lt;p&gt;isuconに参加してきました。結果は&lt;a href=&quot;http://isucon.net/archives/50961437.html&quot;&gt;400組中154位&lt;/a&gt;で予選敗退。予選敗退となりましたが初めてのisucon参加にしては中の上に食い込めてまぁまぁだったのではないでしょうか。&lt;/p&gt;
+
+&lt;p&gt;使用言語はRubyでした。&lt;/p&gt;
+
+&lt;h2 id=&quot;事前準備&quot;&gt;事前準備&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;isuconの練習時間は取れなかったので、参加ブログや過去問を読み漁りました
+    &lt;ul&gt;
+      &lt;li&gt;使えそうな設定・ブログエントリなどはgistにまとめて秘伝のタレとして準備しておきました&lt;/li&gt;
+      &lt;li&gt;また協議中に使えそうななツール・コマンドもさらっと触っておきました&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;当日の開発用レポジトリは事前にGitHub上にプライベートレポジトリを作成しておきチームメンバーを登録しておきました&lt;/li&gt;
+  &lt;li&gt;ボトルネック把握用にカジュアルに導入できるisucon用NewRelicのアカウントも作成しておきました&lt;/li&gt;
+  &lt;li&gt;コミュニケーションツールとしてはSlackに専用のチャンネルを用意しておきました。今考えると新規に組織を作ってもよかったかもしれません
+方針&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上述の事前準備のなかで当日の競技の流れをイメトレしてなんとなくの方針を決めました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;作業がバッティングしないようにどの領域（App, WebServer, DB, CacheStore）を誰が見るかを決めてから作業する&lt;/li&gt;
+  &lt;li&gt;競技開始1時間くらいは全員でマニュアル読み、アプリケーション触ってアプリケーション把握、なんとなくのボトルネックのあたりを付ける&lt;/li&gt;
+  &lt;li&gt;競技終了1時間前にはコードをフリーズして再起動試験に備える&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;当日の立ち回り&quot;&gt;当日の立ち回り&lt;/h2&gt;
+
+&lt;p&gt;今回は同僚の redfit と s-jcs [敬称略]の三人と出たのですが僕含め三人ともに業務ではアプリケーションを主に担当しているので今回はチーム的にインフラ・ミドルウェアチューニングが弱いチーム構成になってました。&lt;/p&gt;
+
+&lt;p&gt;なので当日の立ち回りとしては、わりとインフラ業務経験がそこまで深くない s-jcs がアプリケーションを中心に担当してもらい、僕はインフラ・ミドルウェア周りを中心に攻めることにして、redfit には全般的に見てもらおうということになりました。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/isucon/isucon7-photo.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
+
+&lt;h3 id=&quot;mysql&quot;&gt;MySQL&lt;/h3&gt;
+
+&lt;p&gt;まず僕はMySQLの設定をしました。遅いクエリを特定して、インデックスを貼ればすぐに高速化が実現すること、また吐かれているクエリからAppの特性が透けてみえてくるのでは？という意図からMySQLから着手することにしました。&lt;/p&gt;
+
+&lt;p&gt;まずはスロークエリとしてクエリログを全部吐くように設定。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;slow_query_log                = 1
+slow_query_log_file           = /var/lib/mysql/mysqld-slow.log
+long_query_time               = 0
+log-queries-not-using-indexes = 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;吐かれたクエリをざっとみてインデックス貼れそうな部分を貼ります。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INDEX&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;idx_channel_id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;channel_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INDEX&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;idx_image_name&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;my.cnf&lt;/code&gt; の設定は後に &lt;code class=&quot;highlighter-rouge&quot;&gt;too many connection&lt;/code&gt; を観測していたので、 &lt;code class=&quot;highlighter-rouge&quot;&gt;max_connections&lt;/code&gt;  を少しいじったくらいでそれ以外はいじってません。&lt;/p&gt;
+
+&lt;p&gt;吐かれるクエリをザッと見て同じタイプのクエリが複数吐かれているのを観測できたので、アプリで複数のN+1の問題があることは想像がつきました。一方、例えば10秒とかかかるような激遅クエリが走っているわけではないので、何かしらの激遅クエリがボトルネックにはなってなさそうであることがわかりました。&lt;/p&gt;
+
+&lt;h3 id=&quot;app&quot;&gt;App&lt;/h3&gt;
+
+&lt;p&gt;上記の作業の裏でアプリケーションのチューニングをメンバーがやってたのですが劇的に得点が伸びません。上位陣の点数を見てここから抜けるには何かしらのブレークスルーが必要であろうと思い、ここでicons問題を解決しなければどーにもならなそうということに気づきます。&lt;/p&gt;
+
+&lt;p&gt;ここで僕はミドルウェア関係を手を止めicons問題の解決のためにアプリに手を出すことにしました（この時点で16時位だったと思います）。まずはDBに入った icons を書き出して NGINXでサーブするところまでをやりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;w&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;data&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;というコードでDBの画像を書き出していたのですが、ベンチが互換性チェックで落ちることに気づきます。&lt;/p&gt;
+
+&lt;p&gt;最初は画像がぶっ壊れてるのかと思ったのですが、見かけ上は全く同じ画像になっています。cmpを使ってバイナリのdiffをとってもこれといった差分は出ません。しかし画像のmd5を見てみると確かに値が違う。&lt;/p&gt;
+
+&lt;p&gt;うーん…となり違うとしたら画像のメタデータかファイル末尾のなにかだろうと思い、viのxxdを使ってhexdump形式でファイルを確認してみました。ここでRubyの &lt;code class=&quot;highlighter-rouge&quot;&gt;file.puts&lt;/code&gt; で画像ファイル末尾に改行が余計に入ってしまう点に気づけました。&lt;/p&gt;
+
+&lt;p&gt;この問題で30分以上は時間を潰してしまいました。最初からシンプルに &lt;code class=&quot;highlighter-rouge&quot;&gt;File.write&lt;/code&gt; あたりを使っておけばよかったなぁと後悔。&lt;/p&gt;
+
+&lt;h3 id=&quot;nginx&quot;&gt;NGINX&lt;/h3&gt;
+
+&lt;p&gt;Iconsは書き出せた、では次はそのファイルの効率的な配信だ、ということでassets関連のファイルがキャッシャブルな状態で配信されているかを確認しました。&lt;/p&gt;
+
+&lt;p&gt;ここでCacheControlヘッダーあたりが怪しいということには気づけたのですがうまく設定を煮詰めることができずタイムアップ。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;location /fonts/ {
+    add_header Cache-Control &quot;public&quot;;
+}
+location /js/ {
+    add_header Cache-Control &quot;public&quot;;
+}
+location /css/ {
+    add_header Cache-Control &quot;public&quot;;
+}
+location /icons/ {
+    add_header Cache-Control &quot;public&quot;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;普段仕事でこのへんのNginxのconfは触る機会がないので設定がスムーズに進まず時間を浪費してしまいました。（実際作業時間の半分以上はああでもないこうでもないと言いながら適当な情報をクグる時間になっていたと思います）&lt;/p&gt;
+
+&lt;h2 id=&quot;問題について&quot;&gt;問題について&lt;/h2&gt;
+
+&lt;p&gt;今までのisucon の傾向を考慮しつつ、事前にある程度どんな構成で出題されそうか予測を立てていました。予想とその結果は以下の通り。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;App
+    &lt;ul&gt;
+      &lt;li&gt;予想候補: Rails/Sinatra&lt;/li&gt;
+      &lt;li&gt;予想: Sinatra&lt;/li&gt;
+      &lt;li&gt;結果: Sinatra  → 的中&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;DB
+    &lt;ul&gt;
+      &lt;li&gt;予想候補: MySQL/Postgres&lt;/li&gt;
+      &lt;li&gt;予想: MySQL&lt;/li&gt;
+      &lt;li&gt;結果: MySQL  → 的中&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;WebServer
+    &lt;ul&gt;
+      &lt;li&gt;予想候補: NGINX /Apache&lt;/li&gt;
+      &lt;li&gt;予想: NGINX&lt;/li&gt;
+      &lt;li&gt;結果: NGINX  → 的中&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;メモリストア
+    &lt;ul&gt;
+      &lt;li&gt;予想候補: Memcache/ Redis&lt;/li&gt;
+      &lt;li&gt;予想: Memcache&lt;/li&gt;
+      &lt;li&gt;結果: 無し → ハズレ&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;サーバー構成
+    &lt;ul&gt;
+      &lt;li&gt;予想候補: Web+DB一体型の小さいサーバー一台 / WebとDBを分離した小さいサーバー二台&lt;/li&gt;
+      &lt;li&gt;予想: Web+DB 一体型のサーバー一台&lt;/li&gt;
+      &lt;li&gt;結果: Web2台 DB1台の三台構成  → 大外れ&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;App, DB, Webは概ね予想の通りでしたがまさか複数台構成、それも三台出くるとは思いもしませんでした（運営様お疲れ様です）。&lt;/p&gt;
+
+&lt;p&gt;複数台を想定していなかったので競技中はサーバー間のプロキシ戦略とか分散戦略とか全然ぱっと思い浮かばなかったです。これは大きな敗因だったと思います。&lt;/p&gt;
+
+&lt;p&gt;またAWS脳の僕としては画像の扱いは「はぁ？ AWS におくやろ普通（少なくともファイル配信サーバーおくやろ）」と思考停止しており、画像をDBに保存するなんて発想はとうの昔に忘れてしまっておりました。なのでicons問題に対してぱっとスマートなソリューションを頭に浮かべられなかったのは甘かったところでした。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今回のISUSON、3台なのでweb x2 db x1 で予選通過できるんだけどこれが5台や10台だったらより帯域を有効利用するアーキテクチャが強くなるし、一台にファイル書き込みを寄せる奴には負けないと思ってる&lt;/p&gt;&amp;mdash; fujiwara (@fujiwara) &lt;a href=&quot;https://twitter.com/fujiwara/status/923533843520413697?ref_src=twsrc%5Etfw&quot;&gt;October 26, 2017&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;今回は２台のWebだったけどこれが10台だったらという思考実験をやってみるのも面白そうです。&lt;/p&gt;
+
+&lt;h2 id=&quot;反省点まとめ&quot;&gt;反省点まとめ&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;systemd 慣れなすぎてダメだった
+    &lt;ul&gt;
+      &lt;li&gt;最近業務でコマンドでサーバー操作することもめっきりなくなってるし systemd を使っていないので使って覚えるしかなさそう&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;vim という存在しないコマンドを叩いて何度エラーになったかわからないので大人しくサーバーにはvimを入れよう&lt;/li&gt;
+  &lt;li&gt;nginx力が低く効率的なサーバー構成を組めなかった
+    &lt;ul&gt;
+      &lt;li&gt;今回の敗因は何と言ってもicons問題を解決できずボトルネックをiconsからアプリケーションに移せなかったこと&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gist.github.com/941/8c64842b71995a2d448315e2594f62c2&quot;&gt;マニュアル&lt;/a&gt;ちゃんと読んでおこう
+    &lt;ul&gt;
+      &lt;li&gt;sleep の値変えて一喜一憂していたけどマニュアルにこう書いてあった: 「GET /fetch へのアクセスには点数が加算されません。」&lt;/li&gt;
+      &lt;li&gt;304加点に関する記述もされておりそこで静的ファイルに関してピンと来てれば良かった&lt;/li&gt;
+      &lt;li&gt;声に出して読み合わせとかすると良いかもしれない&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;業務でサーバー作業全然してないので作業時間の半分くらいは調べる時間だった感覚&lt;/li&gt;
+  &lt;li&gt;Nginxのログをalpで解析するのが余裕なくてできなかった
+    &lt;ul&gt;
+      &lt;li&gt;Nginxのログをベンチマーカーの気持ちになりながら目グレップできなかった&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;データベースconnection 閉じ忘れ気づけなかった&lt;/li&gt;
+  &lt;li&gt;複数台でそれぞれのホスト間の名前解決どうしてるかを見るのに &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; はすぐに確認しておいてよかった&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/hosts
+&lt;span class=&quot;go&quot;&gt;127.0.0.1       localhost
+192.168.101.1   app1011
+192.168.101.2   app1012
+192.168.101.3   app1013 db
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;運営の方へ&quot;&gt;運営の方へ&lt;/h2&gt;
+
+&lt;p&gt;ベンチマーカーの結果が安定しなかったり、開催日両日共に開始時間が遅れたりもしましたが、参加を終えてその不満も忘れるくらい準備が大変だったろうなぁとお察しします。あれだけのサーバー台数を参加者全員に用意するのは本当にすごい！&lt;/p&gt;
+
+&lt;p&gt;問題についでですが、&lt;code class=&quot;highlighter-rouge&quot;&gt;Cache-Controle: Public, max-age&lt;/code&gt;に関して何か色々物申す方がいらっしゃるようですが、これに関しては気づける人はちゃんと気づけたし特段奇問という印象は僕は受けなかったです。&lt;/p&gt;
+
+&lt;p&gt;コンテスト規模は年々拡大する一方ですが、今年も開催してくださりありがとうございました！&lt;/p&gt;
+
+&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;エンジョイ勢です &lt;a href=&quot;https://twitter.com/hashtag/isucon?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#isucon&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/921933892780568576?ref_src=twsrc%5Etfw&quot;&gt;October 22, 2017&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;今回のisuconはエンジョイ勢として臨んだのですがずっと出たかったisuconだったので実際参加してみてとてもエンジョイできました。&lt;/p&gt;
+
+&lt;p&gt;とはいえ圧倒的なスコア差を上位陣に見せられて悔しさはかなり残りました。今年なんとなくの雰囲気を掴めたので来年も出場し、上位陣に食い込めるように精進していきたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/isucon/isucon7-qualify&quot;&gt;isucon/isucon7-qualify: ISUCON7 予選問題の参照実装とベンチマーカー&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="isucon" /><summary type="html">isuconに参加してきました。結果は400組中154位で予選敗退。予選敗退となりましたが初めてのisucon参加にしては中の上に食い込めてまぁまぁだったのではないでしょうか。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/isucon/isucon7.png" /></entry><entry><title type="html">Goの日付フォーマット ―2006年1月2日の謎―</title><link href="http://blog.toshimaru.net/go-time-format/" rel="alternate" type="text/html" title="Goの日付フォーマット ―2006年1月2日の謎―" /><published>2017-09-15T00:00:00+09:00</published><updated>2017-09-15T00:00:00+09:00</updated><id>http://blog.toshimaru.net/go-time-format</id><content type="html" xml:base="http://blog.toshimaru.net/go-time-format/">&lt;p&gt;Goの現在時刻は&lt;code class=&quot;highlighter-rouge&quot;&gt;time.Now()&lt;/code&gt;で取得することができるがフォーマットされた現在日時はどのように取得すればよいだろうか。&lt;/p&gt;
 
 &lt;h2 id=&quot;今日の日付の取得&quot;&gt;今日の日付の取得&lt;/h2&gt;
 
@@ -1644,67 +1852,4 @@
       &lt;p&gt;特定のサーバーにデータに依存してしまわないように、データ的にはステートレスなサーバー構成が前提となる &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="roppongirb" /><category term="aws" /><category term="presentation" /><summary type="html">第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb2/og.png" /></entry><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="http://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>http://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="http://blog.toshimaru.net/gem-rack-simple-user-agent/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;というgemを作った。&lt;/p&gt;
-
-&lt;h2 id=&quot;なぜ作ったか&quot;&gt;なぜ作ったか&lt;/h2&gt;
-
-&lt;p&gt;同じコンセプトのgemとしては、&lt;a href=&quot;https://github.com/k0kubun&quot;&gt;k0kubun&lt;/a&gt;さんの&lt;a href=&quot;https://github.com/k0kubun/rack-user_agent&quot;&gt;rack-user_agent&lt;/a&gt;がある。詳細については下記のブログエントリに詳しい。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://k0kubun.hatenablog.com/entry/2014/11/21/041949&quot;&gt;Railsでデバイスの判定をするのに便利なgemを作った - k0kubun’s blog&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして&lt;a href=&quot;https://github.com/woothee/woothee&quot;&gt;woothee&lt;/a&gt;を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。&lt;/p&gt;
-
-&lt;h3 id=&quot;tablet-判定したい&quot;&gt;tablet 判定したい&lt;/h3&gt;
-
-&lt;p&gt;昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。&lt;/p&gt;
-
-&lt;p&gt;wootheeの場合、残念ながらcategoryとしてtabletは用意されていない。実際にwootheeを使ってiPadを判定した場合、カテゴリはsmartphoneと判定されてしまう。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Mozilla/5.0 (iPad; CPU OS 9_0_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A404 Safari/601.1&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Safari&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:smartphone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;iPad&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Apple&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。&lt;/p&gt;
-
-&lt;h3 id=&quot;無条件にbot判定されたくない&quot;&gt;無条件にbot判定されたくない&lt;/h3&gt;
-
-&lt;p&gt;また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば&lt;a href=&quot;https://www.google.com/webmasters/tools/mobile-friendly/&quot;&gt;Mobile-Friendly Test&lt;/a&gt;でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが&lt;code class=&quot;highlighter-rouge&quot;&gt;crawler&lt;/code&gt;と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Googlebot&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:crawler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;rack-simple_user_agentというソリューション&quot;&gt;rack-simple_user_agentというソリューション&lt;/h2&gt;
-
-&lt;p&gt;これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは &lt;strong&gt;stupidly simple UA detector&lt;/strong&gt; と称することにした。&lt;/p&gt;
-
-&lt;h2 id=&quot;rack-simple_user_agentで可能な判定&quot;&gt;rack-simple_user_agentで可能な判定&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;request.from_smartphone?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;iPhone, Android, Windows Phone の判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;request.from_tablet?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;iPad, Android Tablet の判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;request.from_smartdevice?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;上記のsmartphone, tabletを含む判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;from_googlebot?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;googlebot かどうかの判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.&lt;/p&gt;
-
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="gem" /><category term="rails" /><summary type="html">rack-simple_user_agentというgemを作った。</summary></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="roppongirb" /><category term="aws" /><category term="presentation" /><summary type="html">第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb2/og.png" /></entry></feed>
