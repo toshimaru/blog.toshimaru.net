@@ -83,7 +83,7 @@
 
 <p>isuconに参加してきました。結果は<a href="http://isucon.net/archives/50961437.html">400組中154位</a>で予選敗退。予選敗退となりましたが初めてのisucon参加にしては中の上に食い込めてまぁまぁだったのではないでしょうか。</p>
 
-<p>使用言語はRubyでした。</p>
+<p>※使用言語はRubyでした。</p>
 
 <h2 id="事前準備">事前準備</h2>
 
@@ -91,14 +91,15 @@
   <li>isuconの練習時間は取れなかったので、参加ブログや過去問を読み漁りました
     <ul>
       <li>使えそうな設定・ブログエントリなどはgistにまとめて秘伝のタレとして準備しておきました</li>
-      <li>また協議中に使えそうななツール・コマンドもさらっと触っておきました</li>
+      <li>また協議中に使えそうなツール・コマンドもさらっと触っておきました</li>
     </ul>
   </li>
-  <li>当日の開発用レポジトリは事前にGitHub上にプライベートレポジトリを作成しておきチームメンバーを登録しておきました</li>
+  <li>当日の開発用レポジトリは事前にGitHub上にプライベートレポジトリを作成しておきチームメンバーを招待しておきました</li>
   <li>ボトルネック把握用にカジュアルに導入できるisucon用NewRelicのアカウントも作成しておきました</li>
-  <li>コミュニケーションツールとしてはSlackに専用のチャンネルを用意しておきました。今考えると新規に組織を作ってもよかったかもしれません
-方針</li>
+  <li>コミュニケーションツールとしてはSlackに専用のチャンネルを用意しておきました（今考えると新規にSlackチームを作ってもよかったかもしれません）</li>
 </ul>
+
+<h2 id="方針">方針</h2>
 
 <p>上述の事前準備のなかで当日の競技の流れをイメトレしてなんとなくの方針を決めました。</p>
 
@@ -136,7 +137,7 @@ log-queries-not-using-indexes = 1
 <span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_image_name</span> <span class="k">ON</span> <span class="n">image</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">my.cnf</code> の設定は後に <code class="highlighter-rouge">too many connection</code> を観測していたので、 <code class="highlighter-rouge">max_connections</code>  を少しいじったくらいでそれ以外はいじってません。</p>
+<p><code class="highlighter-rouge">my.cnf</code>の設定は後に<code class="highlighter-rouge">too many connection</code>を観測していたので、<code class="highlighter-rouge">max_connections</code>を少しいじったくらいでそれ以外はいじってません。</p>
 
 <p>吐かれるクエリをザッと見て同じタイプのクエリが複数吐かれているのを観測できたので、アプリで複数のN+1の問題があることは想像がつきました。一方、例えば10秒とかかかるような激遅クエリが走っているわけではないので、何かしらの激遅クエリがボトルネックにはなってなさそうであることがわかりました。</p>
 
@@ -191,6 +192,13 @@ location /icons/ {
       <li>結果: Sinatra  → 的中</li>
     </ul>
   </li>
+  <li>App Server
+    <ul>
+      <li>予想候補: Unicorn/Puma</li>
+      <li>予想: Unicorn</li>
+      <li>結果: Puma → 外れ</li>
+    </ul>
+  </li>
   <li>DB
     <ul>
       <li>予想候補: MySQL/Postgres</li>
@@ -227,19 +235,22 @@ location /icons/ {
 
 <p>またAWS脳の僕としては画像の扱いは「はぁ？ AWS におくやろ普通（少なくともファイル配信サーバーおくやろ）」と思考停止しており、画像をDBに保存するなんて発想はとうの昔に忘れてしまっておりました。なのでicons問題に対してぱっとスマートなソリューションを頭に浮かべられなかったのは甘かったところでした。</p>
 
-<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">今回のISUSON、3台なのでweb x2 db x1 で予選通過できるんだけどこれが5台や10台だったらより帯域を有効利用するアーキテクチャが強くなるし、一台にファイル書き込みを寄せる奴には負けないと思ってる</p>&mdash; fujiwara (@fujiwara) <a href="https://twitter.com/fujiwara/status/923533843520413697?ref_src=twsrc%5Etfw">October 26, 2017</a></blockquote>
+<blockquote class="twitter-tweet" data-lang="ja">
+<p lang="ja" dir="ltr">今回のISUSON、3台なのでweb x2 db x1 で予選通過できるんだけどこれが5台や10台だったらより帯域を有効利用するアーキテクチャが強くなるし、一台にファイル書き込みを寄せる奴には負けないと思ってる</p>&mdash; fujiwara (@fujiwara) <a href="https://twitter.com/fujiwara/status/923533843520413697?ref_src=twsrc%5Etfw">October 26, 2017</a>
+</blockquote>
 
 <p>今回は２台のWebだったけどこれが10台だったらという思考実験をやってみるのも面白そうです。</p>
 
 <h2 id="反省点まとめ">反省点まとめ</h2>
 
 <ul>
-  <li>systemd 慣れなすぎてダメだった
+  <li>systemd 慣れてなさすぎてダメだった
     <ul>
       <li>最近業務でコマンドでサーバー操作することもめっきりなくなってるし systemd を使っていないので使って覚えるしかなさそう</li>
+      <li>参考情報: <a href="https://qiita.com/tukiyo3/items/092fc32318bd3d1a0846">CentOS7で使われているsystemctlについて少しまとめた - Qiita</a></li>
     </ul>
   </li>
-  <li>vim という存在しないコマンドを叩いて何度エラーになったかわからないので大人しくサーバーにはvimを入れよう</li>
+  <li>サーバー作業中、<code class="highlighter-rouge">vim</code>という存在しないコマンドを叩いて何度エラーになったかわからないので大人しくサーバーにはvimを入れよう</li>
   <li>nginx力が低く効率的なサーバー構成を組めなかった
     <ul>
       <li>今回の敗因は何と言ってもicons問題を解決できずボトルネックをiconsからアプリケーションに移せなかったこと</li>
@@ -247,18 +258,28 @@ location /icons/ {
   </li>
   <li><a href="https://gist.github.com/941/8c64842b71995a2d448315e2594f62c2">マニュアル</a>ちゃんと読んでおこう
     <ul>
-      <li>sleep の値変えて一喜一憂していたけどマニュアルにこう書いてあった: 「GET /fetch へのアクセスには点数が加算されません。」</li>
-      <li>304加点に関する記述もされておりそこで静的ファイルに関してピンと来てれば良かった</li>
-      <li>声に出して読み合わせとかすると良いかもしれない</li>
+      <li>sleep の値変えてスコア変わって一喜一憂していたけどマニュアルにはこう書いてあった -&gt;「GET /fetch へのアクセスには点数が加算されません。」</li>
+      <li>304加点に関する記述もされており、そこで静的ファイルに関してピンと来てればもっと早い段階でスコア伸ばせていたと思う</li>
+      <li>次は一番最初に声に出して読み合わせとかすると良いかもしれない</li>
     </ul>
   </li>
-  <li>業務でサーバー作業全然してないので作業時間の半分くらいは調べる時間だった感覚</li>
-  <li>Nginxのログをalpで解析するのが余裕なくてできなかった
+  <li>業務でサーバー作業全然しないので作業時間の半分くらいはGoogleでああでもないこうでもないと調べる時間だった感覚
     <ul>
-      <li>Nginxのログをベンチマーカーの気持ちになりながら目グレップできなかった</li>
+      <li>サーバー作業もっとスラスラできるようになりたい</li>
     </ul>
   </li>
-  <li>データベースconnection 閉じ忘れ気づけなかった</li>
+  <li>Nginxのログをalpで解析するのができなかった
+    <ul>
+      <li>Nginxのログをベンチマーカーの気持ちになりながら目グレップする必要あった</li>
+    </ul>
+  </li>
+  <li>アプリケーションのデータベースconnection 閉じ忘れ気づけなかった。これで too many connectionが発生してたっぽい</li>
+  <li>デプロイスクリプト用意する予定だったけどちゃんと用意できなかった
+    <ul>
+      <li>これにより再起動漏れとかが発生した</li>
+    </ul>
+  </li>
+  <li>confファイルのrepo管理が徹底できず雑管理してしまった</li>
   <li>複数台でそれぞれのホスト間の名前解決どうしてるかを見るのに <code class="highlighter-rouge">/etc/hosts</code> はすぐに確認しておいてよかった</li>
 </ul>
 
@@ -269,17 +290,32 @@ location /icons/ {
 192.168.101.3   app1013 db
 </span></code></pre></div></div>
 
+<h2 id="良かったこと">良かったこと</h2>
+
+<ul>
+  <li>Discord良い</li>
+  <li>MacのGUIは有効に使えたと思う。MacのGUI便利。
+    <ul>
+      <li>DBはSequel Proでカジュアルに覗くのが良い</li>
+      <li>FileはforkLift使ってカジュアルに転送できたのが良い(今回DBのdumpファイルとか持ってきた)</li>
+    </ul>
+  </li>
+  <li>同僚と出場したので、会社利用させてもらったのでWiFiも快適だったしホワイトボード・ディスプレイなどの設備も使えて良かった</li>
+</ul>
+
 <h2 id="運営の方へ">運営の方へ</h2>
 
 <p>ベンチマーカーの結果が安定しなかったり、開催日両日共に開始時間が遅れたりもしましたが、参加を終えてその不満も忘れるくらい準備が大変だったろうなぁとお察しします。あれだけのサーバー台数を参加者全員に用意するのは本当にすごい！</p>
 
-<p>問題についでですが、<code class="highlighter-rouge">Cache-Controle: Public, max-age</code>に関して何か色々物申す方がいらっしゃるようですが、これに関しては気づける人はちゃんと気づけたし特段奇問という印象は僕は受けなかったです。</p>
+<p>出題についでですが、<code class="highlighter-rouge">Cache-Controle: Public, max-age</code>に関して何か色々物申す方がいらっしゃるようですが、これに関しては気づける人はちゃんと気づけたし特段奇問という印象は僕は受けなかったです。</p>
 
 <p>コンテスト規模は年々拡大する一方ですが、今年も開催してくださりありがとうございました！</p>
 
 <h2 id="最後に">最後に</h2>
 
-<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">エンジョイ勢です <a href="https://twitter.com/hashtag/isucon?src=hash&amp;ref_src=twsrc%5Etfw">#isucon</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/921933892780568576?ref_src=twsrc%5Etfw">October 22, 2017</a></blockquote>
+<blockquote class="twitter-tweet" data-lang="ja">
+<p lang="ja" dir="ltr">エンジョイ勢です <a href="https://twitter.com/hashtag/isucon?src=hash&amp;ref_src=twsrc%5Etfw">#isucon</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/921933892780568576?ref_src=twsrc%5Etfw">October 22, 2017</a>
+</blockquote>
 
 <p>今回のisuconはエンジョイ勢として臨んだのですがずっと出たかったisuconだったので実際参加してみてとてもエンジョイできました。</p>
 
@@ -288,7 +324,10 @@ location /icons/ {
 <h2 id="参考">参考</h2>
 
 <ul>
-  <li><a href="https://github.com/isucon/isucon7-qualify">isucon/isucon7-qualify: ISUCON7 予選問題の参照実装とベンチマーカー</a></li>
+  <li>問題: <a href="https://github.com/isucon/isucon7-qualify">isucon/isucon7-qualify: ISUCON7 予選問題の参照実装とベンチマーカー</a></li>
+  <li>今回の出題に関してキャッシュコントロールに関してこちらが参考になります: <a href="http://landau.jp/blog/10/">静的ファイルのキャッシュコントロールについて ISUCON7 – そろそろちゃんとやります</a></li>
+  <li>学びが多い関連エントリ(特に上位陣のは参考になる) <a href="http://isucon.net/archives/50949740.html">ISUCON7 オンライン予選 関連エントリまとめ : ISUCON公式Blog</a></li>
+  <li>過去問: <a href="https://github.com/matsuu/vagrant-isucon">https://github.com/matsuu/vagrant-isucon</a></li>
 </ul>
 
 
