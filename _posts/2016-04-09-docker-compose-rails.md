@@ -3,7 +3,7 @@ title: docker-compose で Rails 環境を構築する
 published: true
 image: /images/posts/docker/compose.png
 description: docker-machine, docker-compose を使ってローカルにdocker Rails環境を構築してみます。
-tags: docker docker-compose docker-machine
+tags: docker
 ---
 
 `docker-machine`,` docker-compose` を使ってローカルにdocker Rails環境を構築してみます。
@@ -13,7 +13,7 @@ tags: docker docker-compose docker-machine
 - docker-machine
 - docker-compose
 
-バージョンは下記の通り。
+それぞれのバージョンは下記の通り。
 
     $ docker-machine -v
     docker-machine version 0.6.0, build e27fb87
@@ -46,13 +46,14 @@ tags: docker docker-compose docker-machine
     Docker is up and running!
     To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: docker-machine env default
 
+
 `docker-machine ls` で状態を確認。
 
     $ docker-machine ls
     NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER    ERRORS
     default   -        virtualbox   Running   tcp://192.168.99.100:2376           v1.10.3
 
-STATE: Runningになってますね。
+STATE: Running になってますね。
 
 ### 環境変数設定
 
@@ -87,7 +88,7 @@ docker-machine の環境変数をセットします。
 
 `docker-compose.yml`を用意します。`docker-compose.yml`はこんな感じです。
 
-{% highlight yaml %}
+```yml
 version: '2'
 services:
   db:
@@ -103,7 +104,7 @@ services:
       - "3000:3000"
     depends_on:
       - db
-{% endhighlight  %}
+```
 
 `web`, `db` の２つのサービスを用意します。今回は`db`はmysqlでいきます。
 
@@ -111,10 +112,10 @@ services:
 
 `Gemfile`はこんな感じ。rails 4.2.6 でいきましょう。
 
-{% highlight ruby %}
+```rb
 source 'https://rubygems.org'
 gem 'rails', '4.2.6'
-{% endhighlight  %}
+```
 
 `Gemfile.lock`は空っぽで :ok: .
 
@@ -174,7 +175,7 @@ gem 'therubyracer', platforms: :ruby
 
 下記の通り、`config/database.yml`内のhostに`db`を指定しましょう。
 
-```
+```yml
 # config/database.yml
 default: &default
   adapter: mysql2
@@ -216,4 +217,5 @@ development:
     192.168.99.100
 
 ## 参考
+
 - [Quickstart: Compose and Rails](https://docs.docker.com/compose/rails/)
