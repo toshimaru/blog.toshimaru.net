@@ -1,7 +1,7 @@
 ---
 layout: post
 title: railsdmで「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を話してきました
-image: "/images/posts/railsdm/rdm2017.png"
+image: /images/posts/railsdm/rdm2017.png
 description: Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。ざっくり発表内容をこちらにもまとめてみたいと思います。　※公開用に一部スライドを編集してあります
 tags: rails presentation
 ---
@@ -14,20 +14,20 @@ tags: rails presentation
 
 ## テーマ設定について
 
-GoやPython、PHP、Node.js、Scala、Elixirなどの選択肢がある中「なぜ今Ruby/Railsを使うのか？」というテーマを個人的に掘り下げてみたかったのでこの機会に発表してみることにしてみました。
+Web開発においてGoやPython、PHP、Node.js、Scala、Elixirなど様々な選択肢がある中で「なぜ今、Ruby/Railsを使うのか？」というテーマを個人的に掘り下げてみたかったのでこの機会に発表してみることにしてみました。
 
 ## Railsの2つの哲学
 
 1. **DRY** (Don't Repeat Yourself): 同じことを繰り返さない
 2. **CoC** (Convention over Configuration): 設定より規約
 
-Railsの哲学は上記２つがありますが、個人的にはDRYよりもCoCがずっと重要だと思ってます。なぜならDRYはプログラミング行為において普遍的な考え方である一方、CoCはRailsが定めたRails独自の規約だからです。
+Railsの哲学は上記の２つがありますが、個人的にはDRYよりもCoCがずっと重要だと思ってます。なぜならDRYはプログラミング行為において普遍的な考え方である一方、CoCはRailsが定めたRails独自の規約だからです。
 
 ## Ruby on Railsの本質
 
 Ruby on Railsの本質は、**センスの良い規約（=Rail）によって設定および設計の手間を最小限にした** ことだと考えます。
 
-この規約により我々は設定にまつわるコードを数百業書いたりとかする必要もなくなりましたし、設計工程で生じがちな＜俺の考える最強のアプリケーション設計バトル＞や＜俺の考える最強のデータベース設計選手権＞を緩和しコミュニケーションコストを大幅にカットすることができました（とはいえその規約に規定されていない部分の設計はどうするんだという問題は残りますが...）。
+この規約により我々は設定にまつわるコードを数百行書いたりとかする必要もなくなりましたし、設計工程で生じがちな＜俺の考える最強のアプリケーション設計バトル＞や＜俺の考える最強のデータベース設計選手権＞を緩和しコミュニケーションコストを大幅にカットすることができました（とはいえその規約に規定されていない部分の設計はどうするんだという問題は残りますが...）。
 
 この規約によって我々はRuby on Railsで **圧倒的コード量の少なさと生産性の高さを実現** できました。
 
@@ -58,17 +58,22 @@ Ruby on Railsの本質は、**センスの良い規約（=Rail）によって設
 
 ## 高速化の努力
 
-とはいえ高速化の努力はあって、Ruby3に向けてのRuby高速化（いやゆる、Ruby3x3）や Shopify/bootsnap のようなRails起動高速化があります。
+とはいえ高速化の努力はあって、Ruby3に向けてのRuby高速化（いわゆる[Ruby3x3](http://gihyo.jp/news/report/01/rubykaigi2017/0003)）や、[bootsnap](https://github.com/Shopify/bootsnap)のようなRailsの起動高速などの努力があります。
 
 ## 2018年、Ruby on Railsという選択
 
-小〜中規模のWebアプリケーション（言い換えるとマイクロサービス化を考えなくても済むような規模）であればRailsで十分戦えると考えています。なので2018年もRuby on Railsは有効なWebアプリケーションフレームワークの選択肢であり続けでしょう。少なくとも、ベターオルタナティブが出現しない限りはそうでしょう。
+小〜中規模のWebアプリケーション（言い換えるとマイクロサービス化を考えなくても済むような規模）であればRailsで十分戦えると考えています。
+
+なので2018年もRuby on Railsは有効なWebアプリケーションフレームワークの選択肢であり続けでしょう。少なくとも、Ruby on Railsを超えるようなベターオルタナティブが出現しない限りはそうでしょう。
 
 ## 発表を終えて
 
-本発表を聞いた人は「一生Ruby/Railsにこだわり続けるのか？」と思うかもしれませんが、今後、Railsくらいの生産性を発揮できてRailsより速いフレームワークが出現するのであれば全然乗り換える準備はあります。
+本発表を聞いた人には「じゃあ一生Ruby/Railsを使い続けるのか？」と思われるかもしれませんが、今後Railsくらいの生産性を発揮できてRailsより速いフレームワークが出現するのであれば全然乗り換える準備はあります。
 
-ただドキュメント、ライブラリ、運用実績などの周辺環境も含めてRuby/Rails並みに整うのは相当厳しいように思われますのであと３年位はRailsの寿命は続くのかなという印象です。
+ただドキュメント・ライブラリ・運用実績などの周辺環境も含めてRuby/Rails並みに整うのは相当厳しいように思われますので、あと３年位はRailsの寿命は続くのかなという印象です。
+
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">誰か日本でRubyKaigiじゃなくてRailsKaigiをオーガナイズしてくれる人はいないものか（チラッ<br>めちゃくちゃ人集まることは絶対間違いないと思うのだけど。。。</p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/841439645011394564?ref_src=twsrc%5Etfw">March 14, 2017</a></blockquote>
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">以前書いたこれ、現場の知見の共有という意味では <a href="https://twitter.com/hashtag/railsdm?src=hash&amp;ref_src=twsrc%5Etfw">#railsdm</a> がやっていってくれてる感ある <a href="https://t.co/XLGDEEKooR">https://t.co/XLGDEEKooR</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/940369828451303424?ref_src=twsrc%5Etfw">December 11, 2017</a></blockquote>
 
 ## 参考
 
