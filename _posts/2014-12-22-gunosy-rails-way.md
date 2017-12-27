@@ -2,12 +2,15 @@
 layout: post
 title: GunosyでのRails開発フロー
 published: true
-description: 本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います この記事はGunosy Advent Calendar 2014の22日目の記事です。
+description: 本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います (この記事はGunosy Advent Calendar 2014の22日目の記事です)
 tags: rails opsworks
-toc: true
 ---
 
-**この記事は[Gunosy Advent Calendar 2014](http://qiita.com/advent-calendar/2014/gunosy)の22日目の記事です。**
+**この当時の内容と大きく変わっていませんが、最新のRails開発について[公式テックブログ](http://tech.gunosy.io/entry/gunosy-admin-rails)に書きました。そちらも合わせてご参照ください。**
+
+---
+
+この記事は[Gunosy Advent Calendar 2014](http://qiita.com/advent-calendar/2014/gunosy)の22日目の記事です。
 
 こんにちは、Gunosyの[toshimaru](https://twitter.com/toshimaru_e)です。Gunosyでは主にRuby on Railsアプリを担当しています。
 
