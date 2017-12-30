@@ -16,8 +16,10 @@ env:
     - GIT_AUTHOR_NAME="Toshi via Travis-CI"
     - GIT_AUTHOR_EMAIL="me@toshimaru.net"
 
-deploy:
-  provider: script
-  script: rvm $TRAVIS_RUBY_VERSION do bundle exec rake autodeploy
-  on:
-    branch: master
+# rvm is unset in deploy phase. so don't use it.
+# ref. https://github.com/travis-ci/travis-ci/issues/5205
+# deploy:
+#   provider: script
+#   script: rvm $TRAVIS_RUBY_VERSION do bundle exec rake autodeploy
+#   on:
+#     branch: master
