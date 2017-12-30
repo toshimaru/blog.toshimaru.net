@@ -44,8 +44,14 @@ layout: default
         "@type": "Blog",
         "@id": "{{ site.url }}{{ post.url }}"
       },
+      "url": "{{ site.url }}{{ post.url }}",
       "headline": "{{ post.title }}",
       "datePublished": "{{ post.date | date_to_xmlschema }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ site.author }}",
+        "email": "{{ site.mail }}"
+      },
       "keywords": "{{ post.tags | join: ', ' }}"
     } {% if forloop.last == false %},{% endif %}
     {% endfor %}
