@@ -2,11 +2,15 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>{% if page.title %}{{ page.title }} - {% elsif page.tag %}{{ page.tag }} - {% endif %}{{ site.title }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+
   <link rel="stylesheet" href="/css/main.css">
-  <script src="/js/vendor/modernizr-2.8.3.min.js"></script>
+
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="{% if page.title %}{{ page.title }} - {% elsif page.tag %}{{ page.tag }} - {% endif %}{{ site.title }}">
@@ -25,8 +29,8 @@
   <meta name="twitter:image" content="{{ page.image }}" />{% else -%}
   <meta property="og:image" content="{{ site.url }}{{ page.image }}" />
   <meta name="twitter:image" content="{{ site.url }}{{ page.image }}" />{% endif -%}
-  {% else -%}<meta name="twitter:image" content="{{ site.url }}/images/icon.png" />
-  <meta property="og:image" content="{{ site.url }}/images/icon.png" />{% endif -%}
+  {% else -%}<meta name="twitter:image" content="{{ site.url }}/icon.png" />
+  <meta property="og:image" content="{{ site.url }}/icon.png" />{% endif -%}
   <meta property="og:type" content="{{ page.og_type }}">
   {% if page.date %}<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">{% endif -%}
   {% comment %}<!-- should be https canonical URL. comment out until the site becomes completely https. -->{% endcomment %}
@@ -38,22 +42,23 @@
       enable_page_level_ads: true
     });
   </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
   {% feed_meta %}
 </head>
 <body>
   <!--[if lte IE 9]>
-      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
   <![endif]-->
-
-  <!-- Google Tag Manager -->
-  <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P34X4D"
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
-  <!-- End Google Tag Manager -->
+  <!-- End Google Tag Manager (noscript) -->
 
   {% include header.html %}
   <div class="main-wrapper">
@@ -65,7 +70,8 @@
   </div>
   {% include footer.html %}
 
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+  <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>
