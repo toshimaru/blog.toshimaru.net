@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Railsのfind_eachの挙動を調べた - Hack Your Design!</title>
+  <title>Railsのfind_eachの挙動について調べた - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="site.webmanifest">
@@ -13,11 +13,11 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Railsのfind_eachの挙動を調べた - Hack Your Design!">
-  <meta property="og:title" content="Railsのfind_eachの挙動を調べた - Hack Your Design!">
-  <meta name="description" content="Railsのfind_eachの挙動を調べた。find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。">
-  <meta name="twitter:description" content="Railsのfind_eachの挙動を調べた。find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。">
-  <meta property="og:description" content="Railsのfind_eachの挙動を調べた。find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。">
+  <meta name="twitter:title" content="Railsのfind_eachの挙動について調べた - Hack Your Design!">
+  <meta property="og:title" content="Railsのfind_eachの挙動について調べた - Hack Your Design!">
+  <meta name="description" content="find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。">
+  <meta name="twitter:description" content="find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。">
+  <meta property="og:description" content="find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。">
   <meta name="twitter:image" content="http://blog.toshimaru.net/icon.png" />
   <meta property="og:image" content="http://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
   <meta property="article:published_time" content="2015-11-12T00:00:00+09:00">
@@ -73,7 +73,7 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Railsのfind_eachの挙動を調べた</h1>
+  <h1 class="fadeInLeft">Railsのfind_eachの挙動について調べた</h1>
   <div class="meta">
     <div class="clearfix">
       <i class="icon-calendar"></i><time datetime="2015-11-12T00:00:00+09:00" pubdate>12 Nov 2015</time>
@@ -101,7 +101,7 @@
 <h2 id="find_each-とは">
 <a id="find_each-とは" class="anchor" href="#find_each-%E3%81%A8%E3%81%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>find_each とは</h2>
 
-<p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。</p>
+<p>バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきてメモリ展開して処理しちゃあアカンよねってことで、データを徐々に展開して処理したいときに使う。</p>
 
 <blockquote>
   <p>Railsには find_each というメソッドが用意されています。通常の each メソッドを使用すると、全データをまとめてメモリに展開してから処理を開始します。そのため、十分にメモリに載るデータ量であれば何も問題ないですが、数百万、数千万というデータ量になってくるとメモリに載りきらずに溢れてしまって大変なことになります。</p>
@@ -128,10 +128,12 @@
   ...
 </code></pre></div></div>
 
-<p>デフォルトでは<code class="highlighter-rouge">order by id</code>で全件取得して1000件ずつ<code class="highlighter-rouge">limit 1000</code>して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。</p>
+<p>デフォルトでは<code class="highlighter-rouge">ORDER BY id</code>で全件取得して1000件ずつ分割(<code class="highlighter-rouge">limit 1000</code>)して処理していくようなかたち。</p>
 
 <h2 id="order付き-find_each">
 <a id="order付き-find_each" class="anchor" href="#order%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>order付き find_each</h2>
+
+<p>では<code class="highlighter-rouge">order</code>を付けて<code class="highlighter-rouge">find_each</code>したらどうなるのだろう？</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.order(created_at: :desc).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
@@ -141,12 +143,12 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   ...
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">Scoped order and limit are ignored</code>ということでorderとlimitは無視されるようです。</p>
+<p><code class="highlighter-rouge">Scoped order and limit are ignored</code>ということで<code class="highlighter-rouge">order</code>と<code class="highlighter-rouge">limit</code>は無視されるようです。</p>
 
 <h2 id="limit付き-find_each">
 <a id="limit付き-find_each" class="anchor" href="#limit%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>limit付き find_each</h2>
 
-<p>じゃあlimitも試してみよう。</p>
+<p>じゃあ<code class="highlighter-rouge">limit</code>も試してみよう。</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.limit(2000).find_each{|a|}
 Scoped order and limit are ignored, it's forced to be batch order and batch size
@@ -156,7 +158,7 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   ...
 </code></pre></div></div>
 
-<p>やっぱりワーニングが出て無視された。</p>
+<p>やっぱりワーニングメッセージが出て無視された。</p>
 
 <h2 id="where付き-find_each">
 <a id="where付き-find_each" class="anchor" href="#where%E4%BB%98%E3%81%8D-find_each" aria-hidden="true"><span class="octicon octicon-link"></span></a>where付き find_each</h2>
@@ -171,7 +173,9 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
   ...
 </code></pre></div></div>
 
-<p>しっかり全てのクエリに<code class="highlighter-rouge">users</code>.<code class="highlighter-rouge">notes</code> = ‘1’という条件が付いていますね。ところで、この`users`.`id` &gt; 11955 の11955というidはどこから出てきたんだろう？</p>
+<p>しっかり全てのクエリに<code class="highlighter-rouge">users</code>.<code class="highlighter-rouge">notes</code> = ‘1’という条件が付いていますね。</p>
+
+<p>ところで、この`users`.`id` &gt; 11955 の<code class="highlighter-rouge">11955</code>というidはどこから出てきたんだろう？</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="n">records</span><span class="p">.</span><span class="nf">any?</span>
   <span class="n">records_size</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">size</span>
@@ -188,14 +192,15 @@ Scoped order and limit are ignored, it's forced to be batch order and batch size
 
 <p>ポイントとなっているコード箇所を抜き出すとここ。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>primary_key_offset = records.last.id
-relation.where(table[primary_key].gt(primary_key_offset))
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">primary_key_offset</span> <span class="o">=</span> <span class="n">records</span><span class="p">.</span><span class="nf">last</span><span class="p">.</span><span class="nf">id</span>
+<span class="n">relation</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">primary_key</span><span class="p">].</span><span class="nf">gt</span><span class="p">(</span><span class="n">primary_key_offset</span><span class="p">))</span>
 </code></pre></div></div>
 
 <p>最初に取得した1000件のうちの<code class="highlighter-rouge">last.id</code>を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。</p>
 
 <h2 id="まとめ">
 <a id="まとめ" class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
+
 <ul>
   <li>find_eachはデフォルトで1000件ずつ処理する</li>
   <li>find_eachにおいてorderとlimitは無視される</li>
@@ -318,7 +323,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
       "@type": "Blog",
       "@id": "http://blog.toshimaru.net/rails-find_each/"
     },
-    "headline": "Railsのfind_eachの挙動を調べた",
+    "headline": "Railsのfind_eachの挙動について調べた",
     "datePublished": "2015-11-12T00:00:00+09:00",
     "author": {
       "@type": "Person",
