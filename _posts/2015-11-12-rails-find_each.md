@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Railsのfind_eachの挙動を調べた
+title: Railsのfind_eachの挙動について調べた
 published: true
-description: Railsのfind_eachの挙動を調べた。find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。
+description: find_eachとは、バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データ全部まるっと取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。
 tags: rails activerecord
 toc: true
 ---
@@ -11,7 +11,7 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
 
 ## find_each とは
 
-バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきて処理しちゃあアカンよねってことで徐々に処理をしていくときに使う。
+バッチ処理などにおいてActiveRecordで効率的に大量データを処理したいときに使うメソッド。大量データまるっと全部取ってきてメモリ展開して処理しちゃあアカンよねってことで、データを徐々に展開して処理したいときに使う。
 
 > Railsには find_each というメソッドが用意されています。通常の each メソッドを使用すると、全データをまとめてメモリに展開してから処理を開始します。そのため、十分にメモリに載るデータ量であれば何も問題ないですが、数百万、数千万というデータ量になってくるとメモリに載りきらずに溢れてしまって大変なことになります。
 >
@@ -32,9 +32,11 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
       User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` > 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
       ...
 
-デフォルトでは`order by id`で全件取得して1000件ずつ`limit 1000`して処理していくようなかたち。ではorderやlimitを付けてfind_eachしたらどうなるのだろう。
+デフォルトでは`ORDER BY id`で全件取得して1000件ずつ分割(`limit 1000`)して処理していくようなかたち。
 
 ## order付き find_each
+
+では`order`を付けて`find_each`したらどうなるのだろう？
 
     > User.order(created_at: :desc).find_each{|a|}
     Scoped order and limit are ignored, it's forced to be batch order and batch size
@@ -43,11 +45,11 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
       User Load (2.3ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` > 2001)  ORDER BY `users`.`id` ASC LIMIT 1000
       ...
 
-`Scoped order and limit are ignored`ということでorderとlimitは無視されるようです。
+`Scoped order and limit are ignored`ということで`order`と`limit`は無視されるようです。
 
 ## limit付き find_each
 
-じゃあlimitも試してみよう。
+じゃあ`limit`も試してみよう。
 
     > User.limit(2000).find_each{|a|}
     Scoped order and limit are ignored, it's forced to be batch order and batch size
@@ -56,7 +58,7 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
       User Load (3.4ms)  SELECT  `users`.* FROM `users` WHERE (`users`.`id` > 12003)  ORDER BY `users`.`id` ASC LIMIT 1000
       ...
 
-やっぱりワーニングが出て無視された。
+やっぱりワーニングメッセージが出て無視された。
 
 ## where付き find_each
 
@@ -69,7 +71,9 @@ Railsの[find_each](http://apidock.com/rails/ActiveRecord/Batches/ClassMethods/f
       User Load (4.7ms)  SELECT  `users`.* FROM `users` WHERE `users`.`notes` = '1' AND (`users`.`id` > 18067)  ORDER BY `users`.`id` ASC LIMIT 1000
       ...
 
-しっかり全てのクエリに`users`.`notes` = '1'という条件が付いていますね。ところで、この\`users\`.\`id\` > 11955 の11955というidはどこから出てきたんだろう？
+しっかり全てのクエリに`users`.`notes` = '1'という条件が付いていますね。
+
+ところで、この\`users\`.\`id\` > 11955 の`11955`というidはどこから出てきたんだろう？
 
 ```rb
 while records.any?
@@ -87,12 +91,15 @@ end
 
 ポイントとなっているコード箇所を抜き出すとここ。
 
-    primary_key_offset = records.last.id
-    relation.where(table[primary_key].gt(primary_key_offset))
+```rb
+primary_key_offset = records.last.id
+relation.where(table[primary_key].gt(primary_key_offset))
+```
 
 最初に取得した1000件のうちの`last.id`を取得してそれより大きいidを条件として次の1000件を取得する、というようになっているようです。
 
 ## まとめ
+
 * find_eachはデフォルトで1000件ずつ処理する
 * find_eachにおいてorderとlimitは無視される
 * where付きの場合は1000件取得してその中のlast.idを使ってさらに次の1000件を取得してループを回していく
