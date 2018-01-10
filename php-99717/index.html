@@ -89,21 +89,21 @@
 <p>事の発端はこれ。Arrayにキーがセットされていて、かつ、そのキーの値をチェックしたい。</p>
 
 <figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// 1.
-</span><span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// 処理
-</span><span class="p">}</span>
+<span class="c1">// 1.</span>
+<span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 処理</span>
+<span class="p">}</span>
 
-<span class="c1">// 2. 1より早いんじゃね？
-</span><span class="k">if</span> <span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// でもNoticeでちゃうよ！
-</span>    <span class="c1">// PHP Notice:  Undefined index: index
-</span><span class="p">}</span>
+<span class="c1">// 2. 1より早いんじゃね？</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// でもNoticeでちゃうよ！</span>
+    <span class="c1">// PHP Notice:  Undefined index: index</span>
+<span class="p">}</span>
 
-<span class="c1">// 3. 2の「PHP Notice」の回避策　＠
-</span><span class="k">if</span> <span class="p">(</span><span class="o">@</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// 処理
-</span><span class="p">}</span></code></pre></figure>
+<span class="c1">// 3. 2の「PHP Notice」の回避策　＠</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">@</span><span class="nv">$checkedAry</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"val"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 処理</span>
+<span class="p">}</span></code></pre></figure>
 
 <p>１と３なら３のほうが処理早いんじゃね？ってことで試してみたところ、こうなった。 （PHP 5.3.3）</p>
 
@@ -199,7 +199,7 @@
 
 
   <div class="related">
-  <h3>関連エントリ</h3>
+  <h3>関連記事</h3>
   <ul>
   
     <li><a href="/gae-ip-info/" title="接続元のグローバルIP出すやつ作った">接続元のグローバルIP出すやつ作った</a></li>
@@ -217,6 +217,7 @@
 
 
 <div class="related-by-google">
+  <h3>おすすめ記事</h3>
   <ins class="adsbygoogle"
        style="display:block"
        data-ad-format="autorelaxed"
