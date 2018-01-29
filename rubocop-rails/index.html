@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html class="no-js" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <link rel="stylesheet" href="/css/main.css">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design!">
+  <meta property="og:title" content="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design!">
+  <meta name="description" content="Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 Rubyの静的コード解析の定番といえばRuboCopですよね。ですがRuboCopの設定ファイルrubocop.ymlの設定作業って結構大変じゃないですか？">
+  <meta name="twitter:description" content="Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 Rubyの静的コード解析の定番といえばRuboCopですよね。ですがRuboCopの設定ファイルrubocop.ymlの設定作業って結構大変じゃないですか？">
+  <meta property="og:description" content="Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 Rubyの静的コード解析の定番といえばRuboCopですよね。ですがRuboCopの設定ファイルrubocop.ymlの設定作業って結構大変じゃないですか？">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/rubocop-rail.png">
+  <meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/rubocop-rail.png">
+<meta property="og:type" content="article">
+  <meta property="article:published_time" content="2018-01-30T00:00:00+09:00">
+  <link rel="canonical" href="http://blog.toshimaru.net/rubocop-rails/">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-8616720383995770",
+      enable_page_level_ads: true
+    });
+  </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+  <link type="application/atom+xml" rel="alternate" href="http://blog.toshimaru.net/atom.xml" title="Hack Your Design!">
+</head>
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="https://google.com/search" method="get">
+      <input type="hidden" name="query" value="site:blog.toshimaru.net">
+      <input type="text" class="search-txt" name="q" placeholder="Search">
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2018-01-30T00:00:00+09:00" pubdate>30 Jan 2018</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/rails/" rel="tag">rails</a>
+
+<a href="/tag/rubocop/" rel="tag">rubocop</a>
+
+
+    </div>
+    <img class="post-image flipInX" src="/images/posts/rubocop-rail.png" alt="(image)Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った">
+  </div>
+</div>
+
+<p>Railsとほとんど同じRuboCopの設定が利用できる<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a>というgemを作りましたので紹介します。</p>
+
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="ja" dir="ltr">Railsのrubocopと同じ設定を簡単に適用できるgemを作ったよ<br>toshimaru/rubocop-rails: Code style checking for Ruby on Rails project <a href="https://t.co/DnTRKtJc9j">https://t.co/DnTRKtJc9j</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/819931180304715776?ref_src=twsrc%5Etfw">January 13, 2017</a>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h2 id="モチベーション">モチベーション</h2>
+
+<p>Rubyの静的コード解析の定番といえば<a href="https://github.com/bbatsov/rubocop">RuboCop</a>ですよね。ですがRuboCopの設定ファイル<code class="highlighter-rouge">rubocop.yml</code>の設定作業って結構大変じゃないですか？</p>
+
+<p>RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もあるが「誰がお前の作った設定に従うか」という気持ちも無くはない。</p>
+
+<p>「何かしらRuboCop設定のレールが欲しいよね〜〜」というところで閃き<img class="emoji" title=":bulb:" alt=":bulb:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f4a1.png" height="20" width="20">「だったら公式railsチームの用意した<code class="highlighter-rouge">rubocop.yml</code>を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a> gemを作りました。</p>
+
+<h2 id="実際使ってみてどうか">実際使ってみてどうか</h2>
+
+<p>実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くない。</p>
+
+<p>また副次効果として、Railsにコントリビュートするときに普段からこのgemの設定に慣れておくと、Rails公式rubocop設定違反にならないコードを書けて便利。</p>
+
+<h2 id="こんなrubocop設定もあるよ">こんなRuboCop設定もあるよ</h2>
+
+<p>他の＜いい感じ＞に設定されたRuboCop設定も紹介してみます。これらの設定はきちんとチーム・会社でディスカッションされた上で作られたものだと思いますので信頼できるものかと思います。</p>
+
+<ul>
+  <li>GitHubの場合: <a href="https://github.com/github/rubocop-github">github/rubocop-github</a>
+</li>
+  <li>SideCIでお馴染みのActcatの場合: <a href="https://github.com/sideci/meowcop">sideci/meowcop</a>
+</li>
+</ul>
+
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rubocop-rails/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+<div id="adsense">
+  <!-- post-rectangle1 -->
+  <ins class="adsbygoogle adslot_1" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7891449048"></ins>
+  <!-- post-rectangle2 -->
+  <ins class="adsbygoogle adslot_2" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="4798381840"></ins>
+  <!-- post-rectangle-smartphone -->
+  <ins class="adsbygoogle adslot_mobile" style="width:300px;height:250px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="5264827844"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+
+  <div class="related">
+  <h3>関連記事</h3>
+  <ul>
+  
+    <li><a href="/why-we-use-ruby-on-rails/" title="railsdmで「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を話してきました">railsdmで「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を話してきました</a></li>
+  
+    <li><a href="/rails-frontend/" title="Railsフロントエンド技術の今とこれから">Railsフロントエンド技術の今とこれから</a></li>
+  
+    <li><a href="/gem-rack-simple-user-agent/" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った">Railsでデバイス判定するrack-simple_user_agentというgemを作った</a></li>
+  
+    <li><a href="/roppongirb-speeding-up-rails/" title="Roppongi.rbで「Rails高速化戦略」を発表しました">Roppongi.rbで「Rails高速化戦略」を発表しました</a></li>
+  
+    <li><a href="/rails-new-options/" title="rails new するときによく使うオプション">rails new するときによく使うオプション</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <h3>おすすめ記事</h3>
+  <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/why-we-use-ruby-on-rails/" title="Older Post: railsdmで「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を話してきました">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'hackyourdesign'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "http://blog.toshimaru.net/rubocop-rails/"
+    },
+    "headline": "Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った",
+    "datePublished": "2018-01-30T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "http://blog.toshimaru.net/images/posts/rubocop-rail.png"
+    },
+    "keywords": "rails, rubocop"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "http://blog.toshimaru.net/tag/rails/",
+          "name": "rails"
+        }
+      }
+    ]
+    }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+            <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li>
+<a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li>
+<a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-frontend/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-frontend/"></a>
+</li>
+          <li>
+<a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li>
+<a href="/jquery-8-tips/">jQuery使いが知っておくべきjQueryテクニック8選</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-8-tips/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-8-tips/"></a>
+</li>
+          <li>
+<a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-http-status-symbols/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li>
+<a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
+</li>
+          <li>
+<a href="/belongs_to-through/">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/belongs_to-through/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/belongs_to-through/"></a>
+</li>
+        </ul>
+        <p><a href="http://b.hatena.ne.jp/entrylist?sort=count&amp;url=http%3A%2F%2Fblog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+          <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-2">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-3">git</a> <a href="/tag/github/" class="set-1">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google_app_engine/" class="set-1">google_app_engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-3">javascript</a> <a href="/tag/jekyll/" class="set-2">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-3">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-4">php</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-5">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sinatra/" class="set-1">sinatra</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-2">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-2">雑記</a>
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshi</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
