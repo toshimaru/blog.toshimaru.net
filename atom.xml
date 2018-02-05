@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-01-30T09:02:15+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="http://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2018-01-30T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="http://blog.toshimaru.net/rubocop-rails/">&lt;p&gt;Railsとほとんど同じRuboCopの設定が利用できる&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemを作りましたので紹介します。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.2">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-02-05T14:11:42+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="http://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2018-01-30T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="http://blog.toshimaru.net/rubocop-rails/">&lt;p&gt;Railsとほとんど同じRuboCopの設定が利用できる&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemを作りましたので紹介します。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのrubocopと同じ設定を簡単に適用できるgemを作ったよ&lt;br /&gt;toshimaru/rubocop-rails: Code style checking for Ruby on Rails project &lt;a href=&quot;https://t.co/DnTRKtJc9j&quot;&gt;https://t.co/DnTRKtJc9j&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/819931180304715776?ref_src=twsrc%5Etfw&quot;&gt;January 13, 2017&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
@@ -7,15 +7,26 @@
 
 &lt;p&gt;Rubyの静的コード解析の定番といえば&lt;a href=&quot;https://github.com/bbatsov/rubocop&quot;&gt;RuboCop&lt;/a&gt;ですよね。ですがRuboCopの設定ファイル&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;の設定作業って結構大変じゃないですか？&lt;/p&gt;
 
-&lt;p&gt;RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もあるが「誰がお前の作った設定に従うか」という気持ちも無くはない。&lt;/p&gt;
+&lt;p&gt;RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もありますが「誰がお前の作った設定に従うか！」という気持ちも無くはない。&lt;/p&gt;
 
-&lt;p&gt;「何かしらRuboCop設定のレールが欲しいよね〜〜」というところで閃き:bulb:「だったら公式railsチームの用意した&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt; gemを作りました。&lt;/p&gt;
+&lt;p&gt;「何かしらRuboCop設定のレールが欲しいよね〜〜〜 :railway_car:」というところで閃き:bulb:、「だったら公式railsチームの用意した&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt; gemを作りました。&lt;/p&gt;
+
+&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+
+&lt;p&gt;使い方はrubocop-railsをinstallした後に、下記の設定を記述した&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;を用意する。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;inherit_gem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;rubocop-rails&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;config/rails.yml&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;オーバーライドしたい設定、追加したい設定があれば、適宜同じ&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;内に設定を追加していく。&lt;/p&gt;
 
 &lt;h2 id=&quot;実際使ってみてどうか&quot;&gt;実際使ってみてどうか&lt;/h2&gt;
 
-&lt;p&gt;実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くない。&lt;/p&gt;
+&lt;p&gt;実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くないです。&lt;/p&gt;
 
-&lt;p&gt;また副次効果として、Railsにコントリビュートするときに普段からこのgemの設定に慣れておくと、Rails公式rubocop設定違反にならないコードを書けて便利。&lt;/p&gt;
+&lt;p&gt;また副次効果として、Railsにコントリビュートするときに普段からこのgemの設定に慣れておくと、Rails公式rubocop設定違反にならないコードを書けて便利。 :innocent:&lt;/p&gt;
 
 &lt;h2 id=&quot;こんなrubocop設定もあるよ&quot;&gt;こんなRuboCop設定もあるよ&lt;/h2&gt;
 
