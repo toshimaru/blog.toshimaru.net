@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-03-05T14:59:49+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="http://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-03-05T00:00:00+09:00</published><updated>2018-03-05T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="http://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-03-05T19:41:48+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="http://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-03-05T00:00:00+09:00</published><updated>2018-03-05T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="http://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
 
 &lt;p&gt;ということで今日はRailsバッチ処理の最適化について書いてみたいと思います。&lt;/p&gt;
 
 &lt;h2 id=&quot;検証環境&quot;&gt;検証環境&lt;/h2&gt;
 
-&lt;p&gt;検証に使った環境は下記の通りです。&lt;/p&gt;
+&lt;p&gt;コードの検証に使った環境は下記の通りです。&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;macOS High Sierra (2.3 GHz Intel Core i5 / メモリ8G)&lt;/li&gt;
@@ -177,6 +177,29 @@ Memory: 0.82 MB
 
 &lt;p&gt;これを今回の最適化コードの最終形としたいと思います。&lt;/p&gt;
 
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;em&gt;追記ここから&lt;/em&gt;&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;これcreated_atにインデックスがあろうがなかろうが全舐めして1秒弱で終わるレコード数ならいいのだけど、そうだとしてもsaveをupdate_allにした時点でcallbackが起きなくなって元と等価ではなくなるから仕事で真似するときは詳しい人にちゃんとレビューしてもらってから投入したほうがよさそう。&lt;/p&gt;&amp;mdash; Ryuta Kamizono (@kamipo) &lt;a href=&quot;https://twitter.com/kamipo/status/970574529452900352?ref_src=twsrc%5Etfw&quot;&gt;March 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;kamipoさんからご指摘頂いたとおり、&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;は通常のActiveRecordの更新とは異なりcallback, validationをスキップする仕様となっております。よってオリジナルコードとは等価な処理では無くなっているので、実際の現場においては&lt;code class=&quot;highlighter-rouge&quot;&gt;save&lt;/code&gt;から&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;に変更する際は「本当にcallback, validationスキップしても大丈夫なんだっけ？」ということをしっかり考えてから実施するようにしてください。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;it does not trigger Active Record callbacks or validations&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all&lt;/p&gt;
+
+&lt;p&gt;今回のコード例ではモデルのcallback, validationをスキップしても問題ないコードとして話を進めています。&lt;/p&gt;
+
+&lt;p&gt;加えて、今回データベースの最適化は最適化の範囲外としたので&lt;code class=&quot;highlighter-rouge&quot;&gt;created_at&lt;/code&gt;カラムのindexは貼りませんでした。実際の現場においてはRubyのコードレベルの最適化に加えてデータベースの最適化も考えてINDEXを貼ることも検討したほうがいいでしょう。&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;追記ここまで&lt;/em&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
 &lt;h2 id=&quot;最終結果&quot;&gt;最終結果&lt;/h2&gt;
 
 &lt;p&gt;オリジナルコードと最適化済みの最終コードを比較すると下記の通りの改善が確認できました。&lt;/p&gt;
@@ -215,7 +238,14 @@ Memory: 0.82 MB
 &lt;p&gt;そんなActiveRecordデータ処理で陥りがちな罠をパターン化し今月のRails Develper Meetupにて発表する予定です。ご興味あれば是非。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;3月25日に「ActiveRecordアンチパターン」的な内容で発表しますー | Rails Developers Meetup 2018: Day 2｜IT勉強会ならTECH PLAY［テックプレイ］ &lt;a href=&quot;https://t.co/QJgdMF92Sr&quot;&gt;https://t.co/QJgdMF92Sr&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/960340809005506561?ref_src=twsrc%5Etfw&quot;&gt;February 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary></entry><entry><title type="html">ヤフーの1on1とシリコンバレー式1on1の本を読んだ</title><link href="http://blog.toshimaru.net/1-on-1-book-memo/" rel="alternate" type="text/html" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ" /><published>2018-02-10T00:00:00+09:00</published><updated>2018-02-10T00:00:00+09:00</updated><id>http://blog.toshimaru.net/1-on-1-book-memo</id><content type="html" xml:base="http://blog.toshimaru.net/1-on-1-book-memo/">&lt;p&gt;1 on 1 をチームで実施することとなり、勉強がてら『&lt;a href=&quot;http://amzn.to/2GNg6b5&quot;&gt;シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング&lt;/a&gt;』と『&lt;a href=&quot;http://amzn.to/2GKRNu2&quot;&gt;ヤフーの1on1―――部下を成長させるコミュニケーションの技法&lt;/a&gt;』の２冊を読んだ。&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html&quot;&gt;ActiveRecord::Relation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html&quot;&gt;ActiveRecord::Batches&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary></entry><entry><title type="html">ヤフーの1on1とシリコンバレー式1on1の本を読んだ</title><link href="http://blog.toshimaru.net/1-on-1-book-memo/" rel="alternate" type="text/html" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ" /><published>2018-02-10T00:00:00+09:00</published><updated>2018-02-10T00:00:00+09:00</updated><id>http://blog.toshimaru.net/1-on-1-book-memo</id><content type="html" xml:base="http://blog.toshimaru.net/1-on-1-book-memo/">&lt;p&gt;1 on 1 をチームで実施することとなり、勉強がてら『&lt;a href=&quot;http://amzn.to/2GNg6b5&quot;&gt;シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング&lt;/a&gt;』と『&lt;a href=&quot;http://amzn.to/2GKRNu2&quot;&gt;ヤフーの1on1―――部下を成長させるコミュニケーションの技法&lt;/a&gt;』の２冊を読んだ。&lt;/p&gt;
 
 &lt;p&gt;※以下、それぞれをシリコンバレー式1on1本とYahoo 1on1本と表記する&lt;/p&gt;
 
