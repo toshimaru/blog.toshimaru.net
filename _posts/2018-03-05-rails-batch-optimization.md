@@ -12,7 +12,7 @@ toc: true
 
 ## 検証環境
 
-検証に使った環境は下記の通りです。
+コードの検証に使った環境は下記の通りです。
 
 - macOS High Sierra (2.3 GHz Intel Core i5 / メモリ8G)
 - Ruby 2.5
@@ -190,6 +190,27 @@ Memory: 0.82 MB
 
 これを今回の最適化コードの最終形としたいと思います。
 
+---
+
+_追記ここから_
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">これcreated_atにインデックスがあろうがなかろうが全舐めして1秒弱で終わるレコード数ならいいのだけど、そうだとしてもsaveをupdate_allにした時点でcallbackが起きなくなって元と等価ではなくなるから仕事で真似するときは詳しい人にちゃんとレビューしてもらってから投入したほうがよさそう。</p>&mdash; Ryuta Kamizono (@kamipo) <a href="https://twitter.com/kamipo/status/970574529452900352?ref_src=twsrc%5Etfw">March 5, 2018</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+kamipoさんからご指摘頂いたとおり、`update_all`は通常のActiveRecordの更新とは異なりcallback, validationをスキップする仕様となっております。よってオリジナルコードとは等価な処理では無くなっているので、実際の現場においては`save`から`update_all`に変更する際は「本当にcallback, validationスキップしても大丈夫なんだっけ？」ということをしっかり考えてから実施するようにしてください。
+
+> it does not trigger Active Record callbacks or validations
+
+http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all
+
+今回のコード例ではモデルのcallback, validationをスキップしても問題ないコードとして話を進めています。
+
+加えて、今回データベースの最適化は最適化の範囲外としたので`created_at`カラムのindexは貼りませんでした。実際の現場においてはRubyのコードレベルの最適化に加えてデータベースの最適化も考えてINDEXを貼ることも検討したほうがいいでしょう。
+
+_追記ここまで_
+
+---
+
 ## 最終結果
 
 オリジナルコードと最適化済みの最終コードを比較すると下記の通りの改善が確認できました。
@@ -208,3 +229,8 @@ Memory: 0.82 MB
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">3月25日に「ActiveRecordアンチパターン」的な内容で発表しますー | Rails Developers Meetup 2018: Day 2｜IT勉強会ならTECH PLAY［テックプレイ］ <a href="https://t.co/QJgdMF92Sr">https://t.co/QJgdMF92Sr</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/960340809005506561?ref_src=twsrc%5Etfw">February 5, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## 参考リンク
+
+- [ActiveRecord::Relation](http://api.rubyonrails.org/classes/ActiveRecord/Relation.html)
+- [ActiveRecord::Batches](http://api.rubyonrails.org/classes/ActiveRecord/Batches.html)
