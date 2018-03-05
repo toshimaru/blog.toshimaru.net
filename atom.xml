@@ -1,4 +1,221 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-02-27T09:07:29+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">ヤフーの1on1とシリコンバレー式1on1の本を読んだ</title><link href="http://blog.toshimaru.net/1-on-1-book-memo/" rel="alternate" type="text/html" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ" /><published>2018-02-10T00:00:00+09:00</published><updated>2018-02-10T00:00:00+09:00</updated><id>http://blog.toshimaru.net/1-on-1-book-memo</id><content type="html" xml:base="http://blog.toshimaru.net/1-on-1-book-memo/">&lt;p&gt;1 on 1 をチームで実施することとなり、勉強がてら『&lt;a href=&quot;http://amzn.to/2GNg6b5&quot;&gt;シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング&lt;/a&gt;』と『&lt;a href=&quot;http://amzn.to/2GKRNu2&quot;&gt;ヤフーの1on1―――部下を成長させるコミュニケーションの技法&lt;/a&gt;』の２冊を読んだ。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-03-05T14:53:08+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="http://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-02-12T00:00:00+09:00</published><updated>2018-02-12T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="http://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;ということで今日はRailsバッチ処理の最適化について書いてみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;検証環境&quot;&gt;検証環境&lt;/h2&gt;
+
+&lt;p&gt;検証に使った環境は下記の通りです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;macOS High Sierra (2.3 GHz Intel Core i5 / メモリ8G)&lt;/li&gt;
+  &lt;li&gt;Ruby 2.5&lt;/li&gt;
+  &lt;li&gt;Rails 5.1&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;前提条件&quot;&gt;前提条件&lt;/h2&gt;
+
+&lt;p&gt;最適化の前提条件としては下記の通りです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;バッチはrakeタスクとして実行する&lt;/li&gt;
+  &lt;li&gt;今回、最適化対象とするのはUserモデルのバッチ処理
+    &lt;ul&gt;
+      &lt;li&gt;今回使用するUserモデルは&lt;a href=&quot;https://github.com/plataformatec/devise/&quot;&gt;devise&lt;/a&gt;で作られるUserモデル(&lt;code class=&quot;highlighter-rouge&quot;&gt;rails generate devise:install&lt;/code&gt;)を基本として、そのスキーマ定義にint型のpointカラムをつけたもの&lt;/li&gt;
+      &lt;li&gt;pointカラムは登録ユーザーが自由につかえるポイントの意&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Userデータとして事前に50万件のユーザーデータを投入しておく&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://dalibornasevic.com/posts/68-processing-large-csv-files-with-ruby&quot;&gt;こちらのコード&lt;/a&gt;を参考に処理の &lt;strong&gt;実行時間&lt;/strong&gt; と &lt;strong&gt;メモリ使用量&lt;/strong&gt; を計測する&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;execute&lt;/code&gt;などによる直接SQL実行はせずにDBの操作を行う&lt;/li&gt;
+  &lt;li&gt;シンプルにするために、登録日 = &lt;code class=&quot;highlighter-rouge&quot;&gt;User.created_at&lt;/code&gt;とする&lt;/li&gt;
+  &lt;li&gt;データベースのトランザクション処理は考慮しない&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;オリジナルコード&quot;&gt;オリジナルコード&lt;/h2&gt;
+
+&lt;p&gt;さて今回最適化するコードは下記です。処理内容としては &lt;strong&gt;全ユーザーの中から2017年以降の登録ユーザーへ100ポイントを付与する&lt;/strong&gt; というものです。いかにも販促活動の一環としてありそうな話です（&lt;code class=&quot;highlighter-rouge&quot;&gt;2017年以降&lt;/code&gt;のところの条件は別になんでも良かったのですが、処理対象をある程度多くするために今回はそのように設定しました）。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:original&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;2017-01-01&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;あなたはこのコードをぱっと見てどこが悪いかすぐにわかりますか？&lt;/strong&gt;（言うまでもなくこのコードは問題アリアリのコードです!!）&lt;/p&gt;
+
+&lt;p&gt;中級者以上のRailsエンジニアであれば「そんなコードは絶対書かないよ！」と思うかもしれませんが、「RailsでWebプログラミングを初めてまだ一ヶ月です！」みたいな初級エンジニアであれば上記のように書いても全然おかしくはないコードだと思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;ベンチマーク&quot;&gt;ベンチマーク&lt;/h3&gt;
+
+&lt;p&gt;まずはこの問題のあるコードがどれだけ時間がかかっているかを計測してみましょう。&lt;/p&gt;
+
+&lt;p&gt;※ 前提条件で書いたとおり&lt;a href=&quot;https://dalibornasevic.com/posts/68-processing-large-csv-files-with-ruby&quot;&gt;こちらのコード&lt;/a&gt;を参考に時間とメモリ使用量を計測します。また結果は数回実施した上で大きく外れていない平均的なスコア結果を掲載します。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:original
+&lt;span class=&quot;go&quot;&gt;Time: 339.42 secs
+Memory: 2219.72 MB
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行時間は340秒、メモリ使用量は2200MB程でした。今回の最適化のゴールは &lt;strong&gt;この処理時間できるだけ速くして、あわせてメモリ使用量も抑えることです。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;では早速このコードを最適化していきましょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;最適化1-簡単な最適化&quot;&gt;最適化1: 簡単な最適化&lt;/h2&gt;
+
+&lt;p&gt;まずは簡単な最適化から始めましょう。日付の比較は&lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt;を使うよりも&lt;code class=&quot;highlighter-rouge&quot;&gt;Date&lt;/code&gt;クラスを使ったほうが速そうです。また、ループの中で何度も同じ値が使われるのも良くないので定数に切り出しちゃいましょう。結果、下記のコードのようになりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement1&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;ベンチマーク-1&quot;&gt;ベンチマーク&lt;/h3&gt;
+
+&lt;p&gt;さて計測結果です。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:improvement1
+&lt;span class=&quot;go&quot;&gt;Time: 320.0 secs
+Memory: 2244.71 MB
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;メモリ使用量は変わらず、実行時間は10数秒程度速くなったくらいでしょうか。小さな最適化レベルでまだまだ全然速くなったとは言えません。&lt;/p&gt;
+
+&lt;h2 id=&quot;最適化2-where--each-を使う&quot;&gt;最適化2: where &amp;amp; each を使う&lt;/h2&gt;
+
+&lt;p&gt;次はもう少し本格的な最適化を入れていきましょう。&lt;/p&gt;
+
+&lt;p&gt;まずは&lt;code class=&quot;highlighter-rouge&quot;&gt;User.all.each&lt;/code&gt;で全件ユーザーを取得している点が真っ先に気になるところです。これは &lt;strong&gt;全件取得せず2017年以降の登録ユーザーをあらかじめフィルターしていからループさせる&lt;/strong&gt; ほうが良さそうです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement2&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;あらかじめ処理対象ユーザーだけをフィルターできているので、ループ内の&lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt;も消すことができました。&lt;/p&gt;
+
+&lt;h3 id=&quot;ベンチマーク-2&quot;&gt;ベンチマーク&lt;/h3&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:improvement2
+&lt;span class=&quot;go&quot;&gt;Time: 294.35 secs
+Memory: 1623.5 MB
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行時間が前の結果より20秒程改善、メモリ消費もユーザーを全件取得する必要がなくなった分、500MB程空きました。良い感じですね。&lt;/p&gt;
+
+&lt;h2 id=&quot;最適化3-find_each-を使う&quot;&gt;最適化3: find_each を使う&lt;/h2&gt;
+
+&lt;p&gt;ちょっと待って下さい、大量データを一度にロードしなくてもいいように、ActiveRecordが&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-find_each&quot;&gt;find_each&lt;/a&gt;という便利メソッドを用意してくれてるのでした。これを使わない手はないでしょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement3&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find_each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで少しつづユーザーをロードして処理してくれるようになり、メモリに優しいコードになったと思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;ベンチマーク-3&quot;&gt;ベンチマーク&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake batch:improvement3
+Time: 290.88 secs
+Memory: 31.41 MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行時間が前の結果と変わらないこそすれ、&lt;strong&gt;メモリ使用量は前の結果の50分の一となりました。&lt;/strong&gt; 大きな改善と言っていいでしょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;最適化4-in_batches--update_all-を使う&quot;&gt;最適化4: in_batches &amp;amp; update_all を使う&lt;/h2&gt;
+
+&lt;p&gt;ここで一件一件&lt;code class=&quot;highlighter-rouge&quot;&gt;update&lt;/code&gt;が走る点が気になってきました。そこはActiveRecordの&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all&quot;&gt;update_all&lt;/a&gt;を使ってまとめて更新するようにしてあげれば解決できそうです。&lt;/p&gt;
+
+&lt;p&gt;また&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;は&lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord::Relation&lt;/code&gt;のメソッドですが、&lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord::Relation&lt;/code&gt;を先の&lt;code class=&quot;highlighter-rouge&quot;&gt;find_each&lt;/code&gt;のように返してくれる便利メソッドが&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-in_batches&quot;&gt;in_batches&lt;/a&gt;です。この&lt;code class=&quot;highlighter-rouge&quot;&gt;in_batches&lt;/code&gt;と&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;を組み合わせて処理してあげれば効率良く更新できそうな気がします。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement4&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;in_batches&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;point = point + 100&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;ベンチマーク-4&quot;&gt;ベンチマーク&lt;/h3&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:improvement4
+&lt;span class=&quot;go&quot;&gt;Time: 2.46 secs
+Memory: 7.26 MB
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;実行時間が100倍速くなりました。&lt;/strong&gt; またメモリの使用量も前の結果よりさらに抑えられています。&lt;/p&gt;
+
+&lt;h2 id=&quot;最適化5-where--update_all&quot;&gt;最適化5: where &amp;amp; update_all&lt;/h2&gt;
+
+&lt;p&gt;勘の良い方なら既にお気づきですね。ハイ、先のコードは&lt;code class=&quot;highlighter-rouge&quot;&gt;in_batches&lt;/code&gt;すら不要です。単純にupdate対象を&lt;code class=&quot;highlighter-rouge&quot;&gt;where&lt;/code&gt;でフィルターした上で&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;すれば良さそうです。出来上がったコードがこちら。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement5&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;point = point + 100&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;一行のシンプルなコードに仕上がりました。&lt;/p&gt;
+
+&lt;h3 id=&quot;ベンチマーク-5&quot;&gt;ベンチマーク&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake batch:improvement5
+Time: 0.78 secs
+Memory: 0.82 MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;実行時間は前の結果より3倍早くなり、メモリ使用量もさらに10分の一まで抑えられました。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;これを今回の最適化コードの最終形としたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;最終結果&quot;&gt;最終結果&lt;/h2&gt;
+
+&lt;p&gt;オリジナルコードと最適化済みの最終コードを比較すると下記の通りの改善が確認できました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;実行時間&lt;/th&gt;
+      &lt;th&gt;メモリ消費&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;オリジナルコード&lt;/td&gt;
+      &lt;td&gt;339.42 secs&lt;/td&gt;
+      &lt;td&gt;2219.72 MB&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;最適化コード&lt;/td&gt;
+      &lt;td&gt;0.78 secs&lt;/td&gt;
+      &lt;td&gt;0.82 MB&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;改善結果&lt;/td&gt;
+      &lt;td&gt;:rocket: &lt;strong&gt;435倍高速化&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;:recycle: &lt;strong&gt;約2700分の一まで省メモリ化&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;activerecordデータ処理アンチパターンで発表します&quot;&gt;「ActiveRecordデータ処理アンチパターン」で発表します&lt;/h2&gt;
+
+&lt;p&gt;上述したようなオリジナルコードは極端な例ではありますが、ActiveRecordでデータを扱うときはきちんと遅くならないように意識してバッチ処理を書かないと極端に遅くなってしまうケースがあります。&lt;/p&gt;
+
+&lt;p&gt;そんなActiveRecordデータ処理で陥りがちな罠をパターン化し今月のRails Develper Meetupにて発表する予定です。ご興味あれば是非。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;3月25日に「ActiveRecordアンチパターン」的な内容で発表しますー | Rails Developers Meetup 2018: Day 2｜IT勉強会ならTECH PLAY［テックプレイ］ &lt;a href=&quot;https://t.co/QJgdMF92Sr&quot;&gt;https://t.co/QJgdMF92Sr&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/960340809005506561?ref_src=twsrc%5Etfw&quot;&gt;February 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary></entry><entry><title type="html">ヤフーの1on1とシリコンバレー式1on1の本を読んだ</title><link href="http://blog.toshimaru.net/1-on-1-book-memo/" rel="alternate" type="text/html" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ" /><published>2018-02-10T00:00:00+09:00</published><updated>2018-02-10T00:00:00+09:00</updated><id>http://blog.toshimaru.net/1-on-1-book-memo</id><content type="html" xml:base="http://blog.toshimaru.net/1-on-1-book-memo/">&lt;p&gt;1 on 1 をチームで実施することとなり、勉強がてら『&lt;a href=&quot;http://amzn.to/2GNg6b5&quot;&gt;シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング&lt;/a&gt;』と『&lt;a href=&quot;http://amzn.to/2GKRNu2&quot;&gt;ヤフーの1on1―――部下を成長させるコミュニケーションの技法&lt;/a&gt;』の２冊を読んだ。&lt;/p&gt;
 
 &lt;p&gt;※以下、それぞれをシリコンバレー式1on1本とYahoo 1on1本と表記する&lt;/p&gt;
 
@@ -1514,138 +1731,4 @@ location /icons/ {
       &lt;p&gt;一方で、複雑でないアプリケーションに対しReactを導入するのはオーバーキルなのでごく一部分の小さなイベント制御JSコードであればjQueryで十分な場面も未だ多くあると思います。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="frontend" /><category term="roppongirb" /><summary type="html">待望されたYarnサポートの入ったRails5.1が2017年4月にリリースされました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb3/roppongirb-3.jpg" /></entry><entry><title type="html">JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await</title><link href="http://blog.toshimaru.net/new-xhr-fetch-asyncawait/" rel="alternate" type="text/html" title="JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await" /><published>2017-02-20T00:00:00+09:00</published><updated>2017-02-20T00:00:00+09:00</updated><id>http://blog.toshimaru.net/new-xhr-fetch-asyncawait</id><content type="html" xml:base="http://blog.toshimaru.net/new-xhr-fetch-asyncawait/">&lt;p&gt;JavaScriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。&lt;/p&gt;
-
-&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://jquery.com/&quot;&gt;jQuery&lt;/a&gt;, &lt;a href=&quot;https://github.com/visionmedia/superagent&quot;&gt;superagent&lt;/a&gt;, &lt;a href=&quot;https://github.com/mzabriskie/axios&quot;&gt;axios&lt;/a&gt;などのAJAX系ライブラリは使用しないこととする。&lt;/li&gt;
-  &lt;li&gt;検証に使うブラウザは最新版のChrome (現在はVersion56.0)&lt;/li&gt;
-  &lt;li&gt;今回リクエストを送る先は仮想的に下記のURLとする&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://your.domain.net/&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;1-xmlhttprequest&quot;&gt;1. XMLHttpRequest&lt;/h2&gt;
-
-&lt;p&gt;さぁ,まずは古き良き&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/API/XMLHttpRequest&quot;&gt;XMLHttpRequest&lt;/a&gt;。ローレベルなAPIでAJAX処理が書きにくいのですが、歴史がある分多くのブラウザで動作します。&lt;/p&gt;
-
-&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;XMLHttpRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'GET'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onerror&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;error!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Chrome Dev Toolのコンソールで動かしてみましょう。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/xhr/1.png&quot; alt=&quot;xhr1&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;モダンな書き方にしてみよう&quot;&gt;モダンな書き方にしてみよう！&lt;/h3&gt;
-
-&lt;p&gt;このまま次のXHRに進んでも良いですがせっかくなので上記のコードをもう少しモダンにしてみます。&lt;/p&gt;
-
-&lt;p&gt;今回は下記の２つの書き方を導入します。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/const&quot;&gt;const&lt;/a&gt; = 定数&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Functions/Arrow_functions&quot;&gt;Arrow function&lt;/a&gt; = アロー関数&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;上記の2つで1のXMLHttpRequestのコードを書き直すとこのようになります。&lt;/p&gt;
-
-&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;XMLHttpRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'GET'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onerror&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;error!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;var&lt;/code&gt;は&lt;code class=&quot;highlighter-rouge&quot;&gt;const&lt;/code&gt;に、&lt;code class=&quot;highlighter-rouge&quot;&gt;function&lt;/code&gt;は&lt;code class=&quot;highlighter-rouge&quot;&gt;=&amp;gt;&lt;/code&gt;へと変更しています。わかりやすくなってスッキリしましたね。&lt;/p&gt;
-
-&lt;p&gt;この書き方でも動くかChrome Dev Toolのコンソールで動かしてみましょう。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/xhr/2.png&quot; alt=&quot;xhr2&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;:ok: でした。&lt;/p&gt;
-
-&lt;h2 id=&quot;2-fetch-api&quot;&gt;2. fetch API&lt;/h2&gt;
-
-&lt;p&gt;次は&lt;code class=&quot;highlighter-rouge&quot;&gt;fetch&lt;/code&gt; APIを使ってXHRしてみましょう。ちなみにfetch APIはChrome Version 42よりサポートされています。&lt;/p&gt;
-
-&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;error caught!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;コードとしてはurlを&lt;code class=&quot;highlighter-rouge&quot;&gt;fetch&lt;/code&gt;して&lt;code class=&quot;highlighter-rouge&quot;&gt;then&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;catch&lt;/code&gt;をチェインさせてそれぞれの処理内容を書いていくというものになります。&lt;/p&gt;
-
-&lt;p&gt;Chrome Dev Toolコンソールで動かした結果。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/xhr/3.png&quot; alt=&quot;xhr3&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;fetch&lt;/code&gt;は&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise&quot;&gt;Promise&lt;/a&gt;を返す点がポイントですね。&lt;/p&gt;
-
-&lt;h2 id=&quot;3-fetch--asyncawait&quot;&gt;3. fetch + async/await&lt;/h2&gt;
-
-&lt;p&gt;最後のXHRは&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/async_function&quot;&gt;async/await&lt;/a&gt;になります。Chrome55からのサポートなので最近追加された機能ということになります。&lt;/p&gt;
-
-&lt;p&gt;さきほどの&lt;code class=&quot;highlighter-rouge&quot;&gt;fetch&lt;/code&gt;のコードをasync/awaitの機能を使って書き換えてみましょう。&lt;/p&gt;
-
-&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;async&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;error!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;ポイントとしては &lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt;を使ってまず無名関数を作ります。これでその関数内に&lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt;を使う準備ができました。&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await&quot;&gt;await&lt;/a&gt;はPromiseが返されるのを待機するので、先程のPromiseを返す&lt;code class=&quot;highlighter-rouge&quot;&gt;fetch&lt;/code&gt;関数の手前に&lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt;を宣言します。これで&lt;code class=&quot;highlighter-rouge&quot;&gt;fetch&lt;/code&gt;関数は&lt;code class=&quot;highlighter-rouge&quot;&gt;then&lt;/code&gt;でコールバックをチェインする必要がなくなり、&lt;code class=&quot;highlighter-rouge&quot;&gt;response&lt;/code&gt;変数にダイレクトに結果が代入されます。エラー処理に関してはtryで処理内容を囲み、catchでエラーを補足します。&lt;/p&gt;
-
-&lt;p&gt;コンソールで動かしてみた結果は下記の通り。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/xhr/4.png&quot; alt=&quot;xhr4&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
-
-&lt;p&gt;結論としては現時点では3つめのfetch+async/awaitな書き方が最もモダンな書き方となります。&lt;/p&gt;
-
-&lt;p&gt;3の書き方でなにが嬉しいかというと:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;非同期処理でありがちなコールバック地獄からの解放&lt;/li&gt;
-  &lt;li&gt;同期的なコードで書けるので書きやすい・読みやすい&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/try...catch&quot;&gt;try~catch節&lt;/a&gt;を用いているのでエラー処理の見通しが良い&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;このあたりでしょうか。&lt;/p&gt;
-
-&lt;p&gt;まだasync/awaitシンタックスはECMAScript 2017のDraftな仕様というステータスであり現時点でIEはサポートしていない書き方です。なので多くの人が触る環境下のコードベースにおける導入は厳しいですが、これらが使える利用環境を限定できるのであれば積極的に使っていきたい書き方ですね。&lt;/p&gt;
-
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/OC7tgJP1D4s&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;おまけbabelで使う場合&quot;&gt;（おまけ）babelで使う場合&lt;/h2&gt;
-
-&lt;p&gt;babel で async/await のシンタックス使いたい場合は&lt;code class=&quot;highlighter-rouge&quot;&gt;babel-plugin-syntax-async-functions&lt;/code&gt;を使うことになります。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://babeljs.io/docs/plugins/syntax-async-functions/&quot;&gt;Syntax async functions · Babel&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://jakearchibald.com/2015/thats-so-fetch/&quot;&gt;That’s so fetch! - JakeArchibald.com&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest&quot;&gt;XMLHttpRequest - Web APIs | MDN&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="javascript" /><category term="ajax" /><summary type="html">JavaScriptのXHR(XMLHttpRequest)の送り方は１つだけではありません。モダンなXHRに向けてそれぞれのHTTPリクエストの送り方を比較・検討してみます。</summary></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="frontend" /><category term="roppongirb" /><summary type="html">待望されたYarnサポートの入ったRails5.1が2017年4月にリリースされました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb3/roppongirb-3.jpg" /></entry></feed>
