@@ -1,4 +1,133 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-03-06T02:44:57+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="http://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-03-05T00:00:00+09:00</published><updated>2018-03-05T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="http://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-03-27T02:40:25+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</title><link href="http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/" rel="alternate" type="text/html" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました" /><published>2018-03-27T00:00:00+09:00</published><updated>2018-03-27T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rdm2018-active-record-anti-patterns</id><content type="html" xml:base="http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/">&lt;p&gt;&lt;a href=&quot;https://railsdm.github.io/2018/&quot;&gt;Rails Developers Meetup 2018&lt;/a&gt;で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。&lt;/p&gt;
+
+&lt;h2 id=&quot;発表資料&quot;&gt;発表資料&lt;/h2&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;2bb9d7ceea4b4987bf4c8618a53a1e68&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;事前に公開したエントリ&quot;&gt;事前に公開したエントリ&lt;/h2&gt;
+
+&lt;p&gt;発表資料に出てくる最初の事例はこちらがベースの事例となっています。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今月末のRails Developer Meetupに先駆けてRailsの遅いバッチ処理を400倍速くする話を書きました  | Rails/ActiveRecord バッチ処理の最適化 - Hack Your Design! &lt;a href=&quot;https://t.co/i7JZnZcuLc&quot;&gt;https://t.co/i7JZnZcuLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/970546164725501952?ref_src=twsrc%5Etfw&quot;&gt;March 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;紹介したアンチパターン&quot;&gt;紹介したアンチパターン&lt;/h2&gt;
+
+&lt;p&gt;発表内で紹介したアンチパターンがこちらです。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;All Each Pattern&lt;/li&gt;
+  &lt;li&gt;N+1 Update Queries Pattern&lt;/li&gt;
+  &lt;li&gt;Ruby Aggregation Pattern&lt;/li&gt;
+  &lt;li&gt;N+1 Queries Pattern&lt;/li&gt;
+  &lt;li&gt;Unnecessary Query Pattern&lt;/li&gt;
+  &lt;li&gt;Unnecessary Mode Initialization Pattern&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;紹介できなかったアンチパターン&quot;&gt;紹介できなかったアンチパターン&lt;/h2&gt;
+
+&lt;p&gt;何かしらアンチパターン化できそうだけど、時間の都合上しなかったアンチパターンがこちらです。発表しなかったので命名は適当です。&lt;/p&gt;
+
+&lt;h3 id=&quot;なんでもincludesパターン&quot;&gt;なんでもincludesパターン&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;joins&lt;/code&gt;で良いのになんでも&lt;code class=&quot;highlighter-rouge&quot;&gt;includes&lt;/code&gt;で解決しようとしちゃうパターン。このへんは下記の解説に詳しいです。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://qiita.com/k0kubun/items/80c5a5494f53bb88dc58&quot;&gt;ActiveRecordのjoinsとpreloadとincludesとeager_loadの違い - Qiita&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;too-many-find_or_create_by-パターン&quot;&gt;Too many find_or_create_by パターン&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;find_or_create_by&lt;/code&gt;は、オブジェクトが存在する場合は取得、なければ作成って挙動をするやつです。これをループ内で使いまくるパターン。&lt;/p&gt;
+
+&lt;p&gt;そんなときはSQLのUPSERTの機能を使うのが得策。具体的にはMySQLであれば&lt;code class=&quot;highlighter-rouge&quot;&gt;INSERT...ON DUPLICATE KEY UPDATE&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;p&gt;残念なことにこれはActiveRecordの標準機能では提供されていないので&lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt;などのgemを使って解決する必要があります。&lt;/p&gt;
+
+&lt;h3 id=&quot;has_many関連のcount方法いろいろあるよ問題&quot;&gt;has_many関連のcount方法いろいろあるよ問題&lt;/h3&gt;
+
+&lt;p&gt;ちゃんとパターン化できていませんが、この問題もなかなか難しい問題です。どのメソッド使ったらよいかはケースバイケースで変わってくるので詳しくは下記を参照されたし。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://qiita.com/nay3/items/1cda39fb58569d832203&quot;&gt;ActiveRecord の has_many関連、件数を調べるメソッドはどれを使えばいい？ - Qiita&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;q--a&quot;&gt;Q &amp;amp; A&lt;/h2&gt;
+
+&lt;h3 id=&quot;アンチパターンの出典は&quot;&gt;アンチパターンの出典は？&lt;/h3&gt;
+
+&lt;p&gt;全部オレです（笑&lt;/p&gt;
+
+&lt;p&gt;一応元ネタというかインスパイアを受けた本としては発表内でも紹介している『SQLアンチパターン』です。&lt;/p&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=4873115892&amp;amp;linkId=6903fbe4f4a55cf4f47b4036bf2f350a&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;こちらの本が原著は英語で書かれており、それに倣うかたちで英語でアンチパターンを命名しました。まぁ平たく言うとカッコつけて英語にしました以上の理由はありません :smile:&lt;/p&gt;
+
+&lt;h3 id=&quot;事例１usercreated_atにindex貼らないの&quot;&gt;（事例１）User.created_atにINDEX貼らないの？&lt;/h3&gt;
+
+&lt;p&gt;下記二点の理由により貼りませんでした。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;前提事項としてDBの最適化はしないと述べた&lt;/li&gt;
+  &lt;li&gt;User.created_atにINDEXを貼ってもINDEX効かない&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;User.created_atにINDEX(&lt;code class=&quot;highlighter-rouge&quot;&gt;index_users_on_created_at&lt;/code&gt;)を貼ったあとの実行計画がこちらになります。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &amp;gt;= '2017-01-01') \G
+*************************** 1. row ***************************
+           id: 1
+  select_type: UPDATE
+        table: users
+   partitions: NULL
+         type: index
+possible_keys: index_users_on_created_at
+          key: PRIMARY
+      key_len: 8
+          ref: NULL
+         rows: 99574
+     filtered: 100.00
+        Extra: Using where
+1 row in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;INDEX貼ってても対象範囲が大きいとINDEX効かなくなるんです。そして今回のケースはそれに当たります。（この挙動、実は僕も全然知りませんでした…）&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;mysqlで検索の対象範囲が大きくなりすぎるとindexが効かなくなるの知らなかった | [MYSQL] datetimeカラムのインデックスの使われ方をテストしてみた │ revdev &lt;a href=&quot;https://t.co/2JK7VD7Ttv&quot;&gt;https://t.co/2JK7VD7Ttv&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/974924182369722368?ref_src=twsrc%5Etfw&quot;&gt;March 17, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;テストとして条件の範囲を小さくした実行計画がこちらになります。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &amp;gt;= '2018-01-01') \G
+*************************** 1. row ***************************
+           id: 1
+  select_type: UPDATE
+        table: users
+   partitions: NULL
+         type: range
+possible_keys: index_users_on_created_at
+          key: index_users_on_created_at
+      key_len: 5
+          ref: const
+         rows: 5903
+     filtered: 100.00
+        Extra: Using where
+1 row in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;きちんとこちらではINDEXが効いてます。&lt;/p&gt;
+
+&lt;h3 id=&quot;事例２改善１のコードのモデルってロードされている&quot;&gt;（事例２）改善１のコードのモデルってロードされている？&lt;/h3&gt;
+
+&lt;p&gt;会場であった質問です。こちらはRails consoleで実際のコードを動かしてあげれば一目瞭然です。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; Post.group(:user_id).select(&quot;user_id, SUM(like_count) AS like_count&quot;).order(&quot;like_count DESC&quot;) .limit(100)
+  Post Load (976.6ms)  SELECT  user_id, SUM(like_count) AS like_count FROM `posts` GROUP BY `posts`.`user_id` ORDER BY like_count DESC LIMIT 11
+=&amp;gt; #&amp;lt;ActiveRecord::Relation [#&amp;lt;Post id: nil, user_id: 2632, like_count: 832&amp;gt;, #&amp;lt;Post id: nil, user_id: 51965, like_count: 800&amp;gt;, #&amp;lt;Post id: nil, user_id: 25068, like_count: 783&amp;gt;, ...]&amp;gt;
+
+&amp;gt; Post.group(:user_id).order(&quot;SUM(like_count) DESC&quot;) .limit(3000).pluck(:user_id)
+   (668.3ms)  SELECT  `posts`.`user_id` FROM `posts` GROUP BY `posts`.`user_id` ORDER BY SUM(like_count) DESC LIMIT 3000
+=&amp;gt; [2632, 51965, 25068, 8515, 84933, 67763, 89631, 69494, 78805, 17541, 53344, 7618, 92652, 13704, 94308, 96778, ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;発表を終えて&quot;&gt;発表を終えて&lt;/h2&gt;
+
+&lt;p&gt;30minsと長めの発表は&lt;a href=&quot;/aws-summit-tokyo-2015/&quot;&gt;AWS Summitぶり&lt;/a&gt;だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかった。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="activerecord" /><category term="rails" /><summary type="html">Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/railsdm/rdm2018.png" /></entry><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="http://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-03-05T00:00:00+09:00</published><updated>2018-03-05T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="http://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
 
 &lt;p&gt;ということで今日はRailsバッチ処理の最適化について書いてみたいと思います。&lt;/p&gt;
 
@@ -498,7 +627,7 @@ Memory: 0.82 MB
 &lt;ul&gt;
   &lt;li&gt;GitHubの場合: &lt;a href=&quot;https://github.com/github/rubocop-github&quot;&gt;github/rubocop-github&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;SideCIでお馴染みのActcatの場合: &lt;a href=&quot;https://github.com/sideci/meowcop&quot;&gt;sideci/meowcop&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry><entry><title type="html">railsdmで「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を話してきました</title><link href="http://blog.toshimaru.net/why-we-use-ruby-on-rails/" rel="alternate" type="text/html" title="railsdmで「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を話してきました" /><published>2017-12-11T00:00:00+09:00</published><updated>2017-12-11T00:00:00+09:00</updated><id>http://blog.toshimaru.net/why-we-use-ruby-on-rails</id><content type="html" xml:base="http://blog.toshimaru.net/why-we-use-ruby-on-rails/">&lt;p&gt;&lt;a href=&quot;https://techplay.jp/event/631431&quot;&gt;Rails Developers Meetup 2017&lt;/a&gt;でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。&lt;/p&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry><entry><title type="html">railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました</title><link href="http://blog.toshimaru.net/why-we-use-ruby-on-rails/" rel="alternate" type="text/html" title="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました" /><published>2017-12-11T00:00:00+09:00</published><updated>2017-12-11T00:00:00+09:00</updated><id>http://blog.toshimaru.net/why-we-use-ruby-on-rails</id><content type="html" xml:base="http://blog.toshimaru.net/why-we-use-ruby-on-rails/">&lt;p&gt;&lt;a href=&quot;https://techplay.jp/event/631431&quot;&gt;Rails Developers Meetup 2017&lt;/a&gt;でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。&lt;/p&gt;
 
 &lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;68db83f9e02946f08a45817d8fb25b09&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
 
@@ -1479,291 +1608,4 @@ location /icons/ {
       &lt;p&gt;当時の技術水準に照らし合わせて本書のアプローチがどれだけ先進的だったか想像してみるのも面白いかもしれない &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><category term="読書" /><summary type="html">きっかけはRebuild.fm。</summary></entry><entry><title type="html">Railsフロントエンド技術の今とこれから</title><link href="http://blog.toshimaru.net/rails-frontend/" rel="alternate" type="text/html" title="Railsフロントエンド技術の今とこれから" /><published>2017-05-22T00:00:00+09:00</published><updated>2017-05-22T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-frontend</id><content type="html" xml:base="http://blog.toshimaru.net/rails-frontend/">&lt;p&gt;待望されたYarnサポートの入ったRails5.1が2017年4月にリリースされました。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://edgeguides.rubyonrails.org/5_1_release_notes.html&quot;&gt;Ruby on Rails 5.1 Release Notes — Ruby on Rails Guides&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;他にもjQueryがデフォルトdependencyから外されたり、Optionalでwebpackサポートが入ったりしており、Railsのフロントエンドは大きな転換点を迎えたと言ってよいでしょう。本エントリではRailsのフロントエンド技術の今を振り返り、今後どうなっていくかをまとめてみたいと思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;disられてきたrailsフロントエンド-no_good&quot;&gt;DisられてきたRailsフロントエンド :no_good:&lt;/h2&gt;
-
-&lt;p&gt;Railsのフロントエンド技術スタックは、フロントエンドを専業とするエンジニアにDisられるものでした。具体的には下記の技術要素です。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;jQuery&lt;/li&gt;
-  &lt;li&gt;CoffeeScript&lt;/li&gt;
-  &lt;li&gt;Assets Pipeline (sprockets)&lt;/li&gt;
-  &lt;li&gt;gemのエコシステムに乗ったJSライブラリ(jquery-railsなど)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;複雑化するWebアプリケーションにおいてjQueryはもう時代遅れとされてますし、CoffeeScriptよりも時代はES6、AltJS使うにしても今はTypeScriptが有力候補でしょうか。gemのエコシステムに乗っかっているJSライブラリがAsset Pipelineを通して各環境にシップされるていることも嫌われます。なぜならJSにはnpmというエコシステムがあるからです。&lt;/p&gt;
-
-&lt;h2 id=&quot;railsのフロントエンド刷新の歩み-walking&quot;&gt;Railsのフロントエンド刷新の歩み :walking:&lt;/h2&gt;
-
-&lt;p&gt;しかし2016年春頃&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;からRailsの作者・&lt;a href=&quot;https://github.com/dhh&quot;&gt;DHH&lt;/a&gt;の上げたIssueを皮切りに、フロントエンド技術刷新の歩みが始まります。その歴史・経緯を追ってみましょう。&lt;/p&gt;
-
-&lt;h3 id=&quot;2016年5月&quot;&gt;2016年5月&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Rails v5.1 で jQueryを依存性としてDropしようというIssueをDHHが上げる
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/issues/25208&quot;&gt;Drop jQuery as a dependency · Issue #25208 · rails/rails&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2016年10月&quot;&gt;2016年10月&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Railsにnpm supportを追加するPRが上げられる
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/26836&quot;&gt;Add Yarn support in new apps using –yarn option by Liceth · Pull Request #26836 · rails/rails&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Sprockets 側でNPMをsupportするPRが上げられる
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/sprockets/pull/405&quot;&gt;NPM support: Add support for resolving main from npm’s package.json by guilleiguaran · Pull Request #405 · rails/sprockets&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2016年11月&quot;&gt;2016年11月&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;npm support PRにてnpmではなくyarnを採用することが決められる
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/26836#issuecomment-257426850&quot;&gt;https://github.com/rails/rails/pull/26836#issuecomment-257426850&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;jquery-rails をRailsから外すPRが上げられる
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/27113&quot;&gt;Drop jQuery as a dependency by guilleiguaran · Pull Request #27113 · rails/rails&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2016年12月&quot;&gt;2016年12月&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;DHH自らwebpacker gemを作成開始、v0.1としてgemを公開
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/webpacker/commit/f4cc31d&quot;&gt;FIRST!1! · rails/webpacker@f4cc31d&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;同gemをRails本体の機能に取り込む
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/27288&quot;&gt;Basic –webpack delegation to new webpacker gem by dhh · Pull Request #27288 · rails/rails&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2017年2月&quot;&gt;2017年2月&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Rails 5.1.beta1 リリース
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;http://weblog.rubyonrails.org/2017/2/23/Rails-5-1-beta1/&quot;&gt;Rails 5.1.0.beta1: Loving JavaScript, System Tests, Encrypted Secrets, and more | Riding Rails&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;webpacker 1.0 リリース
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://rubygems.org/gems/webpacker/versions/1.0&quot;&gt;https://rubygems.org/gems/webpacker/versions/1.0&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;jQueryに依存しないujsである rails-ujs が actionview の一機能としてRails本体に取り込まれる
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/commit/41c33bd4b2ec3f4a482e6030b6fda15091d81e4a&quot;&gt;https://github.com/rails/rails/commit/41c33bd4b2ec3f4a482e6030b6fda15091d81e4a&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2017年4月&quot;&gt;2017年4月&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;:tada: Rails 5.1 リリース
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;http://weblog.rubyonrails.org/2017/4/27/Rails-5-1-final/&quot;&gt;Rails 5.1: Loving JavaScript, System Tests, Encrypted Secrets, and more | Riding Rails&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;以上が現在に至るRailsフロントエンド進化の軌跡となります。2016年5月のDHHの問題提起からわずか(?)一年足らずでここまで進化したのは純粋にすごいなーと思いました。&lt;/p&gt;
-
-&lt;h2 id=&quot;railsのフロントエンド実装の選択肢&quot;&gt;Railsのフロントエンド実装の選択肢&lt;/h2&gt;
-
-&lt;p&gt;Rails5.1のフロントエンド刷新以降、&lt;strong&gt;今Railsにはどんなフロントエンド実装の選択肢があるのか&lt;/strong&gt;、ざっと見てみます。&lt;/p&gt;
-
-&lt;h3 id=&quot;1-asset-pipeline&quot;&gt;1. &lt;a href=&quot;https://railsguides.jp/asset_pipeline.html&quot;&gt;Asset Pipeline&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Sprockets + CoffeeScript, SASS, jQuery&lt;/li&gt;
-  &lt;li&gt;今まで通りの古き良きassets管理&lt;/li&gt;
-  &lt;li&gt;知見も多く転がっており、枯れているのでハマりにくい&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2-sprockets-4&quot;&gt;2. &lt;a href=&quot;https://github.com/rails/sprockets&quot;&gt;Sprockets 4&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;ES6 support &lt;a href=&quot;https://github.com/rails/sprockets/blob/master/UPGRADING.md#es6-support&quot;&gt;https://github.com/rails/sprockets/blob/master/UPGRADING.md#es6-support&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Sprockets4の開発自体は停滞気味 &lt;a href=&quot;https://github.com/rails/sprockets/blob/master/CHANGELOG.md&quot;&gt;https://github.com/rails/sprockets/blob/master/CHANGELOG.md&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;3-browserify-rails&quot;&gt;3. &lt;a href=&quot;https://github.com/browserify-rails/browserify-rails&quot;&gt;browserify-rails&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;sprockets のコールバックとして動作
-    &lt;ul&gt;
-      &lt;li&gt;つまりsprocketsに依存している&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;導入のための参考記事: &lt;a href=&quot;http://techlife.cookpad.com/entry/2015/12/14/130041&quot;&gt;モダンJavaScript開発環境 on Rails - クックパッド開発者ブログ&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;4-webpacker&quot;&gt;4. &lt;a href=&quot;https://github.com/rails/webpacker&quot;&gt;webpacker&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;絶賛開発中
-    &lt;ul&gt;
-      &lt;li&gt;活発に変更が入っているので導入に際しては現時点ではREADMEを参考にするのが良さそう&lt;/li&gt;
-      &lt;li&gt;まだ小慣れていない印象&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;最初はwebpack+railsのシームレスな統合のための薄い実装だと思ったが、現在ゴテゴテな実装…
-    &lt;ul&gt;
-      &lt;li&gt;react, angular, elm, vue などの初期インストールタスクが１つのレポジトリに全部のっている
-        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;https://github.com/rails/webpacker/issues/20#issuecomment-266347480&quot;&gt;plugable にしようぜ&lt;/a&gt;という話はあるが現在そうはなっていない&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;初回インストール時の生成ファイル・パッケージ構成はたぶんフロントエンドガチ勢からみたら&lt;a href=&quot;https://github.com/rails/webpacker/blob/5003a5de0222c1f5b0f3c2b887064039e06f7eae/lib/install/template.rb#L25-L30&quot;&gt;クソの山っぽい&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;レールにのったwebpack利用という意味のカジュアルな利用だったら良いかもしれない&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;5-webpack-rails&quot;&gt;5. &lt;a href=&quot;https://github.com/mipearson/webpack-rails&quot;&gt;webpack-rails&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Sprockets 非依存&lt;/li&gt;
-  &lt;li&gt;webpack利用のための薄い実装
-    &lt;ul&gt;
-      &lt;li&gt;初期のwebpackerに似てる印象&lt;/li&gt;
-      &lt;li&gt;個人的にはwebpackerよりは筋が良い印象を受けた&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;6-react_on_rails&quot;&gt;6. &lt;a href=&quot;https://github.com/shakacode/react_on_rails&quot;&gt;react_on_rails&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;SSRサポート&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/sstephenson/execjs&quot;&gt;execjs&lt;/a&gt; 依存&lt;/li&gt;
-  &lt;li&gt;webpacker integration アリ
-    &lt;ul&gt;
-      &lt;li&gt;webpackerの薄い実装も登場 &lt;a href=&quot;https://github.com/shakacode/webpacker_lite&quot;&gt;shakacode/webpacker_lite&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;参考記事: &lt;a href=&quot;http://r7kamura.hatenablog.com/entry/2016/10/10/173610&quot;&gt;Ruby on Rails on React on SSR on SPA - ✘╹◡╹✘&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;7-react-rails&quot;&gt;7. &lt;a href=&quot;https://github.com/reactjs/react-rails&quot;&gt;react-rails&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;SSRサポート&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/sstephenson/execjs&quot;&gt;execjs&lt;/a&gt; 依存&lt;/li&gt;
-  &lt;li&gt;react_on_railsと異なる点は、integration の選択肢として Rails Assets Pipline もしくは webpacker が選べること
-    &lt;ul&gt;
-      &lt;li&gt;Asset Pipelineにのりたかったらこちらを選択&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;8-独自に導入&quot;&gt;8. 独自に導入&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;独自にJSアプリケーションをRailsに統合させる構成を考えRails上にのっける&lt;/li&gt;
-  &lt;li&gt;例: &lt;a href=&quot;http://techlife.cookpad.com/entry/2016/07/27/101015&quot;&gt;webpackを使った Rails上でのReact開発 - クックパッド開発者ブログ&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;9-sprockets-commoner&quot;&gt;9. &lt;a href=&quot;https://github.com/Shopify/sprockets-commoner&quot;&gt;sprockets-commoner&lt;/a&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Shopify製&lt;/li&gt;
-  &lt;li&gt;コンセプトとしてはRails Wayを壊さずにBabelを利用すること&lt;/li&gt;
-  &lt;li&gt;Sprocketsに依存&lt;/li&gt;
-  &lt;li&gt;導入に際してはitkrt2yさんのこちらの記事を参考に: &lt;a href=&quot;http://qiita.com/itkrt2y/items/18ea41828e1c22fc31e3&quot;&gt;顧客が本当に求めていたsprockets、sprockets-commonerの紹介 - Qiita&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;どうすべきか&quot;&gt;どうすべきか&lt;/h2&gt;
-
-&lt;p&gt;上記に紹介したように様々な実装があるわけですが、我々はどれをどのように選択すべきでしょうか。僕なりにまとめてみました。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb3/flowchart.png&quot; alt=&quot;chart&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;まず最初にあるのが、Railsが嫌い/宗教的にあわない/フロントエンドをレールにのらせたくないのであれば無理してRailsを使うことはないと思っています。Railsをやめる、あるいはRailsはWebAPIに徹して独立したフロントエンドの世界観を築くのもアリだと思ってます。&lt;/p&gt;
-
-&lt;p&gt;また現状のAsset管理に満足していて、かつビジネス上の要件としてリッチなJS実装が求められないのであれば無理してモダンなフロントエンド機構を構築する必要はありません。無理してwebpackだのbrowserifyだの導入せずに、古き良きAsset Pipelineでいいのです（技術そのものが目的な場合はこの限りではない）。&lt;/p&gt;
-
-&lt;h2 id=&quot;今後どうなるか&quot;&gt;今後どうなるか&lt;/h2&gt;
-
-&lt;p&gt;Railsコミュニティの流れとして、&lt;strong&gt;今後どうなっていくか&lt;/strong&gt; も考えてみたいと思います。&lt;/p&gt;
-
-&lt;h3 id=&quot;1-gemからnpmへ&quot;&gt;1. gemからnpmへ&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb3/rails-npm.png&quot; alt=&quot;bridge&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;RailsからNPM(yarn)のブリッジがRailsのコア機能の１つとして提供されたことはとても意義深いことだと思っています。その結果起こりうることとしては以下でしょうか。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;jquery-rails, underscore-rails のような Asset Pipeline に載せるタイプのgemは廃れていく(npm管理に移っていく)&lt;/li&gt;
-  &lt;li&gt;Railsエンジニアがnpmライブラリを今後どんどん活用することによって、RailsエンジニアのJS界隈進出が増えるかも…?
-    &lt;ul&gt;
-      &lt;li&gt;railsコミュニティにとってもnpmコミュニティにとっても良い事&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2-reactへの大潮流&quot;&gt;2. Reactへの大潮流&lt;/h3&gt;
-
-&lt;p&gt;今までJSライブラリのデファクトと言ったらjQueryでしたが、フロントエンド実装の複雑化にともないReactを採用する企業が増えその状況が変わってきました（少なくとも僕の観測範囲内では）。jQueryを使っての複雑なDOM操作のコードは破綻しがちですし限界があります。その結果のReact採用なのでしょう。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;反省会というからReact導入が一般的に浸透し導入後一巡したってことだろうなぁ&lt;br /&gt;Twitterトレンド入り！ 「&lt;a href=&quot;https://twitter.com/hashtag/React%E5%8F%8D%E7%9C%81%E4%BC%9A?src=hash&quot;&gt;#React反省会&lt;/a&gt;」登壇資料一挙公開！ | Wantedly Engineer Blog &lt;a href=&quot;https://t.co/PbG49aclqa&quot;&gt;https://t.co/PbG49aclqa&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/862817538022883328&quot;&gt;May 11, 2017&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;上記のようにReactが導入されやすい環境が整ってきている昨今、今後ますますRails+Reactの採用事例は増えていくと思われます&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-
-&lt;h3 id=&quot;3-turbolinks-がますます下火に&quot;&gt;3. Turbolinks がますます下火に&lt;/h3&gt;
-
-&lt;p&gt;&lt;del&gt;黙って無効化すべし&lt;/del&gt; 無効化されることの多いturbolinks機能ですがますます下火になっていくと思われます。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb3/turbolinks.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;リッチなレンダリングUXを提供するためのRailsチーム(DHH)の苦肉の策がTurbolinksという理解でいますが、上述したようにフロントエンド開発の機構が整ってきている今、わざわざturbolinksを使う必要性もなくなってきました。&lt;/p&gt;
-
-&lt;p&gt;とはいえ、絶対にJS書きたくないでござる！というJS書きたくないマンなRailsエンジニアの選択肢の１つとしてはアリだと思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;フロントエンドというマイクロサービスがもたらす複雑性&quot;&gt;フロントエンドというマイクロサービスがもたらす複雑性&lt;/h2&gt;
-
-&lt;p&gt;と、ここまでRailsとフロントエンドの話をしてきましたが、一方で安易なフロントエンド技術の導入は負債を生み出す危険性もあることも付しておきます。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;このツラミわかるなぁ | ReactSPAをRailsに戻している話 // Speaker Deck &lt;a href=&quot;https://t.co/G3Ln3NbmCQ&quot;&gt;https://t.co/G3Ln3NbmCQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/857758278830350337&quot;&gt;April 28, 2017&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;このケースのように複雑なフロントエンド実装が逆に負債となり足かせとなる場合もあります。&lt;a href=&quot;http://anond.hatelabo.jp/20170501085956&quot;&gt;全くメンテされないクソJSコードの塊を作る&lt;/a&gt;ような状況は避けなければなりません。&lt;/p&gt;
-
-&lt;p&gt;高度に専業化したフロントエンド技術はもはやいちサーバーサイドエンジニアが片手間に開発・メンテナンスできるレベルのものでもなくなってきています。うまく作ったとしてもその後のアップデートに追従していくのは至難の業でしょう。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-conversation=&quot;none&quot; data-cards=&quot;hidden&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;紹介されているこっちのスライドもよくわかるなぁ。「フロントエンドは一個のマイクロサービス(ただのViewじゃない)」「マイクロサービス作っているのだから辛いの当然」 &lt;a href=&quot;https://t.co/YqkrIYSXxf&quot;&gt;https://t.co/YqkrIYSXxf&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/857790990496616448&quot;&gt;April 28, 2017&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;このようにフロントエンドを１つのマイクロサービスと捉える見方もあります。マイクロサービスであるからこそ、モノリシックサービスよりもアーキテクチャ・実装が複雑になりがちです。高度なフロントエンド技術導入の際はチームとしてその複雑性を受け入れる覚悟が必要でしょう。&lt;/p&gt;
-
-&lt;h2 id=&quot;イベント告知&quot;&gt;イベント告知&lt;/h2&gt;
-
-&lt;p&gt;そんなわけで随分と長い前置きでしたが、次回のRoppongi.rb#3のテーマは”Rails x Frontend”で開催します。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://roppongirb.connpass.com/event/56456/&quot;&gt;Roppongi.rb #3 “Rails x Frontend-Tech”&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Roppongi.rb #3 &amp;quot;Rails x Frontend-Tech&amp;quot; 〜これからのRails Frontendの話をしよう〜 を公開しました！ &lt;a href=&quot;https://t.co/hOjXX7J8dC&quot;&gt;https://t.co/hOjXX7J8dC&lt;/a&gt; &lt;a href=&quot;https://twitter.com/hashtag/roppongirb?src=hash&quot;&gt;#roppongirb&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/861725918552707072&quot;&gt;May 8, 2017&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;既に参加枠（抽選）は埋まっており参加登録いただいた方を全員ご案内できないのが恐縮ですが、もしよければ登録して遊びにきてください。&lt;/p&gt;
-
-&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://qiita.com/itkrt2y/items/7e999836f460fb9c005d&quot;&gt;Rails5.1に向けてフロントエンド周りで起こっている革命まとめ - Qiita&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://qiita.com/yuroyoro/items/a29e39989f4469ef5e41&quot;&gt;Rails5.1から導入されるwebpacker.gemは本当にRailsのフロントエンド開発に福音をもたらすのか? - Qiita&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;footnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot;&gt;
-      &lt;p&gt;ちょうど&lt;a href=&quot;http://railsconf.com/2016&quot;&gt;RailsConf 2016&lt;/a&gt;の後くらいのタイミングでしょうか。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot;&gt;
-      &lt;p&gt;一方で、複雑でないアプリケーションに対しReactを導入するのはオーバーキルなのでごく一部分の小さなイベント制御JSコードであればjQueryで十分な場面も未だ多くあると思います。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="frontend" /><category term="roppongirb" /><summary type="html">待望されたYarnサポートの入ったRails5.1が2017年4月にリリースされました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/roppongirb3/roppongirb-3.jpg" /></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><category term="読書" /><summary type="html">きっかけはRebuild.fm。</summary></entry></feed>

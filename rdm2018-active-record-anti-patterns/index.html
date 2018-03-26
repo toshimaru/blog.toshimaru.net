@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました - Hack Your Design!</title>
+  <title>railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="site.webmanifest">
@@ -14,16 +14,16 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました - Hack Your Design!">
-  <meta property="og:title" content="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました - Hack Your Design!">
-  <meta name="description" content="Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。ざっくり発表内容をこちらにもまとめてみたいと思います。　※公開用に一部スライドを編集してあります">
-  <meta name="twitter:description" content="Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。ざっくり発表内容をこちらにもまとめてみたいと思います。　※公開用に一部スライドを編集してあります">
-  <meta property="og:description" content="Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。ざっくり発表内容をこちらにもまとめてみたいと思います。　※公開用に一部スライドを編集してあります">
-  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/railsdm/rdm2017.png">
-  <meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/railsdm/rdm2017.png">
+  <meta name="twitter:title" content="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました - Hack Your Design!">
+  <meta property="og:title" content="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました - Hack Your Design!">
+  <meta name="description" content="Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。紹介したアンチパターン 発表内で紹介したアンチパターンがこちらです。 All Each Pattern N+1 Update Queries Pattern Ruby Aggregation Pattern N+1 Queries Pattern Unnecessary Query Pattern Unnecessary Mode Initialization Pattern 紹介できなかったアンチパターン 何かしらアンチパターン化できそうだけど、時間の都合上しなかったアンチパターンがこちらです。発表しなかったので命名は適当です。">
+  <meta name="twitter:description" content="Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。紹介したアンチパターン 発表内で紹介したアンチパターンがこちらです。 All Each Pattern N+1 Update Queries Pattern Ruby Aggregation Pattern N+1 Queries Pattern Unnecessary Query Pattern Unnecessary Mode Initialization Pattern 紹介できなかったアンチパターン 何かしらアンチパターン化できそうだけど、時間の都合上しなかったアンチパターンがこちらです。発表しなかったので命名は適当です。">
+  <meta property="og:description" content="Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。紹介したアンチパターン 発表内で紹介したアンチパターンがこちらです。 All Each Pattern N+1 Update Queries Pattern Ruby Aggregation Pattern N+1 Queries Pattern Unnecessary Query Pattern Unnecessary Mode Initialization Pattern 紹介できなかったアンチパターン 何かしらアンチパターン化できそうだけど、時間の都合上しなかったアンチパターンがこちらです。発表しなかったので命名は適当です。">
+  <meta property="og:image" content="http://blog.toshimaru.net/images/posts/railsdm/rdm2018.png">
+  <meta name="twitter:image" content="http://blog.toshimaru.net/images/posts/railsdm/rdm2018.png">
 <meta property="og:type" content="article">
-  <meta property="article:published_time" content="2017-12-11T00:00:00+09:00">
-  <link rel="canonical" href="http://blog.toshimaru.net/why-we-use-ruby-on-rails/">
+  <meta property="article:published_time" content="2018-03-27T00:00:00+09:00">
+  <link rel="canonical" href="http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     // (adsbygoogle = window.adsbygoogle || []).push({
@@ -74,112 +74,162 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました</h1>
+  <h1 class="fadeInLeft">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2017-12-11T00:00:00+09:00" pubdate>11 Dec 2017</time>
+      <i class="icon-calendar"></i><time datetime="2018-03-27T00:00:00+09:00" pubdate>27 Mar 2018</time>
       <i class="icon-tags"></i> 
-<a href="/tag/rails/" rel="tag">rails</a>
-
 <a href="/tag/presentation/" rel="tag">presentation</a>
+
+<a href="/tag/activerecord/" rel="tag">activerecord</a>
+
+<a href="/tag/rails/" rel="tag">rails</a>
 
 
     </div>
-    <img class="post-image flipInX" src="/images/posts/railsdm/rdm2017.png" alt="(image)railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました" title="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました">
+    <img class="post-image flipInX" src="/images/posts/railsdm/rdm2018.png" alt="(image)railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました">
   </div>
 </div>
 
-<p><a href="https://techplay.jp/event/631431">Rails Developers Meetup 2017</a>でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。</p>
+<p><a href="https://railsdm.github.io/2018/">Rails Developers Meetup 2018</a>で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。</p>
 
-<script async="" class="speakerdeck-embed" data-id="68db83f9e02946f08a45817d8fb25b09" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+<h2 id="発表資料">発表資料</h2>
 
-<p>※公開用に一部スライドを編集してあります<img class="emoji" title=":wink:" alt=":wink:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f609.png" height="20" width="20"></p>
+<script async="" class="speakerdeck-embed" data-id="2bb9d7ceea4b4987bf4c8618a53a1e68" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
-<h2 id="テーマ設定について">テーマ設定について</h2>
+<h2 id="事前に公開したエントリ">事前に公開したエントリ</h2>
 
-<p>Web開発においてGoやPython、PHP、Node.js、Scala、Elixirなど様々な選択肢がある中で「なぜ今、Ruby/Railsを使うのか？」というテーマを個人的に掘り下げてみたかったのでこの機会に発表してみることにしてみました。</p>
+<p>発表資料に出てくる最初の事例はこちらがベースの事例となっています。</p>
 
-<h2 id="railsの2つの哲学">Railsの2つの哲学</h2>
+<blockquote class="twitter-tweet" data-lang="ja">
+<p lang="ja" dir="ltr">今月末のRails Developer Meetupに先駆けてRailsの遅いバッチ処理を400倍速くする話を書きました  | Rails/ActiveRecord バッチ処理の最適化 - Hack Your Design! <a href="https://t.co/i7JZnZcuLc">https://t.co/i7JZnZcuLc</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/970546164725501952?ref_src=twsrc%5Etfw">March 5, 2018</a>
+</blockquote>
+
+<h2 id="紹介したアンチパターン">紹介したアンチパターン</h2>
+
+<p>発表内で紹介したアンチパターンがこちらです。</p>
 
 <ol>
-  <li>
-<strong>DRY</strong> (Don’t Repeat Yourself): 同じことを繰り返さない</li>
-  <li>
-<strong>CoC</strong> (Convention over Configuration): 設定より規約</li>
+  <li>All Each Pattern</li>
+  <li>N+1 Update Queries Pattern</li>
+  <li>Ruby Aggregation Pattern</li>
+  <li>N+1 Queries Pattern</li>
+  <li>Unnecessary Query Pattern</li>
+  <li>Unnecessary Mode Initialization Pattern</li>
 </ol>
 
-<p>Railsの哲学は上記の２つがありますが、個人的にはDRYよりもCoCがずっと重要だと思ってます。なぜならDRYはプログラミング行為において普遍的な考え方である一方、CoCはRailsが定めたRails独自の規約だからです。</p>
+<h2 id="紹介できなかったアンチパターン">紹介できなかったアンチパターン</h2>
 
-<h2 id="ruby-on-railsの本質">Ruby on Railsの本質</h2>
+<p>何かしらアンチパターン化できそうだけど、時間の都合上しなかったアンチパターンがこちらです。発表しなかったので命名は適当です。</p>
 
-<p>Ruby on Railsの本質は、<strong>センスの良い規約（=Rail）によって設定および設計の手間を最小限にした</strong> ことだと考えます。</p>
+<h3 id="なんでもincludesパターン">なんでもincludesパターン</h3>
 
-<p>この規約により我々は設定にまつわるコードを数百行書いたりとかする必要もなくなりましたし、設計工程で生じがちな＜俺の考える最強のアプリケーション設計バトル＞や＜俺の考える最強のデータベース設計選手権＞を緩和しコミュニケーションコストを大幅にカットすることができました（とはいえその規約に規定されていない部分の設計はどうするんだという問題は残りますが…）。</p>
+<p><code class="highlighter-rouge">joins</code>で良いのになんでも<code class="highlighter-rouge">includes</code>で解決しようとしちゃうパターン。このへんは下記の解説に詳しいです。</p>
 
-<p>この規約によって我々はRuby on Railsで <strong>圧倒的コード量の少なさと生産性の高さを実現</strong> できました。</p>
+<p><a href="https://qiita.com/k0kubun/items/80c5a5494f53bb88dc58">ActiveRecordのjoinsとpreloadとincludesとeager_loadの違い - Qiita</a></p>
 
-<h2 id="rails批判〇〇の方が速いよ">Rails批判:「〇〇の方が速いよ」</h2>
+<h3 id="too-many-find_or_create_by-パターン">Too many find_or_create_by パターン</h3>
 
-<p>パフォーマンス要件がマストでないときにRailsを使いましょう。パフォーマンス要件がマストのケースにおいては（e.g. 広告サーバー）そもそもRubyという言語選択はするべきでないです。</p>
+<p><code class="highlighter-rouge">find_or_create_by</code>は、オブジェクトが存在する場合は取得、なければ作成って挙動をするやつです。これをループ内で使いまくるパターン。</p>
 
-<p>「速い」の定義をどこにおくかも重要なポイントです。この速さを「処理系の速さ」としたらRubyはGoなどには負けますが、「開発の速さ」とした場合はどうでしょうか？　我々にとって価値のある速さはどちらでしょうか？　例えばスタートアップなどにおいて1日でも1時間でも早くPDCAサイクルを回したい場合にRailsのほうが最適ではないでしょうか。</p>
+<p>そんなときはSQLのUPSERTの機能を使うのが得策。具体的にはMySQLであれば<code class="highlighter-rouge">INSERT...ON DUPLICATE KEY UPDATE</code>です。</p>
 
-<p>またエンドユーザーにとっての速さは必ずしも処理系の速さとは一致しない点も気をつけてください。かの超絶高速なサイト<a href="https://dev.to/">dev.to</a>はRails製であるという事実を忘れないでください。</p>
+<p>残念なことにこれはActiveRecordの標準機能では提供されていないので<a href="https://github.com/zdennis/activerecord-import">activerecord-import</a>などのgemを使って解決する必要があります。</p>
 
-<h3 id="devtoはrails製であるという事実">dev.toはRails製であるという事実</h3>
+<h3 id="has_many関連のcount方法いろいろあるよ問題">has_many関連のcount方法いろいろあるよ問題</h3>
 
-<p>この事実から言えることは <strong>サービス特性と要素技術を正しく理解・把握した上で最適なアーキテクチャを選択する</strong> ことが重要ということです。</p>
+<p>ちゃんとパターン化できていませんが、この問題もなかなか難しい問題です。どのメソッド使ったらよいかはケースバイケースで変わってくるので詳しくは下記を参照されたし。</p>
 
-<p>例えば<a href="https://dev.to/">dev.to</a> の場合、キャッシュしやすいというサービス特性を利用して、Railsで生成されるコンテンツを爆速CDNであるFastlyに載せて配信させました。これにより結果的に最高の爆速UXを提供できているのです。</p>
+<p><a href="https://qiita.com/nay3/items/1cda39fb58569d832203">ActiveRecord の has_many関連、件数を調べるメソッドはどれを使えばいい？ - Qiita</a></p>
 
-<p>つまり速さという点において問題になるレイヤーはアプリケーションサーバーのレイヤーだけではないということです。</p>
+<h2 id="q--a">Q &amp; A</h2>
 
-<h2 id="rubyrailsが遅いという前に">Ruby/Railsが遅いという前に</h2>
+<h3 id="アンチパターンの出典は">アンチパターンの出典は？</h3>
 
-<p>「Ruby/Railsが遅い!」という前に下記はしっかり確認していただきたいものです。</p>
+<p>全部オレです（笑</p>
 
-<ul>
-  <li>自分のアプリケーション設計やテーブル設計の失敗の責任を、言語やフレームワークに押し付けてはいないか</li>
-  <li>するべき最適化をする前に遅いと斬り捨ててはいないか</li>
-</ul>
+<p>一応元ネタというかインスパイアを受けた本としては発表内でも紹介している『SQLアンチパターン』です。</p>
 
-<p>僕の経験上、Railsで”ちゃんと”作ることができれば、爆速ではないかもしれませんがまぁまぁ速いくらいのサイトは実現可能だと思います。</p>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=4873115892&amp;linkId=6903fbe4f4a55cf4f47b4036bf2f350a"></iframe>
 
-<h2 id="高速化の努力">高速化の努力</h2>
+<p>こちらの本が原著は英語で書かれており、それに倣うかたちで英語でアンチパターンを命名しました。まぁ平たく言うとカッコつけて英語にしました以上の理由はありません <img class="emoji" title=":smile:" alt=":smile:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20"></p>
 
-<p>とはいえ高速化の努力はあって、Ruby3に向けてのRuby高速化（いわゆる<a href="http://gihyo.jp/news/report/01/rubykaigi2017/0003">Ruby3x3</a>）や、<a href="https://github.com/Shopify/bootsnap">bootsnap</a>のようなRailsの起動高速などの努力があります。</p>
+<h3 id="事例１usercreated_atにindex貼らないの">（事例１）User.created_atにINDEX貼らないの？</h3>
 
-<h2 id="2018年ruby-on-railsという選択">2018年、Ruby on Railsという選択</h2>
+<p>下記二点の理由により貼りませんでした。</p>
 
-<p>小〜中規模のWebアプリケーション（言い換えるとマイクロサービス化を考えなくても済むような規模）であればRailsで十分戦えると考えています。</p>
+<ol>
+  <li>前提事項としてDBの最適化はしないと述べた</li>
+  <li>User.created_atにINDEXを貼ってもINDEX効かない</li>
+</ol>
 
-<p>なので2018年もRuby on Railsは有効なWebアプリケーションフレームワークの選択肢であり続けでしょう。少なくとも、Ruby on Railsを超えるようなベターオルタナティブが出現しない限りはそうでしょう。</p>
+<p>User.created_atにINDEX(<code class="highlighter-rouge">index_users_on_created_at</code>)を貼ったあとの実行計画がこちらになります。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &gt;= '2017-01-01') \G
+*************************** 1. row ***************************
+           id: 1
+  select_type: UPDATE
+        table: users
+   partitions: NULL
+         type: index
+possible_keys: index_users_on_created_at
+          key: PRIMARY
+      key_len: 8
+          ref: NULL
+         rows: 99574
+     filtered: 100.00
+        Extra: Using where
+1 row in set (0.00 sec)
+</code></pre></div></div>
+
+<p>INDEX貼ってても対象範囲が大きいとINDEX効かなくなるんです。そして今回のケースはそれに当たります。（この挙動、実は僕も全然知りませんでした…）</p>
+
+<blockquote class="twitter-tweet" data-lang="ja">
+<p lang="ja" dir="ltr">mysqlで検索の対象範囲が大きくなりすぎるとindexが効かなくなるの知らなかった | [MYSQL] datetimeカラムのインデックスの使われ方をテストしてみた │ revdev <a href="https://t.co/2JK7VD7Ttv">https://t.co/2JK7VD7Ttv</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/974924182369722368?ref_src=twsrc%5Etfw">March 17, 2018</a>
+</blockquote>
+
+<p>テストとして条件の範囲を小さくした実行計画がこちらになります。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &gt;= '2018-01-01') \G
+*************************** 1. row ***************************
+           id: 1
+  select_type: UPDATE
+        table: users
+   partitions: NULL
+         type: range
+possible_keys: index_users_on_created_at
+          key: index_users_on_created_at
+      key_len: 5
+          ref: const
+         rows: 5903
+     filtered: 100.00
+        Extra: Using where
+1 row in set (0.00 sec)
+</code></pre></div></div>
+
+<p>きちんとこちらではINDEXが効いてます。</p>
+
+<h3 id="事例２改善１のコードのモデルってロードされている">（事例２）改善１のコードのモデルってロードされている？</h3>
+
+<p>会場であった質問です。こちらはRails consoleで実際のコードを動かしてあげれば一目瞭然です。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Post.group(:user_id).select("user_id, SUM(like_count) AS like_count").order("like_count DESC") .limit(100)
+  Post Load (976.6ms)  SELECT  user_id, SUM(like_count) AS like_count FROM `posts` GROUP BY `posts`.`user_id` ORDER BY like_count DESC LIMIT 11
+=&gt; #&lt;ActiveRecord::Relation [#&lt;Post id: nil, user_id: 2632, like_count: 832&gt;, #&lt;Post id: nil, user_id: 51965, like_count: 800&gt;, #&lt;Post id: nil, user_id: 25068, like_count: 783&gt;, ...]&gt;
+
+&gt; Post.group(:user_id).order("SUM(like_count) DESC") .limit(3000).pluck(:user_id)
+   (668.3ms)  SELECT  `posts`.`user_id` FROM `posts` GROUP BY `posts`.`user_id` ORDER BY SUM(like_count) DESC LIMIT 3000
+=&gt; [2632, 51965, 25068, 8515, 84933, 67763, 89631, 69494, 78805, 17541, 53344, 7618, 92652, 13704, 94308, 96778, ...
+</code></pre></div></div>
 
 <h2 id="発表を終えて">発表を終えて</h2>
 
-<p>本発表を聞いた人には「じゃあ一生Ruby/Railsを使い続けるのか？」と思われるかもしれませんが、今後Railsくらいの生産性を発揮できてRailsより速いフレームワークが出現するのであれば全然乗り換える準備はあります。</p>
+<p>30minsと長めの発表は<a href="/aws-summit-tokyo-2015/">AWS Summitぶり</a>だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかった。</p>
 
-<p>ただドキュメント・ライブラリ・運用実績などの周辺環境も含めてRuby/Rails並みに整うのは相当厳しいように思われますので、あと３年位はRailsの寿命は続くのかなという印象です。</p>
-
-<blockquote class="twitter-tweet" data-lang="ja">
-<p lang="ja" dir="ltr">誰か日本でRubyKaigiじゃなくてRailsKaigiをオーガナイズしてくれる人はいないものか（チラッ<br>めちゃくちゃ人集まることは絶対間違いないと思うのだけど。。。</p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/841439645011394564?ref_src=twsrc%5Etfw">March 14, 2017</a>
-</blockquote>
-<blockquote class="twitter-tweet" data-lang="ja">
-<p lang="ja" dir="ltr">以前書いたこれ、現場の知見の共有という意味では <a href="https://twitter.com/hashtag/railsdm?src=hash&amp;ref_src=twsrc%5Etfw">#railsdm</a> がやっていってくれてる感ある <a href="https://t.co/XLGDEEKooR">https://t.co/XLGDEEKooR</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/940369828451303424?ref_src=twsrc%5Etfw">December 11, 2017</a>
-</blockquote>
-
-<h2 id="参考">参考</h2>
-
-<ul>
-  <li>その他の発表スライドなどはこちら <a href="https://railsdm.github.io/2017/">Rails Developers Meetup 2017</a>
-</li>
-  <li>当日のTweetまとめ <a href="https://togetter.com/li/1179895">Rails Developers Meetup 2017 #railsdm - Togetter</a>
-</li>
-</ul>
 
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/why-we-use-ruby-on-rails/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rdm2018-active-record-anti-patterns/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -199,15 +249,15 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/rdm2018-active-record-anti-patterns/" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</a></li>
+    <li><a href="/rails-batch-optimization/" title="Rails/ActiveRecord バッチ処理の最適化">Rails/ActiveRecord バッチ処理の最適化</a></li>
+  
+    <li><a href="/why-we-use-ruby-on-rails/" title="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました">railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました</a></li>
   
     <li><a href="/roppongirb-speeding-up-rails/" title="Roppongi.rbで「Rails高速化戦略」を発表しました">Roppongi.rbで「Rails高速化戦略」を発表しました</a></li>
   
-    <li><a href="/infrastructure-as-ruby-code-2016/" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</a></li>
+    <li><a href="/rails-find_each/" title="Railsのfind_eachの挙動について調べた">Railsのfind_eachの挙動について調べた</a></li>
   
-    <li><a href="/json-schema-collaboration/" title="JSON Schemaについて発表した">JSON Schemaについて発表した</a></li>
-  
-    <li><a href="/aws-summit-tokyo-2015/" title="AWS Summit Tokyo 2015で発表してきました">AWS Summit Tokyo 2015で発表してきました</a></li>
+    <li><a href="/manage-schema-with-sql-in-rails/" title="SQLファイルでRailsのスキーマ情報管理">SQLファイルでRailsのスキーマ情報管理</a></li>
   
   </ul>
   </div>
@@ -223,14 +273,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/rubocop-rails/" title="Newer Post: Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/like-a-sponge-as-an-engineer/" title="Older Post: 技術者としてスポンジであり続けること　あるいは老害回避戦略の話">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/rails-batch-optimization/" title="Older Post: Rails/ActiveRecord バッチ処理の最適化">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -272,10 +318,10 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "http://blog.toshimaru.net/why-we-use-ruby-on-rails/"
+      "@id": "http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/"
     },
-    "headline": "railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました",
-    "datePublished": "2017-12-11T00:00:00+09:00",
+    "headline": "railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました",
+    "datePublished": "2018-03-27T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -288,9 +334,9 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     },
     "image": {
       "@type": "ImageObject",
-      "url": "http://blog.toshimaru.net/images/posts/railsdm/rdm2017.png"
+      "url": "http://blog.toshimaru.net/images/posts/railsdm/rdm2018.png"
     },
-    "keywords": "rails, presentation"
+    "keywords": "presentation, activerecord, rails"
   },
   {
     
@@ -301,8 +347,8 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "http://blog.toshimaru.net/tag/rails/",
-          "name": "rails"
+          "@id": "http://blog.toshimaru.net/tag/presentation/",
+          "name": "presentation"
         }
       }
     ]
