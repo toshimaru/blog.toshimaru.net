@@ -1,6 +1,6 @@
 ---
 layout: post
-title: railsdmで「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を話してきました
+title: railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました
 image: /images/posts/railsdm/rdm2017.png
 description: Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。ざっくり発表内容をこちらにもまとめてみたいと思います。　※公開用に一部スライドを編集してあります
 tags: rails presentation
