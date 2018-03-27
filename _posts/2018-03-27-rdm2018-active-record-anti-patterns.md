@@ -12,11 +12,27 @@ tags: presentation activerecord rails
 
 <script async class="speakerdeck-embed" data-id="2bb9d7ceea4b4987bf4c8618a53a1e68" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
+## 発表概要
+
+> ActiveRecordはWebエンジニア達が嫌う（？）SQLを書かずとも、Rubyオブジェクトで気軽にデータベースへアクセスできる魔法のようなツールです。しかし便利な反面、何も考えずにゴリゴリActiveRecordを使ってDBアクセスしていると、劇的に重たいクエリが発行されたり非効率的なクエリが量産されたりします。
+> 
+> 本発表ではそれらActiveRecordで陥りがちな罠をパターン化し、ActiveRecordデータ処理アンチパターンとして発表します。
+> 
+> ※発表では実際のサンプルコードとともにパフォーマンスの計測結果も紹介します。 
+
 ## 事前に公開したエントリ
 
 発表資料に出てくる最初の事例はこちらがベースの事例となっています。
 
 <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">今月末のRails Developer Meetupに先駆けてRailsの遅いバッチ処理を400倍速くする話を書きました  | Rails/ActiveRecord バッチ処理の最適化 - Hack Your Design! <a href="https://t.co/i7JZnZcuLc">https://t.co/i7JZnZcuLc</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/970546164725501952?ref_src=twsrc%5Etfw">March 5, 2018</a></blockquote>
+
+## 発表モチベーション
+
+今回の発表に至るモチベーションとしては、僕が実際に踏んだActiveRecordの重い処理とか他のエンジニアが書いたActiveRecordコードのパフォーマンス改善のための修正とかをやっている中で、その良くない処理及びその処理に対する解決アプローチがある程度パターン化できると思ったからです。
+
+僕のアタマの中である程度「こういうアンチ・パターンがありそう」ってのはあったので今回の発表を機にそのアンチパターンにそれっぽい名前を付けて、同時に机上の空論にならないようにコードベースに落として、それをイメージしやすい具体的な事例とともに紹介しました。
+
+結果として、ActiveRecordアンチパターンを命名とともに整理できたことは大変良かったと思っています。またこの資料さえ共有しとけば、今後レビューのときとかもアンチパターンに関するコミュニケーションがしやすくなって個人的に助かりそうです。
 
 ## 紹介したアンチパターン
 
@@ -70,9 +86,9 @@ tags: presentation activerecord rails
 下記二点の理由により貼りませんでした。
 
 1. 前提事項としてDBの最適化はしないと述べた
-2. User.created_atにINDEXを貼ってもINDEX効かない
+2. `User.created_at` にINDEXを貼ってもINDEX効かない
 
-User.created_atにINDEX(`index_users_on_created_at`)を貼ったあとの実行計画がこちらになります。
+`User.created_at`にINDEX(`index_users_on_created_at`)を貼ったあとの実行計画がこちらになります。
 
 ```
 mysql> EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at >= '2017-01-01') \G
@@ -132,7 +148,17 @@ possible_keys: index_users_on_created_at
 => [2632, 51965, 25068, 8515, 84933, 67763, 89631, 69494, 78805, 17541, 53344, 7618, 92652, 13704, 94308, 96778, ...
 ```
 
+### 紹介したアンチパターン、どれくらいの件数で障害に繋がりそう？
+
+今回紹介した事例は数千件-数十万くらいの程度のデータ量なのでそこまで酷いパフォーマンス結果は出ませんでしたが、例えば事例１でこれがUserレコード数百万件とか、事例３でレコードが数十万件くらいのオーダーになってくるとボトルネックが表出しそうかな、という印象です。
+
+いずれにせよそこそこの規模のアプリケーションになってくると、数百万レコードを扱うのは当たり前の世界になってくると思うので、そのレコード数をどうActiveRecordの世界で上手に扱うは逃げられないテーマになってくるかなと思います。
+
 ## 発表を終えて
 
 30minsと長めの発表は[AWS Summitぶり](/aws-summit-tokyo-2015/)だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかった。
+
+## その他の資料
+
+- Rails Developer Meetup 2018の全体の発表資料はこちら: [Rails Developers Meetup 2018 スライドまとめ - Qiita](https://qiita.com/dyoshimitsu/items/20a41ab656d2da80e4d9)
 
