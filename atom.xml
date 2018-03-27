@@ -1,14 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-03-27T09:05:28+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</title><link href="http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/" rel="alternate" type="text/html" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました" /><published>2018-03-27T00:00:00+09:00</published><updated>2018-03-27T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rdm2018-active-record-anti-patterns</id><content type="html" xml:base="http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/">&lt;p&gt;&lt;a href=&quot;https://railsdm.github.io/2018/&quot;&gt;Rails Developers Meetup 2018&lt;/a&gt;で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="http://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-03-27T13:22:54+09:00</updated><id>http://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</title><link href="http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/" rel="alternate" type="text/html" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました" /><published>2018-03-27T00:00:00+09:00</published><updated>2018-03-27T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rdm2018-active-record-anti-patterns</id><content type="html" xml:base="http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/">&lt;p&gt;&lt;a href=&quot;https://railsdm.github.io/2018/&quot;&gt;Rails Developers Meetup 2018&lt;/a&gt;で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。&lt;/p&gt;
 
 &lt;h2 id=&quot;発表資料&quot;&gt;発表資料&lt;/h2&gt;
 
 &lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;2bb9d7ceea4b4987bf4c8618a53a1e68&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;発表概要&quot;&gt;発表概要&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ActiveRecordはWebエンジニア達が嫌う（？）SQLを書かずとも、Rubyオブジェクトで気軽にデータベースへアクセスできる魔法のようなツールです。しかし便利な反面、何も考えずにゴリゴリActiveRecordを使ってDBアクセスしていると、劇的に重たいクエリが発行されたり非効率的なクエリが量産されたりします。&lt;/p&gt;
+
+  &lt;p&gt;本発表ではそれらActiveRecordで陥りがちな罠をパターン化し、ActiveRecordデータ処理アンチパターンとして発表します。&lt;/p&gt;
+
+  &lt;p&gt;※発表では実際のサンプルコードとともにパフォーマンスの計測結果も紹介します。&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;h2 id=&quot;事前に公開したエントリ&quot;&gt;事前に公開したエントリ&lt;/h2&gt;
 
 &lt;p&gt;発表資料に出てくる最初の事例はこちらがベースの事例となっています。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今月末のRails Developer Meetupに先駆けてRailsの遅いバッチ処理を400倍速くする話を書きました  | Rails/ActiveRecord バッチ処理の最適化 - Hack Your Design! &lt;a href=&quot;https://t.co/i7JZnZcuLc&quot;&gt;https://t.co/i7JZnZcuLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/970546164725501952?ref_src=twsrc%5Etfw&quot;&gt;March 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;発表モチベーション&quot;&gt;発表モチベーション&lt;/h2&gt;
+
+&lt;p&gt;今回の発表に至るモチベーションとしては、僕が実際に踏んだActiveRecordの重い処理とか他のエンジニアが書いたActiveRecordコードのパフォーマンス改善のための修正とかをやっている中で、その良くない処理及びその処理に対する解決アプローチがある程度パターン化できると思ったからです。&lt;/p&gt;
+
+&lt;p&gt;僕のアタマの中である程度「こういうアンチ・パターンがありそう」ってのはあったので今回の発表を機にそのアンチパターンにそれっぽい名前を付けて、同時に机上の空論にならないようにコードベースに落として、それをイメージしやすい具体的な事例とともに紹介しました。&lt;/p&gt;
+
+&lt;p&gt;結果として、ActiveRecordアンチパターンを命名とともに整理できたことは大変良かったと思っています。またこの資料さえ共有しとけば、今後レビューのときとかもアンチパターンに関するコミュニケーションがしやすくなって個人的に助かりそうです。&lt;/p&gt;
 
 &lt;h2 id=&quot;紹介したアンチパターン&quot;&gt;紹介したアンチパターン&lt;/h2&gt;
 
@@ -65,10 +83,10 @@
 
 &lt;ol&gt;
   &lt;li&gt;前提事項としてDBの最適化はしないと述べた&lt;/li&gt;
-  &lt;li&gt;User.created_atにINDEXを貼ってもINDEX効かない&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;User.created_at&lt;/code&gt; にINDEXを貼ってもINDEX効かない&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;User.created_atにINDEX(&lt;code class=&quot;highlighter-rouge&quot;&gt;index_users_on_created_at&lt;/code&gt;)を貼ったあとの実行計画がこちらになります。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;User.created_at&lt;/code&gt;にINDEX(&lt;code class=&quot;highlighter-rouge&quot;&gt;index_users_on_created_at&lt;/code&gt;)を貼ったあとの実行計画がこちらになります。&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &amp;gt;= '2017-01-01') \G
 *************************** 1. row ***************************
@@ -125,9 +143,21 @@ possible_keys: index_users_on_created_at
 =&amp;gt; [2632, 51965, 25068, 8515, 84933, 67763, 89631, 69494, 78805, 17541, 53344, 7618, 92652, 13704, 94308, 96778, ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;h3 id=&quot;紹介したアンチパターンどれくらいの件数で障害に繋がりそう&quot;&gt;紹介したアンチパターン、どれくらいの件数で障害に繋がりそう？&lt;/h3&gt;
+
+&lt;p&gt;今回紹介した事例は数千件-数十万くらいの程度のデータ量なのでそこまで酷いパフォーマンス結果は出ませんでしたが、例えば事例１でこれがUserレコード数百万件とか、事例３でレコードが数十万件くらいのオーダーになってくるとボトルネックが表出しそうかな、という印象です。&lt;/p&gt;
+
+&lt;p&gt;いずれにせよそこそこの規模のアプリケーションになってくると、数百万レコードを扱うのは当たり前の世界になってくると思うので、そのレコード数をどうActiveRecordの世界で上手に扱うは逃げられないテーマになってくるかなと思います。&lt;/p&gt;
+
 &lt;h2 id=&quot;発表を終えて&quot;&gt;発表を終えて&lt;/h2&gt;
 
-&lt;p&gt;30minsと長めの発表は&lt;a href=&quot;/aws-summit-tokyo-2015/&quot;&gt;AWS Summitぶり&lt;/a&gt;だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかった。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="activerecord" /><category term="rails" /><summary type="html">Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/railsdm/rdm2018.png" /></entry><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="http://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-03-05T00:00:00+09:00</published><updated>2018-03-05T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="http://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;30minsと長めの発表は&lt;a href=&quot;/aws-summit-tokyo-2015/&quot;&gt;AWS Summitぶり&lt;/a&gt;だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかった。&lt;/p&gt;
+
+&lt;h2 id=&quot;その他の資料&quot;&gt;その他の資料&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rails Developer Meetup 2018の全体の発表資料はこちら: &lt;a href=&quot;https://qiita.com/dyoshimitsu/items/20a41ab656d2da80e4d9&quot;&gt;Rails Developers Meetup 2018 スライドまとめ - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="activerecord" /><category term="rails" /><summary type="html">Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://blog.toshimaru.net/images/posts/railsdm/rdm2018.png" /></entry><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="http://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-03-05T00:00:00+09:00</published><updated>2018-03-05T00:00:00+09:00</updated><id>http://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="http://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
 
 &lt;p&gt;ということで今日はRailsバッチ処理の最適化について書いてみたいと思います。&lt;/p&gt;
 
