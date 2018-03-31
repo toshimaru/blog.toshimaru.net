@@ -26,13 +26,19 @@ tags: presentation activerecord rails
 
 <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">今月末のRails Developer Meetupに先駆けてRailsの遅いバッチ処理を400倍速くする話を書きました  | Rails/ActiveRecord バッチ処理の最適化 - Hack Your Design! <a href="https://t.co/i7JZnZcuLc">https://t.co/i7JZnZcuLc</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/970546164725501952?ref_src=twsrc%5Etfw">March 5, 2018</a></blockquote>
 
+## ソースコード
+
+実際使ったコード、ベンチマーク結果はこちらに上がってます。コードは`lib/tasks/batch.rake`、スキーマは`schema.rb`、シードデータは`db/*_seed.csv`、ベンチマーク結果はCircleCIをそれぞれ参照ください。
+
+<https://github.com/toshimaru/rdm-rails5.1>
+
 ## 発表モチベーション
 
-今回の発表に至るモチベーションとしては、僕が実際に踏んだActiveRecordの重い処理とか他のエンジニアが書いたActiveRecordコードのパフォーマンス改善のための修正とかをやっている中で、その良くない処理及びその処理に対する解決アプローチがある程度パターン化できると思ったからです。
+今回の発表に至るモチベーションとしては、僕が実際に踏んだActiveRecordの重い処理とか他のエンジニアが書いたActiveRecordコードのパフォーマンス改善のための修正などをやっている中で、その良くない処理及びそれに対する解決アプローチがパターン化できると思ったからです。
 
-僕のアタマの中である程度「こういうアンチ・パターンがありそう」ってのはあったので今回の発表を機にそのアンチパターンにそれっぽい名前を付けて、同時に机上の空論にならないようにコードベースに落として、それをイメージしやすい具体的な事例とともに紹介しました。
+僕のアタマの中に「こういうアンチパターンがありそう」というアンチパターン候補がある程度リストアップされていたので、今回の発表を機にそれらにそれっぽい名前を付けて、同時に机上の空論にならないようにそれらをコードに落として、聞き手がイメージしやすいように具体的な事例とともに紹介しました。
 
-結果として、ActiveRecordアンチパターンを命名とともに整理できたことは大変良かったと思っています。またこの資料さえ共有しとけば、今後レビューのときとかもアンチパターンに関するコミュニケーションがしやすくなって個人的に助かりそうです。
+結果として、自分の中にあったActiveRecordアンチパターンを命名とともに整理できたことは大変良かったと思っています。またこの資料さえチームに共有しとけば、今後レビューのときとかでもアンチパターンに関するコミュニケーションがしやすくなって個人的に助かりそうです。
 
 ## 紹介したアンチパターン
 
@@ -57,11 +63,11 @@ tags: presentation activerecord rails
 
 ### Too many find_or_create_by パターン
 
-`find_or_create_by`は、オブジェクトが存在する場合は取得、なければ作成って挙動をするやつです。これをループ内で使いまくるパターン。
+`find_or_create_by`は、オブジェクトが存在する場合は取得、なければ作成って挙動をするやつです。これをループ内で使いまくっちゃうパターン。
 
 そんなときはSQLのUPSERTの機能を使うのが得策。具体的にはMySQLであれば`INSERT...ON DUPLICATE KEY UPDATE`です。
 
-残念なことにこれはActiveRecordの標準機能では提供されていないので[activerecord-import](https://github.com/zdennis/activerecord-import)などのgemを使って解決する必要があります。
+残念なことにUPSERTはActiveRecordの標準機能では提供されていないので、[activerecord-import](https://github.com/zdennis/activerecord-import)などのgemを使って解決する必要があります。
 
 ### has_many関連のcount方法いろいろあるよ問題
 
@@ -148,6 +154,8 @@ possible_keys: index_users_on_created_at
 => [2632, 51965, 25068, 8515, 84933, 67763, 89631, 69494, 78805, 17541, 53344, 7618, 92652, 13704, 94308, 96778, ...
 ```
 
+一つ目の`.select`を使ったコードはログに`Post Load`と出現している通り、Postモデルがロードされている一方、`.pluck`のほうでは`Post Load`とはなにも出ず単純に走ったクエリのみがログに出力されています。
+
 ### 紹介したアンチパターン、どれくらいの件数で障害に繋がりそう？
 
 今回紹介した事例は数千件-数十万くらいの程度のデータ量なのでそこまで酷いパフォーマンス結果は出ませんでしたが、例えば事例１でこれがUserレコード数百万件とか、事例３でレコードが数十万件くらいのオーダーになってくるとボトルネックが表出しそうかな、という印象です。
@@ -156,9 +164,8 @@ possible_keys: index_users_on_created_at
 
 ## 発表を終えて
 
-30minsと長めの発表は[AWS Summitぶり](/aws-summit-tokyo-2015/)だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかった。
+30minsと長めの発表は[AWS Summitぶり](/aws-summit-tokyo-2015/)だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかったです。
 
 ## その他の資料
 
 - Rails Developer Meetup 2018の全体の発表資料はこちら: [Rails Developers Meetup 2018 スライドまとめ - Qiita](https://qiita.com/dyoshimitsu/items/20a41ab656d2da80e4d9)
-
