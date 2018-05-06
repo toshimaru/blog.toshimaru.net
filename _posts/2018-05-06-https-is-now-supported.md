@@ -2,32 +2,37 @@
 layout: post
 title: 本ブログが完全https化されました
 image: "/images/posts/https/https.png"
-description: 本ブログが完全HTTPS化されましたのでお知らせ致します。 といっても別に何をやったというわけではなく、朝起きたら突然GitHub PagesがHTTPSに対応してました。 今まで本ブログに蓄積されたはてブ人気エントリ（5user以上）の現時点でのスナップショットを取っておいたので下記に一覧として公開いたします。
-tags: https
+description: 本ブログが完全HTTPS化されましたのでお知らせ致します。 といっても別に何をやったというわけではなく、朝起きたら突然GitHub PagesがHTTPSをサポートしてくれてました。 今まで本ブログに蓄積されたはてなブックマーク人気エントリ（5user以上）の現時点でのスナップショットを取っておいたので下記に一覧として公開いたします。
+tags: https security
 ---
 
 本ブログが完全HTTPS化されましたのでお知らせ致します。
 
 ## GitHub Pages HTTPS Support
 
-といっても別に何をやったというわけではなく、朝起きたら突然GitHub PagesがHTTPSに対応してました。
+といっても別に何をやったというわけではなく、朝起きたら突然GitHub PagesがHTTPSをサポートしてくれてました。
 
-<blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">Today, custom domains on GitHub Pages are gaining support for HTTPS via <a href="https://twitter.com/letsencrypt?ref_src=twsrc%5Etfw">@letsencrypt</a>. It&#39;s another step towards making the web more secure for everyone. <a href="https://t.co/MbB7Jjd3EE">https://t.co/MbB7Jjd3EE</a></p>&mdash; GitHub (@github) <a href="https://twitter.com/github/status/991366832421523456?ref_src=twsrc%5Etfw">2018年5月1日</a></blockquote>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="ja"><p lang="en" dir="ltr">Today, custom domains on GitHub Pages are gaining support for HTTPS via <a href="https://twitter.com/letsencrypt?ref_src=twsrc%5Etfw">@letsencrypt</a>. It&#39;s another step towards making the web more secure for everyone. <a href="https://t.co/MbB7Jjd3EE">https://t.co/MbB7Jjd3EE</a></p>&mdash; GitHub (@github) <a href="https://twitter.com/github/status/991366832421523456?ref_src=twsrc%5Etfw">May 1, 2018</a></blockquote>
 
 HTTPSで配信するために特段こちら側で何か設定が必要というわけではなく、GitHubがよしなに全て設定してくれているので本当に朝起きたらhttpをhttpsに変えてアクセスするただけで大丈夫でした。
 
-ちなみに僕は数年くらい前から「Github Pagesカスタムドメインでhttps対応してほしい！」とサポートに訴え続けておりましたが、この度はやっと対応してくれたということでありがたい気持ちでいっぱいです。（これでやっと同僚エンジニアから「セキュアじゃないですね！」と煽られることもなくなる...）
+ちなみに僕は数年くらい前から「Github Pagesカスタムドメインでhttps対応してほしい！」とGitHubサポートチームに訴え続けておりましたが、この度はやっと対応してくれたということでありがたい気持ちでいっぱいです。（これでやっと同僚エンジニアから「ブログがセキュアじゃないですね！」と煽られることもなくなる...）
 
-![](/images/posts/https/https-github.png)
-**↑GitHubのhttps設定画面**
+![github config](/images/posts/https/https-github.png)
+
+**:point_up:GitHubのhttps設定画面**
+
+![let's encrypt certification](/images/posts/https/lets-encrypt.png)
+
+**:point_up:HTTPS対応に際してはLet's Encryptの証明書が使われています**
 
 ## はてぶURL変わっちゃうよ問題
 
-はてなブックマークはhttpとhttpsをURLとして区別するので、今回のhttps化に伴い今までのはてなブックマーク数がリセットされることになります。ちょっと勿体無い気もしますが致し方ない感じです。
+はてなブックマークではhttpとhttpsをURLとして区別するので、今回のhttps化に伴い今までのはてなブックマーク数がリセットされることになります。ちょっと勿体無い気もしますが致し方ないですね。
 
 せっかくなので今まで本ブログに蓄積されたはてブ人気エントリ（5user以上）の現時点でのスナップショットを取っておいたので下記に一覧として公開いたします。
 
-#### 人気エントリ(5user以上) スナップショット
+### 人気エントリ(5user以上)一覧
 
 1. [UIの進化を止めるうんこユーザーに我々はどう立ち向かうべ...](http://blog.toshimaru.net/cool-ui/) [![](https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/)](http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/)
 1. [Railsフロントエンド技術の今とこれから](http://blog.toshimaru.net/rails-frontend/) [![](https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-frontend/)](http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-frontend/)
