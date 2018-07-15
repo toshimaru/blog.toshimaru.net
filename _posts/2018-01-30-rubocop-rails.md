@@ -2,9 +2,17 @@
 layout: post
 title: Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った
 image: "/images/posts/rubocop-rail.png"
-description: Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 Rubyの静的コード解析の定番といえばRuboCopですよね。ですがRuboCopの設定ファイルrubocop.ymlの設定作業って結構大変じゃないですか？
+description: Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。
 tags: rails rubocop
-modified_date: 2018-02-05
+modified_date: 2018-07-15
+---
+
+【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、[rubocop-rails_config](https://github.com/toshimaru/rubocop-rails_config)というgemにRenameされました。
+
+本gemご利用の方は下記のrubocop-rails_configでのご利用お願いします。
+
+[toshimaru/rubocop-rails_config](https://github.com/toshimaru/rubocop-rails_config)
+
 ---
 
 Railsとほとんど同じRuboCopの設定が利用できる[rubocop-rails](https://github.com/toshimaru/rubocop-rails)というgemを作りましたので紹介します。
