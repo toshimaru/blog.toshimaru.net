@@ -1,4 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-07-15T17:10:12+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">本ブログが完全https化されました</title><link href="https://blog.toshimaru.net/https-is-now-supported/" rel="alternate" type="text/html" title="本ブログが完全https化されました" /><published>2018-05-06T00:00:00+09:00</published><updated>2018-05-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/https-is-now-supported</id><content type="html" xml:base="https://blog.toshimaru.net/https-is-now-supported/">&lt;p&gt;本ブログが完全HTTPS化されましたのでお知らせ致します。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-07-17T01:02:22+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">RuboCopチームにgemの名前を譲った話</title><link href="https://blog.toshimaru.net/rubocop-rails-config/" rel="alternate" type="text/html" title="RuboCopチームにgemの名前を譲った話" /><published>2018-07-17T00:00:00+09:00</published><updated>2018-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config/">&lt;p&gt;かねてより僕が開発していた&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;ubocop-rails&lt;/a&gt;というgemをRuboCop公式チームの要望により譲った。&lt;/p&gt;
+
+&lt;p&gt;僕がこのgemを作った経緯とかは下記の記事の通り。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;つくったやつ | Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design! &lt;a href=&quot;https://t.co/szG0eLPetS&quot;&gt;https://t.co/szG0eLPetS&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/958123075572195331?ref_src=twsrc%5Etfw&quot;&gt;January 29, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
+
+&lt;p&gt;名前を譲ることになったきっかけは下記のIssue。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop/issues/5976&quot;&gt;Extract Rails Cops in a separate · Issue #5976 · rubocop-hq/rubocop&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;より正確にいうとこのIssueの前に&lt;a href=&quot;https://rubykaigi.org/2018/&quot;&gt;RubyKaigi 2018&lt;/a&gt;の懇親会でRuboCop作者から僕へ間接的に打診があり、上記のIssueに至る。&lt;/p&gt;
+
+&lt;p&gt;RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を作りたい。gem名はrubocop-railsとしたい。名前を頂戴！」と感じ。僕の想いとしては「RuboCop公式チームとして使いたい名前ということであればどうぞどうぞ。わかりやすい名前を付けることはRubyコミュニティ全体の利益にもなるだろうしね！」という感じ。&lt;/p&gt;
+
+&lt;h2 id=&quot;譲るにあたりやったこと&quot;&gt;譲るにあたりやったこと&lt;/h2&gt;
+
+&lt;p&gt;下記のようなIssueを作成して進めていった。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails/issues/31&quot;&gt;[IMPORTANT ANNOUNCEMENT] Transfer rubocop-rails gem to RuboCop Team · Issue #31 · toshimaru/rubocop-rails&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;rubocop-rails に代わる新しいgemを作成: &lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;rubocop-rails の新しいversionを切って、post_install_messageでRenameの旨を周知&lt;/li&gt;
+  &lt;li&gt;rubocop-rails_config のほうに簡単にUpdateできるようなUpdate Generator Taskを用意&lt;/li&gt;
+  &lt;li&gt;rubocop-rails というgemに新しいOwnerを付与&lt;/li&gt;
+  &lt;li&gt;rubocop-rails のRename前の古いバージョンをrubygemsから削除&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一番最後の &lt;strong&gt;古いバージョンをrubygemsから削除&lt;/strong&gt; はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果古いバージョンを消してでもgemのRenameを周知しようと思い至った。これに関しては正直正解はないと思う。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+
+&lt;p&gt;なお、gemを消す方法に関しては下記を参考にさせてもらった。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blog.s21g.com/articles/1755&quot;&gt;公開した gem を削除する方法 - ヽ( ・∀・)ノくまくまー - s21g&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">かねてより僕が開発していたubocop-railsというgemをRuboCop公式チームの要望により譲った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry><entry><title type="html">本ブログが完全https化されました</title><link href="https://blog.toshimaru.net/https-is-now-supported/" rel="alternate" type="text/html" title="本ブログが完全https化されました" /><published>2018-05-06T00:00:00+09:00</published><updated>2018-05-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/https-is-now-supported</id><content type="html" xml:base="https://blog.toshimaru.net/https-is-now-supported/">&lt;p&gt;本ブログが完全HTTPS化されましたのでお知らせ致します。&lt;/p&gt;
 
 &lt;h2 id=&quot;github-pages-https-support&quot;&gt;GitHub Pages HTTPS Support&lt;/h2&gt;
 
@@ -1372,86 +1408,4 @@ location /icons/ {
 &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
 	&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RFC822Z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">Goの現在時刻はtime.Now()で取得することができるがフォーマットされた現在日時はどのように取得すればよいだろうか。</summary></entry><entry><title type="html">Rubyのヒアドキュメントの書き方いろいろ</title><link href="https://blog.toshimaru.net/ruby-heredoc/" rel="alternate" type="text/html" title="Rubyのヒアドキュメントの書き方いろいろ" /><published>2017-08-04T00:00:00+09:00</published><updated>2017-08-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-heredoc</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-heredoc/">&lt;p&gt;Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;識別子&quot;&gt;&amp;lt;&amp;lt;識別子&lt;/h2&gt;
-
-&lt;p&gt;これがRubyのヒアドキュメントの基本型となります。識別子である&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;の始点の&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&amp;lt;EOS&lt;/code&gt;から次に出てくる&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;までの囲まれている部分が文字列となります。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
-    Hello,
-
-    World!
-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    Hello,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    World!&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;上記のコードのコメントアウトされている箇所が定義した&lt;code class=&quot;highlighter-rouge&quot;&gt;hello&lt;/code&gt;メソッドの出力結果となります。&lt;/p&gt;
-
-&lt;h2 id=&quot;-識別子&quot;&gt;&amp;lt;&amp;lt;-識別子&lt;/h2&gt;
-
-&lt;p&gt;上記のコードは終端の&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;の位置が気に食わないですか？　たしかにdef~endの中で一段ネストさせたいですね。&lt;code class=&quot;highlighter-rouge&quot;&gt;-&lt;/code&gt;（ダッシュ）を識別子の手前に置けば、こんな書き方が可能です。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
-    Hello,
-
-    World!
-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  EOS&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    Hello,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    World!&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;これで終端の&lt;code class=&quot;highlighter-rouge&quot;&gt;EOS&lt;/code&gt;がメソッドの内部でネストされて可読性が上がりましたね。&lt;/p&gt;
-
-&lt;h2 id=&quot;識別子-1&quot;&gt;&amp;lt;&amp;lt;~識別子&lt;/h2&gt;
-
-&lt;p&gt;でもちょっと待って下さい。本当にほしい文字列は先頭に空白のない文字列だったんです。でも安心してください、Ruby2.3以降は&lt;code class=&quot;highlighter-rouge&quot;&gt;~&lt;/code&gt;（チルダ）を識別子の手前に置いてこう書けるんです。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;~&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
-    Hello,
-
-    World!
-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  EOS&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#Hello,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#World!&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;これでHelloという文字列の手前にあるネストの空白も消してくれました。&lt;/p&gt;
-
-&lt;h2 id=&quot;豆知識-github-syntax-highlight&quot;&gt;豆知識. GitHub Syntax Highlight&lt;/h2&gt;
-
-&lt;p&gt;下記のようにGitHub上にてヒアドキュメントの識別子にsyntaxの指定をすると、GitHub syntax highlightが効くようになります。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;a&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RUBY&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
-    def hello
-      puts &quot;Hello World!&quot;
-    end
-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  RUBY&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/heredoc_rb.png&quot; alt=&quot;heredoc&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.ruby-lang.org/ja/latest/doc/spec=2fliteral.html#here&quot;&gt;リテラル (Ruby 2.4.0) ヒアドキュメント (行指向文字列リテラル)&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://qiita.com/Linda_pp/items/32fddbbe117cf03fef0f&quot;&gt;Ruby のヒアドキュメントすごい - Qiita&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。</summary></entry></feed>
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">Goの現在時刻はtime.Now()で取得することができるがフォーマットされた現在日時はどのように取得すればよいだろうか。</summary></entry></feed>
