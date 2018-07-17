@@ -36,6 +36,16 @@ RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を�
 
 一番最後の **古いバージョンをrubygemsから削除** はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果古いバージョンを消してでもgemのRenameを周知しようと思い至った。これに関しては正直正解はないと思う。
 
+## RuboCopコミッターのkoicさんが発表してくださいました
+
+本件に関してはRuboCopコミッターの[@koic](https://twitter.com/koic)さんも先日の[Rails Developers Meetup 2018 Day 3 Extreme](https://techplay.jp/event/679666)にて発表して頂いたようです。:innocent:
+
+<script async class="speakerdeck-embed" data-slide="57" data-id="612849c52252464d8a63fc97f90c6091" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+発表エントリ: [Rails Developers Meetup 2018 Day 3 Extreme に登壇した - koicの日記](http://koic.hatenablog.com/entry/railsdm-2018-day3-extreme)
+
+こちらこそありがとうございました。:pray:
+
 ## 参考資料
 
 なお、gemを消す方法に関しては下記を参考にさせてもらった。
