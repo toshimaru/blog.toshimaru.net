@@ -6,7 +6,7 @@ description: かねてより僕が開発していたubocop-railsというgemをR
 tags: rails rubocop
 ---
 
-かねてより僕が開発していた[ubocop-rails](https://github.com/toshimaru/rubocop-rails)というgemをRuboCop公式チームの要望により譲った。
+かねてより僕が開発していた[rubocop-rails](https://github.com/toshimaru/rubocop-rails)というgemをRuboCop公式チームの要望により譲った。
 
 僕がこのgemを作った経緯とかは下記の記事の通り。
 
@@ -28,13 +28,13 @@ RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を�
 
 [[IMPORTANT ANNOUNCEMENT] Transfer rubocop-rails gem to RuboCop Team · Issue #31 · toshimaru/rubocop-rails](https://github.com/toshimaru/rubocop-rails/issues/31)
 
-- rubocop-rails に代わる新しいgemを作成: [rubocop-rails_config](https://github.com/toshimaru/rubocop-rails_config)
-- rubocop-rails の新しいversionを切って、post_install_messageでRenameの旨を周知
-- rubocop-rails_config のほうに簡単にUpdateできるようなUpdate Generator Taskを用意
-- rubocop-rails というgemに新しいOwnerを付与
-- rubocop-rails のRename前の古いバージョンをrubygemsから削除
+- `rubocop-rails` に代わる新しいgemを作成: [rubocop-rails_config](https://github.com/toshimaru/rubocop-rails_config)
+- `rubocop-rails` の新しいversionを切って、post_install_messageでRenameの旨を周知
+- `rubocop-rails_config` のほうに簡単にUpdateできるようなUpdate Generator Taskを用意
+- `rubocop-rails` というgemに新しいOwnerを付与
+- `rubocop-rails` のRename前の古いバージョンをrubygemsから削除
 
-一番最後の **古いバージョンをrubygemsから削除** はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果古いバージョンを消してでもgemのRenameを周知しようと思い至った。これに関しては正直正解はないと思う。
+一番最後の **古いバージョンをrubygemsから削除** はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果、古いバージョンを消してでもgemのRename周知を優先させようと思い至った。これに関しては正直正解はないと思う。
 
 ## RuboCopコミッターのkoicさんが発表してくださいました
 
@@ -44,7 +44,7 @@ RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を�
 
 発表エントリ: [Rails Developers Meetup 2018 Day 3 Extreme に登壇した - koicの日記](http://koic.hatenablog.com/entry/railsdm-2018-day3-extreme)
 
-こちらこそありがとうございました。:pray:
+エピソードのご紹介ありがとうございました。:pray:
 
 ## 参考資料
 
