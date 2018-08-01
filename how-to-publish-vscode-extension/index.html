@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design!</title>
+  <title>VS Code Extensionの公開手順 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="site.webmanifest">
@@ -13,15 +13,15 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design!">
-  <meta property="og:title" content="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design!">
-  <meta name="description" content="はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。 きっかけ もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった Vimでhybrid、Atomでhybrid nextというテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った 公開されているvscode-hybrid-nextを使おうと思ったが、少々気に食わない設定があった 同レポジトリにPRしようかと思ったがテーマのあて方がtmTheme形式だったため小回りが効かない感じになってた 自分でテーマを作った hybrid-next-plus">
-  <meta name="twitter:description" content="はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。 きっかけ もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった Vimでhybrid、Atomでhybrid nextというテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った 公開されているvscode-hybrid-nextを使おうと思ったが、少々気に食わない設定があった 同レポジトリにPRしようかと思ったがテーマのあて方がtmTheme形式だったため小回りが効かない感じになってた 自分でテーマを作った hybrid-next-plus">
-  <meta property="og:description" content="はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。 きっかけ もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった Vimでhybrid、Atomでhybrid nextというテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った 公開されているvscode-hybrid-nextを使おうと思ったが、少々気に食わない設定があった 同レポジトリにPRしようかと思ったがテーマのあて方がtmTheme形式だったため小回りが効かない感じになってた 自分でテーマを作った hybrid-next-plus">
-  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" />
-  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2018-07-31T00:00:00+09:00">
-  <link rel="canonical" href="https://blog.toshimaru.net/vscoce-hybrid-next-plus/">
+  <meta name="twitter:title" content="VS Code Extensionの公開手順 - Hack Your Design!">
+  <meta property="og:title" content="VS Code Extensionの公開手順 - Hack Your Design!">
+  <meta name="description" content="先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。 まずVSCode Extensionを公開するためには、Visual Studio Team Servicesアカウントが必要になります。">
+  <meta name="twitter:description" content="先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。 まずVSCode Extensionを公開するためには、Visual Studio Team Servicesアカウントが必要になります。">
+  <meta property="og:description" content="先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。 まずVSCode Extensionを公開するためには、Visual Studio Team Servicesアカウントが必要になります。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/vsts/og.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/vsts/og.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2018-08-01T00:00:00+09:00">
+  <link rel="canonical" href="https://blog.toshimaru.net/how-to-publish-vscode-extension/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     // (adsbygoogle = window.adsbygoogle || []).push({
@@ -43,7 +43,8 @@
     <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
   <![endif]-->
   <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
   <header class="clearfix">
@@ -60,8 +61,8 @@
   <a class="icon search-area">
     <i class="icon-search"></i>
     <form id="search-form" action="https://google.com/search" method="get">
-      <input type="hidden" name="query" value="site:blog.toshimaru.net">
-      <input type="text" class="search-txt" name="q" placeholder="Search">
+      <input type="hidden" name="query" value="site:blog.toshimaru.net" />
+      <input type="text" class="search-txt" name="q" placeholder="Search"/>
     </form>
   </a>
   </div>
@@ -72,59 +73,114 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</h1>
+  <h1 class="fadeInLeft">VS Code Extensionの公開手順</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2018-07-31T00:00:00+09:00" pubdate>31 Jul 2018</time>
+      <i class="icon-calendar"></i><time datetime="2018-08-01T00:00:00+09:00" pubdate>01 Aug 2018</time>
       <i class="icon-tags"></i> 
 <a href="/tag/vscode/" rel="tag">vscode</a>
 
 
     </div>
-    <img class="post-image flipInX" src="/images/posts/vscode/hybrid.png" alt="(image)はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました">
+    <img class="post-image flipInX" src="/images/posts/vsts/og.png" alt="(image)VS Code Extensionの公開手順" title="VS Code Extensionの公開手順" />
   </div>
 </div>
 
-<p>はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</p>
+<ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#visual-studio-team-servicesアカウントの作成">Visual Studio Team Servicesアカウントの作成</a></li>
+<li class="toc-entry toc-h2"><a href="#プロジェクト作成">プロジェクト作成</a></li>
+<li class="toc-entry toc-h2"><a href="#アクセストークンの取得">アクセストークンの取得</a></li>
+<li class="toc-entry toc-h2"><a href="#vsceのダウンロード">vsceのダウンロード</a></li>
+<li class="toc-entry toc-h2"><a href="#publisher作成">Publisher作成</a></li>
+<li class="toc-entry toc-h2"><a href="#vsceログイン">vsceログイン</a></li>
+<li class="toc-entry toc-h2"><a href="#公開">公開！</a></li>
+<li class="toc-entry toc-h2"><a href="#参考資料">参考資料</a></li>
+</ul><p>先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。</p>
 
-<blockquote class="twitter-tweet" data-lang="ja">
-<p lang="ja" dir="ltr">初めてのVSCode ExtensionとしてThemeを作ってみた（Beta Version）| Hybrid Next Plus - Visual Studio Marketplace <a href="https://t.co/d8xWeLHQ51">https://t.co/d8xWeLHQ51</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1021918426426531840?ref_src=twsrc%5Etfw">July 25, 2018</a>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="ja" dir="ltr">Blogged. | はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design! <a href="https://t.co/2cg3jwnT5q">https://t.co/2cg3jwnT5q</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1024512092341030912?ref_src=twsrc%5Etfw">August 1, 2018</a>
 </blockquote>
 
-<h2 id="きっかけ">きっかけ</h2>
+<h2 id="visual-studio-team-servicesアカウントの作成">
+<a id="visual-studio-team-servicesアカウントの作成" class="anchor" href="#visual-studio-team-services%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visual Studio Team Servicesアカウントの作成</h2>
+
+<p>まずVSCode Extensionを公開するためには、<a href="https://visualstudio.microsoft.com/team-services/">Visual Studio Team Services</a>アカウントが必要になります。</p>
+
+<p><img src="/images/posts/vsts/sign-in.png" alt=""></p>
+
+<p>「MSのメールアカウントを作らなければならないんか！？」と一瞬思っちゃいましたが、手持ちのGmailなどでも登録できるのでご安心を。</p>
+
+<h2 id="プロジェクト作成">
+<a id="プロジェクト作成" class="anchor" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E4%BD%9C%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>プロジェクト作成</h2>
+
+<p>自分の好きな名前でプロジェクトを作成します。</p>
+
+<p><img src="/images/posts/vsts/create-pj.png" alt=""></p>
+
+<h2 id="アクセストークンの取得">
+<a id="アクセストークンの取得" class="anchor" href="#%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3%E3%81%AE%E5%8F%96%E5%BE%97" aria-hidden="true"><span class="octicon octicon-link"></span></a>アクセストークンの取得</h2>
+
+<p>作成したプロジェクトページ( <code class="highlighter-rouge">https://{youraccount}.visualstudio.com</code> )でアクセストークンを取得します。 右上メニューのセキュリティからアクセストークンの追加を行ってください。</p>
+
+<p><img src="/images/posts/vsts/security.png" alt=""></p>
+
+<p><img src="/images/posts/vsts/accesstoken.png" alt=""></p>
+
+<p>下記の内容でアクセストークンを作成します。</p>
 
 <ul>
-  <li>もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった</li>
-  <li>Vimで<a href="https://github.com/w0ng/vim-hybrid">hybrid</a>、Atomで<a href="https://github.com/kaicataldo/hybrid-next-syntax">hybrid next</a>というテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った</li>
-  <li>公開されている<a href="https://github.com/wyze/vscode-hybrid-next/">vscode-hybrid-next</a>を使おうと思ったが、少々気に食わない設定があった</li>
-  <li>同レポジトリにPRしようかと思ったがテーマのあて方が<a href="https://www.sublimetext.com/docs/3/color_schemes_tmtheme.html">tmTheme</a>形式だったため小回りが効かない感じになってた</li>
-  <li>自分でテーマを作った <a href="https://github.com/toshimaru/hybrid-next-plus">hybrid-next-plus</a>
+  <li>Description: <strong>vsce</strong>
+</li>
+  <li>Expire: <strong>1 year</strong>
+</li>
+  <li>Scope: <strong>All</strong>
 </li>
 </ul>
 
-<h2 id="参考テーマ">参考テーマ</h2>
+<p><strong>※ScopeをAllに設定しないとこのあとの手順がうまくいかないので注意！</strong></p>
 
-<p>背景やサイドバーの設定は、<a href="https://atom.io/themes/one-dark-ui">Atom One Dark</a>を参考にした。</p>
+<p><img src="/images/posts/vsts/get-token.png" alt=""></p>
 
-<p><img src="https://i.github-camo.com/af4a063b48fb691fb25e664ca8e0680a31f6f1e4/68747470733a2f2f636c6f75642e67697468756275736572636f6e74656e742e636f6d2f6173736574732f3337383032332f32363234363831382f30383235356237362d336364362d313165372d396636642d3661653365313661383961392e706e67" alt="atom one dark"></p>
+<h2 id="vsceのダウンロード">
+<a id="vsceのダウンロード" class="anchor" href="#vsce%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89" aria-hidden="true"><span class="octicon octicon-link"></span></a>vsceのダウンロード</h2>
 
-<p><img class="emoji" title=":point_up:" alt=":point_up:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/261d.png" height="20" width="20"> <strong>【図】Atom One Dark(公式READMEより引用)</strong></p>
+<p>VSCode Extensionの公開に際しては<code class="highlighter-rouge">vsce</code>コマンドを使用します。npmでダウンロードしてください。</p>
 
-<p>シンタックスハイライトのカラーは、<a href="https://github.com/w0ng/vim-hybrid">hybrid</a>、<a href="https://github.com/kaicataldo/hybrid-next-syntax">hybrid next</a>, <a href="https://github.com/wyze/vscode-hybrid-next/">vscode-hybrid-next</a>を参考にしつつ一番しっくりくる色のあて方を選択した。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ npm install -g vsce
+</code></pre></div></div>
 
-<p><img src="https://raw.githubusercontent.com/kaicataldo/hybrid-next-syntax/master/screenshots/hybrid-next-screenshot-1.png" alt="hybrid next"></p>
+<h2 id="publisher作成">
+<a id="publisher作成" class="anchor" href="#publisher%E4%BD%9C%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>Publisher作成</h2>
 
-<p><img class="emoji" title=":point_up:" alt=":point_up:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/261d.png" height="20" width="20"> <strong>【図】Atom Hybrid Next(公式READMEより引用)</strong></p>
+<p><a href="https://marketplace.visualstudio.com/manage">Marketplace publisher management page</a> で必要な項目を記入した上でCreate Publisherを行います。</p>
 
-<h2 id="最後に">最後に</h2>
+<h2 id="vsceログイン">
+<a id="vsceログイン" class="anchor" href="#vsce%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>vsceログイン</h2>
 
-<p>一応markdown, Ruby, jsonファイルあたりはちゃんと確認にしていい感じにsyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPRお願いします 🙏</p>
+<p>下記のコマンドでvsceログインします。手順のなかでアクセストークンを聞かれるので上手順で入手したトークンを入力します。</p>
 
-<p>手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vsce login (publisher name)
+</code></pre></div></div>
+
+<h2 id="公開">
+<a id="公開" class="anchor" href="#%E5%85%AC%E9%96%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>公開！</h2>
+
+<p>これで公開準備が整ったので、VSCode Extensionのルートで下記のコマンドを打ってExtensionを公開します。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vsce publish
+</code></pre></div></div>
+
+<h2 id="参考資料">
+<a id="参考資料" class="anchor" href="#%E5%8F%82%E8%80%83%E8%B3%87%E6%96%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考資料</h2>
+
+<ul>
+  <li><a href="https://code.visualstudio.com/docs/extensions/publish-extension">Publishing Visual Studio Code Extensions</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/vsts/organizations/accounts/create-organization-msa-or-work-student?view=vsts">Create a VSTS organization with a Microsoft account or a work account | Microsoft Docs</a></li>
+</ul>
 
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/vscoce-hybrid-next-plus/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/how-to-publish-vscode-extension/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -144,7 +200,7 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/how-to-publish-vscode-extension/" title="VS Code Extensionの公開手順">VS Code Extensionの公開手順</a></li>
+    <li><a href="/vscoce-hybrid-next-plus/" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</a></li>
   
   </ul>
   </div>
@@ -152,7 +208,11 @@
 
 <div class="related-by-google">
   <h3>おすすめ記事</h3>
-  <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7568375448"></ins>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7568375448"></ins>
   <script>
   (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
@@ -160,25 +220,30 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/how-to-publish-vscode-extension/" title="Newer Post: VS Code Extensionの公開手順"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/rubocop-rails-config/" title="Older Post: RuboCopチームにgemの名前を譲った話">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/vscoce-hybrid-next-plus/" title="Older Post: はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
 
 <div id="adsense">
   <!-- post-rectangle1 -->
-  <ins class="adsbygoogle adslot_1" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7891449048"></ins>
+  <ins class="adsbygoogle adslot_1"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7891449048"></ins>
   <!-- post-rectangle2 -->
-  <ins class="adsbygoogle adslot_2" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="4798381840"></ins>
+  <ins class="adsbygoogle adslot_2"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="4798381840"></ins>
   <!-- post-rectangle-smartphone -->
-  <ins class="adsbygoogle adslot_mobile" style="width:300px;height:250px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="5264827844"></ins>
+  <ins class="adsbygoogle adslot_mobile"
+       style="width:300px;height:250px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="5264827844"></ins>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     (adsbygoogle = window.adsbygoogle || []).push({});
@@ -198,8 +263,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-</noscript>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 <script id="jsonld" type="application/ld+json">
@@ -209,10 +273,10 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/vscoce-hybrid-next-plus/"
+      "@id": "https://blog.toshimaru.net/how-to-publish-vscode-extension/"
     },
-    "headline": "はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました",
-    "datePublished": "2018-07-31T00:00:00+09:00",
+    "headline": "VS Code Extensionの公開手順",
+    "datePublished": "2018-08-01T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -225,7 +289,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/images/posts/vscode/hybrid.png"
+      "url": "https://blog.toshimaru.net/images/posts/vsts/og.png"
     },
     "keywords": "vscode"
   },
@@ -271,36 +335,29 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
       <div class="center popular">
         <h2>Popular</h2>
         <ul>
-          <li>
-<a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/"></a>
 </li>
-          <li>
-<a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a>
+          <li><a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-frontend/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-frontend/"></a>
 </li>
-          <li>
-<a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a>
+          <li><a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
 </li>
-          <li>
-<a href="/jquery-8-tips/">jQuery使いが知っておくべきjQueryテクニック8選</a>
+          <li><a href="/jquery-8-tips/">jQuery使いが知っておくべきjQueryテクニック8選</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-8-tips/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-8-tips/"></a>
 </li>
-          <li>
-<a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a>
+          <li><a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-batch-optimization/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-batch-optimization/"></a>
 </li>
-          <li>
-<a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a>
+          <li><a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-http-status-symbols/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-http-status-symbols/"></a>
 </li>
-          <li>
-<a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
+          <li><a href="/git-log-graph/">美しき git log --graph のエイリアス</a>
 <a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/"></a>
 </li>
         </ul>
-        <p><a href="http://b.hatena.ne.jp/entrylist?sort=count&amp;url=http%3A%2F%2Fblog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+        <p><a href="http://b.hatena.ne.jp/entrylist?sort=count&url=http%3A%2F%2Fblog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
       </div>
       <div class="right">
         <h2>Tag</h2>

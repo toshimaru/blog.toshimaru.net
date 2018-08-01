@@ -1,4 +1,72 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-08-01T13:25:55+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</title><link href="https://blog.toshimaru.net/vscoce-hybrid-next-plus/" rel="alternate" type="text/html" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました" /><published>2018-07-31T00:00:00+09:00</published><updated>2018-07-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vscoce-hybrid-next-plus</id><content type="html" xml:base="https://blog.toshimaru.net/vscoce-hybrid-next-plus/">&lt;p&gt;はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-08-01T14:11:30+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">VS Code Extensionの公開手順</title><link href="https://blog.toshimaru.net/how-to-publish-vscode-extension/" rel="alternate" type="text/html" title="VS Code Extensionの公開手順" /><published>2018-08-01T00:00:00+09:00</published><updated>2018-08-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-publish-vscode-extension</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-publish-vscode-extension/">&lt;p&gt;先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. | はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design! &lt;a href=&quot;https://t.co/2cg3jwnT5q&quot;&gt;https://t.co/2cg3jwnT5q&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1024512092341030912?ref_src=twsrc%5Etfw&quot;&gt;August 1, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;visual-studio-team-servicesアカウントの作成&quot;&gt;Visual Studio Team Servicesアカウントの作成&lt;/h2&gt;
+
+&lt;p&gt;まずVSCode Extensionを公開するためには、&lt;a href=&quot;https://visualstudio.microsoft.com/team-services/&quot;&gt;Visual Studio Team Services&lt;/a&gt;アカウントが必要になります。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/sign-in.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;「MSのメールアカウントを作らなければならないんか！？」と一瞬思っちゃいましたが、手持ちのGmailなどでも登録できるのでご安心を。&lt;/p&gt;
+
+&lt;h2 id=&quot;プロジェクト作成&quot;&gt;プロジェクト作成&lt;/h2&gt;
+
+&lt;p&gt;自分の好きな名前でプロジェクトを作成します。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/create-pj.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;アクセストークンの取得&quot;&gt;アクセストークンの取得&lt;/h2&gt;
+
+&lt;p&gt;作成したプロジェクトページ( &lt;code class=&quot;highlighter-rouge&quot;&gt;https://{youraccount}.visualstudio.com&lt;/code&gt; )でアクセストークンを取得します。 右上メニューのセキュリティからアクセストークンの追加を行ってください。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/security.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/accesstoken.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;下記の内容でアクセストークンを作成します。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Description: &lt;strong&gt;vsce&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Expire: &lt;strong&gt;1 year&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;Scope: &lt;strong&gt;All&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;※ScopeをAllに設定しないとこのあとの手順がうまくいかないので注意！&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/get-token.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;vsceのダウンロード&quot;&gt;vsceのダウンロード&lt;/h2&gt;
+
+&lt;p&gt;VSCode Extensionの公開に際しては&lt;code class=&quot;highlighter-rouge&quot;&gt;vsce&lt;/code&gt;コマンドを使用します。npmでダウンロードしてください。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ npm install -g vsce
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;publisher作成&quot;&gt;Publisher作成&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://marketplace.visualstudio.com/manage&quot;&gt;Marketplace publisher management page&lt;/a&gt; で必要な項目を記入した上でCreate Publisherを行います。&lt;/p&gt;
+
+&lt;h2 id=&quot;vsceログイン&quot;&gt;vsceログイン&lt;/h2&gt;
+
+&lt;p&gt;下記のコマンドでvsceログインします。手順のなかでアクセストークンを聞かれるので上手順で入手したトークンを入力します。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vsce login (publisher name)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;公開&quot;&gt;公開！&lt;/h2&gt;
+
+&lt;p&gt;これで公開準備が整ったので、VSCode Extensionのルートで下記のコマンドを打ってExtensionを公開します。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vsce publish
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://code.visualstudio.com/docs/extensions/publish-extension&quot;&gt;Publishing Visual Studio Code Extensions&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/vsts/organizations/accounts/create-organization-msa-or-work-student?view=vsts&quot;&gt;Create a VSTS organization with a Microsoft account or a work account | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><summary type="html">先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vsts/og.png" /></entry><entry><title type="html">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</title><link href="https://blog.toshimaru.net/vscoce-hybrid-next-plus/" rel="alternate" type="text/html" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました" /><published>2018-07-31T00:00:00+09:00</published><updated>2018-07-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vscoce-hybrid-next-plus</id><content type="html" xml:base="https://blog.toshimaru.net/vscoce-hybrid-next-plus/">&lt;p&gt;はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;初めてのVSCode ExtensionとしてThemeを作ってみた（Beta Version）| Hybrid Next Plus - Visual Studio Marketplace &lt;a href=&quot;https://t.co/d8xWeLHQ51&quot;&gt;https://t.co/d8xWeLHQ51&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1021918426426531840?ref_src=twsrc%5Etfw&quot;&gt;July 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
 
@@ -1080,251 +1148,4 @@ Memory: 0.82 MB
       &lt;p&gt;&lt;a href=&quot;https://qiita.com/kaityo256/items/d7d8f7a0e522895c8f5d&quot;&gt;マサカリの起源について - Qiita&lt;/a&gt; &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><summary type="html">エンジニアリングとは常に学習し続けることである</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/book/books.jpeg" /></entry><entry><title type="html">ISUCON7に参加してきました</title><link href="https://blog.toshimaru.net/isucon7/" rel="alternate" type="text/html" title="ISUCON7に参加してきました" /><published>2017-10-28T00:00:00+09:00</published><updated>2017-10-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/isucon7</id><content type="html" xml:base="https://blog.toshimaru.net/isucon7/">&lt;p&gt;isuconに参加してきました。結果は&lt;a href=&quot;http://isucon.net/archives/50961437.html&quot;&gt;400組中154位&lt;/a&gt;で予選敗退。予選敗退となりましたが初めてのisucon参加にしては中の上に食い込めてまぁまぁだったのではないでしょうか。&lt;/p&gt;
-
-&lt;p&gt;※使用言語はRubyでした。&lt;/p&gt;
-
-&lt;h2 id=&quot;事前準備&quot;&gt;事前準備&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;isuconの練習時間は取れなかったので、参加ブログや過去問を読み漁りました
-    &lt;ul&gt;
-      &lt;li&gt;使えそうな設定・ブログエントリなどはgistにまとめて秘伝のタレとして準備しておきました&lt;/li&gt;
-      &lt;li&gt;また協議中に使えそうなツール・コマンドもさらっと触っておきました&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;当日の開発用レポジトリは事前にGitHub上にプライベートレポジトリを作成しておきチームメンバーを招待しておきました&lt;/li&gt;
-  &lt;li&gt;ボトルネック把握用にカジュアルに導入できるisucon用NewRelicのアカウントも作成しておきました&lt;/li&gt;
-  &lt;li&gt;コミュニケーションツールとしてはSlackに専用のチャンネルを用意しておきました（今考えると新規にSlackチームを作ってもよかったかもしれません）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;方針&quot;&gt;方針&lt;/h2&gt;
-
-&lt;p&gt;上述の事前準備のなかで当日の競技の流れをイメトレしてなんとなくの方針を決めました。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;作業がバッティングしないようにどの領域（App, WebServer, DB, CacheStore）を誰が見るかを決めてから作業する&lt;/li&gt;
-  &lt;li&gt;競技開始1時間くらいは全員でマニュアル読み、アプリケーション触ってアプリケーション把握、なんとなくのボトルネックのあたりを付ける&lt;/li&gt;
-  &lt;li&gt;競技終了1時間前にはコードをフリーズして再起動試験に備える&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;当日の立ち回り&quot;&gt;当日の立ち回り&lt;/h2&gt;
-
-&lt;p&gt;今回は同僚の redfit と s-jcs [敬称略]の三人と出たのですが僕含め三人ともに業務ではアプリケーションを主に担当しているので今回はチーム的にインフラ・ミドルウェアチューニングが弱いチーム構成になってました。&lt;/p&gt;
-
-&lt;p&gt;なので当日の立ち回りとしては、わりとインフラ業務経験がそこまで深くない s-jcs がアプリケーションを中心に担当してもらい、僕はインフラ・ミドルウェア周りを中心に攻めることにして、redfit には全般的に見てもらおうということになりました。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/isucon/isucon7-photo.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;やったこと&quot;&gt;やったこと&lt;/h2&gt;
-
-&lt;h3 id=&quot;mysql&quot;&gt;MySQL&lt;/h3&gt;
-
-&lt;p&gt;まず僕はMySQLの設定をしました。遅いクエリを特定して、インデックスを貼ればすぐに高速化が実現すること、また吐かれているクエリからAppの特性が透けてみえてくるのでは？という意図からMySQLから着手することにしました。&lt;/p&gt;
-
-&lt;p&gt;まずはスロークエリとしてクエリログを全部吐くように設定。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;slow_query_log                = 1
-slow_query_log_file           = /var/lib/mysql/mysqld-slow.log
-long_query_time               = 0
-log-queries-not-using-indexes = 1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;吐かれたクエリをざっとみてインデックス貼れそうな部分を貼ります。&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INDEX&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;idx_channel_id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;channel_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INDEX&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;idx_image_name&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;my.cnf&lt;/code&gt;の設定は後に&lt;code class=&quot;highlighter-rouge&quot;&gt;too many connection&lt;/code&gt;を観測していたので、&lt;code class=&quot;highlighter-rouge&quot;&gt;max_connections&lt;/code&gt;を少しいじったくらいでそれ以外はいじってません。&lt;/p&gt;
-
-&lt;p&gt;吐かれるクエリをザッと見て同じタイプのクエリが複数吐かれているのを観測できたので、アプリで複数のN+1の問題があることは想像がつきました。一方、例えば10秒とかかかるような激遅クエリが走っているわけではないので、何かしらの激遅クエリがボトルネックにはなってなさそうであることがわかりました。&lt;/p&gt;
-
-&lt;h3 id=&quot;app&quot;&gt;App&lt;/h3&gt;
-
-&lt;p&gt;上記の作業の裏でアプリケーションのチューニングをメンバーがやってたのですが劇的に得点が伸びません。上位陣の点数を見てここから抜けるには何かしらのブレークスルーが必要であろうと思い、ここでicons問題を解決しなければどーにもならなそうということに気づきます。&lt;/p&gt;
-
-&lt;p&gt;ここで僕はミドルウェア関係を手を止めicons問題の解決のためにアプリに手を出すことにしました（この時点で16時位だったと思います）。まずはDBに入った icons を書き出して NGINXでサーブするところまでをやりました。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;w&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;puts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;data&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;というコードでDBの画像を書き出していたのですが、ベンチが互換性チェックで落ちることに気づきます。&lt;/p&gt;
-
-&lt;p&gt;最初は画像がぶっ壊れてるのかと思ったのですが、見かけ上は全く同じ画像になっています。cmpを使ってバイナリのdiffをとってもこれといった差分は出ません。しかし画像のmd5を見てみると確かに値が違う。&lt;/p&gt;
-
-&lt;p&gt;うーん…となり違うとしたら画像のメタデータかファイル末尾のなにかだろうと思い、viのxxdを使ってhexdump形式でファイルを確認してみました。ここでRubyの &lt;code class=&quot;highlighter-rouge&quot;&gt;file.puts&lt;/code&gt; で画像ファイル末尾に改行が余計に入ってしまう点に気づけました。&lt;/p&gt;
-
-&lt;p&gt;この問題で30分以上は時間を潰してしまいました。最初からシンプルに &lt;code class=&quot;highlighter-rouge&quot;&gt;File.write&lt;/code&gt; あたりを使っておけばよかったなぁと後悔。&lt;/p&gt;
-
-&lt;h3 id=&quot;nginx&quot;&gt;NGINX&lt;/h3&gt;
-
-&lt;p&gt;Iconsは書き出せた、では次はそのファイルの効率的な配信だ、ということでassets関連のファイルがキャッシャブルな状態で配信されているかを確認しました。&lt;/p&gt;
-
-&lt;p&gt;ここでCacheControlヘッダーあたりが怪しいということには気づけたのですがうまく設定を煮詰めることができずタイムアップ。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;location /fonts/ {
-    add_header Cache-Control &quot;public&quot;;
-}
-location /js/ {
-    add_header Cache-Control &quot;public&quot;;
-}
-location /css/ {
-    add_header Cache-Control &quot;public&quot;;
-}
-location /icons/ {
-    add_header Cache-Control &quot;public&quot;;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;普段仕事でこのへんのNginxのconfは触る機会がないので設定がスムーズに進まず時間を浪費してしまいました。（実際作業時間の半分以上はああでもないこうでもないと言いながら適当な情報をクグる時間になっていたと思います）&lt;/p&gt;
-
-&lt;h2 id=&quot;問題について&quot;&gt;問題について&lt;/h2&gt;
-
-&lt;p&gt;今までのisucon の傾向を考慮しつつ、事前にある程度どんな構成で出題されそうか予測を立てていました。予想とその結果は以下の通り。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;App
-    &lt;ul&gt;
-      &lt;li&gt;予想候補: Rails/Sinatra&lt;/li&gt;
-      &lt;li&gt;予想: Sinatra&lt;/li&gt;
-      &lt;li&gt;結果: Sinatra  → 的中&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;App Server
-    &lt;ul&gt;
-      &lt;li&gt;予想候補: Unicorn/Puma&lt;/li&gt;
-      &lt;li&gt;予想: Unicorn&lt;/li&gt;
-      &lt;li&gt;結果: Puma → 外れ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;DB
-    &lt;ul&gt;
-      &lt;li&gt;予想候補: MySQL/Postgres&lt;/li&gt;
-      &lt;li&gt;予想: MySQL&lt;/li&gt;
-      &lt;li&gt;結果: MySQL  → 的中&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;WebServer
-    &lt;ul&gt;
-      &lt;li&gt;予想候補: NGINX /Apache&lt;/li&gt;
-      &lt;li&gt;予想: NGINX&lt;/li&gt;
-      &lt;li&gt;結果: NGINX  → 的中&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;メモリストア
-    &lt;ul&gt;
-      &lt;li&gt;予想候補: Memcache/ Redis&lt;/li&gt;
-      &lt;li&gt;予想: Memcache&lt;/li&gt;
-      &lt;li&gt;結果: 無し → ハズレ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;サーバー構成
-    &lt;ul&gt;
-      &lt;li&gt;予想候補: Web+DB一体型の小さいサーバー一台 / WebとDBを分離した小さいサーバー二台&lt;/li&gt;
-      &lt;li&gt;予想: Web+DB 一体型のサーバー一台&lt;/li&gt;
-      &lt;li&gt;結果: Web2台 DB1台の三台構成  → 大外れ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;App, DB, Webは概ね予想の通りでしたがまさか複数台構成、それも三台出くるとは思いもしませんでした（運営様お疲れ様です）。&lt;/p&gt;
-
-&lt;p&gt;複数台を想定していなかったので競技中はサーバー間のプロキシ戦略とか分散戦略とか全然ぱっと思い浮かばなかったです。これは大きな敗因だったと思います。&lt;/p&gt;
-
-&lt;p&gt;またAWS脳の僕としては画像の扱いは「はぁ？ AWS におくやろ普通（少なくともファイル配信サーバーおくやろ）」と思考停止しており、画像をDBに保存するなんて発想はとうの昔に忘れてしまっておりました。なのでicons問題に対してぱっとスマートなソリューションを頭に浮かべられなかったのは甘かったところでした。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;
-&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今回のISUSON、3台なのでweb x2 db x1 で予選通過できるんだけどこれが5台や10台だったらより帯域を有効利用するアーキテクチャが強くなるし、一台にファイル書き込みを寄せる奴には負けないと思ってる&lt;/p&gt;&amp;mdash; fujiwara (@fujiwara) &lt;a href=&quot;https://twitter.com/fujiwara/status/923533843520413697?ref_src=twsrc%5Etfw&quot;&gt;October 26, 2017&lt;/a&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;今回は２台のWebだったけどこれが10台だったらという思考実験をやってみるのも面白そうです。&lt;/p&gt;
-
-&lt;h2 id=&quot;反省点まとめ&quot;&gt;反省点まとめ&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;systemd 慣れてなさすぎてダメだった
-    &lt;ul&gt;
-      &lt;li&gt;最近業務でコマンドでサーバー操作することもめっきりなくなってるし systemd を使っていないので使って覚えるしかなさそう&lt;/li&gt;
-      &lt;li&gt;参考情報: &lt;a href=&quot;https://qiita.com/tukiyo3/items/092fc32318bd3d1a0846&quot;&gt;CentOS7で使われているsystemctlについて少しまとめた - Qiita&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;サーバー作業中、&lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt;という存在しないコマンドを叩いて何度エラーになったかわからないので大人しくサーバーにはvimを入れよう&lt;/li&gt;
-  &lt;li&gt;nginx力が低く効率的なサーバー構成を組めなかった
-    &lt;ul&gt;
-      &lt;li&gt;今回の敗因は何と言ってもicons問題を解決できずボトルネックをiconsからアプリケーションに移せなかったこと&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://gist.github.com/941/8c64842b71995a2d448315e2594f62c2&quot;&gt;マニュアル&lt;/a&gt;ちゃんと読んでおこう
-    &lt;ul&gt;
-      &lt;li&gt;sleep の値変えてスコア変わって一喜一憂していたけどマニュアルにはこう書いてあった -&amp;gt;「GET /fetch へのアクセスには点数が加算されません。」&lt;/li&gt;
-      &lt;li&gt;304加点に関する記述もされており、そこで静的ファイルに関してピンと来てればもっと早い段階でスコア伸ばせていたと思う&lt;/li&gt;
-      &lt;li&gt;次は一番最初に声に出して読み合わせとかすると良いかもしれない&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;業務でサーバー作業全然しないので作業時間の半分くらいはGoogleでああでもないこうでもないと調べる時間だった感覚
-    &lt;ul&gt;
-      &lt;li&gt;サーバー作業もっとスラスラできるようになりたい&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Nginxのログをalpで解析するのができなかった
-    &lt;ul&gt;
-      &lt;li&gt;Nginxのログをベンチマーカーの気持ちになりながら目グレップする必要あった&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;アプリケーションのデータベースconnection 閉じ忘れ気づけなかった。これで too many connectionが発生してたっぽい&lt;/li&gt;
-  &lt;li&gt;デプロイスクリプト用意する予定だったけどちゃんと用意できなかった
-    &lt;ul&gt;
-      &lt;li&gt;これにより再起動漏れとかが発生した&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;confファイルのrepo管理が徹底できず雑管理してしまった&lt;/li&gt;
-  &lt;li&gt;複数台でそれぞれのホスト間の名前解決どうしてるかを見るのに &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/hosts&lt;/code&gt; はすぐに確認しておいてよかった&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/hosts
-&lt;span class=&quot;go&quot;&gt;127.0.0.1       localhost
-192.168.101.1   app1011
-192.168.101.2   app1012
-192.168.101.3   app1013 db
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;良かったこと&quot;&gt;良かったこと&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Discord良い&lt;/li&gt;
-  &lt;li&gt;MacのGUIは有効に使えたと思う。MacのGUI便利。
-    &lt;ul&gt;
-      &lt;li&gt;DBはSequel Proでカジュアルに覗くのが良い&lt;/li&gt;
-      &lt;li&gt;FileはforkLift使ってカジュアルに転送できたのが良い(今回DBのdumpファイルとか持ってきた)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;同僚と出場したので、会社利用させてもらったのでWiFiも快適だったしホワイトボード・ディスプレイなどの設備も使えて良かった&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;運営の方へ&quot;&gt;運営の方へ&lt;/h2&gt;
-
-&lt;p&gt;ベンチマーカーの結果が安定しなかったり、開催日両日共に開始時間が遅れたりもしましたが、参加を終えてその不満も忘れるくらい準備が大変だったろうなぁとお察しします。あれだけのサーバー台数を参加者全員に用意するのは本当にすごい！&lt;/p&gt;
-
-&lt;p&gt;出題についでですが、&lt;code class=&quot;highlighter-rouge&quot;&gt;Cache-Controle: Public, max-age&lt;/code&gt;に関して何か色々物申す方がいらっしゃるようですが、これに関しては気づける人はちゃんと気づけたし特段奇問という印象は僕は受けなかったです。&lt;/p&gt;
-
-&lt;p&gt;コンテスト規模は年々拡大する一方ですが、今年も開催してくださりありがとうございました！&lt;/p&gt;
-
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;
-&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;エンジョイ勢です &lt;a href=&quot;https://twitter.com/hashtag/isucon?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#isucon&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/921933892780568576?ref_src=twsrc%5Etfw&quot;&gt;October 22, 2017&lt;/a&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;今回のisuconはエンジョイ勢として臨んだのですがずっと出たかったisuconだったので実際参加してみてとてもエンジョイできました。&lt;/p&gt;
-
-&lt;p&gt;とはいえ圧倒的なスコア差を上位陣に見せられて悔しさはかなり残りました。今年なんとなくの雰囲気を掴めたので来年も出場し、上位陣に食い込めるように精進していきたいと思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;問題: &lt;a href=&quot;https://github.com/isucon/isucon7-qualify&quot;&gt;isucon/isucon7-qualify: ISUCON7 予選問題の参照実装とベンチマーカー&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;今回の出題に関してキャッシュコントロールに関してこちらが参考になります: &lt;a href=&quot;http://landau.jp/blog/10/&quot;&gt;静的ファイルのキャッシュコントロールについて ISUCON7 – そろそろちゃんとやります&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;学びが多い関連エントリ(特に上位陣のは参考になる) &lt;a href=&quot;http://isucon.net/archives/50949740.html&quot;&gt;ISUCON7 オンライン予選 関連エントリまとめ : ISUCON公式Blog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;過去問: &lt;a href=&quot;https://github.com/matsuu/vagrant-isucon&quot;&gt;https://github.com/matsuu/vagrant-isucon&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="isucon" /><summary type="html">isuconに参加してきました。結果は400組中154位で予選敗退。予選敗退となりましたが初めてのisucon参加にしては中の上に食い込めてまぁまぁだったのではないでしょうか。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/isucon/isucon7.png" /></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><summary type="html">エンジニアリングとは常に学習し続けることである</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/book/books.jpeg" /></entry></feed>
