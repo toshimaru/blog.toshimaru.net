@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/toshimaru/blog.toshimaru.net.png?branch=master)](https://travis-ci.org/toshimaru/blog.toshimaru.net)
-[![Dependency Status](https://gemnasium.com/toshimaru/blog.toshimaru.net.svg)](https://gemnasium.com/toshimaru/blog.toshimaru.net)
 
 # blog.toshimaru.net
 
