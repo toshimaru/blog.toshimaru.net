@@ -1,4 +1,114 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-08-05T00:51:08+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">VS Code Extensionの公開手順</title><link href="https://blog.toshimaru.net/how-to-publish-vscode-extension/" rel="alternate" type="text/html" title="VS Code Extensionの公開手順" /><published>2018-08-01T00:00:00+09:00</published><updated>2018-08-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-publish-vscode-extension</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-publish-vscode-extension/">&lt;p&gt;先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-08-12T16:40:26+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える</title><link href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/" rel="alternate" type="text/html" title="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える" /><published>2018-08-04T00:00:00+09:00</published><updated>2018-08-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/poltergeist-to-selenium-webdriver</id><content type="html" xml:base="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">&lt;p&gt;RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、&lt;a href=&quot;https://github.com/teampoltergeist/poltergeist&quot;&gt;poltergeist&lt;/a&gt;から&lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/headless/README.md&quot;&gt;Headless Chrome&lt;/a&gt;に乗り換えてみたのでそのときのメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;対応-pull-request&quot;&gt;対応 Pull Request&lt;/h2&gt;
+
+&lt;p&gt;今回対応したPull Requestしてはこちら。&lt;/p&gt;
+
+&lt;p&gt;https://github.com/toshimaru/RailsTwitterClone/pull/211&lt;/p&gt;
+
+&lt;p&gt;思ったよりも差分はコンパクトにまとまった。&lt;/p&gt;
+
+&lt;h2 id=&quot;install-selenium-webdriver&quot;&gt;Install selenium-webdriver&lt;/h2&gt;
+
+&lt;p&gt;まずは&lt;code class=&quot;highlighter-rouge&quot;&gt;poltergeist&lt;/code&gt; gemの代わりに、&lt;code class=&quot;highlighter-rouge&quot;&gt;selenium-webdriver&lt;/code&gt;をインストール。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;-  gem &quot;poltergeist&quot;
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+  gem &quot;selenium-webdriver&quot;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;change-capybarajavascript_driver&quot;&gt;Change Capybara.javascript_driver&lt;/h2&gt;
+
+&lt;p&gt;次に&lt;code class=&quot;highlighter-rouge&quot;&gt;Capybara.javascript_driver&lt;/code&gt;を&lt;code class=&quot;highlighter-rouge&quot;&gt;:poltergeist&lt;/code&gt;から&lt;code class=&quot;highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;に変更。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;- require &quot;capybara/poltergeist&quot;
+- Capybara.javascript_driver = :poltergeist
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+ require &quot;selenium-webdriver&quot;
++ Capybara.javascript_driver = :selenium_chrome_headless
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ちなみに&lt;code class=&quot;highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;の設定は下記の変更の中でcapybara内に取り込まれている。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--headless'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--disable-gpu'&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;via. https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce&lt;/p&gt;
+
+&lt;h2 id=&quot;install-chromedriver&quot;&gt;Install chromedriver&lt;/h2&gt;
+
+&lt;h3 id=&quot;on-mac&quot;&gt;On Mac&lt;/h3&gt;
+
+&lt;p&gt;chromedriverが必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラク。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; brew cask &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;chromedriver
+&lt;span class=&quot;go&quot;&gt;Updating Homebrew...
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt; Auto-updated Homebrew!
+&lt;span class=&quot;go&quot;&gt;Updated 1 tap (homebrew/cask).
+No changes to formulae.
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt; Satisfying dependencies
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;####################################################################### 100.0%&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt; Verifying checksum &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt; Installing Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt; Extracting nested container chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt; Linking Binary &lt;span class=&quot;s1&quot;&gt;'chromedriver'&lt;/span&gt; to &lt;span class=&quot;s1&quot;&gt;'/usr/local/bin/chromedriver'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;🍺  chromedriver was successfully installed!
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;注意事項&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;brew install chromedriver&lt;/code&gt;ではinstallできないので注意（ちょっと古いやり方）。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;chromedriver-helper&lt;/code&gt; gemが入っているとうまく動かない場合があるので注意。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;on-circleci&quot;&gt;On CircleCI&lt;/h3&gt;
+
+&lt;p&gt;CircleCI上では、&lt;code class=&quot;highlighter-rouge&quot;&gt;ruby:x.x-node-browsers&lt;/code&gt;のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.5-node-browsers&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用している。&lt;/p&gt;
+
+&lt;h2 id=&quot;on-travisci&quot;&gt;On TravisCI&lt;/h2&gt;
+
+&lt;p&gt;これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failures:
+
+  1) Authentication authorization screenshot
+     Failure/Error: before { visit signin_path }
+
+     Selenium::WebDriver::Error::WebDriverError:
+        Unable to find Mozilla geckodriver. Please download the server from https://github.com/mozilla/geckodriver/releases and place it somewhere on your PATH. More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
+     # ./spec/features/authentication_pages_spec.rb:9:in `block (3 levels) in &amp;lt;top (required)&amp;gt;'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;本当は&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo: false&lt;/code&gt;の設定で動かしたかったのですがそれだと上手くいかなかったので&lt;code class=&quot;highlighter-rouge&quot;&gt;sudo&lt;/code&gt;で起動させて&lt;code class=&quot;highlighter-rouge&quot;&gt;chromium-chromedriver&lt;/code&gt;をテスト前にInstallしてパスを通すという方法でテストを通しました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;required&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;before_install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sudo apt-get install -y chromium-chromedriver&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)&lt;/p&gt;
+
+&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ohbarye.hatenablog.jp/entry/2018/03/10/232300&quot;&gt;PhantomJS + Poltergeist を Selenium + Headless Chrome で置き換える (1) Rails + Capybara による feature spec 編 - valid,invalid&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.speee.jp/entry/2017/06/15/135636&quot;&gt;RSpec の feature spec でヘッドレス Chrome を使う - Speee DEVELOPER BLOG&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://y-yagi.tumblr.com/post/166831012790/rails%E9%9B%91%E3%81%ABsystem-test%E3%81%A7headless-chrome%E3%82%92%E4%BD%BF%E3%81%86&quot;&gt;[Rails]雑にSystem TestでHeadless Chromeを使う | 日々雑記&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rspec" /><summary type="html">RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/chromedriver.jpg" /></entry><entry><title type="html">VS Code Extensionの公開手順</title><link href="https://blog.toshimaru.net/how-to-publish-vscode-extension/" rel="alternate" type="text/html" title="VS Code Extensionの公開手順" /><published>2018-08-01T00:00:00+09:00</published><updated>2018-08-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-publish-vscode-extension</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-publish-vscode-extension/">&lt;p&gt;先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. | はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design! &lt;a href=&quot;https://t.co/2cg3jwnT5q&quot;&gt;https://t.co/2cg3jwnT5q&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1024512092341030912?ref_src=twsrc%5Etfw&quot;&gt;August 1, 2018&lt;/a&gt;&lt;/blockquote&gt;
 
@@ -98,7 +208,11 @@
 
 &lt;p&gt;一応markdown, Ruby, jsonファイルあたりはちゃんと確認にしていい感じにsyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPRお願いします 🙏&lt;/p&gt;
 
-&lt;p&gt;手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><summary type="html">はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /></entry><entry><title type="html">RuboCopチームにgemの名前を譲った話</title><link href="https://blog.toshimaru.net/rubocop-rails-config/" rel="alternate" type="text/html" title="RuboCopチームにgemの名前を譲った話" /><published>2018-07-17T00:00:00+09:00</published><updated>2018-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config/">&lt;p&gt;かねてより僕が開発していた&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemをRuboCop公式チームの要望により譲った。&lt;/p&gt;
+&lt;p&gt;手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。&lt;/p&gt;
+
+&lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;/how-to-publish-vscode-extension/&quot;&gt;VS Code Extensionの公開手順&lt;/a&gt;を書きました。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><summary type="html">はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /></entry><entry><title type="html">RuboCopチームにgemの名前を譲った話</title><link href="https://blog.toshimaru.net/rubocop-rails-config/" rel="alternate" type="text/html" title="RuboCopチームにgemの名前を譲った話" /><published>2018-07-17T00:00:00+09:00</published><updated>2018-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config/">&lt;p&gt;かねてより僕が開発していた&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemをRuboCop公式チームの要望により譲った。&lt;/p&gt;
 
 &lt;p&gt;僕がこのgemを作った経緯とかは下記の記事の通り。&lt;/p&gt;
 
@@ -999,153 +1113,4 @@ Memory: 0.82 MB
 &lt;ul&gt;
   &lt;li&gt;その他の発表スライドなどはこちら &lt;a href=&quot;https://railsdm.github.io/2017/&quot;&gt;Rails Developers Meetup 2017&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;当日のTweetまとめ &lt;a href=&quot;https://togetter.com/li/1179895&quot;&gt;Rails Developers Meetup 2017 #railsdm - Togetter&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="presentation" /><summary type="html">Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2017.png" /></entry><entry><title type="html">技術者としてスポンジであり続けること　あるいは老害回避戦略の話</title><link href="https://blog.toshimaru.net/like-a-sponge-as-an-engineer/" rel="alternate" type="text/html" title="技術者としてスポンジであり続けること　あるいは老害回避戦略の話" /><published>2017-12-04T00:00:00+09:00</published><updated>2017-12-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/like-a-sponge-as-an-engineer</id><content type="html" xml:base="https://blog.toshimaru.net/like-a-sponge-as-an-engineer/">&lt;h2 id=&quot;エンジニアリングとは常に学習し続けることである&quot;&gt;エンジニアリングとは常に学習し続けることである&lt;/h2&gt;
-
-&lt;p&gt;エンジニアリングとは常に学習し続けることである。僕がWeb技術者として生計を立てる上で大切にしているモットーだ。&lt;/p&gt;
-
-&lt;p&gt;ドッグイヤーな変化の激しいIT業界、変化に取り残されないためには常に学習が必要だ。今僕たちがデファクト・スタンダートとしている技術は一年後もスタンダートであり続けるだろうか？　一年くらいなら大丈夫？　じゃあ三年後は？　五年後は？ 十年後はどうだろう？ 自信をもって技術トレンドは今と変わっていないと言えるだろうか。&lt;/p&gt;
-
-&lt;h2 id=&quot;変化する技術トレンド&quot;&gt;変化する技術トレンド&lt;/h2&gt;
-
-&lt;p&gt;Web業界の技術トレンド変化を見るにしてもその変化が激しいことは明らかだ。古くは掲示板を動かしていたPerl CGIの時代から、最強のPHP製CMS・Wordpress、継続的にバージョンアップを重ね進化を続けるWebアプリケーションフレームワーク・Ruby on Rails…。近年だとサーバーサイドJavaScirpt・Node.js、Erlang VM上で動くRubyライクなシンタックスを持つElixir、Twitterでも運用実績を持つScala、Googleが作った爆速言語Go、Mozillaの開発したRustなどもよく聞く。お硬い感じなところだとJavaのSpring Frameworkであったり（最近はKotlin対応もしたと聞く）オープンソース化もされているMicrosoftの.NETなど。&lt;/p&gt;
-
-&lt;p&gt;サーバーサイド技術だけじゃなく、フロントエンド技術の変化も大きい。HTMLはHTML5になり、CSSはCSS3になってWebでリッチな表現が可能になった。貧弱な言語であったJavaScriptはES6(ES2015),ES7(ES2016)へと進化し言語として洗練されてきている（Bebelなどのトランスパイラーの進化の力も大きい）。便利な関数群を多く含みブラウザ間の挙動の差異を吸収してくれるjQueryはそこそこ長い間フロントエンドのデファクト・ライブラリだったが、フロントエンドコードの複雑化・巨大化に伴いその座をReactやAngularへと譲りつつある（React/Angularにたどり着くまでの紆余曲折はここでは省略）。&lt;/p&gt;
-
-&lt;p&gt;開発ワークフローもずいぶん進化した。開発者にとって一番大きかったのはGitHubの台頭だ。OSSを加速度的に推し進めエンジニアリング業界にソーシャルコーディングという概念を普及させた。これによりVCSはGitを利用しRemoteにはGithub（あるいはGithubライクなプロダクト）を使うのが当たり前となった。&lt;/p&gt;
-
-&lt;p&gt;テストももちろん書く。テストを書くと次はCIがしたくなる。Jenkins？ 今ならTravisCI、CircleCIなどのCIサービス使ったほうが良さそうだ。&lt;/p&gt;
-
-&lt;p&gt;アプリケーションのデプロイ先となるインフラはどうだ。オンプレ？ いや、今はクラウドの時代だ。IaaS業者ならAWS（Amazon Web Service）か。いや、GCP（Google Cloud Platform）も最近頑張っているようだ。そこまでインフラ面倒見る余裕なんてない？ならばHerokuなどのPaaSを選択することもできる。&lt;/p&gt;
-
-&lt;p&gt;モバイルアプリ開発はどうだろう？ iOS？ Objective-Cじゃなくて今はSwiftなんだっけ。Android？ 古き良きJava…ではなく最近はKotlinで書けるらしい。最近はReact Nativeという技術もあるらしい。Reactに慣れたWeb開発者にとって取っ付きやすそうだ。&lt;/p&gt;
-
-&lt;h2 id=&quot;我々は学習し続けられるか&quot;&gt;我々は学習し続けられるか？&lt;/h2&gt;
-
-&lt;p&gt;Web技術に限定してザッと思いつくだけ列挙してもこれだけあるのだ。これでもなお「１つの技術だけで今後も戦い続けることができる！」と自信を持って言えるだろうか。&lt;/p&gt;
-
-&lt;p&gt;あなたは言う。いいや、俺はこの技術一筋で勝負するんだ！なるほど、けっこうけっこう。あなたが変わらなくても世界は変わる。世界はあなたを待ってはくれない&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-
-&lt;p&gt;学習を止めた時から変化の波に取り残され、気付いた頃にはもう手遅れ…、そんな事態は避けなければならない。&lt;/p&gt;
-
-&lt;p&gt;では問おう。&lt;strong&gt;我々は学習し続けられるのか？&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;学習の壁&quot;&gt;学習の壁&lt;/h2&gt;
-
-&lt;p&gt;我々に立ちはだかる学習の壁。この学習の壁を乗り越える続けることは難しい。&lt;/p&gt;
-
-&lt;p&gt;そしてこれは歳を重ねれば重ねるほどに難しくなっていく。一般的に記憶力や集中力は年齢とともに衰えていくと言われるからだ&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-
-&lt;p&gt;一方で学習能力は年齢とは関係ないとする説もある&lt;sup id=&quot;fnref:3&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;。記憶力そのものに年齢は関係なく、老化とともに記憶力が低下したと感じる理由は＜学習意欲の低下＞に起因しているとする説だ。&lt;/p&gt;
-
-&lt;p&gt;僕の考えとしては前者の説も後者の説もどちらも支持したい。我々の学習能力は年齢とともに衰えていくし、学習意欲もまた年齢とともに低下する。&lt;/p&gt;
-
-&lt;h2 id=&quot;スポンジであるということ&quot;&gt;スポンジであるということ&lt;/h2&gt;
-
-&lt;p&gt;では我々はこれにどう抗ったらよいだろうか？　&lt;/p&gt;
-
-&lt;p&gt;前者の年齢とともに不可避的に衰える能力は仕方がないにせよ、せめて後者の学習意欲は高く保ち続けようではないか。新しいものを進んで吸収できるスポンジであろう。弾力を失ってはいけない。柔軟にしなやかであろう。硬直化する脳に抗おう。&lt;/p&gt;
-
-&lt;p&gt;スポンジであるということ。これによって学習という困難も楽しみとして享受できるようになるのではないだろうか。&lt;/p&gt;
-
-&lt;h2 id=&quot;老害になってはいないか&quot;&gt;老害になってはいないか&lt;/h2&gt;
-
-&lt;p&gt;学習し続ける姿勢、これは老害化するのを防ぐ上でも大切な心がけだと思う。&lt;/p&gt;
-
-&lt;p&gt;そもそも老害とはどういう人なのか？ 僕が思う老害とは下記の通りだ。&lt;/p&gt;
-
-&lt;p&gt;老害とは自分の過去の栄光や成功体験を元にして自分の価値観ややり方を周囲（主に若者がターゲットにされやすい）に押し付けるような人のこと。その結果、チーム/個人のパフォーマンスを低下させる。&lt;/p&gt;
-
-&lt;p&gt;こういうタイプの人は過去の成功を根拠としてロジックを展開するので、その成功が現代では通用しない時代錯誤なものであったとしても気にせず押し通そうとする。そして新しいことに関しては「よくわからない」などと言って斬り捨てる。&lt;/p&gt;
-
-&lt;p&gt;そんな老害にはなりたくないと思う。きっとこの文章を読んでいるあなたもそうだろう。だがあなたは &lt;strong&gt;自分が老害になっていないとハッキリ言えるだろうか？&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;一般的に、歳を取ると価値観は固まっていき保守的になってゆく。あなたは自分の気づかないレベルで無意識に新しいことを拒絶していないだろうか。自分の考えを無意識に他者に押し付けてはいないだろうか。職場で気づいたら老害になってはいないだろうか。&lt;/p&gt;
-
-&lt;h2 id=&quot;老害回避戦略&quot;&gt;老害回避戦略&lt;/h2&gt;
-
-&lt;p&gt;エンジニアとして老害にならないための僕なりの老害回避戦略を考えてみたのでまとめてみる。&lt;/p&gt;
-
-&lt;h3 id=&quot;マサカリを投げるな&quot;&gt;マサカリを投げるな&lt;/h3&gt;
-
-&lt;p&gt;技術的な厳しい指摘をよく「マサカリを投げる」と表現したりするが&lt;sup id=&quot;fnref:4&quot;&gt;&lt;a href=&quot;#fn:4&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;、マサカリを投げるのは止めよう。&lt;/p&gt;
-
-&lt;p&gt;そのマサカリが本当に意味のあるものか今一度考えてみよう。あなたの飛ばしたマサカリは周囲を萎縮させチームの空気を悪くしパフォーマンスを下げている可能性が高い。&lt;/p&gt;
-
-&lt;p&gt;あなたがどんなに優れたエンジニアだとしてもそれをマサカリという形で誇示する必要は無い。あなたの優秀さはマサカリではなくコードで示せるはずだ。&lt;/p&gt;
-
-&lt;p&gt;剣ではなく弁を。攻撃ではなく教育を。&lt;/p&gt;
-
-&lt;h3 id=&quot;技術に素直でいよう&quot;&gt;技術に素直でいよう&lt;/h3&gt;
-
-&lt;p&gt;コンピュータの内部が0か1のバイナリで構成されているの同様に、プログラミングという行為も0か1のように正誤がハッキリするものが多いように感じる。&lt;/p&gt;
-
-&lt;p&gt;バグがある挙動、バグが無い挙動であればバグが無い挙動が正しいし、速いコードと遅いコードであれば速いコードが良いし、DRYなコード、そうじゃないコードがあればDRYなコードを選択すべきだし、テストがないコードよりもテストがあるコードが信頼性は高い。&lt;/p&gt;
-
-&lt;p&gt;老害であれば技術的正しさを無視して自説を展開するかもしれないが、それではダメだ。常に技術的に正しい世界を目指そう。技術にたいして素直でいよう。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;個人開発は遊びでいいけど仕事における開発は遊びじゃない。技術的/仕様的正しさは常に追求すべきだしデータ的正しさは検証すべきだしプログラムにはバグが無いように（テストコード書くなどして）努力すべきだし自分のコードにはオーナーシップを持つべきだ。&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/995968055342649344?ref_src=twsrc%5Etfw&quot;&gt;May 14, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;僕たちが持っている知識は変化する技術の流れの中で明日には変わっているかもしれない。今に凝り固まるのではなく、常に技術的正しさを求めて学習しよう。&lt;/p&gt;
-
-&lt;h3 id=&quot;フラットでいよう&quot;&gt;フラットでいよう&lt;/h3&gt;
-
-&lt;p&gt;GitHubのOSSコミュニティで人種・性別・年齢関係なくコラボレーションするように、我々も技術の文脈においてフラットなコミュニケーションを目指そう。&lt;/p&gt;
-
-&lt;p&gt;この世界、どんなに自分より歳をとっていてもかなわないなというエンジニアもいるし、逆に自分よりずっと若くても優秀なエンジニアはたくさんいる。「俺の方が人生経験が長いから」「私の方が年齢が高いから」という理由では奢れない（もしそんな理由でエラそうにしているのであればそれは老害だ）。&lt;/p&gt;
-
-&lt;p&gt;実際のところ、先輩後輩・上下関係を重んじる日本社会においてこれを実現するのは容易ではないわけだが、技術コミュニケーションにおいてできるだけフラットなコミュニケーションを心がけよう。この姿勢は前述の&lt;技術に素直でいる&gt;ことにも繋がることだと思う。&lt;/技術に素直でいる&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;次の世代を育てる&quot;&gt;次の世代を育てる&lt;/h3&gt;
-
-&lt;p&gt;老害でないということは同時に若手とうまく付き合うということでもある。今まで述べてきたような老害的な態度を取らなければ、若手が伸び伸びと働ける職場環境にできるのではないだろうか。&lt;/p&gt;
-
-&lt;p&gt;次の世代を育てよう。そして彼らが伸び伸びと活躍できるような雰囲気作りを目指そう。&lt;/p&gt;
-
-&lt;p&gt;こんなことを言うとたまに「若手に自分のポジションを脅かせれる」「自分の仕事が奪われる」と言って拒否反応を示す人をたまに見かける。その考え方も分からなくはないが、僕はそれは自己保身的で一面的な考え方だと感じる。&lt;/p&gt;
-
-&lt;p&gt;次の世代を育てることで得られるメリットは数多くあると思う。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;次の世代を育てる過程で自分も育つ: 育てている過程の中で自分もちゃんと理解できていなかった部分が理解できるようになったり、自分の理解が深まる&lt;/li&gt;
-  &lt;li&gt;次の世代が育つことでチームひいては会社の生産性が高まり自分自身の仕事が相対的に減る&lt;/li&gt;
-  &lt;li&gt;次の世代が育つと自分一人ではできなかったことが出来るようになるかもしれない: 切磋琢磨出来る仲間が増えるとチームとしてもう一段上のレベルへと上がり、一人では思いつかなかったアイディアやソリューションが発案されるかもしれない&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;自分の立場ばかり考える保身的な老害にはならないようにしよう。どんどん次の世代を育てていき、次の世代とともにステップアップを目指そう。&lt;/p&gt;
-
-&lt;h2 id=&quot;35歳定年説は嘘&quot;&gt;「35歳定年説」は嘘&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://tech-camp.in/note/engineer/30204/&quot;&gt;35歳定年説&lt;/a&gt;的な言説を技術界隈で聞くことがある。&lt;/p&gt;
-
-&lt;p&gt;この35歳の35の数字の部分は38でも40でもなんだって良いのだが、僕は基本的にこのn歳定年説は間違っていると思う。&lt;/p&gt;
-
-&lt;p&gt;これを反証することは簡単で、40歳でバリバリ現役でコードを書き続けている技術者を見つければ良い。僕は40歳でバリバリ前線で頑張っている技術者を知っている。なのでこの説は間違っているとハッキリ言える。&lt;/p&gt;
-
-&lt;p&gt;思うに、&lt;strong&gt;コードを書かず学習意欲を失ってしまった35歳のおじさんたちが自分がコードが書けないこと・学ばないことの言い訳として言い出し始めたのがこの「35歳定年説」の真実じゃないだろうか。&lt;/strong&gt; 20歳の技術者は35歳定年説なんて言い出さない。それを言い出すのは35を過ぎて自身のパフォーマンスが出なくなったと感じている技術者たちだけだ。もし本当にそんな理由で言っているのであればハッキリ言ってダサすぎだと思う。&lt;/p&gt;
-
-&lt;p&gt;年齢を言い訳にするのは止めよう。学習するのに遅すぎるなんてことはないはずだ。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;You’re never too old to learn&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
-
-&lt;p&gt;この文章は僕自身が若手とは言えない年齢となり今後シニアな立場へとなっていく中で「自分は老害化していくのではないか」という危機感から自戒も込めて書いたものである。願わくば五年後十年後自分がここに書いたような老害になっていないことを祈る。&lt;/p&gt;
-
-&lt;div class=&quot;footnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot;&gt;
-      &lt;p&gt;もちろん１つのことに特化して高度な専門性を武器に戦っている技術者もいる。しかしトレンドは常に追っているべきだ。なぜならブレークスルーが起こってその技術が死んだときに自分の食い扶持がなくなるからだ（それでもすぐにその技術がなくなるわけではないのでその技術を使う古い現場で細々と食い扶持を得るのも戦略としてありえるが）。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://www.businessinsider.jp/post-100550&quot;&gt;集中力は43歳！ 人間の脳のピーク年齢は、能力ごとに違っていた | BUSINESS INSIDER JAPAN&lt;/a&gt; &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:3&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;http://www.fukuishimbun.co.jp/articles/-/62618&quot;&gt;「加齢で記憶力が低下」は誤解 知能も低下せず、問題は前頭葉老化 | 東洋経済ONLINE | 福井新聞ONLINE&lt;/a&gt; &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:4&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://qiita.com/kaityo256/items/d7d8f7a0e522895c8f5d&quot;&gt;マサカリの起源について - Qiita&lt;/a&gt; &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><summary type="html">エンジニアリングとは常に学習し続けることである</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/book/books.jpeg" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="presentation" /><summary type="html">Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2017.png" /></entry></feed>

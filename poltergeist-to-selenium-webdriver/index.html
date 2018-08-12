@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>RSpecが通ったり落ちたりしたときにはseed値を指定する - Hack Your Design!</title>
+  <title>Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="site.webmanifest">
@@ -13,15 +13,15 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="RSpecが通ったり落ちたりしたときにはseed値を指定する - Hack Your Design!">
-  <meta property="og:title" content="RSpecが通ったり落ちたりしたときにはseed値を指定する - Hack Your Design!">
-  <meta name="description" content="RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。">
-  <meta name="twitter:description" content="RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。">
-  <meta property="og:description" content="RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。">
-  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
-  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2014-09-23T00:00:00+09:00">
-  <link rel="canonical" href="https://blog.toshimaru.net/rspec-occasional-fail/">
+  <meta name="twitter:title" content="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える - Hack Your Design!">
+  <meta property="og:title" content="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える - Hack Your Design!">
+  <meta name="description" content="RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。">
+  <meta name="twitter:description" content="RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。">
+  <meta property="og:description" content="RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/chromedriver.jpg" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/chromedriver.jpg" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2018-08-04T00:00:00+09:00">
+  <link rel="canonical" href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     // (adsbygoogle = window.adsbygoogle || []).push({
@@ -73,62 +73,136 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">RSpecが通ったり落ちたりしたときにはseed値を指定する</h1>
+  <h1 class="fadeInLeft">Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2014-09-23T00:00:00+09:00" pubdate>23 Sep 2014</time>
+      <i class="icon-calendar"></i><time datetime="2018-08-04T00:00:00+09:00" pubdate>04 Aug 2018</time>
       <i class="icon-tags"></i> 
+<a href="/tag/rails/" rel="tag">rails</a>
+
 <a href="/tag/rspec/" rel="tag">rspec</a>
 
 
     </div>
-    
+    <img class="post-image flipInX" src="/images/posts/chromedriver.jpg" alt="(image)Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える" title="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える" />
   </div>
 </div>
 
-<p>RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。</p>
+<p>RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、<a href="https://github.com/teampoltergeist/poltergeist">poltergeist</a>から<a href="https://chromium.googlesource.com/chromium/src/+/master/headless/README.md">Headless Chrome</a>に乗り換えてみたのでそのときのメモ。</p>
 
-<h2 id="バージョン情報">バージョン情報</h2>
+<h2 id="対応-pull-request">対応 Pull Request</h2>
+
+<p>今回対応したPull Requestしてはこちら。</p>
+
+<p>https://github.com/toshimaru/RailsTwitterClone/pull/211</p>
+
+<p>思ったよりも差分はコンパクトにまとまった。</p>
+
+<h2 id="install-selenium-webdriver">Install selenium-webdriver</h2>
+
+<p>まずは<code class="highlighter-rouge">poltergeist</code> gemの代わりに、<code class="highlighter-rouge">selenium-webdriver</code>をインストール。</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-  gem "poltergeist"
+</span><span class="gi">+  gem "selenium-webdriver"
+</span></code></pre></div></div>
+
+<h2 id="change-capybarajavascript_driver">Change Capybara.javascript_driver</h2>
+
+<p>次に<code class="highlighter-rouge">Capybara.javascript_driver</code>を<code class="highlighter-rouge">:poltergeist</code>から<code class="highlighter-rouge">:selenium_chrome_headless</code>に変更。</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">- require "capybara/poltergeist"
+- Capybara.javascript_driver = :poltergeist
+</span><span class="gi">+ require "selenium-webdriver"
++ Capybara.javascript_driver = :selenium_chrome_headless
+</span></code></pre></div></div>
+
+<p>ちなみに<code class="highlighter-rouge">:selenium_chrome_headless</code>の設定は下記の変更の中でcapybara内に取り込まれている。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Capybara</span><span class="p">.</span><span class="nf">register_driver</span> <span class="ss">:selenium_chrome_headless</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+  <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span><span class="p">()</span>
+  <span class="n">browser_options</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s1">'--headless'</span>
+  <span class="n">browser_options</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s1">'--disable-gpu'</span>
+  <span class="no">Capybara</span><span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">Driver</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="ss">browser: :chrome</span><span class="p">,</span> <span class="ss">options: </span><span class="n">browser_options</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>via. https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce</p>
+
+<h2 id="install-chromedriver">Install chromedriver</h2>
+
+<h3 id="on-mac">On Mac</h3>
+
+<p>chromedriverが必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラク。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> brew cask <span class="nb">install </span>chromedriver
+<span class="go">Updating Homebrew...
+</span><span class="gp">==&gt;</span> Auto-updated Homebrew!
+<span class="go">Updated 1 tap (homebrew/cask).
+No changes to formulae.
+
+</span><span class="gp">==&gt;</span> Satisfying dependencies
+<span class="gp">==&gt;</span> Downloading https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip
+<span class="gp">#</span><span class="c">####################################################################### 100.0%</span>
+<span class="gp">==&gt;</span> Verifying checksum <span class="k">for </span>Cask chromedriver
+<span class="gp">==&gt;</span> Installing Cask chromedriver
+<span class="gp">==&gt;</span> Extracting nested container chromedriver
+<span class="gp">==&gt;</span> Linking Binary <span class="s1">'chromedriver'</span> to <span class="s1">'/usr/local/bin/chromedriver'</span><span class="nb">.</span>
+<span class="go">🍺  chromedriver was successfully installed!
+</span></code></pre></div></div>
+
+<p><strong>注意事項</strong></p>
 
 <ul>
-  <li>rails (4.1.5)</li>
-  <li>rspec (3.1.0)</li>
+  <li><code class="highlighter-rouge">brew install chromedriver</code>ではinstallできないので注意（ちょっと古いやり方）。</li>
+  <li><code class="highlighter-rouge">chromedriver-helper</code> gemが入っているとうまく動かない場合があるので注意。</li>
 </ul>
 
-<h2 id="random-order-rspec">Random order RSpec</h2>
+<h3 id="on-circleci">On CircleCI</h3>
 
-<p>RSpecを順番に依存させないために<code class="highlighter-rouge">spec_helper.rb</code>でこんな設定がされている。</p>
+<p>CircleCI上では、<code class="highlighter-rouge">ruby:x.x-node-browsers</code>のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Run specs in random order to surface order dependencies. If you find an</span>
-<span class="c1"># order dependency and want to debug it, you can fix the order by providing</span>
-<span class="c1"># the seed, which is printed after each run.</span>
-<span class="c1">#     --seed 1234</span>
-<span class="n">config</span><span class="p">.</span><span class="nf">order</span> <span class="o">=</span> <span class="s2">"random"</span>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">docker</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">circleci/ruby:2.5-node-browsers</span>
 </code></pre></div></div>
 
-<p>この設定によりテスト実行の順序がランダムになり、順序に依存しないテストの記述が可能となる。シード値はテストの最後に得られる。</p>
+<p>上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用している。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Randomized with seed 724
+<h2 id="on-travisci">On TravisCI</h2>
+
+<p>これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failures:
+
+  1) Authentication authorization screenshot
+     Failure/Error: before { visit signin_path }
+
+     Selenium::WebDriver::Error::WebDriverError:
+        Unable to find Mozilla geckodriver. Please download the server from https://github.com/mozilla/geckodriver/releases and place it somewhere on your PATH. More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
+     # ./spec/features/authentication_pages_spec.rb:9:in `block (3 levels) in &lt;top (required)&gt;'
 </code></pre></div></div>
 
-<h2 id="シード値を指定して実行">シード値を指定して実行</h2>
+<p>本当は<code class="highlighter-rouge">sudo: false</code>の設定で動かしたかったのですがそれだと上手くいかなかったので<code class="highlighter-rouge">sudo</code>で起動させて<code class="highlighter-rouge">chromium-chromedriver</code>をテスト前にInstallしてパスを通すという方法でテストを通しました。</p>
 
-<p>Failしたテストのこのシード値を設定してテストを走らせればFailしたテストの順番を再現できる。</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bundle exec rspec --seed 724 --fail-fast
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">sudo</span><span class="pi">:</span> <span class="s">required</span>
+<span class="na">language</span><span class="pi">:</span> <span class="s">ruby</span>
+<span class="na">before_install</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">sudo apt-get install -y chromium-chromedriver</span>
+  <span class="pi">-</span> <span class="s">ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">--seed</code>でシード値を指定、<code class="highlighter-rouge">--fail-fast</code>を設定してFailしたときにテストを即時終了させるようにする。</p>
+<p>(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)</p>
 
-<p>こうすればFailするテストを再現できて、どのテストがどこでテスト実行順番に依存して落ちているのかがわかります。</p>
+<h2 id="参考リンク">参考リンク</h2>
 
-<h2 id="参考">参考</h2>
-
-<p><a href="http://ikm.hatenablog.jp/entry/2013/03/26/003838">ランダムに落ちるspecの修正で便利だったRSpecの2つの設定</a></p>
+<ul>
+  <li><a href="https://ohbarye.hatenablog.jp/entry/2018/03/10/232300">PhantomJS + Poltergeist を Selenium + Headless Chrome で置き換える (1) Rails + Capybara による feature spec 編 - valid,invalid</a></li>
+  <li><a href="https://tech.speee.jp/entry/2017/06/15/135636">RSpec の feature spec でヘッドレス Chrome を使う - Speee DEVELOPER BLOG</a></li>
+  <li><a href="http://y-yagi.tumblr.com/post/166831012790/rails%E9%9B%91%E3%81%ABsystem-test%E3%81%A7headless-chrome%E3%82%92%E4%BD%BF%E3%81%86">[Rails]雑にSystem TestでHeadless Chromeを使う | 日々雑記</a></li>
+</ul>
 
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rspec-occasional-fail/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/poltergeist-to-selenium-webdriver/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -148,11 +222,15 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/poltergeist-to-selenium-webdriver/" title="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える">Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える</a></li>
-  
     <li><a href="/coverage-with-codeclimate/" title="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</a></li>
   
+    <li><a href="/rspec-occasional-fail/" title="RSpecが通ったり落ちたりしたときにはseed値を指定する">RSpecが通ったり落ちたりしたときにはseed値を指定する</a></li>
+  
     <li><a href="/rspec2-to-rspec3-errors/" title="RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話">RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話</a></li>
+  
+    <li><a href="/rubocop-rails-config/" title="RuboCopチームにgemの名前を譲った話">RuboCopチームにgemの名前を譲った話</a></li>
+  
+    <li><a href="/rdm2018-active-record-anti-patterns/" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</a></li>
   
   </ul>
   </div>
@@ -172,14 +250,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/vancouver-infomation/" title="Newer Post: カナダ・バンクーバー情報（2014年度版）"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/job-hunting-fin/" title="Older Post: 就活日記(完) 就職">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/how-to-publish-vscode-extension/" title="Older Post: VS Code Extensionの公開手順">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -229,10 +303,10 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/rspec-occasional-fail/"
+      "@id": "https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/"
     },
-    "headline": "RSpecが通ったり落ちたりしたときにはseed値を指定する",
-    "datePublished": "2014-09-23T00:00:00+09:00",
+    "headline": "Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える",
+    "datePublished": "2018-08-04T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -245,9 +319,9 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/icon.png"
+      "url": "https://blog.toshimaru.net/images/posts/chromedriver.jpg"
     },
-    "keywords": "rspec"
+    "keywords": "rails, rspec"
   },
   {
     
@@ -258,8 +332,8 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "https://blog.toshimaru.net/tag/rspec/",
-          "name": "rspec"
+          "@id": "https://blog.toshimaru.net/tag/rails/",
+          "name": "rails"
         }
       }
     ]
