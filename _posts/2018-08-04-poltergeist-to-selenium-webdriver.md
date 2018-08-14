@@ -10,9 +10,9 @@ RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、[poltergeis
 
 ## 対応 Pull Request
 
-今回対応したPull Requestしてはこちら。
+今回対応したPull Requestはこちら。
 
-https://github.com/toshimaru/RailsTwitterClone/pull/211
+[Use headless Chrome instead of PhantomJS(poltergeist) by toshimaru · Pull Request #211 · toshimaru/RailsTwitterClone · GitHub](https://github.com/toshimaru/RailsTwitterClone/pull/211)
 
 思ったよりも差分はコンパクトにまとまった。
 
@@ -47,7 +47,7 @@ Capybara.register_driver :selenium_chrome_headless do |app|
 end
 ```
 
-via. https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce
+via. [add default selenium chrome driver registrations · teamcapybara/capybara@0275eab · GitHub](https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce)
 
 ## Install chromedriver
 
