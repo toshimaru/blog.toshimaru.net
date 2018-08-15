@@ -1,4 +1,250 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-08-14T13:25:36+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える</title><link href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/" rel="alternate" type="text/html" title="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える" /><published>2018-08-04T00:00:00+09:00</published><updated>2018-08-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/poltergeist-to-selenium-webdriver</id><content type="html" xml:base="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">&lt;p&gt;RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、&lt;a href=&quot;https://github.com/teampoltergeist/poltergeist&quot;&gt;poltergeist&lt;/a&gt;から&lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/headless/README.md&quot;&gt;Headless Chrome&lt;/a&gt;に乗り換えてみたのでそのときのメモ。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-08-16T04:01:47+09:00</updated><id>https://blog.toshimaru.net/</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">『その「エンジニア採用」が不幸を生む』読んだ ~優秀エンジニアを採用するために~</title><link href="https://blog.toshimaru.net/engineer-hiring/" rel="alternate" type="text/html" title="『その「エンジニア採用」が不幸を生む』読んだ ~優秀エンジニアを採用するために~" /><published>2018-08-16T00:00:00+09:00</published><updated>2018-08-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/engineer-hiring</id><content type="html" xml:base="https://blog.toshimaru.net/engineer-hiring/">&lt;p&gt;エンジニア採用について最近いろいろ考える機会が増えたので読んでみた。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.amazon.co.jp/dp/4774186015/ref=as_li_ss_il?ie=UTF8&amp;amp;linkCode=li3&amp;amp;tag=toshimaru-22&amp;amp;linkId=2a0d1c72cd87e32ad0e5401b65cb39ac&amp;amp;language=ja_JP&quot; target=&quot;_blank&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;amp;ASIN=4774186015&amp;amp;Format=_SL250_&amp;amp;ID=AsinImage&amp;amp;MarketPlace=JP&amp;amp;ServiceVersion=20070822&amp;amp;WS=1&amp;amp;tag=toshimaru-22&amp;amp;language=ja_JP&quot; /&gt;&lt;/a&gt;&lt;img src=&quot;https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;l=li3&amp;amp;o=9&amp;amp;a=4774186015&quot; width=&quot;1&quot; height=&quot;1&quot; border=&quot;0&quot; alt=&quot;&quot; style=&quot;border:none !important; margin:0px !important;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;本書の概要&quot;&gt;本書の概要&lt;/h2&gt;
+
+&lt;p&gt;本書ではIT分野で人材採用のコンサルタントとして活動している著者が、「エンジニアと企業のミスマッチ」はどうして起こるのか、それをどう解決していったらよいのかを紹介している。&lt;/p&gt;
+
+&lt;p&gt;本書前半部分ではイケてない会社やエンジニアの採用失敗例および就職失敗例が紹介されており、後半部分では企業サイドがどうエンジニアを惹きつけ採用に結びつけたらよいかの話が書かれている。&lt;/p&gt;
+
+&lt;h2 id=&quot;エンジニアと企業のミスマッチ&quot;&gt;エンジニアと企業のミスマッチ&lt;/h2&gt;
+
+&lt;p&gt;本書では下記のようにエンジニアが特性に応じて２タイプ・４分類に分けられている。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/engineer/types.png&quot; alt=&quot;２タイプ・４分類&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;どんなに採用対象となるエンジニアが優秀であろうと、会社にフィットしないこともあるので気をつけなければならないと著者は警鐘を鳴らす。&lt;/p&gt;
+
+&lt;p&gt;これは確かにそうで、例えばどんなに優秀なSI系システム開発エンジニアであろうとも、SIとは全く毛色が異なるWeb系企業に就職したとして即戦力ですぐ活躍するイメージは湧かない。逆に、小さな企業でずっとゆるふわに開発をやってきたWeb系エンジニアがSI業界に飛び込んだとして、すぐに活躍できるイメージも湧かない。&lt;/p&gt;
+
+&lt;p&gt;また会社のアーリーフェーズにおいて人も少なく新規開発が多い場面においては、エンジニアはフルスタック的な能力が求められることが多いだろう。その状況において、大きいシステムの一部機能の保守・運用をやってきたエンジニアは（どんなにその運用・保守能力が高くとも）活躍できないだろう。&lt;/p&gt;
+
+&lt;h2 id=&quot;良いエンジニアは市場に出ない&quot;&gt;良いエンジニアは市場に出ない&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;本当にすごいエンジニアほど、労働市場に出ることはなく、知人を介した紹介や、WebやSNSを介した直接応募で転職が決まっている&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;これもよく言われることだが、優秀なエンジニアであればあるほど転職市場には出てこない。なぜなら優秀なエンジニアは引く手あまたで、信頼のおける知人の紹介であったり勉強会などで出会った人づてで就職を決めてしまうことが多いからだ。&lt;/p&gt;
+
+&lt;p&gt;これは企業側にとっても採用を難しくさる要因になっていると思う。なぜならいざ転職市場から優秀なエンジニアを見つけようと思っても、優秀なエンジニアがそもそも転職市場には居ないので転職市場を掘っても掘ってもなかなかお目当てのエンジニアには出会えないからだ。&lt;/p&gt;
+
+&lt;p&gt;逆に言うと企業側が優秀な人の採用に一人成功すればその人づてに紹介の輪が広がるケースもあるので、最初の優秀な一人の採用は極めて重要と言える。&lt;/p&gt;
+
+&lt;p&gt;本書でも転職者のルートで一番多いのは知人を介した紹介であり、エンジニアの転職も同じエンジニアからの紹介ルートが一番多いと書かれている。エンジニアを介したルートがなぜエンジニアにとって合理的なのかの理由は下記のように書かれている。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;エンジニア同士、技術トークを共有することができ、エンジニアの思考や行動のどこにつまずきやすいのかを理解している&lt;/li&gt;
+  &lt;li&gt;（エンジニアに限らないことだが）求人企業サイドの情報より利害関係がない人間関係から収集した情報のほうが信じやすい = オーバーハードコミュニケーション&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;転職ルートの多様化&quot;&gt;転職ルートの多様化&lt;/h2&gt;
+
+&lt;p&gt;僕がカナダ・バンクーバーから帰国後、エンジニアとして転職活動をしていて一番驚いたこととしては、新卒就活生時代にさんざん経験したようなお堅い面接からスタートするのではなくカジュアルな面談からスタートできるという点だ。&lt;/p&gt;
+
+&lt;p&gt;今でこそ当たり前になっているカジュアル面談だが、当時はカジュアルな面談から気軽にスタートできるマッチングサービスがそこまで多くはなく、当時使っていたWantedlyは非常に重宝した思い出がある。&lt;/p&gt;
+
+&lt;p&gt;なお当時の僕の就活の様子は当ブログにまとまっているので興味がある方はどうぞ: &lt;a href=&quot;https://blog.toshimaru.net/tag/就活/&quot;&gt;就活日記シリーズ&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;また最近では、ドラフト型、スカウト型の求人サービスも多く登場している。例えば下記のようなものである。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://job-draft.jp&quot;&gt;転職ドラフト&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://jobs.forkwell.com/about/scout&quot;&gt;Forkwell Scout&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://scouty.co.jp/&quot;&gt;Scouty&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;中でも転職ドラフトは個人的にかなりのブレークスルーであったと感じる。企業に年収をセットで提示させることで、今まで暗黙的にタブーとされてきた年収をつまびらかにしたからだ。これはエンジニアにとってもたいへん有益で、なぜなら自身の市場価値を＜年収＞という圧倒的にわかりやすく明確な数値で知ることができるからである。&lt;/p&gt;
+
+&lt;p&gt;僕も転職ドラフトが話題になった当時、市場価値を測るという目的で試しにドラフト対象者として登録してみたのだが、やはり現年収を大きく上回る年収が提示されたときのインパクトは大きかった。それが数十万くらい高いくらいの話であれば「まぁ現職に不満はないしこんなもんかー」程度で済むのだが数百万単位で現年収を上回る提示をされたときはたとえ現職に全く不満はないとしても心が揺らぐというものである。&lt;/p&gt;
+
+&lt;p&gt;もちろん転職を決めるファクターとして年収が全てではないのでそれで転職を決めましたという話ではないのだが、エンジニア自身の中で「自分の市場価値は年収ベースでこれくらいか」という相場観を持てるのはとても良いことだ。&lt;/p&gt;
+
+&lt;p&gt;このようにエンジニアの転職チャンネルや転職サービスは多様化しており、採用担当者のそこらへんの感度の高さ・リテラシーも求められていくる。本書でも下記のように述べられている。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;どのようなエンジニアがどこにいるのか、全体像が捉えるのは困難。&lt;/p&gt;
+
+  &lt;p&gt;全体像が捉えづらい中で、あなたの会社に必要なエンジニアがどこにいるのか仮設を立て、検証し、採用活動をおこなって試行錯誤しながら、採用に必要なノウハウを蓄積していくことが、エンジニア採用を成功されるために重要&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;企業の情報発信&quot;&gt;企業の情報発信&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;企業ブランドや情報発信力は重要です。コストをかけてでも良くしていかなければ、事業はもちろん、採用もうまくいかない現実があることを再認識しましょう。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;近年は&lt;a href=&quot;http://business.hatenastaff.com/blogmedia&quot;&gt;はてなブログMedia&lt;/a&gt; などを利用したオウンドメディアによる情報発信も当たり前となってきた。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://mercan.mercari.com&quot;&gt;メルカン&lt;/a&gt; by メルカリ&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://employment.en-japan.com/engineerhub/&quot;&gt;エンジニアHub&lt;/a&gt; by エンジャパン&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://r.gnavi.co.jp/g-interview/&quot;&gt;みんなのごはん&lt;/a&gt; by ぐるなび&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;テック系企業だとエンジニア向けにテックブログを持つのも当たり前の時代だ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.mercari.com&quot;&gt;Mercari Engineering Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://techlife.cookpad.com&quot;&gt;クックパッド開発者ブログ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.pepabo.com&quot;&gt;ペパボテックブログ&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;企業にとってみれば、エンジニアにそもそも企業について興味を持ってもらわないとカジュアル面談にすらたどり着けない。まずはオウンドメディアによる情報発信、テックブログによる技術の情報発信を積極的に行って知ってもらう努力が必要になる。&lt;/p&gt;
+
+&lt;h2 id=&quot;企業の差別化ポイント&quot;&gt;企業の差別化ポイント&lt;/h2&gt;
+
+&lt;p&gt;企業の差別化ポイントとしては本書では下記が紹介されている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;報酬&lt;/li&gt;
+  &lt;li&gt;就業条件&lt;/li&gt;
+  &lt;li&gt;評価と処遇&lt;/li&gt;
+  &lt;li&gt;企業内教育の制度&lt;/li&gt;
+  &lt;li&gt;キャリアパス&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;報酬&quot;&gt;報酬&lt;/h3&gt;
+
+&lt;p&gt;一番わかり易いのは報酬での差別化だ。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;エンジニアが転職する第一の要因は「報酬の低さ」であるといわれています。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;本書ではエンジニア報酬が低くなる要因を、年功序列による賃金テーブルが運用されているからだとしている。古き良き日本企業であれば年功序列による賃金テーブルを運用をしたくなる気持ちがあるだろうが、エンジニアにおいてはそれは絶対NGといえる。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;エンジニアにとっての成長は人によって千差万別で、学生時代から技術を身につけたエンジニアならば入社時点で先輩社員より開発力が高い、いやはるかに高い人もいます。年齢≠技術であり、技術力と実績が賃金と比例する大前提と社内規定が矛盾し、能力と実績を反映した報酬を出せない企業が非常に多いからです。&lt;/p&gt;
+
+  &lt;p&gt;これら既存の日本企業の運営ルールを打ち破ることができれば、良いエンジニアに働いてもらえる環境の整備に向けて大きく前進することになります。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;転職すると年収が上がるバグ&quot;&gt;転職すると年収が上がるバグ&lt;/h4&gt;
+
+&lt;p&gt;思い切った賃金テーブルの改定が行えない企業が世の中には多いようで、&lt;a href=&quot;http://b.hatena.ne.jp/entry/356805083/comment/mizchi&quot;&gt;転職すると年収が上がるというバグ&lt;/a&gt;が報告されている。&lt;/p&gt;
+
+&lt;p&gt;エンジニアを採用したい企業側にとってはそのバグを突くことが採用チャンスと言えるだろう。幸い、上述したような転職ドラフトのようなサービスが世の中には存在しているので、各社どんどん年収バグを突いていっていただきたい&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;また転職ドラフトなどでガンガン高い入札をしている企業であれば、それだけで「エンジニアを高く評価する企業」というイメージにもなるので、一つの企業ブランディング活動にもなりそうだ。&lt;/p&gt;
+
+&lt;p&gt;余談にはなるが、その際社内実態との乖離には気をつけなければならない。さもないと社内で変な軋轢を生むこととなる。&lt;/p&gt;
+
+&lt;h3 id=&quot;就業条件&quot;&gt;就業条件&lt;/h3&gt;
+
+&lt;p&gt;福利厚生を含む就業条件をユニークにするというのも最近多く聞く。例えば下記のような例である。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リモートワーク&lt;/li&gt;
+  &lt;li&gt;フレックスタイム制&lt;/li&gt;
+  &lt;li&gt;副業推奨&lt;/li&gt;
+  &lt;li&gt;英語などの学習支援&lt;/li&gt;
+  &lt;li&gt;勉強会や海外カンファレンス参加のサポート&lt;/li&gt;
+  &lt;li&gt;子育て支援制度&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;など細かい制度を上げるとキリがないが、エンジニアを惹きつける就業条件を設定する企業も多くなっている。&lt;/p&gt;
+
+&lt;p&gt;エンジニア仕事は比較的場所・時間を選ばず働くことができるので、例えばリモートワーク・フレックスタイム制を好むエンジニアは多くいる。またエンジニアは普段から英語ドキュメントを読んだり、OSS活動の中でGitHubで英語でコミュニケーションをとったり、海外のテックカンファレンスに行ったり、英語を使用することも多いので英語の学習支援があると嬉しいという声も聞く。&lt;/p&gt;
+
+&lt;p&gt;最近僕が見た中で充実した福利厚生・就業条件がある企業を下記に列挙する。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://about.yahoo.co.jp/hr/workplace/familycare.html&quot;&gt;ヤフー&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.smartnews.com/blog/2018/08/company-benefits/&quot;&gt;スマートニュース&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://cybozu.co.jp/company/work-style/&quot;&gt;サイボウズ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://careers.mercari.com/merci-box/&quot;&gt;メルカリ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.cyberagent.co.jp/way/info/contents_type=1119&quot;&gt;サイバーエージェント&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;評価と処遇&quot;&gt;評価と処遇&lt;/h3&gt;
+
+&lt;p&gt;本書でも述べられている通り、エンジニアの評価システムほど難しいものはない。公平な評価システムを作る上で下記が重要だと述べられている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;評価システムをルール通り運用する&lt;/li&gt;
+  &lt;li&gt;システム開発経験のあるマネージャーもしくはエンジニアが一時評価を実施する&lt;/li&gt;
+  &lt;li&gt;対象のエンジニアの技術領域と評価社の技術領域をそろえる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;エンジニアの評価制度に関しては下記のボヤージュグループのエンジニアの技術力評価の歴史の資料が参考になるだろう。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;a3d2a247abca426cabeb4522d3bf57a5&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;また処遇に関しては実力・実績ベースで決めるべきであり、本書では下記のアンチパターンが紹介されている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;創業期のメンバーと仲良しになってしまい、キャリア採用で優秀なエンジニアが入社して実績を出しても昇格できない&lt;/li&gt;
+  &lt;li&gt;経営陣と優秀なエンジニアの間に創業時からいる低スキルのエンジニアが上長として入り込み、優秀なエンジニアの成果を自分のものにして、優秀なエンジニアのモチベーションを消滅させる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;企業内教育の制度&quot;&gt;企業内教育の制度&lt;/h3&gt;
+
+&lt;p&gt;企業としてエンジニアの育成に投資することや成長環境を整備することも重要だと述べられている。&lt;/p&gt;
+
+&lt;p&gt;この例としては、CTOやエース級エンジニアからの技術研修であったり、彼らとのペアプログラミング・レビューであったりすると思う。最近だとそういったことが実施できるエンジニアを外部から技術顧問として招く例も聞く。&lt;/p&gt;
+
+&lt;p&gt;そのような成長環境をエンジニアに定常的にしっかり用意することができれば、エンジニアの離職率の低下につなげることができるだろう。&lt;/p&gt;
+
+&lt;p&gt;ペアプロ事例に関しては下記のt-wadaさんの資料が参考になる。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;483d185def8b4038b0d981e51ed3ebbb&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;キャリアパス&quot;&gt;キャリアパス&lt;/h3&gt;
+
+&lt;p&gt;エンジニアがキャリアパスを描きやすい環境を作るのも企業にとって重要だ。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;開発を通じてエンジニアが成長でき、成長後も働けるキャリアパスを構築できる事業運営が重要になってきます。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;最先端の技術・開発手法による開発プロジェクトを社内で１つは確保する&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;枯れた技術・古い技術だけではエンジニアが離れてしまうこともあるので、そういったプロジェクトを社内に１つは用意することでエンジニアをつなぎとめる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;マネージャーのキャリアパスを用意&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;35歳エンジニア定年説という言葉が流布されているように、エンジニアとしての成長が頭打ちになるタイミングがいつかは来る。それに備えてエンジニアがマネージャとしてキャリアを進めていけるようなパスも用意する&lt;/li&gt;
+      &lt;li&gt;このへんに関しては過去にこのような記事を書いたことがある: &lt;a href=&quot;https://blog.toshimaru.net/like-a-sponge-as-an-engineer/&quot;&gt;技術者としてスポンジであり続けること　あるいは老害回避戦略の話&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;社内のキャリアパスを公開&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;社内エンジニアの中にはスペシャリストとしてエンジニアリングを突き詰める人であったりマネージャーにジョブチェンジしてマネージャーとしてキャリアを歩んでいく人もいるだろう。そういったキャリアパスの事例を社内に蓄積していき、1on1などの面談で具体的なキャリア例とともに紹介して、キャリアパスをイメージしやすい環境を作れると良いだろう。&lt;/li&gt;
+      &lt;li&gt;1on1について書いた過去の記事: &lt;a href=&quot;https://blog.toshimaru.net/1-on-1-book-memo/&quot;&gt;ヤフーの1on1とシリコンバレー式1on1の本を読んだ ~1on1の目的、進め方、何を話すべきか~&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;迷ったら採用しないという原則&quot;&gt;迷ったら採用しないという原則&lt;/h2&gt;
+
+&lt;p&gt;最後になるが、本書には触れられてない内容だが、個人的に採用する側として気をつけたらよいと思うことがある。それは「迷ったら採用しない」ということである。&lt;/p&gt;
+
+&lt;p&gt;日本は解雇規制が厳しいので米国のように簡単にクビにはできない。つまり間違った人材（全くカルチャーフィットしない人材、人間性に難ありな人材、技術力が著しく悪い人材）を間違って採用してしまったとしても、なかなか簡単には解雇できないということだ。従って採用は失敗しないように気をつけなければならないと思うし、&lt;strong&gt;迷ったら採らないというのが原則&lt;/strong&gt;だと僕は考えている。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;企業は偽陽性（False Positive）を避けようとしているからだと思います。要するに間違って企業に合わない人（人間として、人材として）を採用するのが最悪だと思われています。良い人材を見過ごすよりも合わない人材を採用する方がコストが高いからです。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://medium.com/@oldergod/square-%E3%81%AE%E6%8E%A1%E7%94%A8%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6-8d95b8346917&quot;&gt;Square の採用プロセスについて – Benoît Quenaudon – Medium&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;米国の採用ですらそのような状況なのだから&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;、日本の採用はFalse Positiveな採用に陥らないようになおさら気をつけるべきだと思う。&lt;/p&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=4774186015&amp;amp;linkId=39b086c770d3b85f907636ba1244e86b&quot;&gt;&lt;/iframe&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;ひいてはこれがエンジニア全体の報酬水準を引き上げることになるので、この発言は僕自身のポジショントークも少し入っている &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;ちなみ本引用記事の要旨としては、Square社はFalse Positiveを避けつつも、False Negativeにもならないようにとちゃんと考えて採用しているよ、という話 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="採用" /><category term="読書" /><category term="management" /><summary type="html">エンジニア採用について最近いろいろ考える機会が増えたので読んでみた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/engineer/og.jpeg" /></entry><entry><title type="html">Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える</title><link href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/" rel="alternate" type="text/html" title="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える" /><published>2018-08-04T00:00:00+09:00</published><updated>2018-08-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/poltergeist-to-selenium-webdriver</id><content type="html" xml:base="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">&lt;p&gt;RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、&lt;a href=&quot;https://github.com/teampoltergeist/poltergeist&quot;&gt;poltergeist&lt;/a&gt;から&lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/headless/README.md&quot;&gt;Headless Chrome&lt;/a&gt;に乗り換えてみたのでそのときのメモ。&lt;/p&gt;
 
 &lt;h2 id=&quot;対応-pull-request&quot;&gt;対応 Pull Request&lt;/h2&gt;
 
@@ -779,7 +1025,7 @@ Memory: 0.82 MB
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html&quot;&gt;ActiveRecord::Relation&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html&quot;&gt;ActiveRecord::Batches&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/ar-optimization.png" /></entry><entry><title type="html">ヤフーの1on1とシリコンバレー式1on1の本を読んだ</title><link href="https://blog.toshimaru.net/1-on-1-book-memo/" rel="alternate" type="text/html" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ" /><published>2018-02-10T00:00:00+09:00</published><updated>2018-02-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/1-on-1-book-memo</id><content type="html" xml:base="https://blog.toshimaru.net/1-on-1-book-memo/">&lt;p&gt;1 on 1 をチームで実施することとなり、勉強がてら『&lt;a href=&quot;http://amzn.to/2GNg6b5&quot;&gt;シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング&lt;/a&gt;』と『&lt;a href=&quot;http://amzn.to/2GKRNu2&quot;&gt;ヤフーの1on1―――部下を成長させるコミュニケーションの技法&lt;/a&gt;』の２冊を読んだ。&lt;/p&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/ar-optimization.png" /></entry><entry><title type="html">ヤフーの1on1とシリコンバレー式1on1の本を読んだ ~1on1の目的、進め方、何を話すべきか~</title><link href="https://blog.toshimaru.net/1-on-1-book-memo/" rel="alternate" type="text/html" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ ~1on1の目的、進め方、何を話すべきか~" /><published>2018-02-10T00:00:00+09:00</published><updated>2018-02-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/1-on-1-book-memo</id><content type="html" xml:base="https://blog.toshimaru.net/1-on-1-book-memo/">&lt;p&gt;1 on 1 をチームで実施することとなり、勉強がてら『&lt;a href=&quot;http://amzn.to/2GNg6b5&quot;&gt;シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング&lt;/a&gt;』と『&lt;a href=&quot;http://amzn.to/2GKRNu2&quot;&gt;ヤフーの1on1―――部下を成長させるコミュニケーションの技法&lt;/a&gt;』の２冊を読んだ。&lt;/p&gt;
 
 &lt;p&gt;※以下、それぞれをシリコンバレー式1on1本とYahoo 1on1本と表記する&lt;/p&gt;
 
@@ -812,27 +1058,27 @@ Memory: 0.82 MB
 &lt;p&gt;1 on 1 の目的としては下記が挙げられる。&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;部下との関係性の構築
+  &lt;li&gt;&lt;strong&gt;部下との関係性の構築&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;業務ではできない質の高いコミュニケーションを行う&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;部下のキャリア開発
+  &lt;li&gt;&lt;strong&gt;部下のキャリア開発&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;部下の短期的キャリア・中長期のキャリア開発を支援&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;部下のパフォーマンス管理
+  &lt;li&gt;&lt;strong&gt;部下のパフォーマンス管理&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;目標管理&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;部下のモチベーション向上
+  &lt;li&gt;&lt;strong&gt;部下のモチベーション向上&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;困っていること・業務ブロッカーの排除&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;部下の成長支援
+  &lt;li&gt;&lt;strong&gt;部下の成長支援&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;フィードバック&lt;/li&gt;
     &lt;/ul&gt;
@@ -848,17 +1094,17 @@ Memory: 0.82 MB
 &lt;p&gt;&lt;strong&gt;シリコンバレー式1on1本より図を引用&lt;/strong&gt;&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;プライベート相互理解
+  &lt;li&gt;&lt;strong&gt;プライベート相互理解&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;雑談の中から聞きだせるとよい。関係性を構築する上で相手の人となりは知っておくのが基本。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;心身の健康チェック
+  &lt;li&gt;&lt;strong&gt;心身の健康チェック&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;心身の状態が問題ないか。業務量が過多になっていたり、業務時間が不規則になっていないか。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;モチベーションアップ
+  &lt;li&gt;&lt;strong&gt;モチベーションアップ&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;モチベーションを下げる要因を取り除く
         &lt;ul&gt;
@@ -873,7 +1119,7 @@ Memory: 0.82 MB
       &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;業務・組織課題の改善
+  &lt;li&gt;&lt;strong&gt;業務・組織課題の改善&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;業務課題の改善
         &lt;ul&gt;
@@ -883,7 +1129,7 @@ Memory: 0.82 MB
       &lt;li&gt;チーム/組織課題の改善&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;目標設定・評価
+  &lt;li&gt;&lt;strong&gt;目標設定・評価&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;マネージャーは正しい評価をするのではなく、部下が納得できる評価が必要
         &lt;ul&gt;
@@ -892,12 +1138,12 @@ Memory: 0.82 MB
       &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;能力開発・キャリア支援
+  &lt;li&gt;&lt;strong&gt;能力開発・キャリア支援&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;経験学習のサイクルを回す&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;戦略・方針の伝達
+  &lt;li&gt;&lt;strong&gt;戦略・方針の伝達&lt;/strong&gt;
     &lt;ul&gt;
       &lt;li&gt;経営陣などの上層部の戦略・方針をその背景も含めて適切に部下に伝達する&lt;/li&gt;
     &lt;/ul&gt;
@@ -936,7 +1182,7 @@ Memory: 0.82 MB
 
 &lt;p&gt;また、上司は部下の話を頭ごなしに否定するのではなく共感を示す必要がある。否定する必要があるときはニュートラルな上手な言い回しをすること。&lt;/p&gt;
 
-&lt;p&gt;そして目標設定・評価や業務アサインはきちんと部下が納得感を持てるような説明が上司に求められる。上司から部下への一方的な設定は命令感が強くなり部下が発言しにくくなる可能性がある&lt;/p&gt;
+&lt;p&gt;そして目標設定・評価や業務アサインはきちんと部下が納得感を持てるような説明が上司に求められる。上司から部下への一方的な設定は命令感が強くなり部下が発言しにくくなる可能性がある。&lt;/p&gt;
 
 &lt;h2 id=&quot;1-on-1の頻度について&quot;&gt;1 on 1の頻度について&lt;/h2&gt;
 
@@ -976,7 +1222,7 @@ Memory: 0.82 MB
 
 &lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=4478069786&amp;amp;linkId=ea9f3d4a7b14fcc644075add70c9b61e&quot;&gt;&lt;/iframe&gt;
 
-&lt;h2 id=&quot;その他のweb上の参考資料&quot;&gt;その他のWeb上の参考資料&lt;/h2&gt;
+&lt;h2 id=&quot;web上の参考資料&quot;&gt;Web上の参考資料&lt;/h2&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.slideshare.net/satoshiyoshinaga/1on1-80798455&quot;&gt;生産性を高める 1on1&lt;/a&gt;&lt;/li&gt;
@@ -1035,82 +1281,4 @@ Memory: 0.82 MB
 &lt;ul&gt;
   &lt;li&gt;GitHubの場合: &lt;a href=&quot;https://github.com/github/rubocop-github&quot;&gt;github/rubocop-github&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;SideCIでお馴染みのActcatの場合: &lt;a href=&quot;https://github.com/sideci/meowcop&quot;&gt;sideci/meowcop&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry><entry><title type="html">railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました</title><link href="https://blog.toshimaru.net/why-we-use-ruby-on-rails/" rel="alternate" type="text/html" title="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました" /><published>2017-12-11T00:00:00+09:00</published><updated>2017-12-11T00:00:00+09:00</updated><id>https://blog.toshimaru.net/why-we-use-ruby-on-rails</id><content type="html" xml:base="https://blog.toshimaru.net/why-we-use-ruby-on-rails/">&lt;p&gt;&lt;a href=&quot;https://techplay.jp/event/631431&quot;&gt;Rails Developers Meetup 2017&lt;/a&gt;でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。&lt;/p&gt;
-
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;68db83f9e02946f08a45817d8fb25b09&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;※公開用に一部スライドを編集してあります:wink:&lt;/p&gt;
-
-&lt;h2 id=&quot;テーマ設定について&quot;&gt;テーマ設定について&lt;/h2&gt;
-
-&lt;p&gt;Web開発においてGoやPython、PHP、Node.js、Scala、Elixirなど様々な選択肢がある中で「なぜ今、Ruby/Railsを使うのか？」というテーマを個人的に掘り下げてみたかったのでこの機会に発表してみることにしてみました。&lt;/p&gt;
-
-&lt;h2 id=&quot;railsの2つの哲学&quot;&gt;Railsの2つの哲学&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;DRY&lt;/strong&gt; (Don’t Repeat Yourself): 同じことを繰り返さない&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;CoC&lt;/strong&gt; (Convention over Configuration): 設定より規約&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Railsの哲学は上記の２つがありますが、個人的にはDRYよりもCoCがずっと重要だと思ってます。なぜならDRYはプログラミング行為において普遍的な考え方である一方、CoCはRailsが定めたRails独自の規約だからです。&lt;/p&gt;
-
-&lt;h2 id=&quot;ruby-on-railsの本質&quot;&gt;Ruby on Railsの本質&lt;/h2&gt;
-
-&lt;p&gt;Ruby on Railsの本質は、&lt;strong&gt;センスの良い規約（=Rail）によって設定および設計の手間を最小限にした&lt;/strong&gt; ことだと考えます。&lt;/p&gt;
-
-&lt;p&gt;この規約により我々は設定にまつわるコードを数百行書いたりとかする必要もなくなりましたし、設計工程で生じがちな＜俺の考える最強のアプリケーション設計バトル＞や＜俺の考える最強のデータベース設計選手権＞を緩和しコミュニケーションコストを大幅にカットすることができました（とはいえその規約に規定されていない部分の設計はどうするんだという問題は残りますが…）。&lt;/p&gt;
-
-&lt;p&gt;この規約によって我々はRuby on Railsで &lt;strong&gt;圧倒的コード量の少なさと生産性の高さを実現&lt;/strong&gt; できました。&lt;/p&gt;
-
-&lt;h2 id=&quot;rails批判〇〇の方が速いよ&quot;&gt;Rails批判:「〇〇の方が速いよ」&lt;/h2&gt;
-
-&lt;p&gt;パフォーマンス要件がマストでないときにRailsを使いましょう。パフォーマンス要件がマストのケースにおいては（e.g. 広告サーバー）そもそもRubyという言語選択はするべきでないです。&lt;/p&gt;
-
-&lt;p&gt;「速い」の定義をどこにおくかも重要なポイントです。この速さを「処理系の速さ」としたらRubyはGoなどには負けますが、「開発の速さ」とした場合はどうでしょうか？　我々にとって価値のある速さはどちらでしょうか？　例えばスタートアップなどにおいて1日でも1時間でも早くPDCAサイクルを回したい場合にRailsのほうが最適ではないでしょうか。&lt;/p&gt;
-
-&lt;p&gt;またエンドユーザーにとっての速さは必ずしも処理系の速さとは一致しない点も気をつけてください。かの超絶高速なサイト&lt;a href=&quot;https://dev.to/&quot;&gt;dev.to&lt;/a&gt;はRails製であるという事実を忘れないでください。&lt;/p&gt;
-
-&lt;h3 id=&quot;devtoはrails製であるという事実&quot;&gt;dev.toはRails製であるという事実&lt;/h3&gt;
-
-&lt;p&gt;この事実から言えることは &lt;strong&gt;サービス特性と要素技術を正しく理解・把握した上で最適なアーキテクチャを選択する&lt;/strong&gt; ことが重要ということです。&lt;/p&gt;
-
-&lt;p&gt;例えば&lt;a href=&quot;https://dev.to/&quot;&gt;dev.to&lt;/a&gt; の場合、キャッシュしやすいというサービス特性を利用して、Railsで生成されるコンテンツを爆速CDNであるFastlyに載せて配信させました。これにより結果的に最高の爆速UXを提供できているのです。&lt;/p&gt;
-
-&lt;p&gt;つまり速さという点において問題になるレイヤーはアプリケーションサーバーのレイヤーだけではないということです。&lt;/p&gt;
-
-&lt;h2 id=&quot;rubyrailsが遅いという前に&quot;&gt;Ruby/Railsが遅いという前に&lt;/h2&gt;
-
-&lt;p&gt;「Ruby/Railsが遅い!」という前に下記はしっかり確認していただきたいものです。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;自分のアプリケーション設計やテーブル設計の失敗の責任を、言語やフレームワークに押し付けてはいないか&lt;/li&gt;
-  &lt;li&gt;するべき最適化をする前に遅いと斬り捨ててはいないか&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;僕の経験上、Railsで”ちゃんと”作ることができれば、爆速ではないかもしれませんがまぁまぁ速いくらいのサイトは実現可能だと思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;高速化の努力&quot;&gt;高速化の努力&lt;/h2&gt;
-
-&lt;p&gt;とはいえ高速化の努力はあって、Ruby3に向けてのRuby高速化（いわゆる&lt;a href=&quot;http://gihyo.jp/news/report/01/rubykaigi2017/0003&quot;&gt;Ruby3x3&lt;/a&gt;）や、&lt;a href=&quot;https://github.com/Shopify/bootsnap&quot;&gt;bootsnap&lt;/a&gt;のようなRailsの起動高速などの努力があります。&lt;/p&gt;
-
-&lt;h2 id=&quot;2018年ruby-on-railsという選択&quot;&gt;2018年、Ruby on Railsという選択&lt;/h2&gt;
-
-&lt;p&gt;小〜中規模のWebアプリケーション（言い換えるとマイクロサービス化を考えなくても済むような規模）であればRailsで十分戦えると考えています。&lt;/p&gt;
-
-&lt;p&gt;なので2018年もRuby on Railsは有効なWebアプリケーションフレームワークの選択肢であり続けでしょう。少なくとも、Ruby on Railsを超えるようなベターオルタナティブが出現しない限りはそうでしょう。&lt;/p&gt;
-
-&lt;h2 id=&quot;発表を終えて&quot;&gt;発表を終えて&lt;/h2&gt;
-
-&lt;p&gt;本発表を聞いた人には「じゃあ一生Ruby/Railsを使い続けるのか？」と思われるかもしれませんが、今後Railsくらいの生産性を発揮できてRailsより速いフレームワークが出現するのであれば全然乗り換える準備はあります。&lt;/p&gt;
-
-&lt;p&gt;ただドキュメント・ライブラリ・運用実績などの周辺環境も含めてRuby/Rails並みに整うのは相当厳しいように思われますので、あと３年位はRailsの寿命は続くのかなという印象です。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;誰か日本でRubyKaigiじゃなくてRailsKaigiをオーガナイズしてくれる人はいないものか（チラッ&lt;br /&gt;めちゃくちゃ人集まることは絶対間違いないと思うのだけど。。。&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/841439645011394564?ref_src=twsrc%5Etfw&quot;&gt;March 14, 2017&lt;/a&gt;&lt;/blockquote&gt;
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;以前書いたこれ、現場の知見の共有という意味では &lt;a href=&quot;https://twitter.com/hashtag/railsdm?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#railsdm&lt;/a&gt; がやっていってくれてる感ある &lt;a href=&quot;https://t.co/XLGDEEKooR&quot;&gt;https://t.co/XLGDEEKooR&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/940369828451303424?ref_src=twsrc%5Etfw&quot;&gt;December 11, 2017&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;その他の発表スライドなどはこちら &lt;a href=&quot;https://railsdm.github.io/2017/&quot;&gt;Rails Developers Meetup 2017&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;当日のTweetまとめ &lt;a href=&quot;https://togetter.com/li/1179895&quot;&gt;Rails Developers Meetup 2017 #railsdm - Togetter&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="presentation" /><summary type="html">Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2017.png" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry></feed>
