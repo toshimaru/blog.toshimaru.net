@@ -3,7 +3,7 @@ layout: post
 title: 『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~
 image: "/images/posts/engineer/og.jpeg"
 description: エンジニア採用について最近いろいろ考える機会が増えたので読んでみた。本書ではIT分野で人材採用のコンサルタントとして活動している著者が、「エンジニアと企業のミスマッチ」はどうして起こるのか、それをどう解決していったらよいのかを紹介している。 本書前半部分ではイケてない会社やエンジニアの採用失敗例および就職失敗例が紹介されており、後半部分では企業サイドがどうエンジニアを惹きつけ採用に結びつけたらよいかの話が書かれている。 本書では下記のようにエンジニアが特性に応じて２タイプ・４分類に分けられている。どんなに採用対象となるエンジニアが優秀であろうと、会社にフィットしないこともあるので気をつけなければならないと著者は警鐘を鳴らす。
-tags: 採用 読書 management
+tags: 採用 読書
 toc: true
 ---
 
@@ -184,16 +184,21 @@ IT企業が数多く存在する中、良いエンジニアに働いてもらう
 
 そのような成長環境をエンジニアに定常的にしっかり用意することができれば、エンジニアの離職率の低下につなげることができるだろう。
 
-ペアプロ事例に関しては下記のt-wadaさんの資料が参考になる。
+技術研修の例として、技術研究を行っている企業がブログにてその内容を紹介している。
 
-<script async class="speakerdeck-embed" data-id="483d185def8b4038b0d981e51ed3ebbb" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+- [総合職・デザイナー向け技術基礎研修 2018 - クックパッド開発者ブログ](https://techlife.cookpad.com/entry/2018/05/09/080000)
+- [エンジニア新人研修、始めました。 - エムスリーテックブログ](https://www.m3tech.blog/entry/2018/08/13/090000)
 
-またGitHub上で研修資料をアップして研修の充実度をアピールするのも有効な手段である。
+またGitHubに研修資料をアップして、研修の充実度をアピールするのも有効な手段である。
 
 - mixi [git](https://github.com/mixi-inc/GitTraining/wiki), [Android](https://github.com/mixi-inc/AndroidTraining), [iOS](https://github.com/mixi-inc/iOSTraining), [JavaScript](https://github.com/mixi-inc/JavaScriptTraining), [Ruby](https://github.com/mixi-inc/RubyTraining), [Perl](https://github.com/mixi-inc/PerlTraining) 
 - [はてなの教科書](https://github.com/hatena/Hatena-Textbook)
 - ドワンゴ [Scala](https://dwango.github.io/scala_text/)
 - [株式会社万葉の新入社員教育用カリキュラム](https://github.com/everyleaf/el-training)(Ruby on Rails)
+
+ペアプロの事例に関しては下記のt-wadaさんの資料が参考になるだろう。
+
+<script async class="speakerdeck-embed" data-id="483d185def8b4038b0d981e51ed3ebbb" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
 ### キャリアパス
 
