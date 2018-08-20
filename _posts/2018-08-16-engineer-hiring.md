@@ -100,6 +100,10 @@ toc: true
 
 企業にとってみれば、エンジニアに企業について知ってもらい、興味を持ってもらわなければカジュアル面談にすらたどり着けない。まずはオウンドメディアによる情報発信あるいはテックブログによる技術的な情報発信を積極的に行って企業について認知してもらい興味を持ってもらう努力が必要になる。
 
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="ja" dir="ltr">SmartHR 社が面接で使っている資料を Speaker Deck で公開しました！昇給実績や、いま入社した場合にもらえるストックオプションのシミュレーション結果もアリます。ほぼ全職種募集してるので、お気軽にご応募ください！<a href="https://t.co/d1hl3rXeC6">https://t.co/d1hl3rXeC6</a> <a href="https://t.co/ey6dBB7B8z">pic.twitter.com/ey6dBB7B8z</a></p>&mdash; 宮田 昇始 (@miyasho88) <a href="https://twitter.com/miyasho88/status/1027086009178017792?ref_src=twsrc%5Etfw">August 8, 2018</a></blockquote>
+
+**↑SmartHR社は会社紹介資料をそのままWebに公開している。会社ヴィジョンやユニークな制度が資料内でわかりやすく紹介されておりお手本としたい会社紹介資料だ。**
+
 ## 企業の差別化ポイント
 
 IT企業が数多く存在する中、良いエンジニアに働いてもらうには他社と決定的な差別化を測る必要がある。エンジニア採用における企業の差別化ポイントとしては本書では下記が紹介されている。
