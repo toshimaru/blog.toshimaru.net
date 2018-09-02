@@ -4,6 +4,7 @@ title: 技術者としてスポンジであり続けること　あるいは老�
 description: エンジニアリングとは常に学習し続けることである。僕がWeb技術者として生計を立てる上で大切にしているモットーだ。 ドッグイヤーな変化の激しいIT業界、変化に取り残されないためには常に学習が必要だ。今僕たちがデファクト・スタンダートとしている技術は一年後もスタンダートであり続けるだろうか？　一年くらいなら大丈夫？　じゃあ三年後は？　五年後は？ 十年後はどうだろう？ 自信をもって技術トレンドは今と変わっていないと言えるだろうか。
 image: /images/posts/book/books.jpeg
 tags: tech
+modified_date: 2018-08-31
 ---
 
 ## エンジニアリングとは常に学習し続けることである
@@ -69,6 +70,10 @@ Web技術に限定してザッと思いつくだけ列挙してもこれだけ�
 そんな老害にはなりたくないと思う。きっとこの文章を読んでいるあなたもそうだろう。だがあなたは **自分が老害になっていないとハッキリ言えるだろうか？**
 
 一般的に、歳を取ると価値観は固まっていき保守的になってゆく。あなたは自分の気づかないレベルで無意識に新しいことを拒絶していないだろうか。自分の考えを無意識に他者に押し付けてはいないだろうか。職場で気づいたら老害になってはいないだろうか。
+
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/NWNwslJEgKFtkr" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/sasakipochi/ss-51445100" title="老害について" target="_blank">老害について</a> </strong> from <strong><a href="https://www.slideshare.net/sasakipochi" target="_blank">Ken SASAKI</a></strong> </div>
+
+:point_up: **老害について簡潔にまとまっている資料**
 
 ## 老害回避戦略
 
