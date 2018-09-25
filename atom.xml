@@ -1,4 +1,233 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-09-11T13:33:31+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">初めてのモブプログラミング体験</title><link href="https://blog.toshimaru.net/first-mob-programming/" rel="alternate" type="text/html" title="初めてのモブプログラミング体験" /><published>2018-09-03T00:00:00+09:00</published><updated>2018-09-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/first-mob-programming</id><content type="html" xml:base="https://blog.toshimaru.net/first-mob-programming/">&lt;p&gt;モブプログラミングを初めてやってみたのでその感想。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-09-25T23:48:36+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">MySQLで連番の仮想表を作る</title><link href="https://blog.toshimaru.net/mysql-virtual-table/" rel="alternate" type="text/html" title="MySQLで連番の仮想表を作る" /><published>2018-09-25T00:00:00+09:00</published><updated>2018-09-25T00:00:00+09:00</updated><id>https://blog.toshimaru.net/mysql-virtual-table</id><content type="html" xml:base="https://blog.toshimaru.net/mysql-virtual-table/">&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
+
+&lt;p&gt;MySQLで実テーブルを参照せずに連番のデータを生成したい。&lt;/p&gt;
+
+&lt;h2 id=&quot;前提環境&quot;&gt;前提環境&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;MySQL 5.7&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;方法&quot;&gt;方法&lt;/h2&gt;
+
+&lt;p&gt;下記のようなSQLでやりたいことが実現できます。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;COLUMNS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ポイントとしては下記の通り。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;全体の構成としては、2つの&lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt;文を&lt;code class=&quot;highlighter-rouge&quot;&gt;UNION&lt;/code&gt;を使って結合しているというもの&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;@seq_no&lt;/code&gt;という変数を用意&lt;/li&gt;
+  &lt;li&gt;１つ目の&lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt;文で変数を初期化する&lt;/li&gt;
+  &lt;li&gt;２つ目の&lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt;文で初期化した変数のインクリメントの処理を行う
+    &lt;ul&gt;
+      &lt;li&gt;その際にデータ件数を確保するために、MySQLで最初に用意されている&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt;を参照する（中身のデータは実際には使わない）&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LIMIT&lt;/code&gt;で取得したいデータ件数を指定する&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;このSQLで得られる結果は下記の通り。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;seq_no&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;6&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;7&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;8&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;9&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;これで1から10までの連番のデータをSQLだけで得ることができました。&lt;/p&gt;
+
+&lt;h2 id=&quot;応用編&quot;&gt;応用編&lt;/h2&gt;
+
+&lt;p&gt;上記で紹介したテクニックを使えばいろいろなことがSQLで実現できます。&lt;/p&gt;
+
+&lt;h3 id=&quot;0からデクリメント&quot;&gt;0からデクリメント&lt;/h3&gt;
+
+&lt;p&gt;まずはインクリメントの逆、デクリメント。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;COLUMNS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;結果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;seq_no&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;-1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;-2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;-3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;-4&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;値を倍加させる&quot;&gt;値を倍加させる&lt;/h3&gt;
+
+&lt;p&gt;値を倍々にしていってみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;COLLATIONS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt; を使うと&lt;code class=&quot;highlighter-rouge&quot;&gt;seq_no&lt;/code&gt;値が大きくなりすぎてしまい&lt;code class=&quot;highlighter-rouge&quot;&gt;DOUBLE value is out of range&lt;/code&gt;というエラーが発生するので&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLLATIONS&lt;/code&gt;を使用&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;結果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;seq_no&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;8&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;16&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;32&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;64&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;128&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;256&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;512&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;直近30日間の日付をリストアップ&quot;&gt;直近30日間の日付をリストアップ&lt;/h3&gt;
+
+&lt;p&gt;直近30日間の日付をリストアップしてみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CURDATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTERVAL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DAY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;COLUMNS&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;結果&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;date&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-09-24&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-09-23&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-09-22&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-09-21&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;（…省略…）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-08-27&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;執筆時点の今日の日付は&lt;code class=&quot;highlighter-rouge&quot;&gt;2018-09-25&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CURDATE()&lt;/code&gt;から&lt;code class=&quot;highlighter-rouge&quot;&gt;seq_no&lt;/code&gt;日分を引き算して日付を出力&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;注意点&quot;&gt;注意点&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt;を使った場合、&lt;code class=&quot;highlighter-rouge&quot;&gt;LIMIT&lt;/code&gt;で指定できる値は&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt;のMAX値までという制限がある&lt;/li&gt;
+  &lt;li&gt;MySQL7から導入されたWITH syntaxでCTEすればもっとシンプルにクエリが書けそう&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="mysql" /><summary type="html">やりたいこと</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/virtual-table-og.jpg" /></entry><entry><title type="html">初めてのモブプログラミング体験</title><link href="https://blog.toshimaru.net/first-mob-programming/" rel="alternate" type="text/html" title="初めてのモブプログラミング体験" /><published>2018-09-03T00:00:00+09:00</published><updated>2018-09-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/first-mob-programming</id><content type="html" xml:base="https://blog.toshimaru.net/first-mob-programming/">&lt;p&gt;モブプログラミングを初めてやってみたのでその感想。&lt;/p&gt;
 
 &lt;h2 id=&quot;進め方&quot;&gt;進め方&lt;/h2&gt;
 
@@ -1139,215 +1368,4 @@ Memory: 0.82 MB
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html&quot;&gt;ActiveRecord::Relation&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html&quot;&gt;ActiveRecord::Batches&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/ar-optimization.png" /></entry><entry><title type="html">ヤフーの1on1とシリコンバレー式1on1の本を読んだ ~1on1の目的、進め方、何を話すべきか~</title><link href="https://blog.toshimaru.net/1-on-1-book-memo/" rel="alternate" type="text/html" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ ~1on1の目的、進め方、何を話すべきか~" /><published>2018-02-10T00:00:00+09:00</published><updated>2018-02-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/1-on-1-book-memo</id><content type="html" xml:base="https://blog.toshimaru.net/1-on-1-book-memo/">&lt;p&gt;1 on 1 をチームで実施することとなり、勉強がてら『&lt;a href=&quot;http://amzn.to/2GNg6b5&quot;&gt;シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング&lt;/a&gt;』と『&lt;a href=&quot;http://amzn.to/2GKRNu2&quot;&gt;ヤフーの1on1―――部下を成長させるコミュニケーションの技法&lt;/a&gt;』の２冊を読んだ。&lt;/p&gt;
-
-&lt;p&gt;※以下、それぞれをシリコンバレー式1on1本とYahoo 1on1本と表記する&lt;/p&gt;
-
-&lt;h2 id=&quot;両本のちがい&quot;&gt;両本のちがい&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;シリコンバレー式1on1本
-    &lt;ul&gt;
-      &lt;li&gt;1 on 1の必要性、1 on 1で何を話すべきかが体系的にまとまっている&lt;/li&gt;
-      &lt;li&gt;1 on 1の質問・伝え方例一覧が巻末にある&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Yahoo 1on1本
-    &lt;ul&gt;
-      &lt;li&gt;1 on 1における上司のロールとしてはコーチング的な要素強い&lt;/li&gt;
-      &lt;li&gt;1 on 1 での改善事例、サクセスストーリーが漫画・会話形式多く書かれている&lt;/li&gt;
-      &lt;li&gt;コミュニケーションの細かなテクニック・Tipsも多く書かれている&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;シリコンバレー式1on1本のほうで体系的に1 on 1の必要性・話すべきことを掴んで、実際に1 on 1の開催イメージを掴んでいくためにYahoo 1on1本を読むと良い。&lt;/p&gt;
-
-&lt;h2 id=&quot;1-on-1とは何か&quot;&gt;1 on 1とは何か？&lt;/h2&gt;
-
-&lt;p&gt;1 on 1とは上司と部下で行われる１対１で話をする場のことである&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。日本語で言うと面談…だが面談というと人事面談や評価面談などのように堅い印象があるので、あえて1 on 1という呼び方をすることが多い。&lt;/p&gt;
-
-&lt;h2 id=&quot;1-on-1の目的&quot;&gt;1 on 1の目的&lt;/h2&gt;
-
-&lt;p&gt;1 on 1 の目的としては下記が挙げられる。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;部下との関係性の構築&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;業務ではできない質の高いコミュニケーションを行う&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;部下のキャリア開発&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;部下の短期的キャリア・中長期のキャリア開発を支援&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;部下のパフォーマンス管理&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;目標管理&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;部下のモチベーション向上&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;困っていること・業務ブロッカーの排除&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;部下の成長支援&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;フィードバック&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;そして上司はこれらの1 on 1目的をきちんと部下に説明すること。部下が1 on 1に意義が見いだせなかったり、イヤイヤ開催するような1 on 1であれば1 on 1はすぐに形骸化してしまうので、しっかり上司は目的を伝えて納得してもらった上で1 on 1を開催すること。&lt;/p&gt;
-
-&lt;h2 id=&quot;1-on-1で話すこと&quot;&gt;1 on 1で話すこと&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/1on1/1on1-topics.png&quot; alt=&quot;シリコンバレー式&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;シリコンバレー式1on1本より図を引用&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;プライベート相互理解&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;雑談の中から聞きだせるとよい。関係性を構築する上で相手の人となりは知っておくのが基本。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;心身の健康チェック&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;心身の状態が問題ないか。業務量が過多になっていたり、業務時間が不規則になっていないか。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;モチベーションアップ&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;モチベーションを下げる要因を取り除く
-        &lt;ul&gt;
-          &lt;li&gt;何か困っていること・業務を行う上でのブロッカーがあるのであればその話をきちんと聞く（傾聴/アクティブリスニング）&lt;/li&gt;
-          &lt;li&gt;上司は部下への否定ではなく共感を示す&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;モチベーションを上げる要因を作り出す
-        &lt;ul&gt;
-          &lt;li&gt;ほめる/承認する&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;業務・組織課題の改善&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;業務課題の改善
-        &lt;ul&gt;
-          &lt;li&gt;課題を聞くとともに将来起こりうるリスクも確認しておくと良い&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;チーム/組織課題の改善&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;目標設定・評価&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;マネージャーは正しい評価をするのではなく、部下が納得できる評価が必要
-        &lt;ul&gt;
-          &lt;li&gt;納得感を持てなければ部下が建設的に目標に向き合えない&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;能力開発・キャリア支援&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;経験学習のサイクルを回す&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;戦略・方針の伝達&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;経営陣などの上層部の戦略・方針をその背景も含めて適切に部下に伝達する&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;1-on-1は部下のための時間&quot;&gt;1 on 1は部下のための時間&lt;/h2&gt;
-
-&lt;p&gt;1 on 1は会社のための時間でもなく上司のための時間ではなく &lt;strong&gt;部下のための時間&lt;/strong&gt; だ。&lt;/p&gt;
-
-&lt;p&gt;1 on 1で話すトピックは基本的には上司が決めてファシリテートしていくものであるが、部下が話したいトピックがある場合はそちらを優先する。&lt;/p&gt;
-
-&lt;p&gt;1 on 1 内で話している時間も7-8割くらいが部下が話す時間になるようにするのが理想的である。&lt;/p&gt;
-
-&lt;h2 id=&quot;1-on-1メモを作ろう&quot;&gt;1 on 1メモを作ろう&lt;/h2&gt;
-
-&lt;p&gt;1 on 1 で話した内容を忘れないように、きちんと話したことをメモとして書き残しておく。&lt;/p&gt;
-
-&lt;p&gt;メモを残すならば今ならグーグルDocsなどのクラウドサービスを使うのが良いだろう。上司・部下だけが閲覧できるような設定にしておき、メモは共同編集しておけるようにしておくと良い。&lt;/p&gt;
-
-&lt;p&gt;上司は共有用のドキュメントとは別に部下の個人データを残すドキュメントも用意しておくとよい。そうすることで話が進めやすくなったり担当が変わったときの情報の引き継ぎがやりやすくなる。&lt;/p&gt;
-
-&lt;h2 id=&quot;心理的安全性の確保&quot;&gt;心理的安全性の確保&lt;/h2&gt;
-
-&lt;p&gt;1 on 1は部下が率直に、気兼ねなく上司と話をできる場でなければならない。言い換えると上司は部下の心理的安全性を確保するように気をつけなければならない。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;心理的安全性とは、自分の言動が他者に与える影響を強く意識することなく感じたままの想いを素直に伝えることのできる環境や雰囲気のことです。&lt;/p&gt;
-
-  &lt;p&gt;&lt;a href=&quot;https://bizhint.jp/keyword/101187&quot;&gt;心理的安全性とは？googleが発見したチーム生産性を高める唯一の方法 | BizHint HR&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;心理的安全性を確保するにはどうすればよいか。&lt;/p&gt;
-
-&lt;p&gt;まず、上司は部下一人ひとりときちんと向き合い話を傾聴する姿勢が求められる。部下の話を先取ったり途中で遮ることはやめること。&lt;/p&gt;
-
-&lt;p&gt;また、上司は部下の話を頭ごなしに否定するのではなく共感を示す必要がある。否定する必要があるときはニュートラルな上手な言い回しをすること。&lt;/p&gt;
-
-&lt;p&gt;そして目標設定・評価や業務アサインはきちんと部下が納得感を持てるような説明が上司に求められる。上司から部下への一方的な設定は命令感が強くなり部下が発言しにくくなる可能性がある。&lt;/p&gt;
-
-&lt;h2 id=&quot;1-on-1の頻度について&quot;&gt;1 on 1の頻度について&lt;/h2&gt;
-
-&lt;p&gt;Yahoo社の場合だと週一回、30分の1 on 1ミーティングを実施しているとのことだ。フィードバックループを素早く回していくためにはそれくらいの頻度が丁度良いらしい。&lt;/p&gt;
-
-&lt;p&gt;とはいえ現実問題としてマネージャーは忙しいのでなかなかそこまでの時間がとれないかもしれない。であれば隔週、最低でも月一回は1 on 1を実施する。1 on 1 において重要なのは定期的に継続して実践することだ。&lt;/p&gt;
-
-&lt;h2 id=&quot;次のアクションを決める&quot;&gt;次のアクションを決める&lt;/h2&gt;
-
-&lt;p&gt;1 on 1 の中でタスクや確認事項が生じた場合はきちんと &lt;strong&gt;次のアクション（宿題）&lt;/strong&gt; として残しておく。&lt;/p&gt;
-
-&lt;p&gt;そのアクションがきちんと達成できているかは、次回の1 on 1時に必ず確認する。積み残した宿題があるのであれば出来なかった理由をしっかり確認して次回のアクションに繋げる。&lt;/p&gt;
-
-&lt;h2 id=&quot;1-on-1を通して成長を支援する&quot;&gt;1 on 1を通して成長を支援する&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/1on1/cycle.png&quot; alt=&quot;経験学習サイクル&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;シリコンバレー式1on1本より図を引用&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;どちらの本も1 on 1での成長を促すために &lt;strong&gt;経験学習サイクル&lt;/strong&gt; を回すことが推奨されている。&lt;/p&gt;
-
-&lt;p&gt;1 on 1ではこのサイクルが上手に回るようにサポートする。上司は1 on 1のやり取りの中で上図の2(振り返り),3(教訓・学びの気づき),4(計画)を部下の口から引き出せるようにうまく働きかけをおこなう。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/1on1/coaching.png&quot; alt=&quot;コーチング&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Yahoo 1on1本より図を引用&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;所感&quot;&gt;所感&lt;/h2&gt;
-
-&lt;p&gt;業務上のコミュニケーションだけでは、業務外の困っていることであったりその人がキャリアプランをどう考えているかなどのトピックまでは拾えない。人々のワークスタイル・ライフスタイルの多様化にともない人々の仕事に対する価値観、仕事に求めることも多様化してきている中、その領域を拾える1 on 1は職場環境を改善するために非常に有効な手段だと感じることができた。&lt;/p&gt;
-
-&lt;p&gt;1 on 1制度はシリコンバレーは当たり前のプラクティスとなっていると聞く。日本企業でも1 on 1制度の導入事例が増えていって社会全体の労働環境が改善されると良いなーと思った。&lt;/p&gt;
-
-&lt;p&gt;1 on 1導入後も単純に1 on 1を開催して満足というわけではなく、上手な1 on 1にしていくには上司側の1 on 1スキルの向上も必要となってくる。本書を読んでその辺の細かなテクニックとか言い回しのポイントなども知ることができてよかった。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=4761272864&amp;amp;linkId=fa0dbf5e7d684ec5864efa0436add116&quot;&gt;&lt;/iframe&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=4478069786&amp;amp;linkId=ea9f3d4a7b14fcc644075add70c9b61e&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;web上の参考資料&quot;&gt;Web上の参考資料&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.slideshare.net/satoshiyoshinaga/1on1-80798455&quot;&gt;生産性を高める 1on1&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://medium.com/@tumada/%E5%8A%B9%E6%9E%9C%E7%9A%84%E3%81%AA-1-on-1-%E3%83%9F%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AB%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%93%E3%81%A8-6d5c03a3383&quot;&gt;効果的な 1 on 1 ミーティングのためにマネージャができること – Taka Umada – Medium&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://d.hatena.ne.jp/higepon/20150728/1438080621&quot;&gt;1 on 1 で 何を話すのか？ マネージャ/ソフトウェアエンジニアの立場から - サンフランシスコではたらくソフトウェアエンジニア - Higepon’s blog&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;footnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot;&gt;
-      &lt;p&gt;上司と部下という呼称は上下関係が色濃く現れる日本語なのであまり好きではないのだが、便宜上使うこととする &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="management" /><category term="読書" /><category term="tech" /><summary type="html">1 on 1 をチームで実施することとなり、勉強がてら『シリコンバレー式 最強の育て方 ― 人材マネジメントの新しい常識 1 on1ミーティング』と『ヤフーの1on1―――部下を成長させるコミュニケーションの技法』の２冊を読んだ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/1on1/og.jpg" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/ar-optimization.png" /></entry></feed>

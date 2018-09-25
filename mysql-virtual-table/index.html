@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>mysqlでの日付の範囲指定 - Hack Your Design!</title>
+  <title>MySQLで連番の仮想表を作る - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="site.webmanifest">
@@ -13,15 +13,15 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="mysqlでの日付の範囲指定 - Hack Your Design!">
-  <meta property="og:title" content="mysqlでの日付の範囲指定 - Hack Your Design!">
-  <meta name="description" content="mysqlでの日付の範囲指定はbetweenを使うのがインデックスも効いてGOODな感じ。">
-  <meta name="twitter:description" content="mysqlでの日付の範囲指定はbetweenを使うのがインデックスも効いてGOODな感じ。">
-  <meta property="og:description" content="mysqlでの日付の範囲指定はbetweenを使うのがインデックスも効いてGOODな感じ。">
-  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
-  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2011-11-08T00:00:00+09:00">
-  <link rel="canonical" href="https://blog.toshimaru.net/mysql/">
+  <meta name="twitter:title" content="MySQLで連番の仮想表を作る - Hack Your Design!">
+  <meta property="og:title" content="MySQLで連番の仮想表を作る - Hack Your Design!">
+  <meta name="description" content="MySQLで実テーブルを参照せずに連番のデータを生成したい。 前提環境 MySQL 5.7 方法 下記のようなSQLでやりたいことが実現できます。">
+  <meta name="twitter:description" content="MySQLで実テーブルを参照せずに連番のデータを生成したい。 前提環境 MySQL 5.7 方法 下記のようなSQLでやりたいことが実現できます。">
+  <meta property="og:description" content="MySQLで実テーブルを参照せずに連番のデータを生成したい。 前提環境 MySQL 5.7 方法 下記のようなSQLでやりたいことが実現できます。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/virtual-table-og.jpg" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/virtual-table-og.jpg" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2018-09-25T00:00:00+09:00">
+  <link rel="canonical" href="https://blog.toshimaru.net/mysql-virtual-table/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     // (adsbygoogle = window.adsbygoogle || []).push({
@@ -73,30 +73,279 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">mysqlでの日付の範囲指定</h1>
+  <h1 class="fadeInLeft">MySQLで連番の仮想表を作る</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2011-11-08T00:00:00+09:00" pubdate>2011/11/08</time>
+      <i class="icon-calendar"></i><time datetime="2018-09-25T00:00:00+09:00" pubdate>2018/09/25</time>
       <i class="icon-tags"></i> 
 <a href="/tag/mysql/" rel="tag">mysql</a>
 
 
     </div>
-    
+    <img class="post-image flipInX" src="/images/posts/virtual-table-og.jpg" alt="(image)MySQLで連番の仮想表を作る" title="MySQLで連番の仮想表を作る" />
   </div>
 </div>
 
-<p><code class="highlighter-rouge">between</code> を使うのがインデックスも効いてGOODな感じ.</p>
+<ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#やりたいこと">やりたいこと</a></li>
+<li class="toc-entry toc-h2"><a href="#前提環境">前提環境</a></li>
+<li class="toc-entry toc-h2"><a href="#方法">方法</a></li>
+<li class="toc-entry toc-h2"><a href="#応用編">応用編</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#0からデクリメント">0からデクリメント</a></li>
+<li class="toc-entry toc-h3"><a href="#値を倍加させる">値を倍加させる</a></li>
+<li class="toc-entry toc-h3"><a href="#直近30日間の日付をリストアップ">直近30日間の日付をリストアップ</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#注意点">注意点</a></li>
+</ul><h2 id="やりたいこと">
+<a id="やりたいこと" class="anchor" href="#%E3%82%84%E3%82%8A%E3%81%9F%E3%81%84%E3%81%93%E3%81%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>やりたいこと</h2>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">item</span> <span class="k">where</span> <span class="s1">'datetime'</span> <span class="k">between</span> <span class="s1">'2010-06-23'</span> <span class="k">and</span> <span class="s1">'2010-06-23'</span> <span class="o">+</span> <span class="n">interval</span> <span class="mi">1</span> <span class="k">day</span><span class="p">;</span>
+<p>MySQLで実テーブルを参照せずに連番のデータを生成したい。</p>
+
+<h2 id="前提環境">
+<a id="前提環境" class="anchor" href="#%E5%89%8D%E6%8F%90%E7%92%B0%E5%A2%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>前提環境</h2>
+
+<ul>
+  <li>MySQL 5.7</li>
+</ul>
+
+<h2 id="方法">
+<a id="方法" class="anchor" href="#%E6%96%B9%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>方法</h2>
+
+<p>下記のようなSQLでやりたいことが実現できます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span>
+<span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">seq_no</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span>
+<span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">COLUMNS</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
 </code></pre></div></div>
 
-<h3 id="参考">参考</h3>
-<p><a href="http://sj6.org/mysql_datetime_index_faster/">datetime型のカラムから日付データを引っ張ってくる際の高速化</a></p>
+<p>ポイントとしては下記の通り。</p>
+
+<ul>
+  <li>全体の構成としては、2つの<code class="highlighter-rouge">SELECT</code>文を<code class="highlighter-rouge">UNION</code>を使って結合しているというもの</li>
+  <li>
+<code class="highlighter-rouge">@seq_no</code>という変数を用意</li>
+  <li>１つ目の<code class="highlighter-rouge">SELECT</code>文で変数を初期化する</li>
+  <li>２つ目の<code class="highlighter-rouge">SELECT</code>文で初期化した変数のインクリメントの処理を行う
+    <ul>
+      <li>その際にデータ件数を確保するために、MySQLで最初に用意されている<code class="highlighter-rouge">information_schema.COLUMNS</code>を参照する（中身のデータは実際には使わない）</li>
+      <li>
+<code class="highlighter-rouge">LIMIT</code>で取得したいデータ件数を指定する</li>
+    </ul>
+  </li>
+</ul>
+
+<p>このSQLで得られる結果は下記の通り。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>seq_no</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これで1から10までの連番のデータをSQLだけで得ることができました。</p>
+
+<h2 id="応用編">
+<a id="応用編" class="anchor" href="#%E5%BF%9C%E7%94%A8%E7%B7%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>応用編</h2>
+
+<p>上記で紹介したテクニックを使えばいろいろなことがSQLで実現できます。</p>
+
+<h3 id="0からデクリメント">
+<a id="0からデクリメント" class="anchor" href="#0%E3%81%8B%E3%82%89%E3%83%87%E3%82%AF%E3%83%AA%E3%83%A1%E3%83%B3%E3%83%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>0からデクリメント</h3>
+
+<p>まずはインクリメントの逆、デクリメント。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span> <span class="k">AS</span> <span class="n">seq_no</span>
+<span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">seq_no</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span>
+<span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">COLUMNS</span>
+<span class="k">LIMIT</span> <span class="mi">5</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>seq_no</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>-1</td>
+    </tr>
+    <tr>
+      <td>-2</td>
+    </tr>
+    <tr>
+      <td>-3</td>
+    </tr>
+    <tr>
+      <td>-4</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="値を倍加させる">
+<a id="値を倍加させる" class="anchor" href="#%E5%80%A4%E3%82%92%E5%80%8D%E5%8A%A0%E3%81%95%E3%81%9B%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>値を倍加させる</h3>
+
+<p>値を倍々にしていってみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span>
+<span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">seq_no</span> <span class="o">*</span> <span class="mi">2</span> <span class="k">AS</span> <span class="n">seq_no</span>
+<span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">COLLATIONS</span>
+<span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+<code class="highlighter-rouge">information_schema.COLUMNS</code> を使うと<code class="highlighter-rouge">seq_no</code>値が大きくなりすぎてしまい<code class="highlighter-rouge">DOUBLE value is out of range</code>というエラーが発生するので<code class="highlighter-rouge">information_schema.COLLATIONS</code>を使用</li>
+</ul>
+
+<p><strong>結果</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>seq_no</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>32</td>
+    </tr>
+    <tr>
+      <td>64</td>
+    </tr>
+    <tr>
+      <td>128</td>
+    </tr>
+    <tr>
+      <td>256</td>
+    </tr>
+    <tr>
+      <td>512</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="直近30日間の日付をリストアップ">
+<a id="直近30日間の日付をリストアップ" class="anchor" href="#%E7%9B%B4%E8%BF%9130%E6%97%A5%E9%96%93%E3%81%AE%E6%97%A5%E4%BB%98%E3%82%92%E3%83%AA%E3%82%B9%E3%83%88%E3%82%A2%E3%83%83%E3%83%97" aria-hidden="true"><span class="octicon octicon-link"></span></a>直近30日間の日付をリストアップ</h3>
+
+<p>直近30日間の日付をリストアップしてみる。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">CURDATE</span><span class="p">()</span> <span class="o">-</span> <span class="n">INTERVAL</span> <span class="n">seq_no</span> <span class="k">DAY</span> <span class="k">AS</span> <span class="n">date</span>
+<span class="k">FROM</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span> <span class="k">AS</span> <span class="n">seq_no</span>
+      <span class="k">UNION</span>
+      <span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">seq_no</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span> <span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">COLUMNS</span>
+      <span class="k">LIMIT</span> <span class="mi">30</span><span class="p">)</span> <span class="n">tmp</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><strong>結果</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2018-09-24</td>
+    </tr>
+    <tr>
+      <td>2018-09-23</td>
+    </tr>
+    <tr>
+      <td>2018-09-22</td>
+    </tr>
+    <tr>
+      <td>2018-09-21</td>
+    </tr>
+    <tr>
+      <td>（…省略…）</td>
+    </tr>
+    <tr>
+      <td>2018-08-27</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>執筆時点の今日の日付は<code class="highlighter-rouge">2018-09-25</code>
+</li>
+  <li>
+<code class="highlighter-rouge">CURDATE()</code>から<code class="highlighter-rouge">seq_no</code>日分を引き算して日付を出力</li>
+</ul>
+
+<h2 id="注意点">
+<a id="注意点" class="anchor" href="#%E6%B3%A8%E6%84%8F%E7%82%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>注意点</h2>
+
+<ul>
+  <li>
+<code class="highlighter-rouge">information_schema.COLUMNS</code>を使った場合、<code class="highlighter-rouge">LIMIT</code>で指定できる値は<code class="highlighter-rouge">information_schema.COLUMNS</code>のMAX値までという制限がある</li>
+  <li>MySQL7から導入されたWITH syntaxでCTEすればもっとシンプルにクエリが書けそう</li>
+</ul>
 
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/s/blog.toshimaru.net/mysql/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/s/blog.toshimaru.net/mysql-virtual-table/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -116,11 +365,11 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/mysql-virtual-table/" title="MySQLで連番の仮想表を作る">MySQLで連番の仮想表を作る</a></li>
-  
     <li><a href="/rails-4-transaction-isolation/" title="Rails4 でトランザクション分離レベルを設定する">Rails4 でトランザクション分離レベルを設定する</a></li>
   
     <li><a href="/mac-mysql-upgrade-error/" title="brew upgrade mysql 後にpidエラー">brew upgrade mysql 後にpidエラー</a></li>
+  
+    <li><a href="/mysql/" title="mysqlでの日付の範囲指定">mysqlでの日付の範囲指定</a></li>
   
   </ul>
   </div>
@@ -140,14 +389,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/79430508/" title="Newer Post: vimでHTMLタグ上を効率的にカーソル移動する"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/ps2/" title="Older Post: PS/2接続のキーボードが反応しないときにすること">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/first-mob-programming/" title="Older Post: 初めてのモブプログラミング体験">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -197,10 +442,10 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/mysql/"
+      "@id": "https://blog.toshimaru.net/mysql-virtual-table/"
     },
-    "headline": "mysqlでの日付の範囲指定",
-    "datePublished": "2011-11-08T00:00:00+09:00",
+    "headline": "MySQLで連番の仮想表を作る",
+    "datePublished": "2018-09-25T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -213,7 +458,7 @@ var disqus_shortname = 'hackyourdesign'; // required: replace example with your 
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/icon.png"
+      "url": "https://blog.toshimaru.net/images/posts/virtual-table-og.jpg"
     },
     "keywords": "mysql"
   },
