@@ -1,4 +1,280 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-10-03T09:00:13+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">MySQLで連番の仮想表を作る</title><link href="https://blog.toshimaru.net/mysql-virtual-table/" rel="alternate" type="text/html" title="MySQLで連番の仮想表を作る" /><published>2018-09-25T00:00:00+09:00</published><updated>2018-09-25T00:00:00+09:00</updated><id>https://blog.toshimaru.net/mysql-virtual-table</id><content type="html" xml:base="https://blog.toshimaru.net/mysql-virtual-table/">&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-10-07T22:36:13+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">[MySQL]日付が歯抜けのデータを結合して日付毎に整理されたテーブルを作る</title><link href="https://blog.toshimaru.net/join-with-date-virtual-table/" rel="alternate" type="text/html" title="[MySQL]日付が歯抜けのデータを結合して日付毎に整理されたテーブルを作る" /><published>2018-10-07T00:00:00+09:00</published><updated>2018-10-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/join-with-date-virtual-table</id><content type="html" xml:base="https://blog.toshimaru.net/join-with-date-virtual-table/">&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
+
+&lt;p&gt;下記の日付が歯抜けになっている2つのテーブル（テーブル1, テーブル2）のデータを日付毎に整理してテーブル3のようなデータを生成したい。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;テーブル1&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;日付&lt;/th&gt;
+      &lt;th&gt;商品販売数&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-02&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-04&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-05&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-07&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-08&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-10&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;テーブル2&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;日付&lt;/th&gt;
+      &lt;th&gt;商品入荷数&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-03&lt;/td&gt;
+      &lt;td&gt;20&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-05&lt;/td&gt;
+      &lt;td&gt;30&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-10&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;テーブル3&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;日付&lt;/th&gt;
+      &lt;th&gt;商品入荷数&lt;/th&gt;
+      &lt;th&gt;商品販売数&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-01&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-02&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-03&lt;/td&gt;
+      &lt;td&gt;20&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-04&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-05&lt;/td&gt;
+      &lt;td&gt;30&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-06&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-07&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-08&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-09&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-10&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;前提環境&quot;&gt;前提環境&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;MySQL 5.7&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;方法&quot;&gt;方法&lt;/h2&gt;
+
+&lt;p&gt;以前紹介した連番の仮想表を作るテクニックを駆使すればやりたいことが実現可能です。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/mysql-virtual-table/&quot;&gt;MySQLで連番の仮想表を作る&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;日付だけのテーブルを作る&quot;&gt;日付だけのテーブルを作る&lt;/h3&gt;
+
+&lt;p&gt;対象期間、つまり2018年1月1日〜2018年1月10日までのデータを生成します。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'2018-01-01'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTERVAL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DAY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;COLUMNS&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;date&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-01&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-02&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-03&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-04&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-05&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-06&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-07&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-08&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-09&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-10&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;日付テーブルにデータをjoinする&quot;&gt;日付テーブルにデータをJOINする&lt;/h3&gt;
+
+&lt;p&gt;上記の日付テーブルに実データをJOINしてやればうまくデータが生成できます。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;date_table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'日付'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;IFNULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;商品入荷数&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'入荷数'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;IFNULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;商品販売数&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'販売数'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'2018-01-01'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTERVAL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DAY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_no&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;COLUMNS&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_table&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LEFT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;日付&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LEFT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;日付&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで無事、得たかったデータを得ることができました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;日付&lt;/th&gt;
+      &lt;th&gt;入荷数&lt;/th&gt;
+      &lt;th&gt;販売数&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-01&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-02&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-03&lt;/td&gt;
+      &lt;td&gt;20&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-04&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-05&lt;/td&gt;
+      &lt;td&gt;30&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-06&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-07&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-08&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-09&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2018-01-10&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;利用シーン&quot;&gt;利用シーン&lt;/h2&gt;
+
+&lt;p&gt;日付毎にデータをグラフにプロットして可視化したいときにこのテクニックを使うと便利。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="mysql" /><summary type="html">やりたいこと</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/sql1.png" /></entry><entry><title type="html">MySQLで連番の仮想表を作る</title><link href="https://blog.toshimaru.net/mysql-virtual-table/" rel="alternate" type="text/html" title="MySQLで連番の仮想表を作る" /><published>2018-09-25T00:00:00+09:00</published><updated>2018-09-25T00:00:00+09:00</updated><id>https://blog.toshimaru.net/mysql-virtual-table</id><content type="html" xml:base="https://blog.toshimaru.net/mysql-virtual-table/">&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
 
 &lt;p&gt;MySQLで実テーブルを参照せずに連番のデータを生成したい。&lt;/p&gt;
 
@@ -225,8 +501,8 @@
 &lt;h2 id=&quot;注意点&quot;&gt;注意点&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt;を使った場合、&lt;code class=&quot;highlighter-rouge&quot;&gt;LIMIT&lt;/code&gt;で指定できる値は&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt;のMAX値までという制限がある&lt;/li&gt;
-  &lt;li&gt;MySQL7から導入されたWITH syntaxでCTEすればもっとシンプルにクエリが書けそう&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt;を使った場合、&lt;code class=&quot;highlighter-rouge&quot;&gt;LIMIT&lt;/code&gt;で指定できる値は&lt;code class=&quot;highlighter-rouge&quot;&gt;information_schema.COLUMNS&lt;/code&gt;のMAX値までという成約がある&lt;/li&gt;
+  &lt;li&gt;MySQL7から導入された&lt;a href=&quot;https://dev.mysql.com/doc/refman/8.0/en/with.html&quot;&gt;WITH syntax&lt;/a&gt;でCTEすればもっとシンプルにクエリが書けそう&lt;/li&gt;
 &lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="mysql" /><summary type="html">やりたいこと</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/virtual-table-og.jpg" /></entry><entry><title type="html">初めてのモブプログラミング体験</title><link href="https://blog.toshimaru.net/first-mob-programming/" rel="alternate" type="text/html" title="初めてのモブプログラミング体験" /><published>2018-09-03T00:00:00+09:00</published><updated>2018-09-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/first-mob-programming</id><content type="html" xml:base="https://blog.toshimaru.net/first-mob-programming/">&lt;p&gt;モブプログラミングを初めてやってみたのでその感想。&lt;/p&gt;
 
 &lt;h2 id=&quot;進め方&quot;&gt;進め方&lt;/h2&gt;
@@ -1116,256 +1392,4 @@ possible_keys: index_users_on_created_at
 
 &lt;ul&gt;
   &lt;li&gt;Rails Developer Meetup 2018の全体の発表資料はこちら: &lt;a href=&quot;https://qiita.com/dyoshimitsu/items/20a41ab656d2da80e4d9&quot;&gt;Rails Developers Meetup 2018 スライドまとめ - Qiita&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="activerecord" /><category term="rails" /><summary type="html">Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2018.png" /></entry><entry><title type="html">Rails/ActiveRecord バッチ処理の最適化</title><link href="https://blog.toshimaru.net/rails-batch-optimization/" rel="alternate" type="text/html" title="Rails/ActiveRecord バッチ処理の最適化" /><published>2018-03-05T00:00:00+09:00</published><updated>2018-03-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-batch-optimization</id><content type="html" xml:base="https://blog.toshimaru.net/rails-batch-optimization/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのバッチ処理最適化の記事書いたら需要あるかな&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/936796457931128832?ref_src=twsrc%5Etfw&quot;&gt;December 2, 2017&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;ということで今日はRailsバッチ処理の最適化について書いてみたいと思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;検証環境&quot;&gt;検証環境&lt;/h2&gt;
-
-&lt;p&gt;コードの検証に使った環境は下記の通りです。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;macOS High Sierra (2.3 GHz Intel Core i5 / メモリ8G)&lt;/li&gt;
-  &lt;li&gt;Ruby 2.5&lt;/li&gt;
-  &lt;li&gt;Rails 5.1&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;前提条件&quot;&gt;前提条件&lt;/h2&gt;
-
-&lt;p&gt;最適化の前提条件としては下記の通りです。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;バッチはrakeタスクとして実行する&lt;/li&gt;
-  &lt;li&gt;今回、最適化対象とするのは &lt;strong&gt;Userモデルのバッチ処理&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;使用するUserモデルは&lt;a href=&quot;https://github.com/plataformatec/devise/&quot;&gt;devise&lt;/a&gt;で作られるUserモデル(&lt;code class=&quot;highlighter-rouge&quot;&gt;rails generate devise:install&lt;/code&gt;)を基本として、そのスキーマ定義にint型のpointカラムをつけたもの&lt;/li&gt;
-      &lt;li&gt;pointカラムは登録ユーザーが自由につかえるポイントの意&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Userデータとして事前に &lt;strong&gt;50万件のユーザーデータ&lt;/strong&gt; を投入しておく&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://dalibornasevic.com/posts/68-processing-large-csv-files-with-ruby&quot;&gt;こちらのコード&lt;/a&gt;を参考に処理の &lt;strong&gt;実行時間&lt;/strong&gt; と &lt;strong&gt;メモリ使用量&lt;/strong&gt; を計測する&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;execute&lt;/code&gt;などによる直接SQL実行はせずにDB操作を行う&lt;/li&gt;
-  &lt;li&gt;シンプルにするために、登録日 = &lt;code class=&quot;highlighter-rouge&quot;&gt;User.created_at&lt;/code&gt;とする
-    &lt;ul&gt;
-      &lt;li&gt;Userのタイムゾーンは無いものとする（すべてUTCとして扱う）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;データベースのトランザクション処理は考慮しない&lt;/li&gt;
-  &lt;li&gt;今回行う最適化の対象はアプリケーションコードでありDBの最適化は考えない&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;オリジナルコード&quot;&gt;オリジナルコード&lt;/h2&gt;
-
-&lt;p&gt;さて今回最適化するコードは下記です。処理内容としては &lt;strong&gt;全ユーザーの中から2017年以降の登録ユーザーへ100ポイントを付与する&lt;/strong&gt; というものです。いかにも販促活動の一環としてありそうな話です（&lt;code class=&quot;highlighter-rouge&quot;&gt;2017年以降&lt;/code&gt;のところの条件は別になんでも良かったのですが、処理対象をある程度確保するために今回はそのように設定しました）。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:original&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;2017-01-01&quot;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;あなたはこのコードをぱっと見てどこが悪いかすぐにわかりますか？（言うまでもなくこのコードは問題アリアリのコードです!!）&lt;/p&gt;
-
-&lt;p&gt;中級者以上のRailsエンジニアであれば「そんなコードは絶対書かないよ！」と思うかもしれませんが、「RailsでWebプログラミングを初めてまだ一ヶ月です！」みたいな初級エンジニアであれば上記のように書いても全然おかしくはないコードだと思います。&lt;/p&gt;
-
-&lt;h3 id=&quot;ベンチマーク&quot;&gt;ベンチマーク&lt;/h3&gt;
-
-&lt;p&gt;まずはこの問題のあるコードがどれだけ時間がかかっているかを計測してみましょう。&lt;/p&gt;
-
-&lt;p&gt;※ 前提条件で書いた通り、&lt;a href=&quot;https://dalibornasevic.com/posts/68-processing-large-csv-files-with-ruby&quot;&gt;こちらのコード&lt;/a&gt;を参考に時間とメモリ使用量を計測します。また結果は数回実施した上で大きく外れていない平均的なスコア結果を掲載します。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:original
-&lt;span class=&quot;go&quot;&gt;Time: 339.42 secs
-Memory: 2219.72 MB
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;実行時間は340秒、メモリ使用量は2200MB程でした。今回の最適化のゴールは &lt;strong&gt;この処理時間をできるだけ速くして、あわせてメモリ使用量も抑えることです。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;では早速このコードを最適化していきましょう。&lt;/p&gt;
-
-&lt;h2 id=&quot;最適化1-簡単な最適化&quot;&gt;最適化1: 簡単な最適化&lt;/h2&gt;
-
-&lt;p&gt;まずは簡単な最適化から始めましょう。日付の比較は&lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt;を使うよりも&lt;code class=&quot;highlighter-rouge&quot;&gt;Date&lt;/code&gt;クラスを使ったほうが速そうです。また、ループの中で何度も同じ値が使われるのも良くないので定数に切り出しちゃいましょう。結果、下記のコードのようになりました。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement1&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;ベンチマーク-1&quot;&gt;ベンチマーク&lt;/h3&gt;
-
-&lt;p&gt;さて計測結果です。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:improvement1
-&lt;span class=&quot;go&quot;&gt;Time: 320.0 secs
-Memory: 2244.71 MB
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;メモリ使用量は変わらず、実行時間は10数秒程度速くなったくらいでしょうか。小さな最適化レベルでまだまだ全然速くなったとは言えません。&lt;/p&gt;
-
-&lt;h2 id=&quot;最適化2-where--each-を使う&quot;&gt;最適化2: where &amp;amp; each を使う&lt;/h2&gt;
-
-&lt;p&gt;次はもう少し本格的な最適化を入れていきましょう。&lt;/p&gt;
-
-&lt;p&gt;まずは&lt;code class=&quot;highlighter-rouge&quot;&gt;User.all.each&lt;/code&gt;で全件ユーザーを取得している点が真っ先に気になるところです。これは &lt;strong&gt;全件取得せず2017年以降の登録ユーザーをあらかじめフィルターしてからループさせる&lt;/strong&gt; ほうが良さそうです。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement2&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;あらかじめ処理対象ユーザーだけをフィルターできているので、ループ内の&lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt;も消すことができました。&lt;/p&gt;
-
-&lt;h3 id=&quot;ベンチマーク-2&quot;&gt;ベンチマーク&lt;/h3&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:improvement2
-&lt;span class=&quot;go&quot;&gt;Time: 294.35 secs
-Memory: 1623.5 MB
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;実行時間が前の結果より20秒程改善、メモリ消費もユーザーを全件取得する必要がなくなった分、500MB程空きました。良い感じですね。&lt;/p&gt;
-
-&lt;h2 id=&quot;最適化3-find_each-を使う&quot;&gt;最適化3: find_each を使う&lt;/h2&gt;
-
-&lt;p&gt;ちょっと待って下さい、大量データを一度にロードしなくてもいいように、ActiveRecordが&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-find_each&quot;&gt;find_each&lt;/a&gt;という便利メソッドを用意してくれてるのでした。これを使わない手はないでしょう。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement3&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find_each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;これで少しつづユーザーをロードして処理してくれるようになり、メモリに優しいコードになったと思います。&lt;/p&gt;
-
-&lt;h3 id=&quot;ベンチマーク-3&quot;&gt;ベンチマーク&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake batch:improvement3
-Time: 290.88 secs
-Memory: 31.41 MB
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;実行時間が前の結果と変わらないこそすれ、&lt;strong&gt;メモリ使用量は前の結果の50分の一となりました。&lt;/strong&gt; 大きな改善と言っていいでしょう。&lt;/p&gt;
-
-&lt;h2 id=&quot;最適化4-in_batches--update_all-を使う&quot;&gt;最適化4: in_batches &amp;amp; update_all を使う&lt;/h2&gt;
-
-&lt;p&gt;ここで一件一件&lt;code class=&quot;highlighter-rouge&quot;&gt;update&lt;/code&gt;が走る点が気になってきました。そこはActiveRecordの&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all&quot;&gt;update_all&lt;/a&gt;を使ってまとめて更新するようにしてあげれば解決できそうです。&lt;/p&gt;
-
-&lt;p&gt;また&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;は&lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord::Relation&lt;/code&gt;のメソッドですが、&lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord::Relation&lt;/code&gt;を先の&lt;code class=&quot;highlighter-rouge&quot;&gt;find_each&lt;/code&gt;のように返してくれる便利メソッドが&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-in_batches&quot;&gt;in_batches&lt;/a&gt;です。&lt;/p&gt;
-
-&lt;p&gt;この&lt;code class=&quot;highlighter-rouge&quot;&gt;in_batches&lt;/code&gt;と&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;を組み合わせて処理してあげれば効率良く更新できそうな気がします。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement4&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;in_batches&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;point = point + 100&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;ベンチマーク-4&quot;&gt;ベンチマーク&lt;/h3&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; rake batch:improvement4
-&lt;span class=&quot;go&quot;&gt;Time: 2.46 secs
-Memory: 7.26 MB
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;実行時間が100倍速くなりました。&lt;/strong&gt; 劇的な改善と言っていいでしょう。またメモリの使用量も前の結果よりさらに抑えられています。&lt;/p&gt;
-
-&lt;h2 id=&quot;最適化5-where--update_all&quot;&gt;最適化5: where &amp;amp; update_all&lt;/h2&gt;
-
-&lt;p&gt;勘の良い方なら既にお気づきですね。…ハイ、先のコードは&lt;code class=&quot;highlighter-rouge&quot;&gt;in_batches&lt;/code&gt;すら不要です。単純にupdate対象を&lt;code class=&quot;highlighter-rouge&quot;&gt;where&lt;/code&gt;でフィルターした上で&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;すれば良さそうです。出来上がったコードがこちら。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Task: batch:improvement5&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;created_at &amp;gt;= ?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;POINT_DATE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;point = point + 100&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;一行のシンプルなコードに仕上がりました。&lt;/p&gt;
-
-&lt;h3 id=&quot;ベンチマーク-5&quot;&gt;ベンチマーク&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake batch:improvement5
-Time: 0.78 secs
-Memory: 0.82 MB
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;実行時間は前の結果より3倍早くなり、メモリ使用量もさらに10分の一まで抑えられました。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;これを今回の最適化コードの最終形としたいと思います。&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;em&gt;追記ここから&lt;/em&gt;&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;これcreated_atにインデックスがあろうがなかろうが全舐めして1秒弱で終わるレコード数ならいいのだけど、そうだとしてもsaveをupdate_allにした時点でcallbackが起きなくなって元と等価ではなくなるから仕事で真似するときは詳しい人にちゃんとレビューしてもらってから投入したほうがよさそう。&lt;/p&gt;&amp;mdash; Ryuta Kamizono (@kamipo) &lt;a href=&quot;https://twitter.com/kamipo/status/970574529452900352?ref_src=twsrc%5Etfw&quot;&gt;March 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;kamipoさんからご指摘頂いたとおり、&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;は通常のActiveRecordの更新とは異なりcallback, validationをスキップするという仕様となっております。よってオリジナルコードとは等価な処理では無くなっているので、実際の現場においては&lt;code class=&quot;highlighter-rouge&quot;&gt;save&lt;/code&gt;から&lt;code class=&quot;highlighter-rouge&quot;&gt;update_all&lt;/code&gt;に変更する際は「本当にcallback, validationスキップしても大丈夫なんだっけ？」ということをしっかり考えてから実施するようにしてください。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;it does not trigger Active Record callbacks or validations&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all&lt;/p&gt;
-
-&lt;p&gt;なお今回のコード例ではモデルのcallback, validationをスキップしても問題ないコードとして話を進めています。&lt;/p&gt;
-
-&lt;p&gt;加えて、今回データベースの最適化は最適化の範囲外としたので&lt;code class=&quot;highlighter-rouge&quot;&gt;created_at&lt;/code&gt;カラムのindexは貼りませんでした。実際の現場においてはRubyのコードレベルの最適化に加えてデータベースの最適化も考えてINDEXを貼ることも検討したほうがいいでしょう。&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;追記ここまで&lt;/em&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h2 id=&quot;最終結果&quot;&gt;最終結果&lt;/h2&gt;
-
-&lt;p&gt;オリジナルコードと最適化済みの最終コードを比較すると下記の通りの改善が確認できました。&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;実行時間&lt;/th&gt;
-      &lt;th&gt;メモリ消費&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;オリジナルコード&lt;/td&gt;
-      &lt;td&gt;339.42 secs&lt;/td&gt;
-      &lt;td&gt;2219.72 MB&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;最適化コード&lt;/td&gt;
-      &lt;td&gt;0.78 secs&lt;/td&gt;
-      &lt;td&gt;0.82 MB&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;改善結果&lt;/td&gt;
-      &lt;td&gt;:rocket: &lt;strong&gt;435倍高速化&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;:recycle: &lt;strong&gt;約2700分の一まで省メモリ化&lt;/strong&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;activerecordデータ処理アンチパターンで発表します&quot;&gt;「ActiveRecordデータ処理アンチパターン」で発表します&lt;/h2&gt;
-
-&lt;p&gt;上述したようなオリジナルコードは極端な例ではありますが、ActiveRecordでデータを扱うときはきちんと遅くならないように意識してバッチ処理を書かないと極端に遅くなってしまうケースがあります。&lt;/p&gt;
-
-&lt;p&gt;そんなActiveRecordデータ処理で陥りがちな罠をパターン化し今月のRails Develper Meetupにて発表する予定です。ご興味あれば是非。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;3月25日に「ActiveRecordアンチパターン」的な内容で発表しますー | Rails Developers Meetup 2018: Day 2｜IT勉強会ならTECH PLAY［テックプレイ］ &lt;a href=&quot;https://t.co/QJgdMF92Sr&quot;&gt;https://t.co/QJgdMF92Sr&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/960340809005506561?ref_src=twsrc%5Etfw&quot;&gt;February 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Relation.html&quot;&gt;ActiveRecord::Relation&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/Batches.html&quot;&gt;ActiveRecord::Batches&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="activerecord" /><summary type="html">Railsのバッチ処理最適化の記事書いたら需要あるかな&amp;mdash; toshimaru (@toshimaru_e) December 2, 2017</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/ar-optimization.png" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="activerecord" /><category term="rails" /><summary type="html">Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2018.png" /></entry></feed>
