@@ -137,5 +137,5 @@ FROM (SELECT @seq_no := 0 AS seq_no
 
 ## 注意点
 
-- `information_schema.COLUMNS`を使った場合、`LIMIT`で指定できる値は`information_schema.COLUMNS`のMAX値までという制限がある
-- MySQL7から導入されたWITH syntaxでCTEすればもっとシンプルにクエリが書けそう
+- `information_schema.COLUMNS`を使った場合、`LIMIT`で指定できる値は`information_schema.COLUMNS`のMAX値までという成約がある
+- MySQL7から導入された[WITH syntax](https://dev.mysql.com/doc/refman/8.0/en/with.html)でCTEすればもっとシンプルにクエリが書けそう
