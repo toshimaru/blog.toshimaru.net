@@ -1,13 +1,16 @@
 ---
 layout: post
-title: Ruby の inject メソッドを使いこなす
+title: Ruby の inject(reduce) メソッドを使いこなす
+modified_date: 2018-10-09
 published: true
 description: Rubyのイテレータメソッド・injectの使い方を紹介します。合計の出し方、配列内の要素数をハッシュにしたり、each_with_objectの使い方など。
 tags: ruby
 toc: true
 ---
 
-Rubyのイテレータメソッド`inject`の使い方を紹介してみようと思います。
+Rubyのイテレータメソッド`inject`(`reduce`)の使い方を紹介してみようと思います。
+
+※文中では便宜上、`inject`で表記しますが`reduce`も等価なメソッドなので文中の`inject`は`reduce`に置き換え可能です
 
 ## injectの基本的な使い方
 
@@ -115,3 +118,4 @@ end
 * [injectとeach_with_objectって何が違うのさ？ - Qiita](http://qiita.com/Kta-M/items/c9781e09d96601687767)
 * [Enumerable#each_with_indexが便利すぎる - 永遠に未完成](http://thinca.hatenablog.com/entry/20090410/1239374983)
 * [Rubyで Enumerable#reduce / inject で処理を中断して結果を返す - Qiita](https://qiita.com/minoritea/items/daf8ee91f2de1725b9b0)
+* [reduce と inject の発想の違い](https://magazine.rubyist.net/articles/0038/0038-MapAndCollect.html#reduce-と-inject-の発想の違い)
