@@ -1,4 +1,112 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-11-13T08:25:13+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~</title><link href="https://blog.toshimaru.net/team-geek/" rel="alternate" type="text/html" title="『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~" /><published>2018-10-26T00:00:00+09:00</published><updated>2018-10-26T00:00:00+09:00</updated><id>https://blog.toshimaru.net/team-geek</id><content type="html" xml:base="https://blog.toshimaru.net/team-geek/">&lt;p&gt;かの有名なHRTの精神の原典になっている本ということで読んでみた。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-11-20T00:57:49+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">reviewdogを使ってCI上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop/" rel="alternate" type="text/html" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす" /><published>2018-11-19T00:00:00+09:00</published><updated>2018-11-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop/">&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop&quot;&gt;rubocop&lt;/a&gt;の自動レビューを&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;reviewdog&lt;/a&gt;を使ってやってみたのでその知見です。&lt;/p&gt;
+
+&lt;h2 id=&quot;auto-rubocop-on-circleci-powered-by-reviewdog&quot;&gt;Auto-RuboCop on CircleCI powered by reviewdog&lt;/h2&gt;
+
+&lt;p&gt;僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。&lt;/p&gt;
+
+&lt;p&gt;https://github.com/toshimaru/RailsTwitterClone/pull/254&lt;/p&gt;
+
+&lt;h3 id=&quot;1-configymlの設定&quot;&gt;1. &lt;code class=&quot;highlighter-rouge&quot;&gt;config.yml&lt;/code&gt;の設定&lt;/h3&gt;
+
+&lt;p&gt;基本的には&lt;a href=&quot;https://github.com/haya14busa/reviewdog#circle-ci&quot;&gt;公式READMEのCircleCIセットアップ手順&lt;/a&gt;通りですが、まずは下記のようにreviewdogのバイナリを&lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt;経由で落とします。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 環境変数でダウンロードするreviewdogのバージョンを指定&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;REVIEWDOG_VERSION&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;0.9.11&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# reviewdogをcurlでダウンロード&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install reviewdog&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;amp;&amp;amp; chmod +x ./reviewdog&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2コメントできるtokenを取得--設定&quot;&gt;2.コメントできるTokenを取得 &amp;amp; 設定&lt;/h3&gt;
+
+&lt;p&gt;reviewdogにコメントさせるためにはコメントできる権限を持ったGitHub Tokenが必要になります。下記手順でGitHub Tokenを取得してください。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/settings/tokens&quot;&gt;アクセストークンの取得ページ&lt;/a&gt;にいく&lt;/li&gt;
+  &lt;li&gt;下記の権限を設定してTokenを発行
+    &lt;ul&gt;
+      &lt;li&gt;Privateレポジトリの設定: &lt;code class=&quot;highlighter-rouge&quot;&gt;repo&lt;/code&gt;をチェック&lt;/li&gt;
+      &lt;li&gt;Publicレポジトリの設定: &lt;code class=&quot;highlighter-rouge&quot;&gt;public_repo&lt;/code&gt;をチェック&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これでTokenが発行できましたので、次にそのTokenの設定です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CircleCIの環境変数の設定画面を開く&lt;/li&gt;
+  &lt;li&gt;下記の環境変数を設定
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;REVIEWDOG_GITHUB_API_TOKEN&lt;/code&gt;の値に前手順で取得したTokenを設定&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これにてreviewdogにコメントできる権限が付与されました。&lt;/p&gt;
+
+&lt;h3 id=&quot;3-rubucopの結果をreviewdogで通知&quot;&gt;3. rubucopの結果をreviewdogで通知&lt;/h3&gt;
+
+&lt;p&gt;あとはいつも通りのrubocopのコマンドをパイプしてreviewdogに渡してあげればOK。その際のオプションは &lt;code class=&quot;highlighter-rouge&quot;&gt;-f=rubocop&lt;/code&gt;（rubocopフォーマット指定）, &lt;code class=&quot;highlighter-rouge&quot;&gt;-reporter=github-pr-review&lt;/code&gt;（GitHub PRレビューコメント形式の指定） の２つを指定します。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;完成yamlイメージ&quot;&gt;完成yamlイメージ&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.circleci/config.yml&lt;/code&gt;の完成イメージは下記です（完全なyamlファイル&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/254/files&quot;&gt;当該Pull Request&lt;/a&gt;より確認してください）。なおCircleCIはversion2.1を使用していることに注意してください（現時点の最新バージョン）。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2.1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;executors&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;working_directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;~/app&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.5-node-browsers&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;RAILS_ENV&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;test&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;REVIEWDOG_VERSION&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;0.9.11&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle_install&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install reviewdog&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+            &lt;span class=&quot;no&quot;&gt;curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;amp;&amp;amp; chmod +x ./reviewdog&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;なぜreviewdogなのか&quot;&gt;なぜreviewdogなのか&lt;/h2&gt;
+
+&lt;p&gt;ruboop自動レビューのためのツールとして、既にあるツールに&lt;a href=&quot;https://github.com/packsaddle/ruby-saddler&quot;&gt;Saddler&lt;/a&gt;や&lt;a href=&quot;https://github.com/prontolabs/pronto&quot;&gt;pronto&lt;/a&gt;などがありますが、なぜそれらを使わずにreviewdogを採用したのかというと下記の理由からです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Goのシングルバイナリポン置き(curlワンコマンド)でSetupがめちゃくちゃ楽&lt;/li&gt;
+  &lt;li&gt;Language Agnostic(Ruby以外もGo, PHP, Pythonなど他言語で使える)&lt;/li&gt;
+  &lt;li&gt;Go実装でパフォーマンスが良い&lt;/li&gt;
+  &lt;li&gt;Activeにメンテされている&lt;/li&gt;
+  &lt;li&gt;READMEドキュメントが充実している&lt;/li&gt;
+  &lt;li&gt;日本人が作っている!!（おまけ理由&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;本記事ではRubyプロジェクトのrubocop checkをreviewdogを使ってCircleCI上で動かす例を紹介しました。&lt;/p&gt;
+
+&lt;p&gt;公式READMEにはTravisCI上での動かし方であったり、GitHubの新機能・GitHub Checks形式での動かし方も記載されておりますので、興味があるかたは公式READMEをご参照ください。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;haya14busa/reviewdog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://haya14busa.com/reviewdog/&quot;&gt;reviewdog を飼ってコードレビューや開発を改善しませんか - haya14busa&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/azu/items/c563da0b5455a1b1dca2&quot;&gt;reviewdogを使ってtextlintの結果をPull Requestに書き込む方法 - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rubocop" /><category term="github" /><category term="circleci" /><summary type="html">rubocopの自動レビューをreviewdogを使ってやってみたのでその知見です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop_x_reviewdog.jpg" /></entry><entry><title type="html">『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~</title><link href="https://blog.toshimaru.net/team-geek/" rel="alternate" type="text/html" title="『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~" /><published>2018-10-26T00:00:00+09:00</published><updated>2018-10-26T00:00:00+09:00</updated><id>https://blog.toshimaru.net/team-geek</id><content type="html" xml:base="https://blog.toshimaru.net/team-geek/">&lt;p&gt;かの有名なHRTの精神の原典になっている本ということで読んでみた。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://www.amazon.co.jp/Team-Geek-%E2%80%95Google%E3%81%AE%E3%82%AE%E3%83%BC%E3%82%AF%E3%81%9F%E3%81%A1%E3%81%AF%E3%81%84%E3%81%8B%E3%81%AB%E3%81%97%E3%81%A6%E3%83%81%E3%83%BC%E3%83%A0%E3%82%92%E4%BD%9C%E3%82%8B%E3%81%AE%E3%81%8B-Brian-Fitzpatrick/dp/4873116309/ref=as_li_ss_il?ie=UTF8&amp;amp;qid=1540485309&amp;amp;sr=8-1&amp;amp;keywords=team+geek&amp;amp;linkCode=li3&amp;amp;tag=toshimaru-22&amp;amp;linkId=40736310d52f5cf2ad4d58ee4b35f4e3&amp;amp;language=ja_JP&quot; target=&quot;_blank&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;amp;ASIN=4873116309&amp;amp;Format=_SL250_&amp;amp;ID=AsinImage&amp;amp;MarketPlace=JP&amp;amp;ServiceVersion=20070822&amp;amp;WS=1&amp;amp;tag=toshimaru-22&amp;amp;language=ja_JP&quot; /&gt;&lt;/a&gt;&lt;img src=&quot;https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;l=li3&amp;amp;o=9&amp;amp;a=4873116309&quot; width=&quot;1&quot; height=&quot;1&quot; border=&quot;0&quot; alt=&quot;&quot; style=&quot;border:none !important; margin:0px !important;&quot; /&gt;&lt;/p&gt;
 
@@ -1459,106 +1567,4 @@ No changes to formulae.
 
 &lt;p&gt;なお、gemを消す方法に関しては下記を参考にさせてもらった。&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://blog.s21g.com/articles/1755&quot;&gt;公開した gem を削除する方法 - ヽ( ・∀・)ノくまくまー - s21g&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">かねてより僕が開発していたrubocop-railsというgemをRuboCop公式チームの要望により譲った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry><entry><title type="html">本ブログが完全https化されました</title><link href="https://blog.toshimaru.net/https-is-now-supported/" rel="alternate" type="text/html" title="本ブログが完全https化されました" /><published>2018-05-06T00:00:00+09:00</published><updated>2018-05-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/https-is-now-supported</id><content type="html" xml:base="https://blog.toshimaru.net/https-is-now-supported/">&lt;p&gt;本ブログが完全HTTPS化されましたのでお知らせ致します。&lt;/p&gt;
-
-&lt;h2 id=&quot;github-pages-https-support&quot;&gt;GitHub Pages HTTPS Support&lt;/h2&gt;
-
-&lt;p&gt;といっても別に何をやったというわけではなく、朝起きたら突然GitHub PagesがHTTPSをサポートしてくれてました。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-cards=&quot;hidden&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Today, custom domains on GitHub Pages are gaining support for HTTPS via &lt;a href=&quot;https://twitter.com/letsencrypt?ref_src=twsrc%5Etfw&quot;&gt;@letsencrypt&lt;/a&gt;. It&amp;#39;s another step towards making the web more secure for everyone. &lt;a href=&quot;https://t.co/MbB7Jjd3EE&quot;&gt;https://t.co/MbB7Jjd3EE&lt;/a&gt;&lt;/p&gt;&amp;mdash; GitHub (@github) &lt;a href=&quot;https://twitter.com/github/status/991366832421523456?ref_src=twsrc%5Etfw&quot;&gt;May 1, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;HTTPSで配信するために特段こちら側で何か設定が必要というわけではなく、GitHubがよしなに全て設定してくれているので本当に朝起きたらhttpをhttpsに変えてアクセスするただけで大丈夫でした。&lt;/p&gt;
-
-&lt;p&gt;ちなみに僕は数年くらい前から「Github Pagesカスタムドメインでhttps対応してほしい！」とGitHubサポートチームに訴え続けておりましたが、この度はやっと対応してくれたということでありがたい気持ちでいっぱいです。（これでやっと同僚エンジニアから「ブログがセキュアじゃないですね！」と煽られることもなくなる…）&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/https/https-github.png&quot; alt=&quot;github config&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;:point_up:GitHubのhttps設定画面&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/https/lets-encrypt.png&quot; alt=&quot;let's encrypt certification&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;:point_up:HTTPS対応に際してはLet’s Encryptの証明書が使われています&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;はてぶurl変わっちゃうよ問題&quot;&gt;はてぶURL変わっちゃうよ問題&lt;/h2&gt;
-
-&lt;p&gt;はてなブックマークではhttpとhttpsをURLとして区別するので、今回のhttps化に伴い今までのはてなブックマーク数がリセットされることになります。ちょっと勿体無い気もしますが致し方ないですね。&lt;/p&gt;
-
-&lt;p&gt;せっかくなので今まで本ブログに蓄積されたはてブ人気エントリ（5user以上）の現時点でのスナップショットを取っておいたので下記に一覧として公開いたします。&lt;/p&gt;
-
-&lt;h3 id=&quot;人気エントリ5user以上一覧&quot;&gt;人気エントリ(5user以上)一覧&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/cool-ui/&quot;&gt;UIの進化を止めるうんこユーザーに我々はどう立ち向かうべ…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rails-frontend/&quot;&gt;Railsフロントエンド技術の今とこれから&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-frontend/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-frontend/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/jquery-ajaxdeferredajax&quot;&gt;jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/jquery-ajaxdeferredajax/&quot;&gt;jQuery モダンAjaxな書き方を目指して　〜deferredを使ったAJAX〜…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/jquery-8-tips/&quot;&gt;jQuery使いが知っておくべき8つのjQueryテクニック &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-8-tips/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-8-tips/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rails-batch-optimization/&quot;&gt;Rails/ActiveRecord バッチ処理の最適化&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-batch-optimization/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-batch-optimization/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rails-http-status-symbols/&quot;&gt;RailsのHTTPステータスのシンボル表現まとめ&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-http-status-symbols/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-http-status-symbols/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/git-log-graph/&quot;&gt;美しき git log –graph のエイリアス&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-log-graph/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-log-graph/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/gunosy-rails-way/&quot;&gt;GunosyでのRails開発フロー&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/gunosy-rails-way/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/gunosy-rails-way/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/scrum-training/&quot;&gt;認定スクラムマスター研修に行ってきました&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/scrum-training/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/scrum-training/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/roppongirb-speeding-up-rails/&quot;&gt;Roppongi.rbで「Rails高速化戦略」を発表しました &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/roppongirb-speeding-up-rails/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/roppongirb-speeding-up-rails/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/belongs_to-through/&quot;&gt;【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/belongs_to-through/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/belongs_to-through/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/php-trait/&quot;&gt;PHP5.4のtrait機能を理解する&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/php-trait/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/php-trait/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/git-pushgithub/&quot;&gt;github に git pushした変更の取り消し&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-pushgithub/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-pushgithub/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rails-pry-byebug/&quot;&gt;pry-byebug を使ってRailsアプリをステップ実行する &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-pry-byebug/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-pry-byebug/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/jquery-bottom-scroll/&quot;&gt;jQueryでページ最下部のスクロール時のイベントをキャッチ…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-bottom-scroll/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-bottom-scroll/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/how-to-find-job-in-Vancouver/&quot;&gt;僕が単身海外（バンクーバー）に来て仕事を見つけるまで…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/how-to-find-job-in-Vancouver/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/how-to-find-job-in-Vancouver/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/play-m3u8-video-in-browser/&quot;&gt;video.js で m3u8 形式の動画ファイルをブラウザで再生する &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/play-m3u8-video-in-browser/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/play-m3u8-video-in-browser/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rails-find_each/&quot;&gt;Railsのfind_eachの挙動を調べた&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-find_each/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-find_each/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/job-hunting-6/&quot;&gt;就活日記(6) KAIZEN platform Inc.&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-6/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/job-hunting-6/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/s3-cloudfront-cors-setting/&quot;&gt;AWS S3 + CloudFront のCORS設定手順&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/s3-cloudfront-cors-setting/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/s3-cloudfront-cors-setting/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/jquerydeferred-is-most-important-client/&quot;&gt;DeferredはjQueryにおける最も重要なクライアントサイドツール…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquerydeferred-is-most-important-client/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquerydeferred-is-most-important-client/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/&quot;&gt;「フロントエンドデベロッパー面接時の質問事項」日本語…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/Front-end-Developer-Interview-Questions-Japanese/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/8/&quot;&gt;ダメエンジニアの8つの特徴&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/8/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/8/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/docker-compose-rails/&quot;&gt;docker-compose で Rails 環境を構築する&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/docker-compose-rails/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/docker-compose-rails/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/css-animation/&quot;&gt;CSS3アニメーションを使ってサイトをリッチに &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/css-animation/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/css-animation/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/opsworks-rails/&quot;&gt;Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/opsworks-rails/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/opsworks-rails/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/active-record-callbacks/&quot;&gt;ActiveRecordのコールバックの順番・コールバック内のロール…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/active-record-callbacks/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/active-record-callbacks/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/ruby-percent-notation/&quot;&gt;Rubyの%の記法まとめ&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-percent-notation/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/ruby-percent-notation/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/ruby-standard-error/&quot;&gt;Rubyで独自例外を定義するときはStandardErrorを継承する &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-standard-error/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/ruby-standard-error/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/like-a-sponge-as-an-engineer/&quot;&gt;技術者としてスポンジであり続けること　あるいは老害回…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/like-a-sponge-as-an-engineer/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/like-a-sponge-as-an-engineer/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/linux/&quot;&gt;プロセス毎のメモリ使用量を調べるコマンド&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/linux/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/linux/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/json-schema-collaboration/&quot;&gt;JSON Schemaについて発表した&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/json-schema-collaboration/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/json-schema-collaboration/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/php-is-not-bad-language/&quot;&gt;PHPって言うほど悪い言語じゃない&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/php-is-not-bad-language/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/php-is-not-bad-language/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/job-hunting-fin/&quot;&gt;就活日記(完) 就職&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-fin/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/job-hunting-fin/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/&quot;&gt;railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表し…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rdm2018-active-record-anti-patterns/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rdm2018-active-record-anti-patterns/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/cool-ui-after/&quot;&gt;「UIの進化を止めるうんこユーザーに我々はどう立ち向かう…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui-after/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui-after/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/phpurl-safe-base64-encode/&quot;&gt;[PHP]URL safe な base64 encode メソッド&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/phpurl-safe-base64-encode/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/phpurl-safe-base64-encode/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/&quot;&gt;Hack Your Design! - Home&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/ruby-immutable-string/&quot;&gt;Ruby2.3 で導入された frozen_string_literal オプションで Immutable St…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-immutable-string/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/ruby-immutable-string/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rails-4-transaction-isolation/&quot;&gt;Rails4 でトランザクション分離レベルを設定する &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-4-transaction-isolation/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-4-transaction-isolation/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/jqueryhidden-inputjquery/&quot;&gt;【jQuery】hidden inputタグをjQueryで追加&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/jqueryhidden-inputjquery/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jqueryhidden-inputjquery/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/manage-schema-with-sql-in-rails/&quot;&gt;SQLファイルでRailsのスキーマ情報管理&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/manage-schema-with-sql-in-rails/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/manage-schema-with-sql-in-rails/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/chrome-dev-tool/&quot;&gt;細かすぎて伝わりにくいChrome Developerツールを使いこなそう…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/chrome-dev-tool/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/chrome-dev-tool/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/git-29764/&quot;&gt;Git のコミットメッセージの書き方&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-29764/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-29764/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/job-hunting-0/&quot;&gt;就活日記(0) エントリー&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-0/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/job-hunting-0/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/publish-rails-app-in-lan/&quot;&gt;RailsアプリケーションをLAN内に公開する&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/publish-rails-app-in-lan/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/publish-rails-app-in-lan/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/git-revert-mainline/&quot;&gt;Gitのrevertの-m(mainline)オプションについて&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-revert-mainline/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-revert-mainline/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/vimsublime-text-2&quot;&gt;Vimから３日で乗り換えた、次世代モテエディタ「Sublime Text 2…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/vimsublime-text-2&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/vimsublime-text-2&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rfc/&quot;&gt;メールアドレスにはRFC的に使用可能な文字(!#$%&amp;amp;’*+-/=?^_`{|}~)…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rfc/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rfc/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/how-to-use-composer-autoload/&quot;&gt;Composerで始める PHPのライブラリ管理&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/how-to-use-composer-autoload/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/how-to-use-composer-autoload/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rspec-occasional-fail/&quot;&gt;RSpecが通ったり落ちたりしたときに&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rspec-occasional-fail/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rspec-occasional-fail/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/vimsublime-text-2/&quot;&gt;Vimから３日で乗り換えた、次世代モテエディタ「Sublime Text 2…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/vimsublime-text-2/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/vimsublime-text-2/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/job-hunting-3/&quot;&gt;就活日記(3) Quipper&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-3/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/job-hunting-3/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/yapc-2015/&quot;&gt;YAPC::Asia 2015で心に残ったトーク&amp;amp;スライド #yapcasia &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/yapc-2015/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/yapc-2015/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/&quot;&gt;[Mac][git]error: There was a problem with the editor ‘vi’.&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/coverage-with-codeclimate/&quot;&gt;カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換え…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/coverage-with-codeclimate/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/coverage-with-codeclimate/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/ruby-inject/&quot;&gt;Rubyのinjectを使いこなす&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-inject/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/ruby-inject/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/windows-s3-sync/&quot;&gt;WindowsコマンドでAmazon S3上にバックアップする &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/windows-s3-sync/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/windows-s3-sync/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/digital-ocean-vagrant-puppet/&quot;&gt;1円クラウド、DigitalOceanのインスタンスをVagrant upして、puppet…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/digital-ocean-vagrant-puppet/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/digital-ocean-vagrant-puppet/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/ruby-vs-go/&quot;&gt;Ruby vs Golang でパフォーマンス比較してみた&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-vs-go/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/ruby-vs-go/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/why-you-should-write-shitty-code/&quot;&gt;ひどいコードを書いてもよいとき&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/why-you-should-write-shitty-code/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/why-you-should-write-shitty-code/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/backbone-learn/&quot;&gt;Backbone.jsをそろそろ学習したい人のための学習リソース集（…&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/backbone-learn/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/backbone-learn/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/git-pushgithub&quot;&gt;github に git pushした変更の取り消し&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/git-pushgithub&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/git-pushgithub&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/ruby-on-google-app-engine/&quot;&gt;Ruby on Rails を Google App Engine 上で動かしてみる&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/ruby-on-google-app-engine/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/ruby-on-google-app-engine/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/rails-new-options/&quot;&gt;rails new するときによく使うオプション&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-new-options/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-new-options/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/job-hunting-2/&quot;&gt;就活日記(2) freee&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/job-hunting-2/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/job-hunting-2/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/php-force-property/&quot;&gt;PHPのプロパティをStrictに定義する&lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/php-force-property/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/php-force-property/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.toshimaru.net/new-xhr-fetch-asyncawait/&quot;&gt;JavaScriptのXHRの送り方いろいろ: XMLHttpRequest, fetch, async/await &lt;/a&gt; &lt;a href=&quot;http://b.hatena.ne.jp/entry/blog.toshimaru.net/new-xhr-fetch-asyncawait/&quot;&gt;&lt;img src=&quot;https://b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/new-xhr-fetch-asyncawait/&quot; alt=&quot;&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
-
-&lt;p&gt;今後とも本ブログにて、有用な情報をぼちぼち発信していけたら良いな〜と思っておりますので引き続きよろしくお願いします。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="https" /><category term="security" /><summary type="html">本ブログが完全HTTPS化されましたのでお知らせ致します。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/https/https.png" /></entry></feed>
+&lt;p&gt;&lt;a href=&quot;http://blog.s21g.com/articles/1755&quot;&gt;公開した gem を削除する方法 - ヽ( ・∀・)ノくまくまー - s21g&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">かねてより僕が開発していたrubocop-railsというgemをRuboCop公式チームの要望により譲った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry></feed>
