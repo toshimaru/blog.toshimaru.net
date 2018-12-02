@@ -2,7 +2,8 @@
 layout: post
 title: はじめてのCircleCI Orbsを公開した
 image: "/images/posts/circleci-orb.png"
-description: "はじめてのCircleCI Orbsを公開した。そのメモ。2018年11月に正式公開されたCircleCI Orbs。 本日Orbsをリリースしました🥳OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。 要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、bundle installをCircleCI Orbsを使って共通化してみることにしてみました。"
+description: "はじめてのCircleCI Orbsを公開した。そのメモ。2018年11月に正式公開されたCircleCI Orbs。本日Orbsをリリースしました。OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、bundle installをCircleCI Orbsを使って共通化してみることにしてみました。
+"
 toc: true
 tags: circleci
 ---
@@ -42,21 +43,21 @@ brew install circleci
 
 namespaceを取得します。
 
-``` 
+```
 $ circleci namespace create toshimaru github toshimaru
-``` 
+```
 
 ### Orb 作成
 
 namespace以下のorb名を作成します。
 
-``` 
+```
 $ circleci orb create toshimaru/bundle-install
 Orb toshimaru/bundle-install created.
 Please note that any versions you publish of this orb are world-readable.
 
 You can now register versions of toshimaru/bundle-install using circleci orb publish.
-``` 
+```
 
 ### Publish CircleCI Orb
 
@@ -93,4 +94,4 @@ jobs:
 ## 参考にした記事
 
 - 全体的にこちらの手順を参考にさせていただきました。 [CircleCI Orbs 入門 | tsub's blog](https://blog.tsub.me/post/introducing-to-circleci-orbs/)
-- ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs 
+- ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs
