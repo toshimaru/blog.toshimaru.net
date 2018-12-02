@@ -1,4 +1,98 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-12-02T14:32:36+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">reviewdogを使ってCI上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop/" rel="alternate" type="text/html" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす" /><published>2018-11-19T00:00:00+09:00</published><updated>2018-11-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop/">&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop&quot;&gt;rubocop&lt;/a&gt;の自動レビューを&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;reviewdog&lt;/a&gt;を使ってやってみたのでその知見です。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.4">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2018-12-02T15:39:37+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">はじめてのCircleCI Orbsを公開した</title><link href="https://blog.toshimaru.net/my-first-circleci-orbs/" rel="alternate" type="text/html" title="はじめてのCircleCI Orbsを公開した" /><published>2018-12-02T00:00:00+09:00</published><updated>2018-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/my-first-circleci-orbs</id><content type="html" xml:base="https://blog.toshimaru.net/my-first-circleci-orbs/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install &lt;a href=&quot;https://t.co/Ikd11JmEFd&quot;&gt;https://t.co/Ikd11JmEFd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw&quot;&gt;November 30, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;はじめてのCircleCI Orbsを公開した。そのメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;circleci-orbsとは&quot;&gt;CircleCI Orbsとは&lt;/h2&gt;
+
+&lt;p&gt;2018年11月に正式公開されたCircleCI Orbs。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;本日Orbsをリリースしました🥳OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。&lt;/p&gt;&amp;mdash; CircleCI Japan (@CircleCIJapan) &lt;a href=&quot;https://twitter.com/CircleCIJapan/status/1060285769124696064?ref_src=twsrc%5Etfw&quot;&gt;November 7, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。&lt;/p&gt;
+
+&lt;h2 id=&quot;作ってみた&quot;&gt;作ってみた&lt;/h2&gt;
+
+&lt;p&gt;僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、&lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;をCircleCI Orbsを使って共通化してみることにしてみました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;結果できたのがこちら: &lt;a href=&quot;https://circleci.com/orbs/registry/orb/toshimaru/bundle-install&quot;&gt;CircleCI Orb Registry - toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;GitHubソースコードはこちら: &lt;a href=&quot;https://github.com/toshimaru/bundle-install&quot;&gt;toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;作り方&quot;&gt;作り方&lt;/h2&gt;
+
+&lt;h3 id=&quot;install-circleci-command&quot;&gt;Install circleci command&lt;/h3&gt;
+
+&lt;p&gt;まずはcircleciコマンドを入手。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install circleci
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;namespace-作成&quot;&gt;namespace 作成&lt;/h3&gt;
+
+&lt;p&gt;namespaceを取得します。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci namespace create toshimaru github toshimaru
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;orb-作成&quot;&gt;Orb 作成&lt;/h3&gt;
+
+&lt;p&gt;namespace以下のorb名を作成します。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb create toshimaru/bundle-install
+Orb toshimaru/bundle-install created.
+Please note that any versions you publish of this orb are world-readable.
+
+You can now register versions of toshimaru/bundle-install using circleci orb publish.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;publish-circleci-orb&quot;&gt;Publish CircleCI Orb&lt;/h3&gt;
+
+&lt;p&gt;作成した&lt;code class=&quot;highlighter-rouge&quot;&gt;orb.yml&lt;/code&gt;を公開します。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb publish src/orb.yml toshimaru/bundle-install@0.0.1
+Orb toshimaru/bundle-install@0.0.1 was published.
+Please note that this is an open orb and is world-readable.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;作成したorbを使う&quot;&gt;作成したOrbを使う&lt;/h2&gt;
+
+&lt;p&gt;次に作成したOrbを使う側、呼び出す側の設定です。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;toshimaru&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/bundle-install@0.1.0&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/bundle-install&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# - bundle exec rspec&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実際に下記のPRでOrbの変更例が見れますのでご参照ください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/264/files&quot;&gt;Introduce CircleCI Orbs by toshimaru · Pull Request #264&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考にした記事&quot;&gt;参考にした記事&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;全体的にこちらの手順を参考にさせていただきました。 [CircleCI Orbs 入門&lt;/td&gt;
+          &lt;td&gt;tsub’s blog](https://blog.tsub.me/post/introducing-to-circleci-orbs/)&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+  &lt;li&gt;ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><summary type="html">I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install https://t.co/Ikd11JmEFd&amp;mdash; toshimaru (@toshimaru_e) November 30, 2018</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" /></entry><entry><title type="html">reviewdogを使ってCI上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop/" rel="alternate" type="text/html" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす" /><published>2018-11-19T00:00:00+09:00</published><updated>2018-11-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop/">&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop&quot;&gt;rubocop&lt;/a&gt;の自動レビューを&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;reviewdog&lt;/a&gt;を使ってやってみたのでその知見です。&lt;/p&gt;
 
 &lt;h2 id=&quot;auto-rubocop-on-circleci-powered-by-reviewdog&quot;&gt;Auto-RuboCop on CircleCI powered by reviewdog&lt;/h2&gt;
 
@@ -1521,50 +1615,4 @@ No changes to formulae.
 
 &lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&quot;/how-to-publish-vscode-extension/&quot;&gt;VS Code Extensionの公開手順&lt;/a&gt;を書きました。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><summary type="html">はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /></entry><entry><title type="html">RuboCopチームにgemの名前を譲った話</title><link href="https://blog.toshimaru.net/rubocop-rails-config/" rel="alternate" type="text/html" title="RuboCopチームにgemの名前を譲った話" /><published>2018-07-17T00:00:00+09:00</published><updated>2018-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config/">&lt;p&gt;かねてより僕が開発していた&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemをRuboCop公式チームの要望により譲った。&lt;/p&gt;
-
-&lt;p&gt;僕がこのgemを作った経緯とかは下記の記事の通り。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;つくったやつ | Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design! &lt;a href=&quot;https://t.co/szG0eLPetS&quot;&gt;https://t.co/szG0eLPetS&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/958123075572195331?ref_src=twsrc%5Etfw&quot;&gt;January 29, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
-
-&lt;p&gt;名前を譲ることになったきっかけは下記のIssue。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop/issues/5976&quot;&gt;Extract Rails Cops in a separate · Issue #5976 · rubocop-hq/rubocop&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;より正確にいうとこのIssueの前に&lt;a href=&quot;https://rubykaigi.org/2018/&quot;&gt;RubyKaigi 2018&lt;/a&gt;の懇親会でRuboCop作者から僕へ間接的に打診があり、上記のIssueに至る。&lt;/p&gt;
-
-&lt;p&gt;RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を作りたい。gem名はrubocop-railsとしたい。名前を頂戴！」と感じ。僕の想いとしては「RuboCop公式チームとして使いたい名前ということであればどうぞどうぞ。わかりやすい名前を付けることはRubyコミュニティ全体の利益にもなるだろうしね！」という感じ。&lt;/p&gt;
-
-&lt;h2 id=&quot;譲るにあたりやったこと&quot;&gt;譲るにあたりやったこと&lt;/h2&gt;
-
-&lt;p&gt;下記のようなIssueを作成して進めていった。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails/issues/31&quot;&gt;[IMPORTANT ANNOUNCEMENT] Transfer rubocop-rails gem to RuboCop Team · Issue #31 · toshimaru/rubocop-rails&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; に代わる新しいgemを作成: &lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; の新しいversionを切って、post_install_messageでRenameの旨を周知&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop-rails_config&lt;/code&gt; のほうに簡単にUpdateできるようなUpdate Generator Taskを用意&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; というgemに新しいOwnerを付与&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; のRename前の古いバージョンをrubygemsから削除&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;一番最後の &lt;strong&gt;古いバージョンをrubygemsから削除&lt;/strong&gt; はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果、古いバージョンを消してでもgemのRename周知を優先させようと思い至った。これに関しては正直正解はないと思う。&lt;/p&gt;
-
-&lt;h2 id=&quot;rubocopコミッターのkoicさんが発表してくださいました&quot;&gt;RuboCopコミッターのkoicさんが発表してくださいました&lt;/h2&gt;
-
-&lt;p&gt;本件に関してはRuboCopコミッターの&lt;a href=&quot;https://twitter.com/koic&quot;&gt;@koic&lt;/a&gt;さんも先日の&lt;a href=&quot;https://techplay.jp/event/679666&quot;&gt;Rails Developers Meetup 2018 Day 3 Extreme&lt;/a&gt;にて発表して頂いたようです。:innocent:&lt;/p&gt;
-
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-slide=&quot;57&quot; data-id=&quot;612849c52252464d8a63fc97f90c6091&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;発表エントリ: &lt;a href=&quot;http://koic.hatenablog.com/entry/railsdm-2018-day3-extreme&quot;&gt;Rails Developers Meetup 2018 Day 3 Extreme に登壇した - koicの日記&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;エピソードのご紹介ありがとうございました。:pray:&lt;/p&gt;
-
-&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
-
-&lt;p&gt;なお、gemを消す方法に関しては下記を参考にさせてもらった。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://blog.s21g.com/articles/1755&quot;&gt;公開した gem を削除する方法 - ヽ( ・∀・)ノくまくまー - s21g&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><summary type="html">かねてより僕が開発していたrubocop-railsというgemをRuboCop公式チームの要望により譲った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /></entry></feed>
+&lt;p&gt;&lt;a href=&quot;/how-to-publish-vscode-extension/&quot;&gt;VS Code Extensionの公開手順&lt;/a&gt;を書きました。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><summary type="html">はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /></entry></feed>
