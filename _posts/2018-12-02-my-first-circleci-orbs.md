@@ -33,7 +33,7 @@ tags: circleci
 
 ### Install circleci command
 
-まずはcircleciコマンドを入手。
+まずはcircleciコマンドを入手。MacOSの場合下記のようにbrewで入れることができます。
 
 ```
 brew install circleci
@@ -93,5 +93,5 @@ jobs:
 
 ## 参考にした記事
 
-- 全体的にこちらの手順を参考にさせていただきました。 [CircleCI Orbs 入門 | tsub's blog](https://blog.tsub.me/post/introducing-to-circleci-orbs/)
+- 全体的にこちらの手順を参考にさせていただきました。 [CircleCI Orbs 入門 \| tsub's blog](https://blog.tsub.me/post/introducing-to-circleci-orbs/)
 - ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs
