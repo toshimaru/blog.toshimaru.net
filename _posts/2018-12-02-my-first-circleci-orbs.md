@@ -75,15 +75,14 @@ Please note that this is an open orb and is world-readable.
 
 ```yml
 orbs:
-  toshimaru: toshimaru/bundle-install@0.1.0
-
+  bundle-install: toshimaru/bundle-install@0.1.0
 jobs:
   build:
     docker:
       - image: circleci/ruby
     steps:
       - checkout
-      - toshimaru/bundle-install
+      - bundle-install/bundle-install
       # - bundle exec rspec
 ```
 
