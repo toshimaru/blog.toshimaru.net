@@ -5,7 +5,7 @@ gem 'jekyll'
 group :jekyll_plugins do
   # gem 'jekyll-admin'
   gem 'jekyll-coffeescript'
-  gem 'jekyll-compose', github: 'jekyll/jekyll-compose'
+  gem 'jekyll-compose'
   gem 'jekyll-feed'
   gem 'jekyll-paginate'
   gem 'jekyll-sitemap'
