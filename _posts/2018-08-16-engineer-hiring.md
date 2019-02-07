@@ -77,7 +77,7 @@ toc: true
 転職ドラフトは一例だが、エンジニアの転職チャネル・転職サービスは多様化している。採用担当者はエンジニア採用チャネルに対する感度の高さやそれを使いこなすためのリテラシーが求められてくる。本書でも下記のように述べられている。
 
 > どのようなエンジニアがどこにいるのか、全体像を捉えるのは困難だからです。
-> 
+>
 > 全体像が捉えづらい中で、あなたの会社に必要なエンジニアがどこにいるのか仮設を立て、検証し、採用活動をおこなって試行錯誤しながら、採用に必要なノウハウを蓄積していくことが、エンジニア採用を成功させるためには重要です。
 
 このへんのPDCAサイクルが回せる採用担当者もまた、エンジニアと同様に企業には必要となるだろう。
@@ -94,7 +94,7 @@ toc: true
 
 テック系企業だとエンジニア向けにテックブログを持つのも当たり前の時代となった。
 
-- [Mercari Engineering Blog](https://tech.mercari.com) 
+- [Mercari Engineering Blog](https://tech.mercari.com)
 - [クックパッド開発者ブログ](https://techlife.cookpad.com)
 - [ペパボテックブログ](https://tech.pepabo.com)
 
@@ -106,7 +106,7 @@ toc: true
 
 ## 企業の差別化ポイント
 
-IT企業が数多く存在する中、良いエンジニアに働いてもらうには他社と決定的な差別化を測る必要がある。エンジニア採用における企業の差別化ポイントとしては本書では下記が紹介されている。
+IT企業が数多く存在する中、良いエンジニアに働いてもらうには他社と決定的な差別化を図る必要がある。エンジニア採用における企業の差別化ポイントとしては本書では下記が紹介されている。
 
 - 報酬
 - 就業条件
@@ -123,7 +123,7 @@ IT企業が数多く存在する中、良いエンジニアに働いてもらう
 本書ではエンジニア報酬が低くなる要因を、年功序列による賃金テーブルが運用されているからだとしている。古き良き日本企業であれば年功序列による賃金テーブルを運用をしたくなる気持ちもわかるのだが、エンジニアにおいてはそれは絶対NGといえる。
 
 > エンジニアにとっての成長は人によって千差万別で、学生時代から技術を身につけたエンジニアならば入社時点で先輩社員より開発力が高い、いやはるかに高い人もいます。年齢≠技術であり、技術力と実績が賃金と比例する大前提と社内規定が矛盾し、能力と実績を反映した報酬を出せない企業が非常に多いからです。
-> 
+>
 > これら既存の日本企業の運営ルールを打ち破ることができれば、良いエンジニアに働いてもらえる環境の整備に向けて大きく前進することになります。
 
 #### 転職すると年収が上がるバグ
@@ -195,7 +195,7 @@ IT企業が数多く存在する中、良いエンジニアに働いてもらう
 
 またGitHubに研修資料をアップして、研修の充実度をアピールするのも有効な手段である。
 
-- mixi [git](https://github.com/mixi-inc/GitTraining/wiki), [Android](https://github.com/mixi-inc/AndroidTraining), [iOS](https://github.com/mixi-inc/iOSTraining), [JavaScript](https://github.com/mixi-inc/JavaScriptTraining), [Ruby](https://github.com/mixi-inc/RubyTraining), [Perl](https://github.com/mixi-inc/PerlTraining) 
+- mixi [git](https://github.com/mixi-inc/GitTraining/wiki), [Android](https://github.com/mixi-inc/AndroidTraining), [iOS](https://github.com/mixi-inc/iOSTraining), [JavaScript](https://github.com/mixi-inc/JavaScriptTraining), [Ruby](https://github.com/mixi-inc/RubyTraining), [Perl](https://github.com/mixi-inc/PerlTraining)
 - [はてなの教科書](https://github.com/hatena/Hatena-Textbook)
 - ドワンゴ [Scala](https://dwango.github.io/scala_text/)
 - [株式会社万葉の新入社員教育用カリキュラム](https://github.com/everyleaf/el-training)(Ruby on Rails)
