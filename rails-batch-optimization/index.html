@@ -137,7 +137,7 @@
 <p>ということで今日はRailsバッチ処理の最適化について書いてみたいと思います。</p>
 
 <h2 id="検証環境">
-<a id="検証環境" class="anchor" href="#%E6%A4%9C%E8%A8%BC%E7%92%B0%E5%A2%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>検証環境</h2>
+<a class="anchor" href="#%E6%A4%9C%E8%A8%BC%E7%92%B0%E5%A2%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>検証環境</h2>
 
 <p>コードの検証に使った環境は下記の通りです。</p>
 
@@ -148,7 +148,7 @@
 </ul>
 
 <h2 id="前提条件">
-<a id="前提条件" class="anchor" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>前提条件</h2>
+<a class="anchor" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>前提条件</h2>
 
 <p>最適化の前提条件としては下記の通りです。</p>
 
@@ -175,7 +175,7 @@
 </ul>
 
 <h2 id="オリジナルコード">
-<a id="オリジナルコード" class="anchor" href="#%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%89" aria-hidden="true"><span class="octicon octicon-link"></span></a>オリジナルコード</h2>
+<a class="anchor" href="#%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%89" aria-hidden="true"><span class="octicon octicon-link"></span></a>オリジナルコード</h2>
 
 <p>さて今回最適化するコードは下記です。処理内容としては <strong>全ユーザーの中から2017年以降の登録ユーザーへ100ポイントを付与する</strong> というものです。いかにも販促活動の一環としてありそうな話です（<code class="highlighter-rouge">2017年以降</code>のところの条件は別になんでも良かったのですが、処理対象をある程度確保するために今回はそのように設定しました）。</p>
 
@@ -193,7 +193,7 @@
 <p>中級者以上のRailsエンジニアであれば「そんなコードは絶対書かないよ！」と思うかもしれませんが、「RailsでWebプログラミングを初めてまだ一ヶ月です！」みたいな初級エンジニアであれば上記のように書いても全然おかしくはないコードだと思います。</p>
 
 <h3 id="ベンチマーク">
-<a id="ベンチマーク" class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
+<a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
 <p>まずはこの問題のあるコードがどれだけ時間がかかっているかを計測してみましょう。</p>
 
@@ -209,7 +209,7 @@ Memory: 2219.72 MB
 <p>では早速このコードを最適化していきましょう。</p>
 
 <h2 id="最適化1-簡単な最適化">
-<a id="最適化1-簡単な最適化" class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%961-%E7%B0%A1%E5%8D%98%E3%81%AA%E6%9C%80%E9%81%A9%E5%8C%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化1: 簡単な最適化</h2>
+<a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%961-%E7%B0%A1%E5%8D%98%E3%81%AA%E6%9C%80%E9%81%A9%E5%8C%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化1: 簡単な最適化</h2>
 
 <p>まずは簡単な最適化から始めましょう。日付の比較は<code class="highlighter-rouge">String</code>を使うよりも<code class="highlighter-rouge">Date</code>クラスを使ったほうが速そうです。また、ループの中で何度も同じ値が使われるのも良くないので定数に切り出しちゃいましょう。結果、下記のコードのようになりました。</p>
 
@@ -225,7 +225,7 @@ Memory: 2219.72 MB
 </code></pre></div></div>
 
 <h3 id="ベンチマーク-1">
-<a id="ベンチマーク-1" class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
+<a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
 <p>さて計測結果です。</p>
 
@@ -237,7 +237,7 @@ Memory: 2244.71 MB
 <p>メモリ使用量は変わらず、実行時間は10数秒程度速くなったくらいでしょうか。小さな最適化レベルでまだまだ全然速くなったとは言えません。</p>
 
 <h2 id="最適化2-where--each-を使う">
-<a id="最適化2-where--each-を使う" class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%962-where--each-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化2: where &amp; each を使う</h2>
+<a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%962-where--each-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化2: where &amp; each を使う</h2>
 
 <p>次はもう少し本格的な最適化を入れていきましょう。</p>
 
@@ -253,7 +253,7 @@ Memory: 2244.71 MB
 <p>あらかじめ処理対象ユーザーだけをフィルターできているので、ループ内の<code class="highlighter-rouge">if</code>も消すことができました。</p>
 
 <h3 id="ベンチマーク-2">
-<a id="ベンチマーク-2" class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
+<a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> rake batch:improvement2
 <span class="go">Time: 294.35 secs
@@ -263,7 +263,7 @@ Memory: 1623.5 MB
 <p>実行時間が前の結果より20秒程改善、メモリ消費もユーザーを全件取得する必要がなくなった分、500MB程空きました。良い感じですね。</p>
 
 <h2 id="最適化3-find_each-を使う">
-<a id="最適化3-find_each-を使う" class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%963-find_each-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化3: find_each を使う</h2>
+<a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%963-find_each-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化3: find_each を使う</h2>
 
 <p>ちょっと待って下さい、大量データを一度にロードしなくてもいいように、ActiveRecordが<a href="http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-find_each">find_each</a>という便利メソッドを用意してくれてるのでした。これを使わない手はないでしょう。</p>
 
@@ -277,7 +277,7 @@ Memory: 1623.5 MB
 <p>これで少しつづユーザーをロードして処理してくれるようになり、メモリに優しいコードになったと思います。</p>
 
 <h3 id="ベンチマーク-3">
-<a id="ベンチマーク-3" class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
+<a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake batch:improvement3
 Time: 290.88 secs
@@ -287,7 +287,7 @@ Memory: 31.41 MB
 <p>実行時間が前の結果と変わらないこそすれ、<strong>メモリ使用量は前の結果の50分の一となりました。</strong> 大きな改善と言っていいでしょう。</p>
 
 <h2 id="最適化4-in_batches--update_all-を使う">
-<a id="最適化4-in_batches--update_all-を使う" class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%964-in_batches--update_all-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化4: in_batches &amp; update_all を使う</h2>
+<a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%964-in_batches--update_all-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化4: in_batches &amp; update_all を使う</h2>
 
 <p>ここで一件一件<code class="highlighter-rouge">update</code>が走る点が気になってきました。そこはActiveRecordの<a href="http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all">update_all</a>を使ってまとめて更新するようにしてあげれば解決できそうです。</p>
 
@@ -302,7 +302,7 @@ Memory: 31.41 MB
 </code></pre></div></div>
 
 <h3 id="ベンチマーク-4">
-<a id="ベンチマーク-4" class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
+<a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> rake batch:improvement4
 <span class="go">Time: 2.46 secs
@@ -312,7 +312,7 @@ Memory: 7.26 MB
 <p><strong>実行時間が100倍速くなりました。</strong> 劇的な改善と言っていいでしょう。またメモリの使用量も前の結果よりさらに抑えられています。</p>
 
 <h2 id="最適化5-where--update_all">
-<a id="最適化5-where--update_all" class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%965-where--update_all" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化5: where &amp; update_all</h2>
+<a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%965-where--update_all" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化5: where &amp; update_all</h2>
 
 <p>勘の良い方なら既にお気づきですね。…ハイ、先のコードは<code class="highlighter-rouge">in_batches</code>すら不要です。単純にupdate対象を<code class="highlighter-rouge">where</code>でフィルターした上で<code class="highlighter-rouge">update_all</code>すれば良さそうです。出来上がったコードがこちら。</p>
 
@@ -323,7 +323,7 @@ Memory: 7.26 MB
 <p>一行のシンプルなコードに仕上がりました。</p>
 
 <h3 id="ベンチマーク-5">
-<a id="ベンチマーク-5" class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
+<a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake batch:improvement5
 Time: 0.78 secs
@@ -359,7 +359,7 @@ Memory: 0.82 MB
 <hr>
 
 <h2 id="最終結果">
-<a id="最終結果" class="anchor" href="#%E6%9C%80%E7%B5%82%E7%B5%90%E6%9E%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>最終結果</h2>
+<a class="anchor" href="#%E6%9C%80%E7%B5%82%E7%B5%90%E6%9E%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>最終結果</h2>
 
 <p>オリジナルコードと最適化済みの最終コードを比較すると下記の通りの改善が確認できました。</p>
 
@@ -395,7 +395,7 @@ Memory: 0.82 MB
 </table>
 
 <h2 id="activerecordデータ処理アンチパターンで発表します">
-<a id="activerecordデータ処理アンチパターンで発表します" class="anchor" href="#activerecord%E3%83%87%E3%83%BC%E3%82%BF%E5%87%A6%E7%90%86%E3%82%A2%E3%83%B3%E3%83%81%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3%E3%81%A7%E7%99%BA%E8%A1%A8%E3%81%97%E3%81%BE%E3%81%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>「ActiveRecordデータ処理アンチパターン」で発表します</h2>
+<a class="anchor" href="#activerecord%E3%83%87%E3%83%BC%E3%82%BF%E5%87%A6%E7%90%86%E3%82%A2%E3%83%B3%E3%83%81%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3%E3%81%A7%E7%99%BA%E8%A1%A8%E3%81%97%E3%81%BE%E3%81%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>「ActiveRecordデータ処理アンチパターン」で発表します</h2>
 
 <p>上述したようなオリジナルコードは極端な例ではありますが、ActiveRecordでデータを扱うときはきちんと遅くならないように意識してバッチ処理を書かないと極端に遅くなってしまうケースがあります。</p>
 
@@ -406,7 +406,7 @@ Memory: 0.82 MB
 </blockquote>
 
 <h2 id="参考リンク">
-<a id="参考リンク" class="anchor" href="#%E5%8F%82%E8%80%83%E3%83%AA%E3%83%B3%E3%82%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考リンク</h2>
+<a class="anchor" href="#%E5%8F%82%E8%80%83%E3%83%AA%E3%83%B3%E3%82%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考リンク</h2>
 
 <ul>
   <li><a href="http://api.rubyonrails.org/classes/ActiveRecord/Relation.html">ActiveRecord::Relation</a></li>
