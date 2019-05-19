@@ -3,7 +3,7 @@ title: Ruby on Rails を Google App Engine 上で動かしてみる
 published: true
 image: /images/posts/ruby-gae/ruby.png
 description: Ruby on RailsをGoogle App Engine 上で動かしてみました。手順はGoogle公式ドキュメントの「How to run Hello World - Ruby — Google Cloud Platform」を参考に進めていきます。
-tags: google_app_engine rails docker
+tags: google-app-engine rails docker
 ---
 
 [［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey](http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html)
