@@ -18,7 +18,6 @@ modified_date: 2018-07-15
 Railsとほとんど同じRuboCopの設定が利用できる[rubocop-rails](https://github.com/toshimaru/rubocop-rails)というgemを作りましたので紹介します。
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">Railsのrubocopと同じ設定を簡単に適用できるgemを作ったよ<br>toshimaru/rubocop-rails: Code style checking for Ruby on Rails project <a href="https://t.co/DnTRKtJc9j">https://t.co/DnTRKtJc9j</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/819931180304715776?ref_src=twsrc%5Etfw">January 13, 2017</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 ## モチベーション
 
