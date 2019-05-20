@@ -1,24 +1,35 @@
 ---
 layout: post
-title: 超簡単なコマンドでローカルにHTTPサーバーを起動
-published: true
+title: 超簡単コマンドでローカルにHTTPサーバーを起動する方法
 description: ローカル上にWEBサーバーを起動できる超簡単なワンラインコマンドを紹介します
+modified_date: 2019-05-20
 tags: php python
 ---
 
-個人的には[PHPのビルトインウェブサーバー](http://php.net/manual/ja/features.commandline.webserver.php)の`PHP -S`コマンドが使いたいけど、php5.4以降じゃないと使えないのが難点。Macだとデフォルトで入ってるPHPバージョンは5.3なのでこのコマンドは使えない。ということでpythonの力をお借りして簡単にHTTPサーバが起動できる。
+スタティックなサイトをサクッとローカルで確認したいときのTipsです。
 
+## PHPを使う
 
-    $ python -m SimpleHTTPServer
+[PHPのビルトインウェブサーバー](http://php.net/manual/ja/features.commandline.webserver.php)を使うのが最も簡単な方法だと思います。
+
+```console
+$ php -S localhost:8888
+```
+
+## Pytnonを使う
+
+pythonを使うならこんな感じ。
+
+```console
+$ python -m SimpleHTTPServer
+```
 
 これでポート8000でWebサーバが起動。ポート指定したければこう。
 
-    $ python -m SimpleHTTPServer 8888
+```console
+$ python -m SimpleHTTPServer 8888
+```
 
-スタティックなサイトをサクッと確認したいときに使えます。以上、簡単なTIPSでした。
+## 参考
 
-## 追記
-
-今はMacでデフォルトで入っているPHPのバージョンが5.4なので下記のPHPコマンドでOKですね。
-
-    $ php -S localhost:8888
+- [ワンライナーWebサーバを集めてみた - Qiita](https://qiita.com/sudahiroshi/items/e74d61d939f18779970d)
