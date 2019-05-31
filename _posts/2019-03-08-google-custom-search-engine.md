@@ -1,13 +1,13 @@
 ---
 layout: post
-title: Google Custom Searchのサイト設定方法
+title: Google Custom Searchのサイト設置方法
 image: "/images/posts/cse/og.png"
-description: サイトにGoogle Custom Searchを設定しましたのでその手順をメモします。 Google Custom Search（カスタム検索エンジン）とは？ Google Custom Search（カスタム検索エンジン）はGoogleの検索アルゴリズムでサイト内検索の結果を表示してくれるサービスです。カスタム検索 と銘打っている通り、検索設定や検索結果のデザイン・レイアウトをカスタマイズすることが可能です。
+description: サイトにGoogle Custom Searchを設定・設定しましたのでその手順をメモします。 Google Custom Search（カスタム検索エンジン）とは？ Google Custom Search（カスタム検索エンジン）はGoogleの検索アルゴリズムでサイト内検索の結果を表示してくれるサービスです。カスタム検索 と銘打っている通り、検索設定や検索結果のデザイン・レイアウトをカスタマイズすることが可能です。
 tags: seo
 toc: true
 ---
 
-サイトにGoogle Custom Searchを設定しましたのでその手順をメモします。
+サイトにGoogle Custom Searchを設定・設定しましたのでその手順をメモします。
 
 ## Google Custom Search（カスタム検索エンジン）とは？
 
