@@ -1,0 +1,683 @@
+<!doctype html>
+<html class="no-js" lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>『Effective DevOps』読んだ: DevOpsという文化の作り方 - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <link rel="stylesheet" href="/css/main.css">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="『Effective DevOps』読んだ: DevOpsという文化の作り方 - Hack Your Design!">
+  <meta property="og:title" content="『Effective DevOps』読んだ: DevOpsという文化の作り方 - Hack Your Design!">
+  <meta name="description" content="本書を「DevOpsの技術的解説書」と期待して読むと肩透かしを食う。本書はDevOpsを文化・価値観と捉えその文化を醸成するための考え方やアプローチについて解説する。 したがって本書のターゲットとなるのは現場でバリバリ働くエンジニアというよりは、より良い技術組織作りやチームビルディングに興味のあるリーダーやエンジニアマネージャーと言える。『Effective DevOps』―本書の副題は「4本柱による持続可能な組織文化の育て方」となっている。ではここでいう4本柱とは何か？というと下記4つである。 コラボレーション: チームをどう協調させるべきか アフィニティ: チームのコミュニケーションの質をどう上げて団結力を強めるべきか ツール: どんなツールを採用すべきか スケーリング: 組織をどう発展・成長させていくべきか">
+  <meta name="twitter:description" content="本書を「DevOpsの技術的解説書」と期待して読むと肩透かしを食う。本書はDevOpsを文化・価値観と捉えその文化を醸成するための考え方やアプローチについて解説する。 したがって本書のターゲットとなるのは現場でバリバリ働くエンジニアというよりは、より良い技術組織作りやチームビルディングに興味のあるリーダーやエンジニアマネージャーと言える。『Effective DevOps』―本書の副題は「4本柱による持続可能な組織文化の育て方」となっている。ではここでいう4本柱とは何か？というと下記4つである。 コラボレーション: チームをどう協調させるべきか アフィニティ: チームのコミュニケーションの質をどう上げて団結力を強めるべきか ツール: どんなツールを採用すべきか スケーリング: 組織をどう発展・成長させていくべきか">
+  <meta property="og:description" content="本書を「DevOpsの技術的解説書」と期待して読むと肩透かしを食う。本書はDevOpsを文化・価値観と捉えその文化を醸成するための考え方やアプローチについて解説する。 したがって本書のターゲットとなるのは現場でバリバリ働くエンジニアというよりは、より良い技術組織作りやチームビルディングに興味のあるリーダーやエンジニアマネージャーと言える。『Effective DevOps』―本書の副題は「4本柱による持続可能な組織文化の育て方」となっている。ではここでいう4本柱とは何か？というと下記4つである。 コラボレーション: チームをどう協調させるべきか アフィニティ: チームのコミュニケーションの質をどう上げて団結力を強めるべきか ツール: どんなツールを採用すべきか スケーリング: 組織をどう発展・成長させていくべきか">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/effective_devops.jpg" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/effective_devops.jpg" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2019-06-03T00:00:00+09:00">
+  <link rel="canonical" href="https://blog.toshimaru.net/effective-devops/">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    // (adsbygoogle = window.adsbygoogle || []).push({
+    //   google_ad_client: "ca-pub-8616720383995770",
+    //   enable_page_level_ads: false
+    // });
+  </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.toshimaru.net/atom.xml" title="Hack Your Design!" />
+</head>
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="/search/" method="get">
+      <input type="text" class="search-txt" name="q" placeholder="Search"/>
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">『Effective DevOps』読んだ: DevOpsという文化の作り方</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2019-06-03T00:00:00+09:00" pubdate>2019/06/03</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/読書/" rel="tag">読書</a>
+
+
+    </div>
+    <img class="post-image flipInX" src="/images/posts/effective_devops.jpg" alt="(image)『Effective DevOps』読んだ: DevOpsという文化の作り方" title="『Effective DevOps』読んだ: DevOpsという文化の作り方" />
+  </div>
+</div>
+
+<div id="md-content">
+  <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#本書のターゲット">本書のターゲット</a></li>
+<li class="toc-entry toc-h2"><a href="#effective-devopsの4本柱">Effective DevOpsの4本柱</a></li>
+<li class="toc-entry toc-h2"><a href="#devopsアンチパターン">devopsアンチパターン</a></li>
+<li class="toc-entry toc-h2"><a href="#コラボレーションの例">コラボレーションの例</a></li>
+<li class="toc-entry toc-h2"><a href="#個人の成長のために">個人の成長のために</a></li>
+<li class="toc-entry toc-h2"><a href="#コミュニケーションの手段">コミュニケーションの手段</a></li>
+<li class="toc-entry toc-h2"><a href="#優れたリーダーの条件">優れたリーダーの条件</a></li>
+<li class="toc-entry toc-h2"><a href="#対立のマネジメント">対立のマネジメント</a></li>
+<li class="toc-entry toc-h2"><a href="#新技術導入時の注意事項">新技術導入時の注意事項</a></li>
+<li class="toc-entry toc-h2"><a href="#その他の読書メモ">その他の読書メモ</a></li>
+<li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
+<li class="toc-entry toc-h2"><a href="#参考資料">参考資料</a></li>
+</ul>
+  <h2 id="本書のターゲット">
+<a class="anchor" href="#%E6%9C%AC%E6%9B%B8%E3%81%AE%E3%82%BF%E3%83%BC%E3%82%B2%E3%83%83%E3%83%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>本書のターゲット</h2>
+
+<p>本書を「DevOpsの技術的解説書」と期待して読むと肩透かしを食う。本書は<strong>DevOpsを文化・価値観と捉え</strong>その文化を醸成するための考え方やアプローチについて解説する。</p>
+
+<p>したがって本書のターゲットとなるのは現場でバリバリ働くエンジニアというよりは、より良い技術組織作りやチームビルディングに興味のある<strong>リーダーやエンジニアマネージャー</strong>と言える。</p>
+
+<p><a href="https://www.amazon.co.jp/Effective-DevOps-%E2%80%954%E6%9C%AC%E6%9F%B1%E3%81%AB%E3%82%88%E3%82%8B%E6%8C%81%E7%B6%9A%E5%8F%AF%E8%83%BD%E3%81%AA%E7%B5%84%E7%B9%94%E6%96%87%E5%8C%96%E3%81%AE%E8%82%B2%E3%81%A6%E6%96%B9-Jennifer-Davis/dp/4873118352/ref=as_li_ss_il?ie=UTF8&amp;linkCode=li2&amp;tag=toshimaru-22&amp;linkId=5e5f00b190f6e76006ea26658b065bb5&amp;language=ja_JP" target="_blank"><img border="0" src="//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;ASIN=4873118352&amp;Format=_SL160_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=toshimaru-22&amp;language=ja_JP"></a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;language=ja_JP&amp;l=li2&amp;o=9&amp;a=4873118352" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;"></p>
+
+<h2 id="effective-devopsの4本柱">
+<a class="anchor" href="#effective-devops%E3%81%AE4%E6%9C%AC%E6%9F%B1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Effective DevOpsの4本柱</h2>
+
+<p>『Effective DevOps』―本書の副題は「<strong>4本柱による持続可能な組織文化の育て方</strong>」となっている。ではここでいう4本柱とは何か？というと下記4つである。</p>
+
+<ol>
+  <li>
+<strong>コラボレーション</strong>: チームをどう協調させるべきか</li>
+  <li>
+<strong>アフィニティ</strong>: チームのコミュニケーションの質をどう上げて団結力を強めるべきか</li>
+  <li>
+<strong>ツール</strong>: どんなツールを採用すべきか</li>
+  <li>
+<strong>スケーリング</strong>: 組織をどう発展・成長させていくべきか</li>
+</ol>
+
+<p>この4本柱でわかる通り、本書はほとんどがコミュニケーションの話であったり、考え方や振る舞い方の話であったりする。</p>
+
+<p>3本目にツールの話があるように見えるが具体的なツール名を期待してはいけない。「ツールXを使っているからDevOpsだ」という言説は勘違いであり、どんなツールを使っているかは本質的にはDevOpsには関係ないからだ。</p>
+
+<h2 id="devopsアンチパターン">
+<a class="anchor" href="#devops%E3%82%A2%E3%83%B3%E3%83%81%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>devopsアンチパターン</h2>
+
+<ul>
+  <li>
+<strong>避難文化</strong>
+    <ul>
+      <li>ミスが発生したときに人を避難し処罰することはやってはならない</li>
+      <li>避難文化があると人々が避難されるまいと情報を隠蔽してしまう</li>
+    </ul>
+  </li>
+  <li>
+<strong>サイロ化</strong>
+    <ul>
+      <li>目的や責任を共有せずあそれぞれバラバラの役割を重視する状態</li>
+      <li>サイロ化が進むと責任を他のチームになすりつけることになる</li>
+    </ul>
+  </li>
+  <li>
+<strong>ヒューマンエラーを原因にしない</strong>
+    <ul>
+      <li>ミスを犯した人間自体がエラーの原因だとする考え方</li>
+      <li>ヒューマンエラーだと片付けない、そこからチームが学習することが大事</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="コラボレーションの例">
+<a class="anchor" href="#%E3%82%B3%E3%83%A9%E3%83%9C%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E4%BE%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>コラボレーションの例</h2>
+
+<p>コラボレーションの例としては下記のようなものが考えうる。</p>
+
+<ul>
+  <li>非同期でのコードレビュー</li>
+  <li>ドキュメンテーション</li>
+  <li>問題のアップデートとバグレポート</li>
+  <li>その週に進んだ内容のデモ</li>
+  <li>定期的な状況・進捗報告</li>
+  <li>ペア作業（ペアプロ、モブプロ）</li>
+</ul>
+
+<h2 id="個人の成長のために">
+<a class="anchor" href="#%E5%80%8B%E4%BA%BA%E3%81%AE%E6%88%90%E9%95%B7%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>個人の成長のために</h2>
+
+<ul>
+  <li>基本を学ぶ
+    <ul>
+      <li>自分に必要なスキルは何か、チームに必要なスキルは何か、誰が何をしているか基本を学ぶ</li>
+    </ul>
+  </li>
+  <li>学習能力を高める
+    <ul>
+      <li>学習プロセスを見直す、学習能力を強化する</li>
+    </ul>
+  </li>
+  <li>質の高い実践を心がける
+    <ul>
+      <li>学んでいるスキルを正しく使う</li>
+    </ul>
+  </li>
+  <li>惰性的な習慣を見直し、使うツールやテクニックなど自分のスタイルを開発する</li>
+  <li>新しいスキルを学ぶ、既存のスキルを強化する</li>
+  <li>絶えず自分自身に課題を与え自分自身を向上させていく</li>
+</ul>
+
+<h2 id="コミュニケーションの手段">
+<a class="anchor" href="#%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E6%89%8B%E6%AE%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>コミュニケーションの手段</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>コミュニケーション手段</th>
+      <th>即時性</th>
+      <th>オーディエンス<br>への浸透度</th>
+      <th>受け手<br>の負担</th>
+      <th>コンテキスト</th>
+      <th>構成の<br>緻密さ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>電子メール</td>
+      <td>✕</td>
+      <td>○</td>
+      <td>普通</td>
+      <td>多い</td>
+      <td>△</td>
+    </tr>
+    <tr>
+      <td>臨時会議（ビデオ会議）</td>
+      <td>○</td>
+      <td>✕</td>
+      <td>普通</td>
+      <td>少ない</td>
+      <td>✕</td>
+    </tr>
+    <tr>
+      <td>チャット</td>
+      <td>△</td>
+      <td>△</td>
+      <td>軽い</td>
+      <td>多い</td>
+      <td>✕</td>
+    </tr>
+    <tr>
+      <td>正式な会議</td>
+      <td>✕✕</td>
+      <td>○</td>
+      <td>重い</td>
+      <td>少ない</td>
+      <td>○</td>
+    </tr>
+    <tr>
+      <td>Twitter（マイクロブログ）</td>
+      <td>✕</td>
+      <td>△</td>
+      <td>軽い</td>
+      <td>多い</td>
+      <td>✕</td>
+    </tr>
+    <tr>
+      <td>GitHubのプルリクエスト</td>
+      <td>✕</td>
+      <td>△</td>
+      <td>普通</td>
+      <td>普通</td>
+      <td>△</td>
+    </tr>
+    <tr>
+      <td>付箋紙のメモ</td>
+      <td>✕✕</td>
+      <td>△</td>
+      <td>軽い</td>
+      <td>多い</td>
+      <td>✕</td>
+    </tr>
+    <tr>
+      <td>PagerDutyアラート</td>
+      <td>○</td>
+      <td>○</td>
+      <td>重い</td>
+      <td>普通</td>
+      <td>✕</td>
+    </tr>
+    <tr>
+      <td>書籍・ブログ記事</td>
+      <td>✕✕</td>
+      <td>✕</td>
+      <td>普通</td>
+      <td>普通</td>
+      <td>○</td>
+    </tr>
+    <tr>
+      <td>画像・グラフ</td>
+      <td>✕</td>
+      <td>✕</td>
+      <td>軽い</td>
+      <td>多い</td>
+      <td>✕✕</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>
+<strong>即時性</strong>: コミュニケーションがどれだけ早く成立するか</li>
+  <li>
+<strong>オーディエンスへの浸透度</strong> : オーディエンスにメッセージを届けるためにどれくらい効果的か</li>
+  <li>
+<strong>負担</strong>: そのコミュニケーションに参加するための必要な時間と労力</li>
+  <li>
+<strong>コンテキスト</strong>: 特定のコミュニケーション方法で必要とされるコンテキストがどれくらいあるか</li>
+  <li>
+<strong>構成の緻密さ</strong>: 伝えたいことがどれくらい緻密に構成されていなければいけないか</li>
+</ul>
+
+<h2 id="優れたリーダーの条件">
+<a class="anchor" href="#%E5%84%AA%E3%82%8C%E3%81%9F%E3%83%AA%E3%83%BC%E3%83%80%E3%83%BC%E3%81%AE%E6%9D%A1%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>優れたリーダーの条件</h2>
+
+<ul>
+  <li>周囲から最良のものを引き出す
+    <ul>
+      <li>自分自身や少数の「ロックスター」だけを重視してはならない。周りにいるすべてのひとたちから裁量のものを引き出せ</li>
+      <li>優秀な組織とそうでない組織の違いはこの能力の有無で出る</li>
+    </ul>
+  </li>
+  <li>メンバー個人のビジョンと企業やチームのビジョンを一致させるように支援する</li>
+  <li>規範たれ
+    <ul>
+      <li>リーダーは自分が期待している行動の規範となるべき</li>
+      <li>まわりのひとはリーダーの悪い行動も真似ることがあるので気をつけろ</li>
+    </ul>
+  </li>
+  <li>クソの傘たれ
+    <ul>
+      <li>上層部から強力（不条理）な指示があった場合にチームを守る</li>
+      <li>メンバーの仕事の邪魔になるバカげたことをできる限りシャットアウト</li>
+    </ul>
+  </li>
+  <li>リーダーは「私」中心に考えない、「私たち」、つまりチームを中心に考える</li>
+</ul>
+
+<h2 id="対立のマネジメント">
+<a class="anchor" href="#%E5%AF%BE%E7%AB%8B%E3%81%AE%E3%83%9E%E3%83%8D%E3%82%B8%E3%83%A1%E3%83%B3%E3%83%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>対立のマネジメント</h2>
+
+<ul>
+  <li>対立があること自体はチームの健全性を示す
+    <ul>
+      <li>対立はチームに新しい発想や視点をもたらす</li>
+    </ul>
+  </li>
+  <li>個人・チーム・組織が成長するには健全な対立を解決するスキルが必要</li>
+  <li>対立の要因
+    <ul>
+      <li>チームの目標と個人の目標の不一致</li>
+      <li>組織の目標と個人の目標の不一致</li>
+      <li>インセンティブの不一致</li>
+      <li>チーム外部との対立
+        <ul>
+          <li>チームごとのモチベーション、目標の違いが原因</li>
+        </ul>
+      </li>
+      <li>非現実的な期待
+        <ul>
+          <li>マネジメント側の責任</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="新技術導入時の注意事項">
+<a class="anchor" href="#%E6%96%B0%E6%8A%80%E8%A1%93%E5%B0%8E%E5%85%A5%E6%99%82%E3%81%AE%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>新技術導入時の注意事項</h2>
+
+<ul>
+  <li>新技術の既知のリスクはなにか？</li>
+  <li>どんな未知の不確定要素にぶつかる可能性があるか？</li>
+  <li>既存の記述では解決できない、どんな問を題解決しようとしているのか？</li>
+</ul>
+
+<h2 id="その他の読書メモ">
+<a class="anchor" href="#%E3%81%9D%E3%81%AE%E4%BB%96%E3%81%AE%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%A2" aria-hidden="true"><span class="octicon octicon-link"></span></a>その他の読書メモ</h2>
+
+<ul>
+  <li>ブリリアントジャークは採用の対象外にすべき p99</li>
+  <li>組織再編時に自問すべきこと p102
+    <ul>
+      <li>なぜ行われているか</li>
+      <li>タイミングは適切か</li>
+      <li>仕事は変わった？</li>
+      <li>後退局面ではないか？</li>
+      <li>人手不足に陥っていないか？</li>
+    </ul>
+  </li>
+  <li>危機的状況時のコミュニケーションテクニック p133
+    <ul>
+      <li>CUS
+        <ul>
+          <li>Concerned</li>
+          <li>Unsure</li>
+          <li>Safety</li>
+        </ul>
+      </li>
+      <li>SBAR
+        <ul>
+          <li>Situatonal</li>
+          <li>Background</li>
+          <li>Assessments</li>
+          <li>Recommendation</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>大がかりな文化的、技術的改革を成し遂げるためには共通のビジョン、目標、基準が必要 p136</li>
+  <li>ハードスキルだけでなくソフトスキルの評価も必要 p142</li>
+  <li>技術だけでなく人間関係もケアしろ p155</li>
+  <li>devops改革を成功させるためにトップダウンの支援も必要 p158</li>
+  <li>ツールが文化に影響を与える p182
+    <ul>
+      <li>例: Slack導入が組織のコミュニケーション様式に影響を与える</li>
+    </ul>
+  </li>
+  <li>思いやりの文化 p199
+    <ul>
+      <li>感謝の重要性</li>
+    </ul>
+  </li>
+  <li>非難のない文化 p200</li>
+  <li>ツールの合意を得ることは難しい、声のでかい人をどう判断するか p215
+    <ul>
+      <li>決定プロセスに参加させる p216</li>
+    </ul>
+  </li>
+  <li>チームの定着
+    <ul>
+      <li>報酬 p231
+        <ul>
+          <li>給料上げるためには転職が一番よい</li>
+        </ul>
+      </li>
+      <li>特典 p233
+        <ul>
+          <li>リモート</li>
+          <li>教育</li>
+          <li>フレックス</li>
+          <li>ワークライフバランス</li>
+          <li>有給休暇</li>
+          <li>退職金</li>
+          <li>健康保険</li>
+          <li>カジュアルドレス</li>
+          <li>移動手段</li>
+          <li>性別不問のトイレ</li>
+          <li>託児所</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>昇進のプロセスを可視化 p235</li>
+  <li>簡単ではないが実行可能なワークロードを与える p235</li>
+  <li>品質の定義 p253</li>
+  <li>価値観を伝える p292
+    <ul>
+      <li>相手に心の準備</li>
+      <li>コミュニケーションスキルのレベルアップ</li>
+      <li>可能なら対面</li>
+      <li>記録して繰り返す</li>
+      <li>情報を可視化し共有する</li>
+    </ul>
+  </li>
+  <li>退職を口止めするな p312</li>
+  <li>文化的負債 p314</li>
+</ul>
+
+<h2 id="まとめ">
+<a class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
+
+<ul>
+  <li>技術組織をリードする立場の人であれば『Effective DevOps』を読んでおいて損はなさそう</li>
+  <li>DevOpsは文化そのものであり、自動化しているからdevops、高度なツールを導入しているからdevopsとかそういったものではない</li>
+  <li>DevOpsの４本柱はコラボレーション、アフィニティ、ツール、スケーリング</li>
+</ul>
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=4873118352&amp;linkId=d0c1dc91fabdea3242b72abcd7eeb43d"></iframe>
+
+<h2 id="参考資料">
+<a class="anchor" href="#%E5%8F%82%E8%80%83%E8%B3%87%E6%96%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考資料</h2>
+
+<ul>
+  <li><a href="https://www.ryuzee.com/contents/blog/7126">【資料公開】Effective DevOps | Ryuzee.com</a></li>
+</ul>
+
+</div>
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/s/blog.toshimaru.net/effective-devops/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連記事</h3>
+  <ul>
+  
+    <li><a href="/team-geek/" title="『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~">『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~</a></li>
+  
+    <li><a href="/engineer-hiring/" title="『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~">『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~</a></li>
+  
+    <li><a href="/1-on-1-book-memo/" title="ヤフーの1on1とシリコンバレー式1on1の本を読んだ ~1on1の目的、進め方、何を話すべきか~">ヤフーの1on1とシリコンバレー式1on1の本を読んだ ~1on1の目的、進め方、何を話すべきか~</a></li>
+  
+    <li><a href="/the-pragmatic-programmer/" title="『達人プログラマー（新装版）』 読んだ">『達人プログラマー（新装版）』 読んだ</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <h3>おすすめ記事</h3>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/gae-first-to-second-generation/" title="Older Post: Google App Engineを第一世代から第二世代に乗り換えた">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="adsense">
+  <!-- post-rectangle1 -->
+  <ins class="adsbygoogle adslot_1"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7891449048"></ins>
+  <!-- post-rectangle2 -->
+  <ins class="adsbygoogle adslot_2"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="4798381840"></ins>
+  <!-- post-rectangle-smartphone -->
+  <ins class="adsbygoogle adslot_mobile"
+       style="width:300px;height:250px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="5264827844"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+(function () { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://hackyourdesign.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "https://blog.toshimaru.net/effective-devops/"
+    },
+    "headline": "『Effective DevOps』読んだ: DevOpsという文化の作り方",
+    "datePublished": "2019-06-03T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://blog.toshimaru.net/images/posts/effective_devops.jpg"
+    },
+    "keywords": "読書"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://blog.toshimaru.net/tag/読書/",
+          "name": "読書"
+        }
+      }
+    ]
+    }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+            <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/cool-ui/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li><a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-frontend/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-frontend/"></a>
+</li>
+          <li><a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li><a href="/engineer-hiring/">『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~</a>
+<a href="http://b.hatena.ne.jp/entry/s/blog.toshimaru.net/engineer-hiring/"><img src="//b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/engineer-hiring/"></a>
+</li>
+          <li><a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-batch-optimization/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-batch-optimization/"></a>
+</li>
+          <li><a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a>
+<a href="http://b.hatena.ne.jp/entry/blog.toshimaru.net/rails-http-status-symbols/"><img src="//b.hatena.ne.jp/entry/image/http://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li><a href="/vg-tech-assessment/">VOYAGE GROUPの『公開技術力評価会』に行ってエンジニア評価と給与設定について本気出して考えた</a>
+<a href="http://b.hatena.ne.jp/entry/s/blog.toshimaru.net/vg-tech-assessment/"><img src="//b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/vg-tech-assessment/"></a>
+</li>
+        </ul>
+        <p><a href="http://b.hatena.ne.jp/entrylist?sort=count&url=blog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+          <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-3">git</a> <a href="/tag/github/" class="set-1">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-3">javascript</a> <a href="/tag/jekyll/" class="set-1">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-4">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sinatra/" class="set-1">sinatra</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%A9%95%E4%BE%A1/" class="set-1">評価</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-2">雑記</a>
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshimaru</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
