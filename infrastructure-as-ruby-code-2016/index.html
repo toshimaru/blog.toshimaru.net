@@ -297,14 +297,14 @@
 
 <p>powered by <a href="https://github.com/winebarrel/roadworker">roadworker</a></p>
 
-<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resource</span><span class="x"> </span><span class="s">"aws_route53_record"</span><span class="x"> </span><span class="s">"www"</span><span class="x"> </span><span class="p">{</span><span class="x">
- </span><span class="n">zone_id</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"${aws_route53_zone.primary.zone_id}"</span><span class="x">
- </span><span class="n">name</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"www.example.com"</span><span class="x">
- </span><span class="k">type</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"A"</span><span class="x">
- </span><span class="n">ttl</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"300"</span><span class="x">
- </span><span class="n">records</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="p">[</span><span class="s">"${aws_eip.lb.public_ip}"</span><span class="p">]</span><span class="x">
-</span><span class="p">}</span><span class="x">
-</span></code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resource</span> <span class="s">"aws_route53_record"</span> <span class="s">"www"</span> <span class="p">{</span>
+ <span class="n">zone_id</span> <span class="o">=</span> <span class="s">"${aws_route53_zone.primary.zone_id}"</span>
+ <span class="n">name</span> <span class="o">=</span> <span class="s">"www.example.com"</span>
+ <span class="k">type</span> <span class="o">=</span> <span class="s">"A"</span>
+ <span class="n">ttl</span> <span class="o">=</span> <span class="s">"300"</span>
+ <span class="n">records</span> <span class="o">=</span> <span class="p">[</span><span class="s">"${aws_eip.lb.public_ip}"</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <p>powered by <a href="https://www.terraform.io/docs/providers/aws/r/route.html">AWS: aws_route - Terraform by HashiCorp</a></p>
 
@@ -353,24 +353,24 @@
 
 <p>Githubのメンバー管理だってTerraformでできちゃうんだぜ。</p>
 
-<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resource</span><span class="x"> </span><span class="s">"github_membership"</span><span class="x"> </span><span class="s">"membership_for_some_user"</span><span class="x"> </span><span class="p">{</span><span class="x">
-    </span><span class="n">username</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"SomeUser"</span><span class="x">
-    </span><span class="n">role</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"member"</span><span class="x">
-</span><span class="p">}</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resource</span> <span class="s">"github_membership"</span> <span class="s">"membership_for_some_user"</span> <span class="p">{</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s">"SomeUser"</span>
+    <span class="n">role</span> <span class="o">=</span> <span class="s">"member"</span>
+<span class="p">}</span>
 
-</span><span class="n">resource</span><span class="x"> </span><span class="s">"github_repository"</span><span class="x"> </span><span class="s">"example"</span><span class="x"> </span><span class="p">{</span><span class="x">
-  </span><span class="n">name</span><span class="x">        </span><span class="o">=</span><span class="x"> </span><span class="s">"example"</span><span class="x">
-  </span><span class="n">description</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"My awesome codebase"</span><span class="x">
+<span class="n">resource</span> <span class="s">"github_repository"</span> <span class="s">"example"</span> <span class="p">{</span>
+  <span class="n">name</span>        <span class="o">=</span> <span class="s">"example"</span>
+  <span class="n">description</span> <span class="o">=</span> <span class="s">"My awesome codebase"</span>
 
-  </span><span class="n">private</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">true</span><span class="x">
-</span><span class="p">}</span><span class="x">
+  <span class="n">private</span> <span class="o">=</span> <span class="no">true</span>
+<span class="p">}</span>
 
-</span><span class="n">resource</span><span class="x"> </span><span class="s">"github_repository_collaborator"</span><span class="x"> </span><span class="s">"a_repo_collaborator"</span><span class="x"> </span><span class="p">{</span><span class="x">
-    </span><span class="n">repository</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"our-cool-repo"</span><span class="x">
-    </span><span class="n">username</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"SomeUser"</span><span class="x">
-    </span><span class="n">permission</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"admin"</span><span class="x">
-</span><span class="p">}</span><span class="x">
-</span></code></pre></div></div>
+<span class="n">resource</span> <span class="s">"github_repository_collaborator"</span> <span class="s">"a_repo_collaborator"</span> <span class="p">{</span>
+    <span class="n">repository</span> <span class="o">=</span> <span class="s">"our-cool-repo"</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="s">"SomeUser"</span>
+    <span class="n">permission</span> <span class="o">=</span> <span class="s">"admin"</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <p>powered by <a href="https://www.terraform.io/docs/providers/github/">Provider: GitHub - Terraform by HashiCorp</a></p>
 

@@ -140,50 +140,50 @@ ruby thread.rb  0.20s user 0.10s system 27% cpu 1.105 total
 
 <p><a href="http://qiita.com/keisukeP/items/f4d680eb9e8f93263fa9">こちら</a>を参考に書いてみた。</p>
 
-<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span class="k">package</span> <span class="n">main</span>
 
-</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
-	</span><span class="s">"fmt"</span><span class="x">
-	</span><span class="s">"io"</span><span class="x">
-	</span><span class="s">"net/http"</span><span class="x">
-	</span><span class="s">"os"</span><span class="x">
-	</span><span class="s">"sync"</span><span class="x">
-</span><span class="p">)</span><span class="x">
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"io"</span>
+	<span class="s">"net/http"</span>
+	<span class="s">"os"</span>
+	<span class="s">"sync"</span>
+<span class="p">)</span>
 
-</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
-	</span><span class="k">var</span><span class="x"> </span><span class="n">wg</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span><span class="x">
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">wg</span> <span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span>
 
-	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">100</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
-		</span><span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
-		</span><span class="k">var</span><span class="x"> </span><span class="n">url</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"http://dummyimage.com/600x400"</span><span class="x">
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+		<span class="k">var</span> <span class="n">url</span> <span class="kt">string</span> <span class="o">=</span> <span class="s">"http://dummyimage.com/600x400"</span>
 
-		</span><span class="c">//ファイルを開く</span><span class="x">
-		</span><span class="n">file</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span><span class="s">"images/"</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprint</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="s">".png"</span><span class="p">)</span><span class="x">
-		</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
-			</span><span class="nb">panic</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
-		</span><span class="p">}</span><span class="x">
+		<span class="c">//ファイルを開く</span>
+		<span class="n">file</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span><span class="s">"images/"</span> <span class="o">+</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Sprint</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s">".png"</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+			<span class="nb">panic</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+		<span class="p">}</span>
 
-		</span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
-			</span><span class="n">response</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">http</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="x">
-			</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
-				</span><span class="nb">panic</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
-			</span><span class="p">}</span><span class="x">
-			</span><span class="c">//レスポンスのボディを閉じる関数の遅延実行指定</span><span class="x">
-			</span><span class="k">defer</span><span class="x"> </span><span class="n">response</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+		<span class="k">go</span> <span class="k">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="n">response</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">http</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+				<span class="nb">panic</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="c">//レスポンスのボディを閉じる関数の遅延実行指定</span>
+			<span class="k">defer</span> <span class="n">response</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
 
-			</span><span class="c">//fmt.Println("status:", response.Status)</span><span class="x">
+			<span class="c">//fmt.Println("status:", response.Status)</span>
 
-			</span><span class="c">//ファイルを閉じる関数の遅延実行指定</span><span class="x">
-			</span><span class="k">defer</span><span class="x"> </span><span class="n">file</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+			<span class="c">//ファイルを閉じる関数の遅延実行指定</span>
+			<span class="k">defer</span> <span class="n">file</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
 
-			</span><span class="c">//レスポンスのボディから読み込みつつファイルに書き出す。</span><span class="x">
-			</span><span class="n">io</span><span class="o">.</span><span class="n">Copy</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="x"> </span><span class="n">response</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span><span class="x">
-			</span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
-		</span><span class="p">}()</span><span class="x">
-	</span><span class="p">}</span><span class="x">
+			<span class="c">//レスポンスのボディから読み込みつつファイルに書き出す。</span>
+			<span class="n">io</span><span class="o">.</span><span class="n">Copy</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span>
+			<span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
 
-	</span><span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x">
-</span><span class="p">}</span></code></pre></figure>
+	<span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
+<span class="p">}</span></code></pre></figure>
 
 <h3 id="go-run-で実行">Go run で実行</h3>
 

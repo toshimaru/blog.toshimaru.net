@@ -96,17 +96,17 @@
 <span class="kn">import</span> <span class="nn">org.dom4j.DocumentHelper</span><span class="o">;</span>
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Dom4jTest</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"start"</span><span class="o">);</span>
-        <span class="n">String</span> <span class="n">xml</span> <span class="o">=</span> <span class="s">"&lt;root&gt;&lt;element name='toshi'&gt;text1&lt;/element&gt;&lt;element2&gt;text2&lt;/element2&gt;&lt;/root&gt;"</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"start"</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">xml</span> <span class="o">=</span> <span class="s">"&lt;root&gt;&lt;element name='toshi'&gt;text1&lt;/element&gt;&lt;element2&gt;text2&lt;/element2&gt;&lt;/root&gt;"</span><span class="o">;</span>
         <span class="k">try</span> <span class="o">{</span>
-            <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">DocumentHelper</span><span class="o">.</span><span class="na">parseText</span><span class="o">(</span><span class="n">xml</span><span class="o">);</span>
+            <span class="nc">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="nc">DocumentHelper</span><span class="o">.</span><span class="na">parseText</span><span class="o">(</span><span class="n">xml</span><span class="o">);</span>
             <span class="c1">// String s = doc.getRootElement().element("element").getText(); //Textとして取得</span>
             <span class="c1">// String s = doc.getRootElement().element("element").asXML(); //XMLとして取得</span>
             <span class="c1">// String s = doc.getRootElement().element("element").attributeValue("name");//nameのvalueを取得</span>
             <span class="n">doc</span><span class="o">.</span><span class="na">getRootElement</span><span class="o">().</span><span class="na">element</span><span class="o">(</span><span class="s">"element"</span><span class="o">).</span><span class="na">setText</span><span class="o">(</span><span class="s">"set text!"</span><span class="o">);</span><span class="c1">//Textをセット</span>
-            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">doc</span><span class="o">.</span><span class="na">asXML</span><span class="o">());</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">DocumentException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">doc</span><span class="o">.</span><span class="na">asXML</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">DocumentException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
         <span class="o">}</span>
     <span class="o">}</span>

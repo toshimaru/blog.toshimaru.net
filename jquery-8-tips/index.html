@@ -137,12 +137,12 @@
 <p><a href="http://blog.toshimaru.net/jquery-ajaxdeferredajax/">去年のjQuery Advent Calendar</a>で書いた通りです。</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-    <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
     <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-       <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span>
+       <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
     <span class="p">},</span>
     <span class="na">error</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-       <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!!'</span><span class="p">);</span>
+       <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">});</span>
 </code></pre></div></div>
@@ -150,11 +150,11 @@
 <p>上記の書き方よりも、</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-    <span class="na">url</span><span class="p">:</span> <span class="s2">"ajax.html"</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
-    <span class="nx">alert</span><span class="p">(</span><span class="s1">'success!!'</span><span class="p">);</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
 <span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
-    <span class="nx">alert</span><span class="p">(</span><span class="s1">'error!!!'</span><span class="p">);</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
@@ -174,12 +174,12 @@
 
 <p>これもわりと有名ですかね。下記のセレクタは、</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'.foo #bar'</span><span class="p">)</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.foo #bar</span><span class="dl">'</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p><code class="highlighter-rouge">find()</code>を使ったほうが良いとされています。</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'.foo'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">'#bar'</span><span class="p">)</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">.foo</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">'</span><span class="s1">#bar</span><span class="dl">'</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h2 id="6-カスタムイベントを定義する">
@@ -194,19 +194,19 @@
 
 <p>こんな感じでAタグが生成できます。</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;a&gt;'</span><span class="p">,</span> <span class="p">{</span><span class="na">href</span><span class="p">:</span> <span class="s1">'http://google.com/'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'google'</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="s1">'google'</span><span class="p">)</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;a&gt;</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="na">href</span><span class="p">:</span> <span class="dl">'</span><span class="s1">http://google.com/</span><span class="dl">'</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">google</span><span class="dl">'</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="dl">'</span><span class="s1">google</span><span class="dl">'</span><span class="p">)</span>
 <span class="c1">// [&lt;a href=​"http:​/​/​google.com/​" title=​"google"&gt;​google​&lt;/a&gt;​ ]</span>
 </code></pre></div></div>
 
 <p>$.mapと組み合わせるとなかなかよいかもしれません。</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">map</span><span class="p">([</span><span class="s1">'google.com'</span><span class="p">,</span> <span class="s1">'yahoo.com'</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">link</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;li&gt;'</span><span class="p">);</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;a&gt;&lt;/a&gt;'</span><span class="p">,</span> <span class="p">{</span><span class="na">href</span><span class="p">:</span> <span class="nx">link</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="s1">'LINK'</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">list</span><span class="p">);</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">links</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">map</span><span class="p">([</span><span class="dl">'</span><span class="s1">google.com</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">yahoo.com</span><span class="dl">'</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">link</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;li&gt;</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;a&gt;&lt;/a&gt;</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span><span class="na">href</span><span class="p">:</span> <span class="nx">link</span><span class="p">}).</span><span class="nx">text</span><span class="p">(</span><span class="dl">'</span><span class="s1">LINK</span><span class="dl">'</span><span class="p">).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">list</span><span class="p">);</span>
     <span class="k">return</span> <span class="nx">list</span><span class="p">;</span>
 <span class="p">});</span>
 
-<span class="nx">$</span><span class="p">(</span><span class="s1">'&lt;ul&gt;'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">links</span><span class="p">)</span>
+<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;ul&gt;</span><span class="dl">'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">links</span><span class="p">)</span>
 <span class="c1">// =&gt; [&lt;ul&gt;​</span>
 <span class="c1">//        &lt;li&gt;​</span>
 <span class="c1">//        &lt;a href=​"google.com"&gt;​LINK​&lt;/a&gt;​</span>

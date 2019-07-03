@@ -91,17 +91,17 @@
 
 <h2 id="今日の日付の取得">今日の日付の取得</h2>
 
-<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
 
-</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
-	</span><span class="s">"fmt"</span><span class="x">
-	</span><span class="s">"time"</span><span class="x">
-</span><span class="p">)</span><span class="x">
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
-	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="s">"2006-01-02"</span><span class="p">))</span><span class="x">
-</span><span class="p">}</span><span class="x">
-</span></code></pre></div></div>
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="s">"2006-01-02"</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <p>これで今日の日付を取得することができる。</p>
 
@@ -127,48 +127,48 @@
 
 <p>Goでどのように実装されているかを覗いてみる。それぞれの<code class="highlighter-rouge">const</code>がどの数値とマッピングするかがコメントで表現されている。</p>
 
-<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
-	</span><span class="n">_</span><span class="x">                        </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x">
-	</span><span class="n">stdLongMonth</span><span class="x">             </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">stdNeedDate</span><span class="x">  </span><span class="c">// "January"</span><span class="x">
-	</span><span class="n">stdMonth</span><span class="x">                                       </span><span class="c">// "Jan"</span><span class="x">
-	</span><span class="n">stdNumMonth</span><span class="x">                                    </span><span class="c">// "1"</span><span class="x">
-	</span><span class="n">stdZeroMonth</span><span class="x">                                   </span><span class="c">// "01"</span><span class="x">
-	</span><span class="n">stdLongWeekDay</span><span class="x">                                 </span><span class="c">// "Monday"</span><span class="x">
-	</span><span class="n">stdWeekDay</span><span class="x">                                     </span><span class="c">// "Mon"</span><span class="x">
-	</span><span class="n">stdDay</span><span class="x">                                         </span><span class="c">// "2"</span><span class="x">
-	</span><span class="n">stdUnderDay</span><span class="x">                                    </span><span class="c">// "_2"</span><span class="x">
-	</span><span class="n">stdZeroDay</span><span class="x">                                     </span><span class="c">// "02"</span><span class="x">
-	</span><span class="n">stdHour</span><span class="x">                  </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">stdNeedClock</span><span class="x"> </span><span class="c">// "15"</span><span class="x">
-	</span><span class="n">stdHour12</span><span class="x">                                      </span><span class="c">// "3"</span><span class="x">
-	</span><span class="n">stdZeroHour12</span><span class="x">                                  </span><span class="c">// "03"</span><span class="x">
-	</span><span class="n">stdMinute</span><span class="x">                                      </span><span class="c">// "4"</span><span class="x">
-	</span><span class="n">stdZeroMinute</span><span class="x">                                  </span><span class="c">// "04"</span><span class="x">
-	</span><span class="n">stdSecond</span><span class="x">                                      </span><span class="c">// "5"</span><span class="x">
-	</span><span class="n">stdZeroSecond</span><span class="x">                                  </span><span class="c">// "05"</span><span class="x">
-	</span><span class="n">stdLongYear</span><span class="x">              </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">stdNeedDate</span><span class="x">  </span><span class="c">// "2006"</span><span class="x">
-	</span><span class="n">stdYear</span><span class="x">                                        </span><span class="c">// "06"</span><span class="x">
-	</span><span class="n">stdPM</span><span class="x">                    </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">stdNeedClock</span><span class="x"> </span><span class="c">// "PM"</span><span class="x">
-	</span><span class="n">stdpm</span><span class="x">                                          </span><span class="c">// "pm"</span><span class="x">
-	</span><span class="n">stdTZ</span><span class="x">                    </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x">                </span><span class="c">// "MST"</span><span class="x">
-	</span><span class="n">stdISO8601TZ</span><span class="x">                                   </span><span class="c">// "Z0700"  // prints Z for UTC</span><span class="x">
-	</span><span class="n">stdISO8601SecondsTZ</span><span class="x">                            </span><span class="c">// "Z070000"</span><span class="x">
-	</span><span class="n">stdISO8601ShortTZ</span><span class="x">                              </span><span class="c">// "Z07"</span><span class="x">
-	</span><span class="n">stdISO8601ColonTZ</span><span class="x">                              </span><span class="c">// "Z07:00" // prints Z for UTC</span><span class="x">
-	</span><span class="n">stdISO8601ColonSecondsTZ</span><span class="x">                       </span><span class="c">// "Z07:00:00"</span><span class="x">
-	</span><span class="n">stdNumTZ</span><span class="x">                                       </span><span class="c">// "-0700"  // always numeric</span><span class="x">
-	</span><span class="n">stdNumSecondsTz</span><span class="x">                                </span><span class="c">// "-070000"</span><span class="x">
-	</span><span class="n">stdNumShortTZ</span><span class="x">                                  </span><span class="c">// "-07"    // always numeric</span><span class="x">
-	</span><span class="n">stdNumColonTZ</span><span class="x">                                  </span><span class="c">// "-07:00" // always numeric</span><span class="x">
-	</span><span class="n">stdNumColonSecondsTZ</span><span class="x">                           </span><span class="c">// "-07:00:00"</span><span class="x">
-	</span><span class="n">stdFracSecond0</span><span class="x">                                 </span><span class="c">// ".0", ".00", ... , trailing zeros included</span><span class="x">
-	</span><span class="n">stdFracSecond9</span><span class="x">                                 </span><span class="c">// ".9", ".99", ..., trailing zeros omitted</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="p">(</span>
+	<span class="n">_</span>                        <span class="o">=</span> <span class="no">iota</span>
+	<span class="n">stdLongMonth</span>             <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedDate</span>  <span class="c">// "January"</span>
+	<span class="n">stdMonth</span>                                       <span class="c">// "Jan"</span>
+	<span class="n">stdNumMonth</span>                                    <span class="c">// "1"</span>
+	<span class="n">stdZeroMonth</span>                                   <span class="c">// "01"</span>
+	<span class="n">stdLongWeekDay</span>                                 <span class="c">// "Monday"</span>
+	<span class="n">stdWeekDay</span>                                     <span class="c">// "Mon"</span>
+	<span class="n">stdDay</span>                                         <span class="c">// "2"</span>
+	<span class="n">stdUnderDay</span>                                    <span class="c">// "_2"</span>
+	<span class="n">stdZeroDay</span>                                     <span class="c">// "02"</span>
+	<span class="n">stdHour</span>                  <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedClock</span> <span class="c">// "15"</span>
+	<span class="n">stdHour12</span>                                      <span class="c">// "3"</span>
+	<span class="n">stdZeroHour12</span>                                  <span class="c">// "03"</span>
+	<span class="n">stdMinute</span>                                      <span class="c">// "4"</span>
+	<span class="n">stdZeroMinute</span>                                  <span class="c">// "04"</span>
+	<span class="n">stdSecond</span>                                      <span class="c">// "5"</span>
+	<span class="n">stdZeroSecond</span>                                  <span class="c">// "05"</span>
+	<span class="n">stdLongYear</span>              <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedDate</span>  <span class="c">// "2006"</span>
+	<span class="n">stdYear</span>                                        <span class="c">// "06"</span>
+	<span class="n">stdPM</span>                    <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedClock</span> <span class="c">// "PM"</span>
+	<span class="n">stdpm</span>                                          <span class="c">// "pm"</span>
+	<span class="n">stdTZ</span>                    <span class="o">=</span> <span class="no">iota</span>                <span class="c">// "MST"</span>
+	<span class="n">stdISO8601TZ</span>                                   <span class="c">// "Z0700"  // prints Z for UTC</span>
+	<span class="n">stdISO8601SecondsTZ</span>                            <span class="c">// "Z070000"</span>
+	<span class="n">stdISO8601ShortTZ</span>                              <span class="c">// "Z07"</span>
+	<span class="n">stdISO8601ColonTZ</span>                              <span class="c">// "Z07:00" // prints Z for UTC</span>
+	<span class="n">stdISO8601ColonSecondsTZ</span>                       <span class="c">// "Z07:00:00"</span>
+	<span class="n">stdNumTZ</span>                                       <span class="c">// "-0700"  // always numeric</span>
+	<span class="n">stdNumSecondsTz</span>                                <span class="c">// "-070000"</span>
+	<span class="n">stdNumShortTZ</span>                                  <span class="c">// "-07"    // always numeric</span>
+	<span class="n">stdNumColonTZ</span>                                  <span class="c">// "-07:00" // always numeric</span>
+	<span class="n">stdNumColonSecondsTZ</span>                           <span class="c">// "-07:00:00"</span>
+	<span class="n">stdFracSecond0</span>                                 <span class="c">// ".0", ".00", ... , trailing zeros included</span>
+	<span class="n">stdFracSecond9</span>                                 <span class="c">// ".9", ".99", ..., trailing zeros omitted</span>
 
-	</span><span class="n">stdNeedDate</span><span class="x">  </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x"> </span><span class="o">&lt;&lt;</span><span class="x"> </span><span class="m">8</span><span class="x">             </span><span class="c">// need month, day, year</span><span class="x">
-	</span><span class="n">stdNeedClock</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="o">&lt;&lt;</span><span class="x"> </span><span class="m">8</span><span class="x">             </span><span class="c">// need hour, minute, second</span><span class="x">
-	</span><span class="n">stdArgShift</span><span class="x">  </span><span class="o">=</span><span class="x"> </span><span class="m">16</span><span class="x">                 </span><span class="c">// extra argument in high bits, above low stdArgShift</span><span class="x">
-	</span><span class="n">stdMask</span><span class="x">      </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="o">&lt;&lt;</span><span class="n">stdArgShift</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="m">1</span><span class="x"> </span><span class="c">// mask out argument</span><span class="x">
-</span><span class="p">)</span><span class="x">
-</span></code></pre></div></div>
+	<span class="n">stdNeedDate</span>  <span class="o">=</span> <span class="m">1</span> <span class="o">&lt;&lt;</span> <span class="m">8</span>             <span class="c">// need month, day, year</span>
+	<span class="n">stdNeedClock</span> <span class="o">=</span> <span class="m">2</span> <span class="o">&lt;&lt;</span> <span class="m">8</span>             <span class="c">// need hour, minute, second</span>
+	<span class="n">stdArgShift</span>  <span class="o">=</span> <span class="m">16</span>                 <span class="c">// extra argument in high bits, above low stdArgShift</span>
+	<span class="n">stdMask</span>      <span class="o">=</span> <span class="m">1</span><span class="o">&lt;&lt;</span><span class="n">stdArgShift</span> <span class="o">-</span> <span class="m">1</span> <span class="c">// mask out argument</span>
+<span class="p">)</span>
+</code></pre></div></div>
 
 <p><a href="https://github.com/golang/go/blob/master/src/time/format.go">https://github.com/golang/go/blob/master/src/time/format.go</a></p>
 
@@ -178,39 +178,39 @@
 
 <p>RFCなどの標準的な時刻フォーマットもgoが用意してくれている。</p>
 
-<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span><span class="x"> </span><span class="p">(</span><span class="x">
-	</span><span class="n">ANSIC</span><span class="x">       </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon Jan _2 15:04:05 2006"</span><span class="x">
-	</span><span class="n">UnixDate</span><span class="x">    </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon Jan _2 15:04:05 MST 2006"</span><span class="x">
-	</span><span class="n">RubyDate</span><span class="x">    </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon Jan 02 15:04:05 -0700 2006"</span><span class="x">
-	</span><span class="n">RFC822</span><span class="x">      </span><span class="o">=</span><span class="x"> </span><span class="s">"02 Jan 06 15:04 MST"</span><span class="x">
-	</span><span class="n">RFC822Z</span><span class="x">     </span><span class="o">=</span><span class="x"> </span><span class="s">"02 Jan 06 15:04 -0700"</span><span class="x"> </span><span class="c">// RFC822 with numeric zone</span><span class="x">
-	</span><span class="n">RFC850</span><span class="x">      </span><span class="o">=</span><span class="x"> </span><span class="s">"Monday, 02-Jan-06 15:04:05 MST"</span><span class="x">
-	</span><span class="n">RFC1123</span><span class="x">     </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon, 02 Jan 2006 15:04:05 MST"</span><span class="x">
-	</span><span class="n">RFC1123Z</span><span class="x">    </span><span class="o">=</span><span class="x"> </span><span class="s">"Mon, 02 Jan 2006 15:04:05 -0700"</span><span class="x"> </span><span class="c">// RFC1123 with numeric zone</span><span class="x">
-	</span><span class="n">RFC3339</span><span class="x">     </span><span class="o">=</span><span class="x"> </span><span class="s">"2006-01-02T15:04:05Z07:00"</span><span class="x">
-	</span><span class="n">RFC3339Nano</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"2006-01-02T15:04:05.999999999Z07:00"</span><span class="x">
-	</span><span class="n">Kitchen</span><span class="x">     </span><span class="o">=</span><span class="x"> </span><span class="s">"3:04PM"</span><span class="x">
-	</span><span class="c">// Handy time stamps.</span><span class="x">
-	</span><span class="n">Stamp</span><span class="x">      </span><span class="o">=</span><span class="x"> </span><span class="s">"Jan _2 15:04:05"</span><span class="x">
-	</span><span class="n">StampMilli</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"Jan _2 15:04:05.000"</span><span class="x">
-	</span><span class="n">StampMicro</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"Jan _2 15:04:05.000000"</span><span class="x">
-	</span><span class="n">StampNano</span><span class="x">  </span><span class="o">=</span><span class="x"> </span><span class="s">"Jan _2 15:04:05.000000000"</span><span class="x">
-</span><span class="p">)</span><span class="x">
-</span></code></pre></div></div>
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="p">(</span>
+	<span class="n">ANSIC</span>       <span class="o">=</span> <span class="s">"Mon Jan _2 15:04:05 2006"</span>
+	<span class="n">UnixDate</span>    <span class="o">=</span> <span class="s">"Mon Jan _2 15:04:05 MST 2006"</span>
+	<span class="n">RubyDate</span>    <span class="o">=</span> <span class="s">"Mon Jan 02 15:04:05 -0700 2006"</span>
+	<span class="n">RFC822</span>      <span class="o">=</span> <span class="s">"02 Jan 06 15:04 MST"</span>
+	<span class="n">RFC822Z</span>     <span class="o">=</span> <span class="s">"02 Jan 06 15:04 -0700"</span> <span class="c">// RFC822 with numeric zone</span>
+	<span class="n">RFC850</span>      <span class="o">=</span> <span class="s">"Monday, 02-Jan-06 15:04:05 MST"</span>
+	<span class="n">RFC1123</span>     <span class="o">=</span> <span class="s">"Mon, 02 Jan 2006 15:04:05 MST"</span>
+	<span class="n">RFC1123Z</span>    <span class="o">=</span> <span class="s">"Mon, 02 Jan 2006 15:04:05 -0700"</span> <span class="c">// RFC1123 with numeric zone</span>
+	<span class="n">RFC3339</span>     <span class="o">=</span> <span class="s">"2006-01-02T15:04:05Z07:00"</span>
+	<span class="n">RFC3339Nano</span> <span class="o">=</span> <span class="s">"2006-01-02T15:04:05.999999999Z07:00"</span>
+	<span class="n">Kitchen</span>     <span class="o">=</span> <span class="s">"3:04PM"</span>
+	<span class="c">// Handy time stamps.</span>
+	<span class="n">Stamp</span>      <span class="o">=</span> <span class="s">"Jan _2 15:04:05"</span>
+	<span class="n">StampMilli</span> <span class="o">=</span> <span class="s">"Jan _2 15:04:05.000"</span>
+	<span class="n">StampMicro</span> <span class="o">=</span> <span class="s">"Jan _2 15:04:05.000000"</span>
+	<span class="n">StampNano</span>  <span class="o">=</span> <span class="s">"Jan _2 15:04:05.000000000"</span>
+<span class="p">)</span>
+</code></pre></div></div>
 
 <p>これを使って下記のように書くことができる。</p>
 
-<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
 
-</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
-	</span><span class="s">"fmt"</span><span class="x">
-	</span><span class="s">"time"</span><span class="x">
-</span><span class="p">)</span><span class="x">
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
-	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">RFC822Z</span><span class="p">))</span><span class="x">
-</span><span class="p">}</span><span class="x">
-</span></code></pre></div></div>
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">RFC822Z</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 </div>
 
