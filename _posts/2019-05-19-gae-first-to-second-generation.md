@@ -87,12 +87,12 @@ App Engine APIが使えなくなった後、どのようなサービスに移行
 > - Cron -> Cloud Scheduler
 > - Image -> ...?
 
-ref. [App Engine Standard Go 1.9 migration to Go 1.11 · gcpug/nouhau](https://github.com/gcpug/nouhau/tree/master/app-engine/note/gaego19-migration-gaego111#app-engine-api%E3%81%AE%E7%A7%BB%E8%A1%8C%E5%85%88)
+ref. [App Engine Standard Go 1.9 migration to Go 1.11 · gcpug/nouhau](https://github.com/gcpug/nouhau/blob/0bf7d48d3638f6e3969358ebbcb0ecf5d900f0e2/app-engine/note/gaego19-migration-gaego111/README.md)
 
-個人的には[login:required , login:admin の廃止](https://github.com/gcpug/nouhau/tree/master/app-engine/note/gaego19-migration-gaego111#loginrequired--loginadmin-%E3%81%AE%E5%BB%83%E6%AD%A2)が一番辛くて、移行も大変だなぁと思うところであります。
+個人的には `login:required`, `login:admin` の[廃止](https://github.com/gcpug/nouhau/blob/0bf7d48d3638f6e3969358ebbcb0ecf5d900f0e2/app-engine/note/gaego19-migration-gaego111/README.md#loginrequired--loginadmin-%E3%81%AE%E5%BB%83%E6%AD%A2)が一番辛くて、移行も大変だなぁと思うところであります。
 
 ## 参考
 
 - [GAE Go 1.11 ランタイムが公式には 2nd gen ではなくなった件について - Qiita](https://qiita.com/apstndb/items/314e461aed518a4ad26f)
 - [Google App Engine PHP 7.2 がリリース！これまでの違いと利用手順 - koni blog](https://koni.hateblo.jp/entry/2018/12/11/100000)
-- [App Engine Standard Go 1.9 migration to Go 1.11](https://github.com/gcpug/nouhau/tree/master/app-engine/note/gaego19-migration-gaego111)
+- [App Engine Standard Go 1.9 migration to Go 1.11に最低限必要なこと](https://github.com/gcpug/nouhau/blob/master/app-engine/note/gaego19-migration-gaego111/README.md)
