@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>接続元のグローバルIP出すやつ作った - Hack Your Design!</title>
+  <title>Google App EngineのGo runtimeを1.11から1.12にアップグレードした - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -13,15 +13,15 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="接続元のグローバルIP出すやつ作った - Hack Your Design!">
-  <meta property="og:title" content="接続元のグローバルIP出すやつ作った - Hack Your Design!">
-  <meta name="description" content="確認くんとかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。">
-  <meta name="twitter:description" content="確認くんとかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。">
-  <meta property="og:description" content="確認くんとかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。">
-  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/ip.png" />
-  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/ip.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2016-02-10T00:00:00+09:00"><meta property="article:modified_time" content="2019-05-19T00:00:00+09:00" />
-  <link rel="canonical" href="https://blog.toshimaru.net/gae-ip-info/">
+  <meta name="twitter:title" content="Google App EngineのGo runtimeを1.11から1.12にアップグレードした - Hack Your Design!">
+  <meta property="og:title" content="Google App EngineのGo runtimeを1.11から1.12にアップグレードした - Hack Your Design!">
+  <meta name="description" content="Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。きっかけ 「2019年10月1日までにGo1.11かそれ以上に上げろ」というメールがGoogleさんから届いたのでした。">
+  <meta name="twitter:description" content="Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。きっかけ 「2019年10月1日までにGo1.11かそれ以上に上げろ」というメールがGoogleさんから届いたのでした。">
+  <meta property="og:description" content="Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。きっかけ 「2019年10月1日までにGo1.11かそれ以上に上げろ」というメールがGoogleさんから届いたのでした。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2019-07-08T00:00:00+09:00">
+  <link rel="canonical" href="https://blog.toshimaru.net/gae-go-111-to-112/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
     // (adsbygoogle = window.adsbygoogle || []).push({
@@ -72,45 +72,109 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">接続元のグローバルIP出すやつ作った</h1>
+  <h1 class="fadeInLeft">Google App EngineのGo runtimeを1.11から1.12にアップグレードした</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2016-02-10T00:00:00+09:00" pubdate>2016/02/10 (更新: 2019/05/19)</time>
+      <i class="icon-calendar"></i><time datetime="2019-07-08T00:00:00+09:00" pubdate>2019/07/08</time>
       <i class="icon-tags"></i> 
 <a href="/tag/google-app-engine/" rel="tag">google-app-engine</a>
 
-<a href="/tag/php/" rel="tag">php</a>
-
 
     </div>
-    <img class="post-image flipInX" src="/images/posts/ip.png" alt="(image)接続元のグローバルIP出すやつ作った" title="接続元のグローバルIP出すやつ作った" />
+    <img class="post-image flipInX" src="/images/posts/gae/gae-modern-webapp.png" alt="(image)Google App EngineのGo runtimeを1.11から1.12にアップグレードした" title="Google App EngineのGo runtimeを1.11から1.12にアップグレードした" />
   </div>
 </div>
 
 <div id="md-content">
   
-  <p><a href="http://www.ugtop.com/spill.shtml">確認くん</a>とかいちいち検索してページにいったりするのがダルかったので、自分のわかりやすいURLでGoogle App Engine上にPHPで接続元グローバルIP出すやつ作った。</p>
+  <p>Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。</p>
 
-<p><a href="https://ip.toshima.ru/">Your IP address info</a></p>
+<p><strong>前回までのあらすじ</strong></p>
 
-<h2 id="裏機能">裏機能</h2>
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="ja" dir="ltr">GAEを第一世代から第二世代に上げたときの備忘録としてblogged. | Google App Engineを第一世代から第二世代に乗り換えた - Hack Your Design! <a href="https://t.co/L1sLTXo4VE">https://t.co/L1sLTXo4VE</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1130339076198940672?ref_src=twsrc%5Etfw">May 20, 2019</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>コマンドラインで簡単に抽出できるように<code class="highlighter-rouge">curl</code>で叩いたらIPだけ出力するような裏機能付けた。</p>
+<h2 id="きっかけ">きっかけ</h2>
 
-<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> curl <span class="nt">-L</span> ip.toshima.ru
-<span class="go">xxx.xxx.x.x
-</span></code></pre></div></div>
+<p>「<strong>2019年10月1日までにGo1.11かそれ以上に上げろ</strong>」というメールがGoogleさんから届いたのでした。</p>
 
-<h2 id="google-app-engine-という選択">Google App Engine という選択</h2>
+<blockquote>
+  <p><strong>What do I need to do?</strong></p>
 
-<p>Google App Engine、一昔前はとっつきにくかったけど今は管理画面も使いやすくなってドキュメントも丁寧になってきたしデプロイ周りのCLIツールも整ってきているので良い感じである。</p>
+  <p>To avoid service disruption in your applications, please re-deploy your App Engine Standard applications using Go 1.11 or above before October 1, 2019.</p>
 
-<p>Herokuが有料になった今、個人サービスでなにかさっと作りたいときはGAEは良さそう。</p>
+  <p>If your application uses the App Engine <a href="https://godoc.org/google.golang.org/appengine">Go SDK APIs</a>, please <a href="https://cloud.google.com/appengine/docs/standard/go111/go-differences">upgrade to Go 1.11</a>.</p>
+
+  <p>If you are not using these APIs, please <a href="https://cloud.google.com/appengine/docs/standard/go112/go-differences">upgrade to Go 1.12</a>.</p>
+</blockquote>
+
+<p>以前、Go 1.11までは上げていたので正直そのままでもよかったのだけど、せっかくなので1.12まで上げてみることにした。</p>
+
+<h2 id="過渡期世代とは">過渡期世代とは？</h2>
+
+<p>ちなみにGo 1.11は第一世代から第二世代への過渡期世代と言える。Go 1.12にすることで完全なる第二世代へと移行されることとなる、</p>
+
+<blockquote>
+  <p>第二世代にはApp Engine API対応の過渡期の世代とApp Engine API非対応の完璧な第二世代があります。</p>
+
+  <p>ここで言うとJava 8、Go 1.11が過渡期の世代にあたるようです。Go 1.12やPHP 7.2のバージョンの世代は完璧な第二世代にあたるので、App Engine APIは利用不可となります。</p>
+</blockquote>
+
+<p>ref. <a href="/gae-first-to-second-generation/">Google App Engineを第一世代から第二世代に乗り換えた</a></p>
+
+<h2 id="アップグレード手順">アップグレード手順</h2>
+
+<p>基本的に下記の公式ドキュメントを参考にする。</p>
+
+<p><a href="https://cloud.google.com/appengine/docs/standard/go112/go-differences">Migrating your App Engine app to Go 1.12  |  App Engine standard environment for Go 1.12 docs  |  Google Cloud</a></p>
+
+<h2 id="appyml">app.yml</h2>
+
+<p><code class="highlighter-rouge">app.yml</code>にてruntimeをGo 1.12へ変更。</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">runtime</span><span class="pi">:</span> <span class="s">go112</span>
+</code></pre></div></div>
+
+<p><img src="/images/posts/gae/deploy.png" alt="" /></p>
+
+<h2 id="cronyml">cron.yml</h2>
+
+<p>GAE Consoleに機能として続けるようだ。</p>
+
+<p><img src="/images/posts/gae/cron.png" alt="" /></p>
+
+<h2 id="タスクキュー">タスクキュー</h2>
+
+<p>Cloud Tasks でのキュー管理方式に置き換わった。必要なら乗り換えよう。</p>
+
+<p><img src="/images/posts/gae/cloud-tasks.png" alt="" /></p>
+
+<h2 id="ローカル開発環境">ローカル開発環境</h2>
+
+<p>今までどおりの <code class="highlighter-rouge">dev_appserver.py</code> を使うと下記のようにエラーが発生して起動できない。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> dev_appserver.py app.yaml
+<span class="go">...(snip)...
+</span><span class="gp">RuntimeError: Unknown runtime 'go112';</span> supported runtimes are <span class="s1">'custom'</span>, <span class="s1">'go'</span>, <span class="s1">'go111'</span>, <span class="s1">'java'</span>, <span class="s1">'java7'</span>, <span class="s1">'java8'</span>, <span class="s1">'php55'</span>, <span class="s1">'php72'</span>, <span class="s1">'python'</span>, <span class="s1">'python-compat'</span>, <span class="s1">'python27'</span>, <span class="s1">'python37'</span><span class="nb">.</span>
+</code></pre></div></div>
+<p>Go 1.11 に乗り換えているならば <code class="highlighter-rouge">app.go</code> は素直な実装になっているはずなので、下記のように<code class="highlighter-rouge">go run</code>でローカルにサーバーを起動することができる。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> go run app.go
+</code></pre></div></div>
+
+<h3 id="tips">Tips</h3>
+
+<p>下記のように<code class="highlighter-rouge">no-promote</code>オプションを付けることで、本番環境へのトラフィックを振らない形でデプロイができる。これを使った場合、本番URLとは別に確認陽のURLが発行されているので、それを使って動作確認を行った後に本番へと昇格させるかたちとなる。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcloud app deploy --no-promote
+</code></pre></div></div>
+
+<p>参考: <a href="https://cloud.google.com/appengine/docs/standard/go112/testing-and-deploying-your-app">Testing and Deploying your Application  |  App Engine standard environment for Go 1.12 docs  |  Google Cloud</a></p>
 
 </div>
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/s/blog.toshimaru.net/gae-ip-info/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="http://b.hatena.ne.jp/entry/s/blog.toshimaru.net/gae-go-111-to-112/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -130,15 +194,11 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/gae-go-111-to-112/" title="Google App EngineのGo runtimeを1.11から1.12にアップグレードした">Google App EngineのGo runtimeを1.11から1.12にアップグレードした</a></li>
-  
     <li><a href="/gae-first-to-second-generation/" title="Google App Engineを第一世代から第二世代に乗り換えた">Google App Engineを第一世代から第二世代に乗り換えた</a></li>
   
     <li><a href="/ruby-on-google-app-engine/" title="Ruby on Rails を Google App Engine 上で動かしてみる">Ruby on Rails を Google App Engine 上で動かしてみる</a></li>
   
-    <li><a href="/php-trait/" title="PHP5.4 から導入された trait 機能の使いドコロ">PHP5.4 から導入された trait 機能の使いドコロ</a></li>
-  
-    <li><a href="/php-force-property/" title="PHPのプロパティをStrictに定義する">PHPのプロパティをStrictに定義する</a></li>
+    <li><a href="/gae-ip-info/" title="接続元のグローバルIP出すやつ作った">接続元のグローバルIP出すやつ作った</a></li>
   
   </ul>
   </div>
@@ -158,14 +218,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/ruby-on-google-app-engine/" title="Newer Post: Ruby on Rails を Google App Engine 上で動かしてみる"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/why-you-should-write-shitty-code/" title="Older Post: ひどいコードを書いてもよいとき">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/effective-devops/" title="Older Post: 『Effective DevOps』読んだ: DevOpsという文化の作り方">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -211,11 +267,11 @@
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/gae-ip-info/"
+      "@id": "https://blog.toshimaru.net/gae-go-111-to-112/"
     },
-    "headline": "接続元のグローバルIP出すやつ作った",
-    "datePublished": "2016-02-10T00:00:00+09:00",
-    "dateModified": "2019-05-19T00:00:00+09:00","author": {
+    "headline": "Google App EngineのGo runtimeを1.11から1.12にアップグレードした",
+    "datePublished": "2019-07-08T00:00:00+09:00",
+    "author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
@@ -227,9 +283,9 @@
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/images/posts/ip.png"
+      "url": "https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png"
     },
-    "keywords": "google-app-engine, php"
+    "keywords": "google-app-engine"
   },
   {
     
