@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-07-08T03:09:44+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Google App EngineのGo runtimeを1.11から1.12にアップグレードした</title><link href="https://blog.toshimaru.net/gae-go-111-to-112/" rel="alternate" type="text/html" title="Google App EngineのGo runtimeを1.11から1.12にアップグレードした" /><published>2019-07-08T00:00:00+09:00</published><updated>2019-07-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gae-go-111-to-112</id><content type="html" xml:base="https://blog.toshimaru.net/gae-go-111-to-112/">&lt;p&gt;Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-07-08T17:01:18+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Google App EngineのGo runtimeを1.11から1.12にアップグレードした</title><link href="https://blog.toshimaru.net/gae-go-111-to-112/" rel="alternate" type="text/html" title="Google App EngineのGo runtimeを1.11から1.12にアップグレードした" /><published>2019-07-08T00:00:00+09:00</published><updated>2019-07-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gae-go-111-to-112</id><content type="html" xml:base="https://blog.toshimaru.net/gae-go-111-to-112/">&lt;p&gt;Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;前回までのあらすじ&lt;/strong&gt;&lt;/p&gt;
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-cards=&quot;hidden&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;GAEを第一世代から第二世代に上げたときの備忘録としてblogged. | Google App Engineを第一世代から第二世代に乗り換えた - Hack Your Design! &lt;a href=&quot;https://t.co/L1sLTXo4VE&quot;&gt;https://t.co/L1sLTXo4VE&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1130339076198940672?ref_src=twsrc%5Etfw&quot;&gt;May 20, 2019&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;GAEを第一世代から第二世代に上げたときの備忘録としてblogged. | Google App Engineを第一世代から第二世代に乗り換えた - Hack Your Design! &lt;a href=&quot;https://t.co/L1sLTXo4VE&quot;&gt;https://t.co/L1sLTXo4VE&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1130339076198940672?ref_src=twsrc%5Etfw&quot;&gt;May 20, 2019&lt;/a&gt;&lt;/blockquote&gt;
 
 &lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
 
@@ -23,7 +22,7 @@
 
 &lt;h2 id=&quot;過渡期世代とは&quot;&gt;過渡期世代とは？&lt;/h2&gt;
 
-&lt;p&gt;ちなみにGo 1.11は第一世代から第二世代への過渡期世代と言える。Go 1.12にすることで完全なる第二世代へと移行されることとなる、&lt;/p&gt;
+&lt;p&gt;ちなみにGo 1.11は第一世代から第二世代への過渡期世代と言える。Go 1.12にすることで完全なる第二世代へと移行されることとなる。&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;第二世代にはApp Engine API対応の過渡期の世代とApp Engine API非対応の完璧な第二世代があります。&lt;/p&gt;
@@ -35,13 +34,13 @@
 
 &lt;h2 id=&quot;アップグレード手順&quot;&gt;アップグレード手順&lt;/h2&gt;
 
-&lt;p&gt;基本的に下記の公式ドキュメントを参考にする。&lt;/p&gt;
+&lt;p&gt;基本的に下記の公式ドキュメントを参考に進めていけばよい。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/go-differences&quot;&gt;Migrating your App Engine app to Go 1.12  |  App Engine standard environment for Go 1.12 docs  |  Google Cloud&lt;/a&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;appyml&quot;&gt;app.yml&lt;/h2&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;app.yml&lt;/code&gt;にてruntimeをGo 1.12へ変更。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;app.yml&lt;/code&gt;にてruntimeをGo 1.11から1.12へ変更。一番重要な点。&lt;/p&gt;
 
 &lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;runtime&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;go112&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -50,9 +49,11 @@
 
 &lt;h2 id=&quot;cronyml&quot;&gt;cron.yml&lt;/h2&gt;
 
-&lt;p&gt;GAE Consoleに機能として続けるようだ。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cron.yml&lt;/code&gt;はそのままの書式で変更なしで大丈夫。このcronジョブの機能はGAEのConsole上にメニューとして残り続けるようだ。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/gae/cron.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;参考: &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/scheduling-jobs-with-cron-yaml&quot;&gt;Scheduling Jobs with cron.yaml&lt;/a&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;タスクキュー&quot;&gt;タスクキュー&lt;/h2&gt;
 
@@ -60,7 +61,13 @@
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/gae/cloud-tasks.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
+&lt;p&gt;Cloud Tasks の使い方に関してはGoogle App Engineとはまた別の公式ドキュメントを読もう。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://cloud.google.com/tasks/&quot;&gt;Cloud Tasks Service for Asynchronous Execution  |  Cloud Tasks  |  Google Cloud&lt;/a&gt;&lt;/p&gt;
+
 &lt;h2 id=&quot;ローカル開発環境&quot;&gt;ローカル開発環境&lt;/h2&gt;
+
+&lt;h3 id=&quot;dev_appserverpy-は使えない&quot;&gt;dev_appserver.py は使えない&lt;/h3&gt;
 
 &lt;p&gt;今までどおりの &lt;code class=&quot;highlighter-rouge&quot;&gt;dev_appserver.py&lt;/code&gt; を使うと下記のようにエラーが発生して起動できない。&lt;/p&gt;
 
@@ -73,14 +80,20 @@
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; go run app.go
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h3 id=&quot;tips&quot;&gt;Tips&lt;/h3&gt;
+&lt;h3 id=&quot;カナリアリリースっぽいやつ&quot;&gt;カナリアリリースっぽいやつ&lt;/h3&gt;
 
 &lt;p&gt;下記のように&lt;code class=&quot;highlighter-rouge&quot;&gt;no-promote&lt;/code&gt;オプションを付けることで、本番環境へのトラフィックを振らない形でデプロイができる。これを使った場合、本番URLとは別に確認陽のURLが発行されているので、それを使って動作確認を行った後に本番へと昇格させるかたちとなる。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gcloud app deploy --no-promote
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt; gcloud app deploy &lt;span class=&quot;nt&quot;&gt;--no-promote&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;参考: &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/testing-and-deploying-your-app&quot;&gt;Testing and Deploying your Application  |  App Engine standard environment for Go 1.12 docs  |  Google Cloud&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="google-app-engine" /><summary type="html">Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png" /></entry><entry><title type="html">『Effective DevOps』読んだ: DevOpsという文化の作り方</title><link href="https://blog.toshimaru.net/effective-devops/" rel="alternate" type="text/html" title="『Effective DevOps』読んだ: DevOpsという文化の作り方" /><published>2019-06-03T00:00:00+09:00</published><updated>2019-06-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/effective-devops</id><content type="html" xml:base="https://blog.toshimaru.net/effective-devops/">&lt;h2 id=&quot;本書のターゲット&quot;&gt;本書のターゲット&lt;/h2&gt;
+&lt;p&gt;参考: &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/testing-and-deploying-your-app&quot;&gt;Testing and Deploying your Application&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/golang-samples/tree/master/appengine/go11x&quot;&gt;golang-samples/appengine/go11x at master · GoogleCloudPlatform/golang-samples&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google-app-engine" /><summary type="html">Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png" /></entry><entry><title type="html">『Effective DevOps』読んだ: DevOpsという文化の作り方</title><link href="https://blog.toshimaru.net/effective-devops/" rel="alternate" type="text/html" title="『Effective DevOps』読んだ: DevOpsという文化の作り方" /><published>2019-06-03T00:00:00+09:00</published><updated>2019-06-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/effective-devops</id><content type="html" xml:base="https://blog.toshimaru.net/effective-devops/">&lt;h2 id=&quot;本書のターゲット&quot;&gt;本書のターゲット&lt;/h2&gt;
 
 &lt;p&gt;本書を「DevOpsの技術的解説書」と期待して読むと肩透かしを食う。本書は&lt;strong&gt;DevOpsを文化・価値観と捉え&lt;/strong&gt;その文化を醸成するための考え方やアプローチについて解説する。&lt;/p&gt;
 

@@ -91,8 +91,7 @@
 
 <p><strong>前回までのあらすじ</strong></p>
 
-<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="ja" dir="ltr">GAEを第一世代から第二世代に上げたときの備忘録としてblogged. | Google App Engineを第一世代から第二世代に乗り換えた - Hack Your Design! <a href="https://t.co/L1sLTXo4VE">https://t.co/L1sLTXo4VE</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1130339076198940672?ref_src=twsrc%5Etfw">May 20, 2019</a></blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">GAEを第一世代から第二世代に上げたときの備忘録としてblogged. | Google App Engineを第一世代から第二世代に乗り換えた - Hack Your Design! <a href="https://t.co/L1sLTXo4VE">https://t.co/L1sLTXo4VE</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1130339076198940672?ref_src=twsrc%5Etfw">May 20, 2019</a></blockquote>
 
 <h2 id="きっかけ">きっかけ</h2>
 
@@ -112,7 +111,7 @@
 
 <h2 id="過渡期世代とは">過渡期世代とは？</h2>
 
-<p>ちなみにGo 1.11は第一世代から第二世代への過渡期世代と言える。Go 1.12にすることで完全なる第二世代へと移行されることとなる、</p>
+<p>ちなみにGo 1.11は第一世代から第二世代への過渡期世代と言える。Go 1.12にすることで完全なる第二世代へと移行されることとなる。</p>
 
 <blockquote>
   <p>第二世代にはApp Engine API対応の過渡期の世代とApp Engine API非対応の完璧な第二世代があります。</p>
@@ -124,13 +123,13 @@
 
 <h2 id="アップグレード手順">アップグレード手順</h2>
 
-<p>基本的に下記の公式ドキュメントを参考にする。</p>
+<p>基本的に下記の公式ドキュメントを参考に進めていけばよい。</p>
 
 <p><a href="https://cloud.google.com/appengine/docs/standard/go112/go-differences">Migrating your App Engine app to Go 1.12  |  App Engine standard environment for Go 1.12 docs  |  Google Cloud</a></p>
 
 <h2 id="appyml">app.yml</h2>
 
-<p><code class="highlighter-rouge">app.yml</code>にてruntimeをGo 1.12へ変更。</p>
+<p><code class="highlighter-rouge">app.yml</code>にてruntimeをGo 1.11から1.12へ変更。一番重要な点。</p>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">runtime</span><span class="pi">:</span> <span class="s">go112</span>
 </code></pre></div></div>
@@ -139,9 +138,11 @@
 
 <h2 id="cronyml">cron.yml</h2>
 
-<p>GAE Consoleに機能として続けるようだ。</p>
+<p><code class="highlighter-rouge">cron.yml</code>はそのままの書式で変更なしで大丈夫。このcronジョブの機能はGAEのConsole上にメニューとして残り続けるようだ。</p>
 
 <p><img src="/images/posts/gae/cron.png" alt="" /></p>
+
+<p>参考: <a href="https://cloud.google.com/appengine/docs/standard/go112/scheduling-jobs-with-cron-yaml">Scheduling Jobs with cron.yaml</a></p>
 
 <h2 id="タスクキュー">タスクキュー</h2>
 
@@ -149,7 +150,13 @@
 
 <p><img src="/images/posts/gae/cloud-tasks.png" alt="" /></p>
 
+<p>Cloud Tasks の使い方に関してはGoogle App Engineとはまた別の公式ドキュメントを読もう。</p>
+
+<p><a href="https://cloud.google.com/tasks/">Cloud Tasks Service for Asynchronous Execution  |  Cloud Tasks  |  Google Cloud</a></p>
+
 <h2 id="ローカル開発環境">ローカル開発環境</h2>
+
+<h3 id="dev_appserverpy-は使えない">dev_appserver.py は使えない</h3>
 
 <p>今までどおりの <code class="highlighter-rouge">dev_appserver.py</code> を使うと下記のようにエラーが発生して起動できない。</p>
 
@@ -162,14 +169,20 @@
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> go run app.go
 </code></pre></div></div>
 
-<h3 id="tips">Tips</h3>
+<h3 id="カナリアリリースっぽいやつ">カナリアリリースっぽいやつ</h3>
 
 <p>下記のように<code class="highlighter-rouge">no-promote</code>オプションを付けることで、本番環境へのトラフィックを振らない形でデプロイができる。これを使った場合、本番URLとは別に確認陽のURLが発行されているので、それを使って動作確認を行った後に本番へと昇格させるかたちとなる。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcloud app deploy --no-promote
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> gcloud app deploy <span class="nt">--no-promote</span>
 </code></pre></div></div>
 
-<p>参考: <a href="https://cloud.google.com/appengine/docs/standard/go112/testing-and-deploying-your-app">Testing and Deploying your Application  |  App Engine standard environment for Go 1.12 docs  |  Google Cloud</a></p>
+<p>参考: <a href="https://cloud.google.com/appengine/docs/standard/go112/testing-and-deploying-your-app">Testing and Deploying your Application</a></p>
+
+<h2 id="参考資料">参考資料</h2>
+
+<ul>
+  <li><a href="https://github.com/GoogleCloudPlatform/golang-samples/tree/master/appengine/go11x">golang-samples/appengine/go11x at master · GoogleCloudPlatform/golang-samples</a></li>
+</ul>
 
 </div>
 
