@@ -4,6 +4,7 @@ title: Google App Engineを第一世代から第二世代に乗り換えた
 image: "/images/posts/gae/first-vs-second.png"
 description: "Google App Engineを第一世代から第二世代に乗り換えました。GoとPHPの環境をGoogle App Engine上にもっているのですが、それぞれGoは1.9から1.11、PHPは5.5から7.2へのアップデートとなります。第一世代から第二世代の比較　第一世代と第二世代は何が違うのか？ 公式ドキュメントを参照します。ポイントとしては下記になるでしょうか。 サポート言語のバージョンアップ gVisorベースなコンテナサンドボックス環境 /tmpへのRead/Writeアクセス 外部ネットワーク通信が自由に可能に どんな拡張・ライブラリも利用可能に"
 tags: google-app-engine
+hideimage: true
 toc: true
 ---
 
