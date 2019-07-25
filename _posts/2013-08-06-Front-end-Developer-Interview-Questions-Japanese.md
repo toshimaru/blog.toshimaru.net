@@ -9,7 +9,7 @@ tags: tech
 
 [Front-end Job Interview Questions(Github)](https://github.com/h5bp/Front-end-Developer-Interview-Questions)を日本語訳しました。
 
-[日本語訳はこちら](https://github.com/h5bp/Front-end-Developer-Interview-Questions/tree/master/Translations/Japanese) <a href="http://b.hatena.ne.jp/entry/https://github.com/darcyclarke/Front-end-Developer-Interview-Questions/tree/master/Japanese"><img src="http://b.hatena.ne.jp/entry/image/https://github.com/darcyclarke/Front-end-Developer-Interview-Questions/tree/master/Japanese"></a>
+[日本語訳はこちら](https://github.com/h5bp/Front-end-Developer-Interview-Questions/tree/master/Translations/Japanese) <a href="https://b.hatena.ne.jp/entry/https://github.com/darcyclarke/Front-end-Developer-Interview-Questions/tree/master/Japanese"><img src="https://b.hatena.ne.jp/entry/image/https://github.com/darcyclarke/Front-end-Developer-Interview-Questions/tree/master/Japanese"></a>
 
 質問項目としては下記のようになります。
 
