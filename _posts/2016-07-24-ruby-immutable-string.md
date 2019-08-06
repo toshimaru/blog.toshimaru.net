@@ -1,19 +1,31 @@
 ---
 layout: post
-title: Ruby2.3 で導入された frozen_string_literal オプションで Immutable String を実現する
+title: Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する
 description: Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。
+modified_date: 2019-08-07
+image: /images/posts/frozenstring.jpg
 tags: ruby
 ---
 
 ## Immutable String in Ruby3
 
-Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。
+~~Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。~~（下記に追記あり）
 
 > Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました
 
 via. [[Ruby] Ruby 3.0 の特大の非互換について - まめめも](http://d.hatena.ne.jp/ku-ma-me/20151004/p1)
 
 この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに`.freeze`を付けてプルリクエストを投げる輩が大挙してきたことだ。
+
+### 追記
+
+「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、**Ruby3 で文字列がデフォルトで immutable にはしない**という決定がMatzによってなされた。
+
+> So I officially abandon making frozen-string-literals default (for Ruby3).
+
+via. [Feature #11473: Immutable String literal in Ruby 3 - Ruby master - Ruby Issue Tracking System](https://bugs.ruby-lang.org/issues/11473)
+
+したがってRuby3以降も文字列をimmutableにしたければ、引き続き`frozen_string_literal: true`のマジックコメントが必要となる。
 
 ## Immutable String in Ruby2.3+
 
@@ -40,7 +52,7 @@ via. [[Ruby] Ruby 3.0 の特大の非互換について - まめめも](http://d
 
 全て同じ object_id が返ってくる。
 
-```
+```console
 $ ruby string_with_frozen_option.rb
 70212460463280
 70212460463280
@@ -61,7 +73,7 @@ $ ruby string_with_frozen_option.rb
 
 全て違う object_id が返ってくる。
 
-```
+```console
 $ ruby string_without_frozen_option.rb
 70277165754460
 70277165754200
@@ -132,11 +144,24 @@ puts str
 # => abc
 ```
 
+あるいは、`String#+@`を使って下記のようにも書ける。
+
+```rb
+# frozen_string_literal: true
+str = +"a"
+str << "bc"
+puts str
+# => abc
+```
+
+こちらのほうが`dup`するよりも[パフォーマンスが優れている](https://gist.github.com/k0kubun/e3da77cae2c132badd386c96f2de5768)ので、こちらの書き方のほうがベターである。
+
 ## まとめ
 
-Ruby3 の Immutable String に先駆けて、Ruby2.3 以上が前提の実行環境では積極的に`frozen_string_literal: true`の設定をしていくべき。
+Ruby3 の Immutable String に先駆けて、Ruby2.3 以上が前提の実行環境では、積極的に`frozen_string_literal: true`のマジックコメント設定をしていくべき。
 
 ## 参考
 
 - [Immutable strings in Ruby 2.3](https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3)
 - [Feature #8976: file-scope freeze_string directive - Ruby trunk - Ruby Issue Tracking System](https://bugs.ruby-lang.org/issues/8976)
+- [Perfect Frozen String Literal - Qiita](https://qiita.com/k0kubun/items/1c3e605645ba5ff683a1)
