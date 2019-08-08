@@ -1,9 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'jekyll'
+gem 'jekyll', '4.0.0.pre.beta1'
 
 group :jekyll_plugins do
-  # gem 'jekyll-admin'
   gem 'jekyll-coffeescript'
   gem 'jekyll-compose'
   gem 'jekyll-feed'
