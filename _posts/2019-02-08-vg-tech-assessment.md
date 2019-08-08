@@ -3,7 +3,7 @@ layout: post
 title: VOYAGE GROUPの『公開技術力評価会』に行ってエンジニア評価と給与設定について本気出して考えた
 image: "/images/posts/tech_assessment/og.png"
 description: "VOYAGE GROUP エンジニアの公開ガチ評価会というイベントに行ってきた。イベントの内容まとめは他の方のブログに譲るとして、エンジニアの評価についていろいろ考える良いきっかけとなったので書いてみる。（エンジニアに限らず）人の評価は難しい。自分も人を評価する立場になって改めて思う。"
-tags: 評価 tech
+tags: management
 toc: true
 ---
 
