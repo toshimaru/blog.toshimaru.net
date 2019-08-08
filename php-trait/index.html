@@ -119,7 +119,7 @@
 
 <figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
-<span class="k">class</span> <span class="nc">Human</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">Human</span> <span class="p">{</span>
     <span class="k">function</span> <span class="nf">talk</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'話す'</span><span class="p">;</span>
     <span class="p">}</span>
@@ -128,7 +128,7 @@
         <span class="k">echo</span> <span class="s1">'逃げる'</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="sd">/**
+    <span class="cd">/**
      * 使用可能なコマンド一覧を出力
      */</span>
     <span class="k">static</span> <span class="k">function</span> <span class="nf">commands</span><span class="p">()</span> <span class="p">{</span>
@@ -140,13 +140,13 @@
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="k">class</span> <span class="nc">Warrior</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">Warrior</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
     <span class="k">function</span> <span class="nf">attack</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'攻撃'</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="k">class</span> <span class="nc">Wizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">Wizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
     <span class="k">function</span> <span class="nf">spell</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'魔法'</span><span class="p">;</span>
     <span class="p">}</span>
@@ -169,19 +169,19 @@
 
 <figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
-<span class="nx">trait</span> <span class="nx">Attackable</span> <span class="p">{</span>
+<span class="kd">trait</span> <span class="nc">Attackable</span> <span class="p">{</span>
     <span class="k">function</span> <span class="nf">attack</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'攻撃'</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nx">trait</span> <span class="nx">Spellable</span> <span class="p">{</span>
+<span class="kd">trait</span> <span class="nc">Spellable</span> <span class="p">{</span>
     <span class="k">function</span> <span class="nf">spell</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'魔法'</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="k">class</span> <span class="nc">Human</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">Human</span> <span class="p">{</span>
     <span class="k">function</span> <span class="nf">talk</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'話す'</span><span class="p">;</span>
     <span class="p">}</span>
@@ -190,7 +190,7 @@
         <span class="k">echo</span> <span class="s1">'逃げる'</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="sd">/**
+    <span class="cd">/**
      * 使用可能なコマンド一覧を出力
      */</span>
     <span class="k">static</span> <span class="k">function</span> <span class="nf">commands</span><span class="p">()</span> <span class="p">{</span>
@@ -202,8 +202,8 @@
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="k">class</span> <span class="nc">WarriorWizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
-    <span class="k">use</span> <span class="nx">Attackable</span><span class="p">,</span> <span class="nx">Spellable</span><span class="p">;</span>
+<span class="kd">class</span> <span class="nc">WarriorWizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
+    <span class="kn">use</span> <span class="nn">Attackable</span><span class="err">, Spellable</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nx">WarriorWizard</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; WarriorWizard can use `talk` `escape` `commands` `attack` `spell`</span>

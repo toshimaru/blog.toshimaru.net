@@ -160,20 +160,20 @@
 
 <p>今までどおりの <code class="highlighter-rouge">dev_appserver.py</code> を使うと下記のようにエラーが発生して起動できない。</p>
 
-<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> dev_appserver.py app.yaml
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>dev_appserver.py app.yaml
 <span class="go">...(snip)...
-</span><span class="gp">RuntimeError: Unknown runtime 'go112';</span> supported runtimes are <span class="s1">'custom'</span>, <span class="s1">'go'</span>, <span class="s1">'go111'</span>, <span class="s1">'java'</span>, <span class="s1">'java7'</span>, <span class="s1">'java8'</span>, <span class="s1">'php55'</span>, <span class="s1">'php72'</span>, <span class="s1">'python'</span>, <span class="s1">'python-compat'</span>, <span class="s1">'python27'</span>, <span class="s1">'python37'</span><span class="nb">.</span>
+</span><span class="gp">RuntimeError: Unknown runtime 'go112';</span><span class="w"> </span>supported runtimes are <span class="s1">'custom'</span>, <span class="s1">'go'</span>, <span class="s1">'go111'</span>, <span class="s1">'java'</span>, <span class="s1">'java7'</span>, <span class="s1">'java8'</span>, <span class="s1">'php55'</span>, <span class="s1">'php72'</span>, <span class="s1">'python'</span>, <span class="s1">'python-compat'</span>, <span class="s1">'python27'</span>, <span class="s1">'python37'</span><span class="nb">.</span>
 </code></pre></div></div>
 <p>Go 1.11 に乗り換えているならば <code class="highlighter-rouge">app.go</code> は素直な実装になっているはずなので、下記のように<code class="highlighter-rouge">go run</code>でローカルにサーバーを起動することができる。</p>
 
-<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> go run app.go
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run app.go
 </code></pre></div></div>
 
 <h3 id="カナリアリリースっぽいやつ">カナリアリリースっぽいやつ</h3>
 
 <p>下記のように<code class="highlighter-rouge">no-promote</code>オプションを付けることで、本番環境へのトラフィックを振らない形でデプロイができる。これを使った場合、本番URLとは別に確認陽のURLが発行されているので、それを使って動作確認を行った後に本番へと昇格させるかたちとなる。</p>
 
-<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> gcloud app deploy <span class="nt">--no-promote</span>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>gcloud app deploy <span class="nt">--no-promote</span>
 </code></pre></div></div>
 
 <p>参考: <a href="https://cloud.google.com/appengine/docs/standard/go112/testing-and-deploying-your-app">Testing and Deploying your Application</a></p>
