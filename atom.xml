@@ -1,4 +1,329 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0.pre.beta1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-08-12T09:55:20+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Jekyll v4.0 にアップデートした</title><link href="https://blog.toshimaru.net/jekyll-4/" rel="alternate" type="text/html" title="Jekyll v4.0 にアップデートした" /><published>2019-08-09T00:00:00+09:00</published><updated>2019-08-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-4</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-4/">&lt;p&gt;Jekyllの&lt;code class=&quot;highlighter-rouge&quot;&gt;4.0.0.pre.beta1&lt;/code&gt;が降ってきていたのでアップグレードした。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0.pre.beta1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-08-12T16:26:47+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">アンチパターンから学ぶHRTなコードレビュー</title><link href="https://blog.toshimaru.net/hrt-review/" rel="alternate" type="text/html" title="アンチパターンから学ぶHRTなコードレビュー" /><published>2019-08-12T00:00:00+09:00</published><updated>2019-08-12T00:00:00+09:00</updated><id>https://blog.toshimaru.net/hrt-review</id><content type="html" xml:base="https://blog.toshimaru.net/hrt-review/">&lt;p&gt;&lt;a href=&quot;/team-geek/&quot;&gt;『Team Geek』の書評でも書いた&lt;/a&gt;んだけど、コードレビューのときはHRTの精神を大事にしたい。&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-hrt&quot;&gt;What is HRT?&lt;/h2&gt;
+
+&lt;p&gt;HRTとは下記の３つの精神のことだ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Humility&lt;/strong&gt;（謙虚）&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Respect&lt;/strong&gt;（尊敬）&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Trust&lt;/strong&gt;（信頼）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;HRTについて詳しくは弊ブログの下記記事を参照。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;心理的安全性の阻害はHRT精神の欠如によって起こる。常に仲間に対して謙虚、尊敬、信頼の念を持とうな。お兄さんとの約束だぞ！&lt;br /&gt;『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~ - Hack Your Design! &lt;a href=&quot;https://t.co/EHogf87DOd&quot;&gt;https://t.co/EHogf87DOd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1142027694709698561?ref_src=twsrc%5Etfw&quot;&gt;June 21, 2019&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;以下、アンチパターンなコードレビューのシーンを先輩（👿）と後輩（👼）でお送りする。&lt;/p&gt;
+
+&lt;h2 id=&quot;アンチパターン1コメントが怖い&quot;&gt;アンチパターン1・コメントが怖い&lt;/h2&gt;
+
+&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「typoです。直してください」&lt;/p&gt;
+
+  &lt;p&gt;👿「これはこう書くべきです（…以下コード提案…）」&lt;/p&gt;
+
+  &lt;p&gt;👿「どうしてこのようなコードにしたんですか？」&lt;/p&gt;
+
+  &lt;p&gt;👼「（えっ… 怒っているの？ 怖い…）」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;説明&quot;&gt;説明&lt;/h3&gt;
+
+&lt;p&gt;コードレビューじゃなくとも、テキスト・コミュニケーションであれば手段を問わず発生しうる問題。&lt;strong&gt;文字だけのコミュニケーションは、発言の背後にあるコンテキストや感情が汲み取りにくい&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;上記の例だと背後にある感情が「typoじぇねぇか💢 直せ😠」なのか「typoみつけちゃった👀 指摘して直してもらおう😃」なのかがわからないので、先輩・後輩という関係性を前提とした場合、後輩からは先輩が怒っていると思われていても仕方ない状況と言える。&lt;/p&gt;
+
+&lt;p&gt;先輩の他の指摘に関しても同様に、「こう書くべき💢」なのか「個人的にこう書くべきだと思っているんだけどなぁ…🤔」なのかわからないし、「どうしてこんなひどいコード書いた？💢」なのか「このコードの意図が知りたいなぁ、どうしてこう書いたんだろう？🤔」なのかがわからない。&lt;/p&gt;
+
+&lt;h3 id=&quot;解決策&quot;&gt;解決策&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;絵文字を使う😃
+    &lt;ul&gt;
+      &lt;li&gt;絵文字で感情を表現して、発言の背後にある感情の誤読を減らす&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;コードレビュー・ラベルを使う
+    &lt;ul&gt;
+      &lt;li&gt;コメントの前に&lt;code class=&quot;highlighter-rouge&quot;&gt;[nits]&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;[imo]&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;[ask]&lt;/code&gt;などのラベルをつける
+        &lt;ul&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[nits]&lt;/code&gt; 些細な指摘であることを伝える&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[imo]&lt;/code&gt; 個人的な意見であることを伝える&lt;/li&gt;
+          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[ask]&lt;/code&gt; 質問事項、確認事項を訊く&lt;/li&gt;
+          &lt;li&gt;参考: &lt;a href=&quot;https://employment.en-japan.com/engineerhub/entry/2018/01/24/110000&quot;&gt;悪いコードを憎んで人を憎まず！ プルリク送付前に心がけたいコードレビューのコミュニケーション術&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;断定口調・命令口調ではなく提案口調を使う
+    &lt;ul&gt;
+      &lt;li&gt;「〜すべき」「〜してください」などの高圧的な断定・命令口調ではなく、「〜どうでしょう？」などの提案口調を使う&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;質問の背景を明確にする
+    &lt;ul&gt;
+      &lt;li&gt;質問をするということは質問をするに至った背景が何かあるはずなので、それを一緒に提示する&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;口頭で指摘する&lt;/li&gt;
+  &lt;li&gt;上述の&lt;code class=&quot;highlighter-rouge&quot;&gt;[nits]&lt;/code&gt;な指摘で自動化できる点は自動化する
+    &lt;ul&gt;
+      &lt;li&gt;Rubyにおける&lt;a href=&quot;https://github.com/rubocop-hq/rubocop&quot;&gt;rubocop&lt;/a&gt;、JSにおける&lt;a href=&quot;https://github.com/eslint/eslint&quot;&gt;ESLint&lt;/a&gt;などは自動化可能なのでCIで自動化する&lt;/li&gt;
+      &lt;li&gt;人間がいちいち指摘するよりも時間的コスト・心理的コストがレビュワー、レビュイー双方にとってずっと低い&lt;/li&gt;
+      &lt;li&gt;ツールとしては&lt;a href=&quot;https://github.com/reviewdog/reviewdog&quot;&gt;reviewdog&lt;/a&gt;や&lt;a href=&quot;https://sider.review&quot;&gt;sider&lt;/a&gt;など&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「[nits]typo❗️😄」&lt;/p&gt;
+
+  &lt;p&gt;👿「[imo]これはこう書くべきだと思ったのですが、どうでしょう❓😺（…以下コード提案…）」&lt;/p&gt;
+
+  &lt;p&gt;👿「[ask]モデルにあっても良い処理なように感じましたが、どうしてここに処理を書いたんでしょう？」&lt;/p&gt;
+
+  &lt;p&gt;👿「[ask]xxx関数を使えばもうちょっとシンプルに書ける気がしますが、どうしてこう書いたんでしょう？」&lt;/p&gt;
+
+  &lt;p&gt;🤖(bots) 「Trailing whitespace detected.」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;あるいは口頭で:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「さっき上げたコードでちょっと気になるところがあるから聞いてもいいですか？ （コードを指差しして）この部分のコードの意図が汲み取れなかったんですけど、どうしてこんなコードにしたんでしょう？」&lt;/p&gt;
+
+  &lt;p&gt;👼「あー、そこは〇〇〇で、△△△だからそう書いたんですよね。（…以下説明…）」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;アンチパターン2理由がない&quot;&gt;アンチパターン2・理由がない&lt;/h2&gt;
+
+&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「これは残念なコードですので、直してください」&lt;/p&gt;
+
+  &lt;p&gt;👿「この書き方をしたらダメです」&lt;/p&gt;
+
+  &lt;p&gt;👼「はい…（えぇぇ！？ 何がダメなんだろう…？）」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;説明-1&quot;&gt;説明&lt;/h3&gt;
+
+&lt;p&gt;コードレビューコメントに指示はあるが、理由がないケース。&lt;/p&gt;
+
+&lt;p&gt;上記のケースだと「なぜ残念なコードと言えるのか？」というポイントが欠如している。コードに対する価値観が完全に合致していれば、「残念なコード」でレビュイーに伝わるが、大抵の場合はそうではないので理由がないと伝わらないケースが多い。特にレビュイーがジュニアレベルであればコード良し悪しの分別がつかないのでなおさら伝わらない。&lt;/p&gt;
+
+&lt;h3 id=&quot;解決策-1&quot;&gt;解決策&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;レビュイーが納得できるに足る理由を示す
+    &lt;ul&gt;
+      &lt;li&gt;なぜ残念なのか？ なぜダメなのか？ 必ずWhyを示す&lt;/li&gt;
+      &lt;li&gt;「個人的にこっちのほうが好きだから」「なんとなく」などは納得できる理由ではないのでアウト 👉 上述の&lt;code class=&quot;highlighter-rouge&quot;&gt;[imo]&lt;/code&gt;提案行き&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「これはマジックナンバーになっているので、定数に切り出すように直してください😉」&lt;/p&gt;
+
+  &lt;p&gt;👿「この書き方はXSS脆弱性がある書き方だからダメです🙅」&lt;/p&gt;
+
+  &lt;p&gt;👿「[imo]こっちのほうがスッキリしていて個人的に好きなのですがいかがでしょう？（…以下コード提案…）」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;アンチパターン3誹謗中傷&quot;&gt;アンチパターン3・誹謗中傷&lt;/h2&gt;
+
+&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「これはクソコードですね」&lt;/p&gt;
+
+  &lt;p&gt;👼「ごめんなさい（一生懸命書いたのに…（泣））」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;説明-2&quot;&gt;説明&lt;/h3&gt;
+
+&lt;p&gt;コードに対する誹謗中傷。これを乱用すると現場が殺伐とする。&lt;/p&gt;
+
+&lt;h3 id=&quot;解決策-2&quot;&gt;解決策&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;「クソコード」などのコードの誹謗中傷となるような言い回しは使わない
+    &lt;ul&gt;
+      &lt;li&gt;「あまり強い言葉を遣うなよ。弱く見えるぞ。」&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;口頭でコミュニケーションする
+    &lt;ul&gt;
+      &lt;li&gt;クソコードのような強い言葉を使いたくなるような場面では、テキストコミュニケーションだとすれ違いが起きる可能性が高い。クソコードと思い至るまでの理由を膝を突き合わせてきちんと説明する&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「これは今後メンテしていくのがとても辛いコードになりそうです。なぜなら〇〇だし、△△ともなり、××だからです。」&lt;/p&gt;
+
+  &lt;p&gt;👼「なるほど〜〜〜！（私クソコード書いてたかもしれない…）」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;アンチパターン４大量コメント&quot;&gt;アンチパターン４・大量コメント&lt;/h2&gt;
+
+&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「〇〇〇〇」&lt;/p&gt;
+
+  &lt;p&gt;👿「△△△△」&lt;/p&gt;
+
+  &lt;p&gt;👿「××××」&lt;/p&gt;
+
+  &lt;p&gt;（以下大量のレビューコメント）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;説明-3&quot;&gt;説明&lt;/h3&gt;
+
+&lt;p&gt;一連のコード変更に対して大量のレビューコメントが付く事象のこと。&lt;/p&gt;
+
+&lt;p&gt;シニアエンジニアがジュニアエンジニアのコードをレビューするときなど、レビュワー・レビュイー間のスキル・知識・経験に大きな差があるときに陥りやすい。大量のコメントを付ける/付けられることになるので、レビュワーにとってもレビュイーにとっても心的労力が高い。&lt;/p&gt;
+
+&lt;h3 id=&quot;解決策-3&quot;&gt;解決策&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コードの差分を小さくするように分割する
+    &lt;ul&gt;
+      &lt;li&gt;コメントが多く付くのはそもそもコードの差分が大きいからなので差分を小さくしてレビュー対象コードを少なくする&lt;/li&gt;
+      &lt;li&gt;GitHub であれば Pull Request を可能な限り分割し１つ１つを小さい差分に保つ&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;コードレビューの代わりにペアプログラミングをする
+    &lt;ul&gt;
+      &lt;li&gt;コードレビューが大変ならコードレビューをしない。ペアプロでその場で一緒に解決させる&lt;/li&gt;
+      &lt;li&gt;モブプログラミングでもOK&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;研修の実施および内容見直し
+    &lt;ul&gt;
+      &lt;li&gt;スキルに大きな差があることが原因なので、その差を埋めるための研修を実施&lt;/li&gt;
+      &lt;li&gt;もし新入社員向けに研修がないのであれば、新入社員を対象に技術研修を新たに計画すべきかもしれない。既にあるのだとすれば研修内容の見直しが必要かもしれない&lt;/li&gt;
+      &lt;li&gt;中途であればオンボーディング・プロセスの見直しが必要かもしれない&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;（ナビゲーター👿/ドライバー👼がペアプログラミング中）&lt;/p&gt;
+
+  &lt;p&gt;👿「ここのコードは 〇〇〇 できれいに書けるんじゃないかな」&lt;/p&gt;
+
+  &lt;p&gt;👼「なるほど、やってみます。（コードを修正する）」&lt;/p&gt;
+
+  &lt;p&gt;👿「次に 〇〇〇 によって ××× が要らなくなったから直せそう」&lt;/p&gt;
+
+  &lt;p&gt;👼「あ、たしかに。やってみます（コードを修正する）」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;アンチパターン５長大な議論&quot;&gt;アンチパターン５・長大な議論&lt;/h2&gt;
+
+&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「ここの設計、私としては 〇〇〇 だと思うんです」&lt;/p&gt;
+
+  &lt;p&gt;👨「僕はそうは思いません。△△△ にしたほうが良いと思うんです」&lt;/p&gt;
+
+  &lt;p&gt;👩「私は 〇〇〇 案と △△△ 案を組み合わせた ××× でも良いかと」&lt;/p&gt;
+
+  &lt;p&gt;（以下、👿, 👨, 👩 の議論が延々と続く）&lt;/p&gt;
+
+  &lt;p&gt;👼「（あわわわわわ、、、どうすれば…）」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;説明-4&quot;&gt;説明&lt;/h3&gt;
+
+&lt;p&gt;１つのコードレビューに端を発して長大な議論をスタートさせること。これが始まると一つのコメントに対してのスレッドがどんどん伸びていくことになる。&lt;/p&gt;
+
+&lt;p&gt;設計などの大枠なトピックだと、長大な議論になりやすい。&lt;/p&gt;
+
+&lt;h3 id=&quot;解決策-4&quot;&gt;解決策&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;話し合いで解決させる
+    &lt;ul&gt;
+      &lt;li&gt;テキストで延々と話すより、わーっとみんなで集まって話し合うとすぐに決まるケースが多かったりする&lt;/li&gt;
+      &lt;li&gt;話し合った結果をテキストとして残しておく&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;👿「ここの設計、私としては 〇〇〇 だと思うんです」&lt;/p&gt;
+
+  &lt;p&gt;👨「僕はそうは思いません。△△△ にしたほうが良いと思うんです」&lt;/p&gt;
+
+  &lt;p&gt;👩「私は 〇〇〇 案と △△△ 案を組み合わせた ××× でも良いかと」&lt;/p&gt;
+
+  &lt;p&gt;👿「では話し合って決めましょう！」&lt;/p&gt;
+
+  &lt;p&gt;（集まって話し合い）&lt;/p&gt;
+
+  &lt;p&gt;👿 👨 👩「議論した結果、△△△ が良いとなったので △△△ な方針でいきましょう」&lt;/p&gt;
+
+  &lt;p&gt;👼「ラジャー!」&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;なぜhrtなレビューが必要なのか&quot;&gt;なぜHRTなレビューが必要なのか？&lt;/h2&gt;
+
+&lt;p&gt;なぜHRTなコードレビューを心がける必要があるのか？　答えは&lt;strong&gt;チームの心理的安全性を確保するため&lt;/strong&gt;だ。&lt;/p&gt;
+
+&lt;h3 id=&quot;全ては心理的安全性のため&quot;&gt;全ては心理的安全性のため&lt;/h3&gt;
+
+&lt;p&gt;最近では共通認識になりつつあるので改めて言う必要はないかもしれないが、&lt;strong&gt;ハイパフォーマンスなチームにとって心理的安全性は極めて重要&lt;/strong&gt;だ。それはGoogleの調査によって証明されている。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Google のリサーチチームが発見した、チームの効果性が高いチームに固有の 5 つの力学のうち、圧倒的に重要なのが心理的安全性です。リサーチ結果によると、心理的安全性の高いチームのメンバーは、Google からの離職率が低く、他のチームメンバーが発案した多様なアイデアをうまく利用することができ、収益性が高く、「効果的に働く」とマネージャーから評価される機会が 2 倍多い、という特徴がありました。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://rework.withgoogle.com/jp/guides/understanding-team-effectiveness/steps/foster-psychological-safety/&quot;&gt;Google re:Work - ガイド: 「効果的なチームとは何か」を知る&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/hrt/psychological-safety.png&quot; alt=&quot;psychological safety&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/モヒカン族_(ネット用語)&quot;&gt;モヒカン族&lt;/a&gt;の方々は下記のように考えるかもしれない。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;「何を言ったってそれはコードに対する批判であって書いた人への批判ではない。何を言ってもええやろ」&lt;/li&gt;
+  &lt;li&gt;「間違ったことは言っていない。言い方はどうだってええやろ」&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;気持ちはわからなくはないが、残念ながら我々は人間である。人間であるということは感情があるということ。自分が頑張って書いたコードを「クソコード」などというリスペクトの無い言い方で批判されて平常心でいられるだろうか？　「〜するべき」「〜しろ」などと高圧的なコメントを受けてレビュイーは気持ちよく受け止められるだろうか？　そこに違和感があった場合、遠慮なく異を唱えることができるだろうか？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;「心理的安全性を気にしすぎて何も言えない」のではなく、お互いが年齢・ジェンダー・人種の区別なくフラットな関係性で何でも言い合えるようにするためのHRTであり、そのための心理的安全性である&lt;/strong&gt;。そこは勘違いしてはいけない。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;チーム中にある個人の関係において、「様々な形で課題や問題についての提起がされる」ということに他なりません。（…中略…）つまるところ、心理的安全性が高いとは、「些細な問題であっても提起される」「多く問題に対して自己主張がなされる」という観測可能なチームの状態を意味しています。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via &lt;a href=&quot;https://qiita.com/hirokidaichi/items/5d8c4294083d85654a04&quot;&gt;心理的安全性ガイドライン（あるいは権威勾配に関する一考察）&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考情報&quot;&gt;参考情報&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://rework.withgoogle.com/jp/guides/understanding-team-effectiveness/steps/introduction/&quot;&gt;Google re:Work - ガイド: 「効果的なチームとは何か」を知る&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/hirokidaichi/items/5d8c4294083d85654a04&quot;&gt;心理的安全性ガイドライン（あるいは権威勾配に関する一考察） - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="review" /><summary type="html">『Team Geek』の書評でも書いたんだけど、コードレビューのときはHRTの精神を大事にしたい。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/hrt/hrt-review.jpg" /></entry><entry><title type="html">Jekyll v4.0 にアップデートした</title><link href="https://blog.toshimaru.net/jekyll-4/" rel="alternate" type="text/html" title="Jekyll v4.0 にアップデートした" /><published>2019-08-09T00:00:00+09:00</published><updated>2019-08-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-4</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-4/">&lt;p&gt;Jekyllの&lt;code class=&quot;highlighter-rouge&quot;&gt;4.0.0.pre.beta1&lt;/code&gt;が降ってきていたのでアップグレードした。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;We&amp;#39;re getting closer to releasing Jekyll 4!! 🎉 A new beta dropped just now. Please give it a try and let us know how it goes! &lt;a href=&quot;https://t.co/CiIi2i6k7q&quot;&gt;https://t.co/CiIi2i6k7q&lt;/a&gt;&lt;/p&gt;&amp;mdash; jekyll (@jekyllrb) &lt;a href=&quot;https://twitter.com/jekyllrb/status/1158081978194911232?ref_src=twsrc%5Etfw&quot;&gt;August 4, 2019&lt;/a&gt;&lt;/blockquote&gt;
 
@@ -1235,86 +1560,4 @@
 &lt;p&gt;今まで豆をドリップで淹れていたけど、フレンチプレスのほうが美味しくいただけそうな豆をもらったので買ってみた。使った後のコーヒー豆の処理が大変という話を聞いていたのだけど、水切りネットを使うと処理も簡単にできるらしいということで、あわせて買うと後処理が簡単になって良かった。&lt;/p&gt;
 
 &lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B0018JXAC2&amp;amp;linkId=da3e7aed90147e93304ccd78e95fbf30&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B00MLXV2SS&amp;amp;linkId=302b10666e653ceb0463b4c5aa801d45&quot;&gt;&lt;/iframe&gt;</content><author><name>Toshimaru</name></author><category term="pixel" /><summary type="html">2018年に買ってよかったものを紹介してみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/pixel/pixel3.png" /></entry><entry><title type="html">はじめてのCircleCI Orbsを公開した</title><link href="https://blog.toshimaru.net/my-first-circleci-orbs/" rel="alternate" type="text/html" title="はじめてのCircleCI Orbsを公開した" /><published>2018-12-02T00:00:00+09:00</published><updated>2018-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/my-first-circleci-orbs</id><content type="html" xml:base="https://blog.toshimaru.net/my-first-circleci-orbs/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install &lt;a href=&quot;https://t.co/Ikd11JmEFd&quot;&gt;https://t.co/Ikd11JmEFd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw&quot;&gt;November 30, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;はじめてのCircleCI Orbsを公開した。そのメモ。&lt;/p&gt;
-
-&lt;h2 id=&quot;circleci-orbsとは&quot;&gt;CircleCI Orbsとは&lt;/h2&gt;
-
-&lt;p&gt;2018年11月に正式公開されたCircleCI Orbs。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;本日Orbsをリリースしました🥳OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。&lt;/p&gt;&amp;mdash; CircleCI Japan (@CircleCIJapan) &lt;a href=&quot;https://twitter.com/CircleCIJapan/status/1060285769124696064?ref_src=twsrc%5Etfw&quot;&gt;November 7, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。&lt;/p&gt;
-
-&lt;h2 id=&quot;作ってみた&quot;&gt;作ってみた&lt;/h2&gt;
-
-&lt;p&gt;僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、&lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;をCircleCI Orbsを使って共通化してみることにしてみました。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;結果できたのがこちら: &lt;a href=&quot;https://circleci.com/orbs/registry/orb/toshimaru/bundle-install&quot;&gt;CircleCI Orb Registry - toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;GitHubソースコードはこちら: &lt;a href=&quot;https://github.com/toshimaru/bundle-install&quot;&gt;toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;作り方&quot;&gt;作り方&lt;/h2&gt;
-
-&lt;h3 id=&quot;install-circleci-command&quot;&gt;Install circleci command&lt;/h3&gt;
-
-&lt;p&gt;まずはcircleciコマンドを入手。MacOSの場合下記のようにbrewで入れることができます。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install circleci
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;namespace-作成&quot;&gt;namespace 作成&lt;/h3&gt;
-
-&lt;p&gt;namespaceを取得します。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci namespace create toshimaru github toshimaru
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;orb-作成&quot;&gt;Orb 作成&lt;/h3&gt;
-
-&lt;p&gt;namespace以下のorb名を作成します。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb create toshimaru/bundle-install
-Orb toshimaru/bundle-install created.
-Please note that any versions you publish of this orb are world-readable.
-
-You can now register versions of toshimaru/bundle-install using circleci orb publish.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;publish-circleci-orb&quot;&gt;Publish CircleCI Orb&lt;/h3&gt;
-
-&lt;p&gt;作成した&lt;code class=&quot;highlighter-rouge&quot;&gt;orb.yml&lt;/code&gt;を公開します。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb publish src/orb.yml toshimaru/bundle-install@0.0.1
-Orb toshimaru/bundle-install@0.0.1 was published.
-Please note that this is an open orb and is world-readable.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;作成したorbを使う&quot;&gt;作成したOrbを使う&lt;/h2&gt;
-
-&lt;p&gt;次に作成したOrbを使う側、呼び出す側の設定です。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;bundle-install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/bundle-install@0.1.0&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle-install/bundle-install&lt;/span&gt;
-      &lt;span class=&quot;c1&quot;&gt;# - bundle exec rspec&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;実際に下記のPRでOrbの変更例が見れますのでご参照ください。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/264/files&quot;&gt;Introduce CircleCI Orbs by toshimaru · Pull Request #264&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;参考にした記事&quot;&gt;参考にした記事&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;全体的にこちらの手順を参考にさせていただきました。 &lt;a href=&quot;https://blog.tsub.me/post/introducing-to-circleci-orbs/&quot;&gt;CircleCI Orbs 入門 | tsub’s blog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><summary type="html">I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install https://t.co/Ikd11JmEFd&amp;mdash; toshimaru (@toshimaru_e) November 30, 2018</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" /></entry></feed>
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B00MLXV2SS&amp;amp;linkId=302b10666e653ceb0463b4c5aa801d45&quot;&gt;&lt;/iframe&gt;</content><author><name>Toshimaru</name></author><category term="pixel" /><summary type="html">2018年に買ってよかったものを紹介してみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/pixel/pixel3.png" /></entry></feed>
