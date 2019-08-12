@@ -2,10 +2,10 @@
   <div class="main">
     <div class="wrapper clearfix">
       <div class="about">
-        {% if is_about_page == 'yes' %}
+        {% if page.path == 'about.html' %}
           <h2>Recent</h2>
           <ul>
-            {% for post in site.posts limit:7 %}
+            {% for post in site.posts limit:9 %}
             <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
             {% endfor %}
           </ul>
@@ -39,7 +39,7 @@
       <div class="right">
         <h2>Tag</h2>
         <div class="tags">
-          {{ site | tag_cloud }}
+        {% include_cached tag_cloud.html %}
         </div>
       </div>
     </div>
