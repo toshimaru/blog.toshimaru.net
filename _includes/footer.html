@@ -5,7 +5,7 @@
         {% if page.path == 'about.html' %}
           <h2>Recent</h2>
           <ul>
-            {% for post in site.posts limit:7 %}
+            {% for post in site.posts limit:9 %}
             <li><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
             {% endfor %}
           </ul>
@@ -19,7 +19,6 @@
           <ul class="externallinks">
             <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
             <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
-            <li><a href="http://tumblr.toshimaru.net/" class="icon-tumblr-sign" title="tumblr"></a></li>
           </ul>
         {% endif %}
       </div>
@@ -39,7 +38,7 @@
       <div class="right">
         <h2>Tag</h2>
         <div class="tags">
-          {{ site | tag_cloud }}
+        {% include_cached tag_cloud.html %}
         </div>
       </div>
     </div>
