@@ -6,11 +6,12 @@ group :jekyll_plugins do
   gem 'jekyll-coffeescript'
   gem 'jekyll-compose'
   gem 'jekyll-feed'
+  gem 'jekyll-include-cache'
   gem 'jekyll-paginate'
   gem 'jekyll-sitemap'
-  gem 'jekyll-tagging'
   gem 'jekyll-tagging-related_posts'
-  gem 'jekyll-toc', '0.12.1'
+  gem 'jekyll-tagging'
+  gem 'jekyll-toc'
   gem 'jemoji'
 end
 
