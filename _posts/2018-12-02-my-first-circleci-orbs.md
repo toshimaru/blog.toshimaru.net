@@ -2,10 +2,9 @@
 layout: post
 title: はじめてのCircleCI Orbsを公開した
 image: "/images/posts/circleci-orb.png"
-description: "はじめてのCircleCI Orbsを公開した。そのメモ。2018年11月に正式公開されたCircleCI Orbs。本日Orbsをリリースしました。OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、bundle installをCircleCI Orbsを使って共通化してみることにしてみました。
-"
+description: "はじめてのCircleCI Orbsを公開した。そのメモ。2018年11月に正式公開されたCircleCI Orbs。本日Orbsをリリースしました。OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、bundle installをCircleCI Orbsを使って共通化してみることにしてみました。"
 toc: true
-tags: circleci
+tags: circleci oss
 ---
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install <a href="https://t.co/Ikd11JmEFd">https://t.co/Ikd11JmEFd</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw">November 30, 2018</a></blockquote>

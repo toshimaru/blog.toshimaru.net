@@ -3,7 +3,7 @@ layout: post
 title: RubyのJSONパーサーのパース速度比較
 published: true
 description: 標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。
-tags: json gem ruby
+tags: json ruby
 ---
 
 標準のJSONパーサーとは別に[いくつかのJSONパーサー](https://www.ruby-toolbox.com/categories/JSON_Parsers)実装がRuby gemにはある。それらを比較としてベンチマークとってみた。

@@ -3,7 +3,7 @@ layout: post
 title: RuboCopチームにgemの名前を譲った話
 image: "/images/posts/rubocop-rail.png"
 description: かねてより僕が開発していたubocop-railsというgemをRuboCop公式チームの要望により譲った。 僕がこのgemを作った経緯とかは下記の記事の通り。名前を譲ることになったきっかけは下記のIssue。 Extract Rails Cops in a separate より正確にいうとこのIssueの前にRubyKaigi 2018の懇親会でRuboCop作者から僕へ間接的に打診があり、上記のIssueに至る。
-tags: rails rubocop
+tags: rails rubocop oss
 ---
 
 かねてより僕が開発していた[rubocop-rails](https://github.com/toshimaru/rubocop-rails)というgemをRuboCop公式チームの要望により譲った。

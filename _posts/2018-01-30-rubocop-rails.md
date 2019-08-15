@@ -3,7 +3,7 @@ layout: post
 title: Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った
 image: "/images/posts/rubocop-rail.png"
 description: Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。
-tags: rails rubocop
+tags: rails rubocop oss gem
 modified_date: 2018-07-15
 ---
 

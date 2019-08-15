@@ -2,7 +2,7 @@
 layout: post
 title: Railsでデバイス判定するrack-simple_user_agentというgemを作った
 description: rack-simple_user_agent というgemを作った。 同じコンセプトのgemとしては、k0kubunさんのrack-user_agentがある。ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとしてwootheeを使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。
-tags: gem rails
+tags: rails oss gem
 ---
 
 [rack-simple_user_agent](https://github.com/toshimaru/rack-simple_user_agent)というgemを作った。

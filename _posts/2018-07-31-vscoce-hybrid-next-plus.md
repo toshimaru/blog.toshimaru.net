@@ -3,7 +3,7 @@ layout: post
 title: はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました
 image: "/images/posts/vscode/hybrid.png"
 description: "はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。 きっかけ もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった Vimでhybrid、Atomでhybrid nextというテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った 公開されているvscode-hybrid-nextを使おうと思ったが、少々気に食わない設定があった 同レポジトリにPRしようかと思ったがテーマのあて方がtmTheme形式だったため小回りが効かない感じになってた 自分でテーマを作った hybrid-next-plus"
-tags: vscode
+tags: vscode oss
 ---
 
 はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。
@@ -34,7 +34,7 @@ tags: vscode
 
 ## 最後に
 
-一応markdown, Ruby, jsonファイルあたりはちゃんと確認にしていい感じにsyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPRお願いします 🙏
+一応Markdown, Ruby, JSONファイルあたりはいい感じにSyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPR/Issue報告お願いします 🙏
 
 手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。
 
