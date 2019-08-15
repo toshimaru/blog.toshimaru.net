@@ -1,9 +1,8 @@
 ---
 layout: post
 title: docomo雑談対話APIでリプライ返すhubotプラグイン作った
-published: true
 description: 五番煎じくらいになりますが、docomo雑談対話APIを使ってリプライを返すhubotプラグインを作りました。
-tags: hubot npm
+tags: hubot npm oss
 ---
 
 五番煎じくらいになりますが、docomo雑談対話APIを使ってリプライを返すhubotプラグインを作りました。
@@ -16,4 +15,5 @@ tags: hubot npm
 * `DOCOMO_API_KEY`という環境変数使ってAPIアクセスする
 
 ### 参考
+
 * [雑談対話 \| docomo Developer support \| NTTドコモ](https://dev.smt.docomo.ne.jp/?p=docs.api.page&api_name=dialogue&p_name=api_reference)
