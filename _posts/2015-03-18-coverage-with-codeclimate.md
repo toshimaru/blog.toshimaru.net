@@ -1,24 +1,25 @@
 ---
 layout: post
 title: カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話
-published: true
 image: https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png
 description: 趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクトをGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。
 tags: rspec ci
+toc: true
+modified_date: 2019-08-20
 ---
 
-[趣味で立ち上げているプロジェクト](https://github.com/toshimaru/Rails-4-Twitter-Clone)をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。
+[趣味で立ち上げているプロジェクト](https://github.com/toshimaru/RailsTwitterClone)をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。
 
-## どんなSasSを使うか
+## どんなサービスを使うか
 
-自分がRails(ruby)プロジェクト(not private)をGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。それをまとめると下記のようになる。
+自分がRails/Rubyプロジェクト(not Private)をGitHubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測サービスであったりコードの品質の計測サービスであったりする。それらのサービス群をまとめると下記のようになる。
 
 | サービス | 用途 |
 | -------- | ------ |
 | [Travis CI](https://travis-ci.org/repositories)  | CI回す |
 | [Coveralls](https://coveralls.io/) | カバレッジ率を計測 |
 | [Code Climate](https://codeclimate.com/) | コード品質を計測 |
-| [Gemnasium](https://gemnasium.com/dashboard) | Gemのバージョンチェック |
+| [Gemnasium](https://gemnasium.com/dashboard) | ~~Gemのバージョンチェック~~ 既にcloseされたサービスです |
 
 **※ Publicなレポジトリであれば全て無料で使えます**
 
@@ -32,7 +33,7 @@ tags: rspec ci
 
 [Travis CI: Using Code Climate with Travis CI](http://docs.travis-ci.com/user/code-climate/)
 
-コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいしTravis CIのすすめるCodeClimateに統合してみることとした。
+コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいし、TravisCIの勧めるCodeClimateに統合してみることとした。
 
 ## 手順
 
@@ -40,32 +41,32 @@ tags: rspec ci
 
 CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを`.travis.yml`にセット。
 
-{% highlight yaml %}
+```yaml
 addons:
   code_climate:
     repo_token: adf08323...
-{% endhighlight %}
+```
 
 ### Intall CodeClimate reporter
 
 codeclimate-test-reporter を`Gemfile`のtest groupに追加する。
 
-{% highlight ruby %}
+```rb
 gem "codeclimate-test-reporter", require: false
-{% endhighlight %}
+```
 
 CodeClimateのセットアップインストラクション通りに書くとこう。`spec/rails_helper.rb`に書きます。
 
-{% highlight ruby %}
+```rb
 require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
-{% endhighlight %}
+```
 
 ### Simplecovと同居させる
 
 私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。
 
-{% highlight ruby %}
+```rb
 require 'simplecov'
 require "codeclimate-test-reporter"
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
@@ -73,7 +74,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   CodeClimate::TestReporter::Formatter
 ]
 SimpleCov.start "rails"
-{% endhighlight %}
+```
 
 このようにSimpleCovのformatterに`CodeClimate::TestReporter::Formatter`を入れてやれば :ok:
 
@@ -81,5 +82,6 @@ SimpleCov.start "rails"
 
 これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。
 
-### 参考
-[Using Code Climate's new test reporter together with Coveralls and SimpleCov's HTML Formatter](https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter)
+## 参考
+
+- [Using Code Climate's new test reporter together with Coveralls and SimpleCov's HTML Formatter](https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter)
