@@ -21,7 +21,7 @@
   
   <meta property="og:image" content="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" />
   <meta name="twitter:image" content="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2015-03-18T00:00:00+09:00">
+  <meta property="article:published_time" content="2015-03-18T00:00:00+09:00"><meta property="article:modified_time" content="2019-08-20T00:00:00+09:00" />
   <link rel="canonical" href="https://blog.toshimaru.net/coverage-with-codeclimate/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
@@ -75,7 +75,7 @@
   <h1 class="fadeInLeft">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2015-03-18T00:00:00+09:00" pubdate>2015/03/18</time>
+      <i class="icon-calendar"></i><time datetime="2015-03-18T00:00:00+09:00" pubdate>2015/03/18 (更新: 2019/08/20)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/rspec/" rel="tag">rspec</a>
 
@@ -88,12 +88,25 @@
 </div>
 
 <div id="md-content">
-  
-  <p><a href="https://github.com/toshimaru/Rails-4-Twitter-Clone">趣味で立ち上げているプロジェクト</a>をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。</p>
+  <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#%E3%81%A9%E3%82%93%E3%81%AA%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%92%E4%BD%BF%E3%81%86%E3%81%8B">どんなサービスを使うか</a></li>
+<li class="toc-entry toc-h2"><a href="#coveralls--codeclimate">Coveralls → CodeClimate</a></li>
+<li class="toc-entry toc-h2">
+<a href="#%E6%89%8B%E9%A0%86">手順</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#set-code-climate-token">Set Code Climate token</a></li>
+<li class="toc-entry toc-h3"><a href="#intall-codeclimate-reporter">Intall CodeClimate reporter</a></li>
+<li class="toc-entry toc-h3"><a href="#simplecov%E3%81%A8%E5%90%8C%E5%B1%85%E3%81%95%E3%81%9B%E3%82%8B">Simplecovと同居させる</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+  <p><a href="https://github.com/toshimaru/RailsTwitterClone">趣味で立ち上げているプロジェクト</a>をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。</p>
 
-<h2 id="どんなsassを使うか">どんなSasSを使うか</h2>
+<h2 id="どんなサービスを使うか">
+<a class="anchor" href="#%E3%81%A9%E3%82%93%E3%81%AA%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%92%E4%BD%BF%E3%81%86%E3%81%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>どんなサービスを使うか</h2>
 
-<p>自分がRails(ruby)プロジェクト(not private)をGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。それをまとめると下記のようになる。</p>
+<p>自分がRails/Rubyプロジェクト(not Private)をGitHubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測サービスであったりコードの品質の計測サービスであったりする。それらのサービス群をまとめると下記のようになる。</p>
 
 <table>
   <thead>
@@ -117,7 +130,8 @@
     </tr>
     <tr>
       <td><a href="https://gemnasium.com/dashboard">Gemnasium</a></td>
-      <td>Gemのバージョンチェック</td>
+      <td>
+<del>Gemのバージョンチェック</del> 既にcloseされたサービスです</td>
     </tr>
   </tbody>
 </table>
@@ -128,46 +142,55 @@
 
 <p><strong>【図】SaaSの利用により表示できるようになるバッジ群</strong></p>
 
-<h2 id="coveralls--codeclimate">Coveralls → CodeClimate</h2>
+<h2 id="coveralls--codeclimate">
+<a class="anchor" href="#coveralls--codeclimate" aria-hidden="true"><span class="octicon octicon-link"></span></a>Coveralls → CodeClimate</h2>
 
 <p>今回その内の１つであるCoverallsをCodeClimateに移行してみたのですが、そのきっかけとしてはCircleCIでCodeClimateとのインテグレーションが推奨されていたから。</p>
 
 <p><a href="http://docs.travis-ci.com/user/code-climate/">Travis CI: Using Code Climate with Travis CI</a></p>
 
-<p>コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいしTravis CIのすすめるCodeClimateに統合してみることとした。</p>
+<p>コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいし、TravisCIの勧めるCodeClimateに統合してみることとした。</p>
 
-<h2 id="手順">手順</h2>
+<h2 id="手順">
+<a class="anchor" href="#%E6%89%8B%E9%A0%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>手順</h2>
 
-<h3 id="set-code-climate-token">Set Code Climate token</h3>
+<h3 id="set-code-climate-token">
+<a class="anchor" href="#set-code-climate-token" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set Code Climate token</h3>
 
 <p>CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを<code class="highlighter-rouge">.travis.yml</code>にセット。</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">addons</span><span class="pi">:</span>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">addons</span><span class="pi">:</span>
   <span class="na">code_climate</span><span class="pi">:</span>
-    <span class="na">repo_token</span><span class="pi">:</span> <span class="s">adf08323...</span></code></pre></figure>
+    <span class="na">repo_token</span><span class="pi">:</span> <span class="s">adf08323...</span>
+</code></pre></div></div>
 
-<h3 id="intall-codeclimate-reporter">Intall CodeClimate reporter</h3>
+<h3 id="intall-codeclimate-reporter">
+<a class="anchor" href="#intall-codeclimate-reporter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intall CodeClimate reporter</h3>
 
 <p>codeclimate-test-reporter を<code class="highlighter-rouge">Gemfile</code>のtest groupに追加する。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gem</span> <span class="s2">"codeclimate-test-reporter"</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span></code></pre></figure>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s2">"codeclimate-test-reporter"</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span>
+</code></pre></div></div>
 
 <p>CodeClimateのセットアップインストラクション通りに書くとこう。<code class="highlighter-rouge">spec/rails_helper.rb</code>に書きます。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
-<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="p">.</span><span class="nf">start</span></code></pre></figure>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
+<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="p">.</span><span class="nf">start</span>
+</code></pre></div></div>
 
-<h3 id="simplecovと同居させる">Simplecovと同居させる</h3>
+<h3 id="simplecovと同居させる">
+<a class="anchor" href="#simplecov%E3%81%A8%E5%90%8C%E5%B1%85%E3%81%95%E3%81%9B%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simplecovと同居させる</h3>
 
 <p>私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'simplecov'</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'simplecov'</span>
 <span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
 <span class="no">SimpleCov</span><span class="p">.</span><span class="nf">formatter</span> <span class="o">=</span> <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">MultiFormatter</span><span class="p">[</span>
   <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">HTMLFormatter</span><span class="p">,</span>
   <span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">::</span><span class="no">Formatter</span>
 <span class="p">]</span>
-<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">start</span> <span class="s2">"rails"</span></code></pre></figure>
+<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">start</span> <span class="s2">"rails"</span>
+</code></pre></div></div>
 
 <p>このようにSimpleCovのformatterに<code class="highlighter-rouge">CodeClimate::TestReporter::Formatter</code>を入れてやれば <img class="emoji" title=":ok:" alt=":ok:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f197.png" height="20" width="20"></p>
 
@@ -175,8 +198,12 @@
 
 <p>これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。</p>
 
-<h3 id="参考">参考</h3>
-<p><a href="https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter">Using Code Climate’s new test reporter together with Coveralls and SimpleCov’s HTML Formatter</a></p>
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+
+<ul>
+  <li><a href="https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter">Using Code Climate’s new test reporter together with Coveralls and SimpleCov’s HTML Formatter</a></li>
+</ul>
 
 </div>
 
@@ -200,6 +227,10 @@
   <div class="related">
   <h3>関連記事</h3>
   <ul>
+  
+    <li><a href="/github-actions-first-impression/" title="GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~">GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~</a></li>
+  
+    <li><a href="/reviewdog-rubocop/" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす">reviewdogを使ってCI上でRuboCop自動レビューを動かす</a></li>
   
     <li><a href="/poltergeist-to-selenium-webdriver/" title="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える">Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える</a></li>
   
@@ -270,7 +301,7 @@
     },
     "headline": "カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話",
     "datePublished": "2015-03-18T00:00:00+09:00",
-    "author": {
+    "dateModified": "2019-08-20T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
@@ -354,7 +385,7 @@
       <div class="right">
         <h2>Tag</h2>
         <div class="tags">
-        <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-3">git</a> <a href="/tag/github/" class="set-1">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-3">javascript</a> <a href="/tag/jekyll/" class="set-2">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/oss/" class="set-2">oss</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-4">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/poem/" class="set-1">poem</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/review/" class="set-1">review</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-2">雑記</a>
+        <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-3">git</a> <a href="/tag/github/" class="set-2">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-3">javascript</a> <a href="/tag/jekyll/" class="set-2">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/oss/" class="set-2">oss</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-4">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/poem/" class="set-1">poem</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/review/" class="set-1">review</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-2">雑記</a>
 
         </div>
       </div>

@@ -1,0 +1,442 @@
+<!doctype html>
+<html class="no-js" lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~ - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <link rel="stylesheet" href="/css/main.css">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~ - Hack Your Design!">
+  <meta property="og:title" content="GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~ - Hack Your Design!">
+  <meta name="description" content="GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。">
+  <meta name="twitter:description" content="GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。">
+  <meta property="og:description" content="GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/github-actions/og.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/github-actions/og.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2019-08-20T00:00:00+09:00">
+  <link rel="canonical" href="https://blog.toshimaru.net/github-actions-first-impression/">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    // (adsbygoogle = window.adsbygoogle || []).push({
+    //   google_ad_client: "ca-pub-8616720383995770",
+    //   enable_page_level_ads: false
+    // });
+  </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.toshimaru.net/atom.xml" title="Hack Your Design!" />
+</head>
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="/search/" method="get">
+      <input type="text" class="search-txt" name="q" placeholder="Search"/>
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2019-08-20T00:00:00+09:00" pubdate>2019/08/20</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/github/" rel="tag">github</a>
+
+<a href="/tag/ci/" rel="tag">ci</a>
+
+
+    </div>
+    <img class="post-image flipInX" src="/images/posts/github-actions/og.png" alt="(image)GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~" title="GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~" />
+  </div>
+</div>
+
+<div id="md-content">
+  
+  <p>GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。</p>
+
+<p><strong>※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。</strong></p>
+
+<h2 id="tldr">TL;DR</h2>
+
+<ul>
+  <li>GitHub Actions v2、間違いなく顧客が求めていたもの</li>
+  <li>複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可）</li>
+</ul>
+
+<h2 id="github-actions-v1-github-actions-v2がある">GitHub Actions v1, GitHub Actions v2がある</h2>
+
+<p>まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>。</p>
+
+<p>それぞれ違いを下記に列挙します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>GitHub Actions v1</th>
+      <th>GitHub Actions v2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>特徴</td>
+      <td>汎用的なワークフロー型の自動化ソリューション</td>
+      <td>CI機能を備えた自動化ソリューション</td>
+    </tr>
+    <tr>
+      <td>記述言語</td>
+      <td>HCL</td>
+      <td>YAML(JS拡張可)</td>
+    </tr>
+    <tr>
+      <td>公開ステータス</td>
+      <td>2019年9月一杯でdeprecatedになる</td>
+      <td>public beta（順次ロールアウト中）</td>
+    </tr>
+    <tr>
+      <td>ドキュメントURL</td>
+      <td>https://developer.github.com/actions/</td>
+      <td>https://help.github.com</td>
+    </tr>
+    <tr>
+      <td>サポートOS</td>
+      <td>Linux</td>
+      <td>Linux/Mac/Windows</td>
+    </tr>
+    <tr>
+      <td>環境構築</td>
+      <td><code class="highlighter-rouge">Dockerfile</code>を自ら記述</td>
+      <td>用意されたOSを利用</td>
+    </tr>
+    <tr>
+      <td>バックエンド</td>
+      <td>?</td>
+      <td>Azure PipelinesのFork</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>２つあるので、GitHub ActionsでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く異なってきます。</p>
+
+<p>またv1が手元で使えるからといってv2が自動的に使えるわけではありません。それぞれ別物なのでv1が使えてたとしても、v2が降ってくるまでは使えません。</p>
+
+<h2 id="導入方法">導入方法</h2>
+
+<p>設定方法は簡単。GitHub Action v2が使える対象になっていれば、下記のように表示されますので <strong>Enable Repository</strong> してください。</p>
+
+<p><img src="/images/posts/github-actions/enable.png" alt="" /></p>
+
+<p>有効化されると、下記画面が出てくるのでGUIでポチポチワークフローを設定するもよし。</p>
+
+<p><img src="/images/posts/github-actions/get-started.png" alt="" />
+<img src="../getti" alt="" /></p>
+
+<p><code class="highlighter-rouge">.github/workflows</code>以下に直接YAMLを置くもよし。動くYAMLサンプルは下記の公式 starter-workflows レポジトリを覗いてみるとよいかと思います。</p>
+
+<p>https://github.com/actions/starter-workflows/tree/master/ci</p>
+
+<h2 id="価格">価格</h2>
+
+<p><img src="/images/posts/github-actions/price.png" alt="" /></p>
+
+<p>Public Repoは完全無料。並列数も20並列まで使える模様。</p>
+
+<p>TravisCI, CircleCIと比較されることが多いかと思いますが、どちらも同じように無料で使えますが並列数に制限があったり、CIジョブのキューイングが遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。</p>
+
+<h2 id="良い点">良い点</h2>
+
+<ul>
+  <li>主要OSであるLinux/Mac/Windowsは<a href="https://help.github.com/en/articles/virtual-environments-for-github-actions#supported-virtual-environments">すべて対応</a></li>
+  <li>イベントをhookしてからジョブが走りだすまでが早い</li>
+  <li>GitHubサービス内で完結する</li>
+  <li>並列数がしっかり確保されている</li>
+  <li><code class="highlighter-rouge">GITHUB_TOKEN</code>が自動的に発行される（外部CIサービスの場合新たに払い出す必要があった）</li>
+  <li>GitHubとカジュアルに連携できるということで使い方は無限大…!
+    <ul>
+      <li>lintしてPRにコメント</li>
+      <li>/x/path に変更あったら xxx のジョブ起動</li>
+      <li>PR/Issueへの自動ラベリング</li>
+      <li>Tagプッシュされたらリリース</li>
+      <li>何らかの条件でIssueの作成/クローズ</li>
+      <li>etc.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="悪い点">悪い点</h2>
+
+<ul>
+  <li>キャッシュ機構がない</li>
+  <li><code class="highlighter-rouge">[ci skip]</code> 機能がない</li>
+  <li>Betaなのでいろいろバギー
+    <ul>
+      <li>例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする</li>
+    </ul>
+  </li>
+  <li>ドキュメントが少ない</li>
+  <li>サポート問い合わせてもなかなか返信がこない（おそらくGitHubの中のサポート体制がまだ整っていない）</li>
+  <li>eventの粒度がちょっと荒め？
+    <ul>
+      <li>例えば <code class="highlighter-rouge">create</code> イベントにはBranch or tagのcreateイベントが含まれるけど、ほしいのはtagのみの<code class="highlighter-rouge">tag_create</code>なんだよなぁみたいなとき</li>
+      <li>意図しないイベントを拾ったりする（branch deleteでイベントトリガーされるとか）</li>
+    </ul>
+  </li>
+</ul>
+
+<p>しかし今回のGitHub Actions as CI神機能をみんな使わないわけないので、上記の足りない点は近い将来（正式公開前くらいには）、大体直ると考えています。なので僕はGitHub Action as CIとしての機能強化はわりと楽観的にのんびり待っている感じです。</p>
+
+<h2 id="結論">結論</h2>
+
+<ul>
+  <li>GitHub Actions v2、間違いなく顧客が求めていたものと言えます。オープンソースは基本はGitHub ActionsでCIを動かすことになっていくでしょう。</li>
+  <li>上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません</li>
+</ul>
+
+<h2 id="実際に対応してみたpull-request">実際に対応してみたPull Request</h2>
+
+<ul>
+  <li><a href="https://github.com/toshimaru/nyan/pull/33">CI with GitHub Actions by toshimaru · Pull Request #33 · toshimaru/nyan</a></li>
+  <li><a href="https://github.com/toshimaru/dotfiles/pull/75">GitHub Actions by toshimaru · Pull Request #75 · toshimaru/dotfiles</a></li>
+</ul>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>GitHubのサポートの方がそのようにGitHub Actionsを呼び分けていました。 <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+</div>
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/github-actions-first-impression/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連記事</h3>
+  <ul>
+  
+    <li><a href="/reviewdog-rubocop/" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす">reviewdogを使ってCI上でRuboCop自動レビューを動かす</a></li>
+  
+    <li><a href="/coverage-with-codeclimate/" title="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</a></li>
+  
+    <li><a href="/github-and-hub/" title="Github+hubコマンドで快適なGithubライフを営む">Github+hubコマンドで快適なGithubライフを営む</a></li>
+  
+    <li><a href="/autodeploy-jekyll/" title="Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした">Jekyllでgit pushをフックしてGithubPageへ自動デプロイするようにした</a></li>
+  
+    <li><a href="/pull-request/" title="初pull request がマージされました！">初pull request がマージされました！</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <h3>おすすめ記事</h3>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/go-nyan-cat/" title="Older Post: Syntax HighlightされるcatコマンドをGoで作った">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="adsense">
+  <!-- post-rectangle1 -->
+  <ins class="adsbygoogle adslot_1"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7891449048"></ins>
+  <!-- post-rectangle2 -->
+  <ins class="adsbygoogle adslot_2"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="4798381840"></ins>
+  <!-- post-rectangle-smartphone -->
+  <ins class="adsbygoogle adslot_mobile"
+       style="width:300px;height:250px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="5264827844"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+(function () { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://hackyourdesign.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "https://blog.toshimaru.net/github-actions-first-impression/"
+    },
+    "headline": "GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~",
+    "datePublished": "2019-08-20T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://blog.toshimaru.net/images/posts/github-actions/og.png"
+    },
+    "keywords": "github, ci"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://blog.toshimaru.net/tag/github/",
+          "name": "github"
+        }
+      }
+    ]
+    }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/cool-ui/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li><a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-frontend/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-frontend/"></a>
+</li>
+          <li><a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li><a href="/engineer-hiring/">『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/engineer-hiring/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/engineer-hiring/"></a>
+</li>
+          <li><a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-batch-optimization/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-batch-optimization/"></a>
+</li>
+          <li><a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-http-status-symbols/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li><a href="/vg-tech-assessment/">VOYAGE GROUPの『公開技術力評価会』に行ってエンジニア評価と給与設定について本気出して考えた</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/vg-tech-assessment/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/vg-tech-assessment/"></a>
+</li>
+        </ul>
+        <p><a href="https://b.hatena.ne.jp/entrylist?sort=count&url=blog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+        <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-3">git</a> <a href="/tag/github/" class="set-2">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-3">javascript</a> <a href="/tag/jekyll/" class="set-2">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/oss/" class="set-2">oss</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-4">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/poem/" class="set-1">poem</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/review/" class="set-1">review</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-2">雑記</a>
+
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshimaru</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
