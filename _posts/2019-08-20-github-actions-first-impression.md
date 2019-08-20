@@ -1,12 +1,12 @@
 ---
 layout: post
-title: GitHub Actions(v2) を使ってみた ~v1との違い、導入方法、価格、良い点・悪い点~
+title: GitHub Actions(v2)ファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜
 image: "/images/posts/github-actions/og.png"
 description: "GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。"
 tags: github ci
 ---
 
-GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。
+[GitHub Actions v2(beta)](https://github.com/features/actions)が手元に降ってきたので試してみた記事です。
 
 **※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。**
 
@@ -14,6 +14,11 @@ GitHub Actions v2(beta)が手元に降ってきたので試してみた記事で
 
 - GitHub Actions v2、間違いなく顧客が求めていたもの
 - 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可）
+
+## 実際に対応してみたPull Request
+
+- [CI with GitHub Actions by toshimaru · Pull Request #33 · toshimaru/nyan](https://github.com/toshimaru/nyan/pull/33)
+- [GitHub Actions by toshimaru · Pull Request #75 · toshimaru/dotfiles](https://github.com/toshimaru/dotfiles/pull/75)
 
 ## GitHub Actions v1, GitHub Actions v2がある
 
@@ -52,11 +57,13 @@ https://github.com/actions/starter-workflows/tree/master/ci
 
 ## 価格
 
+気になる価格はどうでしょう。
+
 ![](/images/posts/github-actions/price.png)
 
-Public Repoは完全無料。並列数も20並列まで使える模様。
+Public Repoは**完全無料**。並列数も**20並列**まで使える模様。
 
-TravisCI, CircleCIと比較されることが多いかと思いますが、どちらも同じように無料で使えますが並列数に制限があったり、CIジョブのキューイングが遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。
+TravisCI, CircleCIと比較されることが多いかと思いますが、どちらも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。
 
 ## 良い点
 
@@ -89,12 +96,8 @@ TravisCI, CircleCIと比較されることが多いかと思いますが、ど�
 
 ## 結論
 
-- GitHub Actions v2、間違いなく顧客が求めていたものと言えます。オープンソースは基本はGitHub ActionsでCIを動かすことになっていくでしょう。
+- GitHub Actions v2、間違いなく顧客が求めていたものと言えます。オープンソースは基本はGitHub ActionsでCIを動かすことになっていくでしょう
 - 上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません
-
-## 実際に対応してみたPull Request
-
-- [CI with GitHub Actions by toshimaru · Pull Request #33 · toshimaru/nyan](https://github.com/toshimaru/nyan/pull/33)
-- [GitHub Actions by toshimaru · Pull Request #75 · toshimaru/dotfiles](https://github.com/toshimaru/dotfiles/pull/75)
+- 今後どんどん便利になっていろんなActionもサポートされていくと思われるので、ガンガン使ってより良いCIライフにしましょう
 
 [^1]: GitHubのサポートの方がそのようにGitHub Actionsを呼び分けていました。
