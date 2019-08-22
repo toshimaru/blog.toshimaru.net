@@ -4,6 +4,7 @@ title: GitHub Actions(v2)ファーストインプレッション 〜v1との違�
 image: "/images/posts/github-actions/og.png"
 description: "GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。"
 tags: github ci
+modified_date: 2019-08-22
 ---
 
 [GitHub Actions v2(beta)](https://github.com/features/actions)が手元に降ってきたので試してみた記事です。
@@ -31,12 +32,12 @@ tags: github ci
 | 特徴 | 汎用的なワークフロー型の自動化ソリューション | CI機能を備えた自動化ソリューション |
 | 記述言語 | HCL | YAML(JS拡張可) |
 | 公開ステータス | 2019年9月一杯でdeprecatedになる | public beta（順次ロールアウト中） |
-| ドキュメントURL | https://developer.github.com/actions/ | https://help.github.com |
+| ドキュメントURL | https://developer.github.com/actions/ | https://help.github.com/en/articles/about-github-actions |
 | サポートOS | Linux | Linux/Mac/Windows |
 | 環境構築 | `Dockerfile`を自ら記述 | 用意されたOSを利用 |
-| バックエンド | ? | Azure PipelinesのFork |
+| インフラバックエンド | ? | Azure PipelinesのFork |
 
-２つあるので、GitHub ActionsでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く異なってきます。
+２つあるので、「GitHub Actions」というキーワードでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く異なってきます。
 
 またv1が手元で使えるからといってv2が自動的に使えるわけではありません。それぞれ別物なのでv1が使えてたとしても、v2が降ってくるまでは使えません。
 
@@ -53,6 +54,7 @@ tags: github ci
 
 `.github/workflows`以下に直接YAMLを置くもよし。動くYAMLサンプルは下記の公式 starter-workflows レポジトリを覗いてみるとよいかと思います。
 
+Accelerating new GitHub Actions workflows: 
 https://github.com/actions/starter-workflows/tree/master/ci
 
 ## 価格
@@ -63,7 +65,7 @@ https://github.com/actions/starter-workflows/tree/master/ci
 
 Public Repoは**完全無料**。並列数も**20並列**まで使える模様。
 
-TravisCI, CircleCIと比較されることが多いかと思いますが、どちらも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。
+TravisCI, CircleCIと比較されることが多いかと思いますが、どちらのCIサービスも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。
 
 ## 良い点
 
@@ -83,7 +85,9 @@ TravisCI, CircleCIと比較されることが多いかと思いますが、ど�
 ## 悪い点
 
 - キャッシュ機構がない
+- Slack通知が公式では用意されていない
 - `[ci skip]` 機能がない
+- CI Status Badgeがない
 - Betaなのでいろいろバギー
   - 例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする
 - ドキュメントが少ない
@@ -97,7 +101,7 @@ TravisCI, CircleCIと比較されることが多いかと思いますが、ど�
 ## 結論
 
 - GitHub Actions v2、間違いなく顧客が求めていたものと言えます。オープンソースは基本はGitHub ActionsでCIを動かすことになっていくでしょう
-- 上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません
-- 今後どんどん便利になっていろんなActionもサポートされていくと思われるので、ガンガン使ってより良いCIライフにしましょう
+- 上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません。ただCircleCIなどで行っているような複雑なワークフローの移行は、まだ知見も少ない状況なのでなかなか大変な作業だと思います
+- 今後どんどん便利になって、いろんなバリエーションのActionもサポートされていくと思われるので、ガンガン使ってより良いCIライフにしましょう
 
 [^1]: GitHubのサポートの方がそのようにGitHub Actionsを呼び分けていました。
