@@ -20,7 +20,7 @@
   <meta property="og:description" content="GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/github-actions/og.png" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/github-actions/og.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2019-08-20T00:00:00+09:00">
+  <meta property="article:published_time" content="2019-08-20T00:00:00+09:00"><meta property="article:modified_time" content="2019-08-22T00:00:00+09:00" />
   <link rel="canonical" href="https://blog.toshimaru.net/github-actions-first-impression/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
@@ -75,7 +75,7 @@
   <h1 class="fadeInLeft">GitHub Actions(v2)ファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2019-08-20T00:00:00+09:00" pubdate>2019/08/20</time>
+      <i class="icon-calendar"></i><time datetime="2019-08-20T00:00:00+09:00" pubdate>2019/08/20 (更新: 2019/08/22)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/github/" rel="tag">github</a>
 
@@ -140,7 +140,7 @@
     <tr>
       <td>ドキュメントURL</td>
       <td>https://developer.github.com/actions/</td>
-      <td>https://help.github.com</td>
+      <td>https://help.github.com/en/articles/about-github-actions</td>
     </tr>
     <tr>
       <td>サポートOS</td>
@@ -153,14 +153,14 @@
       <td>用意されたOSを利用</td>
     </tr>
     <tr>
-      <td>バックエンド</td>
+      <td>インフラバックエンド</td>
       <td>?</td>
       <td>Azure PipelinesのFork</td>
     </tr>
   </tbody>
 </table>
 
-<p>２つあるので、GitHub ActionsでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く異なってきます。</p>
+<p>２つあるので、「GitHub Actions」というキーワードでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く異なってきます。</p>
 
 <p>またv1が手元で使えるからといってv2が自動的に使えるわけではありません。それぞれ別物なのでv1が使えてたとしても、v2が降ってくるまでは使えません。</p>
 
@@ -177,7 +177,8 @@
 
 <p><code class="highlighter-rouge">.github/workflows</code>以下に直接YAMLを置くもよし。動くYAMLサンプルは下記の公式 starter-workflows レポジトリを覗いてみるとよいかと思います。</p>
 
-<p>https://github.com/actions/starter-workflows/tree/master/ci</p>
+<p>Accelerating new GitHub Actions workflows: 
+https://github.com/actions/starter-workflows/tree/master/ci</p>
 
 <h2 id="価格">価格</h2>
 
@@ -187,7 +188,7 @@
 
 <p>Public Repoは<strong>完全無料</strong>。並列数も<strong>20並列</strong>まで使える模様。</p>
 
-<p>TravisCI, CircleCIと比較されることが多いかと思いますが、どちらも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。</p>
+<p>TravisCI, CircleCIと比較されることが多いかと思いますが、どちらのCIサービスも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。</p>
 
 <h2 id="良い点">良い点</h2>
 
@@ -213,7 +214,9 @@
 
 <ul>
   <li>キャッシュ機構がない</li>
+  <li>Slack通知が公式では用意されていない</li>
   <li><code class="highlighter-rouge">[ci skip]</code> 機能がない</li>
+  <li>CI Status Badgeがない</li>
   <li>Betaなのでいろいろバギー
     <ul>
       <li>例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする</li>
@@ -235,8 +238,8 @@
 
 <ul>
   <li>GitHub Actions v2、間違いなく顧客が求めていたものと言えます。オープンソースは基本はGitHub ActionsでCIを動かすことになっていくでしょう</li>
-  <li>上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません</li>
-  <li>今後どんどん便利になっていろんなActionもサポートされていくと思われるので、ガンガン使ってより良いCIライフにしましょう</li>
+  <li>上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません。ただCircleCIなどで行っているような複雑なワークフローの移行は、まだ知見も少ない状況なのでなかなか大変な作業だと思います</li>
+  <li>今後どんどん便利になって、いろんなバリエーションのActionもサポートされていくと思われるので、ガンガン使ってより良いCIライフにしましょう</li>
 </ul>
 
 <div class="footnotes">
@@ -351,7 +354,7 @@
     },
     "headline": "GitHub Actions(v2)ファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜",
     "datePublished": "2019-08-20T00:00:00+09:00",
-    "author": {
+    "dateModified": "2019-08-22T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
