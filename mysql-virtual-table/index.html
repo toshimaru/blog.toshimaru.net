@@ -291,7 +291,7 @@
 
 <p>直近30日間の日付をリストアップしてみる。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">CURDATE</span><span class="p">()</span> <span class="o">-</span> <span class="n">INTERVAL</span> <span class="n">seq_no</span> <span class="k">DAY</span> <span class="k">AS</span> <span class="n">date</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">CURDATE</span><span class="p">()</span> <span class="o">-</span> <span class="n">INTERVAL</span> <span class="n">seq_no</span> <span class="k">DAY</span> <span class="k">AS</span> <span class="nb">date</span>
 <span class="k">FROM</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span> <span class="k">AS</span> <span class="n">seq_no</span>
       <span class="k">UNION</span>
       <span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">seq_no</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span> <span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">COLUMNS</span>

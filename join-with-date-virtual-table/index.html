@@ -247,7 +247,7 @@
 
 <p>対象期間、つまり2018年1月1日〜2018年1月10日までのデータを生成します。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="s1">'2018-01-01'</span> <span class="o">+</span> <span class="n">INTERVAL</span> <span class="n">seq_no</span> <span class="k">DAY</span> <span class="k">AS</span> <span class="n">date</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="s1">'2018-01-01'</span> <span class="o">+</span> <span class="n">INTERVAL</span> <span class="n">seq_no</span> <span class="k">DAY</span> <span class="k">AS</span> <span class="nb">date</span>
 <span class="k">FROM</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span> <span class="k">AS</span> <span class="n">seq_no</span>
       <span class="k">UNION</span>
       <span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">seq_no</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span> <span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">COLUMNS</span>
@@ -300,16 +300,16 @@
 <p>上記の日付テーブルに実データをJOINしてやればうまくデータが生成できます。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
-    <span class="n">date_table</span><span class="p">.</span><span class="n">date</span> <span class="k">AS</span> <span class="s1">'日付'</span><span class="p">,</span>
+    <span class="n">date_table</span><span class="p">.</span><span class="nb">date</span> <span class="k">AS</span> <span class="s1">'日付'</span><span class="p">,</span>
     <span class="n">IFNULL</span><span class="p">(</span><span class="n">table2</span><span class="p">.</span><span class="err">商品入荷数</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">AS</span> <span class="s1">'入荷数'</span><span class="p">,</span>
     <span class="n">IFNULL</span><span class="p">(</span><span class="n">table1</span><span class="p">.</span><span class="err">商品販売数</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">AS</span> <span class="s1">'販売数'</span>
-<span class="k">FROM</span> <span class="p">(</span><span class="k">SELECT</span> <span class="s1">'2018-01-01'</span> <span class="o">+</span> <span class="n">INTERVAL</span> <span class="n">seq_no</span> <span class="k">DAY</span> <span class="k">AS</span> <span class="n">date</span>
+<span class="k">FROM</span> <span class="p">(</span><span class="k">SELECT</span> <span class="s1">'2018-01-01'</span> <span class="o">+</span> <span class="n">INTERVAL</span> <span class="n">seq_no</span> <span class="k">DAY</span> <span class="k">AS</span> <span class="nb">date</span>
       <span class="k">FROM</span> <span class="p">(</span><span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span> <span class="k">AS</span> <span class="n">seq_no</span>
             <span class="k">UNION</span>
             <span class="k">SELECT</span> <span class="o">@</span><span class="n">seq_no</span> <span class="p">:</span><span class="o">=</span> <span class="o">@</span><span class="n">seq_no</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">AS</span> <span class="n">seq_no</span> <span class="k">FROM</span> <span class="n">information_schema</span><span class="p">.</span><span class="n">COLUMNS</span>
             <span class="k">LIMIT</span> <span class="mi">10</span><span class="p">)</span> <span class="n">tmp</span><span class="p">)</span> <span class="n">date_table</span>
-<span class="k">LEFT</span> <span class="k">JOIN</span> <span class="n">table1</span> <span class="k">ON</span> <span class="n">table1</span><span class="p">.</span><span class="err">日付</span> <span class="o">=</span> <span class="n">date_table</span><span class="p">.</span><span class="n">date</span>
-<span class="k">LEFT</span> <span class="k">JOIN</span> <span class="n">table2</span> <span class="k">ON</span> <span class="n">table2</span><span class="p">.</span><span class="err">日付</span> <span class="o">=</span> <span class="n">date_table</span><span class="p">.</span><span class="n">date</span>
+<span class="k">LEFT</span> <span class="k">JOIN</span> <span class="n">table1</span> <span class="k">ON</span> <span class="n">table1</span><span class="p">.</span><span class="err">日付</span> <span class="o">=</span> <span class="n">date_table</span><span class="p">.</span><span class="nb">date</span>
+<span class="k">LEFT</span> <span class="k">JOIN</span> <span class="n">table2</span> <span class="k">ON</span> <span class="n">table2</span><span class="p">.</span><span class="err">日付</span> <span class="o">=</span> <span class="n">date_table</span><span class="p">.</span><span class="nb">date</span>
 </code></pre></div></div>
 
 <p>これで無事、得たかったデータを得ることができました。</p>
