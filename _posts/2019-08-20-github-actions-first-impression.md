@@ -32,10 +32,10 @@ modified_date: 2019-08-22
 | 特徴 | 汎用的なワークフロー型の自動化ソリューション | CI機能を備えた自動化ソリューション |
 | 記述言語 | HCL | YAML(JS拡張可) |
 | 公開ステータス | 2019年9月一杯でdeprecatedになる | public beta（順次ロールアウト中） |
-| ドキュメントURL | https://developer.github.com/actions/ | https://help.github.com/en/articles/about-github-actions |
+| ドキュメントURL | [developer.github.com](https://developer.github.com/actions/) | [help.github.com](https://help.github.com/en/articles/about-github-actions) |
 | サポートOS | Linux | Linux/Mac/Windows |
 | 環境構築 | `Dockerfile`を自ら記述 | 用意されたOSを利用 |
-| インフラバックエンド | ? | Azure PipelinesのFork |
+| バックエンドインフラ | ? | Azure PipelinesのFork |
 
 ２つあるので、「GitHub Actions」というキーワードでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く異なってきます。
 
@@ -50,7 +50,6 @@ modified_date: 2019-08-22
 有効化されると、下記画面が出てくるのでGUIでポチポチワークフローを設定するもよし。
 
 ![](/images/posts/github-actions/get-started.png)
-![](../getti)
 
 `.github/workflows`以下に直接YAMLを置くもよし。動くYAMLサンプルは下記の公式 starter-workflows レポジトリを覗いてみるとよいかと思います。
 
@@ -87,7 +86,7 @@ TravisCI, CircleCIと比較されることが多いかと思いますが、ど�
 - キャッシュ機構がない
 - Slack通知が公式では用意されていない
 - `[ci skip]` 機能がない
-- CI Status Badgeがない
+- ~~CI Status Badgeがない~~ CI Status Badge もあるようです [参考](https://www.reddit.com/r/github/comments/csehoc/github_actions_official_status_badges/)
 - Betaなのでいろいろバギー
   - 例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする
 - ドキュメントが少ない
