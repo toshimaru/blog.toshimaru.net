@@ -1,9 +1,11 @@
 ---
 layout: post
-title: "Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える"
+title: "Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える"
 image: "/images/posts/chromedriver.jpg"
 description: "RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。"
 tags: rails rspec
+toc: true
+modified_date: 2019-08-30
 ---
 
 RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、[poltergeist](https://github.com/teampoltergeist/poltergeist)から[Headless Chrome](https://chromium.googlesource.com/chromium/src/+/master/headless/README.md)に乗り換えてみたのでそのときのメモ。
@@ -40,7 +42,7 @@ RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、[poltergeis
 
 ```rb
 Capybara.register_driver :selenium_chrome_headless do |app|
-  browser_options = ::Selenium::WebDriver::Chrome::Options.new()
+  browser_options = ::Selenium::WebDriver::Chrome::Options.new
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
@@ -51,9 +53,9 @@ via. [add default selenium chrome driver registrations · teamcapybara/capybara@
 
 ## Install chromedriver
 
-### On Mac
+### On MacOS
 
-chromedriverが必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラク。
+`chromedriver` が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラク。
 
 ```console
 $ brew cask install chromedriver
@@ -74,8 +76,8 @@ No changes to formulae.
 
 **注意事項**
 
-- `brew install chromedriver`ではinstallできないので注意（ちょっと古いやり方）。
-- `chromedriver-helper` gemが入っているとうまく動かない場合があるので注意。
+- `brew install chromedriver`ではinstallできないので注意（ちょっと古いやり方）
+- `chromedriver-helper` gemが入っているとうまく動かない場合があるので注意
 
 ### On CircleCI
 
@@ -88,7 +90,7 @@ CircleCI上では、`ruby:x.x-node-browsers`のCircleCI公式Ruby Dokcer Image�
 
 上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用している。
 
-## On TravisCI
+### On TravisCI
 
 これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。
 
