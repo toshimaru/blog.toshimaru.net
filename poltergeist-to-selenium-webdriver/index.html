@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える - Hack Your Design!</title>
+  <title>Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -13,14 +13,14 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える - Hack Your Design!">
-  <meta property="og:title" content="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える - Hack Your Design!">
+  <meta name="twitter:title" content="Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える - Hack Your Design!">
+  <meta property="og:title" content="Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える - Hack Your Design!">
   <meta name="description" content="RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。">
   <meta name="twitter:description" content="RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。">
   <meta property="og:description" content="RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/chromedriver.jpg" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/chromedriver.jpg" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2018-08-04T00:00:00+09:00">
+  <meta property="article:published_time" content="2018-08-04T00:00:00+09:00"><meta property="article:modified_time" content="2019-08-30T00:00:00+09:00" />
   <link rel="canonical" href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
@@ -72,10 +72,10 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える</h1>
+  <h1 class="fadeInLeft">Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2018-08-04T00:00:00+09:00" pubdate>2018/08/04</time>
+      <i class="icon-calendar"></i><time datetime="2018-08-04T00:00:00+09:00" pubdate>2018/08/04 (更新: 2019/08/30)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/rails/" rel="tag">rails</a>
 
@@ -83,15 +83,28 @@
 
 
     </div>
-    <img class="post-image flipInX" src="/images/posts/chromedriver.jpg" alt="(image)Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える" title="Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える" />
+    <img class="post-image flipInX" src="/images/posts/chromedriver.jpg" alt="(image)Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える" title="Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える" />
   </div>
 </div>
 
 <div id="md-content">
-  
+  <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#対応-pull-request">対応 Pull Request</a></li>
+<li class="toc-entry toc-h2"><a href="#install-selenium-webdriver">Install selenium-webdriver</a></li>
+<li class="toc-entry toc-h2"><a href="#change-capybarajavascript_driver">Change Capybara.javascript_driver</a></li>
+<li class="toc-entry toc-h2"><a href="#install-chromedriver">Install chromedriver</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#on-macos">On MacOS</a></li>
+<li class="toc-entry toc-h3"><a href="#on-circleci">On CircleCI</a></li>
+<li class="toc-entry toc-h3"><a href="#on-travisci">On TravisCI</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#参考リンク">参考リンク</a></li>
+</ul>
   <p>RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、<a href="https://github.com/teampoltergeist/poltergeist">poltergeist</a>から<a href="https://chromium.googlesource.com/chromium/src/+/master/headless/README.md">Headless Chrome</a>に乗り換えてみたのでそのときのメモ。</p>
 
-<h2 id="対応-pull-request">対応 Pull Request</h2>
+<h2 id="対応-pull-request">
+<a class="anchor" href="#%E5%AF%BE%E5%BF%9C-pull-request" aria-hidden="true"><span class="octicon octicon-link"></span></a>対応 Pull Request</h2>
 
 <p>今回対応したPull Requestはこちら。</p>
 
@@ -99,7 +112,8 @@
 
 <p>思ったよりも差分はコンパクトにまとまった。</p>
 
-<h2 id="install-selenium-webdriver">Install selenium-webdriver</h2>
+<h2 id="install-selenium-webdriver">
+<a class="anchor" href="#install-selenium-webdriver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install selenium-webdriver</h2>
 
 <p>まずは<code class="highlighter-rouge">poltergeist</code> gemの代わりに、<code class="highlighter-rouge">selenium-webdriver</code>をインストール。</p>
 
@@ -107,7 +121,8 @@
 </span><span class="gi">+  gem "selenium-webdriver"
 </span></code></pre></div></div>
 
-<h2 id="change-capybarajavascript_driver">Change Capybara.javascript_driver</h2>
+<h2 id="change-capybarajavascript_driver">
+<a class="anchor" href="#change-capybarajavascript_driver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Change Capybara.javascript_driver</h2>
 
 <p>次に<code class="highlighter-rouge">Capybara.javascript_driver</code>を<code class="highlighter-rouge">:poltergeist</code>から<code class="highlighter-rouge">:selenium_chrome_headless</code>に変更。</p>
 
@@ -120,7 +135,7 @@
 <p>ちなみに<code class="highlighter-rouge">:selenium_chrome_headless</code>の設定は下記の変更の中でcapybara内に取り込まれている。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Capybara</span><span class="p">.</span><span class="nf">register_driver</span> <span class="ss">:selenium_chrome_headless</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
-  <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span><span class="p">()</span>
+  <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span>
   <span class="n">browser_options</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s1">'--headless'</span>
   <span class="n">browser_options</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s1">'--disable-gpu'</span>
   <span class="no">Capybara</span><span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">Driver</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="ss">browser: :chrome</span><span class="p">,</span> <span class="ss">options: </span><span class="n">browser_options</span><span class="p">)</span>
@@ -129,11 +144,13 @@
 
 <p>via. <a href="https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce">add default selenium chrome driver registrations · teamcapybara/capybara@0275eab · GitHub</a></p>
 
-<h2 id="install-chromedriver">Install chromedriver</h2>
+<h2 id="install-chromedriver">
+<a class="anchor" href="#install-chromedriver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install chromedriver</h2>
 
-<h3 id="on-mac">On Mac</h3>
+<h3 id="on-macos">
+<a class="anchor" href="#on-macos" aria-hidden="true"><span class="octicon octicon-link"></span></a>On MacOS</h3>
 
-<p>chromedriverが必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラク。</p>
+<p><code class="highlighter-rouge">chromedriver</code> が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラク。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>brew cask <span class="nb">install </span>chromedriver
 <span class="go">Updating Homebrew...
@@ -154,11 +171,14 @@ No changes to formulae.
 <p><strong>注意事項</strong></p>
 
 <ul>
-  <li><code class="highlighter-rouge">brew install chromedriver</code>ではinstallできないので注意（ちょっと古いやり方）。</li>
-  <li><code class="highlighter-rouge">chromedriver-helper</code> gemが入っているとうまく動かない場合があるので注意。</li>
+  <li>
+<code class="highlighter-rouge">brew install chromedriver</code>ではinstallできないので注意（ちょっと古いやり方）</li>
+  <li>
+<code class="highlighter-rouge">chromedriver-helper</code> gemが入っているとうまく動かない場合があるので注意</li>
 </ul>
 
-<h3 id="on-circleci">On CircleCI</h3>
+<h3 id="on-circleci">
+<a class="anchor" href="#on-circleci" aria-hidden="true"><span class="octicon octicon-link"></span></a>On CircleCI</h3>
 
 <p>CircleCI上では、<code class="highlighter-rouge">ruby:x.x-node-browsers</code>のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。</p>
 
@@ -168,7 +188,8 @@ No changes to formulae.
 
 <p>上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用している。</p>
 
-<h2 id="on-travisci">On TravisCI</h2>
+<h3 id="on-travisci">
+<a class="anchor" href="#on-travisci" aria-hidden="true"><span class="octicon octicon-link"></span></a>On TravisCI</h3>
 
 <p>これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。</p>
 
@@ -193,7 +214,8 @@ No changes to formulae.
 
 <p>(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)</p>
 
-<h2 id="参考リンク">参考リンク</h2>
+<h2 id="参考リンク">
+<a class="anchor" href="#%E5%8F%82%E8%80%83%E3%83%AA%E3%83%B3%E3%82%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考リンク</h2>
 
 <ul>
   <li><a href="https://ohbarye.hatenablog.jp/entry/2018/03/10/232300">PhantomJS + Poltergeist を Selenium + Headless Chrome で置き換える (1) Rails + Capybara による feature spec 編 - valid,invalid</a></li>
@@ -307,9 +329,9 @@ No changes to formulae.
       "@type": "Blog",
       "@id": "https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/"
     },
-    "headline": "Rails E2EテストでpoltergeistからHeadless Chromeへ乗り換える",
+    "headline": "Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える",
     "datePublished": "2018-08-04T00:00:00+09:00",
-    "author": {
+    "dateModified": "2019-08-30T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
