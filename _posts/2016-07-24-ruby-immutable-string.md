@@ -5,11 +5,12 @@ description: Ruby3 では文字列がデフォルトで immutable になると�
 modified_date: 2019-09-05
 image: /images/posts/frozenstring.jpg
 tags: ruby
+toc: true
 ---
 
 ## Immutable String in Ruby3
 
-~~Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。~~（**追記あり**）
+~~Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている~~。（**追記あり**）
 
 > Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました
 
@@ -27,9 +28,9 @@ _--- 追記ここから ---_
 
 via. [Feature #11473: Immutable String literal in Ruby 3 - Ruby master - Ruby Issue Tracking System](https://bugs.ruby-lang.org/issues/11473)
 
-したがってR、uby3以降も文字列をimmutableにしたければ、引き続き`frozen_string_literal: true`のマジックコメントが必要となる。
+したがって、Ruby3以降も文字列をimmutableにしたければ、引き続き`frozen_string_literal: true`のマジックコメントが必要となる。
 
-_--- 追記終わり ---_
+_--- 追記ここまで ---_
 
 ## Immutable String in Ruby2.3+
 
@@ -52,8 +53,6 @@ _--- 追記終わり ---_
 5.times { puts "a".object_id }
 ```
 
-### 結果
-
 実行すると全て同じ `object_id` が返ってくる。
 
 ```console
@@ -72,8 +71,6 @@ $ ruby string_with_frozen_option.rb
 ```rb
 5.times { puts "a".object_id }
 ```
-
-### 結果
 
 実行すると全て違う `object_id` が返ってくる。
 
@@ -138,6 +135,8 @@ puts str
 # => test.rb:3:in `<main>': can't modify frozen String (RuntimeError)
 ```
 
+### String#dup
+
 この場合の対処法としてはfreezeを解除したい文字列に対して、`.dup`を付けてやれば解決する。
 
 ```rb
@@ -147,6 +146,8 @@ str << "bc"
 puts str
 # => abc
 ```
+
+### String#+@
 
 あるいは、`String#+@`を使って下記のようにも書ける。
 
