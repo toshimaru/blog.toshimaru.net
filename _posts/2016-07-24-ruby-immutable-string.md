@@ -2,14 +2,14 @@
 layout: post
 title: Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する
 description: Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。
-modified_date: 2019-08-07
+modified_date: 2019-09-05
 image: /images/posts/frozenstring.jpg
 tags: ruby
 ---
 
 ## Immutable String in Ruby3
 
-~~Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。~~（下記に追記あり）
+~~Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。~~（**追記あり**）
 
 > Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました
 
@@ -17,15 +17,19 @@ via. [[Ruby] Ruby 3.0 の特大の非互換について - まめめも](http://d
 
 この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに`.freeze`を付けてプルリクエストを投げる輩が大挙してきたことだ。
 
-### 追記
+_--- 追記ここから ---_
 
-「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、**Ruby3 で文字列がデフォルトで immutable にはしない**という決定がMatzによってなされた。
+### 追記（2019-08-07）
+
+「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、「**Ruby3 では文字列をデフォルトで immutable にはしない**」という決定がMatzによってなされた。
 
 > So I officially abandon making frozen-string-literals default (for Ruby3).
 
 via. [Feature #11473: Immutable String literal in Ruby 3 - Ruby master - Ruby Issue Tracking System](https://bugs.ruby-lang.org/issues/11473)
 
-したがってRuby3以降も文字列をimmutableにしたければ、引き続き`frozen_string_literal: true`のマジックコメントが必要となる。
+したがってR、uby3以降も文字列をimmutableにしたければ、引き続き`frozen_string_literal: true`のマジックコメントが必要となる。
+
+_--- 追記終わり ---_
 
 ## Immutable String in Ruby2.3+
 
@@ -50,7 +54,7 @@ via. [Feature #11473: Immutable String literal in Ruby 3 - Ruby master - Ruby Is
 
 ### 結果
 
-全て同じ object_id が返ってくる。
+実行すると全て同じ `object_id` が返ってくる。
 
 ```console
 $ ruby string_with_frozen_option.rb
@@ -71,7 +75,7 @@ $ ruby string_with_frozen_option.rb
 
 ### 結果
 
-全て違う object_id が返ってくる。
+実行すると全て違う `object_id` が返ってくる。
 
 ```console
 $ ruby string_without_frozen_option.rb
@@ -120,7 +124,7 @@ end
 70346229343820
 ```
 
-つまり`WelcomeController`で定義された文字列だけが`freeze`されていることがわかる。
+つまり`frozen_string_literal`が書かれた`WelcomeController`上で定義された文字列だけが`freeze`されていることがわかる。
 
 ## mutableなStringを定義するにはどうしたらよい？
 
