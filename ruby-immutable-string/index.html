@@ -20,7 +20,7 @@
   <meta property="og:description" content="Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/frozenstring.jpg" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/frozenstring.jpg" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2016-07-24T00:00:00+09:00"><meta property="article:modified_time" content="2019-08-07T00:00:00+09:00" />
+  <meta property="article:published_time" content="2016-07-24T00:00:00+09:00"><meta property="article:modified_time" content="2019-09-05T00:00:00+09:00" />
   <link rel="canonical" href="https://blog.toshimaru.net/ruby-immutable-string/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
@@ -75,7 +75,7 @@
   <h1 class="fadeInLeft">Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2016-07-24T00:00:00+09:00" pubdate>2016/07/24 (更新: 2019/08/07)</time>
+      <i class="icon-calendar"></i><time datetime="2016-07-24T00:00:00+09:00" pubdate>2016/07/24 (更新: 2019/09/05)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/ruby/" rel="tag">ruby</a>
 
@@ -89,7 +89,7 @@
   
   <h2 id="immutable-string-in-ruby3">Immutable String in Ruby3</h2>
 
-<p><del>Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。</del>（下記に追記あり）</p>
+<p><del>Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。</del>（<strong>追記あり</strong>）</p>
 
 <blockquote>
   <p>Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました</p>
@@ -99,9 +99,11 @@
 
 <p>この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに<code class="highlighter-rouge">.freeze</code>を付けてプルリクエストを投げる輩が大挙してきたことだ。</p>
 
-<h3 id="追記">追記</h3>
+<p><em>— 追記ここから —</em></p>
 
-<p>「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、<strong>Ruby3 で文字列がデフォルトで immutable にはしない</strong>という決定がMatzによってなされた。</p>
+<h3 id="追記2019-08-07">追記（2019-08-07）</h3>
+
+<p>「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、「<strong>Ruby3 では文字列をデフォルトで immutable にはしない</strong>」という決定がMatzによってなされた。</p>
 
 <blockquote>
   <p>So I officially abandon making frozen-string-literals default (for Ruby3).</p>
@@ -109,7 +111,9 @@
 
 <p>via. <a href="https://bugs.ruby-lang.org/issues/11473">Feature #11473: Immutable String literal in Ruby 3 - Ruby master - Ruby Issue Tracking System</a></p>
 
-<p>したがってRuby3以降も文字列をimmutableにしたければ、引き続き<code class="highlighter-rouge">frozen_string_literal: true</code>のマジックコメントが必要となる。</p>
+<p>したがってR、uby3以降も文字列をimmutableにしたければ、引き続き<code class="highlighter-rouge">frozen_string_literal: true</code>のマジックコメントが必要となる。</p>
+
+<p><em>— 追記終わり —</em></p>
 
 <h2 id="immutable-string-in-ruby23">Immutable String in Ruby2.3+</h2>
 
@@ -132,7 +136,7 @@
 
 <h3 id="結果">結果</h3>
 
-<p>全て同じ object_id が返ってくる。</p>
+<p>実行すると全て同じ <code class="highlighter-rouge">object_id</code> が返ってくる。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>ruby string_with_frozen_option.rb
 <span class="go">70212460463280
@@ -151,7 +155,7 @@
 
 <h3 id="結果-1">結果</h3>
 
-<p>全て違う object_id が返ってくる。</p>
+<p>実行すると全て違う <code class="highlighter-rouge">object_id</code> が返ってくる。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>ruby string_without_frozen_option.rb
 <span class="go">70277165754460
@@ -196,7 +200,7 @@
 70346229343820
 </code></pre></div></div>
 
-<p>つまり<code class="highlighter-rouge">WelcomeController</code>で定義された文字列だけが<code class="highlighter-rouge">freeze</code>されていることがわかる。</p>
+<p>つまり<code class="highlighter-rouge">frozen_string_literal</code>が書かれた<code class="highlighter-rouge">WelcomeController</code>上で定義された文字列だけが<code class="highlighter-rouge">freeze</code>されていることがわかる。</p>
 
 <h2 id="mutableなstringを定義するにはどうしたらよい">mutableなStringを定義するにはどうしたらよい？</h2>
 
@@ -349,7 +353,7 @@
     },
     "headline": "Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する",
     "datePublished": "2016-07-24T00:00:00+09:00",
-    "dateModified": "2019-08-07T00:00:00+09:00","author": {
+    "dateModified": "2019-09-05T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
