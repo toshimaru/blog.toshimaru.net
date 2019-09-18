@@ -15,9 +15,10 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="Rails on Docker 環境での SystemSpec 環境構築 - Hack Your Design!">
   <meta property="og:title" content="Rails on Docker 環境での SystemSpec 環境構築 - Hack Your Design!">
-  <meta name="description" content="toshimaruの技術系なブログ">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ">
-  <meta property="og:description" content="toshimaruの技術系なブログ"><meta property="og:image" content="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" />
+  <meta name="description" content="Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。 環境 今回SystemSpecを導入したのは下記のような環境です。私のSystemSpec、遅すぎ…？ 実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。しかしこれは結果からいうと設定が悪かったのでした。">
+  <meta name="twitter:description" content="Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。 環境 今回SystemSpecを導入したのは下記のような環境です。私のSystemSpec、遅すぎ…？ 実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。しかしこれは結果からいうと設定が悪かったのでした。">
+  <meta property="og:description" content="Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。 環境 今回SystemSpecを導入したのは下記のような環境です。私のSystemSpec、遅すぎ…？ 実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。しかしこれは結果からいうと設定が悪かったのでした。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><meta property="og:type" content="article">
   <meta property="article:published_time" content="2019-09-18T00:00:00+09:00">
   <link rel="canonical" href="https://blog.toshimaru.net/rails-on-docker-system-spec/">
@@ -142,20 +143,26 @@
 
 <p>しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="o">...</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
     <span class="n">driven_by</span> <span class="ss">:selenium_chrome_headless</span>
   <span class="k">end</span>
+<span class="k">end</span>
 </code></pre></div></div>
 
 <p>下記のようにJSを起動させる必要のない System テストは従来通りの<code class="highlighter-rouge">rack_test</code>、<code class="highlighter-rouge">js: true</code>なテストは<code class="highlighter-rouge">selenium_chrome_headless</code>に設定してやればテスト全体が高速に実行可能になりました。</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="o">...</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
     <span class="n">driven_by</span> <span class="ss">:rack_test</span>
   <span class="k">end</span>
 
   <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">,</span> <span class="ss">js: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
     <span class="n">driven_by</span> <span class="ss">:selenium_chrome_headless</span>
   <span class="k">end</span>
+<span class="k">end</span>
 </code></pre></div></div>
 
 <h2 id="dockerfile">
