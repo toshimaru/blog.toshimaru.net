@@ -1,0 +1,442 @@
+<!doctype html>
+<html class="no-js" lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Rails on Docker 環境での SystemSpec 環境構築 - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <link rel="stylesheet" href="/css/main.css">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="Rails on Docker 環境での SystemSpec 環境構築 - Hack Your Design!">
+  <meta property="og:title" content="Rails on Docker 環境での SystemSpec 環境構築 - Hack Your Design!">
+  <meta name="description" content="toshimaruの技術系なブログ">
+  <meta name="twitter:description" content="toshimaruの技術系なブログ">
+  <meta property="og:description" content="toshimaruの技術系なブログ"><meta property="og:image" content="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2019-09-18T00:00:00+09:00">
+  <link rel="canonical" href="https://blog.toshimaru.net/rails-on-docker-system-spec/">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    // (adsbygoogle = window.adsbygoogle || []).push({
+    //   google_ad_client: "ca-pub-8616720383995770",
+    //   enable_page_level_ads: false
+    // });
+  </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.toshimaru.net/atom.xml" title="Hack Your Design!" />
+</head>
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="/search/" method="get">
+      <input type="text" class="search-txt" name="q" placeholder="Search"/>
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">Rails on Docker 環境での SystemSpec 環境構築</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2019-09-18T00:00:00+09:00" pubdate>2019/09/18</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/rspec/" rel="tag">rspec</a>
+
+<a href="/tag/rails/" rel="tag">rails</a>
+
+<a href="/tag/docker/" rel="tag">docker</a>
+
+
+    </div>
+    <img class="post-image flipInX" src="/images/posts/systemspec/og.jpg" alt="(image)Rails on Docker 環境での SystemSpec 環境構築" title="Rails on Docker 環境での SystemSpec 環境構築" />
+  </div>
+</div>
+
+<div id="md-content">
+  <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#環境">環境</a></li>
+<li class="toc-entry toc-h2"><a href="#対応pull-request">対応Pull Request</a></li>
+<li class="toc-entry toc-h2"><a href="#私のsystemspec遅すぎ">私のSystemSpec、遅すぎ…？</a></li>
+<li class="toc-entry toc-h2"><a href="#dockerfile">Dockerfile</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#chrome-failed-to-start-exited-abnormally">Chrome failed to start: exited abnormally</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#公式ではno-sandboxをデフォルトにはしてくれない">公式ではno-sandboxをデフォルトにはしてくれない？</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#securityを担保するためのsandbox">Securityを担保するためのsandbox</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul>
+  <p>Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</p>
+
+<h2 id="環境">
+<a class="anchor" href="#%E7%92%B0%E5%A2%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>環境</h2>
+
+<p>今回SystemSpecを導入したのは下記のような環境です。</p>
+
+<ul>
+  <li>プロジェクト: <a href="https://github.com/toshimaru/RailsTwitterClone/">RailsTwitterClone</a>
+</li>
+  <li>docker-compose</li>
+  <li>Ruby 2.6</li>
+  <li>chromium-driver</li>
+  <li>gem
+    <ul>
+      <li>rails (5.2)</li>
+      <li>rspec-rails</li>
+      <li>selenium-webdriver</li>
+      <li>capybara</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="対応pull-request">
+<a class="anchor" href="#%E5%AF%BE%E5%BF%9Cpull-request" aria-hidden="true"><span class="octicon octicon-link"></span></a>対応Pull Request</h2>
+
+<p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/506/files">Re-try System Spec by toshimaru · Pull Request #506 · toshimaru/RailsTwitterClone</a></p>
+
+<h2 id="私のsystemspec遅すぎ">
+<a class="anchor" href="#%E7%A7%81%E3%81%AEsystemspec%E9%81%85%E3%81%99%E3%81%8E" aria-hidden="true"><span class="octicon octicon-link"></span></a>私のSystemSpec、遅すぎ…？</h2>
+
+<p>実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。</p>
+
+<p>当時のPull Requestがこちら: <a href="https://github.com/toshimaru/RailsTwitterClone/pull/216">Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone</a></p>
+
+<p>しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:selenium_chrome_headless</span>
+  <span class="k">end</span>
+</code></pre></div></div>
+
+<p>下記のようにJSを起動させる必要のない System テストは従来通りの<code class="highlighter-rouge">rack_test</code>、<code class="highlighter-rouge">js: true</code>なテストは<code class="highlighter-rouge">selenium_chrome_headless</code>に設定してやればテスト全体が高速に実行可能になりました。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:rack_test</span>
+  <span class="k">end</span>
+
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">,</span> <span class="ss">js: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:selenium_chrome_headless</span>
+  <span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="dockerfile">
+<a class="anchor" href="#dockerfile" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dockerfile</h2>
+
+<p>今回利用した <code class="highlighter-rouge">Dockerfile</code> は Ruby 2.6 のベースイメージに <code class="highlighter-rouge">chromium-driver</code> をインストールしたコンテナとなります。</p>
+
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ruby:2.6</span>
+
+<span class="k">RUN </span>apt-get update <span class="nt">-qq</span> <span class="o">&amp;&amp;</span> apt-get <span class="nb">install</span> <span class="nt">-y</span> nodejs chromium-driver 
+</code></pre></div></div>
+
+<h3 id="chrome-failed-to-start-exited-abnormally">
+<a class="anchor" href="#chrome-failed-to-start-exited-abnormally" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chrome failed to start: exited abnormally</h3>
+
+<p>しかし、上述の環境において<code class="highlighter-rouge">rspec</code>を実行すると下記のようなエラーが発生します。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failure/Error: Unable to infer file and line number from backtrace
+
+  Selenium::WebDriver::Error::UnknownError:
+      unknown error: Chrome failed to start: exited abnormally
+      (unknown error: DevToolsActivePort file doesn't exist)
+      (The process started from chrome location /usr/bin/chromium is no longer running, so ChromeDriver is assuming that Chrome has crashed.)
+</code></pre></div></div>
+
+<p>このエラーは Chrome が<code class="highlighter-rouge">sandbox</code>モードで起動していることに起因します。下記のような<code class="highlighter-rouge">no-sandbox</code>オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Capybara</span><span class="p">.</span><span class="nf">register_driver</span> <span class="ss">:headless_chrome</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+  <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">tap</span> <span class="k">do</span> <span class="o">|</span><span class="n">opts</span><span class="o">|</span>
+    <span class="n">opts</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s2">"--headless"</span>
+    <span class="n">opts</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s2">"--disable-gpu"</span>
+    <span class="n">opts</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s2">"--no-sandbox"</span>
+  <span class="k">end</span>
+  <span class="no">Capybara</span><span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">Driver</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="ss">browser: :chrome</span><span class="p">,</span> <span class="ss">options: </span><span class="n">browser_options</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>こうして登録した<code class="highlighter-rouge">headless_chrome</code>をSystemTestに対して適応させてやればOKです。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="o">...</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">,</span> <span class="ss">js: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:headless_chrome</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>これできちんとDocker上でSystemSpecが通るようになりました。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web rspec
+<span class="go">
+Randomized with seed 30150
+............................................................................................................Capybara starting Puma...
+* Version 4.1.1 , codename: Fourth and One
+* Min threads: 0, max threads: 4
+* Listening on tcp://127.0.0.1:38789
+</span><span class="c">...............................................
+</span><span class="go">
+Finished in 19.87 seconds (files took 8.8 seconds to load)
+155 examples, 0 failures
+</span></code></pre></div></div>
+
+<h2 id="公式ではno-sandboxをデフォルトにはしてくれない">
+<a class="anchor" href="#%E5%85%AC%E5%BC%8F%E3%81%A7%E3%81%AFno-sandbox%E3%82%92%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AB%E3%81%AF%E3%81%97%E3%81%A6%E3%81%8F%E3%82%8C%E3%81%AA%E3%81%84" aria-hidden="true"><span class="octicon octicon-link"></span></a>公式ではno-sandboxをデフォルトにはしてくれない？</h2>
+
+<p>余談ですが、Capybara本体で登録されている<code class="highlighter-rouge">selenium_chrome_headless</code>に<code class="highlighter-rouge">no-sandbox</code>オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。</p>
+
+<p><a href="https://github.com/teamcapybara/capybara/pull/2241">Add <code class="highlighter-rouge">no-sandbox</code> option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara</a></p>
+
+<h3 id="securityを担保するためのsandbox">
+<a class="anchor" href="#security%E3%82%92%E6%8B%85%E4%BF%9D%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEsandbox" aria-hidden="true"><span class="octicon octicon-link"></span></a>Securityを担保するためのsandbox</h3>
+
+<p>sandboxはセキュリティを高めるための環境なので基本的には <strong>デフォルトで no-sandbox にするべきではない</strong> という判断のようです。</p>
+
+<blockquote>
+  <p>Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential.</p>
+</blockquote>
+
+<p>via. <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Sandbox</a></p>
+
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+
+<ul>
+  <li><a href="https://qiita.com/ngron/items/f61b8635b4d67f666d75">Rails + Selenium + DockerでSystemSpecの環境構築 - Qiita</a></li>
+  <li><a href="https://news.mynavi.jp/article/20081009-a027/">Google Chrome サンドボックスで実現するセキュリティ、Windowsの機能に依存 | マイナビニュース</a></li>
+</ul>
+
+</div>
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-on-docker-system-spec/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連記事</h3>
+  <ul>
+  
+    <li><a href="/ruby-on-google-app-engine/" title="Ruby on Rails を Google App Engine 上で動かしてみる">Ruby on Rails を Google App Engine 上で動かしてみる</a></li>
+  
+    <li><a href="/docker-compose-rails/" title="docker-compose で Rails 環境を構築する">docker-compose で Rails 環境を構築する</a></li>
+  
+    <li><a href="/poltergeist-to-selenium-webdriver/" title="Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える">Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える</a></li>
+  
+    <li><a href="/coverage-with-codeclimate/" title="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</a></li>
+  
+    <li><a href="/rspec-occasional-fail/" title="RSpecが通ったり落ちたりしたときにはseed値を指定する">RSpecが通ったり落ちたりしたときにはseed値を指定する</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <h3>おすすめ記事</h3>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/macbook-hhkb-sonshi-style/" title="Older Post: 俺流 MacBook+HHKB 最強尊師スタイル">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="adsense">
+  <!-- post-rectangle1 -->
+  <ins class="adsbygoogle adslot_1"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7891449048"></ins>
+  <!-- post-rectangle2 -->
+  <ins class="adsbygoogle adslot_2"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="4798381840"></ins>
+  <!-- post-rectangle-smartphone -->
+  <ins class="adsbygoogle adslot_mobile"
+       style="width:300px;height:250px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="5264827844"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+(function () { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://hackyourdesign.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "https://blog.toshimaru.net/rails-on-docker-system-spec/"
+    },
+    "headline": "Rails on Docker 環境での SystemSpec 環境構築",
+    "datePublished": "2019-09-18T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://blog.toshimaru.net/images/posts/systemspec/og.jpg"
+    },
+    "keywords": "rspec, rails, docker"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://blog.toshimaru.net/tag/rspec/",
+          "name": "rspec"
+        }
+      }
+    ]
+    }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/cool-ui/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li><a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-frontend/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-frontend/"></a>
+</li>
+          <li><a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li><a href="/engineer-hiring/">『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/engineer-hiring/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/engineer-hiring/"></a>
+</li>
+          <li><a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-batch-optimization/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-batch-optimization/"></a>
+</li>
+          <li><a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-http-status-symbols/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li><a href="/vg-tech-assessment/">VOYAGE GROUPの『公開技術力評価会』に行ってエンジニア評価と給与設定について本気出して考えた</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/vg-tech-assessment/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/vg-tech-assessment/"></a>
+</li>
+        </ul>
+        <p><a href="https://b.hatena.ne.jp/entrylist?sort=count&url=blog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+        <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-2">aws</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-2">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-3">git</a> <a href="/tag/github/" class="set-2">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-3">javascript</a> <a href="/tag/jekyll/" class="set-2">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-2">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/oss/" class="set-2">oss</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-4">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/poem/" class="set-1">poem</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/review/" class="set-1">review</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-2">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-2">雑記</a>
+
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshimaru</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

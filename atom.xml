@@ -1,4 +1,132 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-09-16T23:35:55+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">俺流 MacBook+HHKB 最強尊師スタイル</title><link href="https://blog.toshimaru.net/macbook-hhkb-sonshi-style/" rel="alternate" type="text/html" title="俺流 MacBook+HHKB 最強尊師スタイル" /><published>2019-09-15T00:00:00+09:00</published><updated>2019-09-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/macbook-hhkb-sonshi-style</id><content type="html" xml:base="https://blog.toshimaru.net/macbook-hhkb-sonshi-style/">&lt;p&gt;俺の中での  MacBook+HHKB 尊師スタイルの最終形が完成したので紹介してみる。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-09-18T23:16:51+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
+
+&lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
+
+&lt;p&gt;今回SystemSpecを導入したのは下記のような環境です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;プロジェクト: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/&quot;&gt;RailsTwitterClone&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;docker-compose&lt;/li&gt;
+  &lt;li&gt;Ruby 2.6&lt;/li&gt;
+  &lt;li&gt;chromium-driver&lt;/li&gt;
+  &lt;li&gt;gem
+    &lt;ul&gt;
+      &lt;li&gt;rails (5.2)&lt;/li&gt;
+      &lt;li&gt;rspec-rails&lt;/li&gt;
+      &lt;li&gt;selenium-webdriver&lt;/li&gt;
+      &lt;li&gt;capybara&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;対応pull-request&quot;&gt;対応Pull Request&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/506/files&quot;&gt;Re-try System Spec by toshimaru · Pull Request #506 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;私のsystemspec遅すぎ&quot;&gt;私のSystemSpec、遅すぎ…？&lt;/h2&gt;
+
+&lt;p&gt;実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。&lt;/p&gt;
+
+&lt;p&gt;当時のPull Requestがこちら: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/216&quot;&gt;Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;下記のようにJSを起動させる必要のない System テストは従来通りの&lt;code class=&quot;highlighter-rouge&quot;&gt;rack_test&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;js: true&lt;/code&gt;なテストは&lt;code class=&quot;highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に設定してやればテスト全体が高速に実行可能になりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rack_test&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+
+&lt;p&gt;今回利用した &lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; は Ruby 2.6 のベースイメージに &lt;code class=&quot;highlighter-rouge&quot;&gt;chromium-driver&lt;/code&gt; をインストールしたコンテナとなります。&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.6&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nodejs chromium-driver 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;chrome-failed-to-start-exited-abnormally&quot;&gt;Chrome failed to start: exited abnormally&lt;/h3&gt;
+
+&lt;p&gt;しかし、上述の環境において&lt;code class=&quot;highlighter-rouge&quot;&gt;rspec&lt;/code&gt;を実行すると下記のようなエラーが発生します。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failure/Error: Unable to infer file and line number from backtrace
+
+  Selenium::WebDriver::Error::UnknownError:
+      unknown error: Chrome failed to start: exited abnormally
+      (unknown error: DevToolsActivePort file doesn't exist)
+      (The process started from chrome location /usr/bin/chromium is no longer running, so ChromeDriver is assuming that Chrome has crashed.)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このエラーは Chrome が&lt;code class=&quot;highlighter-rouge&quot;&gt;sandbox&lt;/code&gt;モードで起動していることに起因します。下記のような&lt;code class=&quot;highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tap&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--headless&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--disable-gpu&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--no-sandbox&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こうして登録した&lt;code class=&quot;highlighter-rouge&quot;&gt;headless_chrome&lt;/code&gt;をSystemTestに対して適応させてやればOKです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これできちんとDocker上でSystemSpecが通るようになりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web rspec
+&lt;span class=&quot;go&quot;&gt;
+Randomized with seed 30150
+............................................................................................................Capybara starting Puma...
+* Version 4.1.1 , codename: Fourth and One
+* Min threads: 0, max threads: 4
+* Listening on tcp://127.0.0.1:38789
+&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;...............................................
+&lt;/span&gt;&lt;span class=&quot;go&quot;&gt;
+Finished in 19.87 seconds (files took 8.8 seconds to load)
+155 examples, 0 failures
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;公式ではno-sandboxをデフォルトにはしてくれない&quot;&gt;公式ではno-sandboxをデフォルトにはしてくれない？&lt;/h2&gt;
+
+&lt;p&gt;余談ですが、Capybara本体で登録されている&lt;code class=&quot;highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に&lt;code class=&quot;highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/teamcapybara/capybara/pull/2241&quot;&gt;Add &lt;code class=&quot;highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt; option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;securityを担保するためのsandbox&quot;&gt;Securityを担保するためのsandbox&lt;/h3&gt;
+
+&lt;p&gt;sandboxはセキュリティを高めるための環境なので基本的には &lt;strong&gt;デフォルトで no-sandbox にするべきではない&lt;/strong&gt; という判断のようです。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md&quot;&gt;Sandbox&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/ngron/items/f61b8635b4d67f666d75&quot;&gt;Rails + Selenium + DockerでSystemSpecの環境構築 - Qiita&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://news.mynavi.jp/article/20081009-a027/&quot;&gt;Google Chrome サンドボックスで実現するセキュリティ、Windowsの機能に依存 | マイナビニュース&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="rails" /><category term="docker" /><summary type="html">Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /></entry><entry><title type="html">俺流 MacBook+HHKB 最強尊師スタイル</title><link href="https://blog.toshimaru.net/macbook-hhkb-sonshi-style/" rel="alternate" type="text/html" title="俺流 MacBook+HHKB 最強尊師スタイル" /><published>2019-09-15T00:00:00+09:00</published><updated>2019-09-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/macbook-hhkb-sonshi-style</id><content type="html" xml:base="https://blog.toshimaru.net/macbook-hhkb-sonshi-style/">&lt;p&gt;俺の中での  MacBook+HHKB 尊師スタイルの最終形が完成したので紹介してみる。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;俺流MacBook+HHKB尊師スタイルの最終型が完成した &lt;a href=&quot;https://t.co/HEW9luH8t3&quot;&gt;pic.twitter.com/HEW9luH8t3&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1169423113982865410?ref_src=twsrc%5Etfw&quot;&gt;September 5, 2019&lt;/a&gt;&lt;/blockquote&gt;
 
@@ -1328,109 +1456,4 @@ https://github.com/actions/starter-workflows/tree/master/ci&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.ryuzee.com/contents/blog/7126&quot;&gt;【資料公開】Effective DevOps | Ryuzee.com&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="読書" /><summary type="html">本書のターゲット</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/effective_devops.jpg" /></entry><entry><title type="html">Google App Engineを第一世代から第二世代に乗り換えた</title><link href="https://blog.toshimaru.net/gae-first-to-second-generation/" rel="alternate" type="text/html" title="Google App Engineを第一世代から第二世代に乗り換えた" /><published>2019-05-19T00:00:00+09:00</published><updated>2019-05-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gae-first-to-second-generation</id><content type="html" xml:base="https://blog.toshimaru.net/gae-first-to-second-generation/">&lt;p&gt;Google App Engineを第一世代から第二世代に乗り換えました。GoとPHPの環境をGoogle App Engine上にもっているのですが、それぞれGoは1.9から1.11、PHPは5.5から7.2へのアップデートとなります。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Google App Engine で動かしているGoの環境を1.9から1.11に上げた。わりとすんなりいけた&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1128368940919529472?ref_src=twsrc%5Etfw&quot;&gt;May 14, 2019&lt;/a&gt;&lt;/blockquote&gt;
-&lt;blockquote class=&quot;twitter-tweet&quot; data-conversation=&quot;none&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;勢いでPHP on Google App Engine もphp 5.5からphp 7.2に上げといた&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1129004376566030336?ref_src=twsrc%5Etfw&quot;&gt;May 16, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;第一世代から第二世代の比較&quot;&gt;第一世代から第二世代の比較&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;第一世代と第二世代は何が違うのか？&lt;/strong&gt; &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/runtimes&quot;&gt;公式ドキュメント&lt;/a&gt;を参照します。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/gae/first-vs-second.png&quot; alt=&quot;first vs second&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;ポイントとしては下記になるでしょうか。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;サポート言語のバージョンアップ&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/google/gvisor&quot;&gt;gVisor&lt;/a&gt;ベースなコンテナサンドボックス環境&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/tmp&lt;/code&gt;へのRead/Writeアクセス&lt;/li&gt;
-  &lt;li&gt;外部ネットワーク通信が自由に可能に&lt;/li&gt;
-  &lt;li&gt;どんな拡張・ライブラリも利用可能に&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;どのように移行したらよいの&quot;&gt;どのように移行したらよいの？&lt;/h2&gt;
-
-&lt;p&gt;下記のようにアプリケーションの移行のための公式ドキュメントが用意されているのでそれを参照しながら進めるのがよいでしょう。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go111/go-differences&quot;&gt;Migrating your App Engine app from Go 1.9 to Go 1.11&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/php7/php-differences&quot;&gt;Migrating Your App from PHP 5.5 to PHP 7.2&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;注意点&quot;&gt;注意点&lt;/h2&gt;
-
-&lt;h3 id=&quot;appyaml-の変更&quot;&gt;app.yaml の変更&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;app.yaml&lt;/code&gt;で定義した&lt;code class=&quot;highlighter-rouge&quot;&gt;api_version&lt;/code&gt;や&lt;code class=&quot;highlighter-rouge&quot;&gt;login&lt;/code&gt;が使えなくなるなど&lt;code class=&quot;highlighter-rouge&quot;&gt;app.yaml&lt;/code&gt;を書き換える必要があります。この変更は先に引用した公式の移行ドキュメント通りにすすめていけば問題ないです。&lt;/p&gt;
-
-&lt;p&gt;公式がGitHub上でサンプルコードを提供しているのでそれを見るのが手っ取り早いかもしれません。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/appengine/php72&quot;&gt;PHPのGitHubサンプル&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/golang-samples/tree/master/appengine/go11x&quot;&gt;GoのGitHubサンプル&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;第一世代と第二世代の間の過渡期世代がある&quot;&gt;第一世代と第二世代の間の過渡期世代がある&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/gae/gae-1st-2nd.png&quot; alt=&quot;first vs second&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;サンドボックスの制限あり かつ App Engine API 対応 の 純粋な 1st gen ランタイム&lt;/li&gt;
-    &lt;li&gt;サンドボックスの制限なし かつ App Engine API 対応 の 過渡期のランタイム&lt;/li&gt;
-    &lt;li&gt;サンドボックスの制限なし かつ App Engine API 非対応 の 純粋な 2nd gen ランタイム&lt;/li&gt;
-  &lt;/ul&gt;
-
-  &lt;p&gt;の3つに分けることができます。そして 過渡期のランタイム が古い定義では区別せずに 2nd gen と呼ばれていたのに対し、新しい定義では区別せずに 1st gen と呼ばれています。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;ref. &lt;a href=&quot;https://qiita.com/apstndb/items/314e461aed518a4ad26f#%E8%80%83%E5%AF%9F&quot;&gt;GAE Go 1.11 ランタイムが公式には 2nd gen ではなくなった件について - Qiita&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;上引用の通り、&lt;strong&gt;第二世代にはApp Engine API対応の過渡期の世代とApp Engine API非対応の完璧な第二世代があります&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;ここで言うとJava 8、Go 1.11が過渡期の世代にあたるようです。Go 1.12やPHP 7.2のバージョンの世代は完璧な第二世代にあたるので、App Engine APIは利用不可となります。&lt;/p&gt;
-
-&lt;h3 id=&quot;php72は-dev_appserverpy-が使えない&quot;&gt;PHP7.2は dev_appserver.py が使えない&lt;/h3&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;dev_appserver.py is not supported with the PHP 7.2 runtime. To test your application and run it locally, you must download and install PHP 7.2 and set up a web server.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;ref. &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/php7/php-differences#running_your_application_locally&quot;&gt;Migrating Your App from PHP 5.5 to PHP 7.2  |  App Engine standard environment for PHP 7.2 docs  |  Google Cloud&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;PHP7.2を利用する場合 &lt;code class=&quot;highlighter-rouge&quot;&gt;dev_appserver.py&lt;/code&gt; は使えなくなるようなので、PHPのビルトインウェブサーバーを使えとのことです。下記のコマンドでPHPが動作するWebサーバーを起動させましょう。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ php -S localhost:8080
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;参考: &lt;a href=&quot;/simple-command-web-server/&quot;&gt;超簡単コマンドでローカルにHTTPサーバーを起動する方法&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;app-engine-apiの移行先&quot;&gt;App Engine APIの移行先&lt;/h2&gt;
-
-&lt;p&gt;App Engine APIが使えなくなった後、どのようなサービスに移行したらいいのでしょうか？ 下記のようにまとめることができるでしょう。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;Users -&amp;gt; Identity-Aware Proxy?&lt;/li&gt;
-    &lt;li&gt;Memcache -&amp;gt; Cloud Memorystore for Redis&lt;/li&gt;
-    &lt;li&gt;Datastore -&amp;gt; Cloud Datastore&lt;/li&gt;
-    &lt;li&gt;Search -&amp;gt; …?&lt;/li&gt;
-    &lt;li&gt;Mail -&amp;gt; SendGrid?&lt;/li&gt;
-    &lt;li&gt;TaskQueue -&amp;gt; Cloud Tasks&lt;/li&gt;
-    &lt;li&gt;Cron -&amp;gt; Cloud Scheduler&lt;/li&gt;
-    &lt;li&gt;Image -&amp;gt; …?&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;ref. &lt;a href=&quot;https://github.com/gcpug/nouhau/blob/0bf7d48d3638f6e3969358ebbcb0ecf5d900f0e2/app-engine/note/gaego19-migration-gaego111/README.md&quot;&gt;App Engine Standard Go 1.9 migration to Go 1.11 · gcpug/nouhau&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;個人的には &lt;code class=&quot;highlighter-rouge&quot;&gt;login:required&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;login:admin&lt;/code&gt; の&lt;a href=&quot;https://github.com/gcpug/nouhau/blob/0bf7d48d3638f6e3969358ebbcb0ecf5d900f0e2/app-engine/note/gaego19-migration-gaego111/README.md#loginrequired--loginadmin-%E3%81%AE%E5%BB%83%E6%AD%A2&quot;&gt;廃止&lt;/a&gt;が一番辛くて、移行も大変だなぁと思うところであります。&lt;/p&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://qiita.com/apstndb/items/314e461aed518a4ad26f&quot;&gt;GAE Go 1.11 ランタイムが公式には 2nd gen ではなくなった件について - Qiita&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://koni.hateblo.jp/entry/2018/12/11/100000&quot;&gt;Google App Engine PHP 7.2 がリリース！これまでの違いと利用手順 - koni blog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/gcpug/nouhau/blob/master/app-engine/note/gaego19-migration-gaego111/README.md&quot;&gt;App Engine Standard Go 1.9 migration to Go 1.11に最低限必要なこと&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google-app-engine" /><summary type="html">Google App Engineを第一世代から第二世代に乗り換えました。GoとPHPの環境をGoogle App Engine上にもっているのですが、それぞれGoは1.9から1.11、PHPは5.5から7.2へのアップデートとなります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/gae/first-vs-second.png" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="読書" /><summary type="html">本書のターゲット</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/effective_devops.jpg" /></entry></feed>

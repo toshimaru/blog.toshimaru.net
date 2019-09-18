@@ -20,7 +20,7 @@
   <meta property="og:description" content="RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。 今回対応したPull Requestしてはこちら。 https://github.com/toshimaru/RailsTwitterClone/pull/211 思ったよりも差分はコンパクトにまとまった。まずはpoltergeist gemの代わりに、selenium-webdriverをインストール。次にCapybara.javascript_driverを:poltergeistから:selenium_chrome_headlessに変更。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/chromedriver.jpg" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/chromedriver.jpg" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2018-08-04T00:00:00+09:00"><meta property="article:modified_time" content="2019-08-30T00:00:00+09:00" />
+  <meta property="article:published_time" content="2018-08-04T00:00:00+09:00"><meta property="article:modified_time" content="2019-09-17T00:00:00+09:00" />
   <link rel="canonical" href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
@@ -75,11 +75,13 @@
   <h1 class="fadeInLeft">Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2018-08-04T00:00:00+09:00" pubdate>2018/08/04 (更新: 2019/08/30)</time>
+      <i class="icon-calendar"></i><time datetime="2018-08-04T00:00:00+09:00" pubdate>2018/08/04 (更新: 2019/09/17)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/rails/" rel="tag">rails</a>
 
 <a href="/tag/rspec/" rel="tag">rspec</a>
+
+<a href="/tag/chrome/" rel="tag">chrome</a>
 
 
     </div>
@@ -110,7 +112,7 @@
 
 <p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/211">Use headless Chrome instead of PhantomJS(poltergeist) by toshimaru · Pull Request #211 · toshimaru/RailsTwitterClone · GitHub</a></p>
 
-<p>思ったよりも差分はコンパクトにまとまった。</p>
+<p>思ったよりも差分はコンパクトにまとまりました。</p>
 
 <h2 id="install-selenium-webdriver">
 <a class="anchor" href="#install-selenium-webdriver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install selenium-webdriver</h2>
@@ -124,7 +126,7 @@
 <h2 id="change-capybarajavascript_driver">
 <a class="anchor" href="#change-capybarajavascript_driver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Change Capybara.javascript_driver</h2>
 
-<p>次に<code class="highlighter-rouge">Capybara.javascript_driver</code>を<code class="highlighter-rouge">:poltergeist</code>から<code class="highlighter-rouge">:selenium_chrome_headless</code>に変更。</p>
+<p>次に<code class="highlighter-rouge">Capybara.javascript_driver</code>を<code class="highlighter-rouge">:poltergeist</code>から<code class="highlighter-rouge">:selenium_chrome_headless</code>に変更します。</p>
 
 <div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">- require "capybara/poltergeist"
 - Capybara.javascript_driver = :poltergeist
@@ -132,7 +134,7 @@
 + Capybara.javascript_driver = :selenium_chrome_headless
 </span></code></pre></div></div>
 
-<p>ちなみに<code class="highlighter-rouge">:selenium_chrome_headless</code>の設定は下記の変更の中でcapybara内に取り込まれている。</p>
+<p>ちなみに<code class="highlighter-rouge">:selenium_chrome_headless</code>の設定は下記の変更の中でcapybara内に取り込まれています。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Capybara</span><span class="p">.</span><span class="nf">register_driver</span> <span class="ss">:selenium_chrome_headless</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
   <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span>
@@ -150,7 +152,7 @@
 <h3 id="on-macos">
 <a class="anchor" href="#on-macos" aria-hidden="true"><span class="octicon octicon-link"></span></a>On MacOS</h3>
 
-<p><code class="highlighter-rouge">chromedriver</code> が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラク。</p>
+<p><code class="highlighter-rouge">chromedriver</code> が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラクです。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>brew cask <span class="nb">install </span>chromedriver
 <span class="go">Updating Homebrew...
@@ -172,9 +174,9 @@ No changes to formulae.
 
 <ul>
   <li>
-<code class="highlighter-rouge">brew install chromedriver</code>ではinstallできないので注意（ちょっと古いやり方）</li>
+<code class="highlighter-rouge">brew install chromedriver</code>ではinstallできないので注意（<code class="highlighter-rouge">brew cask</code>経由にすること）</li>
   <li>
-<code class="highlighter-rouge">chromedriver-helper</code> gemが入っているとうまく動かない場合があるので注意</li>
+<code class="highlighter-rouge">chromedriver-helper</code> gem が入っているとうまく動かない場合があるので注意</li>
 </ul>
 
 <h3 id="on-circleci">
@@ -186,7 +188,7 @@ No changes to formulae.
     <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">circleci/ruby:2.5-node-browsers</span>
 </code></pre></div></div>
 
-<p>上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用している。</p>
+<p>上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用しています。</p>
 
 <h3 id="on-travisci">
 <a class="anchor" href="#on-travisci" aria-hidden="true"><span class="octicon octicon-link"></span></a>On TravisCI</h3>
@@ -203,7 +205,7 @@ No changes to formulae.
      # ./spec/features/authentication_pages_spec.rb:9:in `block (3 levels) in &lt;top (required)&gt;'
 </code></pre></div></div>
 
-<p>本当は<code class="highlighter-rouge">sudo: false</code>の設定で動かしたかったのですがそれだと上手くいかなかったので<code class="highlighter-rouge">sudo</code>で起動させて<code class="highlighter-rouge">chromium-chromedriver</code>をテスト前にInstallしてパスを通すという方法でテストを通しました。</p>
+<p><del>本当は<code class="highlighter-rouge">sudo: false</code>の設定で動かしたかったのですがそれだと上手くいかなかったので<code class="highlighter-rouge">sudo</code>で起動させて<code class="highlighter-rouge">chromium-chromedriver</code>をテスト前にInstallしてパスを通すという方法でテストを通しました。</del></p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">sudo</span><span class="pi">:</span> <span class="s">required</span>
 <span class="na">language</span><span class="pi">:</span> <span class="s">ruby</span>
@@ -212,7 +214,21 @@ No changes to formulae.
   <span class="pi">-</span> <span class="s">ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver</span>
 </code></pre></div></div>
 
-<p>(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)</p>
+<p><del>(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)</del></p>
+
+<p><strong>追記（2019年9月17日）</strong></p>
+
+<p><code class="highlighter-rouge">sudo</code> 無しでも下記のような設定でいけました。</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">dist</span><span class="pi">:</span> <span class="s">bionic</span>
+<span class="na">addons</span><span class="pi">:</span>
+  <span class="na">chrome</span><span class="pi">:</span> <span class="s">stable</span>
+  <span class="na">apt</span><span class="pi">:</span>
+    <span class="na">packages</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">chromium-chromedriver</span>
+</code></pre></div></div>
+
+<p>参考Pull Request: <a href="https://github.com/toshimaru/RailsTwitterClone/pull/524/files">No sudo on TravisCI by toshimaru · Pull Request #524 · toshimaru/RailsTwitterClone</a></p>
 
 <h2 id="参考リンク">
 <a class="anchor" href="#%E5%8F%82%E8%80%83%E3%83%AA%E3%83%B3%E3%82%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考リンク</h2>
@@ -246,15 +262,15 @@ No changes to formulae.
   <h3>関連記事</h3>
   <ul>
   
+    <li><a href="/rails-on-docker-system-spec/" title="Rails on Docker 環境での SystemSpec 環境構築">Rails on Docker 環境での SystemSpec 環境構築</a></li>
+  
+    <li><a href="/chromebook-firstimpression/" title="Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい">Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい</a></li>
+  
+    <li><a href="/chrome-dev-tool/" title="細かすぎて伝わらないChrome Developerツール・テクニック集">細かすぎて伝わらないChrome Developerツール・テクニック集</a></li>
+  
+    <li><a href="/chrome-dev-tool-localstrage/" title="ChromeのDevToolでlocalStrageのデータをイジイジする">ChromeのDevToolでlocalStrageのデータをイジイジする</a></li>
+  
     <li><a href="/coverage-with-codeclimate/" title="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</a></li>
-  
-    <li><a href="/rspec-occasional-fail/" title="RSpecが通ったり落ちたりしたときにはseed値を指定する">RSpecが通ったり落ちたりしたときにはseed値を指定する</a></li>
-  
-    <li><a href="/rspec2-to-rspec3-errors/" title="RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話">RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話</a></li>
-  
-    <li><a href="/smarthr-job-trial/" title="SmartHR社に体験入社してきた">SmartHR社に体験入社してきた</a></li>
-  
-    <li><a href="/rubocop-rails-config/" title="RuboCopチームにgemの名前を譲った話">RuboCopチームにgemの名前を譲った話</a></li>
   
   </ul>
   </div>
@@ -331,7 +347,7 @@ No changes to formulae.
     },
     "headline": "Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える",
     "datePublished": "2018-08-04T00:00:00+09:00",
-    "dateModified": "2019-08-30T00:00:00+09:00","author": {
+    "dateModified": "2019-09-17T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
@@ -345,7 +361,7 @@ No changes to formulae.
       "@type": "ImageObject",
       "url": "https://blog.toshimaru.net/images/posts/chromedriver.jpg"
     },
-    "keywords": "rails, rspec"
+    "keywords": "rails, rspec, chrome"
   },
   {
     
