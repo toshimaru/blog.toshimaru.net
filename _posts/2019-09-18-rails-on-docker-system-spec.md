@@ -2,7 +2,7 @@
 layout: post
 title: Rails on Docker 環境での SystemSpec 環境構築
 image: "/images/posts/systemspec/og.jpg"
-description: 
+description: "Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。 環境 今回SystemSpecを導入したのは下記のような環境です。私のSystemSpec、遅すぎ…？ 実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。しかしこれは結果からいうと設定が悪かったのでした。"
 toc: true
 tags: rspec rails docker
 ---
@@ -36,14 +36,19 @@ Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しま�
 しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。
 
 ```rb
+RSpec.configure do |config|
+  ...
   config.before(:each, type: :system) do
     driven_by :selenium_chrome_headless
   end
+end
 ```
 
 下記のようにJSを起動させる必要のない System テストは従来通りの`rack_test`、`js: true`なテストは`selenium_chrome_headless`に設定してやればテスト全体が高速に実行可能になりました。
 
 ```rb
+RSpec.configure do |config|
+  ...
   config.before(:each, type: :system) do
     driven_by :rack_test
   end
@@ -51,6 +56,7 @@ Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しま�
   config.before(:each, type: :system, js: true) do
     driven_by :selenium_chrome_headless
   end
+end
 ```
 
 ## Dockerfile
