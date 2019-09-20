@@ -15,9 +15,9 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="Rails でトランザクション分離レベルを設定する方法 - Hack Your Design!">
   <meta property="og:title" content="Rails でトランザクション分離レベルを設定する方法 - Hack Your Design!">
-  <meta name="description" content="突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3.x と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。">
-  <meta name="twitter:description" content="突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3.x と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。">
-  <meta property="og:description" content="突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3.x と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。">
+  <meta name="description" content="突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3 と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。">
+  <meta name="twitter:description" content="突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3 と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。">
+  <meta property="og:description" content="突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3 と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。">
   <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
   <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
   <meta property="article:published_time" content="2015-01-19T00:00:00+09:00"><meta property="article:modified_time" content="2019-09-21T00:00:00+09:00" />
@@ -94,7 +94,7 @@
 <li class="toc-entry toc-h2"><a href="#mysqlのトランザクション分離レベル">MySQLのトランザクション分離レベル</a></li>
 <li class="toc-entry toc-h2"><a href="#railsでトランザクション分離レベルを設定">Railsでトランザクション分離レベルを設定</a>
 <ul>
-<li class="toc-entry toc-h3"><a href="#rails-3x">Rails 3.x</a></li>
+<li class="toc-entry toc-h3"><a href="#rails-3">Rails 3</a></li>
 <li class="toc-entry toc-h3"><a href="#rails-4x">Rails 4.x</a></li>
 <li class="toc-entry toc-h3"><a href="#rails-5-以降">Rails 5 以降</a></li>
 </ul>
@@ -107,7 +107,7 @@
   <p><strong>追記</strong></p>
 
 <ul>
-  <li>2019-09-21: Rails5, Rails6向けに記事の内容をアップデートしました</li>
+  <li>2019-09-21: Rails5, Rails6 向けに記事の内容をアップデートしました</li>
 </ul>
 
 <h2 id="mysqlのトランザクション分離レベル">
@@ -128,10 +128,10 @@
 <h2 id="railsでトランザクション分離レベルを設定">
 <a class="anchor" href="#rails%E3%81%A7%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB%E3%82%92%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>Railsでトランザクション分離レベルを設定</h2>
 
-<p>続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3.x と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。</p>
+<p>続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3 と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。</p>
 
-<h3 id="rails-3x">
-<a class="anchor" href="#rails-3x" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rails 3.x</h3>
+<h3 id="rails-3">
+<a class="anchor" href="#rails-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rails 3</h3>
 
 <p>Rails 3の時代では <code class="highlighter-rouge">execute</code> で直接トランザクション分離レベルを設定する必要がありました。</p>
 
@@ -163,24 +163,25 @@
 <p>via. <a href="https://edgeguides.rubyonrails.org/5_0_release_notes.html">Ruby on Rails 5.0 Release Notes — Ruby on Rails Guides</a></p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ApplicationRecord</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">isolation: :read_committed</span><span class="p">)</span> <span class="k">do</span> 
-  <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">update!</span> <span class="ss">name: </span><span class="s2">"TEST"</span>
+  <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">lock</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">user</span><span class="p">.</span><span class="nf">update!</span> <span class="ss">name: </span><span class="s2">"TEST"</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
 <p>上記のコードを pry で実行した際に流れるクエリは下記の通りです。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   (3.1ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
-   (0.4ms)  BEGIN
-  User Load (1.5ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1
-  User Update (1.1ms)  UPDATE `users` SET `name` = 'TEST', `updated_at` = '2019-09-20 15:54:16' WHERE `users`.`id` = 1
-   (2.9ms)  COMMIT
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   (0.5ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+   (0.3ms)  BEGIN
+  User Load (0.9ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1 FOR UPDATE
+  User Update (0.4ms)  UPDATE `users` SET `name` = 'TEST', `updated_at` = '2019-09-20 16:34:31' WHERE `users`.`id` = 1
+   (1.5ms)  COMMIT
 =&gt; true
 </code></pre></div></div>
 
 <h2 id="有効なトランザクション分離レベル">
 <a class="anchor" href="#%E6%9C%89%E5%8A%B9%E3%81%AA%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>有効なトランザクション分離レベル</h2>
 
-<p>設定可能な有効な<code class="highlighter-rouge">isolation</code>レベルは何でしょうか？　答えは下記４つになります。</p>
+<p>Railsで設定可能かつ有効な<code class="highlighter-rouge">isolation</code>レベルは何でしょうか？　答えは下記４つになります。</p>
 
 <blockquote>
   <p>Valid isolation levels are:</p>
@@ -193,7 +194,7 @@
   </ul>
 </blockquote>
 
-<p>via. <a href="http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html">Rails 4 - Transaction isolation level</a></p>
+<p>via. <a href="https://railsdoc.github.io/classes/ActiveRecord/ConnectionAdapters/DatabaseStatements.html#method-i-transaction-label-Transaction+isolation">ActiveRecord::ConnectionAdapters::DatabaseStatements | RailsDoc</a></p>
 
 <h2 id="分離レベルとダーティリードファジーリードファントムリードの関係">
 <a class="anchor" href="#%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB%E3%81%A8%E3%83%80%E3%83%BC%E3%83%86%E3%82%A3%E3%83%AA%E3%83%BC%E3%83%89%E3%83%95%E3%82%A1%E3%82%B8%E3%83%BC%E3%83%AA%E3%83%BC%E3%83%89%E3%83%95%E3%82%A1%E3%83%B3%E3%83%88%E3%83%A0%E3%83%AA%E3%83%BC%E3%83%89%E3%81%AE%E9%96%A2%E4%BF%82" aria-hidden="true"><span class="octicon octicon-link"></span></a>分離レベルとダーティリード、ファジーリード、ファントムリードの関係</h2>
@@ -203,7 +204,7 @@
 <table>
   <thead>
     <tr>
-      <th> </th>
+      <th>トランザクション分離レベル</th>
       <th>ダーティリード</th>
       <th>ファジーリード</th>
       <th>ファントムリード</th>
@@ -237,7 +238,7 @@
   </tbody>
 </table>
 
-<p>via. <a href="http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838">トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]</a></p>
+<p>via. <a href="https://qiita.com/PruneMazui/items/4135fcf7621869726b4b">[RDBMS][SQL]トランザクション分離レベルについて極力分かりやすく解説 - Qiita</a></p>
 
 <h2 id="最後に">
 <a class="anchor" href="#%E6%9C%80%E5%BE%8C%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>最後に</h2>
@@ -248,9 +249,9 @@
 <a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
 
 <ul>
-  <li><a href="http://d.hatena.ne.jp/tkrd/20131121/1385044179">Rails &amp; MySQL: トランザクション分離レベルをグローバルに設定する</a></li>
-  <li><a href="http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html">Rails 4 - Transaction isolation level</a></li>
-  <li><a href="http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838">トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]</a></li>
+  <li><a href="https://tkrd.hatenadiary.org/entry/20131121/1385044179">Rails &amp; MySQL: トランザクション分離レベルをグローバルに設定する</a></li>
+  <li><a href="https://railsdoc.github.io/classes/ActiveRecord/ConnectionAdapters/DatabaseStatements.html#method-i-transaction-label-Transaction+isolation">ActiveRecord::ConnectionAdapters::DatabaseStatements | RailsDoc</a></li>
+  <li><a href="https://qiita.com/PruneMazui/items/4135fcf7621869726b4b">[RDBMS][SQL]トランザクション分離レベルについて極力分かりやすく解説 - Qiita</a></li>
 </ul>
 
 </div>
