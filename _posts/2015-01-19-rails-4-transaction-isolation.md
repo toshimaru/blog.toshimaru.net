@@ -1,45 +1,47 @@
 ---
 layout: post
-title: Rails4 でトランザクション分離レベルを設定する
+title: Rails でトランザクション分離レベルを設定する方法
 published: true
-description: Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょう？ 実はRails3.xとRails4ではトランザクション分離レベルの設定方法は異なっています。
-tags: rails mysql activerecord
+description: 突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3.x と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。
+tags: rails activerecord mysql
 toc: true
+modified_date: 2019-09-21
 ---
 
-MySQLのトランザクション分離レベル
----
+**追記** 
 
-MySQLのデフォルトのトランザクション分離レベルは何か？
+- 2019-09-21: Rails5, Rails6向けに記事の内容をアップデートしました
+
+## MySQLのトランザクション分離レベル
+
+突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？
 
 > **REPEATABLE READ**
 >
 > This is the default isolation level for InnoDB.
 
-via. [13.3.6 SET TRANSACTION Syntax](http://dev.mysql.com/doc/refman/5.0/en/set-transaction.html)
+via. [MySQL :: MySQL 8.0 Reference Manual :: 15.7.2.1 Transaction Isolation Levels](https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html#isolevel_repeatable-read)
 
-ハイ、答えは「REPEATABLE READ」ですネ.
+ハイ、答えは「**REPEATABLE READ**」ですネ。
 
-Rails4でトランザクション分離レベルを設定
----
+## Railsでトランザクション分離レベルを設定
 
-では次にRailsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょう？ 実はRails3.xとRails4ではトランザクション分離レベルの設定方法は異なっています。
+続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3.x と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。
 
-[Rails & MySQL: トランザクション分離レベルをグローバルに設定する](http://d.hatena.ne.jp/tkrd/20131121/1385044179)
+### Rails 3.x
 
-*（引用ここから）*
-
-Rails 3.x 時代までは、
+Rails 3の時代では `execute` で直接トランザクション分離レベルを設定する必要がありました。
 
 ```rb
-ActiveRecord::Base.connection.
-  execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED')
+ActiveRecord::Base.connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED')
 ActiveRecord::Base.transaction do
   # ...
 end
 ```
 
-のように書かなければなりませんでしたが、Rails 4 でトランザクションごとに分離レベルを指定できるようになりました：
+### Rails 4.x
+
+Rails 4からは`transaction`のオプションとしてトランザクション分離レベルを設定可能になりました。
 
 ```rb
 ActiveRecord::Base.transaction(isolation: :read_committed) do
@@ -47,12 +49,34 @@ ActiveRecord::Base.transaction(isolation: :read_committed) do
 end
 ```
 
-*（引用ここまで）*
+### Rails 5 以降
 
-有効なトランザクション分離レベル
----
+Rails 5からは `ActiveRecord::Base` の代わりに `ApplicationRecord` が使うことができます。
 
-設定可能で有効な`isolation:`レベルは何でしょう？　下記４つになります。
+> ApplicationRecord is a new superclass for all app models
+
+via. [Ruby on Rails 5.0 Release Notes — Ruby on Rails Guides](https://edgeguides.rubyonrails.org/5_0_release_notes.html)
+
+```rb
+ApplicationRecord.transaction(isolation: :read_committed) do 
+  User.find(1).update! name: "TEST"
+end
+```
+
+上記のコードを pry で実行した際に流れるクエリは下記の通りです。
+
+```
+   (3.1ms)  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+   (0.4ms)  BEGIN
+  User Load (1.5ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1
+  User Update (1.1ms)  UPDATE `users` SET `name` = 'TEST', `updated_at` = '2019-09-20 15:54:16' WHERE `users`.`id` = 1
+   (2.9ms)  COMMIT
+=> true
+```
+
+## 有効なトランザクション分離レベル
+
+設定可能な有効な`isolation`レベルは何でしょうか？　答えは下記４つになります。
 
 > Valid isolation levels are:
 >
@@ -63,24 +87,25 @@ end
 
 via. [Rails 4 - Transaction isolation level](http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html)
 
-分離レベルとダーティリード、ファジーリード、ファントムリードの関係
----
+## 分離レベルとダーティリード、ファジーリード、ファントムリードの関係
 
-分離レベルとダーティリード、ファジーリード、ファントムリードそれぞれの関係性は以下。
+分離レベルとダーティリード、ファジーリード、ファントムリードそれぞれの関係性は以下の通り。
 
-| | ダーティリード | ファジーリード | ファントムリード |
-| - | - | - | - |
-| **READ UNCOMMITTED** | 発生する  | 発生する | 発生する |
-| **READ COMMITTED**   | 発生しない | 発生する | 発生する |
-| **REPEATABLE READ**  | 発生しない | 発生しない | 発生する |
+|     | ダーティリード | ファジーリード | ファントムリード |
+| --- | --- | --- | --- |
+| **READ UNCOMMITTED** | 💀発生する  | 💀発生する | 💀発生する |
+| **READ COMMITTED**   | 発生しない | 💀発生する | 💀発生する |
+| **REPEATABLE READ**  | 発生しない | 発生しない | 💀発生する |
 | **SERIALIZABLE**     | 発生しない | 発生しない | 発生しない |
 
 via. [トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]](http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838)
 
+## 最後に
+
 適切なトランザクション分離レベルで適切なトランザクション処理をしましょう！
 
-参考
----
+## 参考
+
 * [Rails & MySQL: トランザクション分離レベルをグローバルに設定する](http://d.hatena.ne.jp/tkrd/20131121/1385044179)
 * [Rails 4 - Transaction isolation level](http://blog.railsupgrade.com/2012/09/rails-4-transaction-isolation-level.html)
 * [トランザクション分離レベルについて極力分かりやすく解説してみた[SQL]](http://gyouza-daisuki.hatenablog.com/entry/2013/11/19/150838)
