@@ -5,7 +5,7 @@ description: "モブプログラミングを初めてやってみたのでその
 マシンは個々人の所有マシン回す形とした"
 image: "/images/posts/mobprogramming.jpg"
 tags: programming
-modified_date: 2019-07-09
+last_modified_at: 2019-07-09
 ---
 
 モブプログラミングを初めてやってみたのでその感想。

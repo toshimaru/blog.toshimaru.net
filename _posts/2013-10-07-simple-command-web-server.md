@@ -2,7 +2,7 @@
 layout: post
 title: 超簡単コマンドでローカルにHTTPサーバーを起動する方法
 description: ローカル上にWEBサーバーを起動できる超簡単なワンラインコマンドを紹介します
-modified_date: 2019-05-20
+last_modified_at: 2019-05-20
 tags: php python
 ---
 

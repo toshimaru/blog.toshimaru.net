@@ -5,7 +5,7 @@ image: https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-1
 description: 趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクトをGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。
 tags: rspec ci
 toc: true
-modified_date: 2019-08-20
+last_modified_at: 2019-08-20
 ---
 
 [趣味で立ち上げているプロジェクト](https://github.com/toshimaru/RailsTwitterClone)をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。
