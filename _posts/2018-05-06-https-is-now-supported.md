@@ -3,7 +3,7 @@ layout: post
 title: 本ブログが完全HTTPS化されました
 image: "/images/posts/https/https.png"
 description: 本ブログが完全HTTPS化されましたのでお知らせ致します。 といっても別に何をやったというわけではなく、朝起きたら突然GitHub PagesがHTTPSをサポートしてくれてました。 今まで本ブログに蓄積されたはてなブックマーク人気エントリ（5user以上）の現時点でのスナップショットを取っておいたので下記に一覧として公開いたします。
-modified_date: 2019-08-08
+last_modified_at: 2019-08-08
 tags: https security
 ---
 

@@ -4,7 +4,7 @@ title: GitHub Actions(v2)ファーストインプレッション 〜v1との違�
 image: "/images/posts/github-actions/og.png"
 description: "GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。"
 tags: github ci
-modified_date: 2019-09-12
+last_modified_at: 2019-09-12
 ---
 
 [GitHub Actions v2(beta)](https://github.com/features/actions)が手元に降ってきたので試してみた記事です。

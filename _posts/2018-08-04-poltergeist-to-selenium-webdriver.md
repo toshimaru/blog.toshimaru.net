@@ -5,7 +5,7 @@ description: "RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度
 image: "/images/posts/chromedriver.jpg"
 tags: rails rspec chrome
 toc: true
-modified_date: 2019-09-17
+last_modified_at: 2019-09-17
 ---
 
 RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、[poltergeist](https://github.com/teampoltergeist/poltergeist)から[Headless Chrome](https://chromium.googlesource.com/chromium/src/+/master/headless/README.md)に乗り換えてみたのでそのときのメモ。

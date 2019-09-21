@@ -4,7 +4,7 @@ title: Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」�
 image: "/images/posts/roppongirb8/og.png"
 description: Roppongi.rb #8にて「Make Rails Documents SEO(Search Engine Optimized)」と題して発表してきた。発表スライドは下記になる。発表では僕が過去に行ったいくつかのRails公式ドキュメントのSEO対応の紹介とともに、現在進めているプロジェクトであるrailsdoc.github.ioを紹介した。
 tags: presentation seo
-modified_date: 2019-02-27
+last_modified_at: 2019-02-27
 ---
 
 [Roppongi.rb #8](https://roppongirb.connpass.com/event/118218/)にて「Make Rails Documents SEO(Search Engine Optimized)」と題して発表してきた。発表スライドは下記になる。

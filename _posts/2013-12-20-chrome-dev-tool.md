@@ -3,7 +3,7 @@ layout: post
 title: 細かすぎて伝わらないChrome Developerツール・テクニック集
 image: /images/posts/chromedev/chrome-dev.png
 description: Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。
-modified_date: 2019-08-08
+last_modified_at: 2019-08-08
 toc: true
 tags: chrome
 ---

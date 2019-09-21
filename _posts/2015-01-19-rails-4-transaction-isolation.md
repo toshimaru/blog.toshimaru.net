@@ -5,7 +5,7 @@ published: true
 description: 突然ですが問題です。MySQLのデフォルトのトランザクション分離レベルは何でしょうか？　続いての問題です。Railsにおいてトランザクション分離レベルを設定するにはどうしたらよいでしょうか？ 実は Rails 3 と Rails 4 と Rails 5 以降ではトランザクション分離レベルの設定方法はそれぞれ異なっています。
 tags: rails activerecord mysql
 toc: true
-modified_date: 2019-09-21
+last_modified_at: 2019-09-21
 ---
 
 **追記** 

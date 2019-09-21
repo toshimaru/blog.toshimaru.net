@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Ruby の inject(reduce) メソッドを使いこなす
-modified_date: 2018-10-09
+last_modified_at: 2018-10-09
 published: true
 description: Rubyのイテレータメソッド・injectの使い方を紹介します。合計の出し方、配列内の要素数をハッシュにしたり、each_with_objectの使い方など。
 tags: ruby

@@ -5,7 +5,7 @@ image: /images/posts/css-animate/block.png
 description: CSS Property Advent Calendar 2013の11日目の記事としてCSSアニメーションのプロパティを紹介をします。 なぜCSS3アニメーションなのか？ さて本ブログでもタイトルやアイキャッチ画像のイメージの表示にちょっとしたCSS3アニメーションを採用しています。ほんのちょっとのCSSの記述なんですがサイトがイイ感じにリッチに見えてとても気に入ってます。
 tags: css
 toc: true
-modified_date: 2018-08-18
+last_modified_at: 2018-08-18
 ---
 
 <style type="text/css">
