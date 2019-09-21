@@ -5,7 +5,7 @@ layout: default
   <h1 class="fadeInLeft">{{ page.title }}</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date: "%Y/%m/%d" }}{% if page.modified_date %} (更新: {{ page.modified_date | date: "%Y/%m/%d" }}){% endif -%}</time>
+      <i class="icon-calendar"></i><time datetime="{{ page.date | date_to_xmlschema }}" pubdate>{{ page.date | date: "%Y/%m/%d" }}{% if page.last_modified_at %} (更新: {{ page.last_modified_at | date: "%Y/%m/%d" }}){% endif -%}</time>
       <i class="icon-tags"></i> {% include tags.html tags=page.tags %}
     </div>
     {% if page.image and page.hideimage != true %}<img class="post-image flipInX" src="{{ page.image }}" alt="(image){{ page.title }}" title="{{ page.title }}" />{% endif %}
@@ -115,7 +115,7 @@ layout: default
     },
     "headline": "{{ page.title }}",
     "datePublished": "{{ page.date | date_to_xmlschema }}",
-    {% if page.modified_date %}"dateModified": "{{ page.modified_date | date_to_xmlschema }}",{% endif -%}
+    {% if page.last_modified_at %}"dateModified": "{{ page.last_modified_at | date_to_xmlschema }}",{% endif -%}
     "author": {
       "@type": "Person",
       "name": "{{ site.author }}",
