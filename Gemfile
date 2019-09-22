@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'jekyll', '4.0.0'
 
 group :jekyll_plugins do
-  gem 'jekyll-coffeescript'
   gem 'jekyll-compose'
   gem 'jekyll-feed'
   gem 'jekyll-include-cache'
