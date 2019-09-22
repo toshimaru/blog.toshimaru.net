@@ -1,14 +1,13 @@
-(function() {
-  $('#toggle-menu').on('click', function() {
+$(() => {
+  $('#toggle-menu').on('click', () => {
     $('#toggle-item').toggleClass('fadeInDown');
-    return $('#navigation').toggleClass('active');
+    $('#navigation').toggleClass('active');
   });
 
-  $('.icon-search').on('click', function() {
-    var $txtbox;
+  $('.icon-search').on('click', () => {
+    let $txtbox;
     $('#search-form').toggleClass('slideInRight');
     $txtbox = $('.search-txt');
-    return $txtbox.focus();
+    $txtbox.focus();
   });
-
-}).call(this);
+})
