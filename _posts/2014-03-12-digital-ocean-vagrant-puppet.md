@@ -2,7 +2,7 @@
 layout: post
 title: 1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする
 published: true
-image: /images/posts/vagrant/vagrant.png
+image: "/images/posts/vagrant/vagrant.png"
 description: 流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。
 tags: digitalocean vagrant
 ---
@@ -13,32 +13,39 @@ tags: digitalocean vagrant
 
 Mac使っているのであれば[homebrew-cask](https://github.com/phinze/homebrew-cask)を使うのが便利。
 
-    $ brew cask install vagrant
+```console
+$ brew cask install vagrant
+```
 
 バージョンは1.5.1
 
-    $ vagrant -v
-    Vagrant 1.5.1
+```console
+$ vagrant -v
+Vagrant 1.5.1
+```
 
 ## Install vagrant-digitalocean plugin
 
 そのままではDigitalOceanは使えないので、次にvagrantのDigitalOceanプラグインをインストール。
 
-    $ vagrant plugin install vagrant-digitalocean
+```console
+$ vagrant plugin install vagrant-digitalocean
+```
 
 ## Vagrantfile Configuration
 
 まずはVagrantfileを用意。
 
-    $ mkdir vagrant-digitalocean-test
-    $ cd vagrant-digitalocean-test
-    $ touch Vagrantfile
+```console
+$ mkdir vagrant-digitalocean-test
+$ cd vagrant-digitalocean-test
+$ touch Vagrantfile
+```
 
 次に`Vagrantfile`に書く設定。
 
-{% highlight ruby %}
+```rb
 Vagrant.configure('2') do |config|
-
   config.vm.provider :digital_ocean do |provider, override|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
     override.vm.box = 'digital_ocean'
@@ -51,9 +58,8 @@ Vagrant.configure('2') do |config|
     provider.region               = 'San Francisco 1'
     provider.size                 = '512MB'
   end
-
 end
-{% endhighlight %}
+```
 
 `provider.client_id`, `provider.api_key`の値はアカウント作成後、下記URLより生成できる。
 
@@ -65,16 +71,20 @@ end
 
 あとはこのコマンドのみ。
 
-    $ vagrant up --provider digital_ocean
+```console
+$ vagrant up --provider digital_ocean
+```
 
 これで一分くらい待つと立ち上がりました。動いてます。
 
-    $ vagrant status
-    Current machine states:
+```console
+$ vagrant status
+Current machine states:
 
-    default                   active (digital_ocean)
+default                   active (digital_ocean)
 
-    active
+active
+```
 
 あとは`vagrant ssh`するなり`vagrant destroy`（インスタンス破棄\[重要！\]）するなり。
 
@@ -82,7 +92,7 @@ end
 
 これだけでは最小パッケージで必要なパッケージが入ってなく片手落ち。そうだ、puppetでプロビジョニングしてみよう。`Vagrantfile`をこうしてみる。
 
-{% highlight ruby %}
+```rb
 Vagrant.configure('2') do |config|
   config.vm.provision "shell", inline: "rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force"
   config.vm.provision "shell", inline: "yum -y install puppet"
@@ -104,7 +114,7 @@ Vagrant.configure('2') do |config|
     puppet.options                = "--verbose"
   end
 end
-{% endhighlight %}
+```
 
 最初にpuppetをインストールコマンドを追加。そして
 
@@ -112,36 +122,42 @@ end
 
 puppetのmanifestファイルを定義します。
 
-    $ mkdir manifests
-    $ touch manifests/default.pp
+```console
+$ mkdir manifests
+$ touch manifests/default.pp
+```
 
 `manifests/default.pp`はこう。vimとgitのパッケージを追加。必要に応じて追加したりする。
 
-    package {
-      [
-        'vim-enhanced',
-        'git',
-      ]:
-      ensure => installed
-    }
+```rb
+package {
+  [
+    'vim-enhanced',
+    'git',
+  ]:
+  ensure => installed
+}
+```
 
 ## Let's provision!
 
-    $ vagrant provision
+```console
+$ vagrant provision
+```
 
 これでpuppet経由で、vimやらgitが入る。良い。
 
 ## 本当に１円？
 
-はい。
+はい。１円です。
 
-検証環境として使ったあとに、dropletをちゃんと破棄していればこうなります。
+検証環境として使ったあとに、Dropletをちゃんと破棄していればこうなります。
 
 ![bill](/images/posts/vagrant/bill.png)
 
 現時点で`1USD` = `102JPY`くらいなので`0.01USD`=約１円ですね。
 
-## Github Repo
+## GitHub Repository
 
 Githubに今回のサンプルの最終形を置いておく。
 
@@ -149,7 +165,7 @@ Githubに今回のサンプルの最終形を置いておく。
 
 ### 参考
 
-* [Simple Cloud Computing, Built for Developers | DigitalOcean](https://m.do.co/c/a79091850c6e)
+* [Simple Cloud Computing, Built for Developers \| DigitalOcean](https://m.do.co/c/a79091850c6e)
 * [VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する](http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/)
 
 {% include digitalocean.html %}
