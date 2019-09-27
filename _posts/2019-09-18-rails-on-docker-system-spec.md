@@ -33,6 +33,20 @@ Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しま�
 
 当時のPull Requestがこちら: [Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone](https://github.com/toshimaru/RailsTwitterClone/pull/216)
 
+> Before
+> 
+> ```
+> Finished in 15.74 seconds (files took 7.65 seconds to load)
+> 152 examples, 0 failures
+> ```
+> 
+> After
+> 
+> ```
+> Finished in 58.46 seconds (files took 7.64 seconds to load)
+> 152 examples, 3 failures
+> ```
+
 しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。
 
 ```rb
