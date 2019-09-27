@@ -140,6 +140,22 @@
 
 <p>当時のPull Requestがこちら: <a href="https://github.com/toshimaru/RailsTwitterClone/pull/216">Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone</a></p>
 
+<blockquote>
+  <p>Before</p>
+
+  <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>Finished in 15.74 seconds (files took 7.65 seconds to load)
+152 examples, 0 failures
+</code></pre></div>  </div>
+
+  <p>After</p>
+
+  <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>Finished in 58.46 seconds (files took 7.64 seconds to load)
+152 examples, 3 failures
+</code></pre></div>  </div>
+</blockquote>
+
 <p>しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>

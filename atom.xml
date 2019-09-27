@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-09-28T00:18:58+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-09-28T00:26:50+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
 
 &lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
 
@@ -28,6 +28,20 @@
 &lt;p&gt;実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。&lt;/p&gt;
 
 &lt;p&gt;当時のPull Requestがこちら: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/216&quot;&gt;Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Before&lt;/p&gt;
+
+  &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 15.74 seconds (files took 7.65 seconds to load)
+152 examples, 0 failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+
+  &lt;p&gt;After&lt;/p&gt;
+
+  &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 58.46 seconds (files took 7.64 seconds to load)
+152 examples, 3 failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。&lt;/p&gt;
 
