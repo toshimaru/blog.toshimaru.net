@@ -8,9 +8,7 @@ toc: true
 last_modified_at: 2019-09-21
 ---
 
-**追記** 
-
-- 2019-09-21: Rails5, Rails6 向けに記事の内容をアップデートしました
+{% include info.html title="追記" text="Rails5, Rails6 向けに記事の内容をアップデートしました（2019/09/21）" %}
 
 ## MySQLのトランザクション分離レベル
 
