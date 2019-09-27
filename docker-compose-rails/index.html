@@ -85,7 +85,7 @@
 
 <div id="md-content">
   
-  <p><code class="highlighter-rouge">docker-machine</code>,<code class="highlighter-rouge"> docker-compose</code> を使ってローカルにdocker Rails環境を構築してみます。</p>
+  <p><code class="highlighter-rouge">docker-machine</code>, ` docker-compose` を使ってローカルにdocker Rails環境を構築してみます。</p>
 
 <h2 id="前提">前提</h2>
 
@@ -96,19 +96,19 @@
 
 <p>それぞれのバージョンは下記の通り。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-machine -v
-docker-machine version 0.6.0, build e27fb87
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine <span class="nt">-v</span>
+<span class="go">docker-machine version 0.6.0, build e27fb87
 
-$ docker-compose -v
-docker-compose version 1.6.2, build unknown
-</code></pre></div></div>
+</span><span class="gp">$</span><span class="w"> </span>docker-compose <span class="nt">-v</span>
+<span class="go">docker-compose version 1.6.2, build unknown
+</span></code></pre></div></div>
 
 <h2 id="docker-machine-準備">docker-machine 準備</h2>
 
-<p><code class="highlighter-rouge">docker-machine create</code>でdefaultのmachineを作成します。</p>
+<p><code class="highlighter-rouge">docker-machine create</code> でdefaultのmachineを作成します。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-machine create --driver virtualbox default
-Running pre-create checks...
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine create <span class="nt">--driver</span> virtualbox default
+<span class="go">Running pre-create checks...
 (...snip...)
 (default) Creating VirtualBox VM...
 (default) Creating SSH key...
@@ -127,14 +127,14 @@ Setting Docker configuration on the remote daemon...
 Checking connection to Docker...
 Docker is up and running!
 To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: docker-machine env default
-</code></pre></div></div>
+</span></code></pre></div></div>
 
 <p><code class="highlighter-rouge">docker-machine ls</code> で状態を確認。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-machine ls
-NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER    ERRORS
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine <span class="nb">ls</span>
+<span class="go">NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER    ERRORS
 default   -        virtualbox   Running   tcp://192.168.99.100:2376           v1.10.3
-</code></pre></div></div>
+</span></code></pre></div></div>
 
 <p>STATE: Running になってますね。</p>
 
@@ -142,7 +142,7 @@ default   -        virtualbox   Running   tcp://192.168.99.100:2376           v1
 
 <p>docker-machine の環境変数をセットします。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ eval "$(docker-machine env default)"
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>docker-machine <span class="nb">env </span>default<span class="si">)</span><span class="s2">"</span>
 </code></pre></div></div>
 
 <h2 id="rails設定">Rails設定</h2>
@@ -151,15 +151,14 @@ default   -        virtualbox   Running   tcp://192.168.99.100:2376           v1
 
 <p>このように<code class="highlighter-rouge">Dockerfile</code>を作成します。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat Dockerfile
-FROM ruby:2.3.0
-RUN apt-get update -qq &amp;&amp; apt-get install -y build-essential libpq-dev
-RUN mkdir /myapp
-WORKDIR /myapp
-ADD Gemfile /myapp/Gemfile
-ADD Gemfile.lock /myapp/Gemfile.lock
-RUN bundle install
-ADD . /myapp
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ruby:2.3.0</span>
+<span class="k">RUN </span>apt-get update <span class="nt">-qq</span> <span class="o">&amp;&amp;</span> apt-get <span class="nb">install</span> <span class="nt">-y</span> build-essential libpq-dev
+<span class="k">RUN </span><span class="nb">mkdir</span> /myapp
+<span class="k">WORKDIR</span><span class="s"> /myapp</span>
+<span class="k">ADD</span><span class="s"> Gemfile /myapp/Gemfile</span>
+<span class="k">ADD</span><span class="s"> Gemfile.lock /myapp/Gemfile.lock</span>
+<span class="k">RUN </span>bundle <span class="nb">install</span>
+<span class="k">ADD</span><span class="s"> . /myapp</span>
 </code></pre></div></div>
 
 <p><code class="highlighter-rouge">Dockerfile</code>に書いてある内容はだいたいこんな感じ。</p>
@@ -208,45 +207,46 @@ ADD . /myapp
 
 <p><code class="highlighter-rouge">Gemfile.lock</code>は空っぽで <img class="emoji" title=":ok:" alt=":ok:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f197.png" height="20" width="20"> .</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch Gemfile.lock
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">touch </span>Gemfile.lock
 </code></pre></div></div>
 
 <h3 id="rails-new">rails new</h3>
 
 <p>これで準備完了。次に<code class="highlighter-rouge">docker-compose</code>を通して<code class="highlighter-rouge">rails new</code>します。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-compose run web rails new . --force --database=mysql --skip-bundle
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web rails new <span class="nb">.</span> <span class="nt">--force</span> <span class="nt">--database</span><span class="o">=</span>mysql <span class="nt">--skip-bundle</span>
 </code></pre></div></div>
 
 <p>これでwebコンテナが起動して<code class="highlighter-rouge">rails new</code>され、カレントディレクトリにその成果物が生成されています。</p>
 
 <p>Gemfileの<code class="highlighter-rouge">therubyracer</code> gemのコメントを外して<code class="highlighter-rouge">docker-compose build</code>します。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">gem</span> <span class="s1">'therubyracer'</span><span class="p">,</span> <span class="ss">platforms: :ruby</span></code></pre></figure>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s1">'therubyracer'</span><span class="p">,</span> <span class="ss">platforms: :ruby</span>
+</code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-compose build
-db uses an image, skipping
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose build
+<span class="go">db uses an image, skipping
 Building web
 Step 1 : FROM ruby:2.3.0
- ---&gt; 268e5f4c6264
-Step 2 : RUN apt-get update -qq &amp;&amp; apt-get install -y build-essential libpq-dev
- ---&gt; Using cache
- ---&gt; b5f055055282
-Step 3 : RUN mkdir /myapp
- ---&gt; Using cache
- ---&gt; ef58bac5859f
-Step 4 : WORKDIR /myapp
- ---&gt; Using cache
- ---&gt; d712516a5383
-Step 5 : ADD Gemfile /myapp/Gemfile
- ---&gt; Using cache
- ---&gt; 45897d961453
-Step 6 : ADD Gemfile.lock /myapp/Gemfile.lock
- ---&gt; Using cache
- ---&gt; 1e9aadcd1985
-Step 7 : RUN bundle install
- ---&gt; Running in db6cade21717
-Fetching gem metadata from https://rubygems.org/...........
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>268e5f4c6264
+<span class="go">Step 2 : RUN apt-get update -qq &amp;&amp; apt-get install -y build-essential libpq-dev
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>b5f055055282
+<span class="go">Step 3 : RUN mkdir /myapp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>ef58bac5859f
+<span class="go">Step 4 : WORKDIR /myapp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>d712516a5383
+<span class="go">Step 5 : ADD Gemfile /myapp/Gemfile
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>45897d961453
+<span class="go">Step 6 : ADD Gemfile.lock /myapp/Gemfile.lock
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>1e9aadcd1985
+<span class="go">Step 7 : RUN bundle install
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Running <span class="k">in </span>db6cade21717
+<span class="go">Fetching gem metadata from https://rubygems.org/...........
 Fetching version metadata from https://rubygems.org/...
 Fetching dependency metadata from https://rubygems.org/..
 Resolving dependencies...
@@ -254,10 +254,10 @@ Installing rake 11.1.2
 ...snip...
 Removing intermediate container b18b021bc248
 Step 8 : ADD . /myapp
- ---&gt; e259ae327e06
-Removing intermediate container 568e85cfeee6
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>e259ae327e06
+<span class="go">Removing intermediate container 568e85cfeee6
 Successfully built e259ae327e06
-</code></pre></div></div>
+</span></code></pre></div></div>
 
 <h2 id="データベース設定">データベース設定</h2>
 
@@ -281,15 +281,15 @@ Successfully built e259ae327e06
 
 <p>データベースの設定が完了したらデータベースを作成します。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-compose run web rake db:create
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web rake db:create
 </code></pre></div></div>
 
 <h2 id="docker-compose-up">docker-compose up</h2>
 
 <p><code class="highlighter-rouge">docker-compose up</code>してrails server立ち上げる。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-compose up
-Recreating rails1_db_1
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose up
+<span class="go">Recreating rails1_db_1
 Recreating rails1_web_1
 Attaching to rails1_db_1, rails1_web_1
 db_1  | 2016-04-09T16:48:34.775827Z 0 [Note] mysqld (mysqld 5.7.11) starting as process 1 ...
@@ -297,16 +297,16 @@ db_1  | 2016-04-09T16:48:34.775827Z 0 [Note] mysqld (mysqld 5.7.11) starting as 
 db_1  | Version: '5.7.11'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server (GPL)
 web_1 | [2016-04-09 16:48:38] INFO  WEBrick 1.3.1
 web_1 | [2016-04-09 16:48:38] INFO  ruby 2.3.0 (2015-12-25) [x86_64-linux]
-web_1 | [2016-04-09 16:48:38] INFO  WEBrick::HTTPServer#start: pid=1 port=3000
+</span><span class="gp">web_1 | [2016-04-09 16:48:38] INFO  WEBrick::HTTPServer#</span>start: <span class="nv">pid</span><span class="o">=</span>1 <span class="nv">port</span><span class="o">=</span>3000
 </code></pre></div></div>
 
 <p>これでrails serverが準備できました。<code class="highlighter-rouge">192.168.99.100:3000</code>でページが見れます。</p>
 
 <p>ちなみにdocker-machineのIPアドレスは下記のように取得可能です。これにて完了！！</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker-machine ip default
-192.168.99.100
-</code></pre></div></div>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine ip default
+<span class="go">192.168.99.100
+</span></code></pre></div></div>
 
 <h2 id="参考">参考</h2>
 
