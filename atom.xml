@@ -1,4 +1,180 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-11-02T20:47:05+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-11-02T22:59:37+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">標準出力、標準エラー出力のリダイレクト方法まとめ</title><link href="https://blog.toshimaru.net/bash-stdout-and-stderr/" rel="alternate" type="text/html" title="標準出力、標準エラー出力のリダイレクト方法まとめ" /><published>2019-11-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/bash-stdout-and-stderr</id><content type="html" xml:base="https://blog.toshimaru.net/bash-stdout-and-stderr/">&lt;p&gt;標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。&lt;/p&gt;
+
+&lt;h2 id=&quot;標準入力-標準出力-標準エラー出力とは&quot;&gt;標準入力, 標準出力, 標準エラー出力とは？&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;種類&lt;/th&gt;
+      &lt;th&gt;説明&lt;/th&gt;
+      &lt;th&gt;ファイルディスクリプタ&lt;/th&gt;
+      &lt;th&gt;省略形&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;標準入力&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;デフォルトの入力データストリーム。&lt;br /&gt;例えばコマンドのパイプラインなど。ターミナル上ではユーザーのキーボード入力のこと。&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;標準出力&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;デフォルトの出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;標準エラー出力&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;デフォルトのエラーに関連する出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stderr&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;（出典: &lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor? - Stdin, stdout, and stderr&lt;/a&gt; より翻訳）&lt;/p&gt;
+
+&lt;p&gt;それぞれのファイルディスクリプタは下記のように &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/stderr&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/stdin&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/stdout&lt;/code&gt; からも確認することができます&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; /dev/std&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;,out,err&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stderr -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/2
+&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdin -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/0
+&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdout -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;標準出力-標準エラー出力するシェルスクリプト&quot;&gt;標準出力, 標準エラー出力するシェルスクリプト&lt;/h2&gt;
+
+&lt;p&gt;今回使用するベースとなるシェルスクリプトは下記になります。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.sh
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;/bin/sh
+&lt;span class=&quot;go&quot;&gt;echo &quot;stdout&quot;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;echo &quot;stderr&quot; &amp;gt;&lt;/span&gt;&amp;amp;2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;stdout という文字列を標準出力&lt;/li&gt;
+  &lt;li&gt;stderr という文字列を標準エラー出力&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;このようなコードとなっております。&lt;/p&gt;
+
+&lt;h3 id=&quot;rubyバージョン&quot;&gt;Rubyバージョン&lt;/h3&gt;
+
+&lt;p&gt;ちなみに今回のシェルスクリプトをRubyで表現すると下記のようになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env ruby&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stdout&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;warn&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stderr&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;リダイレクト無し実行時&quot;&gt;リダイレクト無し実行時&lt;/h2&gt;
+
+&lt;p&gt;まずは何もリダイレクトの設定をしないで実行してみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh
+&lt;span class=&quot;go&quot;&gt;stdout
+stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;標準出力、エラー出力ともに画面に表示される&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;標準出力リダイレクト有り実行時&quot;&gt;標準出力リダイレクト有り実行時&lt;/h2&gt;
+
+&lt;p&gt;次はリダイレクトを設定して実行してみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
+&lt;span class=&quot;go&quot;&gt;stderr
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stdout が出力されなくなった&lt;/li&gt;
+  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に stdout が出力されている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;また上コマンドでは省略されていますが、リダイレクトのデフォルトは標準出力のファイルディスクリプタ「1」なので、&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; の部分は &lt;code class=&quot;highlighter-rouge&quot;&gt;1&amp;gt;&lt;/code&gt; と書くこともできます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;エラー出力リダイレクト有り実行時&quot;&gt;エラー出力リダイレクト有り実行時&lt;/h2&gt;
+
+&lt;p&gt;次はエラー出力だけリダイレクトするようにしてみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 2&amp;gt; stderr.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
+&lt;span class=&quot;go&quot;&gt;stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stderr が出力されなくなった&lt;/li&gt;
+  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に stderr が出力されている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;エラー出力を標準出力としてリダイレクト実行時&quot;&gt;エラー出力を標準出力としてリダイレクト実行時&lt;/h2&gt;
+
+&lt;p&gt;続いてエラー出力を標準出力としてまとめて出力するようにリダイレクトしてみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
+&lt;span class=&quot;go&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リダイレクト実行時の画面表示は何もされない&lt;/li&gt;
+  &lt;li&gt;リダイレクト先のファイル &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout-stderr.txt&lt;/code&gt; には stdout と stderr ともに出力されている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp; stdout-stderr.txt
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;標準出力エラー出力を別々にリダイレクト実行時&quot;&gt;標準出力＆エラー出力を別々にリダイレクト実行時&lt;/h2&gt;
+
+&lt;p&gt;標準出力と標準エラー出力をそれぞれ別にリダイレクトするようにしてみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt 2&amp;gt; stderr.txt
+&lt;span class=&quot;go&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
+&lt;span class=&quot;go&quot;&gt;stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;標準出力である stdout は &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に出力される&lt;/li&gt;
+  &lt;li&gt;標準エラー出力である stderr は &lt;code class=&quot;highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に出力される&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;出力をリダイレクトで捨てる&quot;&gt;出力をリダイレクトで捨てる&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/null&lt;/code&gt;にリダイレクトすれば出力内容を捨てることができます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; /dev/null
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/laikuaut/items/e1cc312ffc7ec2c872fc&quot;&gt;bash: 標準出力、標準エラー出力をファイル、画面それぞれに出力する方法 - Qiita&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="shell" /><category term="bash" /><summary type="html">標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/stdout.png" /></entry><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
 
 &lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
 
@@ -1122,358 +1298,4 @@ https://github.com/actions/starter-workflows/tree/master/ci&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/golang-samples/tree/master/appengine/go11x&quot;&gt;golang-samples/appengine/go11x at master · GoogleCloudPlatform/golang-samples&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google-app-engine" /><summary type="html">Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png" /></entry><entry><title type="html">『Effective DevOps』読んだ: DevOpsという文化の作り方</title><link href="https://blog.toshimaru.net/effective-devops/" rel="alternate" type="text/html" title="『Effective DevOps』読んだ: DevOpsという文化の作り方" /><published>2019-06-03T00:00:00+09:00</published><updated>2019-06-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/effective-devops</id><content type="html" xml:base="https://blog.toshimaru.net/effective-devops/">&lt;h2 id=&quot;本書のターゲット&quot;&gt;本書のターゲット&lt;/h2&gt;
-
-&lt;p&gt;本書を「DevOpsの技術的解説書」と期待して読むと肩透かしを食う。本書は&lt;strong&gt;DevOpsを文化・価値観と捉え&lt;/strong&gt;その文化を醸成するための考え方やアプローチについて解説する。&lt;/p&gt;
-
-&lt;p&gt;したがって本書のターゲットとなるのは現場でバリバリ働くエンジニアというよりは、より良い技術組織作りやチームビルディングに興味のある&lt;strong&gt;リーダーやエンジニアマネージャー&lt;/strong&gt;と言える。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.amazon.co.jp/Effective-DevOps-%E2%80%954%E6%9C%AC%E6%9F%B1%E3%81%AB%E3%82%88%E3%82%8B%E6%8C%81%E7%B6%9A%E5%8F%AF%E8%83%BD%E3%81%AA%E7%B5%84%E7%B9%94%E6%96%87%E5%8C%96%E3%81%AE%E8%82%B2%E3%81%A6%E6%96%B9-Jennifer-Davis/dp/4873118352/ref=as_li_ss_il?ie=UTF8&amp;amp;linkCode=li2&amp;amp;tag=toshimaru-22&amp;amp;linkId=5e5f00b190f6e76006ea26658b065bb5&amp;amp;language=ja_JP&quot; target=&quot;_blank&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;amp;ASIN=4873118352&amp;amp;Format=_SL160_&amp;amp;ID=AsinImage&amp;amp;MarketPlace=JP&amp;amp;ServiceVersion=20070822&amp;amp;WS=1&amp;amp;tag=toshimaru-22&amp;amp;language=ja_JP&quot; /&gt;&lt;/a&gt;&lt;img src=&quot;https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;l=li2&amp;amp;o=9&amp;amp;a=4873118352&quot; width=&quot;1&quot; height=&quot;1&quot; border=&quot;0&quot; alt=&quot;&quot; style=&quot;border:none !important; margin:0px !important;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;effective-devopsの4本柱&quot;&gt;Effective DevOpsの4本柱&lt;/h2&gt;
-
-&lt;p&gt;『Effective DevOps』―本書の副題は「&lt;strong&gt;4本柱による持続可能な組織文化の育て方&lt;/strong&gt;」となっている。ではここでいう4本柱とは何か？というと下記4つである。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;コラボレーション&lt;/strong&gt;: チームをどう協調させるべきか&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;アフィニティ&lt;/strong&gt;: チームのコミュニケーションの質をどう上げて団結力を強めるべきか&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;ツール&lt;/strong&gt;: どんなツールを採用すべきか&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;スケーリング&lt;/strong&gt;: 組織をどう発展・成長させていくべきか&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;この4本柱でわかる通り、本書はほとんどがコミュニケーションの話であったり、考え方や振る舞い方の話であったりする。&lt;/p&gt;
-
-&lt;p&gt;3本目にツールの話があるように見えるが具体的なツール名を期待してはいけない。「ツールXを使っているからDevOpsだ」という言説は勘違いであり、どんなツールを使っているかは本質的にはDevOpsには関係ないからだ。&lt;/p&gt;
-
-&lt;h2 id=&quot;devopsアンチパターン&quot;&gt;devopsアンチパターン&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;避難文化&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;ミスが発生したときに人を避難し処罰することはやってはならない&lt;/li&gt;
-      &lt;li&gt;避難文化があると人々が避難されるまいと情報を隠蔽してしまう&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;サイロ化&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;目的や責任を共有せずあそれぞれバラバラの役割を重視する状態&lt;/li&gt;
-      &lt;li&gt;サイロ化が進むと責任を他のチームになすりつけることになる&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;ヒューマンエラーを原因にしない&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;ミスを犯した人間自体がエラーの原因だとする考え方&lt;/li&gt;
-      &lt;li&gt;ヒューマンエラーだと片付けない、そこからチームが学習することが大事&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;コラボレーションの例&quot;&gt;コラボレーションの例&lt;/h2&gt;
-
-&lt;p&gt;コラボレーションの例としては下記のようなものが考えうる。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;非同期でのコードレビュー&lt;/li&gt;
-  &lt;li&gt;ドキュメンテーション&lt;/li&gt;
-  &lt;li&gt;問題のアップデートとバグレポート&lt;/li&gt;
-  &lt;li&gt;その週に進んだ内容のデモ&lt;/li&gt;
-  &lt;li&gt;定期的な状況・進捗報告&lt;/li&gt;
-  &lt;li&gt;ペア作業（ペアプロ、モブプロ）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;個人の成長のために&quot;&gt;個人の成長のために&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;基本を学ぶ
-    &lt;ul&gt;
-      &lt;li&gt;自分に必要なスキルは何か、チームに必要なスキルは何か、誰が何をしているか基本を学ぶ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;学習能力を高める
-    &lt;ul&gt;
-      &lt;li&gt;学習プロセスを見直す、学習能力を強化する&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;質の高い実践を心がける
-    &lt;ul&gt;
-      &lt;li&gt;学んでいるスキルを正しく使う&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;惰性的な習慣を見直し、使うツールやテクニックなど自分のスタイルを開発する&lt;/li&gt;
-  &lt;li&gt;新しいスキルを学ぶ、既存のスキルを強化する&lt;/li&gt;
-  &lt;li&gt;絶えず自分自身に課題を与え自分自身を向上させていく&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;コミュニケーションの手段&quot;&gt;コミュニケーションの手段&lt;/h2&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;コミュニケーション手段&lt;/th&gt;
-      &lt;th&gt;即時性&lt;/th&gt;
-      &lt;th&gt;オーディエンス&lt;br /&gt;への浸透度&lt;/th&gt;
-      &lt;th&gt;受け手&lt;br /&gt;の負担&lt;/th&gt;
-      &lt;th&gt;コンテキスト&lt;/th&gt;
-      &lt;th&gt;構成の&lt;br /&gt;緻密さ&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;電子メール&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-      &lt;td&gt;○&lt;/td&gt;
-      &lt;td&gt;普通&lt;/td&gt;
-      &lt;td&gt;多い&lt;/td&gt;
-      &lt;td&gt;△&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;臨時会議（ビデオ会議）&lt;/td&gt;
-      &lt;td&gt;○&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-      &lt;td&gt;普通&lt;/td&gt;
-      &lt;td&gt;少ない&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;チャット&lt;/td&gt;
-      &lt;td&gt;△&lt;/td&gt;
-      &lt;td&gt;△&lt;/td&gt;
-      &lt;td&gt;軽い&lt;/td&gt;
-      &lt;td&gt;多い&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;正式な会議&lt;/td&gt;
-      &lt;td&gt;✕✕&lt;/td&gt;
-      &lt;td&gt;○&lt;/td&gt;
-      &lt;td&gt;重い&lt;/td&gt;
-      &lt;td&gt;少ない&lt;/td&gt;
-      &lt;td&gt;○&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Twitter（マイクロブログ）&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-      &lt;td&gt;△&lt;/td&gt;
-      &lt;td&gt;軽い&lt;/td&gt;
-      &lt;td&gt;多い&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;GitHubのプルリクエスト&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-      &lt;td&gt;△&lt;/td&gt;
-      &lt;td&gt;普通&lt;/td&gt;
-      &lt;td&gt;普通&lt;/td&gt;
-      &lt;td&gt;△&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;付箋紙のメモ&lt;/td&gt;
-      &lt;td&gt;✕✕&lt;/td&gt;
-      &lt;td&gt;△&lt;/td&gt;
-      &lt;td&gt;軽い&lt;/td&gt;
-      &lt;td&gt;多い&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;PagerDutyアラート&lt;/td&gt;
-      &lt;td&gt;○&lt;/td&gt;
-      &lt;td&gt;○&lt;/td&gt;
-      &lt;td&gt;重い&lt;/td&gt;
-      &lt;td&gt;普通&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;書籍・ブログ記事&lt;/td&gt;
-      &lt;td&gt;✕✕&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-      &lt;td&gt;普通&lt;/td&gt;
-      &lt;td&gt;普通&lt;/td&gt;
-      &lt;td&gt;○&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;画像・グラフ&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-      &lt;td&gt;✕&lt;/td&gt;
-      &lt;td&gt;軽い&lt;/td&gt;
-      &lt;td&gt;多い&lt;/td&gt;
-      &lt;td&gt;✕✕&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;即時性&lt;/strong&gt;: コミュニケーションがどれだけ早く成立するか&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;オーディエンスへの浸透度&lt;/strong&gt; : オーディエンスにメッセージを届けるためにどれくらい効果的か&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;負担&lt;/strong&gt;: そのコミュニケーションに参加するための必要な時間と労力&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;コンテキスト&lt;/strong&gt;: 特定のコミュニケーション方法で必要とされるコンテキストがどれくらいあるか&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;構成の緻密さ&lt;/strong&gt;: 伝えたいことがどれくらい緻密に構成されていなければいけないか&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;優れたリーダーの条件&quot;&gt;優れたリーダーの条件&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;周囲から最良のものを引き出す
-    &lt;ul&gt;
-      &lt;li&gt;自分自身や少数の「ロックスター」だけを重視してはならない。周りにいるすべてのひとたちから裁量のものを引き出せ&lt;/li&gt;
-      &lt;li&gt;優秀な組織とそうでない組織の違いはこの能力の有無で出る&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;メンバー個人のビジョンと企業やチームのビジョンを一致させるように支援する&lt;/li&gt;
-  &lt;li&gt;規範たれ
-    &lt;ul&gt;
-      &lt;li&gt;リーダーは自分が期待している行動の規範となるべき&lt;/li&gt;
-      &lt;li&gt;まわりのひとはリーダーの悪い行動も真似ることがあるので気をつけろ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;クソの傘たれ
-    &lt;ul&gt;
-      &lt;li&gt;上層部から強力（不条理）な指示があった場合にチームを守る&lt;/li&gt;
-      &lt;li&gt;メンバーの仕事の邪魔になるバカげたことをできる限りシャットアウト&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;リーダーは「私」中心に考えない、「私たち」、つまりチームを中心に考える&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;対立のマネジメント&quot;&gt;対立のマネジメント&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;対立があること自体はチームの健全性を示す
-    &lt;ul&gt;
-      &lt;li&gt;対立はチームに新しい発想や視点をもたらす&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;個人・チーム・組織が成長するには健全な対立を解決するスキルが必要&lt;/li&gt;
-  &lt;li&gt;対立の要因
-    &lt;ul&gt;
-      &lt;li&gt;チームの目標と個人の目標の不一致&lt;/li&gt;
-      &lt;li&gt;組織の目標と個人の目標の不一致&lt;/li&gt;
-      &lt;li&gt;インセンティブの不一致&lt;/li&gt;
-      &lt;li&gt;チーム外部との対立
-        &lt;ul&gt;
-          &lt;li&gt;チームごとのモチベーション、目標の違いが原因&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;非現実的な期待
-        &lt;ul&gt;
-          &lt;li&gt;マネジメント側の責任&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;新技術導入時の注意事項&quot;&gt;新技術導入時の注意事項&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;新技術の既知のリスクはなにか？&lt;/li&gt;
-  &lt;li&gt;どんな未知の不確定要素にぶつかる可能性があるか？&lt;/li&gt;
-  &lt;li&gt;既存の記述では解決できない、どんな問を題解決しようとしているのか？&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;その他の読書メモ&quot;&gt;その他の読書メモ&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;ブリリアントジャークは採用の対象外にすべき p99&lt;/li&gt;
-  &lt;li&gt;組織再編時に自問すべきこと p102
-    &lt;ul&gt;
-      &lt;li&gt;なぜ行われているか&lt;/li&gt;
-      &lt;li&gt;タイミングは適切か&lt;/li&gt;
-      &lt;li&gt;仕事は変わった？&lt;/li&gt;
-      &lt;li&gt;後退局面ではないか？&lt;/li&gt;
-      &lt;li&gt;人手不足に陥っていないか？&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;危機的状況時のコミュニケーションテクニック p133
-    &lt;ul&gt;
-      &lt;li&gt;CUS
-        &lt;ul&gt;
-          &lt;li&gt;Concerned&lt;/li&gt;
-          &lt;li&gt;Unsure&lt;/li&gt;
-          &lt;li&gt;Safety&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;SBAR
-        &lt;ul&gt;
-          &lt;li&gt;Situatonal&lt;/li&gt;
-          &lt;li&gt;Background&lt;/li&gt;
-          &lt;li&gt;Assessments&lt;/li&gt;
-          &lt;li&gt;Recommendation&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;大がかりな文化的、技術的改革を成し遂げるためには共通のビジョン、目標、基準が必要 p136&lt;/li&gt;
-  &lt;li&gt;ハードスキルだけでなくソフトスキルの評価も必要 p142&lt;/li&gt;
-  &lt;li&gt;技術だけでなく人間関係もケアしろ p155&lt;/li&gt;
-  &lt;li&gt;devops改革を成功させるためにトップダウンの支援も必要 p158&lt;/li&gt;
-  &lt;li&gt;ツールが文化に影響を与える p182
-    &lt;ul&gt;
-      &lt;li&gt;例: Slack導入が組織のコミュニケーション様式に影響を与える&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;思いやりの文化 p199
-    &lt;ul&gt;
-      &lt;li&gt;感謝の重要性&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;非難のない文化 p200&lt;/li&gt;
-  &lt;li&gt;ツールの合意を得ることは難しい、声のでかい人をどう判断するか p215
-    &lt;ul&gt;
-      &lt;li&gt;決定プロセスに参加させる p216&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;チームの定着
-    &lt;ul&gt;
-      &lt;li&gt;報酬 p231
-        &lt;ul&gt;
-          &lt;li&gt;給料上げるためには転職が一番よい&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;特典 p233
-        &lt;ul&gt;
-          &lt;li&gt;リモート&lt;/li&gt;
-          &lt;li&gt;教育&lt;/li&gt;
-          &lt;li&gt;フレックス&lt;/li&gt;
-          &lt;li&gt;ワークライフバランス&lt;/li&gt;
-          &lt;li&gt;有給休暇&lt;/li&gt;
-          &lt;li&gt;退職金&lt;/li&gt;
-          &lt;li&gt;健康保険&lt;/li&gt;
-          &lt;li&gt;カジュアルドレス&lt;/li&gt;
-          &lt;li&gt;移動手段&lt;/li&gt;
-          &lt;li&gt;性別不問のトイレ&lt;/li&gt;
-          &lt;li&gt;託児所&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;昇進のプロセスを可視化 p235&lt;/li&gt;
-  &lt;li&gt;簡単ではないが実行可能なワークロードを与える p235&lt;/li&gt;
-  &lt;li&gt;品質の定義 p253&lt;/li&gt;
-  &lt;li&gt;価値観を伝える p292
-    &lt;ul&gt;
-      &lt;li&gt;相手に心の準備&lt;/li&gt;
-      &lt;li&gt;コミュニケーションスキルのレベルアップ&lt;/li&gt;
-      &lt;li&gt;可能なら対面&lt;/li&gt;
-      &lt;li&gt;記録して繰り返す&lt;/li&gt;
-      &lt;li&gt;情報を可視化し共有する&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;退職を口止めするな p312&lt;/li&gt;
-  &lt;li&gt;文化的負債 p314&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;技術組織をリードする立場の人であれば『Effective DevOps』を読んでおいて損はなさそう&lt;/li&gt;
-  &lt;li&gt;DevOpsは文化そのものであり、自動化しているからdevops、高度なツールを導入しているからdevopsとかそういったものではない&lt;/li&gt;
-  &lt;li&gt;DevOpsの４本柱はコラボレーション、アフィニティ、ツール、スケーリング&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=4873118352&amp;amp;linkId=d0c1dc91fabdea3242b72abcd7eeb43d&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.ryuzee.com/contents/blog/7126&quot;&gt;【資料公開】Effective DevOps | Ryuzee.com&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="読書" /><summary type="html">本書のターゲット</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/effective_devops.jpg" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google-app-engine" /><summary type="html">Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png" /></entry></feed>
