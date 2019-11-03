@@ -19,7 +19,7 @@
   <meta name="twitter:description" content="toshimaruの技術系なブログ">
   <meta property="og:description" content="toshimaruの技術系なブログ"><meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
   <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2012-12-02T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/linux/">
+  <meta property="article:published_time" content="2012-12-02T00:00:00+09:00"><meta property="article:modified_time" content="2019-11-02T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/linux/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -67,11 +67,11 @@
   <h1 class="fadeInLeft">プロセス毎のメモリ使用量を調べるコマンド</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-12-02T00:00:00+09:00" pubdate>2012/12/02</time>
+      <i class="icon-calendar"></i><time datetime="2012-12-02T00:00:00+09:00" pubdate>2012/12/02 (更新: 2019/11/02)</time>
       <i class="icon-tags"></i> 
-<a href="/tag/linux/" rel="tag">linux</a>
-
 <a href="/tag/shell/" rel="tag">shell</a>
+
+<a href="/tag/linux/" rel="tag">linux</a>
 
 
     </div>
@@ -84,15 +84,17 @@
   <p>メモリを食いつぶしてたプロセスがいたのでそれを調べるときに利用したコマンド。</p>
 <p>これでズラっとでます。</p>
 <div>
-  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre></div>
+  <pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre>
 </div>
 
-<p>しかし、このコマンドの結果が見づらい。なので<strong>使用量の多い順にソートしてトップ１０を出してみる</strong>とこういうコマンドになります。</p>
+<p>しかし、このコマンドの結果が見づらい。なので<strong>使用量の多い順にソートしてトップ10を出してみる</strong>と下記のようなコマンドになります。</p>
+
 <div>
-  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre></div>
+  <pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre>
 </div>
 
-<h3>参考</h3>
+<h2>参考</h2>
+
 <p><a href="http://at-aka.blogspot.jp/2006/07/linux.html">Linux でプロセスごとのメモリー使用量を調べる</a></p>
 
 </div>
@@ -158,6 +160,17 @@
   
 </div>
 
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+(function () { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://hackyourdesign.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
 <div id="adsense">
   <!-- responsive-ad-unit -->
   <ins class="adsbygoogle"
@@ -172,17 +185,6 @@
   </script>
 </div>
 
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-(function () { // DON'T EDIT BELOW THIS LINE
-  var d = document, s = d.createElement('script');
-  s.src = 'https://hackyourdesign.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
 <script id="jsonld" type="application/ld+json">
 [
   {
@@ -194,7 +196,7 @@
     },
     "headline": "プロセス毎のメモリ使用量を調べるコマンド",
     "datePublished": "2012-12-02T00:00:00+09:00",
-    "author": {
+    "dateModified": "2019-11-02T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
@@ -208,7 +210,7 @@
       "@type": "ImageObject",
       "url": "https://blog.toshimaru.net/icon.png"
     },
-    "keywords": "linux, shell"
+    "keywords": "shell, linux"
   },
   {
     
@@ -219,8 +221,8 @@
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "https://blog.toshimaru.net/tag/linux/",
-          "name": "linux"
+          "@id": "https://blog.toshimaru.net/tag/shell/",
+          "name": "shell"
         }
       }
     ]
