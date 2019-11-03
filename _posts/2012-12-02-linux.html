@@ -1,21 +1,22 @@
 ---
 layout: post
 title: プロセス毎のメモリ使用量を調べるコマンド
-published: true
-tags:
-- linux
-- shell
+tags: shell linux
+last_modified_at: 2019-11-02
 ---
+
 <p>メモリを食いつぶしてたプロセスがいたのでそれを調べるときに利用したコマンド。</p>
 <p>これでズラっとでます。</p>
 <div>
-  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre></div>
+  <pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre>
 </div>
 
-<p>しかし、このコマンドの結果が見づらい。なので<strong>使用量の多い順にソートしてトップ１０を出してみる</strong>とこういうコマンドになります。</p>
+<p>しかし、このコマンドの結果が見づらい。なので<strong>使用量の多い順にソートしてトップ10を出してみる</strong>と下記のようなコマンドになります。</p>
+
 <div>
-  <div class="code"><pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre></div>
+  <pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre>
 </div>
 
-<h3>参考</h3>
+<h2>参考</h2>
+
 <p><a href="http://at-aka.blogspot.jp/2006/07/linux.html">Linux でプロセスごとのメモリー使用量を調べる</a></p>
