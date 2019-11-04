@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through - Hack Your Design!</title>
+  <title>ActiveRecordでhas_many, throughとは逆の関連を定義する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -13,14 +13,14 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through - Hack Your Design!">
-  <meta property="og:title" content="【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through - Hack Your Design!">
-  <meta name="description" content="RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。">
-  <meta name="twitter:description" content="RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。">
-  <meta property="og:description" content="RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。特定のUserがどんなTagを持っているかを調べるにはthroughを使うと簡単に実装できます。Userモデルにthroughを追加しましょう。">
-  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
-  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2014-08-12T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/belongs_to-through/">
+  <meta name="twitter:title" content="ActiveRecordでhas_many, throughとは逆の関連を定義する - Hack Your Design!">
+  <meta property="og:title" content="ActiveRecordでhas_many, throughとは逆の関連を定義する - Hack Your Design!">
+  <meta name="description" content="とあるRailsアプリケーションでこんなテーブル構成があったとします。ユーザー（User）は複数の記事（Post）をもっていて、その記事は複数のコメント（Comment）を持っている、という状態です。上記のようなモデル定義においてユーザーモデルから直接コメントモデルへの関連を定義するにはどうしたらよいでしょうか？ 答えはhas_many+throughを使うことです。has_many, throughの逆の関連はどう定義したらよいのでしょうか？">
+  <meta name="twitter:description" content="とあるRailsアプリケーションでこんなテーブル構成があったとします。ユーザー（User）は複数の記事（Post）をもっていて、その記事は複数のコメント（Comment）を持っている、という状態です。上記のようなモデル定義においてユーザーモデルから直接コメントモデルへの関連を定義するにはどうしたらよいでしょうか？ 答えはhas_many+throughを使うことです。has_many, throughの逆の関連はどう定義したらよいのでしょうか？">
+  <meta property="og:description" content="とあるRailsアプリケーションでこんなテーブル構成があったとします。ユーザー（User）は複数の記事（Post）をもっていて、その記事は複数のコメント（Comment）を持っている、という状態です。上記のようなモデル定義においてユーザーモデルから直接コメントモデルへの関連を定義するにはどうしたらよいでしょうか？ 答えはhas_many+throughを使うことです。has_many, throughの逆の関連はどう定義したらよいのでしょうか？">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/has-many-through/og.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/has-many-through/og.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2014-08-12T00:00:00+09:00"><meta property="article:modified_time" content="2019-11-04T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/belongs_to-through/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -65,111 +65,249 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through</h1>
+  <h1 class="fadeInLeft">ActiveRecordでhas_many, throughとは逆の関連を定義する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2014-08-12T00:00:00+09:00" pubdate>2014/08/12</time>
+      <i class="icon-calendar"></i><time datetime="2014-08-12T00:00:00+09:00" pubdate>2014/08/12 (更新: 2019/11/04)</time>
       <i class="icon-tags"></i> 
-<a href="/tag/rails/" rel="tag">rails</a>
-
 <a href="/tag/activerecord/" rel="tag">activerecord</a>
+
+<a href="/tag/rails/" rel="tag">rails</a>
 
 
     </div>
-    
+    <img class="post-image" src="/images/posts/has-many-through/og.png" alt="(image)ActiveRecordでhas_many, throughとは逆の関連を定義する" title="ActiveRecordでhas_many, throughとは逆の関連を定義する" />
   </div>
 </div>
 
 <div id="md-content">
-  
-  <h2 id="tldr">TL;DR</h2>
+  <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#tldr">TL;DR</a></li>
+<li class="toc-entry toc-h2"><a href="#テーブル構成">テーブル構成</a></li>
+<li class="toc-entry toc-h2"><a href="#has_many-through-の定義">has_many, through の定義</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#belongs_to-through-は使えない">belongs_to, through は使えない？</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#1-delegate-を使う方法">1. delegate を使う方法</a></li>
+<li class="toc-entry toc-h2"><a href="#2-has_one-through-を使う方法">2. has_one, through を使う方法</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#includes-も使うことができる">includes も使うことができる</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#どちらの方法が良いか">どちらの方法が良いか？</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul>
+  <h2 id="tldr">
+<a class="anchor" href="#tldr" aria-hidden="true"><span class="octicon octicon-link"></span></a>TL;DR</h2>
 
-<p>結論は<code class="highlighter-rouge">belongs_to</code>,<code class="highlighter-rouge">through</code>でなく、<code class="highlighter-rouge">delegate</code>, <code class="highlighter-rouge">to</code> もしくは <code class="highlighter-rouge">has_one</code>, <code class="highlighter-rouge">through</code>。</p>
+<p><code class="highlighter-rouge">has_many</code>+<code class="highlighter-rouge">through</code>の逆の関連の定義には:</p>
 
-<h2 id="has_many-through">has_many, through</h2>
+<ul>
+  <li>
+<code class="highlighter-rouge">belongs_to</code>+<code class="highlighter-rouge">through</code>は使えない</li>
+  <li>
+<code class="highlighter-rouge">delegate</code> or <code class="highlighter-rouge">has_one</code>+<code class="highlighter-rouge">through</code> が使える</li>
+  <li>
+<code class="highlighter-rouge">has_one</code>+<code class="highlighter-rouge">through</code> の方が効率もよく、includesも使えてオススメ</li>
+</ul>
 
-<p>RailsでこんなModel構成があったとします。ユーザーは複数の記事をもっていて、その記事は複数のタグを持っている、という状態です。</p>
+<h2 id="テーブル構成">
+<a class="anchor" href="#%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB%E6%A7%8B%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>テーブル構成</h2>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>とあるRailsアプリケーションでこんなテーブル構成があったとします。</p>
+
+<p><img src="/images/posts/has-many-through/user-post-comment.png" alt="User Post Comment"></p>
+
+<p>ユーザー（<code class="highlighter-rouge">User</code>）は複数の記事（<code class="highlighter-rouge">Post</code>）をもっていて、その記事は複数のコメント（<code class="highlighter-rouge">Comment</code>）を持っている、という状態です。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span>
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>特定のUserがどんなTagを持っているかを調べるには<code class="highlighter-rouge">through</code>を使うと簡単に実装できます。<code class="highlighter-rouge">User</code>モデルに<code class="highlighter-rouge">through</code>を追加しましょう。</p>
+<h2 id="has_many-through-の定義">
+<a class="anchor" href="#has_many-through-%E3%81%AE%E5%AE%9A%E7%BE%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>has_many, through の定義</h2>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>上記のようなモデル定義においてユーザーモデルから直接コメントモデルへの関連を定義するにはどうしたらよいでしょうか？</p>
+
+<p>答えは<code class="highlighter-rouge">has_many</code>+<code class="highlighter-rouge">through</code>を使うことです。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through: :posts</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">through: :posts</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span>
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>こうすることで、<code class="highlighter-rouge">@user.tags</code>でユーザーが所有するタグを取得できます。</p>
+<p>下記一行が変更点となります。</p>
 
-<p>ではここで疑問。逆に<code class="highlighter-rouge">Tag</code>から<code class="highlighter-rouge">Post</code>を省いて<code class="highlighter-rouge">User</code>を導きだすことはできないのでしょうか？</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">has_many</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">through: :posts</span>
+</code></pre></div></div>
 
-<h2 id="1-delegate-を使う">1. delegate を使う</h2>
+<p>この変更により、特定のユーザーがどんなコメントを持っているかを下記のように一発で引くことができるようになりました。</p>
 
-<p>結論からいうと<code class="highlighter-rouge">delegate</code>を利用することで省けます。具体的には<code class="highlighter-rouge">Tag</code>モデルをこうします。</p>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># User Load (0.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">comments</span>
+<span class="c1"># Comment Load (0.5ms)  SELECT  `comments`.* FROM `comments` INNER JOIN `posts` ON `comments`.`post_id` = `posts`.`id` WHERE `posts`.`user_id` = 1 LIMIT 11</span>
+</code></pre></div></div>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>ではここで疑問。逆にコメントモデルから<code class="highlighter-rouge">Post</code>モデルを省いてユーザーを引くことはできないのでしょうか？ つまり <strong><code class="highlighter-rouge">has_many</code>, <code class="highlighter-rouge">through</code>の逆の関連はどう定義したらよいのでしょうか？</strong></p>
+
+<h3 id="belongs_to-through-は使えない">
+<a class="anchor" href="#belongs_to-through-%E3%81%AF%E4%BD%BF%E3%81%88%E3%81%AA%E3%81%84" aria-hidden="true"><span class="octicon octicon-link"></span></a>belongs_to, through は使えない？</h3>
+
+<p><code class="highlighter-rouge">has_many</code>, <code class="highlighter-rouge">through</code>が使えるんだから <code class="highlighter-rouge">belongs_to</code>, <code class="highlighter-rouge">through</code> も使えると思うでしょう？　しかし実際に動かしてみると下記のエラーが発生してしまします。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:post</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">through: :post</span>
+<span class="k">end</span>
+<span class="c1"># ArgumentError (Unknown key: :through. Valid keys are: :class_name, ...</span>
+</code></pre></div></div>
+
+<p>残念ながら<code class="highlighter-rouge">belongs_to</code>には<code class="highlighter-rouge">through</code>というオプションは無いようです。</p>
+
+<p><code class="highlighter-rouge">has_many</code>, <code class="highlighter-rouge">through</code>の逆の関連を定義するには２つの方法があります。</p>
+
+<h2 id="1-delegate-を使う方法">
+<a class="anchor" href="#1-delegate-%E3%82%92%E4%BD%BF%E3%81%86%E6%96%B9%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. delegate を使う方法</h2>
+
+<p>１つ目の方法は<code class="highlighter-rouge">delegate</code>を使うことです。具体的にはコメントモデルを下記のように変更します。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through: :posts</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">through: :posts</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span>
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
   <span class="n">delegate</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">to: :post</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>これで<code class="highlighter-rouge">@tag.user</code>なんて風に当該tagを所有するuserにアクセスできます。</p>
+<p>下記のようにユーザーを引くことができるようになりました。</p>
 
-<h2 id="2-has_one-through-を使う">2. has_one, through を使う</h2>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">user</span>
+<span class="c1">#  Comment Load (0.3ms)  SELECT  `comments`.* FROM `comments` ORDER BY `comments`.`id` ASC LIMIT 1</span>
+<span class="c1">#  Post Load (0.4ms)  SELECT  `posts`.* FROM `posts` WHERE `posts`.`id` = 1 LIMIT 1</span>
+<span class="c1">#  User Load (0.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;User id: 1, name: "TEST", created_at: "2019-09-20 15:36:46", updated_at: "2019-09-20 16:34:31"&gt;</span>
+</code></pre></div></div>
 
-<p>このように<code class="highlighter-rouge">has_one</code>, <code class="highlighter-rouge">through</code>も使えます。</p>
+<h2 id="2-has_one-through-を使う方法">
+<a class="anchor" href="#2-has_one-through-%E3%82%92%E4%BD%BF%E3%81%86%E6%96%B9%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. has_one, through を使う方法</h2>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>２つ目の方法は<code class="highlighter-rouge">has_one</code>, <code class="highlighter-rouge">through</code>を使うことです。コメントモデルを下記のように変更します。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span><span class="p">,</span> <span class="ss">through: :posts</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span><span class="p">,</span> <span class="ss">through: :posts</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:tags</span>
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Tag</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:post</span>
   <span class="n">has_one</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">through: :post</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
-<h3 id="参考">参考</h3>
+<p>こちらも同様に下記のようにユーザーを引くことができるようになりました。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">user</span>
+<span class="c1">#  Comment Load (0.3ms)  SELECT  `comments`.* FROM `comments` ORDER BY `comments`.`id` ASC LIMIT 1</span>
+<span class="c1">#  User Load (0.4ms)  SELECT  `users`.* FROM `users` INNER JOIN `posts` ON `users`.`id` = `posts`.`user_id` WHERE `posts`.`id` = 1 LIMIT 1</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;User id: 1, name: "TEST", created_at: "2019-09-20 15:36:46", updated_at: "2019-09-20 16:34:31"&gt;</span>
+</code></pre></div></div>
+
+<p>こちらの方法の定義だと、SQLおよびモデルのLoadが<code class="highlighter-rouge">delegate</code>方式よりも一回分少なく済むので、より低コストでコメントからユーザーを引くことができます。</p>
+
+<h3 id="includes-も使うことができる">
+<a class="anchor" href="#includes-%E3%82%82%E4%BD%BF%E3%81%86%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>includes も使うことができる</h3>
+
+<p><code class="highlighter-rouge">has_one</code> で定義していると <code class="highlighter-rouge">includes</code> も使うことができます。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#  Comment Load (2.9ms)  SELECT  `comments`.* FROM `comments` WHERE `comments`.`id` = 1 LIMIT 1</span>
+<span class="c1">#  Post Load (0.5ms)  SELECT `posts`.* FROM `posts` WHERE `posts`.`id` = 1</span>
+<span class="c1">#  User Load (0.4ms)  SELECT `users`.* FROM `users` WHERE `users`.`id` = 1</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Comment id: 1, ...</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">eager_load</code>や<code class="highlighter-rouge">joins</code>も同様に使うことができます。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="no">Comment</span> <span class="no">Load</span> <span class="p">(</span><span class="mf">1.0</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span>  <span class="sb">`comments`</span><span class="p">.</span><span class="nf">*</span> <span class="no">FROM</span> <span class="sb">`comments`</span> <span class="no">INNER</span> <span class="no">JOIN</span> <span class="sb">`posts`</span> <span class="no">ON</span> <span class="sb">`posts`</span><span class="p">.</span><span class="nf">`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">post_id</span><span class="sb">` INNER JOIN `</span><span class="n">users</span><span class="sb">` ON `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">posts</span><span class="sb">`.`</span><span class="n">user_id</span><span class="sb">` WHERE `</span><span class="n">comments</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = 1 LIMIT 1
+=&gt; #&lt;Comment id: 1 ...
+&gt; Comment.eager_load(:user).find(1)
+#  SQL (2.4ms)  SELECT  `</span><span class="n">comments</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` AS t0_r0, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">post_id</span><span class="sb">` AS t0_r1, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">content</span><span class="sb">` AS t0_r2, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">created_at</span><span class="sb">` AS t0_r3, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">updated_at</span><span class="sb">` AS t0_r4, `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` AS t1_r0, `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">name</span><span class="sb">` AS t1_r1, `</span><span class="n">users</span><span class="sb">`.`</span><span class="n">created_at</span><span class="sb">` AS t1_r2, `</span><span class="n">users</span><span class="sb">`.`</span><span class="n">updated_at</span><span class="sb">` AS t1_r3 FROM `</span><span class="n">comments</span><span class="sb">` LEFT OUTER JOIN `</span><span class="n">posts</span><span class="sb">` ON `</span><span class="n">posts</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">post_id</span><span class="sb">` LEFT OUTER JOIN `</span><span class="n">users</span><span class="sb">` ON `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">posts</span><span class="sb">`.`</span><span class="n">user_id</span><span class="sb">` WHERE `</span><span class="n">comments</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = 1 LIMIT 1
+=&gt; #&lt;Comment id: 1 ...
+</span></code></pre></div></div>
+
+<h2 id="どちらの方法が良いか">
+<a class="anchor" href="#%E3%81%A9%E3%81%A1%E3%82%89%E3%81%AE%E6%96%B9%E6%B3%95%E3%81%8C%E8%89%AF%E3%81%84%E3%81%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>どちらの方法が良いか？</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th><code class="highlighter-rouge">delegate</code></th>
+      <th>
+<code class="highlighter-rouge">has_one</code>+<code class="highlighter-rouge">through</code>
+</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+<code class="highlighter-rouge">Comment</code> -&gt; <code class="highlighter-rouge">User</code> 参照のためのクエリ回数</td>
+      <td>3回</td>
+      <td>2回</td>
+    </tr>
+    <tr>
+      <td>
+<code class="highlighter-rouge">includes</code> <code class="highlighter-rouge">joins</code> などが使えるか？</td>
+      <td>使用不可</td>
+      <td>使用可</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ということで <code class="highlighter-rouge">delegate</code> よりは  <code class="highlighter-rouge">has_one</code>+<code class="highlighter-rouge">through</code> を使うのがオススメです。</p>
+
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+
 <ul>
   <li><a href="http://stackoverflow.com/questions/4021322/belongs-to-through-associations">belongs_to through associations</a></li>
+  <li><a href="https://apidock.com/rails/Module/delegate">delegate (Module) - APIdock</a></li>
 </ul>
 
 </div>
@@ -269,9 +407,9 @@
       "@type": "Blog",
       "@id": "https://blog.toshimaru.net/belongs_to-through/"
     },
-    "headline": "【Rails】has_many, throughの逆の関連はdelegate, toかhas_one, through",
+    "headline": "ActiveRecordでhas_many, throughとは逆の関連を定義する",
     "datePublished": "2014-08-12T00:00:00+09:00",
-    "author": {
+    "dateModified": "2019-11-04T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
@@ -283,9 +421,9 @@
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/icon.png"
+      "url": "https://blog.toshimaru.net/images/posts/has-many-through/og.png"
     },
-    "keywords": "rails, activerecord"
+    "keywords": "activerecord, rails"
   },
   {
     
@@ -296,8 +434,8 @@
         "@type": "ListItem",
         "position": 1,
         "item": {
-          "@id": "https://blog.toshimaru.net/tag/rails/",
-          "name": "rails"
+          "@id": "https://blog.toshimaru.net/tag/activerecord/",
+          "name": "activerecord"
         }
       }
     ]
