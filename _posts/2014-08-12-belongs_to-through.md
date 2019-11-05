@@ -14,13 +14,15 @@ toc: true
 
 - `belongs_to`+`through`は使えない
 - `delegate` or `has_one`+`through` が使える
-- `has_one`+`through` の方が効率もよく、includesも使えてオススメ
+- `has_one`+`through` の方が効率もよく、 `includes` も使えてオススメ
 
 ## テーブル構成
 
 とあるRailsアプリケーションでこんなテーブル構成があったとします。
 
 ![User Post Comment](/images/posts/has-many-through/user-post-comment.png)
+
+### Railsモデル構成
 
 ユーザー（`User`）は複数の記事（`Post`）をもっていて、その記事は複数のコメント（`Comment`）を持っている、という状態です。
 
@@ -30,8 +32,8 @@ class User < ApplicationRecord
 end
 
 class Post < ApplicationRecord
-  has_many :comments
   belongs_to :user
+  has_many :comments
 end
 
 class Comment < ApplicationRecord
@@ -87,7 +89,7 @@ class Comment < ApplicationRecord
   belongs_to :post
   belongs_to :user, through: :post
 end
-# ArgumentError (Unknown key: :through. Valid keys are: :class_name, ...
+# => ArgumentError (Unknown key: :through. Valid keys are: :class_name, ...
 ```
 
 残念ながら`belongs_to`には`through`というオプションは無いようです。
@@ -124,6 +126,8 @@ end
 #  User Load (0.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1
 => #<User id: 1, name: "TEST", created_at: "2019-09-20 15:36:46", updated_at: "2019-09-20 16:34:31">
 ```
+
+ご覧のように Comment → Post → User と順にロードされていることがわかります。
 
 ## 2. has_one, through を使う方法
 
@@ -173,10 +177,10 @@ end
 
 ```rb
 > Comment.joins(:user).find(1)
-  Comment Load (1.0ms)  SELECT  `comments`.* FROM `comments` INNER JOIN `posts` ON `posts`.`id` = `comments`.`post_id` INNER JOIN `users` ON `users`.`id` = `posts`.`user_id` WHERE `comments`.`id` = 1 LIMIT 1
+#  Comment Load (1.0ms)  SELECT  `comments`.* FROM `comments` INNER JOIN `posts` ON `posts`.`id` = `comments`.`post_id` INNER JOIN `users` ON `users`.`id` = `posts`.`user_id` WHERE `comments`.`id` = 1 LIMIT 1
 => #<Comment id: 1 ...
 > Comment.eager_load(:user).find(1)
-#  SQL (2.4ms)  SELECT  `comments`.`id` AS t0_r0, `comments`.`post_id` AS t0_r1, `comments`.`content` AS t0_r2, `comments`.`created_at` AS t0_r3, `comments`.`updated_at` AS t0_r4, `users`.`id` AS t1_r0, `users`.`name` AS t1_r1, `users`.`created_at` AS t1_r2, `users`.`updated_at` AS t1_r3 FROM `comments` LEFT OUTER JOIN `posts` ON `posts`.`id` = `comments`.`post_id` LEFT OUTER JOIN `users` ON `users`.`id` = `posts`.`user_id` WHERE `comments`.`id` = 1 LIMIT 1
+#  SQL (2.4ms)  SELECT  `comments`.`id` AS t0_r0, `comments`.`post_id` AS t0_r1, `comments`.`content` AS t0_r2, `comments`.`created_at` AS t0_r3, `comments`.`updated_at` AS t0_r4, `ube sers`.`id` AS t1_r0, `users`.`name` AS t1_r1, `users`.`created_at` AS t1_r2, `users`.`updated_at` AS t1_r3 FROM `comments` LEFT OUTER JOIN `posts` ON `posts`.`id` = `comments`.`post_id` LEFT OUTER JOIN `users` ON `users`.`id` = `posts`.`user_id` WHERE `comments`.`id` = 1 LIMIT 1
 => #<Comment id: 1 ...
 ```
 
@@ -184,8 +188,9 @@ end
 
 |  | `delegate` | `has_one`+`through` |
 | - | - | - |
-| `Comment` -> `User` 参照のためのクエリ回数  | 3回 | 2回 |
-| `includes` `joins` などが使えるか？  | 使用不可  | 使用可 |
+| `Comment` → `User` 参照のための総クエリ回数 | 3回 | 2回 |
+| `includes` `joins` などが使えるか？  | ☓ 使用不可  | ○ 使用可 |
+| 定義の意味 | `comment` から<br>`user` への関連を<br>`post` に移譲  | `comment` は<br>`post`を通して<br>`user`への関連を１つ持つ |
 
 ということで `delegate` よりは  `has_one`+`through` を使うのがオススメです。
 
@@ -193,3 +198,4 @@ end
 
 - [belongs_to through associations](http://stackoverflow.com/questions/4021322/belongs-to-through-associations)
 - [delegate (Module) - APIdock](https://apidock.com/rails/Module/delegate)
+- [ActiveRecord::Associations::ClassMethods \| RailsDoc](https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_one)
