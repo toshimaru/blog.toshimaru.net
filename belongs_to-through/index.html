@@ -83,7 +83,11 @@
 <div id="md-content">
   <ul class="section-nav">
 <li class="toc-entry toc-h2"><a href="#tldr">TL;DR</a></li>
-<li class="toc-entry toc-h2"><a href="#テーブル構成">テーブル構成</a></li>
+<li class="toc-entry toc-h2"><a href="#テーブル構成">テーブル構成</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#railsモデル構成">Railsモデル構成</a></li>
+</ul>
+</li>
 <li class="toc-entry toc-h2"><a href="#has_many-through-の定義">has_many, through の定義</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#belongs_to-through-は使えない">belongs_to, through は使えない？</a></li>
@@ -109,7 +113,7 @@
   <li>
 <code class="highlighter-rouge">delegate</code> or <code class="highlighter-rouge">has_one</code>+<code class="highlighter-rouge">through</code> が使える</li>
   <li>
-<code class="highlighter-rouge">has_one</code>+<code class="highlighter-rouge">through</code> の方が効率もよく、includesも使えてオススメ</li>
+<code class="highlighter-rouge">has_one</code>+<code class="highlighter-rouge">through</code> の方が効率もよく、 <code class="highlighter-rouge">includes</code> も使えてオススメ</li>
 </ul>
 
 <h2 id="テーブル構成">
@@ -119,6 +123,9 @@
 
 <p><img src="/images/posts/has-many-through/user-post-comment.png" alt="User Post Comment"></p>
 
+<h3 id="railsモデル構成">
+<a class="anchor" href="#rails%E3%83%A2%E3%83%87%E3%83%AB%E6%A7%8B%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>Railsモデル構成</h3>
+
 <p>ユーザー（<code class="highlighter-rouge">User</code>）は複数の記事（<code class="highlighter-rouge">Post</code>）をもっていて、その記事は複数のコメント（<code class="highlighter-rouge">Comment</code>）を持っている、という状態です。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
@@ -126,8 +133,8 @@
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
-  <span class="n">has_many</span> <span class="ss">:comments</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">has_many</span> <span class="ss">:comments</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
@@ -181,7 +188,7 @@
   <span class="n">belongs_to</span> <span class="ss">:post</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">through: :post</span>
 <span class="k">end</span>
-<span class="c1"># ArgumentError (Unknown key: :through. Valid keys are: :class_name, ...</span>
+<span class="c1"># =&gt; ArgumentError (Unknown key: :through. Valid keys are: :class_name, ...</span>
 </code></pre></div></div>
 
 <p>残念ながら<code class="highlighter-rouge">belongs_to</code>には<code class="highlighter-rouge">through</code>というオプションは無いようです。</p>
@@ -217,6 +224,8 @@
 <span class="c1">#  User Load (0.3ms)  SELECT  `users`.* FROM `users` WHERE `users`.`id` = 1 LIMIT 1</span>
 <span class="o">=&gt;</span> <span class="c1">#&lt;User id: 1, name: "TEST", created_at: "2019-09-20 15:36:46", updated_at: "2019-09-20 16:34:31"&gt;</span>
 </code></pre></div></div>
+
+<p>ご覧のように Comment → Post → User と順にロードされていることがわかります。</p>
 
 <h2 id="2-has_one-through-を使う方法">
 <a class="anchor" href="#2-has_one-through-%E3%82%92%E4%BD%BF%E3%81%86%E6%96%B9%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. has_one, through を使う方法</h2>
@@ -264,12 +273,12 @@
 <p><code class="highlighter-rouge">eager_load</code>や<code class="highlighter-rouge">joins</code>も同様に使うことができます。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-  <span class="no">Comment</span> <span class="no">Load</span> <span class="p">(</span><span class="mf">1.0</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span>  <span class="sb">`comments`</span><span class="p">.</span><span class="nf">*</span> <span class="no">FROM</span> <span class="sb">`comments`</span> <span class="no">INNER</span> <span class="no">JOIN</span> <span class="sb">`posts`</span> <span class="no">ON</span> <span class="sb">`posts`</span><span class="p">.</span><span class="nf">`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">post_id</span><span class="sb">` INNER JOIN `</span><span class="n">users</span><span class="sb">` ON `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">posts</span><span class="sb">`.`</span><span class="n">user_id</span><span class="sb">` WHERE `</span><span class="n">comments</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = 1 LIMIT 1
-=&gt; #&lt;Comment id: 1 ...
-&gt; Comment.eager_load(:user).find(1)
-#  SQL (2.4ms)  SELECT  `</span><span class="n">comments</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` AS t0_r0, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">post_id</span><span class="sb">` AS t0_r1, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">content</span><span class="sb">` AS t0_r2, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">created_at</span><span class="sb">` AS t0_r3, `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">updated_at</span><span class="sb">` AS t0_r4, `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` AS t1_r0, `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">name</span><span class="sb">` AS t1_r1, `</span><span class="n">users</span><span class="sb">`.`</span><span class="n">created_at</span><span class="sb">` AS t1_r2, `</span><span class="n">users</span><span class="sb">`.`</span><span class="n">updated_at</span><span class="sb">` AS t1_r3 FROM `</span><span class="n">comments</span><span class="sb">` LEFT OUTER JOIN `</span><span class="n">posts</span><span class="sb">` ON `</span><span class="n">posts</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">comments</span><span class="sb">`.`</span><span class="n">post_id</span><span class="sb">` LEFT OUTER JOIN `</span><span class="n">users</span><span class="sb">` ON `</span><span class="n">users</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = `</span><span class="n">posts</span><span class="sb">`.`</span><span class="n">user_id</span><span class="sb">` WHERE `</span><span class="n">comments</span><span class="sb">`.`</span><span class="nb">id</span><span class="sb">` = 1 LIMIT 1
-=&gt; #&lt;Comment id: 1 ...
-</span></code></pre></div></div>
+<span class="c1">#  Comment Load (1.0ms)  SELECT  `comments`.* FROM `comments` INNER JOIN `posts` ON `posts`.`id` = `comments`.`post_id` INNER JOIN `users` ON `users`.`id` = `posts`.`user_id` WHERE `comments`.`id` = 1 LIMIT 1</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Comment id: 1 ...</span>
+<span class="o">&gt;</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">eager_load</span><span class="p">(</span><span class="ss">:user</span><span class="p">).</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#  SQL (2.4ms)  SELECT  `comments`.`id` AS t0_r0, `comments`.`post_id` AS t0_r1, `comments`.`content` AS t0_r2, `comments`.`created_at` AS t0_r3, `comments`.`updated_at` AS t0_r4, `ube sers`.`id` AS t1_r0, `users`.`name` AS t1_r1, `users`.`created_at` AS t1_r2, `users`.`updated_at` AS t1_r3 FROM `comments` LEFT OUTER JOIN `posts` ON `posts`.`id` = `comments`.`post_id` LEFT OUTER JOIN `users` ON `users`.`id` = `posts`.`user_id` WHERE `comments`.`id` = 1 LIMIT 1</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Comment id: 1 ...</span>
+</code></pre></div></div>
 
 <h2 id="どちらの方法が良いか">
 <a class="anchor" href="#%E3%81%A9%E3%81%A1%E3%82%89%E3%81%AE%E6%96%B9%E6%B3%95%E3%81%8C%E8%89%AF%E3%81%84%E3%81%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>どちらの方法が良いか？</h2>
@@ -287,15 +296,22 @@
   <tbody>
     <tr>
       <td>
-<code class="highlighter-rouge">Comment</code> -&gt; <code class="highlighter-rouge">User</code> 参照のためのクエリ回数</td>
+<code class="highlighter-rouge">Comment</code> → <code class="highlighter-rouge">User</code> 参照のための総クエリ回数</td>
       <td>3回</td>
       <td>2回</td>
     </tr>
     <tr>
       <td>
 <code class="highlighter-rouge">includes</code> <code class="highlighter-rouge">joins</code> などが使えるか？</td>
-      <td>使用不可</td>
-      <td>使用可</td>
+      <td>☓ 使用不可</td>
+      <td>○ 使用可</td>
+    </tr>
+    <tr>
+      <td>定義の意味</td>
+      <td>
+<code class="highlighter-rouge">comment</code> から<br><code class="highlighter-rouge">user</code> への関連を<br><code class="highlighter-rouge">post</code> に移譲</td>
+      <td>
+<code class="highlighter-rouge">comment</code> は<br><code class="highlighter-rouge">post</code>を通して<br><code class="highlighter-rouge">user</code>への関連を１つ持つ</td>
     </tr>
   </tbody>
 </table>
@@ -308,6 +324,7 @@
 <ul>
   <li><a href="http://stackoverflow.com/questions/4021322/belongs-to-through-associations">belongs_to through associations</a></li>
   <li><a href="https://apidock.com/rails/Module/delegate">delegate (Module) - APIdock</a></li>
+  <li><a href="https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_one">ActiveRecord::Associations::ClassMethods | RailsDoc</a></li>
 </ul>
 
 </div>
