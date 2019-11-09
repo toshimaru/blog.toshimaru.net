@@ -4,7 +4,7 @@ title: GitHub Actions(v2)ファーストインプレッション 〜v1との違�
 image: "/images/posts/github-actions/og.png"
 description: "GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。"
 tags: github ci
-last_modified_at: 2019-09-12
+last_modified_at: 2019-11-10
 ---
 
 [GitHub Actions v2(beta)](https://github.com/features/actions)が手元に降ってきたので試してみた記事です。
@@ -87,7 +87,8 @@ TravisCI, CircleCIと比較されることが多いかと思いますが、ど�
   - Tagプッシュされたらリリース
   - 何らかの条件でIssueの作成/クローズ
   - GitHubのコメントでチャットボット的な感覚でワークフロー呼び出し
-  - etc.
+  - などなど
+    - [Marketplace](https://github.com/marketplace?type=actions)や[awesome-actions](https://github.com/sdras/awesome-actions)で良さげなものを探し見ると良さそう
 
 ## 悪い点
 
@@ -100,6 +101,7 @@ TravisCI, CircleCIと比較されることが多いかと思いますが、ど�
   - _（追記）_ CI Status Badgeに関して [公式ドキュメント](https://help.github.com/en/articles/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository) に来ました
 - Betaなのでまだいろいろとバギー
   - 例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする
+  - _（追記）_ だいぶ安定してきた感はあります
 - ~~サポート問い合わせてもなかなか返信がこない（おそらくGitHubの中のサポート体制がまだ整っていない）~~
   - _（追記）_ もうGitHubの中のサポート体制は整ったと思われるので、比較的返事も早く返ってくるようになった模様
 - eventの粒度がちょっと荒め？
