@@ -84,7 +84,12 @@
   
   <p><a href="https://github.com/features/actions">GitHub Actions v2(beta)</a>が手元に降ってきたので試してみた記事です。</p>
 
-<p><strong>※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。</strong></p>
+<div class="warning">
+  <h5></h5>
+  <p>※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。</p>
+</div>
+
+<p>公式ドキュメント: <a href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions">Automating your workflow with GitHub Actions - GitHub Help</a></p>
 
 <h2 id="tldr">TL;DR</h2>
 
@@ -104,6 +109,11 @@
 
 <p>まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>。</p>
 
+<div class="info">
+  <h5>追記</h5>
+  <p>GitHub Actions v1がDeprecatedになったため、現在はv1の多くのコンテンツがv2の内容で置き換わってます。</p>
+</div>
+
 <p>それぞれ違いを下記に列挙します。</p>
 
 <table>
@@ -117,8 +127,8 @@
   <tbody>
     <tr>
       <td>特徴</td>
-      <td>汎用的なワークフロー型の自動化ソリューション</td>
-      <td>CI機能を備えた自動化ソリューション</td>
+      <td>汎用的なワークフロー型の<br />自動化ソリューション</td>
+      <td>CI機能を備えた<br />自動化ソリューション</td>
     </tr>
     <tr>
       <td>記述言語</td>
@@ -127,13 +137,13 @@
     </tr>
     <tr>
       <td>公開ステータス</td>
-      <td>2019年9月一杯でdeprecatedになる</td>
-      <td>public beta（順次ロールアウト中）</td>
+      <td><del>2019年9月一杯でdeprecatedになる</del><br />Deprecated</td>
+      <td>public beta<br />（順次ロールアウト中）</td>
     </tr>
     <tr>
       <td>ドキュメントURL</td>
-      <td><a href="https://developer.github.com/actions/">developer.github.com</a></td>
-      <td><a href="https://help.github.com/en/articles/about-github-actions">help.github.com</a></td>
+      <td><del><a href="https://developer.github.com/actions/">developer.github.com</a></del><br />※現在アクセス不可</td>
+      <td><a href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions">help.github.com</a></td>
     </tr>
     <tr>
       <td>サポートOS</td>
@@ -141,44 +151,49 @@
       <td>Linux/Mac/Windows</td>
     </tr>
     <tr>
-      <td>環境構築</td>
+      <td>環境設定</td>
       <td><code class="highlighter-rouge">Dockerfile</code>を自ら記述</td>
-      <td>用意されたOSを利用</td>
+      <td>用意されたOSを選択して利用</td>
     </tr>
     <tr>
       <td>バックエンドインフラ</td>
-      <td>?</td>
+      <td>?（おそらくGitHub Cloud?）</td>
       <td>Azure PipelinesのFork</td>
+    </tr>
+    <tr>
+      <td>マーケットプレイス</td>
+      <td><a href="https://github.com/marketplace?type=actions">GitHub Marketplace</a></td>
+      <td><a href="https://github.com/marketplace?type=actions">GitHub Marketplace</a><br />※v1と同一URL</td>
     </tr>
   </tbody>
 </table>
 
-<p>２つあるので、「GitHub Actions」というキーワードでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く異なってきます。</p>
+<p>２つあるので、「GitHub Actions」というキーワードでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く内容が異なってきます。</p>
 
-<p>またv1が手元で使えるからといってv2が自動的に使えるわけではありません。それぞれ別物なのでv1が使えてたとしても、v2が降ってくるまでは使えません。</p>
+<p>またv1が手元で使えるからといってv2が自動的に使えるわけではありません。それぞれ別物なのでv1が使えてたとしても、v2が利用可能対象ユーザーとして降ってくるまでは使えません。</p>
 
 <h2 id="導入方法">導入方法</h2>
 
 <p>設定方法は簡単。GitHub Action v2が使える対象になっていれば、下記のように表示されますので <strong>Enable Repository</strong> してください。</p>
 
-<p><img src="/images/posts/github-actions/enable.png" alt="" /></p>
+<p><img src="/images/posts/github-actions/enable.png" alt="Enable Repository" /></p>
 
 <p>有効化されると、下記画面が出てくるのでGUIでポチポチワークフローを設定するもよし。</p>
 
-<p><img src="/images/posts/github-actions/get-started.png" alt="" /></p>
+<p><img src="/images/posts/github-actions/get-started.png" alt="Enable Repository 2" /></p>
 
 <p><code class="highlighter-rouge">.github/workflows</code>以下に直接YAMLを置くもよし。動くYAMLサンプルは下記の公式 starter-workflows レポジトリを覗いてみるとよいかと思います。</p>
 
-<p>Accelerating new GitHub Actions workflows: 
-https://github.com/actions/starter-workflows/tree/master/ci</p>
+<p>Accelerating new GitHub Actions workflows:
+<a href="https://github.com/actions/starter-workflows/tree/master/ci">https://github.com/actions/starter-workflows/tree/master/ci</a></p>
 
 <h2 id="価格">価格</h2>
 
 <p>気になる価格はどうでしょう。</p>
 
-<p><img src="/images/posts/github-actions/price.png" alt="" /></p>
+<p><img src="/images/posts/github-actions/price.png" alt="pricing" /></p>
 
-<p>Public Repoは<strong>完全無料</strong>。並列数も<strong>20並列</strong>まで使える模様。</p>
+<p>Public Repoは <strong>完全無料</strong>。並列数も <strong>20並列</strong> まで使える模様。</p>
 
 <p>TravisCI, CircleCIと比較されることが多いかと思いますが、どちらのCIサービスも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。</p>
 
@@ -186,17 +201,26 @@ https://github.com/actions/starter-workflows/tree/master/ci</p>
 
 <ul>
   <li>主要OSであるLinux/Mac/Windowsは<a href="https://help.github.com/en/articles/virtual-environments-for-github-actions#supported-virtual-environments">すべて対応</a></li>
-  <li>イベントをhookしてからジョブが走りだすまでが早い</li>
-  <li>GitHubサービス内で完結する</li>
+  <li>イベントをhookしてからジョブが走り出すまでが早い</li>
+  <li>GitHubサービス内で完結する
+    <ul>
+      <li>いろんなページを行ったり来たりしなくてよい</li>
+    </ul>
+  </li>
   <li>並列数がしっかり確保されている</li>
-  <li><code class="highlighter-rouge">GITHUB_TOKEN</code>が自動的に発行される（外部CIサービスの場合新たに払い出す必要があった）</li>
-  <li>GitHubとカジュアルに連携できるということで使い方は無限大…!
+  <li><code class="highlighter-rouge">GITHUB_TOKEN</code>が自動的に発行される
+    <ul>
+      <li>外部CIサービスの場合、新たにTokenを払い出す必要があったので手間だった</li>
+    </ul>
+  </li>
+  <li>GitHubとカジュアルに連携できるということで使い方の可能性は無限大…!!!
     <ul>
       <li>lintしてPRにコメント</li>
       <li>/x/path に変更あったら xxx のジョブ起動</li>
       <li>PR/Issueへの自動ラベリング</li>
       <li>Tagプッシュされたらリリース</li>
       <li>何らかの条件でIssueの作成/クローズ</li>
+      <li>GitHubのコメントでチャットボット的な感覚でワークフロー呼び出し</li>
       <li>etc.</li>
     </ul>
   </li>
@@ -205,7 +229,11 @@ https://github.com/actions/starter-workflows/tree/master/ci</p>
 <h2 id="悪い点">悪い点</h2>
 
 <ul>
-  <li>キャッシュ機構がない</li>
+  <li><del>キャッシュ機構がない</del>
+    <ul>
+      <li><em>（追記）</em> きました: <a href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions/caching-dependencies-to-speed-up-workflows">Caching dependencies to speed up workflows - GitHub Help</a></li>
+    </ul>
+  </li>
   <li>Slack通知が公式では用意されていない</li>
   <li><code class="highlighter-rouge">[ci skip]</code> 機能がない</li>
   <li>ドキュメントが少ない</li>
@@ -214,15 +242,19 @@ https://github.com/actions/starter-workflows/tree/master/ci</p>
       <li><em>（追記）</em> CI Status Badgeに関して <a href="https://help.github.com/en/articles/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository">公式ドキュメント</a> に来ました</li>
     </ul>
   </li>
-  <li>Betaなのでいろいろバギー
+  <li>Betaなのでまだいろいろとバギー
     <ul>
       <li>例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする</li>
     </ul>
   </li>
-  <li>サポート問い合わせてもなかなか返信がこない（おそらくGitHubの中のサポート体制がまだ整っていない）</li>
+  <li><del>サポート問い合わせてもなかなか返信がこない（おそらくGitHubの中のサポート体制がまだ整っていない）</del>
+    <ul>
+      <li><em>（追記）</em> もうGitHubの中のサポート体制は整ったと思われるので、比較的返事も早く返ってくるようになった模様</li>
+    </ul>
+  </li>
   <li>eventの粒度がちょっと荒め？
     <ul>
-      <li>例えば <code class="highlighter-rouge">create</code> イベントにはBranch or tagのcreateイベントが含まれるけど、ほしいのはtagのみの<code class="highlighter-rouge">tag_create</code>なんだよなぁみたいなとき</li>
+      <li>例えば <code class="highlighter-rouge">create</code> イベントには Branch or Tag のcreateイベントが含まれるけど、ほしいのはtagのみの<code class="highlighter-rouge">tag_create</code>イベントなんだよなぁみたいなとき</li>
       <li>意図しないイベントを拾ったりする（branch deleteでイベントトリガーされるとか）</li>
     </ul>
   </li>
