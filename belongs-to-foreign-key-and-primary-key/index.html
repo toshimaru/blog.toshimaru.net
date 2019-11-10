@@ -1,0 +1,433 @@
+<!doctype html>
+<html class="no-js" lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法 - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <link rel="stylesheet" href="/css/main.css">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法 - Hack Your Design!">
+  <meta property="og:title" content="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法 - Hack Your Design!">
+  <meta name="description" content="Railsモデルは下記のような状態です。 ユーザー（User）は複数の記事（Post）データをもっている ユーザー（User）は１つのプロフィール（Profile）データをもっている　やりたいこととしてはこのモデル構成の中心にいる User の関連をスキップして Post と Profile を直接関連付けてやることです。つまり User has_one Profile, User has_many Posts の関係を、Profile has_many Posts の関係にしちゃおう、ということです。">
+  <meta name="twitter:description" content="Railsモデルは下記のような状態です。 ユーザー（User）は複数の記事（Post）データをもっている ユーザー（User）は１つのプロフィール（Profile）データをもっている　やりたいこととしてはこのモデル構成の中心にいる User の関連をスキップして Post と Profile を直接関連付けてやることです。つまり User has_one Profile, User has_many Posts の関係を、Profile has_many Posts の関係にしちゃおう、ということです。">
+  <meta property="og:description" content="Railsモデルは下記のような状態です。 ユーザー（User）は複数の記事（Post）データをもっている ユーザー（User）は１つのプロフィール（Profile）データをもっている　やりたいこととしてはこのモデル構成の中心にいる User の関連をスキップして Post と Profile を直接関連付けてやることです。つまり User has_one Profile, User has_many Posts の関係を、Profile has_many Posts の関係にしちゃおう、ということです。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2019-11-10T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.toshimaru.net/atom.xml" title="Hack Your Design!" />
+</head>
+<body>
+  <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="/search/" method="get">
+      <input type="text" class="search-txt" name="q" placeholder="Search"/>
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2019-11-10T00:00:00+09:00" pubdate>2019/11/10</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/activerecord/" rel="tag">activerecord</a>
+
+<a href="/tag/rails/" rel="tag">rails</a>
+
+
+    </div>
+    <img class="post-image" src="/images/posts/belongs-to-foreign-key-and-primary-key/og.png" alt="(image)ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法" title="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法" />
+  </div>
+</div>
+
+<div id="md-content">
+  <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#テーブル構成">テーブル構成</a></li>
+<li class="toc-entry toc-h2"><a href="#railsモデル定義">Railsモデル定義</a></li>
+<li class="toc-entry toc-h2"><a href="#has_oneをもったモデルをスキップする">has_oneをもったモデルをスキップする</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#モデル定義">モデル定義</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#inverse_of-を設定する">inverse_of を設定する</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#モデル定義inverse_of-version">モデル定義（inverse_of version）</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#過去に書いた関連記事">過去に書いた関連記事</a></li>
+<li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
+</ul>
+  <h2 id="テーブル構成">
+<a class="anchor" href="#%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB%E6%A7%8B%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>テーブル構成</h2>
+
+<p>とあるRailsアプリケーションでこんなテーブル構成があったとします。</p>
+
+<p><img src="/images/posts/belongs-to-foreign-key-and-primary-key/users-posts.png" alt="table relation"></p>
+
+<h2 id="railsモデル定義">
+<a class="anchor" href="#rails%E3%83%A2%E3%83%87%E3%83%AB%E5%AE%9A%E7%BE%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>Railsモデル定義</h2>
+
+<p>Railsモデルは下記のような状態です。</p>
+
+<ul>
+  <li>ユーザー（<code class="highlighter-rouge">User</code>）は複数の記事（<code class="highlighter-rouge">Post</code>）データをもっている</li>
+  <li>ユーザー（<code class="highlighter-rouge">User</code>）は１つのプロフィール（<code class="highlighter-rouge">Profile</code>）データをもっている</li>
+</ul>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="n">has_one</span> <span class="ss">:profile</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Profile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="has_oneをもったモデルをスキップする">
+<a class="anchor" href="#has_one%E3%82%92%E3%82%82%E3%81%A3%E3%81%9F%E3%83%A2%E3%83%87%E3%83%AB%E3%82%92%E3%82%B9%E3%82%AD%E3%83%83%E3%83%97%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>has_oneをもったモデルをスキップする</h2>
+
+<p>やりたいこととしてはこのモデル構成の中心にいる <code class="highlighter-rouge">User</code> の関連をスキップして <code class="highlighter-rouge">Post</code> と <code class="highlighter-rouge">Profile</code> を直接関連付けてやることです。つまり <strong>User has_one Profile</strong>, <strong>User has_many Posts</strong> の関係を、<strong>Profile has_many Posts</strong> の関係にしちゃおう、ということです。</p>
+
+<p>テーブル定義で表現すると下図の赤線の部分が今回やりたい関連の定義です。</p>
+
+<p><img src="/images/posts/belongs-to-foreign-key-and-primary-key/users-posts2.png" alt="model relation 2"></p>
+
+<h3 id="モデル定義">
+<a class="anchor" href="#%E3%83%A2%E3%83%87%E3%83%AB%E5%AE%9A%E7%BE%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>モデル定義</h3>
+
+<p>上記のやりたいことはアソシエーションの定義において、<code class="highlighter-rouge">foreign_key</code>, <code class="highlighter-rouge">primary_key</code> などのオプションを駆使して実現可能です。</p>
+
+<p>下記がそのアソシエーション定義の完成形となります。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="n">has_one</span> <span class="ss">:profile</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">belongs_to</span> <span class="ss">:profile</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span><span class="p">,</span> <span class="ss">primary_key: :user_id</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Profile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>この定義により <code class="highlighter-rouge">Post</code> → <code class="highlighter-rouge">Profile</code>, <code class="highlighter-rouge">Profile</code> → <code class="highlighter-rouge">Post</code> の双方向の関連付けが定義することができました。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Post</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">profile</span>
+<span class="c1">#  Post Load (1.2ms)  SELECT  `posts`.* FROM `posts` ORDER BY `posts`.`id` ASC LIMIT 1</span>
+<span class="c1">#  Profile Load (3.9ms)  SELECT  `profiles`.* FROM `profiles` WHERE `profiles`.`user_id` = 1 LIMIT 1</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Profile id: 1, user_id: 1, ..."&gt;</span>
+<span class="o">&gt;</span> <span class="no">Profile</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">posts</span>
+<span class="c1">#  Profile Load (0.8ms)  SELECT  `profiles`.* FROM `profiles` ORDER BY `profiles`.`id` ASC LIMIT 1</span>
+<span class="c1">#  Post Load (0.4ms)  SELECT  `posts`.* FROM `posts` WHERE `posts`.`user_id` = 1 LIMIT 11</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;ActiveRecord::Associations::CollectionProxy [#&lt;Post id: 1, user_id: 1, ..."&gt;, #&lt;Post id: 2, user_id: 1, ...]&gt;</span>
+</code></pre></div></div>
+
+<p>上結果の通り、<code class="highlighter-rouge">User Load</code>を通すことなくお互いを呼び出すことができていることが確認できました。</p>
+
+<h2 id="inverse_of-を設定する">
+<a class="anchor" href="#inverse_of-%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>inverse_of を設定する</h2>
+
+<p>上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは <code class="highlighter-rouge">foreign_key</code> オプションを使っているために、双方向の関連付けが不完全に設定されていることです。</p>
+
+<blockquote>
+  <p>Active Recordでは標準的な名前同士の関連付けのほとんどをサポートしていて、自動的に認識できます。ただし、Active Recordでスコープや次のオプションを使った場合、双方向の関連付けは自動的に認識されません。</p>
+
+  <ul>
+    <li><code class="highlighter-rouge">:through</code></li>
+    <li><code class="highlighter-rouge">:foreign_key</code></li>
+  </ul>
+</blockquote>
+
+<p>via. <a href="https://railsguides.jp/association_basics.html#%E5%8F%8C%E6%96%B9%E5%90%91%E9%96%A2%E9%80%A3%E4%BB%98%E3%81%91">Active Record の関連付け - Rails ガイド</a></p>
+
+<p>実際に試してみましょう。すると下記の通り、同じidを持ったインスタンスにもかかわらず違うオブジェクトとして生成されていることがわかります。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">profile1</span> <span class="o">=</span> <span class="no">Profile</span><span class="p">.</span><span class="nf">first</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Profile id: 1, user_id: 1, ..."&gt;</span>
+<span class="o">&gt;</span> <span class="n">profile2</span> <span class="o">=</span> <span class="n">profile1</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">profile</span>
+<span class="o">=&gt;</span> <span class="c1">#&lt;Profile id: 1, user_id: 1, ..."&gt;</span>
+<span class="o">&gt;</span> <span class="n">profile1</span><span class="p">.</span><span class="nf">equal?</span> <span class="n">profile2</span>
+<span class="o">=&gt;</span> <span class="kp">false</span>
+</code></pre></div></div>
+
+<h3 id="モデル定義inverse_of-version">
+<a class="anchor" href="#%E3%83%A2%E3%83%87%E3%83%AB%E5%AE%9A%E7%BE%A9inverse_of-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>モデル定義（inverse_of version）</h3>
+
+<p>これを解決するために <code class="highlighter-rouge">inverse_of</code> を設定します。上述のコードを下記のように変更します。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="n">has_one</span> <span class="ss">:profile</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">belongs_to</span> <span class="ss">:profile</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span><span class="p">,</span> <span class="ss">primary_key: :user_id</span><span class="p">,</span> <span class="ss">inverse_of: :posts</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Profile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span><span class="p">,</span> <span class="ss">inverse_of: :profile</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>これで下記コードは同じオブジェクトとなり、<code class="highlighter-rouge">true</code>を返すようになります。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">profile1</span> <span class="o">=</span> <span class="no">Profile</span><span class="p">.</span><span class="nf">first</span>
+<span class="o">&gt;</span> <span class="n">profile2</span> <span class="o">=</span> <span class="n">profile1</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">profile</span>
+<span class="o">&gt;</span> <span class="n">profile1</span><span class="p">.</span><span class="nf">equal?</span> <span class="n">profile2</span>
+<span class="o">=&gt;</span> <span class="kp">true</span>
+</code></pre></div></div>
+
+<h2 id="過去に書いた関連記事">
+<a class="anchor" href="#%E9%81%8E%E5%8E%BB%E3%81%AB%E6%9B%B8%E3%81%84%E3%81%9F%E9%96%A2%E9%80%A3%E8%A8%98%E4%BA%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>過去に書いた関連記事</h2>
+
+<ul>
+  <li><a href="/belongs_to-through/">ActiveRecordでhas_many, throughとは逆の関連を定義する</a></li>
+</ul>
+
+<h2 id="参考">
+<a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
+
+<ul>
+  <li><a href="https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-belongs_to">ActiveRecord::Associations::ClassMethods - belongs_to | RailsDoc(β)</a></li>
+  <li><a href="https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many">ActiveRecord::Associations::ClassMethods - has_many | RailsDoc(β)</a></li>
+</ul>
+
+</div>
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連記事</h3>
+  <ul>
+  
+    <li><a href="/rdm2018-active-record-anti-patterns/" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</a></li>
+  
+    <li><a href="/rails-batch-optimization/" title="Rails/ActiveRecord バッチ処理の最適化">Rails/ActiveRecord バッチ処理の最適化</a></li>
+  
+    <li><a href="/rails-find_each/" title="Railsのfind_eachの挙動について調べた">Railsのfind_eachの挙動について調べた</a></li>
+  
+    <li><a href="/manage-schema-with-sql-in-rails/" title="SQLファイルによるRails DBスキーマ管理">SQLファイルによるRails DBスキーマ管理</a></li>
+  
+    <li><a href="/active-record-callbacks/" title="ActiveRecordのコールバックの順序・コールバック内のロールバック処理について">ActiveRecordのコールバックの順序・コールバック内のロールバック処理について</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <h3>おすすめ記事</h3>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/bash-stdout-and-stderr/" title="Older Post: 標準出力、標準エラー出力のリダイレクト方法まとめ">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+(function () { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://hackyourdesign.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+<div id="adsense">
+  <!-- responsive-ad-unit -->
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="4426937197"
+       data-ad-format="auto"
+       data-full-width-responsive="true">
+  </ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/"
+    },
+    "headline": "ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法",
+    "datePublished": "2019-11-10T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png"
+    },
+    "keywords": "activerecord, rails"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://blog.toshimaru.net/tag/activerecord/",
+          "name": "activerecord"
+        }
+      }
+    ]
+    }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/cool-ui/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li><a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-frontend/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-frontend/"></a>
+</li>
+          <li><a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li><a href="/engineer-hiring/">『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/engineer-hiring/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/engineer-hiring/"></a>
+</li>
+          <li><a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-batch-optimization/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-batch-optimization/"></a>
+</li>
+          <li><a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-http-status-symbols/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li><a href="/vg-tech-assessment/">VOYAGE GROUPの『公開技術力評価会』に行ってエンジニア評価と給与設定について本気出して考えた</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/vg-tech-assessment/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/vg-tech-assessment/"></a>
+</li>
+        </ul>
+        <p><a href="https://b.hatena.ne.jp/entrylist?sort=count&url=blog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+        <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-1">aws</a> <a href="/tag/bash/" class="set-1">bash</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-1">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-2">git</a> <a href="/tag/github/" class="set-1">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-3">javascript</a> <a href="/tag/jekyll/" class="set-1">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-1">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/oss/" class="set-2">oss</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-3">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/poem/" class="set-1">poem</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/review/" class="set-1">review</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-1">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-2">雑記</a>
+
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshimaru</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="crossorigin="anonymous"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

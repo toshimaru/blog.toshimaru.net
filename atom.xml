@@ -1,4 +1,141 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-11-11T00:08:41+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">標準出力、標準エラー出力のリダイレクト方法まとめ</title><link href="https://blog.toshimaru.net/bash-stdout-and-stderr/" rel="alternate" type="text/html" title="標準出力、標準エラー出力のリダイレクト方法まとめ" /><published>2019-11-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/bash-stdout-and-stderr</id><content type="html" xml:base="https://blog.toshimaru.net/bash-stdout-and-stderr/">&lt;p&gt;標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-11-11T00:46:40+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</title><link href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/" rel="alternate" type="text/html" title="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法" /><published>2019-11-10T00:00:00+09:00</published><updated>2019-11-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key</id><content type="html" xml:base="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">&lt;h2 id=&quot;テーブル構成&quot;&gt;テーブル構成&lt;/h2&gt;
+
+&lt;p&gt;とあるRailsアプリケーションでこんなテーブル構成があったとします。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/belongs-to-foreign-key-and-primary-key/users-posts.png&quot; alt=&quot;table relation&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;railsモデル定義&quot;&gt;Railsモデル定義&lt;/h2&gt;
+
+&lt;p&gt;Railsモデルは下記のような状態です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ユーザー（&lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;）は複数の記事（&lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt;）データをもっている&lt;/li&gt;
+  &lt;li&gt;ユーザー（&lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;）は１つのプロフィール（&lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt;）データをもっている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;has_oneをもったモデルをスキップする&quot;&gt;has_oneをもったモデルをスキップする&lt;/h2&gt;
+
+&lt;p&gt;やりたいこととしてはこのモデル構成の中心にいる &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; の関連をスキップして &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; と &lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt; を直接関連付けてやることです。つまり &lt;strong&gt;User has_one Profile&lt;/strong&gt;, &lt;strong&gt;User has_many Posts&lt;/strong&gt; の関係を、&lt;strong&gt;Profile has_many Posts&lt;/strong&gt; の関係にしちゃおう、ということです。&lt;/p&gt;
+
+&lt;p&gt;テーブル定義で表現すると下図の赤線の部分が今回やりたい関連の定義です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/belongs-to-foreign-key-and-primary-key/users-posts2.png&quot; alt=&quot;model relation 2&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;モデル定義&quot;&gt;モデル定義&lt;/h3&gt;
+
+&lt;p&gt;上記のやりたいことはアソシエーションの定義において、&lt;code class=&quot;highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;primary_key&lt;/code&gt; などのオプションを駆使して実現可能です。&lt;/p&gt;
+
+&lt;p&gt;下記がそのアソシエーション定義の完成形となります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :user_id&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この定義により &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; → &lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt; → &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; の双方向の関連付けが定義することができました。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Post Load (1.2ms)  SELECT  `posts`.* FROM `posts` ORDER BY `posts`.`id` ASC LIMIT 1&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Profile Load (3.9ms)  SELECT  `profiles`.* FROM `profiles` WHERE `profiles`.`user_id` = 1 LIMIT 1&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Profile Load (0.8ms)  SELECT  `profiles`.* FROM `profiles` ORDER BY `profiles`.`id` ASC LIMIT 1&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Post Load (0.4ms)  SELECT  `posts`.* FROM `posts` WHERE `posts`.`user_id` = 1 LIMIT 11&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;ActiveRecord::Associations::CollectionProxy [#&amp;lt;Post id: 1, user_id: 1, ...&quot;&amp;gt;, #&amp;lt;Post id: 2, user_id: 1, ...]&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上結果の通り、&lt;code class=&quot;highlighter-rouge&quot;&gt;User Load&lt;/code&gt;を通すことなくお互いを呼び出すことができていることが確認できました。&lt;/p&gt;
+
+&lt;h2 id=&quot;inverse_of-を設定する&quot;&gt;inverse_of を設定する&lt;/h2&gt;
+
+&lt;p&gt;上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは &lt;code class=&quot;highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt; オプションを使っているために、双方向の関連付けが不完全に設定されていることです。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Active Recordでは標準的な名前同士の関連付けのほとんどをサポートしていて、自動的に認識できます。ただし、Active Recordでスコープや次のオプションを使った場合、双方向の関連付けは自動的に認識されません。&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:through&lt;/code&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:foreign_key&lt;/code&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://railsguides.jp/association_basics.html#%E5%8F%8C%E6%96%B9%E5%90%91%E9%96%A2%E9%80%A3%E4%BB%98%E3%81%91&quot;&gt;Active Record の関連付け - Rails ガイド&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;実際に試してみましょう。すると下記の通り、同じidを持ったインスタンスにもかかわらず違うオブジェクトとして生成されていることがわかります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;equal?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;モデル定義inverse_of-version&quot;&gt;モデル定義（inverse_of version）&lt;/h3&gt;
+
+&lt;p&gt;これを解決するために &lt;code class=&quot;highlighter-rouge&quot;&gt;inverse_of&lt;/code&gt; を設定します。上述のコードを下記のように変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inverse_of: :posts&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inverse_of: :profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで下記コードは同じオブジェクトとなり、&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;を返すようになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;equal?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;過去に書いた関連記事&quot;&gt;過去に書いた関連記事&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;/belongs_to-through/&quot;&gt;ActiveRecordでhas_many, throughとは逆の関連を定義する&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-belongs_to&quot;&gt;ActiveRecord::Associations::ClassMethods - belongs_to | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many&quot;&gt;ActiveRecord::Associations::ClassMethods - has_many | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="activerecord" /><category term="rails" /><summary type="html">テーブル構成</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" /></entry><entry><title type="html">標準出力、標準エラー出力のリダイレクト方法まとめ</title><link href="https://blog.toshimaru.net/bash-stdout-and-stderr/" rel="alternate" type="text/html" title="標準出力、標準エラー出力のリダイレクト方法まとめ" /><published>2019-11-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/bash-stdout-and-stderr</id><content type="html" xml:base="https://blog.toshimaru.net/bash-stdout-and-stderr/">&lt;p&gt;標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。&lt;/p&gt;
 
 &lt;h2 id=&quot;標準入力-標準出力-標準エラー出力とは&quot;&gt;標準入力, 標準出力, 標準エラー出力とは？&lt;/h2&gt;
 
@@ -1240,99 +1377,4 @@ Finished in 19.87 seconds (files took 8.8 seconds to load)
 
 &lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
 
-&lt;p&gt;他社のスクラム・スプリントを経験するのはなかなかない貴重な機会なので、それを一通り体験できたのはとても良かったです。受け入れていただいたSmartHRさん、ありがとうございました！&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><category term="rails" /><summary type="html">体験入社してます pic.twitter.com/f2Ga5LE5Es&amp;mdash; toshimaru (@toshimaru_e) July 11, 2019</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/smarthr.jpeg" /></entry><entry><title type="html">Google App EngineのGo runtimeを1.11から1.12にアップグレードした</title><link href="https://blog.toshimaru.net/gae-go-111-to-112/" rel="alternate" type="text/html" title="Google App EngineのGo runtimeを1.11から1.12にアップグレードした" /><published>2019-07-08T00:00:00+09:00</published><updated>2019-07-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gae-go-111-to-112</id><content type="html" xml:base="https://blog.toshimaru.net/gae-go-111-to-112/">&lt;p&gt;Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;前回までのあらすじ&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;GAEを第一世代から第二世代に上げたときの備忘録としてblogged. | Google App Engineを第一世代から第二世代に乗り換えた - Hack Your Design! &lt;a href=&quot;https://t.co/L1sLTXo4VE&quot;&gt;https://t.co/L1sLTXo4VE&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1130339076198940672?ref_src=twsrc%5Etfw&quot;&gt;May 20, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
-
-&lt;p&gt;「&lt;strong&gt;2019年10月1日までにGo1.11かそれ以上に上げろ&lt;/strong&gt;」というメールがGoogleさんから届いたのでした。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;What do I need to do?&lt;/strong&gt;&lt;/p&gt;
-
-  &lt;p&gt;To avoid service disruption in your applications, please re-deploy your App Engine Standard applications using Go 1.11 or above before October 1, 2019.&lt;/p&gt;
-
-  &lt;p&gt;If your application uses the App Engine &lt;a href=&quot;https://godoc.org/google.golang.org/appengine&quot;&gt;Go SDK APIs&lt;/a&gt;, please &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go111/go-differences&quot;&gt;upgrade to Go 1.11&lt;/a&gt;.&lt;/p&gt;
-
-  &lt;p&gt;If you are not using these APIs, please &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/go-differences&quot;&gt;upgrade to Go 1.12&lt;/a&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;以前、Go 1.11までは上げていたので正直そのままでもよかったのだけど、せっかくなので1.12まで上げてみることにした。&lt;/p&gt;
-
-&lt;h2 id=&quot;過渡期世代とは&quot;&gt;過渡期世代とは？&lt;/h2&gt;
-
-&lt;p&gt;ちなみにGo 1.11は第一世代から第二世代への過渡期世代と言える。Go 1.12にすることで完全なる第二世代へと移行されることとなる。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;第二世代にはApp Engine API対応の過渡期の世代とApp Engine API非対応の完璧な第二世代があります。&lt;/p&gt;
-
-  &lt;p&gt;ここで言うとJava 8、Go 1.11が過渡期の世代にあたるようです。Go 1.12やPHP 7.2のバージョンの世代は完璧な第二世代にあたるので、App Engine APIは利用不可となります。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;ref. &lt;a href=&quot;/gae-first-to-second-generation/&quot;&gt;Google App Engineを第一世代から第二世代に乗り換えた&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;アップグレード手順&quot;&gt;アップグレード手順&lt;/h2&gt;
-
-&lt;p&gt;基本的に下記の公式ドキュメントを参考に進めていけばよい。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/go-differences&quot;&gt;Migrating your App Engine app to Go 1.12  |  App Engine standard environment for Go 1.12 docs  |  Google Cloud&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;appyml&quot;&gt;app.yml&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;app.yml&lt;/code&gt;にてruntimeをGo 1.11から1.12へ変更。一番重要な点。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;runtime&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;go112&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/gae/deploy.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;cronyml&quot;&gt;cron.yml&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cron.yml&lt;/code&gt;はそのままの書式で変更なしで大丈夫。このcronジョブの機能はGAEのConsole上にメニューとして残り続けるようだ。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/gae/cron.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;参考: &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/scheduling-jobs-with-cron-yaml&quot;&gt;Scheduling Jobs with cron.yaml&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;タスクキュー&quot;&gt;タスクキュー&lt;/h2&gt;
-
-&lt;p&gt;Cloud Tasks でのキュー管理方式に置き換わった。必要なら乗り換えよう。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/gae/cloud-tasks.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Cloud Tasks の使い方に関してはGoogle App Engineとはまた別の公式ドキュメントを読もう。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://cloud.google.com/tasks/&quot;&gt;Cloud Tasks Service for Asynchronous Execution  |  Cloud Tasks  |  Google Cloud&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;ローカル開発環境&quot;&gt;ローカル開発環境&lt;/h2&gt;
-
-&lt;h3 id=&quot;dev_appserverpy-は使えない&quot;&gt;dev_appserver.py は使えない&lt;/h3&gt;
-
-&lt;p&gt;今までどおりの &lt;code class=&quot;highlighter-rouge&quot;&gt;dev_appserver.py&lt;/code&gt; を使うと下記のようにエラーが発生して起動できない。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;dev_appserver.py app.yaml
-&lt;span class=&quot;go&quot;&gt;...(snip)...
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;RuntimeError: Unknown runtime 'go112';&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;supported runtimes are &lt;span class=&quot;s1&quot;&gt;'custom'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'go'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'go111'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'java'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'java7'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'java8'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'php55'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'php72'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'python'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'python-compat'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'python27'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'python37'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Go 1.11 に乗り換えているならば &lt;code class=&quot;highlighter-rouge&quot;&gt;app.go&lt;/code&gt; は素直な実装になっているはずなので、下記のように&lt;code class=&quot;highlighter-rouge&quot;&gt;go run&lt;/code&gt;でローカルにサーバーを起動することができる。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run app.go
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;カナリアリリースっぽいやつ&quot;&gt;カナリアリリースっぽいやつ&lt;/h3&gt;
-
-&lt;p&gt;下記のように&lt;code class=&quot;highlighter-rouge&quot;&gt;no-promote&lt;/code&gt;オプションを付けることで、本番環境へのトラフィックを振らない形でデプロイができる。これを使った場合、本番URLとは別に確認陽のURLが発行されているので、それを使って動作確認を行った後に本番へと昇格させるかたちとなる。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;gcloud app deploy &lt;span class=&quot;nt&quot;&gt;--no-promote&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;参考: &lt;a href=&quot;https://cloud.google.com/appengine/docs/standard/go112/testing-and-deploying-your-app&quot;&gt;Testing and Deploying your Application&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/golang-samples/tree/master/appengine/go11x&quot;&gt;golang-samples/appengine/go11x at master · GoogleCloudPlatform/golang-samples&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google-app-engine" /><summary type="html">Google App Engineで設定しているGoアプリケーションのruntimeを過渡期世代（？）のGo 1.11からGo 1.12にアップグレードしたのでその備忘録。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/gae/gae-modern-webapp.png" /></entry></feed>
+&lt;p&gt;他社のスクラム・スプリントを経験するのはなかなかない貴重な機会なので、それを一通り体験できたのはとても良かったです。受け入れていただいたSmartHRさん、ありがとうございました！&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><category term="rails" /><summary type="html">体験入社してます pic.twitter.com/f2Ga5LE5Es&amp;mdash; toshimaru (@toshimaru_e) July 11, 2019</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/smarthr.jpeg" /></entry></feed>
