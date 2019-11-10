@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!</title>
+  <title>SQLファイルによるRails DBスキーマ管理 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -13,14 +13,14 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!">
-  <meta property="og:title" content="SQLファイルでRailsのスキーマ情報管理 - Hack Your Design!">
+  <meta name="twitter:title" content="SQLファイルによるRails DBスキーマ管理 - Hack Your Design!">
+  <meta property="og:title" content="SQLファイルによるRails DBスキーマ管理 - Hack Your Design!">
   <meta name="description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
   <meta name="twitter:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
   <meta property="og:description" content="Railsではdb:migrateすると、デフォルトでdb/schema.rbを生成しますが、SQLでスキーマ情報を管理することも可能です。下記のようにconfig/application.rb内でactive_record.schema_formatを:sqlと設定することで可能になります（デフォルト値は:ruby）。">
-  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
-  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2015-07-03T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/manage-schema-with-sql-in-rails/">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/schema_format-sql-og.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/schema_format-sql-og.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2015-07-03T00:00:00+09:00"><meta property="article:modified_time" content="2019-11-10T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/manage-schema-with-sql-in-rails/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -65,10 +65,10 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">SQLファイルでRailsのスキーマ情報管理</h1>
+  <h1 class="fadeInLeft">SQLファイルによるRails DBスキーマ管理</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2015-07-03T00:00:00+09:00" pubdate>2015/07/03</time>
+      <i class="icon-calendar"></i><time datetime="2015-07-03T00:00:00+09:00" pubdate>2015/07/03 (更新: 2019/11/10)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/rails/" rel="tag">rails</a>
 
@@ -76,7 +76,7 @@
 
 
     </div>
-    
+    <img class="post-image" src="/images/posts/schema_format-sql-og.png" alt="(image)SQLファイルによるRails DBスキーマ管理" title="SQLファイルによるRails DBスキーマ管理" />
   </div>
 </div>
 
@@ -84,30 +84,32 @@
   
   <p>Railsでは<code class="highlighter-rouge">db:migrate</code>すると、デフォルトで<code class="highlighter-rouge">db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code class="highlighter-rouge">config/application.rb</code>内で<code class="highlighter-rouge">active_record.schema_format</code>を<code class="highlighter-rouge">:sql</code>と設定することで可能になります（デフォルト値は<code class="highlighter-rouge">:ruby</code>）。</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/application.rb</span>
-<span class="k">module</span> <span class="nn">Rails4TwitterClone</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/application.rb</span>
+<span class="k">module</span> <span class="nn">RailsApp</span>
   <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
     <span class="n">config</span><span class="p">.</span><span class="nf">active_record</span><span class="p">.</span><span class="nf">schema_format</span> <span class="o">=</span> <span class="ss">:sql</span>
   <span class="k">end</span>
-<span class="k">end</span></code></pre></figure>
+<span class="k">end</span>
+</code></pre></div></div>
 
-<p>これで<code class="highlighter-rouge">db/migrate</code>するとデフォルトのschema.rbではなく、<code class="highlighter-rouge">db/structure.sql</code>というSQLファイルを吐きます。</p>
+<p>これで<code class="highlighter-rouge">db/migrate</code>するとデフォルトの<code class="highlighter-rouge">schema.rb</code>ではなく、<code class="highlighter-rouge">db/structure.sql</code>というSQLファイルを吐きます。</p>
 
 <h2 id="structuresqlをロードする">structure.sqlをロードする</h2>
 
-<p>生成されたstructure.sqlファイルは、下記のコマンドでデータベースへロードできます。</p>
+<p>生成された<code class="highlighter-rouge">structure.sql</code>ファイルは、下記のコマンドでデータベースへロードできます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rake db:structure:load
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>rails db:structure:load
 </code></pre></div></div>
 
 <h2 id="sqlファイルだけ欲しい場合">SQLファイルだけ欲しい場合</h2>
 
-<p>sqlダンプファイルのみが欲しい場合は、<code class="highlighter-rouge">config.active_record.schema_format</code>の設定を変えずとも下記コマンドでstructure.sqlを生成することができます。</p>
+<p>SQLダンプファイルのみが欲しい場合は、<code class="highlighter-rouge">config.active_record.schema_format</code>の設定を変えずとも下記コマンドで<code class="highlighter-rouge">structure.sql</code>のみを生成することができます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rake db:structure:dump
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>rails db:structure:dump
 </code></pre></div></div>
 
 <h3 id="参考">参考</h3>
+
 <ul>
   <li><a href="http://tech-kazuhisa.hatenablog.com/entry/20130902/1378126825">schema.rbじゃなくてstructure.sqlでスキーマ情報を管理しよう - tech-kazuhisa’s blog</a></li>
   <li><a href="http://edgeguides.rubyonrails.org/active_record_migrations.html#types-of-schema-dumps">Active Record Migrations — Ruby on Rails Guides</a></li>
@@ -210,9 +212,9 @@
       "@type": "Blog",
       "@id": "https://blog.toshimaru.net/manage-schema-with-sql-in-rails/"
     },
-    "headline": "SQLファイルでRailsのスキーマ情報管理",
+    "headline": "SQLファイルによるRails DBスキーマ管理",
     "datePublished": "2015-07-03T00:00:00+09:00",
-    "author": {
+    "dateModified": "2019-11-10T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
@@ -224,7 +226,7 @@
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/icon.png"
+      "url": "https://blog.toshimaru.net/images/posts/schema_format-sql-og.png"
     },
     "keywords": "rails, activerecord"
   },
