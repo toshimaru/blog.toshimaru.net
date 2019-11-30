@@ -3,7 +3,7 @@ layout: post
 title: 就活日記(完) 就職
 published: true
 description: 7月初旬より就活を始め就活日記を書いてまいりましたが、Gunosyに入社する運びとなりましたのでご報告します。今月からすでに働き始めてます。
-tags: 就活
+tags: 就活 転職
 ---
 
 [就活日記(0) エントリー](/job-hunting-0/)
