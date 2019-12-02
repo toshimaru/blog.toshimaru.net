@@ -3,9 +3,10 @@ layout: post
 title: メドピア株式会社で働いてます
 description: "株式会社Gunosy → メドピア株式会社　試用期間が終わってとりあえずはやっていけそうな感じなので、いわゆる在職エントリってやつを書いてみます。"
 tags: 転職
+last_modified_at: 2019-12-02
 ---
 
-# TL;DR
+## TL;DR
 
 - 株式会社Gunosy → メドピア株式会社
 
@@ -46,7 +47,7 @@ tags: 転職
             - 参考: [(翻訳) エンジニアとマネージャの振り子](https://rfushimi.hatenablog.jp/entry/2019/04/23/204637)
     - 30歳も過ぎて技術的な成長もなくこのままマネージャとしてエンジニアキャリアを終えるのではないかという漠然とした危機感・焦燥感
         - マネジメントに足を踏み入れたエンジニアあるある話
-    - 「[EMになって技術力が上がる」](https://ohbarye.hatenablog.jp/entry/2019/11/11/tech-skill-growth-of-engineering-manager)ケースもあるようだけど残念ながら僕はそうではなく、どちらかというと「[技術貯金を切り崩している](https://purintai.hateblo.jp/entry/2019/05/17/150447)」と言ったほうが近かったと感じている
+    - 「[EMになって技術力が上がる](https://ohbarye.hatenablog.jp/entry/2019/11/11/tech-skill-growth-of-engineering-manager)」ケースもあるようだけど残念ながら僕はそうではなく、どちらかというと「[技術貯金を切り崩している](https://purintai.hateblo.jp/entry/2019/05/17/150447)」と言ったほうが近かったと感じている
 - Ruby/Railsカンパニー
     - 僕自身に関しては技術に関しては実はそんな特に拘りなく、なんでもやるタイプ
         - そういう意味で前職はPolyglotカンパニーでいろいろな技術に触れられて楽しかった
@@ -83,7 +84,7 @@ tags: 転職
     - ご存知の通りRuby/Rails系のイベントをメドピアはたくさんスポンサーしてて、会社としてコミュニティをサポートしている姿勢が素晴らしいと思います
         - 参考: [Rubyコミュニティとメドピアの素敵な関係](https://speakerdeck.com/fukumura/rubykomiyuniteitomedopiafalsesu-di-naguan-xi)
         - 他にも[会社開発ブログ](https://tech.medpeer.co.jp/)で技術ネタを発信していたり偉い
-    - @[willnet](https://twitter.com/netwillnet) さんが技術顧問
+    - [@willnet](https://twitter.com/netwillnet)さん技術顧問
         - さまざまな会社に顧問でかかわっているだけあって会社のいろんな事情も汲み取りつつしっかりRuby/Railsの質問に答えてくれるとても頼れる存在…!
         - 読書会やモブプロ会にも参加してもらって適宜解説やアドバイスを貰える
         - 総じてメンバーの技術力底上げ・スキルアップはいい感じに回ってると思います
@@ -174,6 +175,29 @@ tags: 転職
 
 以上です。
 
+## 引用した記事一覧
+
+- [(翻訳) エンジニアとマネージャの振り子 - ふしみのブログ](https://rfushimi.hatenablog.jp/entry/2019/04/23/204637)
+  - 原文: [The Engineer/Manager Pendulum – charity.wtf](https://charity.wtf/2017/05/11/the-engineer-manager-pendulum/)
+- [エンジニアリングマネジャーになってから技術力が伸びるパターン - valid,invalid](https://ohbarye.hatenablog.jp/entry/2019/11/11/tech-skill-growth-of-engineering-manager)
+- [株式会社SmartHR を退職します - purintaiの日記](https://purintai.hateblo.jp/entry/2019/05/17/150447)
+- [エムスリー、Web系時価総額上位なのに全然知られていない - エムスリーテックブログ](https://www.m3tech.blog/entry/m3/2019/10/04)
+- [m3 ai team - Speaker Deck](https://speakerdeck.com/nishiba/m3-ai-team)
+- [AWS Loft Tokyo 〜 挑戦をカタチにする場所へ 〜 \| AWS](https://aws.amazon.com/jp/start-ups/loft/tokyo/)
+- [全社的に会社用GitHubアカウントを廃止した件 - ZOZO Technologies TECH BLOG](https://techblog.zozo.com/entry/github_sso)
+- [社内情報共有についての考え方 - An Epicurean](https://blog.song.mu/entry/open-knowledge-sharing)
+- メドピア関連記事
+  - [エンジニアの自由な働き方に欠かせないのは、目線が〇〇に向いていること【メドピア・CTO福村彰展×平川弘通】 \| MedPeer Blog](https://medpeer.co.jp/corp_blog/513.html)
+  - [Rubyコミュニティとメドピアの素敵な関係 - Speaker Deck](https://speakerdeck.com/fukumura/rubykomiyuniteitomedopiafalsesu-di-naguan-xi)
+  - [メドピア開発者ブログ](https://tech.medpeer.co.jp/)
+  - [IRニュース - メドピア株式会社](https://medpeer.co.jp/ir/irnews.html)
+  - [開発環境 - 採用情報 - メドピア株式会社](https://medpeer.co.jp/recruit/workplace/development.html)
+  - [半年間の開発環境の改善を振り返る - メドピア開発者ブログ](https://tech.medpeer.co.jp/entry/2019/10/30/110000)
+  - [募集要項 - 採用情報 - メドピア株式会社](https://medpeer.co.jp/recruit/entry/)
+- 引用した過去記事
+  - [railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました - Hack Your Design!](/why-we-use-ruby-on-rails/)
+  - [バンクーバーの仕事を退職しました - Hack Your Design!](/vancouver-job-after/)
+
 ---------
 
 P.S. ちなみにグノシーも良い会社なのでどうぞ。
@@ -182,7 +206,7 @@ P.S. ちなみにグノシーも良い会社なのでどうぞ。
 
 ----------
 
-[^0]: Roppongi.rb の今後の運営は[@hattappi](https://twitter.com/hatappi)さんにお任せしています。
-[^1]: GitHubによると複数アカウント持つことは推奨していないが禁止ではないとのことでした。
-[^2]: ちなみに僕はPHPもGpもどちらも大好きな言語です。
+[^0]: Roppongi.rb の今後の運営は[@hatappi](https://twitter.com/hatappi)さんにお任せしています。
+[^1]: GitHubによると「複数アカウント持つことは推奨していないが禁止ではない」とのことでした。
+[^2]: ちなみに僕はPHPもGoもどちらも大好きな言語です。
 [^3]: むしろ変えられなかったら辞めるくらいの気概を持ってやっていこうと思っています。
