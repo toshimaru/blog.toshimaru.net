@@ -1,4 +1,176 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-03T10:49:21+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">メドピア株式会社で働いてます</title><link href="https://blog.toshimaru.net/join-medpeer/" rel="alternate" type="text/html" title="メドピア株式会社で働いてます" /><published>2019-11-30T00:00:00+09:00</published><updated>2019-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/join-medpeer</id><content type="html" xml:base="https://blog.toshimaru.net/join-medpeer/">&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-05T00:19:54+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">複数のGoroutineをWaitGroupで制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroupで制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;p&gt;この記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2019/go7&quot;&gt;Go7 Advent Calendar 2019&lt;/a&gt;５日目の記事です。&lt;/p&gt;
+
+&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
+
+&lt;p&gt;下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上述のプログラムを実行した場合、実行時間は約3分30秒となります。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run original.go
+&lt;span class=&quot;go&quot;&gt;End: 0
+End: 1
+End: 2
+...(snip)...
+End: 97
+End: 98
+End: 99
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これを並行に行うことで劇的な改善を目指します。&lt;/p&gt;
+
+&lt;h2 id=&quot;goroutine-を使う&quot;&gt;Goroutine を使う&lt;/h2&gt;
+
+&lt;p&gt;Goの並行処理といえば Goroutine。こいつを使うには処理を関数化して &lt;code class=&quot;highlighter-rouge&quot;&gt;go&lt;/code&gt; というキーワードを付けるだけです。&lt;/p&gt;
+
+&lt;p&gt;下記のように変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// original2.go&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行してみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run original2.go
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;しかし、何も出力されません！　どうしてでしょうか？&lt;/p&gt;
+
+&lt;h2 id=&quot;goroutine--channel-を使う&quot;&gt;Goroutine + Channel を使う&lt;/h2&gt;
+
+&lt;p&gt;考えてみるとそれはそうで、Goroutine と呼ばれる軽量スレッドに処理を切り分けたものの、その処理の実行中にプログラム自体が終了してしまったからです。Goroutine の処理が完了するまで何らかの仕組みで「待つ」必要があります。&lt;/p&gt;
+
+&lt;p&gt;ここで使えるのが Channel です。Channel はデータの送受信ができる&lt;a href=&quot;https://ja.wikipedia.org/wiki/%E3%83%91%E3%82%A4%E3%83%97_(%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF)&quot;&gt;パイプ&lt;/a&gt;のようなもので、主に Goroutine とのデータのやり取りで使われます。&lt;/p&gt;
+
+&lt;p&gt;Channel を使って Goroutine からのデータを受信するようにコードを書き換えてみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// channel.go&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;chan&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;int&lt;/code&gt; 型の Channel を &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt; する&lt;/li&gt;
+  &lt;li&gt;ループ内の Goroutine の中で↑で作成した Channel に値、&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt; を送信&lt;/li&gt;
+  &lt;li&gt;2回目のループ内で Channel の値を受信して、Printする&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;実行すると下記の通り、Goroutine から受信される値の順番はバラバラで出力されました。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ go run channel.go
+End: 95
+End: 98
+End: 5
+...snip...
+End: 55
+End: 30
+End: 99
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行時間も2.6秒程で完了しました。最初の3分30秒という実行時間に比べて劇的な改善と言えるでしょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;goroutine--waitgroup-を使う&quot;&gt;Goroutine + WaitGroup を使う&lt;/h2&gt;
+
+&lt;p&gt;しかし Channel を使うよりももっと良い書き方があるんです！ それが &lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; です。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; は複数の Goroutine の実行を待ってくれます。今回のプログラムの場合、下記のように書くことができます。&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// waitgroup.go&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;sync&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WaitGroup&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を宣言&lt;/li&gt;
+  &lt;li&gt;ループ内の Goroutine の処理の手前で &lt;code class=&quot;highlighter-rouge&quot;&gt;Add(1)&lt;/code&gt; してグループをインクリメントする&lt;/li&gt;
+  &lt;li&gt;Goroutine 内の最後で &lt;code class=&quot;highlighter-rouge&quot;&gt;Done()&lt;/code&gt; して Goroutine の処理が終わったことを &lt;code class=&quot;highlighter-rouge&quot;&gt;WaitGroup&lt;/code&gt; に教えてあげる&lt;/li&gt;
+  &lt;li&gt;ループ終了後に、&lt;code class=&quot;highlighter-rouge&quot;&gt;Wait()&lt;/code&gt; して &lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; の &lt;code class=&quot;highlighter-rouge&quot;&gt;Done&lt;/code&gt; を待つ&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;実行すると下記の出力を得ることができます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run waitgroup.go
+&lt;span class=&quot;go&quot;&gt;End: 86
+End: 5
+End: 16
+...(snip)...
+End: 66
+End: 85
+End: 70
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行時間は2.2秒程で完了しました。Channel を使った場合よりも速く処理が完了したのは、Channel を使ったデータの送受信のオーバーヘッドを削れたことが大きいと考えられます。&lt;/p&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;複数の Goroutine を取り扱う場合、&lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を使って制御（&lt;code class=&quot;highlighter-rouge&quot;&gt;Add&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Done&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Wait&lt;/code&gt;）すると良い。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">この記事はGo7 Advent Calendar 2019５日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">メドピア株式会社で働いてます</title><link href="https://blog.toshimaru.net/join-medpeer/" rel="alternate" type="text/html" title="メドピア株式会社で働いてます" /><published>2019-11-30T00:00:00+09:00</published><updated>2019-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/join-medpeer</id><content type="html" xml:base="https://blog.toshimaru.net/join-medpeer/">&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
 
 &lt;ul&gt;
   &lt;li&gt;株式会社Gunosy → メドピア株式会社&lt;/li&gt;
@@ -1484,54 +1656,4 @@ Finished in 19.87 seconds (files took 8.8 seconds to load)
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://rework.withgoogle.com/jp/guides/understanding-team-effectiveness/steps/introduction/&quot;&gt;Google re:Work - ガイド: 「効果的なチームとは何か」を知る&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://qiita.com/hirokidaichi/items/5d8c4294083d85654a04&quot;&gt;心理的安全性ガイドライン（あるいは権威勾配に関する一考察） - Qiita&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="review" /><summary type="html">『Team Geek』の書評でも書いたんだけど、コードレビューのときはHRTの精神を大事にしたい。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/hrt/hrt-review.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/hrt/hrt-review.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Jekyll v4.0 にアップデートした</title><link href="https://blog.toshimaru.net/jekyll-4/" rel="alternate" type="text/html" title="Jekyll v4.0 にアップデートした" /><published>2019-08-09T00:00:00+09:00</published><updated>2019-08-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-4</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-4/">&lt;p&gt;Jekyllの&lt;code class=&quot;highlighter-rouge&quot;&gt;4.0.0.pre.beta1&lt;/code&gt;が降ってきていたのでアップグレードした。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;We&amp;#39;re getting closer to releasing Jekyll 4!! 🎉 A new beta dropped just now. Please give it a try and let us know how it goes! &lt;a href=&quot;https://t.co/CiIi2i6k7q&quot;&gt;https://t.co/CiIi2i6k7q&lt;/a&gt;&lt;/p&gt;&amp;mdash; jekyll (@jekyllrb) &lt;a href=&quot;https://twitter.com/jekyllrb/status/1158081978194911232?ref_src=twsrc%5Etfw&quot;&gt;August 4, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;対応prdiff&quot;&gt;対応PR/Diff&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://blog.toshimaru.net&quot;&gt;日本語ブログ&lt;/a&gt;（今見ているWebサイト）と&lt;a href=&quot;https://blog.toshima.ru&quot;&gt;英語ブログ&lt;/a&gt;の２つをJekyll v4.0対応した。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;日本語ブログ: &lt;a href=&quot;https://github.com/toshimaru/blog.toshimaru.net/pull/189&quot;&gt;Jekyll 4 by toshimaru · Pull Request #189 · toshimaru/blog.toshimaru.net&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;英語ブログ: &lt;a href=&quot;https://github.com/toshimaru/blog.toshima.ru/commit/42ecf687c4a9be00f9f9db59c2ac9ab4b4e727e3&quot;&gt;gem ‘jekyll’, ‘4.0.0.pre.beta1’ · toshimaru/blog.toshima.ru@42ecf68&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;bundle update jekyll&lt;/code&gt;でjekyll v4.0 へアップグレードしてどちらのサイトも一発でbuildが通ったので、&lt;a href=&quot;/jekyll-3/&quot;&gt;前回のJekyll v3.0のアップグレードのとき&lt;/a&gt;と比較しても、比較的すんなりいった気がする。&lt;/p&gt;
-
-&lt;h2 id=&quot;jekyll-v40の変更点&quot;&gt;Jekyll v4.0の変更点&lt;/h2&gt;
-
-&lt;p&gt;主要な変更は以下。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Ruby 2.3 のサポートが切られた&lt;/li&gt;
-  &lt;li&gt;markdown rendererのPygments, RedCarpet, rdiscountのサポートが切られた
-    &lt;ul&gt;
-      &lt;li&gt;kramdownのバージョンはv2に上がった&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Cacheのハンドリングがスマートにできるようになった（？）っぽい（&lt;a href=&quot;https://github.com/jekyll/jekyll/pull/7169&quot;&gt;対応PR&lt;/a&gt;）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;jekyll-v40対応にあたってメンテしたgem&quot;&gt;Jekyll v4.0対応にあたってメンテしたgem&lt;/h2&gt;
-
-&lt;p&gt;Jekyll v4.0対応にあたってgemのメンテが必要になったのでメンテした。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/jekyll-tagging-related_posts/pull/9&quot;&gt;Drop Ruby 2.1, 2.2 Support / Drop Jekyll 3.0, 3.1, 3.2, 3.3, 3.4 Support by toshimaru · Pull Request #9 · toshimaru/jekyll-tagging-related_posts&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/jekyll-include_sass/pull/10&quot;&gt;Relax jekyll dependency by toshimaru · Pull Request #10 · toshimaru/jekyll-include_sass&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;（jekyll関連のgemをけっこう作っているのでいつか時間があれば本ブログで紹介したい…:thinking:）&lt;/p&gt;
-
-&lt;h2 id=&quot;jekyllについて&quot;&gt;Jekyllについて&lt;/h2&gt;
-
-&lt;p&gt;いろんな言語でいろんな静的サイトジェネレーターが登場しているが（例えばGo製の&lt;a href=&quot;https://gohugo.io/&quot;&gt;hugo&lt;/a&gt;とか）、2019年も僕はJekyllを使い続けようと思っている。以下が理由。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Rubyによる柔軟な拡張が可能&lt;/li&gt;
-  &lt;li&gt;GitHub Pagesでも使われており、今後も継続的に改善・メンテが期待されること&lt;/li&gt;
-  &lt;li&gt;サイトビルドに速度が必要であればRuby以外の&lt;a href=&quot;https://gohugo.io/&quot;&gt;hugo&lt;/a&gt;など検討するがそこまでビルド速度が問題となっていないこと&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;ということでまだしばらくはjekyllとお付き合いしようと思っています（サイトデザイン作り直したいなぁ:persevere:）。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><summary type="html">Jekyllの4.0.0.pre.beta1が降ってきていたのでアップグレードした。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/jekyll/jekyll4.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/jekyll/jekyll4.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="review" /><summary type="html">『Team Geek』の書評でも書いたんだけど、コードレビューのときはHRTの精神を大事にしたい。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/hrt/hrt-review.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/hrt/hrt-review.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
