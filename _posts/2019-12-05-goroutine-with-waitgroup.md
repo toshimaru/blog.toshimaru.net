@@ -5,7 +5,10 @@ image: "/images/posts/goroutine-waitgroup.png"
 description: "この記事はGo7 Advent Calendar 2019５日目の記事です。やりたいこととしては、下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。"
 tags: go
 toc: true
+last_modified_at: 2019-12-07
 ---
+
+{% include info.html title="追記" text="errgroup について追記しました。" %}
 
 この記事は[Go7 Advent Calendar 2019](https://qiita.com/advent-calendar/2019/go7)５日目の記事です。
 
@@ -181,6 +184,154 @@ End: 70
 
 実行時間は2.2秒程で完了しました。Channel を使った場合よりも速く処理が完了したのは、Channel を使ったデータの送受信のオーバーヘッドを削れたことが大きいと考えられます。
 
+## Goroutine + errgroup を使う
+
+Goroutine の処理内でエラーが発生する可能性があってそれをハンドリングしたい場合はどうすればよいでしょうか？
+
+そこで使えるのが[errgroup](https://godoc.org/golang.org/x/sync/errgroup)です。
+
+下記のコードサンプル内では `i` が90以上の場合にエラーが発生するとしています。
+
+```go
+// errgroup.go
+package main
+
+import (
+	"fmt"
+	"log"
+	"time"
+
+	"golang.org/x/sync/errgroup"
+)
+
+func main() {
+	var eg errgroup.Group
+	for i := 0; i < 100; i++ {
+		i := i
+		eg.Go(func() error {
+			time.Sleep(2 * time.Second) // 長い処理
+			if i > 90 {
+				fmt.Println("Error:", i)
+				return fmt.Errorf("Error occurred: %d", i)
+			}
+			fmt.Println("End:", i)
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+- `golang.org/x/sync/errgroup` をimportして、 `errgroup.Group` を宣言
+- `eg.Go()` 内で Goroutine の処理を定義
+- `eg.Wait()` して `eg.Go()` で実行した Goroutine を待つ
+- `eg.Go()` の処理でエラーがあれば、一番最初のエラーを `eg.Wait()` は返す
+
+実行すると下記の出力を得ることができます。
+
+```console
+$ go run errgroup.go
+End: 86
+End: 3
+End: 1
+End: 2
+End: 11
+Error: 96
+End: 0
+...(snip)...
+Error: 93
+End: 53
+End: 84
+End: 88
+End: 74
+2019/12/07 15:24:15 Error occurred: 96
+exit status 1
+```
+
+全ての Goroutine を実行して最初に出会ったエラー、 `Error: 96` が `Error occurred: 96` として最後に出力されていることがわかります。
+
+##  Goroutine + errgroup + context を使う
+
+もう少しエラーの場合に踏み込んでみましょう。エラーが発生したときに Goroutine をキャンセルする場合はどうしたらよいでしょうか？
+
+これは`errgroup`に加えて、[context](https://golang.org/pkg/context/)を組み合わせて使えば実現できます。
+
+```go
+// errgroup_cancel.go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	"golang.org/x/sync/errgroup"
+)
+
+func main() {
+	eg, ctx := errgroup.WithContext(context.Background())
+
+	for i := 0; i < 100; i++ {
+		i := i
+		eg.Go(func() error {
+			time.Sleep(2 * time.Second) // 長い処理
+
+			select {
+			case <-ctx.Done():
+				fmt.Println("Canceled:", i)
+				return nil
+			default:
+				if i > 90 {
+					fmt.Println("Error:", i)
+					return fmt.Errorf("Error: %d", i)
+				}
+				fmt.Println("End:", i)
+				return nil
+			}
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		log.Fatal(err)
+	}
+}
+```
+
+- `errgroup.WithContext()` を使って、`errgroup` と `context` を生成
+- `eg.Go()` 内でキャンセルされたときの処理を `case <-ctx.Done():` 内に記述
+- non-nil error が返されると context はキャンセルされ、後続の Goroutine がキャンセルされる
+
+これを実行すると下記のような出力となります。
+
+```console
+$ go run errgroup_cancel.go
+End: 5
+End: 6
+End: 23
+Error: 98
+End: 7
+End: 8
+Cenceled: 2
+Cenceled: 9
+...(snip)...
+Cenceled: 92
+Cenceled: 53
+2019/12/07 15:43:48 Error: 98
+exit status 1
+```
+
+`Error: 98` が発生し、後続の Goroutine がキャンセルされていることがわかります。
+
 ## まとめ
 
-複数の Goroutine を取り扱う場合、`sync.WaitGroup` を使って制御（`Add`, `Done`, `Wait`）すると良い。
+- 複数の Goroutine を取り扱う場合、`sync.WaitGroup` を使って制御（`Add`, `Done`, `Wait`）すると良い
+- 複数の Goroutine をエラーハンドリングとともに取り扱う場合、 `errgroup` を使って制御（`Go`, `Wait`, `WithContext`）すると良い
+
+## 参考情報
+
+- [errgroup - GoDoc](https://godoc.org/golang.org/x/sync/errgroup)
+- [context - The Go Programming Language](https://golang.org/pkg/context/)
+- [sync.ErrGroupで複数のgoroutineを制御する \| SOTA](https://deeeet.com/writing/2016/10/12/errgroup/)
+- [[Golang] errgroup使用例 - xonoのブログ](http://dono.hatenablog.com/entry/2018/01/04/111204)
