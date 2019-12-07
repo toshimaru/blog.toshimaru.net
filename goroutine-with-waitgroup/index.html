@@ -20,7 +20,7 @@
   <meta property="og:description" content="この記事はGo7 Advent Calendar 2019５日目の記事です。やりたいこととしては、下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2019-12-05T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/goroutine-with-waitgroup/">
+  <meta property="article:published_time" content="2019-12-05T00:00:00+09:00"><meta property="article:modified_time" content="2019-12-07T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/goroutine-with-waitgroup/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -68,7 +68,7 @@
   <h1 class="fadeInLeft">複数のGoroutineをWaitGroupで制御する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2019-12-05T00:00:00+09:00" pubdate>2019/12/05</time>
+      <i class="icon-calendar"></i><time datetime="2019-12-05T00:00:00+09:00" pubdate>2019/12/05 (更新: 2019/12/07)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/go/" rel="tag">go</a>
 
@@ -84,9 +84,17 @@
 <li class="toc-entry toc-h2"><a href="#goroutine-を使う">Goroutine を使う</a></li>
 <li class="toc-entry toc-h2"><a href="#goroutine--channel-を使う">Goroutine + Channel を使う</a></li>
 <li class="toc-entry toc-h2"><a href="#goroutine--waitgroup-を使う">Goroutine + WaitGroup を使う</a></li>
+<li class="toc-entry toc-h2"><a href="#goroutine--errgroup-を使う">Goroutine + errgroup を使う</a></li>
+<li class="toc-entry toc-h2"><a href="#goroutine--errgroup--context-を使う">Goroutine + errgroup + context を使う</a></li>
 <li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
+<li class="toc-entry toc-h2"><a href="#参考情報">参考情報</a></li>
 </ul>
-  <p>この記事は<a href="https://qiita.com/advent-calendar/2019/go7">Go7 Advent Calendar 2019</a>５日目の記事です。</p>
+  <div class="info">
+  <h5>追記</h5>
+  <p>errgroup について追記しました。</p>
+</div>
+
+<p>この記事は<a href="https://qiita.com/advent-calendar/2019/go7">Go7 Advent Calendar 2019</a>５日目の記事です。</p>
 
 <h2 id="やりたいこと">
 <a class="anchor" href="#%E3%82%84%E3%82%8A%E3%81%9F%E3%81%84%E3%81%93%E3%81%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>やりたいこと</h2>
@@ -262,10 +270,171 @@ End: 70
 
 <p>実行時間は2.2秒程で完了しました。Channel を使った場合よりも速く処理が完了したのは、Channel を使ったデータの送受信のオーバーヘッドを削れたことが大きいと考えられます。</p>
 
+<h2 id="goroutine--errgroup-を使う">
+<a class="anchor" href="#goroutine--errgroup-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goroutine + errgroup を使う</h2>
+
+<p>Goroutine の処理内でエラーが発生する可能性があってそれをハンドリングしたい場合はどうすればよいでしょうか？</p>
+
+<p>そこで使えるのが<a href="https://godoc.org/golang.org/x/sync/errgroup">errgroup</a>です。</p>
+
+<p>下記のコードサンプル内では <code class="highlighter-rouge">i</code> が90以上の場合にエラーが発生するとしています。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// errgroup.go</span>
+<span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"log"</span>
+	<span class="s">"time"</span>
+
+	<span class="s">"golang.org/x/sync/errgroup"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">eg</span> <span class="n">errgroup</span><span class="o">.</span><span class="n">Group</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">i</span> <span class="o">:=</span> <span class="n">i</span>
+		<span class="n">eg</span><span class="o">.</span><span class="n">Go</span><span class="p">(</span><span class="k">func</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
+			<span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="m">90</span> <span class="p">{</span>
+				<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Error:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"Error occurred: %d"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+			<span class="k">return</span> <span class="no">nil</span>
+		<span class="p">})</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">eg</span><span class="o">.</span><span class="n">Wait</span><span class="p">();</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+		<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+<code class="highlighter-rouge">golang.org/x/sync/errgroup</code> をimportして、 <code class="highlighter-rouge">errgroup.Group</code> を宣言</li>
+  <li>
+<code class="highlighter-rouge">eg.Go()</code> 内で Goroutine の処理を定義</li>
+  <li>
+<code class="highlighter-rouge">eg.Wait()</code> して <code class="highlighter-rouge">eg.Go()</code> で実行した Goroutine を待つ</li>
+  <li>
+<code class="highlighter-rouge">eg.Go()</code> の処理でエラーがあれば、一番最初のエラーを <code class="highlighter-rouge">eg.Wait()</code> は返す</li>
+</ul>
+
+<p>実行すると下記の出力を得ることができます。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run errgroup.go
+<span class="go">End: 86
+End: 3
+End: 1
+End: 2
+End: 11
+Error: 96
+End: 0
+...(snip)...
+Error: 93
+End: 53
+End: 84
+End: 88
+End: 74
+2019/12/07 15:24:15 Error occurred: 96
+exit status 1
+</span></code></pre></div></div>
+
+<p>全ての Goroutine を実行して最初に出会ったエラー、 <code class="highlighter-rouge">Error: 96</code> が <code class="highlighter-rouge">Error occurred: 96</code> として最後に出力されていることがわかります。</p>
+
+<h2 id="goroutine--errgroup--context-を使う">
+<a class="anchor" href="#goroutine--errgroup--context-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goroutine + errgroup + context を使う</h2>
+
+<p>もう少しエラーの場合に踏み込んでみましょう。エラーが発生したときに Goroutine をキャンセルする場合はどうしたらよいでしょうか？</p>
+
+<p>これは<code class="highlighter-rouge">errgroup</code>に加えて、<a href="https://golang.org/pkg/context/">context</a>を組み合わせて使えば実現できます。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// errgroup_cancel.go</span>
+<span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"context"</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"log"</span>
+	<span class="s">"time"</span>
+
+	<span class="s">"golang.org/x/sync/errgroup"</span>
+<span class="p">)</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">eg</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">:=</span> <span class="n">errgroup</span><span class="o">.</span><span class="n">WithContext</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">Background</span><span class="p">())</span>
+
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">i</span> <span class="o">:=</span> <span class="n">i</span>
+		<span class="n">eg</span><span class="o">.</span><span class="n">Go</span><span class="p">(</span><span class="k">func</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
+
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="n">ctx</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="o">:</span>
+				<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Canceled:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="k">return</span> <span class="no">nil</span>
+			<span class="k">default</span><span class="o">:</span>
+				<span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="m">90</span> <span class="p">{</span>
+					<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Error:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"Error: %d"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="p">}</span>
+				<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="k">return</span> <span class="no">nil</span>
+			<span class="p">}</span>
+		<span class="p">})</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">eg</span><span class="o">.</span><span class="n">Wait</span><span class="p">();</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+		<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+<code class="highlighter-rouge">errgroup.WithContext()</code> を使って、<code class="highlighter-rouge">errgroup</code> と <code class="highlighter-rouge">context</code> を生成</li>
+  <li>
+<code class="highlighter-rouge">eg.Go()</code> 内でキャンセルされたときの処理を <code class="highlighter-rouge">case &lt;-ctx.Done():</code> 内に記述</li>
+  <li>non-nil error が返されると context はキャンセルされ、後続の Goroutine がキャンセルされる</li>
+</ul>
+
+<p>これを実行すると下記のような出力となります。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run errgroup_cancel.go
+<span class="go">End: 5
+End: 6
+End: 23
+Error: 98
+End: 7
+End: 8
+Cenceled: 2
+Cenceled: 9
+...(snip)...
+Cenceled: 92
+Cenceled: 53
+2019/12/07 15:43:48 Error: 98
+exit status 1
+</span></code></pre></div></div>
+
+<p><code class="highlighter-rouge">Error: 98</code> が発生し、後続の Goroutine がキャンセルされていることがわかります。</p>
+
 <h2 id="まとめ">
 <a class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
 
-<p>複数の Goroutine を取り扱う場合、<code class="highlighter-rouge">sync.WaitGroup</code> を使って制御（<code class="highlighter-rouge">Add</code>, <code class="highlighter-rouge">Done</code>, <code class="highlighter-rouge">Wait</code>）すると良い。</p>
+<ul>
+  <li>複数の Goroutine を取り扱う場合、<code class="highlighter-rouge">sync.WaitGroup</code> を使って制御（<code class="highlighter-rouge">Add</code>, <code class="highlighter-rouge">Done</code>, <code class="highlighter-rouge">Wait</code>）すると良い</li>
+  <li>複数の Goroutine をエラーハンドリングとともに取り扱う場合、 <code class="highlighter-rouge">errgroup</code> を使って制御（<code class="highlighter-rouge">Go</code>, <code class="highlighter-rouge">Wait</code>, <code class="highlighter-rouge">WithContext</code>）すると良い</li>
+</ul>
+
+<h2 id="参考情報">
+<a class="anchor" href="#%E5%8F%82%E8%80%83%E6%83%85%E5%A0%B1" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考情報</h2>
+
+<ul>
+  <li><a href="https://godoc.org/golang.org/x/sync/errgroup">errgroup - GoDoc</a></li>
+  <li><a href="https://golang.org/pkg/context/">context - The Go Programming Language</a></li>
+  <li><a href="https://deeeet.com/writing/2016/10/12/errgroup/">sync.ErrGroupで複数のgoroutineを制御する | SOTA</a></li>
+  <li><a href="http://dono.hatenablog.com/entry/2018/01/04/111204">[Golang] errgroup使用例 - xonoのブログ</a></li>
+</ul>
 
 </div>
 
@@ -358,7 +527,7 @@ End: 70
     },
     "headline": "複数のGoroutineをWaitGroupで制御する",
     "datePublished": "2019-12-05T00:00:00+09:00",
-    "author": {
+    "dateModified": "2019-12-07T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
