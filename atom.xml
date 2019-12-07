@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-07T16:07:02+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">複数のGoroutineをWaitGroupで制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroupで制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;div class=&quot;info&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-07T23:25:26+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">複数のGoroutineをWaitGroup（ErrGroup）で制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;div class=&quot;info&quot;&gt;
   &lt;h5&gt;追記&lt;/h5&gt;
   &lt;p&gt;errgroup について追記しました。&lt;/p&gt;
 &lt;/div&gt;
 
-&lt;p&gt;この記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2019/go7&quot;&gt;Go7 Advent Calendar 2019&lt;/a&gt;５日目の記事です。&lt;/p&gt;
+&lt;p&gt;この記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2019/go7&quot;&gt;Go7 Advent Calendar 2019&lt;/a&gt;五日目の記事です。&lt;/p&gt;
 
 &lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
 
@@ -175,11 +175,11 @@ End: 70
 
 &lt;h2 id=&quot;goroutine--errgroup-を使う&quot;&gt;Goroutine + errgroup を使う&lt;/h2&gt;
 
-&lt;p&gt;Goroutine の処理内でエラーが発生する可能性があってそれをハンドリングしたい場合はどうすればよいでしょうか？&lt;/p&gt;
+&lt;p&gt;Goroutine の処理内でエラーが発生する可能性があり、それをハンドリングしたいという場合はどうすればよいでしょうか？&lt;/p&gt;
 
-&lt;p&gt;そこで使えるのが&lt;a href=&quot;https://godoc.org/golang.org/x/sync/errgroup&quot;&gt;errgroup&lt;/a&gt;です。&lt;/p&gt;
+&lt;p&gt;そんなときに使えるのが&lt;a href=&quot;https://godoc.org/golang.org/x/sync/errgroup&quot;&gt;errgroup&lt;/a&gt;です。errgroup を使ったコードを下記に示します。&lt;/p&gt;
 
-&lt;p&gt;下記のコードサンプル内では &lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt; が90以上の場合にエラーが発生するとしています。&lt;/p&gt;
+&lt;p&gt;※下記のコードサンプル内では &lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt; が90より大きい場合にエラーが発生するとしています。&lt;/p&gt;
 
 &lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// errgroup.go&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
@@ -213,7 +213,7 @@ End: 70
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;golang.org/x/sync/errgroup&lt;/code&gt; をimportして、 &lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup.Group&lt;/code&gt; を宣言&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;golang.org/x/sync/errgroup&lt;/code&gt; をimportして &lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup.Group&lt;/code&gt; を宣言&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; 内で Goroutine の処理を定義&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; して &lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; で実行した Goroutine を待つ&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; の処理でエラーがあれば、一番最初のエラーを &lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; は返す&lt;/li&gt;
@@ -239,13 +239,13 @@ End: 74
 exit status 1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;全ての Goroutine を実行して最初に出会ったエラー、 &lt;code class=&quot;highlighter-rouge&quot;&gt;Error: 96&lt;/code&gt; が &lt;code class=&quot;highlighter-rouge&quot;&gt;Error occurred: 96&lt;/code&gt; として最後に出力されていることがわかります。&lt;/p&gt;
+&lt;p&gt;全ての Goroutine を実行して最初に出会ったエラー、 &lt;code class=&quot;highlighter-rouge&quot;&gt;Error: 96&lt;/code&gt; が &lt;code class=&quot;highlighter-rouge&quot;&gt;Error occurred: 96&lt;/code&gt; として処理の最後で出力されていることがわかります。&lt;/p&gt;
 
 &lt;h2 id=&quot;goroutine--errgroup--context-を使う&quot;&gt;Goroutine + errgroup + context を使う&lt;/h2&gt;
 
-&lt;p&gt;もう少しエラーの場合に踏み込んでみましょう。エラーが発生したときに Goroutine をキャンセルする場合はどうしたらよいでしょうか？&lt;/p&gt;
+&lt;p&gt;もう少し踏み込んで高度なエラー処理をしてみましょう。エラーが発生したときに後続の Goroutine をキャンセルしたいという場合はどうしたらよいでしょうか？&lt;/p&gt;
 
-&lt;p&gt;これは&lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup&lt;/code&gt;に加えて、&lt;a href=&quot;https://golang.org/pkg/context/&quot;&gt;context&lt;/a&gt;を組み合わせて使えば実現できます。&lt;/p&gt;
+&lt;p&gt;これは &lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; に加えて、&lt;a href=&quot;https://golang.org/pkg/context/&quot;&gt;context&lt;/a&gt;を組み合わせて使えば実現できます。&lt;/p&gt;
 
 &lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// errgroup_cancel.go&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
