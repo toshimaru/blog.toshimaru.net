@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 複数のGoroutineをWaitGroupで制御する
+title: 複数のGoroutineをWaitGroup（ErrGroup）で制御する
 image: "/images/posts/goroutine-waitgroup.png"
-description: "この記事はGo7 Advent Calendar 2019５日目の記事です。やりたいこととしては、下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。"
+description: "この記事はGo7 Advent Calendar 2019五日目の記事です。やりたいこととしては、下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。"
 tags: go
 toc: true
 last_modified_at: 2019-12-07
@@ -10,7 +10,7 @@ last_modified_at: 2019-12-07
 
 {% include info.html title="追記" text="errgroup について追記しました。" %}
 
-この記事は[Go7 Advent Calendar 2019](https://qiita.com/advent-calendar/2019/go7)５日目の記事です。
+この記事は[Go7 Advent Calendar 2019](https://qiita.com/advent-calendar/2019/go7)五日目の記事です。
 
 ## やりたいこと
 
@@ -186,11 +186,11 @@ End: 70
 
 ## Goroutine + errgroup を使う
 
-Goroutine の処理内でエラーが発生する可能性があってそれをハンドリングしたい場合はどうすればよいでしょうか？
+Goroutine の処理内でエラーが発生する可能性があり、それをハンドリングしたいという場合はどうすればよいでしょうか？
 
-そこで使えるのが[errgroup](https://godoc.org/golang.org/x/sync/errgroup)です。
+そんなときに使えるのが[errgroup](https://godoc.org/golang.org/x/sync/errgroup)です。errgroup を使ったコードを下記に示します。
 
-下記のコードサンプル内では `i` が90以上の場合にエラーが発生するとしています。
+※下記のコードサンプル内では `i` が90より大きい場合にエラーが発生するとしています。
 
 ```go
 // errgroup.go
@@ -224,7 +224,7 @@ func main() {
 }
 ```
 
-- `golang.org/x/sync/errgroup` をimportして、 `errgroup.Group` を宣言
+- `golang.org/x/sync/errgroup` をimportして `errgroup.Group` を宣言
 - `eg.Go()` 内で Goroutine の処理を定義
 - `eg.Wait()` して `eg.Go()` で実行した Goroutine を待つ
 - `eg.Go()` の処理でエラーがあれば、一番最初のエラーを `eg.Wait()` は返す
@@ -250,13 +250,13 @@ End: 74
 exit status 1
 ```
 
-全ての Goroutine を実行して最初に出会ったエラー、 `Error: 96` が `Error occurred: 96` として最後に出力されていることがわかります。
+全ての Goroutine を実行して最初に出会ったエラー、 `Error: 96` が `Error occurred: 96` として処理の最後で出力されていることがわかります。
 
 ##  Goroutine + errgroup + context を使う
 
-もう少しエラーの場合に踏み込んでみましょう。エラーが発生したときに Goroutine をキャンセルする場合はどうしたらよいでしょうか？
+もう少し踏み込んで高度なエラー処理をしてみましょう。エラーが発生したときに後続の Goroutine をキャンセルしたいという場合はどうしたらよいでしょうか？
 
-これは`errgroup`に加えて、[context](https://golang.org/pkg/context/)を組み合わせて使えば実現できます。
+これは `errgroup` に加えて、[context](https://golang.org/pkg/context/)を組み合わせて使えば実現できます。
 
 ```go
 // errgroup_cancel.go
