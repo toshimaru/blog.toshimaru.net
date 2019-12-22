@@ -1,4 +1,347 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-17T10:21:30+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">複数のGoroutineをWaitGroup（ErrGroup）で制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;div class=&quot;info&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-23T01:37:32+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">転職活動（2019年）</title><link href="https://blog.toshimaru.net/job-change-2019/" rel="alternate" type="text/html" title="転職活動（2019年）" /><published>2019-12-23T00:00:00+09:00</published><updated>2019-12-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/job-change-2019</id><content type="html" xml:base="https://blog.toshimaru.net/job-change-2019/">&lt;p&gt;2019年は&lt;a href=&quot;/join-medpeer/&quot;&gt;転職&lt;/a&gt;というイベントがあった。&lt;/p&gt;
+
+&lt;p&gt;どんな感じで転職活動をしたのかを備忘録として残しておこうと思う。&lt;/p&gt;
+
+&lt;h2 id=&quot;対象読者&quot;&gt;対象読者&lt;/h2&gt;
+
+&lt;p&gt;主に自分のために残しておいているが、下記のような人に役立つかもしれない。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ソフトウェアエンジニアとして転職を考えている人&lt;/li&gt;
+  &lt;li&gt;今後転職するかもしれないソフトウェアエンジニア&lt;/li&gt;
+  &lt;li&gt;各社の採用担当者、あるいはヘッドハンター&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;採用経路について&quot;&gt;採用経路について&lt;/h2&gt;
+
+&lt;h3 id=&quot;サービス経由&quot;&gt;サービス経由&lt;/h3&gt;
+
+&lt;p&gt;前回の転職活動の場合は Wantedly をメインで使って、そこから繋がったいくつかの会社を訪問した上で転職（就職）先を決めた。そのあたりは下記の記事にまとめてある。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://blog.toshimaru.net/job-hunting-fin/&quot;&gt;就活日記(完) 就職&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;今回使ったのは主にスカウト型のサービスがメイン。転職市場におけるエンジニアは未だ売り手市場。スカウト系のサービスに登録しておくだけで、ありがたいことに黙っていても捌ききれないくらいスカウトメッセージが頂ける（もちろんある程度以上にWebにアウトプットがあることが前提）。&lt;/p&gt;
+
+&lt;p&gt;なのでスタンスとしては転職意欲有無にかかわらずスカウト系のサービスには登録しておき、面白そうな会社や興味のある会社からスカウトメッセージを頂ければ話を聞きに行くという方針にしていた。&lt;/p&gt;
+
+&lt;p&gt;時間が無限にあれば、全ての面白そうな会社に実際に足を運んで話を聞いてみたい気持ちはあったものの、残念ながら時間は有限なのでハードルは高めに設定して本当に興味のある会社だけに絞って話を聞きに行っていた。&lt;/p&gt;
+
+&lt;p&gt;具体的にどんなサービスを使ったかというと下記の通り。&lt;/p&gt;
+
+&lt;p&gt;本転職活動時に使用したサービスは★を付けている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;★ &lt;a href=&quot;https://findy-code.io/&quot;&gt;Findy&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;GitHub スキル偏差値&lt;/strong&gt; 確認のために登録したのがきっかけ&lt;/li&gt;
+      &lt;li&gt;知らない面白い企業との出会いが多かった印象&lt;/li&gt;
+      &lt;li&gt;軽い気持ちで登録したらたくさんスカウトが来すぎて対応に手が回らなくなったので、途中でスカウト機能は切った&lt;/li&gt;
+      &lt;li&gt;「スキル偏差値」「あなたの想定年収」「獲得した称号」など知りたくなるものが多く、バイラルさせる機能作りが上手なサービスという印象
+        &lt;ul&gt;
+          &lt;li&gt;登録して &lt;a href=&quot;https://twitter.com/hashtag/findy?src=hashtag_click&quot;&gt;#findy&lt;/a&gt; ハッシュタグとかで他のエンジニアと比較するだけでも面白さあるかも&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;👇こんな感じで称号とかGETできて面白さがある&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/findy.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://lapras.com/&quot;&gt;LAPRAS&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;求職者側としては自分のActivity Logを眺めるだけでも、レジュメ作成の参考になりそう
+        &lt;ul&gt;
+          &lt;li&gt;Tagsによるスコアリングで自分の得意領域を見る&lt;/li&gt;
+          &lt;li&gt;Activity Logで開発者としてどんな活動をしているか振り返る&lt;/li&gt;
+          &lt;li&gt;LAPRAS SCOREで相対的な評価を確認する&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;（採用側として試用した経験から）採用側からみてもTagsのスコアはよくできてると思う&lt;/li&gt;
+      &lt;li&gt;登録している企業が少ないのかそこまで面白い企業との出会いは少なかった印象
+        &lt;ul&gt;
+          &lt;li&gt;個人的には良いサービスだと思っているのでもっと多くの企業が使ってもいいかもなーと思っているが成果報酬型ではなく月額課金型なのが小さい企業にとっての導入の敷居を上げているのかもしれない&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;👇LAPRASのスコアリング&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/lapras1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/lapras2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://job-draft.jp/&quot;&gt;転職ドラフト&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;自らの市場価値の見極めを目的として登録&lt;/li&gt;
+      &lt;li&gt;サービスのわりと初期から登録して定期的にちょこちょこ使っていた&lt;/li&gt;
+      &lt;li&gt;スカウトする企業側にとってみると実際に会ったことのない人に高額のスカウト送るのはなかなか勇気がいるアクション
+        &lt;ul&gt;
+          &lt;li&gt;そんな中でも高いスカウトを出している企業は事業がノリノリで調子良さそうだとか、エンジニアの給与水準が良さそうとかいろいろ想像できたりできる&lt;/li&gt;
+          &lt;li&gt;僕に比較的高額のオファー出してくれた企業にはほぼ会いに行って話を聞くようにしていた&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;過去に書いた関連記事: &lt;a href=&quot;/engineer-hiring/#%E5%B9%B4%E5%8F%8E%E3%81%AE%E9%80%8F%E6%98%8E%E5%8C%96&quot;&gt;年収の透明化（『その「エンジニア採用」が不幸を生む』を読んだ）&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;ダイレクトメッセージ経由&quot;&gt;ダイレクトメッセージ経由&lt;/h3&gt;
+
+&lt;p&gt;採用担当者、ヘッドハンターからのダイレクトメール。こちらから直接企業の担当者に連絡したダイレクトメッセージも含む。&lt;/p&gt;
+
+&lt;p&gt;本転職活動時に使用した経路には★を付けている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;★ &lt;strong&gt;Email&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;ほぼ毎日チェックするので、知らない人（採用担当者、ヘッドハンター）から連絡もらうのはEメールが個人的に一番嬉しい
+        &lt;ul&gt;
+          &lt;li&gt;基本は返信しないスタイルだったけど、たまーに気が向いたときに返信する
+            &lt;ul&gt;
+              &lt;li&gt;（＠担当者さん 返信しないけどきちんと見てます！お返事できずすみません＞＜ ）&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Eメールは埋もれがちなので本格的に密に連絡取り合うなら、工夫して使ったほうが良さそうという学び&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;★ &lt;strong&gt;Twitter&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;自分から直接企業の採用担当者に連絡するときに使った&lt;/li&gt;
+      &lt;li&gt;既にTwitter上で繋がってる人はTwitter経由で連絡いただけて実際に数回会った
+        &lt;ul&gt;
+          &lt;li&gt;Twitterで既に繋がってる人と合うのは心理的障壁が低いし安心感があった&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Facebook&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Twitterと同様、既に繋がってる人との連絡チャンネルとして利用しているので、何回か繋がっていない人から連絡はいただけたけど基本はスルー&lt;/li&gt;
+      &lt;li&gt;エンジニア的には Twitter のほうが親和性の高いSNSなように感じる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Linkedin&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Linkdin は海外のリクルーターとのやり取りでは有用だが日本語圏だと殆ど使われないので今回はスルー（謎の海外リクルーターから謎のメッセージはしばしば来たりする）&lt;/li&gt;
+      &lt;li&gt;海外就労を考えてる人であればちゃんとプロフィールは運用したほうが良い
+        &lt;ul&gt;
+          &lt;li&gt;参考記事: &lt;a href=&quot;/how-to-find-job-in-Vancouver/&quot;&gt;僕が単身海外（バンクーバー）に来て仕事を見つけるまでにやったこと &lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;手紙&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;del&gt;通称・首狩り族からの手紙&lt;/del&gt;&lt;/li&gt;
+      &lt;li&gt;数年前に一度だけ貰ったことがある
+        &lt;ul&gt;
+          &lt;li&gt;あまりもらわないので逆に目を引いたので、飛び道具的には便利かも&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;経歴書レジュメ&quot;&gt;経歴書・レジュメ&lt;/h2&gt;
+
+&lt;p&gt;企業に提出した経歴書について。フォーマットに関しては&lt;a href=&quot;http://localhost:4000/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/&quot;&gt;海外就労&lt;/a&gt;のときに使った &lt;strong&gt;レジュメ形式&lt;/strong&gt; を採用した。&lt;/p&gt;
+
+&lt;p&gt;海外形式のレジュメとは、大体A4一枚程度まとめた経歴書・スキルのハイライトだ。この形式のメリットとしては、求職者にとっては紙幅が限られている中で書く必要があるので、自分のアピールポイントにフォーカスしなければならなくなる点。そして経歴・スキルの紹介が冗長な表現でなく、洗練された簡潔な表現になる点。&lt;/p&gt;
+
+&lt;p&gt;採用側にとっても一枚くらいにまとまっていると書類選考時に判断しやすいし、面接時も質問しやすい（A45枚くらいの経歴書送られて来ても見るの大変だし、5年前の経歴とか聞いても仕方ないよね的な）。&lt;/p&gt;
+
+&lt;p&gt;最初はこの経歴をWeb上にオープンにしようと思ったが、案件詳細などオープンにできない項目もあるので、publicに公開するのはやめた。時間があれば限られた人だけが見れるようなポートフォリオサイトを作ろうと思ったが、今回はそんな時間はなかったのでsecret gist に markdownで期間限定closed公開した（つまりURLを知っている人だけが見れる）。&lt;/p&gt;
+
+&lt;p&gt;こうすることで各企業の担当者にはテキストでURLだけお伝えすればよくなるので便利だった。Wordとかで書いてPDFとかにして送付とかはダルすぎる。&lt;/p&gt;
+
+&lt;h3 id=&quot;レジュメを公開する&quot;&gt;レジュメを公開する&lt;/h3&gt;
+
+&lt;p&gt;今回は僕はレジュメを公開しなかったけど、公開できる内容だけを書いてGitHub上にオープンにするのもアリだと思う。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/okohs/items/abcad0b4aefa585bc50b&quot;&gt;職務経歴書をGitHubで管理しよう - Qiita&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;テンプレート: &lt;a href=&quot;https://github.com/okohs/Curriculum-Vitae-template&quot;&gt;okohs/Curriculum-Vitae-template&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;レジュメの内容&quot;&gt;レジュメの内容&lt;/h3&gt;
+
+&lt;p&gt;具体的にレジュメに盛り込んだ内容としては下記のようなイメージ。&lt;/p&gt;
+
+&lt;div class=&quot;language-md highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gu&quot;&gt;## 略歴&lt;/span&gt;
+経歴のサマリ（大学卒業〜現職に至るまでの略歴を300字くらいで書いた）
+
+&lt;span class=&quot;gu&quot;&gt;## スキル&lt;/span&gt;
+自分のスキルの列挙（プログラミング言語、Webフレームワーク、データベース、IaaS/SasSとかの項目別に列挙した）
+
+&lt;span class=&quot;gu&quot;&gt;## 職務経歴&lt;/span&gt;
+
+&lt;span class=&quot;gu&quot;&gt;### 経歴1(2018-2019)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; 経歴の説明
+
+&lt;span class=&quot;gu&quot;&gt;### 経歴2(2017-2018)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; 経歴の説明
+
+（...経歴が続く。5年以上前の古い経歴に関してはアピールしたい経歴だけを記述）
+
+&lt;span class=&quot;gu&quot;&gt;## OSSコントリビュート&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; gemのリンクとか, npmのリンクとかどのOSSにコントリビュートしたかとかアピールしたいOSSアウトプットを列挙
+
+&lt;span class=&quot;gu&quot;&gt;## 登壇歴&lt;/span&gt;
+https://speakerdeck.com/toshimaru
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;略歴、スキル、職務経歴とかはよくあるやつ。それらに加えてアピールしたいアウトプットとして「&lt;strong&gt;OSSコントリビュート&lt;/strong&gt;」「&lt;strong&gt;登壇歴&lt;/strong&gt;」の項目を追加した。&lt;/p&gt;
+
+&lt;h3 id=&quot;日本の履歴書という悪習&quot;&gt;日本の履歴書という悪習&lt;/h3&gt;
+
+&lt;p&gt;余談だが、どこの企業も大体履歴書を求められたわけだけど、日本の伝統的履歴書フォーマットは早く変えて欲しいと思う。年齢とか性別とかで採用不採用を決めるのは基本NGなので、アメリカのように違法にして履歴書には記述させないようにしてほしい。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/resume.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://uki-studyabroad.com/japanvsusa-resume/&quot;&gt;日本VSアメリカ：履歴書の違い編 | アメリカ留学UKIの節約生活&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;下記も参考までに:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://note.com/ruiu/n/na45effd9778e&quot;&gt;アメリカの面接で質問してはいけない事項について\｜Rui Ueyama｜note&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://jsite.mhlw.go.jp/osaka-roudoukyoku/hourei_seido_tetsuzuki/shokugyou_shoukai/hourei_seido/kosei/futeki.html&quot;&gt;就職差別につながるおそれのある不適切な質問の例 | 大阪労働局&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;面接&quot;&gt;面接&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;あまりガチガチな技術質問はされなかった
+    &lt;ul&gt;
+      &lt;li&gt;逆にいうとGitHubとかである程度アウトプットしてるのでそれをもって技術力は大丈夫だと判断していただけたようだ
+        &lt;ul&gt;
+          &lt;li&gt;オープンなアウトプットみて評価していただけるのありがたいし、普段からみんなオープンなアウトプットはしておこう&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;もう少し技術的なハードな質問が来るだろうと身構えていたので、それがなかったのはちょっとだけ寂しかった
+        &lt;ul&gt;
+          &lt;li&gt;その代わりにカルチャーマッチはきちんと面談・面接時に見られていたと思う&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;僕側から見たのはやりたいことができるか、事業・サービスへ共感できるかや成長性があるかなどに加えて、安定性・福利厚生なども見た
+    &lt;ul&gt;
+      &lt;li&gt;独り身だったときは自分本位で思考していたが、家族ができると家族を養う義務感・責任も出てきてそうも言ってられないので、割と安定志向な要素（待遇、安定性、福利厚生）も見た
+        &lt;ul&gt;
+          &lt;li&gt;例えば＜スタートアップ入って一発当てる＞的なリスクは取りにくくなったように感じている&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;実際どのへん見て決めたかは以前のエントリにも書いた: &lt;a href=&quot;/join-medpeer/&quot;&gt;メドピア株式会社で働いてます&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;外資系gafamについて&quot;&gt;外資系（GAFAM）について&lt;/h2&gt;
+
+&lt;p&gt;一点、転職活動をする中での後悔があるとすれば、それはGAFAM（Google、Amazon、Facebook、Apple、Microsoft）などの外資系を受けなかったことだ。&lt;/p&gt;
+
+&lt;p&gt;外資系は多くのポジションでコンピュータサイエンスの知識を必須スキルとしており（僕は文系なのでそのへんは弱い）、また日系企業のようにカジュアルに話を聞きに行けるエントリーポイントも用意されていないことが多く、そもそも自分にマッチしたポジションがあるかどうかが不明で積極的に受けに行かなかった。&lt;/p&gt;
+
+&lt;p&gt;しかし、きちんと探せばマッチするポジションもあったかもしれないので、外資系の選考フローを体験するという意味でもちゃんと探しておけばよかったと思っている。&lt;/p&gt;
+
+&lt;p&gt;（GAFAM に入社している人ってどうやってポジションマッチ見極めているのだろう… いきなりバシッと面接入るのかな…）&lt;/p&gt;
+
+&lt;h2 id=&quot;企業とのコミュニケーション&quot;&gt;企業とのコミュニケーション&lt;/h2&gt;
+
+&lt;p&gt;企業とやり取りしてて、コミュニケーションですれ違う場面が数回あって、求職者、採用担当者ともにコミュニケーションには気をつけるべきだと思う。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://docs.komagata.org/5632&quot;&gt;人事リセット問題&lt;/a&gt;に代表されるように、ミスコミュニケーションとしては下記のような場合だ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;カジュアル面談のつもりでいったら企業側の担当者が面接のつもりで出てきた
+    &lt;ul&gt;
+      &lt;li&gt;カジュアル面談のあとに選考ステップ進むとは言ってないのに一次面接の案内を飛ばしてきた&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;企業側の担当者との連絡途絶える
+    &lt;ul&gt;
+      &lt;li&gt;あるいは一つ一つの連絡のレスポンスが遅い&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;企業側の申し送り事項の伝達不足
+    &lt;ul&gt;
+      &lt;li&gt;「（それは既に前回の選考ステップで伝えたんだが？）」みたいなケース&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;僕自身は採用にも関わったことのある人間なので、採用担当と面談・面接担当者との伝達漏れが発生するのはある程度想像・理解できるので上記のようなことが発生してもそんな気にしなかったけど、そうじゃない人であればけっこうイメージが悪いと思う（各社の採用担当者は気を付けて欲しい）。&lt;/p&gt;
+
+&lt;p&gt;僕は若かりし頃にヘッドハンターに誘われるまま面談だと思ってノコノコ会社に着いていったらガチガチの人生最強クラスの圧迫面接された経験があるので、それがトラウマになっていることもあって企業担当者との期待値すり合わせはわりと丁寧にやっている方だと思う。&lt;/p&gt;
+
+&lt;p&gt;求職者側の自衛として、ある程度気を付けて企業担当者とコミュニケーションは取るに越したことはないと思う（本来は企業側の担当者がしっかりせぇという話）。&lt;/p&gt;
+
+&lt;h2 id=&quot;おすすめ企業&quot;&gt;おすすめ企業&lt;/h2&gt;
+
+&lt;p&gt;せっかくなので今回の転職活動をしつつオススメ企業なんかを書いてみる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;メドピア
+    &lt;ul&gt;
+      &lt;li&gt;現職&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;/join-medpeer/&quot;&gt;以前のエントリ&lt;/a&gt;に書いたとおり&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Gunosy
+    &lt;ul&gt;
+      &lt;li&gt;前職&lt;/li&gt;
+      &lt;li&gt;若い人が優秀&lt;/li&gt;
+      &lt;li&gt;数値/KPIをきちんと追う文化&lt;/li&gt;
+      &lt;li&gt;機械学習やデータ分析が強い&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;スマートHR
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;/smarthr-job-trial/&quot;&gt;体験入社&lt;/a&gt;でファンになった会社&lt;/li&gt;
+      &lt;li&gt;現職でSmartHR使っているけど良いプロダクト&lt;/li&gt;
+      &lt;li&gt;オープンな社風が素敵&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;レイヤーX
+    &lt;ul&gt;
+      &lt;li&gt;元・Gunosy福島さんがMBO&lt;/li&gt;
+      &lt;li&gt;初期のGunosyを彷彿とさせる技術者集団&lt;/li&gt;
+      &lt;li&gt;ブロックチェーンに可能性を感じる人には最高そう&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://note.com/fukkyy&quot;&gt;福島さんのnote&lt;/a&gt;は必読&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;マチマチ
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://twitter.com/ikuma&quot;&gt;@ikuma&lt;/a&gt;さんの地域活性化のヴィジョンや組織づくりの方針には共感&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Kyash
+    &lt;ul&gt;
+      &lt;li&gt;直接話を聞いたわけではないが、世に存在するなんちゃらPayシリーズと比べて一番決済UXが良いので個人的に応援しているサービス&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;「ビッグデータでAI！大規模システム！大量アクセス！マイクロサービス！」やりたいって方
+    &lt;ul&gt;
+      &lt;li&gt;そもそもビッグデータや大量アクセスがある企業が少ないので、特に具体的な企業名は上げないけど誰でも知ってるような名の通っているサービス作っている会社に行くといいんじゃないでしょうか
+        &lt;ul&gt;
+          &lt;li&gt;AI周りでは先進的な企業をちょこちょこ見かけたけど僕には良し悪しが判断付かなかったので正直わからない&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;メガベンチャーとかはたくさん選択肢あるし、優秀な人も多く在籍しているだろうし狙い目かもしれない&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="転職" /><summary type="html">2019年は転職というイベントがあった。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/job-change-2019/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/job-change-2019/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">複数のGoroutineをWaitGroup（ErrGroup）で制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;div class=&quot;info&quot;&gt;
   &lt;h5&gt;追記&lt;/h5&gt;
   &lt;p&gt;errgroup について追記しました。&lt;/p&gt;
 &lt;/div&gt;
@@ -671,7 +1014,7 @@ exit status 1
       &lt;p&gt;むしろ変えられなかったら辞めるくらいの気概を持ってやっていこうと思っています。 &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="転職" /><summary type="html">TL;DR</summary></entry><entry><title type="html">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</title><link href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/" rel="alternate" type="text/html" title="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法" /><published>2019-11-10T00:00:00+09:00</published><updated>2019-11-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key</id><content type="html" xml:base="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">&lt;h2 id=&quot;テーブル構成&quot;&gt;テーブル構成&lt;/h2&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="転職" /><summary type="html">TL;DR</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/medpeer.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/medpeer.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</title><link href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/" rel="alternate" type="text/html" title="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法" /><published>2019-11-10T00:00:00+09:00</published><updated>2019-11-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key</id><content type="html" xml:base="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">&lt;h2 id=&quot;テーブル構成&quot;&gt;テーブル構成&lt;/h2&gt;
 
 &lt;p&gt;とあるRailsアプリケーションでこんなテーブル構成があったとします。&lt;/p&gt;
 
@@ -1486,331 +1829,4 @@ Finished in 19.87 seconds (files took 8.8 seconds to load)
   &lt;li&gt;プログラムのコンパイル、実行、テストなどすべてが早いので開発体験がとても良い&lt;/li&gt;
   &lt;li&gt;普段はRubyを使うことが多いが、書き味の良さではGoはRubyに負けるかもだけど、Goは堅牢で高速なアプリケーションを書くのに良い&lt;/li&gt;
   &lt;li&gt;Goコミュニティは日本でもとても活発だし、ライブラリのエコシステムも整っているのが素晴らしい&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><category term="oss" /><summary type="html">Goの習作としてSyntax Highlight可能なcatコマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><media:content medium="image" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">アンチパターンから学ぶHRTなコードレビュー</title><link href="https://blog.toshimaru.net/hrt-review/" rel="alternate" type="text/html" title="アンチパターンから学ぶHRTなコードレビュー" /><published>2019-08-12T00:00:00+09:00</published><updated>2019-08-12T00:00:00+09:00</updated><id>https://blog.toshimaru.net/hrt-review</id><content type="html" xml:base="https://blog.toshimaru.net/hrt-review/">&lt;p&gt;&lt;a href=&quot;/team-geek/&quot;&gt;『Team Geek』の書評でも書いた&lt;/a&gt;んだけど、コードレビューのときはHRTの精神を大事にしたい。&lt;/p&gt;
-
-&lt;h2 id=&quot;what-is-hrt&quot;&gt;What is HRT?&lt;/h2&gt;
-
-&lt;p&gt;HRTとは下記の３つの精神のことだ。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Humility&lt;/strong&gt;（謙虚）&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Respect&lt;/strong&gt;（尊敬）&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Trust&lt;/strong&gt;（信頼）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;HRTについて詳しくは弊ブログの下記記事を参照。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;心理的安全性の阻害はHRT精神の欠如によって起こる。常に仲間に対して謙虚、尊敬、信頼の念を持とうな。お兄さんとの約束だぞ！&lt;br /&gt;『Team Geek』読んだ ~HRTの精神を知り会社でサバイブしていく方法~ - Hack Your Design! &lt;a href=&quot;https://t.co/EHogf87DOd&quot;&gt;https://t.co/EHogf87DOd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1142027694709698561?ref_src=twsrc%5Etfw&quot;&gt;June 21, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;以下、アンチパターンなコードレビューのシーンを先輩（👿）と後輩（👼）でお送りする。&lt;/p&gt;
-
-&lt;h2 id=&quot;アンチパターン1コメントが怖い&quot;&gt;アンチパターン1・コメントが怖い&lt;/h2&gt;
-
-&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「typoです。直してください」&lt;/p&gt;
-
-  &lt;p&gt;👿「これはこう書くべきです（…以下コード提案…）」&lt;/p&gt;
-
-  &lt;p&gt;👿「どうしてこのようなコードにしたんですか？」&lt;/p&gt;
-
-  &lt;p&gt;👼「（えっ… 怒っているの？ 怖い…）」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;説明&quot;&gt;説明&lt;/h3&gt;
-
-&lt;p&gt;コードレビューじゃなくとも、テキスト・コミュニケーションであれば手段を問わず発生しうる問題。&lt;strong&gt;文字だけのコミュニケーションは、発言の背後にあるコンテキストや感情が汲み取りにくい&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;上記の例だと背後にある感情が「typoじぇねぇか💢 直せ😠」なのか「typoみつけちゃった👀 指摘して直してもらおう😃」なのかがわからないので、先輩・後輩という関係性を前提とした場合、後輩からは先輩が怒っていると思われていても仕方ない状況と言える。&lt;/p&gt;
-
-&lt;p&gt;先輩の他の指摘に関しても同様に、「こう書くべき💢」なのか「個人的にこう書くべきだと思っているんだけどなぁ…🤔」なのかわからないし、「どうしてこんなひどいコード書いた？💢」なのか「このコードの意図が知りたいなぁ、どうしてこう書いたんだろう？🤔」なのかがわからない。&lt;/p&gt;
-
-&lt;h3 id=&quot;解決策&quot;&gt;解決策&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;絵文字を使う😃
-    &lt;ul&gt;
-      &lt;li&gt;絵文字で感情を表現して、発言の背後にある感情の誤読を減らす&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;コードレビュー・ラベルを使う
-    &lt;ul&gt;
-      &lt;li&gt;コメントの前に&lt;code class=&quot;highlighter-rouge&quot;&gt;[nits]&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;[imo]&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;[ask]&lt;/code&gt;などのラベルをつける
-        &lt;ul&gt;
-          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[nits]&lt;/code&gt; 些細な指摘であることを伝える&lt;/li&gt;
-          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[imo]&lt;/code&gt; 個人的な意見であることを伝える&lt;/li&gt;
-          &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[ask]&lt;/code&gt; 質問事項、確認事項を訊く&lt;/li&gt;
-          &lt;li&gt;参考: &lt;a href=&quot;https://employment.en-japan.com/engineerhub/entry/2018/01/24/110000&quot;&gt;悪いコードを憎んで人を憎まず！ プルリク送付前に心がけたいコードレビューのコミュニケーション術&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;断定口調・命令口調ではなく提案口調を使う
-    &lt;ul&gt;
-      &lt;li&gt;「〜すべき」「〜してください」などの高圧的な断定・命令口調ではなく、「〜どうでしょう？」などの提案口調を使う&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;質問の背景を明確にする
-    &lt;ul&gt;
-      &lt;li&gt;質問をするということは質問をするに至った背景が何かあるはずなので、それを一緒に提示する&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;口頭で指摘する&lt;/li&gt;
-  &lt;li&gt;上述の&lt;code class=&quot;highlighter-rouge&quot;&gt;[nits]&lt;/code&gt;な指摘で自動化できる点は自動化する
-    &lt;ul&gt;
-      &lt;li&gt;Rubyにおける&lt;a href=&quot;https://github.com/rubocop-hq/rubocop&quot;&gt;rubocop&lt;/a&gt;、JSにおける&lt;a href=&quot;https://github.com/eslint/eslint&quot;&gt;ESLint&lt;/a&gt;などは自動化可能なのでCIで自動化する&lt;/li&gt;
-      &lt;li&gt;人間がいちいち指摘するよりも時間的コスト・心理的コストがレビュワー、レビュイー双方にとってずっと低い&lt;/li&gt;
-      &lt;li&gt;ツールとしては&lt;a href=&quot;https://github.com/reviewdog/reviewdog&quot;&gt;reviewdog&lt;/a&gt;や&lt;a href=&quot;https://sider.review&quot;&gt;sider&lt;/a&gt;など&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「[nits]typo❗️😄」&lt;/p&gt;
-
-  &lt;p&gt;👿「[imo]これはこう書くべきだと思ったのですが、どうでしょう❓😺（…以下コード提案…）」&lt;/p&gt;
-
-  &lt;p&gt;👿「[ask]モデルにあっても良い処理なように感じましたが、どうしてここに処理を書いたんでしょう？」&lt;/p&gt;
-
-  &lt;p&gt;👿「[ask]xxx関数を使えばもうちょっとシンプルに書ける気がしますが、どうしてこう書いたんでしょう？」&lt;/p&gt;
-
-  &lt;p&gt;🤖(bots) 「Trailing whitespace detected.」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;あるいは口頭で:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「さっき上げたコードでちょっと気になるところがあるから聞いてもいいですか？ （コードを指差しして）この部分のコードの意図が汲み取れなかったんですけど、どうしてこんなコードにしたんでしょう？」&lt;/p&gt;
-
-  &lt;p&gt;👼「あー、そこは〇〇〇で、△△△だからそう書いたんですよね。（…以下説明…）」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;アンチパターン2理由がない&quot;&gt;アンチパターン2・理由がない&lt;/h2&gt;
-
-&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「これは残念なコードですので、直してください」&lt;/p&gt;
-
-  &lt;p&gt;👿「この書き方をしたらダメです」&lt;/p&gt;
-
-  &lt;p&gt;👼「はい…（えぇぇ！？ 何がダメなんだろう…？）」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;説明-1&quot;&gt;説明&lt;/h3&gt;
-
-&lt;p&gt;コードレビューコメントに指示はあるが、理由がないケース。&lt;/p&gt;
-
-&lt;p&gt;上記のケースだと「なぜ残念なコードと言えるのか？」というポイントが欠如している。コードに対する価値観が完全に合致していれば、「残念なコード」でレビュイーに伝わるが、大抵の場合はそうではないので理由がないと伝わらないケースが多い。特にレビュイーがジュニアレベルであればコード良し悪しの分別がつかないのでなおさら伝わらない。&lt;/p&gt;
-
-&lt;h3 id=&quot;解決策-1&quot;&gt;解決策&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;レビュイーが納得できるに足る理由を示す
-    &lt;ul&gt;
-      &lt;li&gt;なぜ残念なのか？ なぜダメなのか？ 必ずWhyを示す&lt;/li&gt;
-      &lt;li&gt;「個人的にこっちのほうが好きだから」「なんとなく」などは納得できる理由ではないのでアウト 👉 上述の&lt;code class=&quot;highlighter-rouge&quot;&gt;[imo]&lt;/code&gt;提案行き&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「これはマジックナンバーになっているので、定数に切り出すように直してください😉」&lt;/p&gt;
-
-  &lt;p&gt;👿「この書き方はXSS脆弱性がある書き方だからダメです🙅」&lt;/p&gt;
-
-  &lt;p&gt;👿「[imo]こっちのほうがスッキリしていて個人的に好きなのですがいかがでしょう？（…以下コード提案…）」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;アンチパターン3誹謗中傷&quot;&gt;アンチパターン3・誹謗中傷&lt;/h2&gt;
-
-&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「これはクソコードですね」&lt;/p&gt;
-
-  &lt;p&gt;👼「ごめんなさい（一生懸命書いたのに…（泣））」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;説明-2&quot;&gt;説明&lt;/h3&gt;
-
-&lt;p&gt;コードに対する誹謗中傷。これを乱用すると現場が殺伐とする。&lt;/p&gt;
-
-&lt;h3 id=&quot;解決策-2&quot;&gt;解決策&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;「クソコード」などのコードの誹謗中傷となるような言い回しは使わない
-    &lt;ul&gt;
-      &lt;li&gt;「あまり強い言葉を遣うなよ。弱く見えるぞ。」&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;口頭でコミュニケーションする
-    &lt;ul&gt;
-      &lt;li&gt;クソコードのような強い言葉を使いたくなるような場面は感情が昂ぶっているときであり、テキスト・コミュニケーションだとすれ違いが起きる可能性が高い。クソコードと思い至るまでの理由を膝を突き合わせてきちんと説明する&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「これは今後メンテしていくのがとても辛いコードになりそうです。なぜなら〇〇だし、△△ともなり、××だからです。」&lt;/p&gt;
-
-  &lt;p&gt;👼「なるほど〜〜〜！（私クソコードを書いてたかもしれない…）」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;アンチパターン４大量コメント&quot;&gt;アンチパターン４・大量コメント&lt;/h2&gt;
-
-&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「〇〇〇〇」&lt;/p&gt;
-
-  &lt;p&gt;👿「△△△△」&lt;/p&gt;
-
-  &lt;p&gt;👿「××××」&lt;/p&gt;
-
-  &lt;p&gt;（以下大量のレビューコメント）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;説明-3&quot;&gt;説明&lt;/h3&gt;
-
-&lt;p&gt;一連のコード変更に対して大量のレビューコメントが付く事象のこと。&lt;/p&gt;
-
-&lt;p&gt;シニアエンジニアがジュニアエンジニアのコードをレビューするときなど、レビュワー・レビュイー間のスキル・知識・経験に大きな差があるときに陥りやすい。大量のコメントを付ける/付けられることになるので、レビュワーにとってもレビュイーにとっても心的労力が高い。&lt;/p&gt;
-
-&lt;p&gt;また１つ１つのコメントがどれだけ丁寧だとしても、その数が多くなるとレビュイーに無力感を味あわせてしまうことになり心理的ストレスに繋がる可能性がある。&lt;/p&gt;
-
-&lt;h3 id=&quot;解決策-3&quot;&gt;解決策&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;コードの差分を小さくするように分割する
-    &lt;ul&gt;
-      &lt;li&gt;コメントが多く付くのはそもそもコードの差分が大きいからなので差分を小さくしてレビュー対象コードを少なくする&lt;/li&gt;
-      &lt;li&gt;GitHub であれば Pull Request を可能な限り分割し１つ１つを小さい差分に保つ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;コードレビューの代わりにペアプログラミングをする
-    &lt;ul&gt;
-      &lt;li&gt;コードレビューが大変ならコードレビューをしない。ペアプロでその場で一緒に解決させる&lt;/li&gt;
-      &lt;li&gt;モブプログラミングでもOK&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;研修の実施および内容見直し
-    &lt;ul&gt;
-      &lt;li&gt;スキルに大きな差があることが原因なので、その差を埋めるための研修を実施&lt;/li&gt;
-      &lt;li&gt;もし新入社員向けに研修がないのであれば、新入社員を対象に技術研修を新たに計画すべきかもしれない。既にあるのだとすれば研修内容の見直しが必要かもしれない&lt;/li&gt;
-      &lt;li&gt;中途であればオンボーディング・プロセスの見直しが必要かもしれない&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;（ナビゲーター👿/ドライバー👼がペアプログラミング中）&lt;/p&gt;
-
-  &lt;p&gt;👿「ここのコードは 〇〇〇 できれいに書けるんじゃないかな」&lt;/p&gt;
-
-  &lt;p&gt;👼「なるほど、やってみます。（コードを修正する）」&lt;/p&gt;
-
-  &lt;p&gt;👿「次に 〇〇〇 によって ××× が要らなくなったから直せそう」&lt;/p&gt;
-
-  &lt;p&gt;👼「あ、たしかに。やってみます（コードを修正する）」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;アンチパターン５長大な議論&quot;&gt;アンチパターン５・長大な議論&lt;/h2&gt;
-
-&lt;p&gt;⛔️&lt;strong&gt;アンチパターンなコードレビュー&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「ここの設計、私としては 〇〇〇 だと思うんです」&lt;/p&gt;
-
-  &lt;p&gt;👨「僕はそうは思いません。△△△ にしたほうが良いと思うんです」&lt;/p&gt;
-
-  &lt;p&gt;👩「私は 〇〇〇 案と △△△ 案を組み合わせた ××× でも良いかと」&lt;/p&gt;
-
-  &lt;p&gt;（以下、👿, 👨, 👩 の議論が延々と続く）&lt;/p&gt;
-
-  &lt;p&gt;👼「（あわわわわわ、、、どうすれば…）」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;説明-4&quot;&gt;説明&lt;/h3&gt;
-
-&lt;p&gt;１つのコードレビューに端を発して長大な議論をスタートさせること。これが始まると一つのコメントに対してのスレッドがどんどん伸びていくことになる。&lt;/p&gt;
-
-&lt;p&gt;設計などの大枠なトピックだと、長大な議論になりやすい。&lt;/p&gt;
-
-&lt;h3 id=&quot;解決策-4&quot;&gt;解決策&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;話し合いで解決させる
-    &lt;ul&gt;
-      &lt;li&gt;テキストで延々と話すより、わーっとみんなで集まって話し合うとすぐに決まるケースが多かったりする&lt;/li&gt;
-      &lt;li&gt;話し合った結果をテキストとして残しておく&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;✅&lt;strong&gt;改善後&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;👿「ここの設計、私としては 〇〇〇 だと思うんです」&lt;/p&gt;
-
-  &lt;p&gt;👨「僕はそうは思いません。△△△ にしたほうが良いと思うんです」&lt;/p&gt;
-
-  &lt;p&gt;👩「私は 〇〇〇 案と △△△ 案を組み合わせた ××× でも良いかと」&lt;/p&gt;
-
-  &lt;p&gt;👿「では話し合って決めましょう！」&lt;/p&gt;
-
-  &lt;p&gt;（集まって話し合い）&lt;/p&gt;
-
-  &lt;p&gt;👿 👨 👩「議論した結果、△△△ が良いとなったので △△△ な方針でいきましょう」&lt;/p&gt;
-
-  &lt;p&gt;👼「ラジャー!」&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;なぜhrtなレビューが必要なのか&quot;&gt;なぜHRTなレビューが必要なのか？&lt;/h2&gt;
-
-&lt;p&gt;なぜHRTなコードレビューを心がける必要があるのか？　答えは&lt;strong&gt;チームの心理的安全性を確保するため&lt;/strong&gt;だ。&lt;/p&gt;
-
-&lt;h3 id=&quot;全ては心理的安全性のため&quot;&gt;全ては心理的安全性のため&lt;/h3&gt;
-
-&lt;p&gt;最近では共通認識になりつつあるので改めて言う必要はないかもしれないが、&lt;strong&gt;ハイパフォーマンスなチームにとって心理的安全性は極めて重要&lt;/strong&gt;だ。それはGoogleの調査によって証明されている。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Google のリサーチチームが発見した、チームの効果性が高いチームに固有の 5 つの力学のうち、圧倒的に重要なのが心理的安全性です。リサーチ結果によると、心理的安全性の高いチームのメンバーは、Google からの離職率が低く、他のチームメンバーが発案した多様なアイデアをうまく利用することができ、収益性が高く、「効果的に働く」とマネージャーから評価される機会が 2 倍多い、という特徴がありました。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;via. &lt;a href=&quot;https://rework.withgoogle.com/jp/guides/understanding-team-effectiveness/steps/foster-psychological-safety/&quot;&gt;Google re:Work - ガイド: 「効果的なチームとは何か」を知る&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/hrt/psychological-safety.png&quot; alt=&quot;psychological safety&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://ja.wikipedia.org/wiki/モヒカン族_(ネット用語)&quot;&gt;モヒカン族&lt;/a&gt;の方々は下記のように考えるかもしれない。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;「何を言ったってそれはコードに対する批判であって書いた人への批判ではない。何を言ってもええやろ」&lt;/li&gt;
-  &lt;li&gt;「間違ったことは言っていない。言い方はどうだってええやろ」&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;気持ちはわからなくはないが、残念ながら我々は人間である。人間であるということは感情があるということ。自分が頑張って書いたコードを「クソコード」などというリスペクトの無い言い方で批判されて平常心でいられるだろうか？　「〜するべき」「〜しろ」などと高圧的なコメントを受けてレビュイーは気持ちよく受け止められるだろうか？　そこに違和感があった場合、遠慮なく異を唱えることができるだろうか？&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;「心理的安全性を気にしすぎて何も言えない」のではなく、お互いが年齢・ジェンダー・人種の区別なくフラットな関係性で何でも言い合えるようにするためのHRTであり、そのための心理的安全性である&lt;/strong&gt;。そこは勘違いしてはいけない。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;チーム中にある個人の関係において、「様々な形で課題や問題についての提起がされる」ということに他なりません。（…中略…）つまるところ、心理的安全性が高いとは、「些細な問題であっても提起される」「多く問題に対して自己主張がなされる」という観測可能なチームの状態を意味しています。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;via &lt;a href=&quot;https://qiita.com/hirokidaichi/items/5d8c4294083d85654a04&quot;&gt;心理的安全性ガイドライン（あるいは権威勾配に関する一考察）&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;参考情報&quot;&gt;参考情報&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://rework.withgoogle.com/jp/guides/understanding-team-effectiveness/steps/introduction/&quot;&gt;Google re:Work - ガイド: 「効果的なチームとは何か」を知る&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://qiita.com/hirokidaichi/items/5d8c4294083d85654a04&quot;&gt;心理的安全性ガイドライン（あるいは権威勾配に関する一考察） - Qiita&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="review" /><summary type="html">『Team Geek』の書評でも書いたんだけど、コードレビューのときはHRTの精神を大事にしたい。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/hrt/hrt-review.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/hrt/hrt-review.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><category term="oss" /><summary type="html">Goの習作としてSyntax Highlight可能なcatコマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><media:content medium="image" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
