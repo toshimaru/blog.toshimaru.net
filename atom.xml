@@ -1,4 +1,235 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-24T18:52:15+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">転職活動（2019年）</title><link href="https://blog.toshimaru.net/job-change-2019/" rel="alternate" type="text/html" title="転職活動（2019年）" /><published>2019-12-23T00:00:00+09:00</published><updated>2019-12-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/job-change-2019</id><content type="html" xml:base="https://blog.toshimaru.net/job-change-2019/">&lt;p&gt;2019年は&lt;a href=&quot;/join-medpeer/&quot;&gt;転職&lt;/a&gt;というイベントがあった。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-31T04:05:58+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">docker-compose で Ruby + Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Ruby + Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2019-12-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;ゴール&quot;&gt;ゴール&lt;/h2&gt;
+
+&lt;p&gt;ゴールはRailsのデフォルトホーム画面を表示させるところまでです。&lt;/p&gt;
+
+&lt;h2 id=&quot;手順&quot;&gt;手順&lt;/h2&gt;
+
+&lt;p&gt;下記の手順をベースに進めていきます‥&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.docker.com/compose/rails/&quot;&gt;Quickstart: Compose and Rails | Docker Documentation&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h3&gt;
+
+&lt;p&gt;適当なディレクトリを用意して、&lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.7&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nodejs yarnpkg
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/bin/yarnpkg /usr/bin/yarn
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; /app
+&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /app&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Gemfile /app/Gemfile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Gemfile.lock /app/Gemfile.lock&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /app&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Add a script to be executed every time the container starts.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; entrypoint.sh /usr/bin/&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x /usr/bin/entrypoint.sh
+&lt;span class=&quot;k&quot;&gt;ENTRYPOINT&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;entrypoint.sh&quot;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 3000&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Start the main process.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;rails&quot;, &quot;server&quot;, &quot;-b&quot;, &quot;0.0.0.0&quot;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt;でyarnを入れると、yarn という実行ファイルではなく yarnpkg という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;初期gemfile&quot;&gt;初期Gemfile&lt;/h3&gt;
+
+&lt;p&gt;下記の通り&lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;と&lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;を用意します。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'https://rubygems.org'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'rails'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'~&amp;gt;6'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;今回は Rails v6 を使います&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;Gemfile.lock
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;現段階では &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;は空でOK&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;entrypointsh&quot;&gt;entrypoint.sh&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;entrypoint.sh&lt;/code&gt; です。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Remove a potentially pre-existing server.pid for Rails.&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; /app/tmp/pids/server.pid
+
+&lt;span class=&quot;c&quot;&gt;# Then exec the container's main process (what's set as CMD in the Dockerfile).&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;docker-composeyml&quot;&gt;docker-compose.yml&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3'&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mysql:8.0&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./tmp/db:/var/lib/mysql&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD=1&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bash -c &quot;rm -f tmp/pids/server.pid &amp;amp;&amp;amp; bundle exec rails s -p 3000 -b '0.0.0.0'&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.:/app&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3000:3000&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;depends_on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;mysql は 8.0 を使用&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD&lt;/code&gt; を設定することで &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt; が空でもrootで接続できるようにしておく&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;rails-new&quot;&gt;rails new&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; のコマンドをwebコンテナ上で実行してRailsのファイル群を生成します。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rails new &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mysql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;--force&lt;/code&gt; で既存ファイルを上書き&lt;/li&gt;
+  &lt;li&gt;DBはmysqlを指定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Railsのファイル群が &lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; コマンドによって出来上がったので build します。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose build
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;dbホスト名変更&quot;&gt;DBホスト名変更&lt;/h3&gt;
+
+&lt;p&gt;このままではDBに接続できません。なぜならば host 名を変更する必要があるからです。&lt;/p&gt;
+
+&lt;p&gt;下記の通り &lt;code class=&quot;highlighter-rouge&quot;&gt;config/database.yml&lt;/code&gt; のhostの部分を &lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt; に置き換えましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;adapter&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mysql2&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;utf8mb4&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;pool&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;lt;%= ENV.fetch(&quot;RAILS_MAX_THREADS&quot;) { 5 } %&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;root&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;development&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;app_development&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;app_test&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;host&lt;/code&gt; に &lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt; を設定
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt; はコンテナ名になります&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;build後に docker-compose up します。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose up
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;localhost:3000&lt;/code&gt; でRailsが立ち上がるのでアクセスしてみましょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;error-caching_sha2_password-could-not-be-loaded&quot;&gt;Error: caching_sha2_password could not be loaded&lt;/h2&gt;
+
+&lt;p&gt;しかしここでRailsに接続すると、下記のようなエラーが発生します。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ActiveRecord::NoDatabaseError
+
+Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu/mariadb19/plugin/caching_sha2_password.so: cannot open shared object file: No such file or directory
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これはwebコンテナが mysql 8.0 の&lt;code class=&quot;highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt;認証方式に対応していないためです。&lt;/p&gt;
+
+&lt;p&gt;下記の手順で &lt;code class=&quot;highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; を &lt;code class=&quot;highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;（旧来の認証方式）に変更しましょう。&lt;/p&gt;
+
+&lt;h3 id=&quot;dbコンテナでmysqlクライアント起動&quot;&gt;DBコンテナでmysqlクライアント起動&lt;/h3&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;db bash
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;mysql &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; root
+&lt;span class=&quot;gp&quot;&gt;Welcome to the MySQL monitor.  Commands end with ;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;or &lt;span class=&quot;se&quot;&gt;\g&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Your MySQL connection id is 9
+Server version: 8.0.18 MySQL Community Server - GPL
+
+&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;...
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;認証方式変更sql&quot;&gt;認証方式変更SQL&lt;/h3&gt;
+
+&lt;p&gt;下記のクエリでユーザー一覧とその認証方式が閲覧できます。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
++------------------+-----------+-----------------------+
+| User             | Host      | plugin                |
++------------------+-----------+-----------------------+
+| root             | %         | caching_sha2_password |
+| mysql.infoschema | localhost | caching_sha2_password |
+| mysql.session    | localhost | caching_sha2_password |
+| mysql.sys        | localhost | caching_sha2_password |
+| root             | localhost | caching_sha2_password |
++------------------+-----------+-----------------------+
+5 rows in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;root@%&lt;/code&gt;のユーザー設定を変更しましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;USER&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'%'&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IDENTIFIED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql_native_password&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- Query OK, 0 rows affected (0.02 sec)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;変更されました。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
++------------------+-----------+-----------------------+
+| User             | Host      | plugin                |
++------------------+-----------+-----------------------+
+| root             | %         | mysql_native_password |
+| mysql.infoschema | localhost | caching_sha2_password |
+| mysql.session    | localhost | caching_sha2_password |
+| mysql.sys        | localhost | caching_sha2_password |
+| root             | localhost | caching_sha2_password |
++------------------+-----------+-----------------------+
+5 rows in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;yay-youre-on-rails&quot;&gt;“Yay! You’re on Rails!”&lt;/h2&gt;
+
+&lt;p&gt;DBが作成されていないよ、というメッセージが出るので &lt;code class=&quot;highlighter-rouge&quot;&gt;db:prepare&lt;/code&gt; でテーブルを作成します。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;web bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rails db:prepare
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これでRailsのホーム画面が表示されるようになります。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/docker/railshome.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;過去に同じことをやったときのエントリ: &lt;a href=&quot;docker-compose-rails/&quot;&gt;docker-compose で Rails 環境を構築する&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><category term="mysql" /><category term="rails" /><summary type="html">docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">転職活動（2019年）</title><link href="https://blog.toshimaru.net/job-change-2019/" rel="alternate" type="text/html" title="転職活動（2019年）" /><published>2019-12-23T00:00:00+09:00</published><updated>2019-12-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/job-change-2019</id><content type="html" xml:base="https://blog.toshimaru.net/job-change-2019/">&lt;p&gt;2019年は&lt;a href=&quot;/join-medpeer/&quot;&gt;転職&lt;/a&gt;というイベントがあった。&lt;/p&gt;
 
 &lt;p&gt;どんな感じで転職活動をしたのかを備忘録として残しておこうと思う。&lt;/p&gt;
 
@@ -1781,53 +2012,4 @@ Finished in 19.87 seconds (files took 8.8 seconds to load)
       &lt;p&gt;GitHubのサポートの方がそのようにGitHub Actionsを呼び分けていました。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html">GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Syntax HighlightされるcatコマンドをGoで作った</title><link href="https://blog.toshimaru.net/go-nyan-cat/" rel="alternate" type="text/html" title="Syntax HighlightされるcatコマンドをGoで作った" /><published>2019-08-15T00:00:00+09:00</published><updated>2019-08-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/go-nyan-cat</id><content type="html" xml:base="https://blog.toshimaru.net/go-nyan-cat/">&lt;p&gt;Goの習作としてSyntax Highlight可能な&lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt;コマンドを作った。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;夏休みの工作で作ったやつ。Go 製の Syntax Highlight な cat コマンド. | toshimaru/nyan: Colored `cat` command. &lt;a href=&quot;https://t.co/lu1CL4YdDi&quot;&gt;https://t.co/lu1CL4YdDi&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1161656766100230144?ref_src=twsrc%5Etfw&quot;&gt;August 14, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
-
-&lt;p&gt;全く同じコンセプトのツールとして&lt;a href=&quot;https://github.com/jingweno/ccat&quot;&gt;ccat&lt;/a&gt;があるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。&lt;/p&gt;
-
-&lt;p&gt;更に強力な&lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt;コマンドとしてRust製の&lt;a href=&quot;https://github.com/sharkdp/bat&quot;&gt;bat&lt;/a&gt;があるのだが、これを&lt;code class=&quot;highlighter-rouge&quot;&gt;ccat&lt;/code&gt;とともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。&lt;/p&gt;
-
-&lt;p&gt;ちなみに&lt;code class=&quot;highlighter-rouge&quot;&gt;ccat&lt;/code&gt;との実装の違いでいうと、&lt;code class=&quot;highlighter-rouge&quot;&gt;ccat&lt;/code&gt;はsynatax highlightに&lt;a href=&quot;https://github.com/sourcegraph/syntaxhighlight&quot;&gt;sourcegraph/syntaxhighlight&lt;/a&gt;を使っていて、今回作った&lt;code class=&quot;highlighter-rouge&quot;&gt;nyan&lt;/code&gt;は&lt;a href=&quot;https://github.com/alecthomas/chroma&quot;&gt;alecthomas/chroma&lt;/a&gt;を使っている。&lt;/p&gt;
-
-&lt;h2 id=&quot;使ったgoライブラリサービスなど&quot;&gt;使ったGoライブラリ・サービスなど&lt;/h2&gt;
-
-&lt;h3 id=&quot;goライブラリ&quot;&gt;Goライブラリ&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;パッケージ管理: &lt;a href=&quot;https://blog.golang.org/using-go-modules&quot;&gt;go modules&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;CLIライブラリ: &lt;a href=&quot;https://github.com/spf13/cobra&quot;&gt;cobra&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Syntax Highlightライブラリ: &lt;a href=&quot;https://github.com/alecthomas/chroma&quot;&gt;chroma&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;リリース管理: &lt;a href=&quot;https://github.com/goreleaser/goreleaser&quot;&gt;goreleaser&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;homebrew tapへのリリースも自動でやってくれている: &lt;a href=&quot;https://github.com/toshimaru/homebrew-nyan&quot;&gt;homebrew-nyan&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;テストライブラリ: &lt;a href=&quot;https://github.com/stretchr/testify&quot;&gt;testify&lt;/a&gt;/assert&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;サービス&quot;&gt;サービス&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;CI: &lt;a href=&quot;https://travis-ci.com&quot;&gt;TravisCI&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Code Coverage: &lt;a href=&quot;https://codeclimate.com&quot;&gt;Code Climate&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;今後の展望&quot;&gt;今後の展望&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;今回CIはTravisで動かしたけど先日リリースされた&lt;a href=&quot;https://github.blog/2019-08-08-github-actions-now-supports-ci-cd/&quot;&gt;GitHub Actons(v2)&lt;/a&gt;が使えるようになったら乗り換えたい&lt;/li&gt;
-  &lt;li&gt;行番号表示などの機能拡張も今後やっていきたい&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;goでツール書いてみた感想&quot;&gt;Goでツール書いてみた感想&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;パッケージ管理の機能が言語としてサポートされたのは嬉しい（Go 1.11〜）&lt;/li&gt;
-  &lt;li&gt;プログラムのコンパイル、実行、テストなどすべてが早いので開発体験がとても良い&lt;/li&gt;
-  &lt;li&gt;普段はRubyを使うことが多いが、書き味の良さではGoはRubyに負けるかもだけど、Goは堅牢で高速なアプリケーションを書くのに良い&lt;/li&gt;
-  &lt;li&gt;Goコミュニティは日本でもとても活発だし、ライブラリのエコシステムも整っているのが素晴らしい&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><category term="oss" /><summary type="html">Goの習作としてSyntax Highlight可能なcatコマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><media:content medium="image" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html">GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
