@@ -4,9 +4,10 @@ published: true
 image: /images/posts/docker/compose.png
 description: docker-machine, docker-compose を使ってローカルにdocker Rails環境を構築してみます。
 tags: docker
+toc: true
 ---
 
-`docker-machine`, ` docker-compose` を使ってローカルにdocker Rails環境を構築してみます。
+`docker-machine`, `docker-compose` を使ってローカルにRails on docker な環境を構築してみます。
 
 ## 前提
 
@@ -213,7 +214,7 @@ $ docker-compose run web rake db:create
 
 ## docker-compose up
 
-`docker-compose up`してrails server立ち上げる。
+`docker-compose up`してrails serverを立ち上げます。
 
 ```console
 $ docker-compose up
@@ -228,14 +229,16 @@ web_1 | [2016-04-09 16:48:38] INFO  ruby 2.3.0 (2015-12-25) [x86_64-linux]
 web_1 | [2016-04-09 16:48:38] INFO  WEBrick::HTTPServer#start: pid=1 port=3000
 ```
 
-これでrails serverが準備できました。`192.168.99.100:3000`でページが見れます。
+これでrails serverが準備できました。`192.168.99.100:3000`でページが見ることができます。
 
-ちなみにdocker-machineのIPアドレスは下記のように取得可能です。これにて完了！！
+ちなみにdocker-machineのIPアドレスは下記のように取得可能です。
 
 ```console
 $ docker-machine ip default
 192.168.99.100
 ```
+
+これにて完了！
 
 ## 参考
 

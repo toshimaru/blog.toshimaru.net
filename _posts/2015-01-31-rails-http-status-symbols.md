@@ -1,8 +1,8 @@
 ---
 layout: post
 title: RailsのHTTPステータスのシンボル表現まとめ
-published: true
 description: RailsのHTTPステータスのシンボル表現をよく忘れるのでまとめてみます。
+image: "/images/posts/httpstatuscode.png"
 tags: rails
 ---
 
