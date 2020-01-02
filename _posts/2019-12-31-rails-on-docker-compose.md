@@ -1,10 +1,11 @@
 ---
 layout: post
-title: docker-compose で Ruby + Rails6 + MySQL な環境を構築する
+title: docker-compose で Rails6 + MySQL な環境を構築する
 image: "/images/posts/docker/yaml.png"
 description: "docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。ゴールはRailsのデフォルトホーム画面を表示させるところまでです。"
 tags: docker mysql rails
 toc: true
+last_modified_at: 2020-01-02
 ---
 
 docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。
@@ -44,7 +45,7 @@ EXPOSE 3000
 CMD ["rails", "server", "-b", "0.0.0.0"]
 ```
 
-- `yarnpkg`でyarnを入れると、yarn という実行ファイルではなく yarnpkg という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。
+- `yarnpkg`でyarnを入れると、yarn という実行ファイルではなく `yarnpkg` という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。
 
 ### 初期Gemfile
 
@@ -55,17 +56,17 @@ source 'https://rubygems.org'
 gem 'rails', '~>6'
 ```
 
-- 今回は Rails v6 を使います
+- 今回は Rails v6 （現時点の最新バージョン）を使います
 
 ```console
 $ touch Gemfile.lock
 ```
 
-- 現段階では `Gemfile.lock`は空でOK
+- 現段階では `Gemfile.lock` は空でOK
 
 ### entrypoint.sh
 
-`entrypoint.sh` です。
+`Dockerfile`で`ENTRYPOINT`として定義している `entrypoint.sh` です。
 
 ```bash
 #!/bin/bash
@@ -102,7 +103,7 @@ services:
       - db
 ```
 
-- mysql は 8.0 を使用
+- MySQL は 8.0 （現時点の最新バージョン）を使用
 - `MYSQL_ALLOW_EMPTY_PASSWORD` を設定することで `password` が空でもrootで接続できるようにしておく
 
 ### rails new
@@ -173,6 +174,11 @@ Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu
 
 ```console
 $ docker-compose exec db bash
+```
+
+dbコンテナのbashを起動後にmysqlコマンドで接続します。
+
+```console
 # mysql -u root
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 9
@@ -199,7 +205,9 @@ mysql> select User,Host,plugin from mysql.user;
 5 rows in set (0.00 sec)
 ```
 
-`root@%`のユーザー設定を変更しましょう。
+全て `caching_sha2_password` に設定されています。これを`mysql_native_password`に変更します。
+
+今回対象となる `root@%` のユーザー設定を `ALTER USER` を使って変更しましょう。
 
 ```sql
 ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '';
@@ -232,7 +240,7 @@ $ docker-compose exec web bundle exec rails db:prepare
 
 これでRailsのホーム画面が表示されるようになります。
 
-![](/images/posts/docker/railshome.png)
+![rails home](/images/posts/docker/railshome.png)
 
 ## 参考
 
