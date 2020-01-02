@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2019-12-31T04:05:58+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">docker-compose で Ruby + Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Ruby + Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2019-12-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-01-03T01:40:40+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">docker-compose で Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2020-01-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
 
 &lt;h2 id=&quot;ゴール&quot;&gt;ゴール&lt;/h2&gt;
 
@@ -35,7 +35,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt;でyarnを入れると、yarn という実行ファイルではなく yarnpkg という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt;でyarnを入れると、yarn という実行ファイルではなく &lt;code class=&quot;highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt; という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;初期gemfile&quot;&gt;初期Gemfile&lt;/h3&gt;
@@ -47,19 +47,19 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;今回は Rails v6 を使います&lt;/li&gt;
+  &lt;li&gt;今回は Rails v6 （現時点の最新バージョン）を使います&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;Gemfile.lock
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;現段階では &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;は空でOK&lt;/li&gt;
+  &lt;li&gt;現段階では &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; は空でOK&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;entrypointsh&quot;&gt;entrypoint.sh&lt;/h3&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;entrypoint.sh&lt;/code&gt; です。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;で&lt;code class=&quot;highlighter-rouge&quot;&gt;ENTRYPOINT&lt;/code&gt;として定義している &lt;code class=&quot;highlighter-rouge&quot;&gt;entrypoint.sh&lt;/code&gt; です。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
@@ -95,7 +95,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;mysql は 8.0 を使用&lt;/li&gt;
+  &lt;li&gt;MySQL は 8.0 （現時点の最新バージョン）を使用&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD&lt;/code&gt; を設定することで &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt; が空でもrootで接続できるようにしておく&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -168,7 +168,11 @@ Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu
 &lt;h3 id=&quot;dbコンテナでmysqlクライアント起動&quot;&gt;DBコンテナでmysqlクライアント起動&lt;/h3&gt;
 
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;db bash
-&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;mysql &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; root
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;dbコンテナのbashを起動後にmysqlコマンドで接続します。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;mysql &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; root
 &lt;span class=&quot;gp&quot;&gt;Welcome to the MySQL monitor.  Commands end with ;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;or &lt;span class=&quot;se&quot;&gt;\g&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
 &lt;span class=&quot;go&quot;&gt;Your MySQL connection id is 9
 Server version: 8.0.18 MySQL Community Server - GPL
@@ -193,7 +197,9 @@ Server version: 8.0.18 MySQL Community Server - GPL
 5 rows in set (0.00 sec)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;root@%&lt;/code&gt;のユーザー設定を変更しましょう。&lt;/p&gt;
+&lt;p&gt;全て &lt;code class=&quot;highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; に設定されています。これを&lt;code class=&quot;highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;に変更します。&lt;/p&gt;
+
+&lt;p&gt;今回対象となる &lt;code class=&quot;highlighter-rouge&quot;&gt;root@%&lt;/code&gt; のユーザー設定を &lt;code class=&quot;highlighter-rouge&quot;&gt;ALTER USER&lt;/code&gt; を使って変更しましょう。&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;USER&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'%'&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IDENTIFIED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql_native_password&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;-- Query OK, 0 rows affected (0.02 sec)&lt;/span&gt;
@@ -223,7 +229,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 &lt;p&gt;これでRailsのホーム画面が表示されるようになります。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/docker/railshome.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/docker/railshome.png&quot; alt=&quot;rails home&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
 

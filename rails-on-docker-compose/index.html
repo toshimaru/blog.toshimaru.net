@@ -2,8 +2,7 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>docker-compose で Ruby + Rails6 + MySQL な環境を構築する - Hack Your Design!</title>
+  <title>docker-compose で Rails6 + MySQL な環境を構築する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -13,14 +12,14 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="docker-compose で Ruby + Rails6 + MySQL な環境を構築する - Hack Your Design!">
-  <meta property="og:title" content="docker-compose で Ruby + Rails6 + MySQL な環境を構築する - Hack Your Design!">
+  <meta name="twitter:title" content="docker-compose で Rails6 + MySQL な環境を構築する - Hack Your Design!">
+  <meta property="og:title" content="docker-compose で Rails6 + MySQL な環境を構築する - Hack Your Design!">
   <meta name="description" content="docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。ゴールはRailsのデフォルトホーム画面を表示させるところまでです。">
   <meta name="twitter:description" content="docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。ゴールはRailsのデフォルトホーム画面を表示させるところまでです。">
   <meta property="og:description" content="docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。ゴールはRailsのデフォルトホーム画面を表示させるところまでです。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/docker/yaml.png" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/docker/yaml.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2019-12-31T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/rails-on-docker-compose/">
+  <meta property="article:published_time" content="2019-12-31T00:00:00+09:00"><meta property="article:modified_time" content="2020-01-02T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/rails-on-docker-compose/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -32,7 +31,7 @@
   <link type="application/atom+xml" rel="alternate" href="https://blog.toshimaru.net/atom.xml" title="Hack Your Design!" />
 </head>
 <body>
-  <!--[if lte IE 9]>
+  <!--[if IE]>
     <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
   <![endif]-->
   <!-- Google Tag Manager (noscript) -->
@@ -65,10 +64,10 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">docker-compose で Ruby + Rails6 + MySQL な環境を構築する</h1>
+  <h1 class="fadeInLeft">docker-compose で Rails6 + MySQL な環境を構築する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2019-12-31T00:00:00+09:00" pubdate>2019/12/31</time>
+      <i class="icon-calendar"></i><time datetime="2019-12-31T00:00:00+09:00" pubdate>2019/12/31 (更新: 2020/01/02)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/docker/" rel="tag">docker</a>
 
@@ -78,7 +77,7 @@
 
 
     </div>
-    <img class="post-image" src="/images/posts/docker/yaml.png" alt="(image)docker-compose で Ruby + Rails6 + MySQL な環境を構築する" title="docker-compose で Ruby + Rails6 + MySQL な環境を構築する" />
+    <img class="post-image" src="/images/posts/docker/yaml.png" alt="(image)docker-compose で Rails6 + MySQL な環境を構築する" title="docker-compose で Rails6 + MySQL な環境を構築する" />
   </div>
 </div>
 
@@ -145,7 +144,7 @@
 
 <ul>
   <li>
-<code class="highlighter-rouge">yarnpkg</code>でyarnを入れると、yarn という実行ファイルではなく yarnpkg という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。</li>
+<code class="highlighter-rouge">yarnpkg</code>でyarnを入れると、yarn という実行ファイルではなく <code class="highlighter-rouge">yarnpkg</code> という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。</li>
 </ul>
 
 <h3 id="初期gemfile">
@@ -158,20 +157,20 @@
 </code></pre></div></div>
 
 <ul>
-  <li>今回は Rails v6 を使います</li>
+  <li>今回は Rails v6 （現時点の最新バージョン）を使います</li>
 </ul>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">touch </span>Gemfile.lock
 </code></pre></div></div>
 
 <ul>
-  <li>現段階では <code class="highlighter-rouge">Gemfile.lock</code>は空でOK</li>
+  <li>現段階では <code class="highlighter-rouge">Gemfile.lock</code> は空でOK</li>
 </ul>
 
 <h3 id="entrypointsh">
 <a class="anchor" href="#entrypointsh" aria-hidden="true"><span class="octicon octicon-link"></span></a>entrypoint.sh</h3>
 
-<p><code class="highlighter-rouge">entrypoint.sh</code> です。</p>
+<p><code class="highlighter-rouge">Dockerfile</code>で<code class="highlighter-rouge">ENTRYPOINT</code>として定義している <code class="highlighter-rouge">entrypoint.sh</code> です。</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="nb">set</span> <span class="nt">-e</span>
@@ -208,7 +207,7 @@
 </code></pre></div></div>
 
 <ul>
-  <li>mysql は 8.0 を使用</li>
+  <li>MySQL は 8.0 （現時点の最新バージョン）を使用</li>
   <li>
 <code class="highlighter-rouge">MYSQL_ALLOW_EMPTY_PASSWORD</code> を設定することで <code class="highlighter-rouge">password</code> が空でもrootで接続できるようにしておく</li>
 </ul>
@@ -289,7 +288,11 @@ Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu
 <a class="anchor" href="#db%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%A7mysql%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%B5%B7%E5%8B%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>DBコンテナでmysqlクライアント起動</h3>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose <span class="nb">exec </span>db bash
-<span class="gp">#</span><span class="w"> </span>mysql <span class="nt">-u</span> root
+</code></pre></div></div>
+
+<p>dbコンテナのbashを起動後にmysqlコマンドで接続します。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>mysql <span class="nt">-u</span> root
 <span class="gp">Welcome to the MySQL monitor.  Commands end with ;</span><span class="w"> </span>or <span class="se">\g</span><span class="nb">.</span>
 <span class="go">Your MySQL connection id is 9
 Server version: 8.0.18 MySQL Community Server - GPL
@@ -315,7 +318,9 @@ Server version: 8.0.18 MySQL Community Server - GPL
 5 rows in set (0.00 sec)
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">root@%</code>のユーザー設定を変更しましょう。</p>
+<p>全て <code class="highlighter-rouge">caching_sha2_password</code> に設定されています。これを<code class="highlighter-rouge">mysql_native_password</code>に変更します。</p>
+
+<p>今回対象となる <code class="highlighter-rouge">root@%</code> のユーザー設定を <code class="highlighter-rouge">ALTER USER</code> を使って変更しましょう。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">USER</span> <span class="s1">'root'</span><span class="o">@</span><span class="s1">'%'</span> <span class="n">IDENTIFIED</span> <span class="k">WITH</span> <span class="n">mysql_native_password</span> <span class="k">BY</span> <span class="s1">''</span><span class="p">;</span>
 <span class="c1">-- Query OK, 0 rows affected (0.02 sec)</span>
@@ -346,7 +351,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 <p>これでRailsのホーム画面が表示されるようになります。</p>
 
-<p><img src="/images/posts/docker/railshome.png" alt=""></p>
+<p><img src="/images/posts/docker/railshome.png" alt="rails home"></p>
 
 <h2 id="参考">
 <a class="anchor" href="#%E5%8F%82%E8%80%83" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考</h2>
@@ -416,7 +421,11 @@ Server version: 8.0.18 MySQL Community Server - GPL
 </div>
 
 <div id="disqus_thread"></div>
-<script type="text/javascript">
+<script>
+var disqus_config = function () {
+this.page.url = "https://blog.toshimaru.net/rails-on-docker-compose/";
+this.page.identifier = "/rails-on-docker-compose/";
+};
 (function () { // DON'T EDIT BELOW THIS LINE
   var d = document, s = d.createElement('script');
   s.src = 'https://hackyourdesign.disqus.com/embed.js';
@@ -449,9 +458,9 @@ Server version: 8.0.18 MySQL Community Server - GPL
       "@type": "Blog",
       "@id": "https://blog.toshimaru.net/rails-on-docker-compose/"
     },
-    "headline": "docker-compose で Ruby + Rails6 + MySQL な環境を構築する",
+    "headline": "docker-compose で Rails6 + MySQL な環境を構築する",
     "datePublished": "2019-12-31T00:00:00+09:00",
-    "author": {
+    "dateModified": "2020-01-02T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
@@ -538,8 +547,8 @@ Server version: 8.0.18 MySQL Community Server - GPL
 </footer>
 
 
-  <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="crossorigin="anonymous"></script>
+  <script src="/js/vendor/modernizr-3.8.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>
