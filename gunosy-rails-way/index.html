@@ -90,9 +90,9 @@
 <p>こんにちは、Gunosyの<a href="https://twitter.com/toshimaru_e">toshimaru</a>です。Gunosyでは主にRuby on Railsアプリを担当しています。</p>
 
 <h2 id="はじめに">はじめに</h2>
-<p>Gunosyでは昨年度よりAPIの実装を<a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">Rails実装からGo実装へと変えた</a>ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです<sup id="fnref:2"><a href="#fn:2" class="footnote">1</a></sup>。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも<a href="http://blog.gopheracademy.com/advent-2014/atlas/">Railsは手放せない</a>ようですしね。</p>
+<p>Gunosyでは昨年度よりAPIの実装を<a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">Rails実装からGo実装へと変えた</a>ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">1</a></sup>。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも<a href="http://blog.gopheracademy.com/advent-2014/atlas/">Railsは手放せない</a>ようですしね。</p>
 
-<p>本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います<sup id="fnref:1"><a href="#fn:1" class="footnote">2</a></sup>。</p>
+<p>本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">2</a></sup>。</p>
 
 <h2 id="ブランチの運用">ブランチの運用</h2>
 <p>基本は<a href="http://danielkummer.github.io/git-flow-cheatsheet/index.ja_JP.html">Git flow</a>に則って開発を進めています。ただGit flowにおけるリリースブランチの運用はフローの簡易化のため、またスモールチーム（２〜３人）での開発ということもあり省いています。これによりdevelop→master間のフローがラクになりスピーディな開発が可能になります。</p>
@@ -149,7 +149,7 @@
     </tr>
     <tr>
       <td>Capybara</td>
-      <td>ビューを含むEnd-to-Endテスト<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup></td>
+      <td>ビューを含むEnd-to-Endテスト<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">3</a></sup></td>
     </tr>
   </tbody>
 </table>
@@ -197,7 +197,7 @@
 <p>cronの管理に関しては<a href="https://github.com/javan/whenever">whenever</a>を使用しています。こちらはOpsWorkのデプロイ実行時にChefのwheneverレシビが定義してあり、そこでcronがデプロイ時に更新されるようになっています。</p>
 
 <h2 id="非同期ジョブ">非同期ジョブ</h2>
-<p>重い処理に関してはSidekiqを使いRails側ではSidekiqにキューイングするまでにして、その後の処理はSidekiqで行うようにしてます。例えばGunosyの場合何が重い処理にあたるかというと「全ユーザーにプッシュ通知を送るぞ！」みたいなケース。そのような時間のかかる処理に関してはSidekiqで処理を行っています<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup>。</p>
+<p>重い処理に関してはSidekiqを使いRails側ではSidekiqにキューイングするまでにして、その後の処理はSidekiqで行うようにしてます。例えばGunosyの場合何が重い処理にあたるかというと「全ユーザーにプッシュ通知を送るぞ！」みたいなケース。そのような時間のかかる処理に関してはSidekiqで処理を行っています<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote">4</a></sup>。</p>
 
 <h2 id="その他今後の課題">その他・今後の課題</h2>
 <ul>
@@ -210,19 +210,19 @@
 
 <p>ではでは。</p>
 
-<div class="footnotes">
+<div class="footnotes" role="doc-endnotes">
   <ol>
-    <li id="fn:2">
-      <p>ちなみにDjangoも使われています。 <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    <li id="fn:2" role="doc-endnote">
+      <p>ちなみにDjangoも使われています。 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
-    <li id="fn:1">
-      <p>とはいえ会社全てのRailsプロダクトが今回紹介するようなやり方で統一されているわけではありません。あくまでも自分がかかわっている範囲での開発の進め方です。 <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    <li id="fn:1" role="doc-endnote">
+      <p>とはいえ会社全てのRailsプロダクトが今回紹介するようなやり方で統一されているわけではありません。あくまでも自分がかかわっている範囲での開発の進め方です。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
-    <li id="fn:3">
-      <p>デフォルトのrack_testドライバーを使っていますが、<a href="http://qiita.com/take/items/779747e0981355e569ad">poltergaistが良さ気なので</a>今後使っていきたいと思っています。 <a href="#fnref:3" class="reversefootnote">&#8617;</a></p>
+    <li id="fn:3" role="doc-endnote">
+      <p>デフォルトのrack_testドライバーを使っていますが、<a href="http://qiita.com/take/items/779747e0981355e569ad">poltergaistが良さ気なので</a>今後使っていきたいと思っています。 <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
-    <li id="fn:4">
-      <p>正確には別途配信ワーカーがいるのですがここでは割愛 <a href="#fnref:4" class="reversefootnote">&#8617;</a></p>
+    <li id="fn:4" role="doc-endnote">
+      <p>正確には別途配信ワーカーがいるのですがここでは割愛 <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>
