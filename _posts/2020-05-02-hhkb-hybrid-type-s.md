@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 【レビュー】HHKB Hybrid Type-S をしばらく使ってみた感想
-image: https://pbs.twimg.com/media/EL3zZxiVUAALFov?format=jpg&name=medium
+image: /images/posts/hhkb/hhkb-hybrid.jpg
 hideimage: true
 description: "HHKB Professional HYBRID Type-S を購入してしばらく経ったので使ってみた感想を書いてみます。購入モチベーション: not Type-SなHHKBはややうるさい Type-C接続 Bluetooth接続"
 tags: tech
