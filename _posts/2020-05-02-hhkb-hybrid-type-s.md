@@ -6,6 +6,7 @@ hideimage: true
 description: "HHKB Professional HYBRID Type-S を購入してしばらく経ったので使ってみた感想を書いてみます。購入モチベーション: not Type-SなHHKBはややうるさい Type-C接続 Bluetooth接続"
 tags: tech
 toc: true
+last_modified_at: 2020-05-16
 ---
 
 [HHKB Professional
@@ -104,3 +105,12 @@ not Type-SなHHKBを使ったことのなかった僕にとってType-Sを触っ
 <iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B082TSZ27D&linkId=06db5d4f52a7b49dce985f7445194cbb"></iframe>
 <iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B082TQK2SB&linkId=666af27170fbdef39da1b8d2de31e88d"></iframe>
 <iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B082TYNNL2&linkId=70759e0c4f584e35a0935d040fa17d96"></iframe>
+
+## おまけ
+
+HHKBの持ち運びに100均のペットボトルクッションケースがシンデレラ・フィットという噂を聞いて試してみたらたしかにいい感じにフィットしました。公式ケースだとけっこういいお値段するのでオススメです。
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">もしお知り合いに、「HHKBの新型を買って、持ち歩きたいけど安いクッションケースないんだよなー」という人がいたら、100均で売ってたペットボトルクッションケースがシンデレラフィットですよ、と伝えてあげてください。<br> <a href="https://twitter.com/hashtag/HHKB?src=hash&amp;ref_src=twsrc%5Etfw">#HHKB</a> <a href="https://t.co/zgopIDk2vJ">pic.twitter.com/zgopIDk2vJ</a></p>&mdash; いちのせさん (@yuhkiichinose) <a href="https://twitter.com/yuhkiichinose/status/1206531899209863168?ref_src=twsrc%5Etfw">December 16, 2019</a></blockquote>
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B073XGWYVH&linkId=1cfa8610e160a15364c222146ccca7cd"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B07DC5732N&linkId=743a7be3aa6974683f9ad656223c2d8d"></iframe>
