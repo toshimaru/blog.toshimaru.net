@@ -4,15 +4,19 @@ title: reviewdogを使ってCI上でRuboCop自動レビューを動かす
 image: "/images/posts/rubocop_x_reviewdog.jpg"
 description: "rubocopの自動レビューをreviewdogを使ってやってみたのでその知見です。 Auto-RuboCop on CircleCI powered by reviewdog 僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。基本的には公式READMEのCircleCIセットアップ手順通りですが、まずは下記のようにreviewdogのバイナリをcurl経由で落とします。reviewdogにコメントさせるためにはコメントできる権限を持ったGitHub Tokenが必要になります。下記手順でGitHub Tokenを取得してください。"
 tags: review rubocop github circleci ci
+last_modified_at: 2020-05-30
 ---
 
 [rubocop](https://github.com/rubocop-hq/rubocop)の自動レビューを[reviewdog](https://github.com/haya14busa/reviewdog)を使ってやってみたのでその知見です。
+
+- toc
+{:toc}
 
 ## Auto-RuboCop on CircleCI powered by reviewdog
 
 僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。
 
-https://github.com/toshimaru/RailsTwitterClone/pull/254
+<https://github.com/toshimaru/RailsTwitterClone/pull/254>
 
 ### 1. `config.yml`の設定
 
@@ -80,18 +84,24 @@ jobs:
           name: Install reviewdog
           command: |
             curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog && chmod +x ./reviewdog
+      - run: bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review
+
+workflows:
+  test:
+    jobs:
+      - ...省略...
 ```
 
 ## なぜreviewdogなのか
 
-ruboop自動レビューのためのツールとして、既にあるツールに[Saddler](https://github.com/packsaddle/ruby-saddler)や[pronto](https://github.com/prontolabs/pronto)などがありますが、なぜそれらを使わずにreviewdogを採用したのかというと下記の理由からです。
+ruboop自動レビューのための既にあるツールとしては、[Saddler](https://github.com/packsaddle/ruby-saddler)や[pronto](https://github.com/prontolabs/pronto)などがありますが、なぜそれらを使わずにreviewdogを採用したのかというと下記の理由からです。
 
-- Goのシングルバイナリポン置き(curlワンコマンド)でSetupがめちゃくちゃ楽
-- Language Agnostic(Ruby以外もGo, PHP, Pythonなど他言語で使える)
+- Goのシングルバイナリポン置き（curlワンコマンド）でSetupがめちゃくちゃ楽
+- Language Agnostic （Ruby以外もGo, PHP, Pythonなど他言語で使える）
 - Go実装でパフォーマンスが良い
 - Activeにメンテされている
 - READMEドキュメントが充実している
-- 日本人が作っている!!（おまけ理由
+- 日本人が作っている！（おまけ理由
 
 ## 最後に
 
