@@ -3,7 +3,7 @@ layout: post
 title: reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす
 image: "/images/posts/rubocop-actions/rubocop-actions.jpg"
 description: 
-tags: github ci review
+tags: rubocop github ci review
 toc: true
 ---
 
