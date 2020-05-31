@@ -1,4 +1,86 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-05-30T14:10:30+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-05-31T23:55:54+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/" rel="alternate" type="text/html" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす" /><published>2020-05-31T00:00:00+09:00</published><updated>2020-05-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/">&lt;p&gt;過去に&lt;a href=&quot;/reviewdog-rubocop/&quot;&gt;reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事&lt;/a&gt;を書きました。&lt;/p&gt;
+
+&lt;p&gt;本記事はそれの&lt;a href=&quot;https://github.com/features/actions&quot;&gt;GitHub Actions&lt;/a&gt;バージョンになります。&lt;/p&gt;
+
+&lt;h2 id=&quot;なぜgithub-actionなのか&quot;&gt;なぜGitHub Actionなのか？&lt;/h2&gt;
+
+&lt;p&gt;以前に書いた記事のようにCircleCIでも問題はないものの、GitHub ActionsはデフォルトでPull Requestにコメント可能な &lt;code class=&quot;highlighter-rouge&quot;&gt;GITHUB_TOKEN&lt;/code&gt; を吐くことが可能で、そのへんのtoken周りの煩雑な設定が不要という点でCircleCIよりアドバンテージがあると言えます。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token&quot;&gt;Authenticating with the GITHUB_TOKEN - GitHub Help&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsの&lt;/p&gt;
+
+&lt;h2 id=&quot;基本のrubocop設定&quot;&gt;基本のrubocop設定&lt;/h2&gt;
+
+&lt;p&gt;GitHub Actionsで動かす基本となるrubocop設定は下記の通りです。&lt;/p&gt;
+
+&lt;p&gt;※ 実際はbundlerのキャッシュの設定などが必要ですが今回は設定していません&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/workflows/rubocop.yml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.6&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run rubocop&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上述の設定をベースにreviewdogを使った自動レビューの設定を追加していきます。&lt;/p&gt;
+
+&lt;h2 id=&quot;reviewdogによる自動レビューを追加&quot;&gt;reviewdogによる自動レビューを追加&lt;/h2&gt;
+
+&lt;p&gt;追加するのは下記の2ステップです。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Setup reviewdog: reviewdog のバイナリをインストール&lt;/li&gt;
+  &lt;li&gt;Run rubocop with reviewdog: rubocop の指摘を reviewdog に渡してPRコメントを付けさせる&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;yamlファイルとしては下記になります。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.6&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Setup reviewdog&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;mkdir -p $HOME/bin &amp;amp;&amp;amp; curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b $HOME/bin&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;echo ::add-path::$HOME/bin&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run rubocop with reviewdog&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;REVIEWDOG_GITHUB_API_TOKEN&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;$&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | reviewdog -reporter=github-pr-review -f=rubocop&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;レビューコメント&quot;&gt;レビューコメント&lt;/h2&gt;
+
+&lt;p&gt;設定がうまくいっていれば、下記のように &lt;code class=&quot;highlighter-rouge&quot;&gt;github-actions&lt;/code&gt; からの自動レビューコメントが付きます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/rubocop-actions/rubocop-by-github-actions.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;実際に動かしてみたpull-request&quot;&gt;実際に動かしてみたPull Request&lt;/h2&gt;
+
+&lt;p&gt;実際にこの構成で設定してみたPRは下記になります。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/Test/pull/16&quot;&gt;rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><category term="review" /><summary type="html">過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
 
 &lt;p&gt;特定日付が範囲内にあるかの判定を行うには &lt;a href=&quot;https://railsdoc.github.io/classes/ActiveSupport/TimeWithZone.html#method-i-between-3F&quot;&gt;ActiveSupport::TimeWithZone#between?&lt;/a&gt; が使える。&lt;/p&gt;
 
@@ -1891,48 +1973,4 @@ Finished in 19.87 seconds (files took 8.8 seconds to load)
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://qiita.com/ngron/items/f61b8635b4d67f666d75&quot;&gt;Rails + Selenium + DockerでSystemSpecの環境構築 - Qiita&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://news.mynavi.jp/article/20081009-a027/&quot;&gt;Google Chrome サンドボックスで実現するセキュリティ、Windowsの機能に依存 | マイナビニュース&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="rails" /><category term="docker" /><summary type="html">Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">俺流 MacBook+HHKB 最強尊師スタイル</title><link href="https://blog.toshimaru.net/macbook-hhkb-sonshi-style/" rel="alternate" type="text/html" title="俺流 MacBook+HHKB 最強尊師スタイル" /><published>2019-09-15T00:00:00+09:00</published><updated>2019-09-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/macbook-hhkb-sonshi-style</id><content type="html" xml:base="https://blog.toshimaru.net/macbook-hhkb-sonshi-style/">&lt;p&gt;俺の中での  MacBook+HHKB 尊師スタイルの最終形が完成したので紹介してみる。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;俺流MacBook+HHKB尊師スタイルの最終型が完成した &lt;a href=&quot;https://t.co/HEW9luH8t3&quot;&gt;pic.twitter.com/HEW9luH8t3&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1169423113982865410?ref_src=twsrc%5Etfw&quot;&gt;September 5, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;hhkb-professional-jp&quot;&gt;HHKB Professional JP&lt;/h2&gt;
-
-&lt;p&gt;僕は日本語配列派で矢印キーを使いたい人間なので、日本語配列なHHKBを使っている。また、Bluetooth版はレイテンシが気になるという噂を聞いたりしたのでUSB版を使っている。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B001KWJTD6&amp;amp;linkId=b7e6e472633ae6784805f395f31f6eea&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;キートップカスタマイズ&quot;&gt;キートップカスタマイズ&lt;/h2&gt;
-
-&lt;p&gt;デザイン的に真っ黒だとつまらないので、公式のカラーキートップセットでキーボードにアクセント色を入れている。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B00HC2W0FC&amp;amp;linkId=f2649f32c781880d763e29ed9dc40b61&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;usb接続&quot;&gt;USB接続&lt;/h2&gt;
-
-&lt;p&gt;そのままのUSB接続だとHHKB本体の接続部分とMacBookの画面がぶつかってしまうため、L型のUSB変換コネクタを使っている。あと、USB-Cにそのまま繋ぎたかったので、miniB → USB-Cな短めのケーブルを購入した。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B06VW4GKX9&amp;amp;linkId=dc659d537db9a8f40e58270e306bb201&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B0197AP76U&amp;amp;linkId=1b545d1b6282899c8ec9d78f6bbca88b&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;キーボードブリッジ&quot;&gt;キーボードブリッジ&lt;/h2&gt;
-
-&lt;p&gt;素のMacBookにHHKBを載せただけではHHKBの重みでMacBook本体のキーボードが反応してしまうという問題がある。これを解決するのがキーボードブリッジである。&lt;/p&gt;
-
-&lt;p&gt;ただのプラスチックの板に4000円はなかなか高い買い物だが、サイズが丁度良かったり滑らないように設計されていたりとモノとしては満足している。&lt;/p&gt;
-
-&lt;p&gt;中には&lt;a href=&quot;https://pqrs.org/osx/karabiner/&quot;&gt;Karabiner&lt;/a&gt;を使って外付けキーボードが接続された際に&lt;a href=&quot;https://qiita.com/Jung0/items/df811a68bc704117f577&quot;&gt;本体側のキーボードを無効化をするような設定&lt;/a&gt;を入れている人もいるようだが、Karabinerを常用していない僕にとっては本製品が都合が良かった。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B077ZSGQDH&amp;amp;linkId=6dee09e1347120c915dddce4a42185ac&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;尊師スタイルじゃないとき&quot;&gt;尊師スタイルじゃないとき&lt;/h2&gt;
-
-&lt;p&gt;たまに尊師スタイルせずクラムシェルモードでディスプレイと向き合うときはこんな感じでやっている。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/hhkb/hhkb.jpg&quot; alt=&quot;hhkb clamshell&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;ARCHISSのリストレスト&lt;strong&gt;S&lt;/strong&gt;サイズが安価でHHKBサイズにも丁度よくて気に入っている。&lt;/p&gt;
-
-&lt;p&gt;あとMacBookを閉じた状態でもトラックパッドのジェスチャを使いたいので外部マウスはMagic Trackpadを使っている（古いトラックパッドなのはご愛嬌）。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B01LYYULYJ&amp;amp;linkId=0f940b9d95cd1dc9ce3ba6952992f506&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B016ZE7K8O&amp;amp;linkId=0d04ab048365f77de34f243b1e96a079&quot;&gt;&lt;/iframe&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><summary type="html">俺の中での MacBook+HHKB 尊師スタイルの最終形が完成したので紹介してみる。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/hhkb/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/hhkb/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="rails" /><category term="docker" /><summary type="html">Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
