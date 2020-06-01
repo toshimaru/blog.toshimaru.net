@@ -2,9 +2,10 @@
 layout: post
 title: reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす
 image: "/images/posts/rubocop-actions/rubocop-actions.jpg"
-description: 
+description: "過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。 本記事はそれのGitHub Actionsバージョンになります。　GitHub Actions上でreviewdogを使ってRuboCop自動レビューを動かすための設定を紹介します。"
 tags: rubocop github ci review
 toc: true
+last_modified_at: 2020-06-01
 ---
 
 過去に[reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事](/reviewdog-rubocop/)を書きました。
@@ -17,7 +18,7 @@ toc: true
 
 [Authenticating with the GITHUB_TOKEN - GitHub Help](https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token)
 
-GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsの
+GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsのほうが優れている印象があります。
 
 ## 基本のrubocop設定
 
@@ -57,6 +58,7 @@ jobs:
 yamlファイルとしては下記になります。
 
 ```yml
+# .github/workflows/rubocop.yml
 name: RuboCop
 on: [pull_request]
 jobs:
@@ -84,10 +86,18 @@ jobs:
 
 設定がうまくいっていれば、下記のように `github-actions` からの自動レビューコメントが付きます。
 
-![](/images/posts/rubocop-actions/rubocop-by-github-actions.png)
+![comment by github-actions](/images/posts/rubocop-actions/rubocop-by-github-actions.png)
 
 ## 実際に動かしてみたPull Request
 
 実際にこの構成で設定してみたPRは下記になります。
 
-[rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test](https://github.com/toshimaru/Test/pull/16) 
+[rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test](https://github.com/toshimaru/Test/pull/16)
+
+## 余談
+
+本記事ではミニマルな設定を紹介しましたが、実行高速化のために実際は下記の設定もあわせてしたほうが良いでしょう。
+
+- bundler cache の設定
+- rubocop cache の設定（`~/.cache/rubocop_cache`）
+- `--parallel` オプションの追加
