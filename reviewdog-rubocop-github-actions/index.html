@@ -14,11 +14,12 @@
   <meta name="twitter:site" content="@toshimaru_e">
   <meta name="twitter:title" content="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす - Hack Your Design!">
   <meta property="og:title" content="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす - Hack Your Design!">
-  <meta name="description" content="toshimaruの技術系なブログ">
-  <meta name="twitter:description" content="toshimaruの技術系なブログ">
-  <meta property="og:description" content="toshimaruの技術系なブログ"><meta property="og:image" content="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" />
+  <meta name="description" content="過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。 本記事はそれのGitHub Actionsバージョンになります。　GitHub Actions上でreviewdogを使ってRuboCop自動レビューを動かすための設定を紹介します。">
+  <meta name="twitter:description" content="過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。 本記事はそれのGitHub Actionsバージョンになります。　GitHub Actions上でreviewdogを使ってRuboCop自動レビューを動かすための設定を紹介します。">
+  <meta property="og:description" content="過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。 本記事はそれのGitHub Actionsバージョンになります。　GitHub Actions上でreviewdogを使ってRuboCop自動レビューを動かすための設定を紹介します。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2020-05-31T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/">
+  <meta property="article:published_time" content="2020-05-31T00:00:00+09:00"><meta property="article:modified_time" content="2020-06-01T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -66,7 +67,7 @@
   <h1 class="fadeInLeft">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2020-05-31T00:00:00+09:00" pubdate>2020/05/31</time>
+      <i class="icon-calendar"></i><time datetime="2020-05-31T00:00:00+09:00" pubdate>2020/05/31 (更新: 2020/06/01)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/rubocop/" rel="tag">rubocop</a>
 
@@ -89,6 +90,7 @@
 <li class="toc-entry toc-h2"><a href="#reviewdogによる自動レビューを追加">reviewdogによる自動レビューを追加</a></li>
 <li class="toc-entry toc-h2"><a href="#レビューコメント">レビューコメント</a></li>
 <li class="toc-entry toc-h2"><a href="#実際に動かしてみたpull-request">実際に動かしてみたPull Request</a></li>
+<li class="toc-entry toc-h2"><a href="#余談">余談</a></li>
 </ul>
   <p>過去に<a href="/reviewdog-rubocop/">reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事</a>を書きました。</p>
 
@@ -101,7 +103,7 @@
 
 <p><a href="https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token">Authenticating with the GITHUB_TOKEN - GitHub Help</a></p>
 
-<p>GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsの</p>
+<p>GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsのほうが優れている印象があります。</p>
 
 <h2 id="基本のrubocop設定">
 <a class="anchor" href="#%E5%9F%BA%E6%9C%AC%E3%81%AErubocop%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>基本のrubocop設定</h2>
@@ -142,7 +144,8 @@
 
 <p>yamlファイルとしては下記になります。</p>
 
-<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">name</span><span class="pi">:</span> <span class="s">RuboCop</span>
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/workflows/rubocop.yml</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">RuboCop</span>
 <span class="na">on</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">pull_request</span><span class="pi">]</span>
 <span class="na">jobs</span><span class="pi">:</span>
   <span class="na">rubocop</span><span class="pi">:</span>
@@ -170,7 +173,7 @@
 
 <p>設定がうまくいっていれば、下記のように <code class="highlighter-rouge">github-actions</code> からの自動レビューコメントが付きます。</p>
 
-<p><img src="/images/posts/rubocop-actions/rubocop-by-github-actions.png" alt=""></p>
+<p><img src="/images/posts/rubocop-actions/rubocop-by-github-actions.png" alt="comment by github-actions"></p>
 
 <h2 id="実際に動かしてみたpull-request">
 <a class="anchor" href="#%E5%AE%9F%E9%9A%9B%E3%81%AB%E5%8B%95%E3%81%8B%E3%81%97%E3%81%A6%E3%81%BF%E3%81%9Fpull-request" aria-hidden="true"><span class="octicon octicon-link"></span></a>実際に動かしてみたPull Request</h2>
@@ -178,6 +181,18 @@
 <p>実際にこの構成で設定してみたPRは下記になります。</p>
 
 <p><a href="https://github.com/toshimaru/Test/pull/16">rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test</a></p>
+
+<h2 id="余談">
+<a class="anchor" href="#%E4%BD%99%E8%AB%87" aria-hidden="true"><span class="octicon octicon-link"></span></a>余談</h2>
+
+<p>本記事ではミニマルな設定を紹介しましたが、実行高速化のために実際は下記の設定もあわせてしたほうが良いでしょう。</p>
+
+<ul>
+  <li>bundler cache の設定</li>
+  <li>rubocop cache の設定（<code class="highlighter-rouge">~/.cache/rubocop_cache</code>）</li>
+  <li>
+<code class="highlighter-rouge">--parallel</code> オプションの追加</li>
+</ul>
 
 </div>
 
@@ -278,7 +293,7 @@
     },
     "headline": "reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす",
     "datePublished": "2020-05-31T00:00:00+09:00",
-    "author": {
+    "dateModified": "2020-06-01T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"

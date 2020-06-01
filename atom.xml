@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-01T00:39:47+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/" rel="alternate" type="text/html" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす" /><published>2020-05-31T00:00:00+09:00</published><updated>2020-05-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/">&lt;p&gt;過去に&lt;a href=&quot;/reviewdog-rubocop/&quot;&gt;reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事&lt;/a&gt;を書きました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-01T10:47:50+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/" rel="alternate" type="text/html" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす" /><published>2020-05-31T00:00:00+09:00</published><updated>2020-06-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/">&lt;p&gt;過去に&lt;a href=&quot;/reviewdog-rubocop/&quot;&gt;reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事&lt;/a&gt;を書きました。&lt;/p&gt;
 
 &lt;p&gt;本記事はそれの&lt;a href=&quot;https://github.com/features/actions&quot;&gt;GitHub Actions&lt;/a&gt;バージョンになります。&lt;/p&gt;
 
@@ -8,7 +8,7 @@
 
 &lt;p&gt;&lt;a href=&quot;https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token&quot;&gt;Authenticating with the GITHUB_TOKEN - GitHub Help&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsの&lt;/p&gt;
+&lt;p&gt;GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsのほうが優れている印象があります。&lt;/p&gt;
 
 &lt;h2 id=&quot;基本のrubocop設定&quot;&gt;基本のrubocop設定&lt;/h2&gt;
 
@@ -47,7 +47,8 @@
 
 &lt;p&gt;yamlファイルとしては下記になります。&lt;/p&gt;
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/workflows/rubocop.yml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
@@ -74,13 +75,23 @@
 
 &lt;p&gt;設定がうまくいっていれば、下記のように &lt;code class=&quot;highlighter-rouge&quot;&gt;github-actions&lt;/code&gt; からの自動レビューコメントが付きます。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/rubocop-actions/rubocop-by-github-actions.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/rubocop-actions/rubocop-by-github-actions.png&quot; alt=&quot;comment by github-actions&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;実際に動かしてみたpull-request&quot;&gt;実際に動かしてみたPull Request&lt;/h2&gt;
 
 &lt;p&gt;実際にこの構成で設定してみたPRは下記になります。&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/Test/pull/16&quot;&gt;rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rubocop" /><category term="github" /><category term="ci" /><category term="review" /><summary type="html">過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/Test/pull/16&quot;&gt;rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
+
+&lt;p&gt;本記事ではミニマルな設定を紹介しましたが、実行高速化のために実際は下記の設定もあわせてしたほうが良いでしょう。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;bundler cache の設定&lt;/li&gt;
+  &lt;li&gt;rubocop cache の設定（&lt;code class=&quot;highlighter-rouge&quot;&gt;~/.cache/rubocop_cache&lt;/code&gt;）&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;--parallel&lt;/code&gt; オプションの追加&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rubocop" /><category term="github" /><category term="ci" /><category term="review" /><summary type="html">過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
 
 &lt;p&gt;特定日付が範囲内にあるかの判定を行うには &lt;a href=&quot;https://railsdoc.github.io/classes/ActiveSupport/TimeWithZone.html#method-i-between-3F&quot;&gt;ActiveSupport::TimeWithZone#between?&lt;/a&gt; が使える。&lt;/p&gt;
 
