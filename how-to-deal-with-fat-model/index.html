@@ -1,0 +1,1149 @@
+<!doctype html>
+<html class="no-js" lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>銀座Rails#21で「Fat Modelの倒し方」を発表しました - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <link rel="stylesheet" href="/css/main.css">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="銀座Rails#21で「Fat Modelの倒し方」を発表しました - Hack Your Design!">
+  <meta property="og:title" content="銀座Rails#21で「Fat Modelの倒し方」を発表しました - Hack Your Design!">
+  <meta name="description" content="銀座Rails#21で「Fat Modelの倒し方」と題して発表してきた。　肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？">
+  <meta name="twitter:description" content="銀座Rails#21で「Fat Modelの倒し方」と題して発表してきた。　肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？">
+  <meta property="og:description" content="銀座Rails#21で「Fat Modelの倒し方」と題して発表してきた。　肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-06-01T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/how-to-deal-with-fat-model/">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.toshimaru.net/atom.xml" title="Hack Your Design!" />
+</head>
+<body>
+  <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="/search/" method="get">
+      <input type="text" class="search-txt" name="q" placeholder="Search">
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">銀座Rails#21で「Fat Modelの倒し方」を発表しました</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2020-06-01T00:00:00+09:00" pubdate>2020/06/01</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/presentation/" rel="tag">presentation</a>
+
+<a href="/tag/rails/" rel="tag">rails</a>
+
+<a href="/tag/activerecord/" rel="tag">activerecord</a>
+
+
+    </div>
+    
+  </div>
+</div>
+
+<div id="md-content">
+  
+  <p><a href="https://ginza-rails.connpass.com/event/173610/">銀座Rails#21</a>で「Fat Modelの倒し方」と題して発表してきました。</p>
+
+<h2 id="発表スライド">発表スライド</h2>
+
+<script async="" class="speakerdeck-embed" data-id="fa367404507c4311aa3eeb087fc45a6e" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+<h2 id="目次">目次</h2>
+
+<ul id="markdown-toc">
+  <li><a href="#%E7%99%BA%E8%A1%A8%E3%82%B9%E3%83%A9%E3%82%A4%E3%83%89" id="markdown-toc-発表スライド">発表スライド</a></li>
+  <li><a href="#%E7%9B%AE%E6%AC%A1" id="markdown-toc-目次">目次</a></li>
+  <li><a href="#fat-rails-stage" id="markdown-toc-fat-rails-stage">Fat Rails Stage</a></li>
+  <li><a href="#fat-model%E5%AF%BE%E5%87%A6%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AE%EF%BC%93%E3%81%A4%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AD%E3%83%BC%E3%83%81" id="markdown-toc-fat-model対処のための３つのアプローチ">Fat Model対処のための３つのアプローチ</a></li>
+  <li><a href="#rails-model%E3%81%AE%E9%99%90%E7%95%8C" id="markdown-toc-rails-modelの限界">Rails Modelの限界</a></li>
+  <li><a href="#rails-model%E3%81%AF%E3%81%AA%E3%81%9C%E8%BE%9B%E3%81%8F%E3%81%AA%E3%82%8B%E3%81%AE%E3%81%8B" id="markdown-toc-rails-modelはなぜ辛くなるのか">Rails Modelはなぜ辛くなるのか？</a></li>
+  <li><a href="#%E7%9B%AE%E6%8C%87%E3%81%99%E3%81%B9%E3%81%8D%E3%82%B4%E3%83%BC%E3%83%AB" id="markdown-toc-目指すべきゴール">目指すべきゴール</a></li>
+  <li>
+<a href="#rails-way" id="markdown-toc-rails-way">Rails Way</a>    <ul>
+      <li><a href="#concerns" id="markdown-toc-concerns">Concerns</a></li>
+      <li><a href="#sti" id="markdown-toc-sti">STI</a></li>
+      <li><a href="#polymorphic-association" id="markdown-toc-polymorphic-association">Polymorphic Association</a></li>
+      <li><a href="#accepts_nested_attributes_for" id="markdown-toc-accepts_nested_attributes_for">accepts_nested_attributes_for</a></li>
+      <li><a href="#%E3%81%9D%E3%81%AE%E4%BB%96%E7%B4%B0%E3%81%8B%E3%82%81%E3%81%AE%E3%83%86%E3%82%AF%E3%83%8B%E3%83%83%E3%82%AF" id="markdown-toc-その他細かめのテクニック">その他細かめのテクニック</a></li>
+      <li><a href="#rails-way%E3%81%BE%E3%81%A8%E3%82%81" id="markdown-toc-rails-wayまとめ">「Rails Way」まとめ</a></li>
+    </ul>
+  </li>
+  <li>
+<a href="#sub-rails-way" id="markdown-toc-sub-rails-way">Sub-Rails Way</a>    <ul>
+      <li><a href="#view-model" id="markdown-toc-view-model">View Model</a></li>
+      <li><a href="#%E6%A8%A9%E9%99%90%E7%AE%A1%E7%90%86%E8%AA%8D%E5%8F%AF" id="markdown-toc-権限管理認可">権限管理・認可</a></li>
+      <li><a href="#interactor" id="markdown-toc-interactor">Interactor</a></li>
+      <li><a href="#%E7%89%B9%E5%AE%9A%E3%81%AE%E8%AA%B2%E9%A1%8C%E3%81%AE%E8%A7%A3%E6%B1%BA" id="markdown-toc-特定の課題の解決">特定の課題の解決</a></li>
+      <li><a href="#%E3%81%9D%E3%82%8Crails%E3%81%A7%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88" id="markdown-toc-それrailsでできるよ">「それRailsでできるよ」</a></li>
+      <li><a href="#%E3%81%9D%E3%82%8Cruby%E3%81%A7%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88" id="markdown-toc-それrubyでできるよ">「それRubyでできるよ」</a></li>
+      <li><a href="#saas%E3%81%AB%E5%88%87%E3%82%8A%E5%87%BA%E3%81%99" id="markdown-toc-saasに切り出す">SaaSに切り出す</a></li>
+      <li><a href="#sub-rails-way%E3%81%BE%E3%81%A8%E3%82%81" id="markdown-toc-sub-rails-wayまとめ">「Sub-Rails Way」まとめ</a></li>
+    </ul>
+  </li>
+  <li>
+<a href="#non-rails-way" id="markdown-toc-non-rails-way">Non-Rails Way</a>    <ul>
+      <li><a href="#form-model" id="markdown-toc-form-model">Form Model</a></li>
+      <li><a href="#poro" id="markdown-toc-poro">PORO</a></li>
+      <li><a href="#service-class" id="markdown-toc-service-class">Service Class</a></li>
+      <li><a href="#1-table-multiple-models" id="markdown-toc-1-table-multiple-models">1 Table Multiple Models</a></li>
+      <li><a href="#non-rails-way%E3%81%BE%E3%81%A8%E3%82%81" id="markdown-toc-non-rails-wayまとめ">「Non-Rails Way」まとめ</a></li>
+    </ul>
+  </li>
+  <li><a href="#%E5%85%A8%E4%BD%93%E3%81%AE%E3%81%BE%E3%81%A8%E3%82%81" id="markdown-toc-全体のまとめ">全体のまとめ</a></li>
+  <li><a href="#%E5%8F%82%E8%80%83%E8%B3%87%E6%96%99" id="markdown-toc-参考資料">参考資料</a></li>
+</ul>
+
+<h2 id="fat-rails-stage">Fat Rails Stage</h2>
+
+<p>肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？</p>
+
+<ol>
+  <li>Fat View</li>
+  <li>Fat Controller</li>
+  <li>Fat Model</li>
+</ol>
+
+<p>僕はFat Modelだと考えています。</p>
+
+<p>下記は「RailsがどのようにFatになっていくか」段階を示した表です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Fat Stage</th>
+      <th>Rails習熟度</th>
+      <th>Fat Layer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>低</td>
+      <td>Fat View</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>中</td>
+      <td>Fat Controller</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>高</td>
+      <td>Fat Model<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>
+</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>まずはFatステージ1。Railsというものを全然知らない超初心者が陥るステージです。ビューに何でもかんでもロジックを書いちゃう。その結果がFat Viewです。</p>
+
+<p>次にFatステージ2。ある程度Railsに慣れてきた開発者が陥るステージです。Modelへのロジック分離がうまくできず、Controllerにロジックが集中する。その結果はFat Controllerです。</p>
+
+<p>最後がFatステージ3。Railsを習熟したエンジニアであればModelにロジックを寄せていくのが定石です。その結果出来上がるのはFat Modelです。</p>
+
+<p>このように <strong>どんなにRailsに習熟してようと最終的にぶつかる壁がFat Model</strong> です。</p>
+
+<h2 id="fat-model対処のための３つのアプローチ">Fat Model対処のための３つのアプローチ</h2>
+
+<p>Fat Modelを倒すためのアプローチとして、僕は下記の3つに分けて整理すれば良いのではと考えました。</p>
+
+<ol>
+  <li>Rails Way</li>
+  <li>Sub-Rails Way</li>
+  <li>Non-Rails Way</li>
+</ol>
+
+<h2 id="rails-modelの限界">Rails Modelの限界</h2>
+
+<p>なぜRailsアプリケーションのModel層は限界を迎えてしまうのでしょうか？</p>
+
+<p>Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、<code class="highlighter-rouge">User</code>モデルがあれば<code class="highlighter-rouge">UsersController</code>があり、Controllerのそれぞれのアクションに<code class="highlighter-rouge">User</code>モデルが紐づくという形です。</p>
+
+<p>しかし下図<sup id="fnref:a" role="doc-noteref"><a href="#fn:a" class="footnote">2</a></sup>はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。</p>
+
+<p><img src="/images/posts/ginzarails-21/controllers-model.jpg" alt="inline"></p>
+
+<p>続いてのスライドです<sup id="fnref:b" role="doc-noteref"><a href="#fn:b" class="footnote">3</a></sup>。</p>
+
+<p><img src="https://speakerd.s3.amazonaws.com/presentations/ce30c3cf9433471283e24855f6bdd2b4/slide_42.jpg?12161035" alt="inline"></p>
+
+<p>ここのキーワードとしては <strong>ユースケース</strong>。いろんなユースケースを1つのModelで表現しなければならないという状況が辛いと言えます。</p>
+
+<h2 id="rails-modelはなぜ辛くなるのか">Rails Modelはなぜ辛くなるのか？</h2>
+
+<ul>
+  <li>1つのModelが複数の異なるユースケースに密結合して実装されるとき
+    <ul>
+      <li>→ ある条件やcontextに紐付いたValidation/Callback処理</li>
+    </ul>
+  </li>
+  <li>1つのフォームで複数のサブリソースが更新されるとき（フォームとModelが1対1で紐付かないとき）
+    <ul>
+      <li>→ 1つのModelを起点とした複数Modelを跨ぐトランザクション処理</li>
+    </ul>
+  </li>
+</ul>
+
+<p>上述の限界は、Rails ModelとDBのテーブルが一対一で紐づくRailsの世界観に起因する限界と言えます。</p>
+
+<h2 id="目指すべきゴール">目指すべきゴール</h2>
+
+<p>ではどうRailsの限界を乗り越えていけばいいでしょうか？</p>
+
+<p>下記は横軸がコードベースのサイズ、縦軸がペイン（痛みの度合い）を描いたグラフです<sup id="fnref:c" role="doc-noteref"><a href="#fn:c" class="footnote">4</a></sup>。</p>
+
+<p><img src="/images/posts/ginzarails-21/growth.png" alt="inline"></p>
+
+<p>赤線はバニラRailsです。コードベースのサイズとともにペインが増大しています。</p>
+
+<p>緑線はストラクチャードRails。コードベースが増大してもペインが増大しません。</p>
+
+<p>僕の発表の言うところでは、赤線（バニラRails）がRails Way、緑線（ストラクチャードRails）がSub-Rails・Non-Rails Wayにあたります。</p>
+
+<p><img src="/images/posts/ginzarails-21/growth2.png" alt="inline"></p>
+
+<p>ということで我々の基本的なゴールとしてはこの緑線、すなわち、 <strong>コードベースが大きくなってもペインが増大しないRailsコードベース</strong> を目指しましょう、ということになります。</p>
+
+<h2 id="rails-way">Rails Way</h2>
+
+<p>小学生の絵みたいで恐縮なんですが、Rails Wayを絵にするとこんなイメージです。</p>
+
+<p><img src="/images/posts/ginzarails-21/rails-way.png" alt="fit"></p>
+
+<p>つまり <strong>Railsのレールに沿った開発アプローチ</strong> です。</p>
+
+<h3 id="concerns">Concerns</h3>
+
+<p>まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s <code class="highlighter-rouge">Recording</code> Class<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote">5</a></sup>）。</p>
+
+<p><img src="/images/posts/ginzarails-21/concerns.png" alt="inline"></p>
+
+<p>注意すべきは、ConcernのRails公式ガイドはありません。強いて言うなら下記の記事でDHHがConcernを紹介しています。</p>
+
+<p><a href="https://signalvnoise.com/posts/3372-put-chubby-models-on-a-diet-with-concerns">Put chubby models on a diet with concerns</a></p>
+
+<p>Modelの持っている能力（ability = <code class="highlighter-rouge">-able</code> suffix）に着目してConcern moduleに切り出していくのが、Rails Wayっぽさがあると言えます。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/models/concerns/concernable.rb</span>
+<span class="k">module</span> <span class="nn">Concernable</span>
+  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+
+  <span class="o">...</span><span class="p">(</span><span class="n">your</span> <span class="n">concern</span> <span class="n">code</span><span class="p">)</span><span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="sti">STI</h3>
+
+<p>RailsにおいてテーブルとModelは原則的に1対1で結びつきます。しかし、STIを使えば1つのテーブルで複数Model紐付けることができます。</p>
+
+<p>下図は<code class="highlighter-rouge">players</code>という単一テーブルに複数のクラスが結びついている図です<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote">6</a></sup>。</p>
+
+<p><img src="/images/posts/ginzarails-21/sti.png" alt="inline"></p>
+
+<p>Railsのコード例です。 <code class="highlighter-rouge">companies</code> テーブルに紐づく <code class="highlighter-rouge">Firm</code>, <code class="highlighter-rouge">Client</code>モデルの例だと下記の通りです。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/models/company.rb</span>
+<span class="k">class</span> <span class="nc">Company</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+<span class="k">end</span>
+
+<span class="c1"># app/models/firm.rb</span>
+<span class="k">class</span> <span class="nc">Firm</span> <span class="o">&lt;</span> <span class="no">Company</span>
+<span class="k">end</span>
+
+<span class="c1"># app/models/client.rb</span>
+<span class="k">class</span> <span class="nc">Client</span> <span class="o">&lt;</span> <span class="no">Company</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="polymorphic-association">Polymorphic Association</h3>
+
+<p>1つのポリモーフィック関連付け定義で複数のテーブルを従属させることができるのがポリモーフィック関連です。</p>
+
+<p><img src="/images/posts/ginzarails-21/polymorphic.png" alt="inline"></p>
+
+<p>上図の場合、通常のRails DB設計であれば <code class="highlighter-rouge">pictures</code>テーブルが<code class="highlighter-rouge">employee_id</code>, <code class="highlighter-rouge">product_id</code>を持っているべきですが、<code class="highlighter-rouge">imagable_id</code>という1つカラムで複数のテーブルを従属させることができています。</p>
+
+<p>これをRailsのコードであらわすと下記の通りです。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/models/picture.rb</span>
+<span class="k">class</span> <span class="nc">Picture</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:imageable</span><span class="p">,</span> <span class="ss">polymorphic: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="c1"># app/models/employee.rb</span>
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span> <span class="ss">as: :imageable</span>
+<span class="k">end</span>
+
+<span class="c1"># app/models/product.rb</span>
+<span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:pictures</span><span class="p">,</span> <span class="ss">as: :imageable</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>ただし注意点があります。ポリモーフィック関連は『SQLアンチパターン』6章でアンチパターンとして紹介されており、使用する際は気をつける必要があります。</p>
+
+<p>詳しくは『SQLアンチパターン』を読んでいただければと思います。</p>
+
+<h3 id="accepts_nested_attributes_for">accepts_nested_attributes_for</h3>
+
+<p>ネストされたアトリビュートで関連リソースの作成・更新・削除を行うのが<code class="highlighter-rouge">accepts_nested_attributes_for</code>です。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Member</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:posts</span>
+<span class="k">end</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">member: </span><span class="p">{</span>
+  <span class="ss">name: </span><span class="s1">'joe'</span><span class="p">,</span> <span class="ss">posts_attributes: </span><span class="p">[</span>
+    <span class="p">{</span> <span class="ss">title: </span><span class="s1">'Kari, the awesome Ruby documentation browser!'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="ss">title: </span><span class="s1">'The egalitarian assumption of the modern citizen'</span> <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}}</span>
+<span class="n">member</span> <span class="o">=</span> <span class="no">Member</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:member</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>ただしこの<code class="highlighter-rouge">accepts_nested_attributes_for</code>はDHH自らが「消したい」と発言しており<sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote">7</a></sup>、積極的に使うのはやや躊躇われるかもしれません。</p>
+
+<p><img src="/images/posts/ginzarails-21/dhh.png" alt="inline"></p>
+
+<h3 id="その他細かめのテクニック">その他細かめのテクニック</h3>
+
+<ul>
+  <li>
+<strong>Serialize Attribute</strong>
+    <ul>
+      <li>json型カラムへのメタデータ保存に便利</li>
+      <li>⚠️『SQLアンチパターン』5章 EAV</li>
+    </ul>
+  </li>
+  <li>
+<strong>Value Object</strong> (<code class="highlighter-rouge">compose_of</code>)
+    <ul>
+      <li>複数カラムをValueオブジェクトとして展開するときに便利</li>
+    </ul>
+  </li>
+  <li>
+<strong>Validation Class</strong>/<strong>Callback Class</strong>
+    <ul>
+      <li>クラスとして分離可能 → 分離することで複数モデルで再利用可能に</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="rails-wayまとめ">「Rails Way」まとめ</h3>
+
+<p>全体としては、Rails WayだけではFat Modelを倒す手段として手数が少なく物足りないと感じます。</p>
+
+<p>アプリケーションサイズがFatになっている時点でそのRailsアプリケーションは中規模以上のサイズが見込まれますから、正直Rails WayだけでFat Modelを倒すのは無理だと思います。</p>
+
+<p>❌ Concerns, Validation ClassなどFat ModelをDRYに記述する手段にはなるが、構造的にダイエットする手段にはなっていません。あくまでそれらは局所的なダイエットに留まっています。</p>
+
+<p>❌ STI, PolymorphicなどはDB設計と密結合したソリューションで、完全なコードレベルの解決にはなっていません。また、アンチパターンとして紹介されているように、それ自体が技術負債になりえる構造的問題を孕んでいます。</p>
+
+<h2 id="sub-rails-way">Sub-Rails Way</h2>
+
+<p>Sub-Rails Wayはレールを補強・拡張しつつレールに乗るスタイルです。</p>
+
+<p><img src="/images/posts/ginzarails-21/sub-rails-way.png" alt="fit"></p>
+
+<p>レールを何を使って補強・拡張するのでしょうか？それは下記２つになります。</p>
+
+<ol>
+  <li>gem</li>
+  <li>SaaS</li>
+</ol>
+
+<h3 id="view-model">View Model</h3>
+
+<p>ModelにおけるView関連ロジックを <strong>View Model</strong> として切り出す手法です。</p>
+
+<p>Development of Further PoEAAで<a href="https://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model</a>という概念で紹介されているパターンにあたると考えています。ModelをDecoratorパターンっぽく拡張しているのでDecoratorとも呼ばれることが多いです<sup id="fnref:8" role="doc-noteref"><a href="#fn:8" class="footnote">8</a></sup>。</p>
+
+<p>このView Modelの良いところとしては、Fat Model の対処として機能するだけでなく、Fat View の対処としても機能する点です。</p>
+
+<p>💎 gemの実装としては下記のようなものがあります。</p>
+
+<ul>
+  <li><a href="https://github.com/drapergem/draper">draper</a></li>
+  <li><a href="https://github.com/amatsuda/active_decorator">active_decorator</a></li>
+</ul>
+
+<p>🔧 draperの場合、コードは下記のようになります（ArticleモデルのDecoratorクラス）。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/decorators/article_decorator.rb</span>
+<span class="k">class</span> <span class="nc">ArticleDecorator</span> <span class="o">&lt;</span> <span class="no">Draper</span><span class="o">::</span><span class="no">Decorator</span>
+  <span class="n">delegate_all</span>
+
+  <span class="k">def</span> <span class="nf">publication_status</span>
+    <span class="k">if</span> <span class="n">published?</span>
+      <span class="s2">"Published at </span><span class="si">#{</span><span class="n">published_at</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">else</span>
+      <span class="s2">"Unpublished"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">published_at</span>
+    <span class="n">object</span><span class="p">.</span><span class="nf">published_at</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="s2">"%A, %B %e"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="権限管理認可">権限管理・認可</h3>
+
+<p>管理画面実装において逃げられない実装は認証とあわせて、権限管理・認可ではないでしょうか？</p>
+
+<p>ResourceのCRUDでユーザーのアクセス制御するのが「Railsらしい」権限管理と考えています。</p>
+
+<p>💎 gemの実装としては下記のようなものです。</p>
+
+<ul>
+  <li><a href="https://github.com/varvet/pundit">pundit</a></li>
+  <li><a href="https://github.com/kyuden/banken">banken</a></li>
+  <li><a href="https://github.com/CanCanCommunity/cancancan">cancancan</a></li>
+</ul>
+
+<p>🔧 punditの場合、コードは下記の通りです（Postモデルの認可クラス）。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/policies/post_policy.rb</span>
+<span class="k">class</span> <span class="nc">PostPolicy</span>
+  <span class="nb">attr_reader</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">:post</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">post</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="n">post</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">update?</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">admin?</span> <span class="n">or</span> <span class="n">not</span> <span class="n">post</span><span class="p">.</span><span class="nf">published?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="interactor">Interactor</h3>
+
+<p>InteractorはClean Architecture由来する概念です。</p>
+
+<p>下記の図は見たことある方も多くいらっしゃるかもしれません。赤い部分がClean Architectureにおけるユースケース層になります。このユースケース層に Interactor が表現されています。</p>
+
+<p><img src="https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg" alt="inline"></p>
+
+<p>ユースケース層というアプローチはとても良いと思っています。なぜなら先程「1つのModelが複数の異なるユースケースに密結合して実装されるとき―」と言いましたが、そのユースケースをまさにInteractorとして表現できるからです。</p>
+
+<p>個人的にClean ArchitectureとRailsは相性が良いと思っていて、このようにMVC+InteractorでClean Architectureのそれぞれの層と一致させることができるからです。</p>
+
+<p><img src="/images/posts/ginzarails-21/Clean_Coder_Blog.png" alt="inline"></p>
+
+<p>💎 gemとしては下記があります。</p>
+
+<ul>
+  <li><a href="https://github.com/collectiveidea/interactor-rails">interactor-rails</a></li>
+  <li>(not Rails) <a href="https://github.com/hanami">hanami</a>’s <a href="https://github.com/hanami/utils/blob/master/lib/hanami/interactor.rb">Interactor</a>
+</li>
+</ul>
+
+<p>hanamiはRailsではありませんが、Clean Architectureに強く影響を受けたRuby製Webフレームワークです。hanamiには Interactor の仕組みが標準で実装されています。</p>
+
+<p>🔧 interactor-railsの場合のコードは下記の通りです（ユーザーを認証するクラス）。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/interactors/authenticate_user.rb</span>
+<span class="k">class</span> <span class="nc">AuthenticateUser</span>
+  <span class="kp">include</span> <span class="no">Interactor</span>
+
+  <span class="k">def</span> <span class="nf">call</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span> <span class="n">context</span><span class="p">.</span><span class="nf">password</span><span class="p">)</span>
+      <span class="n">context</span><span class="p">.</span><span class="nf">user</span> <span class="o">=</span> <span class="n">user</span>
+      <span class="n">context</span><span class="p">.</span><span class="nf">token</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">secret_token</span>
+    <span class="k">else</span>
+      <span class="n">context</span><span class="p">.</span><span class="nf">fail!</span><span class="p">(</span><span class="ss">message: </span><span class="s2">"authenticate_user.failure"</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Inside your controller,</span>
+<span class="n">result</span> <span class="o">=</span> <span class="no">AuthenticateUser</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">session_params</span><span class="p">)</span>  
+</code></pre></div></div>
+
+<h3 id="特定の課題の解決">特定の課題の解決</h3>
+
+<p>特定の課題を解決するgemとしては例えば下記のようなものがあります。</p>
+
+<ul>
+  <li>
+<strong>論理削除</strong>
+    <ul>
+      <li>💎 gem: <a href="https://github.com/jhawthorn/discard">discard</a>, <a href="https://github.com/rubysherpas/paranoia">paranoia</a>, <a href="https://github.com/ActsAsParanoid/acts_as_paranoid">acts_as_paranoid</a>
+</li>
+      <li>⚠️ <a href="https://www.slideshare.net/t_wada/ronsakucasual">SQLアンチパターン 幻の第26章「とりあえず削除フラグ」</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<strong>要素のソート・並び替え</strong>
+    <ul>
+      <li>💎 gem: <a href="https://github.com/brendon/acts_as_list">acts_as_list</a>, <a href="https://github.com/mixonic/ranked-model">ranked-model</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<strong>State Machine</strong>
+    <ul>
+      <li>💎 gem: <a href="https://github.com/aasm/aasm">aasm</a>, <a href="https://github.com/amatsuda/stateful_enum">stateful_enum</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<strong>Tagging</strong>
+    <ul>
+      <li>💎 gem: <a href="https://github.com/mbleigh/acts-as-taggable-on">acts-as-taggable-on</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<strong>HashをActiveRecordっぽく操作</strong>
+    <ul>
+      <li>💎 gem: <a href="https://github.com/zilkey/active_hash">active_hash</a>
+</li>
+    </ul>
+  </li>
+</ul>
+
+<p>解決したい課題に応じて導入していくのが良いと思います。</p>
+
+<h3 id="それrailsでできるよ">「それRailsでできるよ」<sup id="fnref:10" role="doc-noteref"><a href="#fn:10" class="footnote">9</a></sup>
+</h3>
+
+<p>逆にgemを使わずともRails標準で解決できるよって課題も多く存在します。例えば下記のような例です。</p>
+
+<ul>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/brainspec/enumerize">enumerize</a> (Emumerized Attributes)
+    <ul>
+      <li>Rails 4.1: ActiveRecord enum</li>
+      <li>参考. <a href="https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html">ActiveRecord::Enum</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/eagletmt/switch_point">switch_point</a> (Database R/W Split)
+    <ul>
+      <li>Rails 6: Multi-DB</li>
+      <li>参考: <a href="https://railsguides.jp/active_record_multiple_databases.html">Active Record で複数のデータベース利用 - Railsガイド</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/zdennis/activerecord-import">activerecord-import</a> (Bulk Import)
+    <ul>
+      <li>Rails 6: <code class="highlighter-rouge">insert_all</code>, <code class="highlighter-rouge">upsert_all</code>
+</li>
+    </ul>
+  </li>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/carrierwaveuploader/carrierwave">carrierwave</a>, <a href="https://github.com/shrinerb/shrine">shrine</a> (File Uploader)
+    <ul>
+      <li>Rails 5.2: Active Storage</li>
+      <li>参考: <a href="https://railsguides.jp/active_storage_overview.html">Active Storage の概要 - Railsガイド</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/norman/friendly_id">friendly_id</a>
+    <ul>
+      <li>ActiveRecord: <code class="highlighter-rouge">to_param</code>
+</li>
+      <li>参考: <a href="https://api.rubyonrails.org/classes/ActiveRecord/Integration.html#method-i-to_param">ActiveRecord::Integration</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/magnusvk/counter_culture">counter_culture</a>
+    <ul>
+      <li>ActiveRecord: <code class="highlighter-rouge">counter_cache</code>
+</li>
+      <li>参考: <a href="https://railsguides.jp/association_basics.html#belongs-to%E3%81%AE%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-counter-cache">Active Record の関連付け</a>
+</li>
+    </ul>
+  </li>
+  <li>ID/Password認証
+    <ul>
+      <li>ActiveModel: <code class="highlighter-rouge">has_secure_password</code>
+</li>
+      <li>参考: <a href="https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html">ActiveModel::SecurePassword::ClassMethods</a>
+</li>
+    </ul>
+  </li>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/rubyconfig/config">config</a> (YAML Config Management)
+    <ul>
+      <li>Rails Custom configuration:</li>
+      <li><code class="highlighter-rouge">Rails::Application.config_for</code></li>
+      <li><code class="highlighter-rouge">config.x</code></li>
+      <li>参考: <a href="https://railsguides.jp/configuring.html#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E8%A8%AD%E5%AE%9A">Rails アプリケーションを設定する - Railsガイド</a>
+</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="それrubyでできるよ">「それRubyでできるよ」<sup id="fnref:10:1" role="doc-noteref"><a href="#fn:10" class="footnote">9</a></sup>
+</h3>
+
+<p>gemを使わずともRubyでもできるよってケースもあります。</p>
+
+<ul>
+  <li>
+<img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/pry/pry">pry</a>
+    <ul>
+      <li>Ruby 2.4: <code class="highlighter-rouge">binding.irb</code>
+</li>
+      <li>Ruby 2.7: REPL Syntax Highlighting</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="saasに切り出す">SaaSに切り出す</h3>
+
+<p>処理をSaaSに切り出す、という意味では下記の例があります。</p>
+
+<ul>
+  <li>
+<a href="https://auth0.com/jp/">Auth0</a>
+    <ul>
+      <li>ユーザー認証ロジックをAuth0に移譲</li>
+      <li>認証にともなうMFA、パスワードリセット、セキュリティ対策などの面倒な実装をAuth0が肩代わり</li>
+    </ul>
+  </li>
+  <li>
+<a href="https://sentry.io/welcome/">Sentry</a>
+    <ul>
+      <li>エラー通知をSentryに移譲</li>
+      <li>サービスにエラーをぽんぽん投げ込めばいい感じにエラーをアグリゲーション・可視化・各種通知してくれる</li>
+    </ul>
+  </li>
+  <li>
+<a href="https://newrelic.co.jp/">NewRelic</a>/<a href="https://www.datadoghq.com/ja/">Datadog</a>
+    <ul>
+      <li>APM (Application Performance Monitoring)を NewRelic/Datadog APMでやる</li>
+      <li>自前で Elasticsearch + Kibana 環境を構築してもいいが、構築コスト・運用コストともに高くつく</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="sub-rails-wayまとめ">「Sub-Rails Way」まとめ</h3>
+
+<p>gem を使うことでFat Model対処法のバリエーションがぐっと広がります。独自実装でModelを太らせることをせず、使えるgemは積極的に利用していくとよいでしょう。</p>
+
+<p>一方、gemを使わずともRails標準で解決できることも実は多くあるので見極めた上でgem導入しましょう。</p>
+
+<p>また、選択肢はさほど多くないものの、最近はさまざまな便利SaaSが出ているので SaaSを使うのもFat Model対抗手段の１つとして検討してもよいでしょう。</p>
+
+<h2 id="non-rails-way">Non-Rails Way</h2>
+
+<p>Non-Railsはレールに乗らない別のレール、独自路線のことです。</p>
+
+<p><img src="/images/posts/ginzarails-21/non-rails-way.png" alt="fit"></p>
+
+<p>つまり自らレールを作っていくスタイルです。</p>
+
+<h3 id="form-model">Form Model</h3>
+
+<p>Form Modelとは、<code class="highlighter-rouge">include ActiveModel</code>したRubyクラスのことです。</p>
+
+<p>巷ではForm Objectと呼ばれることが多いですが、＜Formに特化したActiveModel＞という意味で、あえてForm Modelと本発表では呼んでいます。</p>
+
+<p>フォームとForm Modelは一対一で紐付きます。こうすることで <strong>特定の＜Formのユースケース＞に対応したModel</strong> が作成可能になります。</p>
+
+<p>💎 gemの実装としては下記のようなものがあります。</p>
+
+<ul>
+  <li><a href="https://github.com/trailblazer/reform">reform</a></li>
+  <li>
+<a href="https://github.com/dry-rb/">dry-rb</a>シリーズ（旧・<a href="https://github.com/solnic/virtus">virtus</a>）</li>
+</ul>
+
+<p>Form Modelの使い所としては下記のように整理できると思います。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>紐づく<br>テーブル数</th>
+      <th>Form Modelのユースケース</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>問い合わせフォームなどテーブルを作るまでもないフォームで利用</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>2以上</td>
+      <td>
+<code class="highlighter-rouge">accepts_nested_attributes_for</code>の代わりとして、複雑なフォームの組み立て時に利用</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>テーブルとフォームが1対1で紐づく場合はRails Wayで解決させるのが素直な実装</p>
+
+<p>その他の特定のユースケースに特化したForm Model実装としては、下記のようなものが考えられます。</p>
+
+<ul>
+  <li>SearchForm: 条件に基づく検索に特化したフォーム</li>
+  <li>DownloadForm: CSVなどのダウンロードに特化したフォーム</li>
+</ul>
+
+<h3 id="poro">PORO</h3>
+
+<p>POROとはPlain Old Ruby Objectの略です。元ネタはPoEAAのPOJO (Plain Old Java Object)です。</p>
+
+<p>POROは、ActiveRecordの機能に依存しない純粋なRuby実装です。なので<code class="highlighter-rouge">include ActiveModel</code>しているRubyクラスは個人的にはPOROとは呼んでいません。</p>
+
+<p>純粋なRuby実装なのである意味、 <strong>Ruby Way</strong> とも言うことができます。</p>
+
+<p>POROの主な用途としてはModelの補助輪的な役割だと考えています。</p>
+
+<p>例えば下記の例ではクラスメソッド<code class="highlighter-rouge">create!</code>呼び出し時に引数を受け取って<code class="highlighter-rouge">create!</code>インスタンスメソッド内でトランザクションを張って複数モデルの更新を行っています。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PostWithNotifications</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create!</span><span class="p">(</span><span class="n">creator</span><span class="p">:,</span> <span class="n">body</span><span class="p">:)</span>
+    <span class="n">new</span><span class="p">(</span><span class="ss">creator: </span><span class="n">creator</span><span class="p">,</span> <span class="ss">body: </span><span class="n">body</span><span class="p">).</span><span class="nf">create!</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">creator</span><span class="p">:,</span> <span class="n">body</span><span class="p">:)</span>
+    <span class="vi">@creator</span> <span class="o">=</span> <span class="n">creator</span>
+    <span class="vi">@body</span> <span class="o">=</span> <span class="n">body</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create!</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+      <span class="n">create_post!</span>
+      <span class="n">create_notifications!</span>
+    <span class="k">end</span>    
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>このRubyクラスの場合、＜<code class="highlighter-rouge">Post</code>作成とともに<code class="highlighter-rouge">Notification</code>も作成する＞という複数モデル更新のユースケースをPOROに閉じ込めたということができるでしょう。</p>
+
+<h3 id="service-class">Service Class</h3>
+
+<p>続いてはサービスクラスです。</p>
+
+<p>サービスクラスに関してはもしかしたら賛否両論あるかもしれません。サービスという概念がデカすぎる故に、人によって使い方・解釈が異なり、サービスクラスにまつわる巷のすれ違いを起こしている印象があります。</p>
+
+<p>サービスクラスに関してはまずはサービスの定義問題があると思っています。つまり「あなたの言うServiceってなんですか？」という問題です。</p>
+
+<p>一口にサービスといっても様々な文脈のサービスがあります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Architecture</th>
+      <th>Service Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>PoEAA</strong></td>
+      <td>Service Layer</td>
+    </tr>
+    <tr>
+      <td><strong>DDD</strong></td>
+      <td>Service Class</td>
+    </tr>
+    <tr>
+      <td><strong>Onion Architecture</strong></td>
+      <td>Application Service, Domain Service</td>
+    </tr>
+    <tr>
+      <td>?</td>
+      <td>上記のどれでもない”Service”<br>上記を組み合わせた”Service”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>「どういう文脈のサービスか？」を明確にした上で議論しないとサービスクラスの定義・概念がボンヤリしてしまう印象です。なのでサービスクラスを導入する際は、サービスクラスの定義・使い方を明確にした上でチームに導入していくのが良いと思います。</p>
+
+<p>個人的な見解にはなりますが、＜特定のユースケースの解決＞という意味においてはInteractorのほうが（少なくともRailsにおいては）筋が良いと考えています。</p>
+
+<p>また、個人的に下手にサービスという巨大で強い概念を持ち込むより、POROという概念で雑にまとめたほうが好みだったりします。</p>
+
+<h3 id="1-table-multiple-models">1 Table Multiple Models</h3>
+
+<p>一つのテーブルに複数Modelを紐付けるアプローチです。</p>
+
+<p>Rails WayだとSTIでのみこれは実現可能ですが、STIを使わずにがんばってアプリケーションコードで複数モデルを表現しちゃいましょうというやり方です。</p>
+
+<p>コードにすると、例えば下記のようなコードになります。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">User::AsSignUp</span> <span class="o">&lt;</span> <span class="no">User</span>
+  <span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="o">...</span>
+  <span class="n">after_create</span> <span class="ss">:send_welcome_email</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">send_welcome_email</span>
+    <span class="o">...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>この例では＜<code class="highlighter-rouge">User</code>のサインアップ＞というユースケースにのみ特化したActiveRecordのModelを作成しています。</p>
+
+<p>ただこの実装に関しては、1 Table 1 ModelというRailsのパラダイム（規約）を壊すことになってしまうので、いささか危険思想という印象があります。</p>
+
+<p>ただ僕自身実際にプロダクションに導入して運用した経験はないので、もし実運用における成功例お持ちの方がいれば教えていただけると幸いです。</p>
+
+<h3 id="non-rails-wayまとめ">「Non-Rails Way」まとめ</h3>
+
+<p>4つの Non-Railsを紹介しました。</p>
+
+<ol>
+  <li>Form Model</li>
+  <li>PORO</li>
+  <li>Service Class</li>
+  <li>1 Table Multiple Models</li>
+</ol>
+
+<p>これらをうまく導入できればFat Modelを倒す強力な武器となるのは間違いないでしょう。</p>
+
+<p>どれをどう導入するかに関しては正解はないと思うのでチームにあった手法を選択すると良いと考えています。</p>
+
+<p>といっても「どれを導入すればいいかわからん…」ってなると思うので個人的なおすすめアプローチを紹介すると、モデルを太らせてしまうような複雑なフォームに関してはForm Modelで表現するのがわかりやすいと思います。</p>
+
+<p>何らかのユースケースに特化したクラスを作りたいのであれば、Sub-Railsのセクションで紹介したInteractorを使うのが個人的にはオススメです。</p>
+
+<p>上記で足りないユースケースが出てきた場合、POROと総称してModelの補助輪となるようなRubyクラスを用意してあげると良いかと思います。</p>
+
+<h2 id="全体のまとめ">全体のまとめ</h2>
+
+<p>Fat Modelを倒すための3つのアプローチを紹介しました。</p>
+
+<ol>
+  <li>
+<strong>Rails Way</strong>: Railsの規約に沿った開発アプローチ</li>
+  <li>
+<strong>Sub-Rails Way</strong>: Railsの規約をgemで補強・拡張するアプローチ</li>
+  <li>
+<strong>Non-Rails Way</strong>: Railsの規約から外れる独自実装アプローチ</li>
+</ol>
+
+<p>まずは、 <strong>Rails Way</strong> + <strong>Sub-Rails Way</strong> でFat Modelをダイエットできないか考えましょう。小規模なRailsアプリケーションであれば Rails Way + Sub-Rails Way で十分戦えると思います。</p>
+
+<p>Rails Way + Sub-Rails Way だけで立ち行かなくなった場合に、必要に応じて適切な <strong>Non-Rails Way</strong> を取り入れていきましょう。</p>
+
+<p><strong>Non-Rails Way</strong> はチーム毎に最適解があると思っています。チームで合意できる独自路線を選択・導入すればよいのではないでしょうか。</p>
+
+<h2 id="参考資料">参考資料</h2>
+
+<ul>
+  <li>書籍
+    <ul>
+      <li><a href="https://amzn.to/2TO3ZTe">エンタープライズアプリケーションアーキテクチャパターン</a></li>
+      <li><a href="https://amzn.to/2XfXKJT">Clean Architecture　達人に学ぶソフトウェアの構造と設計</a></li>
+      <li><a href="https://amzn.to/3exaz8y">エリック・エヴァンスのドメイン駆動設計</a></li>
+      <li>
+<a href="https://leanpub.com/growing-rails">Growing Rails Applications in Practice</a> by Henning Koch and Thomas Eisenbarth</li>
+    </ul>
+  </li>
+  <li>アーキテクチャにまつわる資料
+    <ul>
+      <li><a href="https://martinfowler.com/eaaDev/">Martin Fowler: Development of Further Patterns of Enterprise Application Architecture</a></li>
+      <li><a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">Clean Coder Blog: The Clean Architecture</a></li>
+      <li><a href="https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/">The Onion Architecture : part 1 | Programming with Palermo</a></li>
+      <li><a href="https://guides.hanamirb.org/architecture/interactors/">Architecture: Interactors | Hanami Guides</a></li>
+      <li><a href="https://qiita.com/yuku_t/items/961194a5443b618a4cac">中規模Web開発のためのMVC分割とレイヤアーキテクチャ - Qiita</a></li>
+    </ul>
+  </li>
+  <li>Rails公式ドキュメント
+    <ul>
+      <li><a href="https://guides.rubyonrails.org/association_basics.html">Active Record Associations — Ruby on Rails Guides</a></li>
+      <li><a href="https://guides.rubyonrails.org/active_model_basics.html">Active Model Basics — Ruby on Rails Guides</a></li>
+      <li><a href="https://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html">accepts_nested_attributes_for</a></li>
+      <li><a href="https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html">ActiveRecord::Inheritance</a></li>
+      <li><a href="https://api.rubyonrails.org/v6.0.2.1/classes/ActiveSupport/Concern.html">ActiveSupport::Concern</a></li>
+    </ul>
+  </li>
+  <li>Form Model (Form Object)について
+    <ul>
+      <li><a href="https://tech.libinc.co.jp/entry/2019/04/05/113000">Railsで複数モデルを扱うフォームをすっきり書く（Formオブジェクト） - LiBz Tech Blog</a></li>
+      <li><a href="https://moneyforward.com/engineers_blog/2018/12/15/formobject/">accepts_nested_attributes_forを使わず、複数の子レコードを保存する | Money Forward Engineers’ Blog</a></li>
+      <li><a href="https://discourse.clean-rails.org/t/model-form-1-1/14">Model と画面上の form が1対1で一致しない場合、どのように実装するのが綺麗なのか？ - clean-rails.org</a></li>
+    </ul>
+  </li>
+  <li>Service Class (Service Object) について
+    <ul>
+      <li><a href="https://techracho.bpsinc.jp/hachi8833/2017_10_16/46482">Railsで重要なパターンpart 1: Service Object（翻訳）｜TechRacho（テックラッチョ）〜エンジニアの「？」を「！」に〜｜BPS株式会社</a></li>
+      <li><a href="https://qiita.com/joker1007/items/2a03500017766bdb0234">てめえらのRailsはオブジェクト指向じゃねえ！まずはCallbackクラス、Validatorクラスを活用しろ！ - Qiita</a></li>
+      <li><a href="https://intersect.whitefusion.io/the-art-of-code/why-service-objects-are-an-anti-pattern">Why Service Objects are an Anti-Pattern — INTERSECT</a></li>
+      <li><a href="https://techracho.bpsinc.jp/hachi8833/2018_04_16/55130">Service Objectがアンチパターンである理由とよりよい代替手段（翻訳）｜TechRacho（テックラッチョ）〜エンジニアの「？」を「！」に〜｜BPS株式会社</a></li>
+    </ul>
+  </li>
+  <li><a href="https://speakerdeck.com/willnet/concerns-about-concerns">Concerns about Concerns - Speaker Deck</a></li>
+  <li><a href="https://tech.kitchhike.com/entry/2018/02/28/221159">Decorator と Presenter を使い分けて、 Rails を ViewModel ですっきりさせよう - KitchHike Tech Blog</a></li>
+  <li><a href="https://qiita.com/hanachin_/items/ba1dd93905567d88145c">ActiveRecordのモデルが1つだとつらい - Qiita</a></li>
+</ul>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="http://weblog.jamisbuck.org/2006/10/18/skinny-controller-fat-model">Buckblog: Skinny Controller, Fat Model</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:a" role="doc-endnote">
+      <p><a href="https://speakerdeck.com/hshimoyama/rails-with-applicationmodel">ApplicationModel のある風景 - Speaker Deck</a> <a href="#fnref:a" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:b" role="doc-endnote">
+      <p><a href="https://speakerdeck.com/yasaichi/what-is-ruby-on-rails-and-how-to-deal-with-it">Ruby on Railsの正体と向き合い方 - Speaker Deck</a> <a href="#fnref:b" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:c" role="doc-endnote">
+      <p><a href="https://leanpub.com/growing-rails">Growing Rails Applications in Practice</a> <a href="#fnref:c" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:6" role="doc-endnote">
+      <p><a href="https://twitter.com/dhh/status/964244090224128001">https://twitter.com/dhh/status/964244090224128001</a> <a href="#fnref:6" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>PoEAA: <a href="https://www.martinfowler.com/eaaCatalog/singleTableInheritance.html">Single Table Inheritance</a> <a href="#fnref:5" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:7" role="doc-endnote">
+      <p><a href="https://github.com/rails/rails/pull/26976#discussion_r87855694">https://github.com/rails/rails/pull/26976#discussion_r87855694</a> <a href="#fnref:7" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:8" role="doc-endnote">
+      <p>参考: <a href="https://amzn.to/3cekmi3">『Rubyによるデザインパターン』</a> 第11章 オブジェクトを改良する：Decorator <a href="#fnref:8" class="reversefootnote" role="doc-backlink">↩</a></p>
+    </li>
+    <li id="fn:10" role="doc-endnote">
+      <p>Ruby/Rails公式の提供する機能はgemより貧弱だったりするのであしからず <a href="#fnref:10" class="reversefootnote" role="doc-backlink">↩</a> <a href="#fnref:10:1" class="reversefootnote" role="doc-backlink">↩<sup>2</sup></a></p>
+    </li>
+  </ol>
+</div>
+
+</div>
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/how-to-deal-with-fat-model/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;"></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連記事</h3>
+  <ul>
+  
+    <li><a href="/rdm2018-active-record-anti-patterns/" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</a></li>
+  
+    <li><a href="/belongs-to-foreign-key-and-primary-key/" title="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</a></li>
+  
+    <li><a href="/make-rails-documents-seo-search-engine-optimized/" title="Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました">Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました</a></li>
+  
+    <li><a href="/rails-batch-optimization/" title="Rails/ActiveRecord バッチ処理の最適化">Rails/ActiveRecord バッチ処理の最適化</a></li>
+  
+    <li><a href="/why-we-use-ruby-on-rails/" title="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました">railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <h3>おすすめ記事</h3>
+  <ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/reviewdog-rubocop-github-actions/" title="Older Post: reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+
+
+<div id="adsense">
+  <!-- post-rectangle1 -->
+  <ins class="adsbygoogle adslot_1" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="7891449048">
+  </ins>
+  <!-- post-rectangle2 -->
+  <ins class="adsbygoogle adslot_2" style="width:336px;height:280px" data-ad-client="ca-pub-8616720383995770" data-ad-slot="4798381840">
+  </ins>
+  <!-- responsive-ad-unit -->
+  <ins class="adsbygoogle adslot_responsive" data-ad-client="ca-pub-8616720383995770" data-ad-slot="4426937197" data-ad-format="auto" data-full-width-responsive="true">
+  </ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "https://blog.toshimaru.net/how-to-deal-with-fat-model/"
+    },
+    "headline": "銀座Rails#21で「Fat Modelの倒し方」を発表しました",
+    "datePublished": "2020-06-01T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg"
+    },
+    "keywords": "presentation, rails, activerecord"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://blog.toshimaru.net/tag/presentation/",
+          "name": "presentation"
+        }
+      }
+    ]
+    }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li>
+<a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/cool-ui/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li>
+<a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-frontend/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-frontend/"></a>
+</li>
+          <li>
+<a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li>
+<a href="/engineer-hiring/">『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/engineer-hiring/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/engineer-hiring/"></a>
+</li>
+          <li>
+<a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-batch-optimization/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-batch-optimization/"></a>
+</li>
+          <li>
+<a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-http-status-symbols/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li>
+<a href="/vg-tech-assessment/">VOYAGE GROUPの『公開技術力評価会』に行ってエンジニア評価と給与設定について本気出して考えた</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/vg-tech-assessment/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/vg-tech-assessment/"></a>
+</li>
+        </ul>
+        <p><a href="https://b.hatena.ne.jp/entrylist?sort=count&amp;url=blog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+        <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-1">aws</a> <a href="/tag/bash/" class="set-1">bash</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-1">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-2">git</a> <a href="/tag/github/" class="set-2">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-2">javascript</a> <a href="/tag/jekyll/" class="set-1">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-1">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/oss/" class="set-2">oss</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-3">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/poem/" class="set-1">poem</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/review/" class="set-1">review</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-1">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E8%BB%A2%E8%81%B7/" class="set-1">転職</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-1">雑記</a>
+
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshimaru</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="/js/vendor/modernizr-3.8.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
