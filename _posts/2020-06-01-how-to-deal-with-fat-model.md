@@ -2,9 +2,10 @@
 layout: post
 title: 銀座Rails#21で「Fat Modelの倒し方」を発表しました
 image: "/images/posts/ginzarails-21/og.jpg"
-description: "銀座Rails#21で「Fat Modelの倒し方」と題して発表してきた。　肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？"
+description: "銀座Rails#21で「Fat Modelの倒し方」と題して発表してきた。　肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？ 僕はFat Modelだと考えています。 Fat Modelを倒すためのアプローチを 1. Rails Way 2. Sub-Rails Way 3. Non-Rails Way の３つに分けて整理します。"
 tags: presentation rails activerecord
 hideimage: true
+last_modified_at: 2020-06-02
 ---
 
 [銀座Rails#21](https://ginza-rails.connpass.com/event/173610/)で「Fat Modelの倒し方」と題して発表してきました。
@@ -502,11 +503,11 @@ end
 | **PoEAA** | Service Layer |
 | **DDD** | Service Class |
 | **Onion Architecture** | Application Service, Domain Service |
-| ? | 上記のどれでもない"Service"<br>上記を組み合わせた"Service" |
+| **Rails "Service"** ? | 上記のどれでもない"Service"<br>上記を組み合わせた"Service" |
 
 「どういう文脈のサービスか？」を明確にした上で議論しないとサービスクラスの定義・概念がボンヤリしてしまう印象です。なのでサービスクラスを導入する際は、サービスクラスの定義・使い方を明確にした上でチームに導入していくのが良いと思います。
 
-個人的な見解にはなりますが、＜特定のユースケースの解決＞という意味においてはInteractorのほうが（少なくともRailsにおいては）筋が良いと考えています。
+個人的な見解にはなりますが、＜特定のユースケースの解決＞という意味においてはInteractorのほうが少なくともRailsにおいては筋が良いと考えています。
 
 また、個人的に下手にサービスという巨大で強い概念を持ち込むより、POROという概念で雑にまとめたほうが好みだったりします。
 
