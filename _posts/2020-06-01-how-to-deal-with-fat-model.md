@@ -5,7 +5,7 @@ image: "/images/posts/ginzarails-21/og.jpg"
 description: "銀座Rails#21で「Fat Modelの倒し方」と題して発表してきた。　肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？ 僕はFat Modelだと考えています。 Fat Modelを倒すためのアプローチを 1. Rails Way 2. Sub-Rails Way 3. Non-Rails Way の３つに分けて整理します。"
 tags: presentation rails activerecord
 hideimage: true
-last_modified_at: 2020-06-02
+last_modified_at: 2020-06-05
 ---
 
 [銀座Rails#21](https://ginza-rails.connpass.com/event/173610/)で「Fat Modelの倒し方」と題して発表してきました。
@@ -605,6 +605,12 @@ Rails Way + Sub-Rails Way だけで立ち行かなくなった場合に、必要
 - [Concerns about Concerns - Speaker Deck](https://speakerdeck.com/willnet/concerns-about-concerns)
 - [Decorator と Presenter を使い分けて、 Rails を ViewModel ですっきりさせよう - KitchHike Tech Blog](https://tech.kitchhike.com/entry/2018/02/28/221159)
 - [ActiveRecordのモデルが1つだとつらい - Qiita](https://qiita.com/hanachin_/items/ba1dd93905567d88145c)
+
+## 後編（質問・感想編）
+
+別記事にまとめました。
+
+[銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜](/how-to-deal-with-fat-model-after)
 
 [^1]: [Buckblog: Skinny Controller, Fat Model](http://weblog.jamisbuck.org/2006/10/18/skinny-controller-fat-model)
 [^5]: PoEAA: [Single Table Inheritance](https://www.martinfowler.com/eaaCatalog/singleTableInheritance.html)
