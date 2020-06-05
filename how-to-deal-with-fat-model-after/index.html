@@ -1,0 +1,411 @@
+<!doctype html>
+<html class="no-js" lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜 - Hack Your Design!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <link rel="stylesheet" href="/css/main.css">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@toshimaru_e">
+  <meta name="twitter:title" content="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜 - Hack Your Design!">
+  <meta property="og:title" content="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜 - Hack Your Design!">
+  <meta name="description" content="本記事は『銀座Rails#21で「Fat Modelの倒し方」を発表しました』の後編になります。当日あった質問、発表してみての感想などを書きたいと思います。当日の質問： ファイルの置き場について trailblazer について">
+  <meta name="twitter:description" content="本記事は『銀座Rails#21で「Fat Modelの倒し方」を発表しました』の後編になります。当日あった質問、発表してみての感想などを書きたいと思います。当日の質問： ファイルの置き場について trailblazer について">
+  <meta property="og:description" content="本記事は『銀座Rails#21で「Fat Modelの倒し方」を発表しました』の後編になります。当日あった質問、発表してみての感想などを書きたいと思います。当日の質問： ファイルの置き場について trailblazer について">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/ginzarails-21/og2.jpg" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/ginzarails-21/og2.jpg" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-06-05T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P34X4D');</script>
+  <!-- End Google Tag Manager -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.toshimaru.net/atom.xml" title="Hack Your Design!" />
+</head>
+<body>
+  <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P34X4D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="clearfix">
+<div id="header-top">
+  <h1 id="logo"><a href="/">Hack Your Design!</a></h1>
+</div>
+<div id="toggle-menu" class="clearfix"><i class="icon-reorder"></i></div>
+<nav id="navigation">
+  <div id="toggle-item">
+  <a href="/">Blog</a>
+  <a href="/archive/">Archive</a>
+  <a href="/about/">About</a>
+  <a href="/atom.xml" class="icon rss"><i class="icon-rss-sign"></i></a>
+  <a class="icon search-area">
+    <i class="icon-search"></i>
+    <form id="search-form" action="/search/" method="get">
+      <input type="text" class="search-txt" name="q" placeholder="Search"/>
+    </form>
+  </a>
+  </div>
+</nav>
+</header>
+
+  <div class="main-wrapper">
+    <div class="main clearfix">
+      <div id="contents">
+       <div class="post">
+  <h1 class="fadeInLeft">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</h1>
+  <div class="meta">
+    <div class="clearfix">
+      <i class="icon-calendar"></i><time datetime="2020-06-05T00:00:00+09:00" pubdate>2020/06/05</time>
+      <i class="icon-tags"></i> 
+<a href="/tag/presentation/" rel="tag">presentation</a>
+
+<a href="/tag/rails/" rel="tag">rails</a>
+
+
+    </div>
+    <img class="post-image" src="/images/posts/ginzarails-21/og2.jpg" alt="(image)銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" />
+  </div>
+</div>
+
+<div id="md-content">
+  
+  <p>本記事は『<a href="/how-to-deal-with-fat-model/">銀座Rails#21で「Fat Modelの倒し方」を発表しました</a>』の後編になります。</p>
+
+<p>当日あった質問、発表してみての感想などを書きたいと思います。</p>
+
+<ul id="markdown-toc">
+  <li><a href="#当日の質問" id="markdown-toc-当日の質問">当日の質問</a>    <ul>
+      <li><a href="#ファイルの置き場について" id="markdown-toc-ファイルの置き場について">ファイルの置き場について</a></li>
+      <li><a href="#trailblazer-について" id="markdown-toc-trailblazer-について">trailblazer について</a></li>
+    </ul>
+  </li>
+  <li><a href="#初リモート登壇してみて" id="markdown-toc-初リモート登壇してみて">初リモート登壇してみて</a>    <ul>
+      <li><a href="#セットアップ" id="markdown-toc-セットアップ">セットアップ</a></li>
+      <li><a href="#感想" id="markdown-toc-感想">感想</a></li>
+    </ul>
+  </li>
+  <li><a href="#special-thanks" id="markdown-toc-special-thanks">Special Thanks</a></li>
+</ul>
+
+<h2 id="当日の質問">当日の質問</h2>
+
+<h3 id="ファイルの置き場について">ファイルの置き場について</h3>
+
+<p>質問の文脈としては「POROファイルの置き場ってどこ？」という内容でした。</p>
+
+<p>発表中でPOROは「Modelの補助輪」という表現をしましたが、役割としてはModelにあたるので置き場所も<code class="highlighter-rouge">app/models</code>配下で問題ないと考えます。</p>
+
+<p>特別な置き場を作りたくなってしまうかもしれませんが、Railsの提供するMVCのレールを逸脱しない範囲で独自路線を作っていくのが個人的には良いアプローチかなと考えています。POROをモデルの延長線上にあるものと考えれば、<code class="highlighter-rouge">app/models</code>にPOROが配置されているのは不自然ではないかと思います。</p>
+
+<p>もちろん <code class="highlighter-rouge">app/models</code> の内部でドメイン毎にnamespace（module）を持たせファイルを構造化していくのはアリだと思います。例えば下記の例です。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app/models
+├── application_record.rb
+├── domain1
+│   └── plain_object.rb
+├── domain2
+│   └── plain_object.rb
+├── domain3
+│   └── plain_object.rb
+|
+...
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">app/models</code>にフラットにファイルを置いていくと、テーブル数増加・コード肥大化とともにものすごい数になってしまいます。意味のある単位でディレクトリ（module）を切っておくのは今すぐできる手軽な構造化という意味で、早いうちに導入しておくと良いと思います。</p>
+
+<h3 id="trailblazer-について">trailblazer について</h3>
+
+<p>「<a href="https://github.com/trailblazer/trailblazer">trailblazer</a> についてどう思う？」という話がありました。今回の発表にあたりtrailblazerはノーマークだったので、当日は「ちゃんと調べて触ったわけではないので、正直わかりません」という回答をしました。</p>
+
+<p>trailblazer自体は、2015年頃に<a href="https://devchat.tv/ruby-rogues/206-rr-trailblazer-with-nick-sutterer/">Ruby Rogues Podcast</a>で聞いて知っていて、当時は「へ〜、興味深いコンセプトのフレームワークだけど、Not for meかな〜」「RailsのMVC構造とは違って小難しそうなフレームワークだな〜」などと思っていました。</p>
+
+<p>今回の発表を通して改めて trailblazer を評価してみると、<strong>Railsの巨大化にともなって発生するペインポイントを回避するためによく考えられたアーキテクチャだ</strong> と思いました。</p>
+
+<p>trailblazer は「高度に抽象化（high-level abstractions）されたRubyフレームワーク」だと謳っています。「何と比べて高度か？」というと、明らかに「Rails（MVCアーキテクチャ）と比べて高度だ」と考えることができます。具体的にはMVCアーキテクチャと比べて、大規模化しても破綻しにくいアーキテクチャになっているかと思います。</p>
+
+<p><img src="/images/posts/ginzarails-21/trailblazer.png" alt="trailblazer" /></p>
+
+<p>一方でtrailblazerアーキテクチャの中には「Railsでもgemとか使えば表現できるよね？」っていう部分もあるのは事実だと思います。trailblazerのアドバンテージとしては <strong>gem拡張なし</strong> で <strong>標準で</strong> 実現できる点と言えます。素の状態で破綻しにくいアーキテクチャが提供されています。</p>
+
+<p>Hanamiにも共通して言えることなのですが、trailblazerを採用するときのディスアドバンテージはこんな感じでしょうか。</p>
+
+<ul>
+  <li>gem拡張に乏しい
+    <ul>
+      <li>やりたいことをやれるgemが転がっているか？</li>
+    </ul>
+  </li>
+  <li>ハマったときのトラブルシュートの難しさ
+    <ul>
+      <li>ドキュメントは十分にあるか？</li>
+      <li>コミュニティは成熟しているか？</li>
+    </ul>
+  </li>
+  <li>バグを踏んだときの問題解決の難しさ
+    <ul>
+      <li>アクティブなメンテナはどれだけいるか？</li>
+      <li>バグを報告したらすぐ反応して直してくれるか？</li>
+      <li>Pull Request を upstream にカジュアルに投げることができそうか？</li>
+    </ul>
+  </li>
+</ul>
+
+<p>上述したデメリットを考えると、Hanamiないしtrailblazerがどれだけ優秀なアーキテクチャであっても採用は慎重にならざるを得ないと言えます。</p>
+
+<p>Ruby on Railsの優位性はRuby Webフレームワークの圧倒的デファクトになっていることです。gemエコシステムやコミュニティ、ドキュメント、ブログ記事がしっかり整っているのは圧倒的アドバンテージと言えるのではないでしょうか。</p>
+
+<h2 id="初リモート登壇してみて">初リモート登壇してみて</h2>
+
+<h3 id="セットアップ">セットアップ</h3>
+
+<p>今回の発表が初の<a href="https://zoom.us/">Zoom</a>によるリモート登壇でした。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">初リモート登壇セットアップ <a href="https://twitter.com/hashtag/ginzarails?src=hash&amp;ref_src=twsrc%5Etfw">#ginzarails</a> <a href="https://t.co/Ays780ImG9">pic.twitter.com/Ays780ImG9</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1261229167036653570?ref_src=twsrc%5Etfw">May 15, 2020</a></blockquote>
+
+<p>macOS + iPad の2画面を<a href="https://support.apple.com/ja-jp/HT210380">Sidecar</a>を使って実現した形となります。通常登壇だとスピーカーノートを手元のマシンに映して、プレゼン資料をプロジェクタに映して…とするところですが、リモート登壇だとプロジェクタにあたる部分が無いのでサブディスプレイは必須だなと感じました。</p>
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B07PRX2Q11&amp;linkId=496cfb91e959b3c29be79559c0666db9"></iframe>
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B07H27J698&amp;linkId=aa0e907ba05d2a0e01a21b30e73d5b86"></iframe>
+
+<p>リモート発表ということもありネットワークが一番の心配事だったのですが、Google WiFiルーター ⇔ macOS とのネットワーク優先度をMAXにして、5GHz帯を掴むようにして発表に臨むことで、特に問題は発生しませんでした。</p>
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B084ZCV6M5&amp;linkId=dd1f57286c1fe56f3d3bc5db74ef399e"></iframe>
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B01MAW2294&amp;linkId=bdc1818106278e95163b1f29f12bfdd9"></iframe>
+
+<p>また発声がキレイに通るように、ノイズキャンセリングApp・<a href="https://krisp.ai/">Krisp</a>を導入していました（<a href="https://ref.krisp.ai/u/ud778344eb">こちら</a>から登録すると一ヶ月無料で使えます）。リモート時代には必須。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">リモート戦国時代を生き抜くために Krisp を年間購読した</p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1252784955878305792?ref_src=twsrc%5Etfw">April 22, 2020</a></blockquote>
+
+<p>プレゼンツールはおなじみの<a href="https://www.deckset.com/">Deckset</a>。マークダウンでまとめられるのはGood、一方でデザインを凝ろうとするとパワポやキーノートより逆に大変なのでそのへんは課題感あります。</p>
+
+<h3 id="感想">感想</h3>
+
+<p>正直な気持ちをいうと、「発表するならジェスチャーが使えて、オーディエンスの顔・反応が見れて、緊張感を持って臨めるリアル登壇が良いかなー」って考えだったのですが、コロナが長期化しそうな状況を鑑みて今回のリモート登壇にチャレンジしてみることにしました。</p>
+
+<p>実際にやってみて良かったこととしては、お家環境で椅子に座ってノンビリ発表できるのでそこまで疲れないという点でした。あとZoomはリモート登壇にはとても便利なツール（良い背景画像が無かったので今回はバーチャル背景を使わなかったのが若干後悔）。</p>
+
+<p>逆に難しいなと思ったのはやっぱりオーディエンスの反応が見えない点。ここは運営側で<a href="http://commentscreen.com/">Comment Screen</a>環境を用意してもらえたことで、発表中のオーディエンスへの質問や反応はある程度見ることができました。またこれは登壇者側・参加者側どちらでもそうなのですが、リアル現場での懇親会のように発表後にカジュアルに話せないのはちょっと残念だなーと思う点です。</p>
+
+<p>総じてリモート登壇を初めての体験できてよかったと思います。</p>
+
+<p>あと今回いただいた30分という尺はある程度まとまった量の発表をゆっくり進行するには丁度良い尺でした。それ以上の長さになると発表者側もオーディエンス側もダレそうだなぁという印象。</p>
+
+<h2 id="special-thanks">Special Thanks</h2>
+
+<p>本発表はもともと銀座Rails#18で発表予定だったものです。改めての発表機会をいただき、銀座Rails運営の皆様ありがとうございました。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">イベントキャンセルによってお蔵入りした発表資料。普通に喋ったら20分超えの大作だっただけに残念。。。コロナが落ち着くまでは蔵出しせずに寝かせておくかな...😷 <a href="https://t.co/Qzu2YNQyve">pic.twitter.com/Qzu2YNQyve</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1229425295930716160?ref_src=twsrc%5Etfw">February 17, 2020</a></blockquote>
+
+<p>Rails Model の限界を考えるにあたり、<a href="https://twitter.com/_yasaichi">yasaichiさん</a>、<a href="https://github.com/hshimoyama">hshiroyamaさん</a>の発表を参考にさせていただきました。ありがとうございました。</p>
+
+<script async="" class="speakerdeck-embed" data-id="b5579c5fa5fa4e479ec81fda3b231eb2" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
+
+<script async="" class="speakerdeck-embed" data-id="ce30c3cf9433471283e24855f6bdd2b4" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">1年前に「Ruby on Railsの正体と向き合い方」というテーマで登壇したときに、時間の関係で言及できなかった「コードレベルの向き合い方」の詳細が綺麗に整理された上でまとまっていて、いたく感動してしまった。おすすめ / Fat Modelの倒し方 / how to deal with fat model <a href="https://t.co/0vMubQfiLb">https://t.co/0vMubQfiLb</a></p>&mdash; (やさいち|yasaichi) (@_yasaichi) <a href="https://twitter.com/_yasaichi/status/1264889633332060160?ref_src=twsrc%5Etfw">May 25, 2020</a></blockquote>
+
+</div>
+
+<ul id="social-buttons">
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/how-to-deal-with-fat-model-after/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
+  <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+</ul>
+
+
+  <div class="related">
+  <h3>関連記事</h3>
+  <ul>
+  
+    <li><a href="/how-to-deal-with-fat-model/" title="銀座Rails#21で「Fat Modelの倒し方」を発表しました">銀座Rails#21で「Fat Modelの倒し方」を発表しました</a></li>
+  
+    <li><a href="/make-rails-documents-seo-search-engine-optimized/" title="Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました">Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました</a></li>
+  
+    <li><a href="/rdm2018-active-record-anti-patterns/" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</a></li>
+  
+    <li><a href="/why-we-use-ruby-on-rails/" title="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました">railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました</a></li>
+  
+    <li><a href="/roppongirb-speeding-up-rails/" title="Roppongi.rbで「Rails高速化戦略」を発表しました">Roppongi.rbで「Rails高速化戦略」を発表しました</a></li>
+  
+  </ul>
+  </div>
+
+
+<div class="related-by-google">
+  <h3>おすすめ記事</h3>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-format="autorelaxed"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7568375448"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="post-pagination clearfix">
+  
+
+  
+  <div class="older">
+    <a href="/how-to-deal-with-fat-model/" title="Older Post: 銀座Rails#21で「Fat Modelの倒し方」を発表しました">Older  <i class="icon-chevron-right"></i></a>
+  </div>
+  
+</div>
+
+
+
+<div id="adsense">
+  <!-- post-rectangle1 -->
+  <ins class="adsbygoogle adslot_1"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="7891449048">
+  </ins>
+  <!-- post-rectangle2 -->
+  <ins class="adsbygoogle adslot_2"
+       style="width:336px;height:280px"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="4798381840">
+  </ins>
+  <!-- responsive-ad-unit -->
+  <ins class="adsbygoogle adslot_responsive"
+       data-ad-client="ca-pub-8616720383995770"
+       data-ad-slot="4426937197"
+       data-ad-format="auto"
+       data-full-width-responsive="true">
+  </ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<script id="jsonld" type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "Blog",
+      "@id": "https://blog.toshimaru.net/how-to-deal-with-fat-model-after/"
+    },
+    "headline": "銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜",
+    "datePublished": "2020-06-05T00:00:00+09:00",
+    "author": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Toshimaru",
+      "email": "me@toshimaru.net"
+    },
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://blog.toshimaru.net/images/posts/ginzarails-21/og2.jpg"
+    },
+    "keywords": "presentation, rails"
+  },
+  {
+    
+    "@context": "http://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://blog.toshimaru.net/tag/presentation/",
+          "name": "presentation"
+        }
+      }
+    ]
+    }
+]
+</script>
+
+      </div>
+    </div>
+  </div>
+  <footer>
+  <div class="main">
+    <div class="wrapper clearfix">
+      <div class="about">
+        
+          <h2>About</h2>
+          <img id="profile_pic" src="/images/profile.jpg" alt="profile picture" height="110" width="110">
+          <dl class="about-dl">
+            <dt>Toshimaru</dt>
+            <dd>Web Developer. カナダ・バンクーバーでの修行時代を経て日本帰国。最近はもっぱらRuby on Railsと奮闘する日々。ブログでは技術ネタをよく書いています。</dd>
+          </dl>
+          <ul class="externallinks">
+            <li><a href="https://twitter.com/toshimaru_e" class="icon-twitter-sign" title="twitter"></a></li>
+            <li><a href="https://github.com/toshimaru" class="icon-github-sign" title="github"></a></li>
+          </ul>
+        
+      </div>
+      <div class="center popular">
+        <h2>Popular</h2>
+        <ul>
+          <li><a href="/cool-ui/">UIの進化を止めるうんこユーザーに我々はどう立ち向かうべきか</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/cool-ui/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/cool-ui/"></a>
+</li>
+          <li><a href="/rails-frontend/">Railsフロントエンド技術の今とこれから</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-frontend/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-frontend/"></a>
+</li>
+          <li><a href="/jquery-ajaxdeferredajax/">jQueryのDeferredを用いたモダンなAjax処理の書き方</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/jquery-ajaxdeferredajax/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/jquery-ajaxdeferredajax/"></a>
+</li>
+          <li><a href="/engineer-hiring/">『その「エンジニア採用」が不幸を生む』を読んだ ~優秀エンジニアをどう採用するか~</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/engineer-hiring/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/engineer-hiring/"></a>
+</li>
+          <li><a href="/rails-batch-optimization/">Rails/ActiveRecord バッチ処理の最適化</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-batch-optimization/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-batch-optimization/"></a>
+</li>
+          <li><a href="/rails-http-status-symbols/">RailsのHTTPステータスのシンボル表現まとめ</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rails-http-status-symbols/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/rails-http-status-symbols/"></a>
+</li>
+          <li><a href="/vg-tech-assessment/">VOYAGE GROUPの『公開技術力評価会』に行ってエンジニア評価と給与設定について本気出して考えた</a><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/vg-tech-assessment/"><img src="https://b.hatena.ne.jp/entry/image/https://blog.toshimaru.net/vg-tech-assessment/"></a>
+</li>
+        </ul>
+        <p><a href="https://b.hatena.ne.jp/entrylist?sort=count&url=blog.toshimaru.net">▶ その他の人気記事はこちら</a></p>
+      </div>
+      <div class="right">
+        <h2>Tag</h2>
+        <div class="tags">
+        <a href="/tag/activerecord/" class="set-2">activerecord</a> <a href="/tag/ajax/" class="set-1">ajax</a> <a href="/tag/android/" class="set-1">android</a> <a href="/tag/apache/" class="set-1">apache</a> <a href="/tag/api/" class="set-1">api</a> <a href="/tag/aws/" class="set-1">aws</a> <a href="/tag/bash/" class="set-1">bash</a> <a href="/tag/chef/" class="set-1">chef</a> <a href="/tag/chrome/" class="set-1">chrome</a> <a href="/tag/ci/" class="set-1">ci</a> <a href="/tag/circleci/" class="set-1">circleci</a> <a href="/tag/composer/" class="set-1">composer</a> <a href="/tag/css/" class="set-1">css</a> <a href="/tag/design/" class="set-1">design</a> <a href="/tag/digitalocean/" class="set-1">digitalocean</a> <a href="/tag/docker/" class="set-1">docker</a> <a href="/tag/facebook/" class="set-1">facebook</a> <a href="/tag/frontend/" class="set-1">frontend</a> <a href="/tag/gem/" class="set-1">gem</a> <a href="/tag/git/" class="set-2">git</a> <a href="/tag/github/" class="set-1">github</a> <a href="/tag/go/" class="set-1">go</a> <a href="/tag/google-app-engine/" class="set-1">google-app-engine</a> <a href="/tag/html/" class="set-1">html</a> <a href="/tag/https/" class="set-1">https</a> <a href="/tag/hubot/" class="set-1">hubot</a> <a href="/tag/iphone/" class="set-1">iphone</a> <a href="/tag/isucon/" class="set-1">isucon</a> <a href="/tag/java/" class="set-1">java</a> <a href="/tag/javascript/" class="set-2">javascript</a> <a href="/tag/jekyll/" class="set-1">jekyll</a> <a href="/tag/jquery/" class="set-2">jquery</a> <a href="/tag/json/" class="set-1">json</a> <a href="/tag/jsonschema/" class="set-1">jsonschema</a> <a href="/tag/linux/" class="set-1">linux</a> <a href="/tag/mac/" class="set-2">mac</a> <a href="/tag/mail/" class="set-1">mail</a> <a href="/tag/management/" class="set-1">management</a> <a href="/tag/markdown/" class="set-1">markdown</a> <a href="/tag/mysql/" class="set-1">mysql</a> <a href="/tag/network/" class="set-1">network</a> <a href="/tag/npm/" class="set-1">npm</a> <a href="/tag/opsworks/" class="set-1">opsworks</a> <a href="/tag/oss/" class="set-2">oss</a> <a href="/tag/packer/" class="set-1">packer</a> <a href="/tag/perl/" class="set-1">perl</a> <a href="/tag/php/" class="set-3">php</a> <a href="/tag/pixel/" class="set-1">pixel</a> <a href="/tag/podcast/" class="set-1">podcast</a> <a href="/tag/poem/" class="set-1">poem</a> <a href="/tag/presentation/" class="set-2">presentation</a> <a href="/tag/programming/" class="set-1">programming</a> <a href="/tag/python/" class="set-1">python</a> <a href="/tag/rails/" class="set-5">rails</a> <a href="/tag/rake/" class="set-1">rake</a> <a href="/tag/review/" class="set-1">review</a> <a href="/tag/rfc/" class="set-1">rfc</a> <a href="/tag/roppongirb/" class="set-1">roppongirb</a> <a href="/tag/rspec/" class="set-1">rspec</a> <a href="/tag/rubocop/" class="set-1">rubocop</a> <a href="/tag/ruby/" class="set-4">ruby</a> <a href="/tag/s3/" class="set-1">s3</a> <a href="/tag/scala/" class="set-1">scala</a> <a href="/tag/scrum/" class="set-1">scrum</a> <a href="/tag/security/" class="set-1">security</a> <a href="/tag/seo/" class="set-1">seo</a> <a href="/tag/shell/" class="set-1">shell</a> <a href="/tag/sublimetext/" class="set-1">sublimetext</a> <a href="/tag/svn/" class="set-1">svn</a> <a href="/tag/tech/" class="set-3">tech</a> <a href="/tag/terraform/" class="set-1">terraform</a> <a href="/tag/vagrant/" class="set-1">vagrant</a> <a href="/tag/vancouver/" class="set-1">vancouver</a> <a href="/tag/video/" class="set-1">video</a> <a href="/tag/vim/" class="set-1">vim</a> <a href="/tag/vscode/" class="set-1">vscode</a> <a href="/tag/web/" class="set-1">web</a> <a href="/tag/windows/" class="set-1">windows</a> <a href="/tag/zsh/" class="set-1">zsh</a> <a href="/tag/%E5%B0%B1%E6%B4%BB/" class="set-2">就活</a> <a href="/tag/%E6%8E%A1%E7%94%A8/" class="set-1">採用</a> <a href="/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/" class="set-1">海外就労</a> <a href="/tag/%E7%BF%BB%E8%A8%B3/" class="set-1">翻訳</a> <a href="/tag/%E8%AA%AD%E6%9B%B8/" class="set-1">読書</a> <a href="/tag/%E8%BB%A2%E8%81%B7/" class="set-1">転職</a> <a href="/tag/%E9%9B%91%E8%A8%98/" class="set-1">雑記</a>
+
+        </div>
+      </div>
+    </div>
+    <p class="credit">Designed and coded by <a href="/about.html">Toshimaru</a>. Powered by <a href="http://jekyllrb.com/">Jekyll</a>, Hosted by <a href="https://github.com/toshimaru/blog.toshimaru.net">Github</a>.</p>
+  </div>
+</footer>
+
+
+  <script src="/js/vendor/modernizr-3.8.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

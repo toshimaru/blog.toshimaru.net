@@ -1,4 +1,139 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-02T09:16:22+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表しました</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表しました" /><published>2020-06-01T00:00:00+09:00</published><updated>2020-06-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model/">&lt;p&gt;&lt;a href=&quot;https://ginza-rails.connpass.com/event/173610/&quot;&gt;銀座Rails#21&lt;/a&gt;で「Fat Modelの倒し方」と題して発表してきました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-05T10:31:05+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
+
+&lt;p&gt;当日あった質問、発表してみての感想などを書きたいと思います。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#当日の質問&quot; id=&quot;markdown-toc-当日の質問&quot;&gt;当日の質問&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#ファイルの置き場について&quot; id=&quot;markdown-toc-ファイルの置き場について&quot;&gt;ファイルの置き場について&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#trailblazer-について&quot; id=&quot;markdown-toc-trailblazer-について&quot;&gt;trailblazer について&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#初リモート登壇してみて&quot; id=&quot;markdown-toc-初リモート登壇してみて&quot;&gt;初リモート登壇してみて&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#セットアップ&quot; id=&quot;markdown-toc-セットアップ&quot;&gt;セットアップ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#感想&quot; id=&quot;markdown-toc-感想&quot;&gt;感想&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#special-thanks&quot; id=&quot;markdown-toc-special-thanks&quot;&gt;Special Thanks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;当日の質問&quot;&gt;当日の質問&lt;/h2&gt;
+
+&lt;h3 id=&quot;ファイルの置き場について&quot;&gt;ファイルの置き場について&lt;/h3&gt;
+
+&lt;p&gt;質問の文脈としては「POROファイルの置き場ってどこ？」という内容でした。&lt;/p&gt;
+
+&lt;p&gt;発表中でPOROは「Modelの補助輪」という表現をしましたが、役割としてはModelにあたるので置き場所も&lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt;配下で問題ないと考えます。&lt;/p&gt;
+
+&lt;p&gt;特別な置き場を作りたくなってしまうかもしれませんが、Railsの提供するMVCのレールを逸脱しない範囲で独自路線を作っていくのが個人的には良いアプローチかなと考えています。POROをモデルの延長線上にあるものと考えれば、&lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にPOROが配置されているのは不自然ではないかと思います。&lt;/p&gt;
+
+&lt;p&gt;もちろん &lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt; の内部でドメイン毎にnamespace（module）を持たせファイルを構造化していくのはアリだと思います。例えば下記の例です。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;app/models
+├── application_record.rb
+├── domain1
+│   └── plain_object.rb
+├── domain2
+│   └── plain_object.rb
+├── domain3
+│   └── plain_object.rb
+|
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にフラットにファイルを置いていくと、テーブル数増加・コード肥大化とともにものすごい数になってしまいます。意味のある単位でディレクトリ（module）を切っておくのは今すぐできる手軽な構造化という意味で、早いうちに導入しておくと良いと思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;trailblazer-について&quot;&gt;trailblazer について&lt;/h3&gt;
+
+&lt;p&gt;「&lt;a href=&quot;https://github.com/trailblazer/trailblazer&quot;&gt;trailblazer&lt;/a&gt; についてどう思う？」という話がありました。今回の発表にあたりtrailblazerはノーマークだったので、当日は「ちゃんと調べて触ったわけではないので、正直わかりません」という回答をしました。&lt;/p&gt;
+
+&lt;p&gt;trailblazer自体は、2015年頃に&lt;a href=&quot;https://devchat.tv/ruby-rogues/206-rr-trailblazer-with-nick-sutterer/&quot;&gt;Ruby Rogues Podcast&lt;/a&gt;で聞いて知っていて、当時は「へ〜、興味深いコンセプトのフレームワークだけど、Not for meかな〜」「RailsのMVC構造とは違って小難しそうなフレームワークだな〜」などと思っていました。&lt;/p&gt;
+
+&lt;p&gt;今回の発表を通して改めて trailblazer を評価してみると、&lt;strong&gt;Railsの巨大化にともなって発生するペインポイントを回避するためによく考えられたアーキテクチャだ&lt;/strong&gt; と思いました。&lt;/p&gt;
+
+&lt;p&gt;trailblazer は「高度に抽象化（high-level abstractions）されたRubyフレームワーク」だと謳っています。「何と比べて高度か？」というと、明らかに「Rails（MVCアーキテクチャ）と比べて高度だ」と考えることができます。具体的にはMVCアーキテクチャと比べて、大規模化しても破綻しにくいアーキテクチャになっているかと思います。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/trailblazer.png&quot; alt=&quot;trailblazer&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;一方でtrailblazerアーキテクチャの中には「Railsでもgemとか使えば表現できるよね？」っていう部分もあるのは事実だと思います。trailblazerのアドバンテージとしては &lt;strong&gt;gem拡張なし&lt;/strong&gt; で &lt;strong&gt;標準で&lt;/strong&gt; 実現できる点と言えます。素の状態で破綻しにくいアーキテクチャが提供されています。&lt;/p&gt;
+
+&lt;p&gt;Hanamiにも共通して言えることなのですが、trailblazerを採用するときのディスアドバンテージはこんな感じでしょうか。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;gem拡張に乏しい
+    &lt;ul&gt;
+      &lt;li&gt;やりたいことをやれるgemが転がっているか？&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;ハマったときのトラブルシュートの難しさ
+    &lt;ul&gt;
+      &lt;li&gt;ドキュメントは十分にあるか？&lt;/li&gt;
+      &lt;li&gt;コミュニティは成熟しているか？&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;バグを踏んだときの問題解決の難しさ
+    &lt;ul&gt;
+      &lt;li&gt;アクティブなメンテナはどれだけいるか？&lt;/li&gt;
+      &lt;li&gt;バグを報告したらすぐ反応して直してくれるか？&lt;/li&gt;
+      &lt;li&gt;Pull Request を upstream にカジュアルに投げることができそうか？&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上述したデメリットを考えると、Hanamiないしtrailblazerがどれだけ優秀なアーキテクチャであっても採用は慎重にならざるを得ないと言えます。&lt;/p&gt;
+
+&lt;p&gt;Ruby on Railsの優位性はRuby Webフレームワークの圧倒的デファクトになっていることです。gemエコシステムやコミュニティ、ドキュメント、ブログ記事がしっかり整っているのは圧倒的アドバンテージと言えるのではないでしょうか。&lt;/p&gt;
+
+&lt;h2 id=&quot;初リモート登壇してみて&quot;&gt;初リモート登壇してみて&lt;/h2&gt;
+
+&lt;h3 id=&quot;セットアップ&quot;&gt;セットアップ&lt;/h3&gt;
+
+&lt;p&gt;今回の発表が初の&lt;a href=&quot;https://zoom.us/&quot;&gt;Zoom&lt;/a&gt;によるリモート登壇でした。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;初リモート登壇セットアップ &lt;a href=&quot;https://twitter.com/hashtag/ginzarails?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#ginzarails&lt;/a&gt; &lt;a href=&quot;https://t.co/Ays780ImG9&quot;&gt;pic.twitter.com/Ays780ImG9&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1261229167036653570?ref_src=twsrc%5Etfw&quot;&gt;May 15, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;macOS + iPad の2画面を&lt;a href=&quot;https://support.apple.com/ja-jp/HT210380&quot;&gt;Sidecar&lt;/a&gt;を使って実現した形となります。通常登壇だとスピーカーノートを手元のマシンに映して、プレゼン資料をプロジェクタに映して…とするところですが、リモート登壇だとプロジェクタにあたる部分が無いのでサブディスプレイは必須だなと感じました。&lt;/p&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B07PRX2Q11&amp;amp;linkId=496cfb91e959b3c29be79559c0666db9&quot;&gt;&lt;/iframe&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B07H27J698&amp;amp;linkId=aa0e907ba05d2a0e01a21b30e73d5b86&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;リモート発表ということもありネットワークが一番の心配事だったのですが、Google WiFiルーター ⇔ macOS とのネットワーク優先度をMAXにして、5GHz帯を掴むようにして発表に臨むことで、特に問題は発生しませんでした。&lt;/p&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B084ZCV6M5&amp;amp;linkId=dd1f57286c1fe56f3d3bc5db74ef399e&quot;&gt;&lt;/iframe&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B01MAW2294&amp;amp;linkId=bdc1818106278e95163b1f29f12bfdd9&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;また発声がキレイに通るように、ノイズキャンセリングApp・&lt;a href=&quot;https://krisp.ai/&quot;&gt;Krisp&lt;/a&gt;を導入していました（&lt;a href=&quot;https://ref.krisp.ai/u/ud778344eb&quot;&gt;こちら&lt;/a&gt;から登録すると一ヶ月無料で使えます）。リモート時代には必須。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;リモート戦国時代を生き抜くために Krisp を年間購読した&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1252784955878305792?ref_src=twsrc%5Etfw&quot;&gt;April 22, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;プレゼンツールはおなじみの&lt;a href=&quot;https://www.deckset.com/&quot;&gt;Deckset&lt;/a&gt;。マークダウンでまとめられるのはGood、一方でデザインを凝ろうとするとパワポやキーノートより逆に大変なのでそのへんは課題感あります。&lt;/p&gt;
+
+&lt;h3 id=&quot;感想&quot;&gt;感想&lt;/h3&gt;
+
+&lt;p&gt;正直な気持ちをいうと、「発表するならジェスチャーが使えて、オーディエンスの顔・反応が見れて、緊張感を持って臨めるリアル登壇が良いかなー」って考えだったのですが、コロナが長期化しそうな状況を鑑みて今回のリモート登壇にチャレンジしてみることにしました。&lt;/p&gt;
+
+&lt;p&gt;実際にやってみて良かったこととしては、お家環境で椅子に座ってノンビリ発表できるのでそこまで疲れないという点でした。あとZoomはリモート登壇にはとても便利なツール（良い背景画像が無かったので今回はバーチャル背景を使わなかったのが若干後悔）。&lt;/p&gt;
+
+&lt;p&gt;逆に難しいなと思ったのはやっぱりオーディエンスの反応が見えない点。ここは運営側で&lt;a href=&quot;http://commentscreen.com/&quot;&gt;Comment Screen&lt;/a&gt;環境を用意してもらえたことで、発表中のオーディエンスへの質問や反応はある程度見ることができました。またこれは登壇者側・参加者側どちらでもそうなのですが、リアル現場での懇親会のように発表後にカジュアルに話せないのはちょっと残念だなーと思う点です。&lt;/p&gt;
+
+&lt;p&gt;総じてリモート登壇を初めての体験できてよかったと思います。&lt;/p&gt;
+
+&lt;p&gt;あと今回いただいた30分という尺はある程度まとまった量の発表をゆっくり進行するには丁度良い尺でした。それ以上の長さになると発表者側もオーディエンス側もダレそうだなぁという印象。&lt;/p&gt;
+
+&lt;h2 id=&quot;special-thanks&quot;&gt;Special Thanks&lt;/h2&gt;
+
+&lt;p&gt;本発表はもともと銀座Rails#18で発表予定だったものです。改めての発表機会をいただき、銀座Rails運営の皆様ありがとうございました。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;イベントキャンセルによってお蔵入りした発表資料。普通に喋ったら20分超えの大作だっただけに残念。。。コロナが落ち着くまでは蔵出しせずに寝かせておくかな...😷 &lt;a href=&quot;https://t.co/Qzu2YNQyve&quot;&gt;pic.twitter.com/Qzu2YNQyve&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1229425295930716160?ref_src=twsrc%5Etfw&quot;&gt;February 17, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;Rails Model の限界を考えるにあたり、&lt;a href=&quot;https://twitter.com/_yasaichi&quot;&gt;yasaichiさん&lt;/a&gt;、&lt;a href=&quot;https://github.com/hshimoyama&quot;&gt;hshiroyamaさん&lt;/a&gt;の発表を参考にさせていただきました。ありがとうございました。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;b5579c5fa5fa4e479ec81fda3b231eb2&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;ce30c3cf9433471283e24855f6bdd2b4&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;1年前に「Ruby on Railsの正体と向き合い方」というテーマで登壇したときに、時間の関係で言及できなかった「コードレベルの向き合い方」の詳細が綺麗に整理された上でまとまっていて、いたく感動してしまった。おすすめ / Fat Modelの倒し方 / how to deal with fat model &lt;a href=&quot;https://t.co/0vMubQfiLb&quot;&gt;https://t.co/0vMubQfiLb&lt;/a&gt;&lt;/p&gt;&amp;mdash; (やさいち|yasaichi) (@_yasaichi) &lt;a href=&quot;https://twitter.com/_yasaichi/status/1264889633332060160?ref_src=twsrc%5Etfw&quot;&gt;May 25, 2020&lt;/a&gt;&lt;/blockquote&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rails" /><summary type="html">本記事は『銀座Rails#21で「Fat Modelの倒し方」を発表しました』の後編になります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og2.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og2.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表しました</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表しました" /><published>2020-06-01T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model/">&lt;p&gt;&lt;a href=&quot;https://ginza-rails.connpass.com/event/173610/&quot;&gt;銀座Rails#21&lt;/a&gt;で「Fat Modelの倒し方」と題して発表してきました。&lt;/p&gt;
 
 &lt;h2 id=&quot;発表スライド&quot;&gt;発表スライド&lt;/h2&gt;
 
@@ -44,6 +179,7 @@
   &lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#全体のまとめ&quot; id=&quot;markdown-toc-全体のまとめ&quot;&gt;全体のまとめ&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#参考資料&quot; id=&quot;markdown-toc-参考資料&quot;&gt;参考資料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#後編質問感想編&quot; id=&quot;markdown-toc-後編質問感想編&quot;&gt;後編（質問・感想編）&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;fat-rails-stage&quot;&gt;Fat Rails Stage&lt;/h2&gt;
@@ -796,6 +932,12 @@
   &lt;li&gt;&lt;a href=&quot;https://tech.kitchhike.com/entry/2018/02/28/221159&quot;&gt;Decorator と Presenter を使い分けて、 Rails を ViewModel ですっきりさせよう - KitchHike Tech Blog&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://qiita.com/hanachin_/items/ba1dd93905567d88145c&quot;&gt;ActiveRecordのモデルが1つだとつらい - Qiita&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;h2 id=&quot;後編質問感想編&quot;&gt;後編（質問・感想編）&lt;/h2&gt;
+
+&lt;p&gt;別記事にまとめました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/how-to-deal-with-fat-model-after&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜&lt;/a&gt;&lt;/p&gt;
 
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
@@ -2489,180 +2631,4 @@ exit status 1
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-belongs_to&quot;&gt;ActiveRecord::Associations::ClassMethods - belongs_to | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many&quot;&gt;ActiveRecord::Associations::ClassMethods - has_many | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="activerecord" /><category term="rails" /><summary type="html">テーブル構成</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">標準出力、標準エラー出力のリダイレクト方法まとめ</title><link href="https://blog.toshimaru.net/bash-stdout-and-stderr/" rel="alternate" type="text/html" title="標準出力、標準エラー出力のリダイレクト方法まとめ" /><published>2019-11-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/bash-stdout-and-stderr</id><content type="html" xml:base="https://blog.toshimaru.net/bash-stdout-and-stderr/">&lt;p&gt;標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。&lt;/p&gt;
-
-&lt;h2 id=&quot;標準入力-標準出力-標準エラー出力とは&quot;&gt;標準入力, 標準出力, 標準エラー出力とは？&lt;/h2&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;種類&lt;/th&gt;
-      &lt;th&gt;説明&lt;/th&gt;
-      &lt;th&gt;ファイルディスクリプタ&lt;/th&gt;
-      &lt;th&gt;省略形&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;標準入力&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;デフォルトの入力データストリーム。&lt;br /&gt;例えばコマンドのパイプラインなど。ターミナル上ではユーザーのキーボード入力のこと。&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;標準出力&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;デフォルトの出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;標準エラー出力&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;デフォルトのエラーに関連する出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
-      &lt;td&gt;2&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stderr&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;（出典: &lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor? - Stdin, stdout, and stderr&lt;/a&gt; より翻訳）&lt;/p&gt;
-
-&lt;p&gt;それぞれのファイルディスクリプタは下記のように &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/stderr&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/stdin&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/stdout&lt;/code&gt; からも確認することができます&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; /dev/std&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;,out,err&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stderr -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/2
-&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdin -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/0
-&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdout -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;標準出力-標準エラー出力するシェルスクリプト&quot;&gt;標準出力, 標準エラー出力するシェルスクリプト&lt;/h2&gt;
-
-&lt;p&gt;今回使用するベースとなるシェルスクリプトは下記になります。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.sh
-&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;/bin/sh
-&lt;span class=&quot;go&quot;&gt;echo &quot;stdout&quot;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;echo &quot;stderr&quot; &amp;gt;&lt;/span&gt;&amp;amp;2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;stdout という文字列を標準出力&lt;/li&gt;
-  &lt;li&gt;stderr という文字列を標準エラー出力&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;このようなコードとなっております。&lt;/p&gt;
-
-&lt;h3 id=&quot;rubyバージョン&quot;&gt;Rubyバージョン&lt;/h3&gt;
-
-&lt;p&gt;ちなみに今回のシェルスクリプトをRubyで表現すると下記のようになります。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env ruby&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stdout&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;warn&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stderr&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;リダイレクト無し実行時&quot;&gt;リダイレクト無し実行時&lt;/h2&gt;
-
-&lt;p&gt;まずは何もリダイレクトの設定をしないで実行してみます。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh
-&lt;span class=&quot;go&quot;&gt;stdout
-stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;標準出力、エラー出力ともに画面に表示される&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;標準出力リダイレクト有り実行時&quot;&gt;標準出力リダイレクト有り実行時&lt;/h2&gt;
-
-&lt;p&gt;次はリダイレクトを設定して実行してみましょう。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
-&lt;span class=&quot;go&quot;&gt;stderr
-
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
-&lt;span class=&quot;go&quot;&gt;stdout
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stdout が出力されなくなった&lt;/li&gt;
-  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に stdout が出力されている&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;また上コマンドでは省略されていますが、リダイレクトのデフォルトは標準出力のファイルディスクリプタ「1」なので、&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; の部分は &lt;code class=&quot;highlighter-rouge&quot;&gt;1&amp;gt;&lt;/code&gt; と書くこともできます。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
-&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;エラー出力リダイレクト有り実行時&quot;&gt;エラー出力リダイレクト有り実行時&lt;/h2&gt;
-
-&lt;p&gt;次はエラー出力だけリダイレクトするようにしてみましょう。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 2&amp;gt; stderr.txt
-&lt;span class=&quot;go&quot;&gt;stdout
-
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
-&lt;span class=&quot;go&quot;&gt;stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stderr が出力されなくなった&lt;/li&gt;
-  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に stderr が出力されている&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;エラー出力を標準出力としてリダイレクト実行時&quot;&gt;エラー出力を標準出力としてリダイレクト実行時&lt;/h2&gt;
-
-&lt;p&gt;続いてエラー出力を標準出力としてまとめて出力するようにリダイレクトしてみます。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
-&lt;span class=&quot;go&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.txt
-&lt;span class=&quot;go&quot;&gt;stdout
-stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;リダイレクト実行時の画面表示は何もされない&lt;/li&gt;
-  &lt;li&gt;リダイレクト先のファイル &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout-stderr.txt&lt;/code&gt; には stdout と stderr ともに出力されている&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
-&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp; stdout-stderr.txt
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;標準出力エラー出力を別々にリダイレクト実行時&quot;&gt;標準出力＆エラー出力を別々にリダイレクト実行時&lt;/h2&gt;
-
-&lt;p&gt;標準出力と標準エラー出力をそれぞれ別にリダイレクトするようにしてみます。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt 2&amp;gt; stderr.txt
-&lt;span class=&quot;go&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
-&lt;span class=&quot;go&quot;&gt;stdout
-
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
-&lt;span class=&quot;go&quot;&gt;stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;標準出力である stdout は &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に出力される&lt;/li&gt;
-  &lt;li&gt;標準エラー出力である stderr は &lt;code class=&quot;highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に出力される&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;出力をリダイレクトで捨てる&quot;&gt;出力をリダイレクトで捨てる&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/dev/null&lt;/code&gt;にリダイレクトすれば出力内容を捨てることができます。&lt;/p&gt;
-
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; /dev/null
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://qiita.com/laikuaut/items/e1cc312ffc7ec2c872fc&quot;&gt;bash: 標準出力、標準エラー出力をファイル、画面それぞれに出力する方法 - Qiita&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor?&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="shell" /><category term="bash" /><summary type="html">標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/stdout.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/stdout.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="activerecord" /><category term="rails" /><summary type="html">テーブル構成</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
