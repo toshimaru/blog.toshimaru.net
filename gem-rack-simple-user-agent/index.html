@@ -107,7 +107,7 @@
 
 <h3 id="無条件にbot判定されたくない">無条件にbot判定されたくない</h3>
 
-<p>また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば<a href="https://www.google.com/webmasters/tools/mobile-friendly/">Mobile-Friendly Test</a>でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが<code class="highlighter-rouge">crawler</code>と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。</p>
+<p>また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば<a href="https://www.google.com/webmasters/tools/mobile-friendly/">Mobile-Friendly Test</a>でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが<code class="language-plaintext highlighter-rouge">crawler</code>と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Woothee</span><span class="p">.</span><span class="nf">parse</span> <span class="s2">"​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"</span>
 <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span><span class="o">=&gt;</span><span class="s2">"Googlebot"</span><span class="p">,</span> <span class="ss">:category</span><span class="o">=&gt;</span><span class="ss">:crawler</span><span class="p">,</span> <span class="ss">:os</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:os_version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:vendor</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">}</span>
@@ -120,22 +120,22 @@
 <h2 id="rack-simple_user_agentで可能な判定">rack-simple_user_agentで可能な判定</h2>
 
 <ul>
-  <li><code class="highlighter-rouge">request.from_smartphone?</code>
+  <li><code class="language-plaintext highlighter-rouge">request.from_smartphone?</code>
     <ul>
       <li>iPhone, Android, Windows Phone の判定</li>
     </ul>
   </li>
-  <li><code class="highlighter-rouge">request.from_tablet?</code>
+  <li><code class="language-plaintext highlighter-rouge">request.from_tablet?</code>
     <ul>
       <li>iPad, Android Tablet の判定</li>
     </ul>
   </li>
-  <li><code class="highlighter-rouge">request.from_smartdevice?</code>
+  <li><code class="language-plaintext highlighter-rouge">request.from_smartdevice?</code>
     <ul>
       <li>上記のsmartphone, tabletを含む判定</li>
     </ul>
   </li>
-  <li><code class="highlighter-rouge">from_googlebot?</code>
+  <li><code class="language-plaintext highlighter-rouge">from_googlebot?</code>
     <ul>
       <li>googlebot かどうかの判定</li>
     </ul>

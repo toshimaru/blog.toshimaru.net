@@ -81,7 +81,7 @@
 
 <div id="md-content">
   
-  <p>Railsでは<code class="highlighter-rouge">db:migrate</code>すると、デフォルトで<code class="highlighter-rouge">db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code class="highlighter-rouge">config/application.rb</code>内で<code class="highlighter-rouge">active_record.schema_format</code>を<code class="highlighter-rouge">:sql</code>と設定することで可能になります（デフォルト値は<code class="highlighter-rouge">:ruby</code>）。</p>
+  <p>Railsでは<code class="language-plaintext highlighter-rouge">db:migrate</code>すると、デフォルトで<code class="language-plaintext highlighter-rouge">db/schema.rb</code>を生成しますが、SQLでスキーマ情報を管理することも可能です。下記のように<code class="language-plaintext highlighter-rouge">config/application.rb</code>内で<code class="language-plaintext highlighter-rouge">active_record.schema_format</code>を<code class="language-plaintext highlighter-rouge">:sql</code>と設定することで可能になります（デフォルト値は<code class="language-plaintext highlighter-rouge">:ruby</code>）。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/application.rb</span>
 <span class="k">module</span> <span class="nn">RailsApp</span>
@@ -91,18 +91,18 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>これで<code class="highlighter-rouge">db/migrate</code>するとデフォルトの<code class="highlighter-rouge">schema.rb</code>ではなく、<code class="highlighter-rouge">db/structure.sql</code>というSQLファイルを吐きます。</p>
+<p>これで<code class="language-plaintext highlighter-rouge">db/migrate</code>するとデフォルトの<code class="language-plaintext highlighter-rouge">schema.rb</code>ではなく、<code class="language-plaintext highlighter-rouge">db/structure.sql</code>というSQLファイルを吐きます。</p>
 
 <h2 id="structuresqlをロードする">structure.sqlをロードする</h2>
 
-<p>生成された<code class="highlighter-rouge">structure.sql</code>ファイルは、下記のコマンドでデータベースへロードできます。</p>
+<p>生成された<code class="language-plaintext highlighter-rouge">structure.sql</code>ファイルは、下記のコマンドでデータベースへロードできます。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>rails db:structure:load
 </code></pre></div></div>
 
 <h2 id="sqlファイルだけ欲しい場合">SQLファイルだけ欲しい場合</h2>
 
-<p>SQLダンプファイルのみが欲しい場合は、<code class="highlighter-rouge">config.active_record.schema_format</code>の設定を変えずとも下記コマンドで<code class="highlighter-rouge">structure.sql</code>のみを生成することができます。</p>
+<p>SQLダンプファイルのみが欲しい場合は、<code class="language-plaintext highlighter-rouge">config.active_record.schema_format</code>の設定を変えずとも下記コマンドで<code class="language-plaintext highlighter-rouge">structure.sql</code>のみを生成することができます。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>rails db:structure:dump
 </code></pre></div></div>

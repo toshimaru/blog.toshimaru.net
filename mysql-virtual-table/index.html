@@ -118,15 +118,15 @@
 <p>ポイントとしては下記の通り。</p>
 
 <ul>
-  <li>全体の構成としては、2つの<code class="highlighter-rouge">SELECT</code>文を<code class="highlighter-rouge">UNION</code>を使って結合しているというもの</li>
+  <li>全体の構成としては、2つの<code class="language-plaintext highlighter-rouge">SELECT</code>文を<code class="language-plaintext highlighter-rouge">UNION</code>を使って結合しているというもの</li>
   <li>
-<code class="highlighter-rouge">@seq_no</code>という変数を用意</li>
-  <li>１つ目の<code class="highlighter-rouge">SELECT</code>文で変数を初期化する</li>
-  <li>２つ目の<code class="highlighter-rouge">SELECT</code>文で初期化した変数のインクリメントの処理を行う
+<code class="language-plaintext highlighter-rouge">@seq_no</code>という変数を用意</li>
+  <li>１つ目の<code class="language-plaintext highlighter-rouge">SELECT</code>文で変数を初期化する</li>
+  <li>２つ目の<code class="language-plaintext highlighter-rouge">SELECT</code>文で初期化した変数のインクリメントの処理を行う
     <ul>
-      <li>その際にデータ件数を確保するために、MySQLで最初に用意されている<code class="highlighter-rouge">information_schema.COLUMNS</code>を参照する（中身のデータは実際には使わない）</li>
+      <li>その際にデータ件数を確保するために、MySQLで最初に用意されている<code class="language-plaintext highlighter-rouge">information_schema.COLUMNS</code>を参照する（中身のデータは実際には使わない）</li>
       <li>
-<code class="highlighter-rouge">LIMIT</code>で取得したいデータ件数を指定する</li>
+<code class="language-plaintext highlighter-rouge">LIMIT</code>で取得したいデータ件数を指定する</li>
     </ul>
   </li>
 </ul>
@@ -233,7 +233,7 @@
 
 <ul>
   <li>
-<code class="highlighter-rouge">information_schema.COLUMNS</code> を使うと<code class="highlighter-rouge">seq_no</code>値が大きくなりすぎてしまい<code class="highlighter-rouge">DOUBLE value is out of range</code>というエラーが発生するので<code class="highlighter-rouge">information_schema.COLLATIONS</code>を使用</li>
+<code class="language-plaintext highlighter-rouge">information_schema.COLUMNS</code> を使うと<code class="language-plaintext highlighter-rouge">seq_no</code>値が大きくなりすぎてしまい<code class="language-plaintext highlighter-rouge">DOUBLE value is out of range</code>というエラーが発生するので<code class="language-plaintext highlighter-rouge">information_schema.COLLATIONS</code>を使用</li>
 </ul>
 
 <p><strong>結果</strong></p>
@@ -321,10 +321,10 @@
 </table>
 
 <ul>
-  <li>執筆時点の今日の日付は<code class="highlighter-rouge">2018-09-25</code>
+  <li>執筆時点の今日の日付は<code class="language-plaintext highlighter-rouge">2018-09-25</code>
 </li>
   <li>
-<code class="highlighter-rouge">CURDATE()</code>から<code class="highlighter-rouge">seq_no</code>日分を引き算して日付を出力</li>
+<code class="language-plaintext highlighter-rouge">CURDATE()</code>から<code class="language-plaintext highlighter-rouge">seq_no</code>日分を引き算して日付を出力</li>
 </ul>
 
 <h2 id="注意点">
@@ -332,7 +332,7 @@
 
 <ul>
   <li>
-<code class="highlighter-rouge">information_schema.COLUMNS</code>を使った場合、<code class="highlighter-rouge">LIMIT</code>で指定できる値は<code class="highlighter-rouge">information_schema.COLUMNS</code>のMAX値までという成約がある</li>
+<code class="language-plaintext highlighter-rouge">information_schema.COLUMNS</code>を使った場合、<code class="language-plaintext highlighter-rouge">LIMIT</code>で指定できる値は<code class="language-plaintext highlighter-rouge">information_schema.COLUMNS</code>のMAX値までという成約がある</li>
   <li>MySQL7から導入された<a href="https://dev.mysql.com/doc/refman/8.0/en/with.html">WITH syntax</a>でCTEすればもっとシンプルにクエリが書けそう</li>
 </ul>
 

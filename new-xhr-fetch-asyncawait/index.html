@@ -155,7 +155,7 @@
 <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">var</code>は<code class="highlighter-rouge">const</code>に、<code class="highlighter-rouge">function</code>は<code class="highlighter-rouge">=&gt;</code>へと変更しています。わかりやすくなってスッキリしましたね。</p>
+<p><code class="language-plaintext highlighter-rouge">var</code>は<code class="language-plaintext highlighter-rouge">const</code>に、<code class="language-plaintext highlighter-rouge">function</code>は<code class="language-plaintext highlighter-rouge">=&gt;</code>へと変更しています。わかりやすくなってスッキリしましたね。</p>
 
 <p>この書き方でも動くかChrome Dev Toolのコンソールで動かしてみましょう。</p>
 
@@ -166,7 +166,7 @@
 <h2 id="2-fetch-api">
 <a class="anchor" href="#2-fetch-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. fetch API</h2>
 
-<p>次は<code class="highlighter-rouge">fetch</code> APIを使ってXHRしてみましょう。ちなみにfetch APIはChrome Version 42よりサポートされています。</p>
+<p>次は<code class="language-plaintext highlighter-rouge">fetch</code> APIを使ってXHRしてみましょう。ちなみにfetch APIはChrome Version 42よりサポートされています。</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
@@ -175,20 +175,20 @@
 <span class="p">});</span>
 </code></pre></div></div>
 
-<p>コードとしてはurlを<code class="highlighter-rouge">fetch</code>して<code class="highlighter-rouge">then</code>, <code class="highlighter-rouge">catch</code>をチェインさせてそれぞれの処理内容を書いていくというものになります。</p>
+<p>コードとしてはurlを<code class="language-plaintext highlighter-rouge">fetch</code>して<code class="language-plaintext highlighter-rouge">then</code>, <code class="language-plaintext highlighter-rouge">catch</code>をチェインさせてそれぞれの処理内容を書いていくというものになります。</p>
 
 <p>Chrome Dev Toolコンソールで動かした結果。</p>
 
 <p><img src="/images/posts/xhr/3.png" alt="xhr3"></p>
 
-<p><code class="highlighter-rouge">fetch</code>は<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>を返す点がポイントですね。</p>
+<p><code class="language-plaintext highlighter-rouge">fetch</code>は<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>を返す点がポイントですね。</p>
 
 <h2 id="3-fetch--asyncawait">
 <a class="anchor" href="#3-fetch--asyncawait" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. fetch + async/await</h2>
 
 <p>最後のXHRは<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/async_function">async/await</a>になります。Chrome55からのサポートなので最近追加された機能ということになります。</p>
 
-<p>さきほどの<code class="highlighter-rouge">fetch</code>のコードをasync/awaitの機能を使って書き換えてみましょう。</p>
+<p>さきほどの<code class="language-plaintext highlighter-rouge">fetch</code>のコードをasync/awaitの機能を使って書き換えてみましょう。</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">async</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="k">try</span> <span class="p">{</span>
@@ -200,7 +200,7 @@
 <span class="p">})();</span>
 </code></pre></div></div>
 
-<p>ポイントとしては <code class="highlighter-rouge">async</code>を使ってまず無名関数を作ります。これでその関数内に<code class="highlighter-rouge">await</code>を使う準備ができました。<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await">await</a>はPromiseが返されるのを待機するので、先程のPromiseを返す<code class="highlighter-rouge">fetch</code>関数の手前に<code class="highlighter-rouge">await</code>を宣言します。これで<code class="highlighter-rouge">fetch</code>関数は<code class="highlighter-rouge">then</code>でコールバックをチェインする必要がなくなり、<code class="highlighter-rouge">response</code>変数にダイレクトに結果が代入されます。エラー処理に関してはtryで処理内容を囲み、catchでエラーを補足します。</p>
+<p>ポイントとしては <code class="language-plaintext highlighter-rouge">async</code>を使ってまず無名関数を作ります。これでその関数内に<code class="language-plaintext highlighter-rouge">await</code>を使う準備ができました。<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await">await</a>はPromiseが返されるのを待機するので、先程のPromiseを返す<code class="language-plaintext highlighter-rouge">fetch</code>関数の手前に<code class="language-plaintext highlighter-rouge">await</code>を宣言します。これで<code class="language-plaintext highlighter-rouge">fetch</code>関数は<code class="language-plaintext highlighter-rouge">then</code>でコールバックをチェインする必要がなくなり、<code class="language-plaintext highlighter-rouge">response</code>変数にダイレクトに結果が代入されます。エラー処理に関してはtryで処理内容を囲み、catchでエラーを補足します。</p>
 
 <p>コンソールで動かしてみた結果は下記の通り。</p>
 
@@ -229,7 +229,7 @@
 <h2 id="おまけbabelで使う場合">
 <a class="anchor" href="#%E3%81%8A%E3%81%BE%E3%81%91babel%E3%81%A7%E4%BD%BF%E3%81%86%E5%A0%B4%E5%90%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>（おまけ）babelで使う場合</h2>
 
-<p>babel で async/await のシンタックス使いたい場合は<code class="highlighter-rouge">babel-plugin-syntax-async-functions</code>を使うことになります。</p>
+<p>babel で async/await のシンタックス使いたい場合は<code class="language-plaintext highlighter-rouge">babel-plugin-syntax-async-functions</code>を使うことになります。</p>
 
 <p><a href="https://babeljs.io/docs/plugins/syntax-async-functions/">Syntax async functions · Babel</a></p>
 

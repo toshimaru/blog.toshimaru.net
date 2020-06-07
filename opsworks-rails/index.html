@@ -217,7 +217,7 @@
 
 <p><img src="/images/posts/opsworks/add_apps.png" alt="add app"></p>
 
-<p><code class="highlighter-rouge">SECRET_KEY_BASE</code>(Rails4.2の<code class="highlighter-rouge">secrets.yml</code>で必要になる)もあわせてセットしましょう。</p>
+<p><code class="language-plaintext highlighter-rouge">SECRET_KEY_BASE</code>(Rails4.2の<code class="language-plaintext highlighter-rouge">secrets.yml</code>で必要になる)もあわせてセットしましょう。</p>
 
 <p><img src="/images/posts/opsworks/add_envvar.png" alt="env var"></p>
 
@@ -241,16 +241,16 @@
 
 <p>下記のGemが必要になるのでコメントアウトされていることを確認すること。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem 'therubyracer', platforms: :ruby
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem 'therubyracer', platforms: :ruby
 gem 'unicorn'
 </code></pre></div></div>
 
 <h3 id="databaseyml">
 <a class="anchor" href="#databaseyml" aria-hidden="true"><span class="octicon octicon-link"></span></a>database.yml</h3>
 
-<p>RDSを設定していれば自動的に設定されるのですが、今回の場合設定していないので別途手で<code class="highlighter-rouge">database.yml</code>を作りました。</p>
+<p>RDSを設定していれば自動的に設定されるのですが、今回の場合設定していないので別途手で<code class="language-plaintext highlighter-rouge">database.yml</code>を作りました。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@rails-app1 current]# cat config/database.yml
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@rails-app1 current]# cat config/database.yml
 </code></pre></div></div>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
@@ -270,7 +270,7 @@ gem 'unicorn'
 
 <p><img src="/images/posts/opsworks/before_css.png" alt="css"></p>
 
-<p>これは<code class="highlighter-rouge">asset:precompile</code>が走っていないため。</p>
+<p>これは<code class="language-plaintext highlighter-rouge">asset:precompile</code>が走っていないため。</p>
 
 <blockquote>
   <p>rake asset:precompile というタスクを実行する必要がありますが、OpsWorksのRailsアプリケーションのデフォルトのデプロイ処理ではこのタスクを実行してくれません。</p>
@@ -278,7 +278,7 @@ gem 'unicorn'
   <p><a href="http://interu.hatenablog.com/entry/2013/08/01/214258">OpsWorksでRailsをデプロイする際にasset:precompileを実施する方法</a></p>
 </blockquote>
 
-<p>下記を<code class="highlighter-rouge">deploy/before_migrate.rb</code>に設定する。</p>
+<p>下記を<code class="language-plaintext highlighter-rouge">deploy/before_migrate.rb</code>に設定する。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Running deploy/before_migrate.rb"</span><span class="p">)</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="ss">:deploy</span><span class="p">][</span><span class="ss">:rails_opsworks</span><span class="p">][</span><span class="ss">:rails_env</span><span class="p">]</span>
@@ -300,12 +300,12 @@ gem 'unicorn'
 <h3 id="デプロイディレクトリ">
 <a class="anchor" href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA" aria-hidden="true"><span class="octicon octicon-link"></span></a>デプロイ・ディレクトリ</h3>
 
-<p><code class="highlighter-rouge">/srv/www/rails_opsworks/current</code>に最新の状態がデプロイされます。</p>
+<p><code class="language-plaintext highlighter-rouge">/srv/www/rails_opsworks/current</code>に最新の状態がデプロイされます。</p>
 
 <h3 id="ログディレクトリ">
 <a class="anchor" href="#%E3%83%AD%E3%82%B0%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA" aria-hidden="true"><span class="octicon octicon-link"></span></a>ログ・ディレクトリ</h3>
 
-<p><code class="highlighter-rouge">/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
+<p><code class="language-plaintext highlighter-rouge">/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
 
 <h2 id="まとめ">
 <a class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>

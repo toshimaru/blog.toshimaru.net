@@ -84,7 +84,7 @@
 
 <h2 id="フォントファイルの豆腐化問題">フォントファイルの豆腐化問題</h2>
 
-<p><a href="http://fontawesome.io/">Font Awesome</a>のようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、<code class="highlighter-rouge">Access-Control-Allow-Origin</code>のヘッダでAllowされていないOriginからのリクエストの場合、いわゆるフォントの豆腐現象が起きます。これは<a href="https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control">CORS(Cross-Origin Resource Sharing)</a>
+<p><a href="http://fontawesome.io/">Font Awesome</a>のようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、<code class="language-plaintext highlighter-rouge">Access-Control-Allow-Origin</code>のヘッダでAllowされていないOriginからのリクエストの場合、いわゆるフォントの豆腐現象が起きます。これは<a href="https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control">CORS(Cross-Origin Resource Sharing)</a>
 の設定が正しくなされていないためです。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明します。</p>
 
 <h2 id="s3の設定">S3の設定</h2>
@@ -111,13 +111,13 @@
 <span class="nt">&lt;/CORSConfiguration&gt;</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">AllowedOrigin</code>で許可したいOriginのURLを設定、<code class="highlighter-rouge">AllowedMethod</code>で許可したいHTTPリクエストメソッドを指定します。それぞれ複数並べることで複数の値を設定することが可能となっています。</p>
+<p><code class="language-plaintext highlighter-rouge">AllowedOrigin</code>で許可したいOriginのURLを設定、<code class="language-plaintext highlighter-rouge">AllowedMethod</code>で許可したいHTTPリクエストメソッドを指定します。それぞれ複数並べることで複数の値を設定することが可能となっています。</p>
 
 <h3 id="確認手順">確認手順</h3>
 
-<p>正しく設定されているかを確認するために下記のように<code class="highlighter-rouge">curl</code>コマンドを使って検証してみましょう。</p>
+<p>正しく設定されているかを確認するために下記のように<code class="language-plaintext highlighter-rouge">curl</code>コマンドを使って検証してみましょう。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
 HTTP/1.1 200 OK
 x-amz-id-2: xxx
 x-amz-request-id: xxx
@@ -136,7 +136,7 @@ Content-Length: 14356
 Server: AmazonS3
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">Access-Control-Allow-Origin: http://sample.jp</code> のレスポンスがヘッダが返ってきており、正しく AllowOrigin されていることが確認できました。</p>
+<p><code class="language-plaintext highlighter-rouge">Access-Control-Allow-Origin: http://sample.jp</code> のレスポンスがヘッダが返ってきており、正しく AllowOrigin されていることが確認できました。</p>
 
 <h2 id="cloudfront">CloudFront</h2>
 
@@ -146,15 +146,15 @@ Server: AmazonS3
 
 <h3 id="cloudfrontの-cors-設定">CloudFrontの CORS 設定</h3>
 
-<p>CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。OriginヘッダーがS3まで通る必要があるので<code class="highlighter-rouge">Origin</code>ヘッダーを Whitelist Headers に加えてやります。</p>
+<p>CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。OriginヘッダーがS3まで通る必要があるので<code class="language-plaintext highlighter-rouge">Origin</code>ヘッダーを Whitelist Headers に加えてやります。</p>
 
 <p><img src="/images/posts/cors/cloudfront.png" alt=""></p>
 
 <h3 id="確認手順-1">確認手順</h3>
 
-<p>S3と同じく、<code class="highlighter-rouge">curl</code>で確認してみます。</p>
+<p>S3と同じく、<code class="language-plaintext highlighter-rouge">curl</code>で確認してみます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
 HTTP/1.1 200 OK
 Content-Type: binary/octet-stream
 Content-Length: 123
@@ -176,7 +176,7 @@ Via: 1.1 xxxx.cloudfront.net (CloudFront)
 X-Amz-Cf-Id: xxx
 </code></pre></div></div>
 
-<p>S3と同じく<code class="highlighter-rouge">Access-Control-Allow-Origin</code>ヘッダが設定されていることを確認できました。めでたしめでたし。</p>
+<p>S3と同じく<code class="language-plaintext highlighter-rouge">Access-Control-Allow-Origin</code>ヘッダが設定されていることを確認できました。めでたしめでたし。</p>
 
 <h3 id="設定にあたっての注意事項">設定にあたっての注意事項</h3>
 

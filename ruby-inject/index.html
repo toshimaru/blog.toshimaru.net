@@ -97,14 +97,14 @@
 <li class="toc-entry toc-h2"><a href="#番外編-each_with_index">番外編: each_with_index</a></li>
 <li class="toc-entry toc-h2"><a href="#参考">参考</a></li>
 </ul>
-  <p>Rubyのイテレータメソッド<code class="highlighter-rouge">inject</code>(<code class="highlighter-rouge">reduce</code>)の使い方を紹介してみようと思います。</p>
+  <p>Rubyのイテレータメソッド<code class="language-plaintext highlighter-rouge">inject</code>(<code class="language-plaintext highlighter-rouge">reduce</code>)の使い方を紹介してみようと思います。</p>
 
-<p class="info">文中では便宜上、<code class="highlighter-rouge">inject</code>で表記しますが<code class="highlighter-rouge">reduce</code>も等価なメソッドなので文中の<code class="highlighter-rouge">inject</code>は<code class="highlighter-rouge">reduce</code>に置き換え可能です</p>
+<p class="info">文中では便宜上、<code class="language-plaintext highlighter-rouge">inject</code>で表記しますが<code class="language-plaintext highlighter-rouge">reduce</code>も等価なメソッドなので文中の<code class="language-plaintext highlighter-rouge">inject</code>は<code class="language-plaintext highlighter-rouge">reduce</code>に置き換え可能です</p>
 
 <h2 id="injectの基本的な使い方">
 <a class="anchor" href="#inject%E3%81%AE%E5%9F%BA%E6%9C%AC%E7%9A%84%E3%81%AA%E4%BD%BF%E3%81%84%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>injectの基本的な使い方</h2>
 
-<p>Rubyの<code class="highlighter-rouge">inject</code>はこんなふうに使えます。</p>
+<p>Rubyの<code class="language-plaintext highlighter-rouge">inject</code>はこんなふうに使えます。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">enum</span><span class="p">.</span><span class="nf">inject</span> <span class="p">{</span> <span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
 <span class="n">enum</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="n">init</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">memo</span><span class="p">,</span> <span class="n">item</span><span class="o">|</span> <span class="n">block</span> <span class="p">}</span>
@@ -118,7 +118,7 @@
 <h3 id="injectを使わないパターン">
 <a class="anchor" href="#inject%E3%82%92%E4%BD%BF%E3%82%8F%E3%81%AA%E3%81%84%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>injectを使わないパターン</h3>
 
-<p>まずは<code class="highlighter-rouge">inject</code>を使わないパターン。</p>
+<p>まずは<code class="language-plaintext highlighter-rouge">inject</code>を使わないパターン。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">10</span><span class="p">).</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span> <span class="p">}</span>
@@ -128,13 +128,13 @@
 <h3 id="injectを使うパターン">
 <a class="anchor" href="#inject%E3%82%92%E4%BD%BF%E3%81%86%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>injectを使うパターン</h3>
 
-<p>これを<code class="highlighter-rouge">inject</code>で書き直すとこう。</p>
+<p>これを<code class="language-plaintext highlighter-rouge">inject</code>で書き直すとこう。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">i</span> <span class="p">}</span>
 <span class="c1"># =&gt; 55</span>
 </code></pre></div></div>
 
-<p>この場合、sumの初期値をinjectの引数の<code class="highlighter-rouge">0</code>で初期化しています。ただinjectのデフォルト引数設定は<code class="highlighter-rouge">0</code>なので下記のように省略することができます。</p>
+<p>この場合、sumの初期値をinjectの引数の<code class="language-plaintext highlighter-rouge">0</code>で初期化しています。ただinjectのデフォルト引数設定は<code class="language-plaintext highlighter-rouge">0</code>なので下記のように省略することができます。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span> <span class="p">{</span> <span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">i</span> <span class="p">}</span>
 <span class="c1"># =&gt; 55</span>
@@ -160,7 +160,7 @@
 <h2 id="応用編1-配列内の要素数をハッシュに">
 <a class="anchor" href="#%E5%BF%9C%E7%94%A8%E7%B7%A81-%E9%85%8D%E5%88%97%E5%86%85%E3%81%AE%E8%A6%81%E7%B4%A0%E6%95%B0%E3%82%92%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>応用編1: 配列内の要素数をハッシュに</h2>
 
-<p><code class="highlighter-rouge">Hash.new(0)</code>で初期化して<code class="highlighter-rouge">inject</code>.</p>
+<p><code class="language-plaintext highlighter-rouge">Hash.new(0)</code>で初期化して<code class="language-plaintext highlighter-rouge">inject</code>.</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="p">].</span><span class="nf">inject</span><span class="p">(</span><span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span> <span class="o">|</span><span class="nb">hash</span><span class="p">,</span> <span class="n">key</span><span class="o">|</span> <span class="nb">hash</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">hash</span><span class="p">}</span>
 <span class="c1"># =&gt; {:great=&gt;2, :good=&gt;3, :bad=&gt;2, :awesome=&gt;1}</span>
@@ -169,7 +169,7 @@
 <h3 id="each_with_object-を使う">
 <a class="anchor" href="#each_with_object-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>each_with_object を使う</h3>
 
-<p>上記の例だと<code class="highlighter-rouge">hash[key] += 1; hash</code>とやや冗長な書き方となっていますが、<code class="highlighter-rouge">each_with_object</code>使うともう少しシンプルに書けます。</p>
+<p>上記の例だと<code class="language-plaintext highlighter-rouge">hash[key] += 1; hash</code>とやや冗長な書き方となっていますが、<code class="language-plaintext highlighter-rouge">each_with_object</code>使うともう少しシンプルに書けます。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="ss">:great</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:good</span><span class="p">,</span> <span class="ss">:bad</span><span class="p">,</span> <span class="ss">:awesome</span><span class="p">,</span> <span class="ss">:great</span><span class="p">].</span><span class="nf">each_with_object</span><span class="p">(</span><span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="p">{</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="nb">hash</span><span class="o">|</span> <span class="nb">hash</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">}</span>
 <span class="c1"># =&gt; {:great=&gt;2, :good=&gt;3, :bad=&gt;2, :awesome=&gt;1}</span>
@@ -178,7 +178,7 @@
 <h2 id="応用編2-フィボナッチ数列">
 <a class="anchor" href="#%E5%BF%9C%E7%94%A8%E7%B7%A82-%E3%83%95%E3%82%A3%E3%83%9C%E3%83%8A%E3%83%83%E3%83%81%E6%95%B0%E5%88%97" aria-hidden="true"><span class="octicon octicon-link"></span></a>応用編2: フィボナッチ数列</h2>
 
-<p><code class="highlighter-rouge">inject</code> を利用したフィボナッチ数列ロジック。</p>
+<p><code class="language-plaintext highlighter-rouge">inject</code> を利用したフィボナッチ数列ロジック。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">).</span><span class="nf">inject</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="p">{</span> <span class="o">|</span><span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="n">fib</span> <span class="o">&lt;&lt;</span> <span class="n">fib</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">fib</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="p">}</span>
 <span class="c1"># =&gt; [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]</span>
@@ -187,7 +187,7 @@
 <h2 id="応用編3-ループを止める">
 <a class="anchor" href="#%E5%BF%9C%E7%94%A8%E7%B7%A83-%E3%83%AB%E3%83%BC%E3%83%97%E3%82%92%E6%AD%A2%E3%82%81%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>応用編3: ループを止める</h2>
 
-<p>途中でループを止めて処理を終えたい場合、<code class="highlighter-rouge">break</code>を使えば可能。</p>
+<p>途中でループを止めて処理を終えたい場合、<code class="language-plaintext highlighter-rouge">break</code>を使えば可能。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">5</span><span class="p">).</span><span class="nf">inject</span><span class="p">([])</span> <span class="k">do</span> <span class="o">|</span><span class="n">ary</span><span class="p">,</span> <span class="n">number</span><span class="o">|</span>
   <span class="k">break</span> <span class="n">ary</span> <span class="k">if</span> <span class="n">number</span> <span class="o">==</span> <span class="mi">4</span>
@@ -199,7 +199,7 @@
 <h2 id="番外編-each_with_index">
 <a class="anchor" href="#%E7%95%AA%E5%A4%96%E7%B7%A8-each_with_index" aria-hidden="true"><span class="octicon octicon-link"></span></a>番外編: each_with_index</h2>
 
-<p><code class="highlighter-rouge">each_with_index</code>でも<code class="highlighter-rouge">inject</code>は使える。</p>
+<p><code class="language-plaintext highlighter-rouge">each_with_index</code>でも<code class="language-plaintext highlighter-rouge">inject</code>は使える。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">10</span><span class="p">).</span><span class="nf">each_with_index</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">value</span> <span class="p">}</span>
 <span class="c1"># =&gt; 55</span>

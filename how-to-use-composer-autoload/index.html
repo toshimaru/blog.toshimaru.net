@@ -87,17 +87,17 @@
 
 <p>PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -s https://getcomposer.org/installer | php
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -s https://getcomposer.org/installer | php
 </code></pre></div></div>
 
-<p>さてこれで<code class="highlighter-rouge">composer.phar</code>が手に入りました。<code class="highlighter-rouge">composer</code>コマンドを使えるようにするためにパスの通った場所に<code class="highlighter-rouge">composer.phar</code>を移動しましょう。</p>
+<p>さてこれで<code class="language-plaintext highlighter-rouge">composer.phar</code>が手に入りました。<code class="language-plaintext highlighter-rouge">composer</code>コマンドを使えるようにするためにパスの通った場所に<code class="language-plaintext highlighter-rouge">composer.phar</code>を移動しましょう。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mv composer.phar /usr/local/bin/composer
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mv composer.phar /usr/local/bin/composer
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">composer</code>コマンド準備完了です。</p>
+<p><code class="language-plaintext highlighter-rouge">composer</code>コマンド準備完了です。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ composer
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ composer
    ______
   / ____/___  ____ ___  ____  ____  ________  _____
  / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
@@ -109,14 +109,14 @@ Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
 
 <h2 id="依存関係の記述">依存関係の記述</h2>
 
-<p>composerはプロジェクトルートの <code class="highlighter-rouge">composer.json</code> ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
+<p>composerはプロジェクトルートの <code class="language-plaintext highlighter-rouge">composer.json</code> ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch composer.json
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch composer.json
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
+<p><code class="language-plaintext highlighter-rouge">composer.json</code>ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
     "require": {
         "phpunit/phpunit": "3.7.*"
     }
@@ -125,9 +125,9 @@ Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
 
 <h2 id="ライブラリのインストール">ライブラリのインストール</h2>
 
-<p><code class="highlighter-rouge">composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
+<p><code class="language-plaintext highlighter-rouge">composer.json</code>ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ composer install
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ composer install
 Loading composer repositories with package information
 Installing dependencies (including require-dev)
   - Installing symfony/yaml (v2.3.6)
@@ -143,13 +143,13 @@ Writing lock file
 Generating autoload files
 </code></pre></div></div>
 
-<p>うまいこといきました。ライブラリは<code class="highlighter-rouge">vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code class="highlighter-rouge">composer.lock</code>ファイルも生成します。</p>
+<p>うまいこといきました。ライブラリは<code class="language-plaintext highlighter-rouge">vendor</code>ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた<code class="language-plaintext highlighter-rouge">composer.lock</code>ファイルも生成します。</p>
 
 <h2 id="ライブラリのアップデート">ライブラリのアップデート</h2>
 
 <p>ライブラリのアップデートに関しては下記のコマンドでOK.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ composer update
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ composer update
 </code></pre></div></div>
 
 <h2 id="まとめ">まとめ</h2>

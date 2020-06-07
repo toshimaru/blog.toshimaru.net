@@ -105,13 +105,13 @@
 
 <p>質問の文脈としては「POROファイルの置き場ってどこ？」という内容でした。</p>
 
-<p>発表中でPOROは「Modelの補助輪」という表現をしましたが、役割としてはModelにあたるので置き場所も<code class="highlighter-rouge">app/models</code>配下で問題ないと考えます。</p>
+<p>発表中でPOROは「Modelの補助輪」という表現をしましたが、役割としてはModelにあたるので置き場所も<code class="language-plaintext highlighter-rouge">app/models</code>配下で問題ないと考えます。</p>
 
-<p>特別な置き場を作りたくなってしまうかもしれませんが、Railsの提供するMVCのレールを逸脱しない範囲で独自路線を作っていくのが個人的には良いアプローチかなと考えています。POROをモデルの延長線上にあるものと考えれば、<code class="highlighter-rouge">app/models</code>にPOROが配置されているのは不自然ではないかと思います。</p>
+<p>特別な置き場を作りたくなってしまうかもしれませんが、Railsの提供するMVCのレールを逸脱しない範囲で独自路線を作っていくのが個人的には良いアプローチかなと考えています。POROをモデルの延長線上にあるものと考えれば、<code class="language-plaintext highlighter-rouge">app/models</code>にPOROが配置されているのは不自然ではないかと思います。</p>
 
-<p>もちろん <code class="highlighter-rouge">app/models</code> の内部でドメイン毎にnamespace（module）を持たせファイルを構造化していくのはアリだと思います。例えば下記の例です。</p>
+<p>もちろん <code class="language-plaintext highlighter-rouge">app/models</code> の内部でドメイン毎にnamespace（module）を持たせファイルを構造化していくのはアリだと思います。例えば下記の例です。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app/models
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>app/models
 ├── application_record.rb
 ├── domain1
 │   └── plain_object.rb
@@ -123,7 +123,7 @@
 ...
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">app/models</code>にフラットにファイルを置いていくと、テーブル数増加・コード肥大化とともにものすごい数になってしまいます。意味のある単位でディレクトリ（module）を切っておくのは今すぐできる手軽な構造化という意味で、早いうちに導入しておくと良いと思います。</p>
+<p><code class="language-plaintext highlighter-rouge">app/models</code>にフラットにファイルを置いていくと、テーブル数増加・コード肥大化とともにものすごい数になってしまいます。意味のある単位でディレクトリ（module）を切っておくのは今すぐできる手軽な構造化という意味で、早いうちに導入しておくと良いと思います。</p>
 
 <h3 id="trailblazer-について">trailblazer について</h3>
 

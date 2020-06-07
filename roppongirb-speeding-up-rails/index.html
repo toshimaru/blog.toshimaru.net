@@ -142,7 +142,7 @@
 
 <p><a href="https://speakerdeck.com/a_matsuda/3x-rails">3x Rails // Speaker Deck</a></p>
 
-<p><code class="highlighter-rouge">?</code>が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、というような発表。</p>
+<p><code class="language-plaintext highlighter-rouge">?</code>が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、というような発表。</p>
 
 <p>下記は同じ<a href="https://github.com/amatsuda">amatsuda</a>さんが発表された<a href="http://togetter.com/li/955629">Rails Upgrade Casual Talks</a>での資料です。</p>
 
@@ -184,7 +184,7 @@
 
 <ul>
   <li>
-<a href="https://github.com/flyerhzm/bullet">bullet</a>: Kill <code class="highlighter-rouge">N+1</code> issue!</li>
+<a href="https://github.com/flyerhzm/bullet">bullet</a>: Kill <code class="language-plaintext highlighter-rouge">N+1</code> issue!</li>
   <li>
 <a href="https://github.com/joker1007/activerecord-cause">activerecord-cause</a>: Logs where ActiveRecord actually loads record</li>
 </ul>
@@ -222,7 +222,7 @@
 
 <h3 id="n1-partial-rendering">N+1 partial rendering</h3>
 
-<p>データN個分<code class="highlighter-rouge">render</code>処理が走ってしまうのを、個人的に <strong>N+1 rendering</strong> と呼んでいる。データの数N+親のビュー1回で <code class="highlighter-rouge">N+1</code>. 例えばこんなコード。</p>
+<p>データN個分<code class="language-plaintext highlighter-rouge">render</code>処理が走ってしまうのを、個人的に <strong>N+1 rendering</strong> と呼んでいる。データの数N+親のビュー1回で <code class="language-plaintext highlighter-rouge">N+1</code>. 例えばこんなコード。</p>
 
 <div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- views/items/index --&gt;</span>
 <span class="cp">&lt;%</span> <span class="vi">@items</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span> <span class="cp">%&gt;</span>
@@ -241,7 +241,7 @@
 
 <p>この場合のログはこうなる。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Processing by ItemsController#index as HTML
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Processing by ItemsController#index as HTML
   Rendering items/index.html.erb within layouts/application
   Item Load (0.3ms)  SELECT "items".* FROM "items"
   Rendered items/_item.html.erb (0.5ms)
@@ -274,7 +274,7 @@ Completed 200 OK in 80ms (Views: 77.1ms | ActiveRecord: 0.3ms)
 
 <p>この場合のログはこうなる。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Processing by ItemsController#index as HTML
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Processing by ItemsController#index as HTML
   Rendering items/index.html.erb within layouts/application
   Item Load (0.4ms)  SELECT "items".* FROM "items"
   Rendered collection of items/_item.html.erb [29 times] (6.9ms)
@@ -317,7 +317,7 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
 </li>
   <li>Viewの手前のControllerのAction自体の処理が重い場合に有効</li>
   <li>
-<code class="highlighter-rouge">cache_path</code> でキャッシュキーをカスタマイズ可能
+<code class="language-plaintext highlighter-rouge">cache_path</code> でキャッシュキーをカスタマイズ可能
     <ul>
       <li>モデルのupdated_at を組み込んだり、PC/スマフォでキャッシュビュー出し分け可能</li>
     </ul>
@@ -394,7 +394,7 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
 
 <h2 id="ユーザーの体感速度--サーバーサイドレスポンス--クライアントサイドスピード">ユーザーの体感速度 = サーバーサイドレスポンス + クライアントサイド・スピード</h2>
 
-<p>仮にサーバーレスポンスタイムを<code class="highlighter-rouge">1ms</code>にしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。</p>
+<p>仮にサーバーレスポンスタイムを<code class="language-plaintext highlighter-rouge">1ms</code>にしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。</p>
 
 <h3 id="rails-helloworld-app-の場合">Rails HelloWorld App の場合</h3>
 
@@ -404,7 +404,7 @@ Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
 
 <p><img src="/images/posts/roppongirb/render-block-js.png" alt=""></p>
 
-<p><code class="highlighter-rouge">Should Fix</code>として報告されているのは、headタグ内にあるJS読み込みが Render Blocking してますよ、という内容のもの。Webの高速化はサーバーサイドだけで済むようなラクなもんじゃない。</p>
+<p><code class="language-plaintext highlighter-rouge">Should Fix</code>として報告されているのは、headタグ内にあるJS読み込みが Render Blocking してますよ、という内容のもの。Webの高速化はサーバーサイドだけで済むようなラクなもんじゃない。</p>
 
 <h2 id="amp-zap">AMP <img class="emoji" title=":zap:" alt=":zap:" src="https://github.githubassets.com/images/icons/emoji/unicode/26a1.png" height="20" width="20">
 </h2>

@@ -87,17 +87,17 @@
 <p>まずは順序について。下記のようになっています。</p>
 
 <ol>
-  <li><code class="highlighter-rouge">before_validation</code></li>
-  <li><code class="highlighter-rouge">after_validation</code></li>
-  <li><code class="highlighter-rouge">before_save</code></li>
+  <li><code class="language-plaintext highlighter-rouge">before_validation</code></li>
+  <li><code class="language-plaintext highlighter-rouge">after_validation</code></li>
+  <li><code class="language-plaintext highlighter-rouge">before_save</code></li>
   <li>
-<code class="highlighter-rouge">before_create</code> or <code class="highlighter-rouge">before_update</code>
+<code class="language-plaintext highlighter-rouge">before_create</code> or <code class="language-plaintext highlighter-rouge">before_update</code>
 </li>
   <li>
-<code class="highlighter-rouge">after_create</code> or <code class="highlighter-rouge">after_update</code>
+<code class="language-plaintext highlighter-rouge">after_create</code> or <code class="language-plaintext highlighter-rouge">after_update</code>
 </li>
-  <li><code class="highlighter-rouge">after_save</code></li>
-  <li><code class="highlighter-rouge">after_commit</code></li>
+  <li><code class="language-plaintext highlighter-rouge">after_save</code></li>
+  <li><code class="language-plaintext highlighter-rouge">after_commit</code></li>
 </ol>
 
 <h2 id="実際にコードで試してみる">実際にコードで試してみる</h2>
@@ -121,7 +121,7 @@
 
 <p>このモデルをnewしてsaveしてみる。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
    (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -135,15 +135,15 @@ after_commit is called
  =&gt; true
 </code></pre></div></div>
 
-<p>新規作成なので、更新時のコールバックである<code class="highlighter-rouge">before_update</code>, <code class="highlighter-rouge">after_update</code>は呼ばれない。</p>
+<p>新規作成なので、更新時のコールバックである<code class="language-plaintext highlighter-rouge">before_update</code>, <code class="language-plaintext highlighter-rouge">after_update</code>は呼ばれない。</p>
 
-<p>トランザクションが開始され<code class="highlighter-rouge">before_create</code>後にクエリが走る。その後、<code class="highlighter-rouge">after_save</code>のコールバックが呼ばれトランザクションがコミットされる。</p>
+<p>トランザクションが開始され<code class="language-plaintext highlighter-rouge">before_create</code>後にクエリが走る。その後、<code class="language-plaintext highlighter-rouge">after_save</code>のコールバックが呼ばれトランザクションがコミットされる。</p>
 
 <h3 id="レコード更新時">レコード更新時</h3>
 
 <p>同モデルのupdateの場合はこんな感じ。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; user.update(name: "toshi")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; user.update(name: "toshi")
   (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -157,7 +157,7 @@ after_commit is called
 =&gt; true
 </code></pre></div></div>
 
-<p>更新なので <code class="highlighter-rouge">before_create</code> <code class="highlighter-rouge">after_create</code> は呼ばれない。その代わりに<code class="highlighter-rouge">before_update</code>, <code class="highlighter-rouge">after_update</code>が実行される。</p>
+<p>更新なので <code class="language-plaintext highlighter-rouge">before_create</code> <code class="language-plaintext highlighter-rouge">after_create</code> は呼ばれない。その代わりに<code class="language-plaintext highlighter-rouge">before_update</code>, <code class="language-plaintext highlighter-rouge">after_update</code>が実行される。</p>
 
 <h2 id="saveupdate-はトランザクション内で実行される">save/update はトランザクション内で実行される</h2>
 
@@ -167,7 +167,7 @@ after_commit is called
   <p>The entire callback chain of a save, save!, or destroy call runs within a transaction. That includes after_* hooks. If everything goes fine a COMMIT is executed once the chain has been completed.</p>
 </blockquote>
 
-<p>つまり、<code class="highlighter-rouge">save</code>, <code class="highlighter-rouge">save!</code>, <code class="highlighter-rouge">destroy</code>のコールバック群はトランザクション内で処理され、全てのコールバックが問題なく通ればコミットされますよ、と。</p>
+<p>つまり、<code class="language-plaintext highlighter-rouge">save</code>, <code class="language-plaintext highlighter-rouge">save!</code>, <code class="language-plaintext highlighter-rouge">destroy</code>のコールバック群はトランザクション内で処理され、全てのコールバックが問題なく通ればコミットされますよ、と。</p>
 
 <h2 id="特定のコールバックのタイミングで処理をロールバックさせたい">特定のコールバックのタイミングで処理をロールバックさせたい</h2>
 
@@ -175,7 +175,7 @@ after_commit is called
 
 <h3 id="before_-のタイミングでロールバックする場合">before_* のタイミングでロールバックする場合</h3>
 
-<p><code class="highlighter-rouge">before_*</code>のタイミングで false を返すと処理はロールバックされる。</p>
+<p><code class="language-plaintext highlighter-rouge">before_*</code>のタイミングで false を返すと処理はロールバックされる。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">before_validation</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"before_validation is called"</span> <span class="p">}</span>
@@ -188,7 +188,7 @@ after_commit is called
 <span class="k">end</span>
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
 (0.1ms)  begin transaction
 before_validation is called
 after_validation is called
@@ -197,7 +197,7 @@ before_save is called
 =&gt; false
 </code></pre></div></div>
 
-<p>しかし<code class="highlighter-rouge">after_*</code>で false を返しても処理はロールバックされないようだ。</p>
+<p>しかし<code class="language-plaintext highlighter-rouge">after_*</code>で false を返しても処理はロールバックされないようだ。</p>
 
 <h3 id="after_-のタイミングでロールバックする場合">after_* のタイミングでロールバックする場合</h3>
 
@@ -214,7 +214,7 @@ before_save is called
 <span class="k">end</span>
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; User.new.save
    (0.1ms)  begin transaction
 before_validation is called
 after_validation is called

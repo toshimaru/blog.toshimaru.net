@@ -94,18 +94,18 @@
 
 <p>今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir packer-test
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir packer-test
 $ cd packer-test
 </code></pre></div></div>
 
 <p>次にpackerの設定ファイルを用意。ファイル名は何でもよいっぽい。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch Packer.json
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch Packer.json
 </code></pre></div></div>
 
 <p>このように書く。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
   "builders": [
     {
       "type": "digitalocean",
@@ -126,18 +126,18 @@ $ cd packer-test
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">builder</code>でタイプをチョイス。今回は<code class="highlighter-rouge">digitalocean</code>を選択。<code class="highlighter-rouge">client_id</code>, <code class="highlighter-rouge">api_key</code>を設定。<code class="highlighter-rouge">image_id</code>,<code class="highlighter-rouge">region_id</code>,<code class="highlighter-rouge">size_id</code>のint値については<a href="https://developers.digitalocean.com/">こちらのDigitalOcean API</a>を見るとよいっぽい。</p>
+<p><code class="language-plaintext highlighter-rouge">builder</code>でタイプをチョイス。今回は<code class="language-plaintext highlighter-rouge">digitalocean</code>を選択。<code class="language-plaintext highlighter-rouge">client_id</code>, <code class="language-plaintext highlighter-rouge">api_key</code>を設定。<code class="language-plaintext highlighter-rouge">image_id</code>,<code class="language-plaintext highlighter-rouge">region_id</code>,<code class="language-plaintext highlighter-rouge">size_id</code>のint値については<a href="https://developers.digitalocean.com/">こちらのDigitalOcean API</a>を見るとよいっぽい。</p>
 
-<p>プロビジョニングのタイプは今回はシンプルにshellを設定。適当に<code class="highlighter-rouge">setup.sh</code>を作る。</p>
+<p>プロビジョニングのタイプは今回はシンプルにshellを設定。適当に<code class="language-plaintext highlighter-rouge">setup.sh</code>を作る。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "echo 'hello world'" &gt; setup.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "echo 'hello world'" &gt; setup.sh
 </code></pre></div></div>
 
 <h2 id="packer">Packer!</h2>
 
 <p>packerビルドしてみる。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ packer build Packer.json
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ packer build Packer.json
 digitalocean output will be in this color.
 
 ==&gt; digitalocean: Creating temporary ssh key for droplet...
@@ -171,7 +171,7 @@ Build 'digitalocean' finished.
 
 <p><img src="/images/posts/packer/do-after.png" alt="after" /></p>
 
-<p>イメージのスナップショット（<code class="highlighter-rouge">packer-1395033724</code>）が作成されてますね。</p>
+<p>イメージのスナップショット（<code class="language-plaintext highlighter-rouge">packer-1395033724</code>）が作成されてますね。</p>
 
 <h2 id="最後に">最後に</h2>
 
@@ -183,7 +183,7 @@ Build 'digitalocean' finished.
 
 <p>See. <a href="http://www.packer.io/intro/getting-started/build-image.html">http://www.packer.io/intro/getting-started/build-image.html</a></p>
 
-<p>また、<code class="highlighter-rouge">builders</code>の設定を変更することで、<a href="http://www.packer.io/docs/builders/amazon.html">Amazon EC2</a>や<a href="http://www.packer.io/docs/builders/googlecompute.html">Google Compute Engine</a>とかにもイメージ作成できるようですね。</p>
+<p>また、<code class="language-plaintext highlighter-rouge">builders</code>の設定を変更することで、<a href="http://www.packer.io/docs/builders/amazon.html">Amazon EC2</a>や<a href="http://www.packer.io/docs/builders/googlecompute.html">Google Compute Engine</a>とかにもイメージ作成できるようですね。</p>
 
 <h3 id="github-repo">Github Repo</h3>
 

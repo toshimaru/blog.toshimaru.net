@@ -198,7 +198,7 @@
 
 <p>なぜRailsアプリケーションのModel層は限界を迎えてしまうのでしょうか？</p>
 
-<p>Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、<code class="highlighter-rouge">User</code>モデルがあれば<code class="highlighter-rouge">UsersController</code>があり、Controllerのそれぞれのアクションに<code class="highlighter-rouge">User</code>モデルが紐づくという形です。</p>
+<p>Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、<code class="language-plaintext highlighter-rouge">User</code>モデルがあれば<code class="language-plaintext highlighter-rouge">UsersController</code>があり、Controllerのそれぞれのアクションに<code class="language-plaintext highlighter-rouge">User</code>モデルが紐づくという形です。</p>
 
 <p>しかし下図<sup id="fnref:a" role="doc-noteref"><a href="#fn:a" class="footnote">2</a></sup>はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。</p>
 
@@ -255,7 +255,7 @@
 
 <h3 id="concerns">Concerns</h3>
 
-<p>まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s <code class="highlighter-rouge">Recording</code> Class<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote">5</a></sup>）。</p>
+<p>まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s <code class="language-plaintext highlighter-rouge">Recording</code> Class<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote">5</a></sup>）。</p>
 
 <p><img src="/images/posts/ginzarails-21/concerns.png" alt="inline"></p>
 
@@ -263,7 +263,7 @@
 
 <p><a href="https://signalvnoise.com/posts/3372-put-chubby-models-on-a-diet-with-concerns">Put chubby models on a diet with concerns</a></p>
 
-<p>Modelの持っている能力（ability = <code class="highlighter-rouge">-able</code> suffix）に着目してConcern moduleに切り出していくのが、Rails Wayっぽさがあると言えます。</p>
+<p>Modelの持っている能力（ability = <code class="language-plaintext highlighter-rouge">-able</code> suffix）に着目してConcern moduleに切り出していくのが、Rails Wayっぽさがあると言えます。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/models/concerns/concernable.rb</span>
 <span class="k">module</span> <span class="nn">Concernable</span>
@@ -277,11 +277,11 @@
 
 <p>RailsにおいてテーブルとModelは原則的に1対1で結びつきます。しかし、STIを使えば1つのテーブルで複数Model紐付けることができます。</p>
 
-<p>下図は<code class="highlighter-rouge">players</code>という単一テーブルに複数のクラスが結びついている図です<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote">6</a></sup>。</p>
+<p>下図は<code class="language-plaintext highlighter-rouge">players</code>という単一テーブルに複数のクラスが結びついている図です<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote">6</a></sup>。</p>
 
 <p><img src="/images/posts/ginzarails-21/sti.png" alt="inline"></p>
 
-<p>Railsのコード例です。 <code class="highlighter-rouge">companies</code> テーブルに紐づく <code class="highlighter-rouge">Firm</code>, <code class="highlighter-rouge">Client</code>モデルの例だと下記の通りです。</p>
+<p>Railsのコード例です。 <code class="language-plaintext highlighter-rouge">companies</code> テーブルに紐づく <code class="language-plaintext highlighter-rouge">Firm</code>, <code class="language-plaintext highlighter-rouge">Client</code>モデルの例だと下記の通りです。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/models/company.rb</span>
 <span class="k">class</span> <span class="nc">Company</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
@@ -302,7 +302,7 @@
 
 <p><img src="/images/posts/ginzarails-21/polymorphic.png" alt="inline"></p>
 
-<p>上図の場合、通常のRails DB設計であれば <code class="highlighter-rouge">pictures</code>テーブルが<code class="highlighter-rouge">employee_id</code>, <code class="highlighter-rouge">product_id</code>を持っているべきですが、<code class="highlighter-rouge">imagable_id</code>という1つカラムで複数のテーブルを従属させることができています。</p>
+<p>上図の場合、通常のRails DB設計であれば <code class="language-plaintext highlighter-rouge">pictures</code>テーブルが<code class="language-plaintext highlighter-rouge">employee_id</code>, <code class="language-plaintext highlighter-rouge">product_id</code>を持っているべきですが、<code class="language-plaintext highlighter-rouge">imagable_id</code>という1つカラムで複数のテーブルを従属させることができています。</p>
 
 <p>これをRailsのコードであらわすと下記の通りです。</p>
 
@@ -328,7 +328,7 @@
 
 <h3 id="accepts_nested_attributes_for">accepts_nested_attributes_for</h3>
 
-<p>ネストされたアトリビュートで関連リソースの作成・更新・削除を行うのが<code class="highlighter-rouge">accepts_nested_attributes_for</code>です。</p>
+<p>ネストされたアトリビュートで関連リソースの作成・更新・削除を行うのが<code class="language-plaintext highlighter-rouge">accepts_nested_attributes_for</code>です。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Member</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
@@ -344,7 +344,7 @@
 <span class="n">member</span> <span class="o">=</span> <span class="no">Member</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:member</span><span class="p">])</span>
 </code></pre></div></div>
 
-<p>ただしこの<code class="highlighter-rouge">accepts_nested_attributes_for</code>はDHH自らが「消したい」と発言しており<sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote">7</a></sup>、積極的に使うのはやや躊躇われるかもしれません。</p>
+<p>ただしこの<code class="language-plaintext highlighter-rouge">accepts_nested_attributes_for</code>はDHH自らが「消したい」と発言しており<sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote">7</a></sup>、積極的に使うのはやや躊躇われるかもしれません。</p>
 
 <p><img src="/images/posts/ginzarails-21/dhh.png" alt="inline"></p>
 
@@ -359,7 +359,7 @@
     </ul>
   </li>
   <li>
-<strong>Value Object</strong> (<code class="highlighter-rouge">compose_of</code>)
+<strong>Value Object</strong> (<code class="language-plaintext highlighter-rouge">compose_of</code>)
     <ul>
       <li>複数カラムをValueオブジェクトとして展開するときに便利</li>
     </ul>
@@ -576,7 +576,7 @@
   <li>
 <img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/zdennis/activerecord-import">activerecord-import</a> (Bulk Import)
     <ul>
-      <li>Rails 6: <code class="highlighter-rouge">insert_all</code>, <code class="highlighter-rouge">upsert_all</code>
+      <li>Rails 6: <code class="language-plaintext highlighter-rouge">insert_all</code>, <code class="language-plaintext highlighter-rouge">upsert_all</code>
 </li>
     </ul>
   </li>
@@ -591,7 +591,7 @@
   <li>
 <img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/norman/friendly_id">friendly_id</a>
     <ul>
-      <li>ActiveRecord: <code class="highlighter-rouge">to_param</code>
+      <li>ActiveRecord: <code class="language-plaintext highlighter-rouge">to_param</code>
 </li>
       <li>参考: <a href="https://api.rubyonrails.org/classes/ActiveRecord/Integration.html#method-i-to_param">ActiveRecord::Integration</a>
 </li>
@@ -600,7 +600,7 @@
   <li>
 <img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/magnusvk/counter_culture">counter_culture</a>
     <ul>
-      <li>ActiveRecord: <code class="highlighter-rouge">counter_cache</code>
+      <li>ActiveRecord: <code class="language-plaintext highlighter-rouge">counter_cache</code>
 </li>
       <li>参考: <a href="https://railsguides.jp/association_basics.html#belongs-to%E3%81%AE%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-counter-cache">Active Record の関連付け</a>
 </li>
@@ -608,7 +608,7 @@
   </li>
   <li>ID/Password認証
     <ul>
-      <li>ActiveModel: <code class="highlighter-rouge">has_secure_password</code>
+      <li>ActiveModel: <code class="language-plaintext highlighter-rouge">has_secure_password</code>
 </li>
       <li>参考: <a href="https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html">ActiveModel::SecurePassword::ClassMethods</a>
 </li>
@@ -618,8 +618,8 @@
 <img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/rubyconfig/config">config</a> (YAML Config Management)
     <ul>
       <li>Rails Custom configuration:</li>
-      <li><code class="highlighter-rouge">Rails::Application.config_for</code></li>
-      <li><code class="highlighter-rouge">config.x</code></li>
+      <li><code class="language-plaintext highlighter-rouge">Rails::Application.config_for</code></li>
+      <li><code class="language-plaintext highlighter-rouge">config.x</code></li>
       <li>参考: <a href="https://railsguides.jp/configuring.html#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E8%A8%AD%E5%AE%9A">Rails アプリケーションを設定する - Railsガイド</a>
 </li>
     </ul>
@@ -635,7 +635,7 @@
   <li>
 <img class="emoji" title=":gem:" alt=":gem:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f48e.png" height="20" width="20"> <a href="https://github.com/pry/pry">pry</a>
     <ul>
-      <li>Ruby 2.4: <code class="highlighter-rouge">binding.irb</code>
+      <li>Ruby 2.4: <code class="language-plaintext highlighter-rouge">binding.irb</code>
 </li>
       <li>Ruby 2.7: REPL Syntax Highlighting</li>
     </ul>
@@ -688,7 +688,7 @@
 
 <h3 id="form-model">Form Model</h3>
 
-<p>Form Modelとは、<code class="highlighter-rouge">include ActiveModel</code>したRubyクラスのことです。</p>
+<p>Form Modelとは、<code class="language-plaintext highlighter-rouge">include ActiveModel</code>したRubyクラスのことです。</p>
 
 <p>巷ではForm Objectと呼ばれることが多いですが、＜Formに特化したActiveModel＞という意味で、あえてForm Modelと本発表では呼んでいます。</p>
 
@@ -723,7 +723,7 @@
     <tr>
       <td>2以上</td>
       <td>
-<code class="highlighter-rouge">accepts_nested_attributes_for</code>の代わりとして、複雑なフォームの組み立て時に利用</td>
+<code class="language-plaintext highlighter-rouge">accepts_nested_attributes_for</code>の代わりとして、複雑なフォームの組み立て時に利用</td>
     </tr>
   </tbody>
 </table>
@@ -741,13 +741,13 @@
 
 <p>POROとはPlain Old Ruby Objectの略です。元ネタはPoEAAのPOJO (Plain Old Java Object)です。</p>
 
-<p>POROは、ActiveRecordの機能に依存しない純粋なRuby実装です。なので<code class="highlighter-rouge">include ActiveModel</code>しているRubyクラスは個人的にはPOROとは呼んでいません。</p>
+<p>POROは、ActiveRecordの機能に依存しない純粋なRuby実装です。なので<code class="language-plaintext highlighter-rouge">include ActiveModel</code>しているRubyクラスは個人的にはPOROとは呼んでいません。</p>
 
 <p>純粋なRuby実装なのである意味、 <strong>Ruby Way</strong> とも言うことができます。</p>
 
 <p>POROの主な用途としてはModelの補助輪的な役割だと考えています。</p>
 
-<p>例えば下記の例ではクラスメソッド<code class="highlighter-rouge">create!</code>呼び出し時に引数を受け取って<code class="highlighter-rouge">create!</code>インスタンスメソッド内でトランザクションを張って複数モデルの更新を行っています。</p>
+<p>例えば下記の例ではクラスメソッド<code class="language-plaintext highlighter-rouge">create!</code>呼び出し時に引数を受け取って<code class="language-plaintext highlighter-rouge">create!</code>インスタンスメソッド内でトランザクションを張って複数モデルの更新を行っています。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PostWithNotifications</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">create!</span><span class="p">(</span><span class="n">creator</span><span class="p">:,</span> <span class="n">body</span><span class="p">:)</span>
@@ -768,7 +768,7 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>このRubyクラスの場合、＜<code class="highlighter-rouge">Post</code>作成とともに<code class="highlighter-rouge">Notification</code>も作成する＞という複数モデル更新のユースケースをPOROに閉じ込めたということができるでしょう。</p>
+<p>このRubyクラスの場合、＜<code class="language-plaintext highlighter-rouge">Post</code>作成とともに<code class="language-plaintext highlighter-rouge">Notification</code>も作成する＞という複数モデル更新のユースケースをPOROに閉じ込めたということができるでしょう。</p>
 
 <h3 id="service-class">Service Class</h3>
 
@@ -837,7 +837,7 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>この例では＜<code class="highlighter-rouge">User</code>のサインアップ＞というユースケースにのみ特化したActiveRecordのModelを作成しています。</p>
+<p>この例では＜<code class="language-plaintext highlighter-rouge">User</code>のサインアップ＞というユースケースにのみ特化したActiveRecordのModelを作成しています。</p>
 
 <p>ただこの実装に関しては、1 Table 1 ModelというRailsのパラダイム（規約）を壊すことになってしまうので、いささか危険思想という印象があります。</p>
 

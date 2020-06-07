@@ -81,29 +81,29 @@
 
 <div id="md-content">
   
-  <p>普通に<code class="highlighter-rouge">rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからローカルIPではアクセスすることができません。</p>
+  <p>普通に<code class="language-plaintext highlighter-rouge">rails server</code>した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからローカルIPではアクセスすることができません。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails server
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails server
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://localhost:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
 </code></pre></div></div>
 
-<p>これをLAN内に公開したい場合はどうするか。下記のように<code class="highlighter-rouge">binding</code>のオプションを付けてその値として<code class="highlighter-rouge">0.0.0.0</code>を指定します。</p>
+<p>これをLAN内に公開したい場合はどうするか。下記のように<code class="language-plaintext highlighter-rouge">binding</code>のオプションを付けてその値として<code class="language-plaintext highlighter-rouge">0.0.0.0</code>を指定します。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails server --binding=0.0.0.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails server --binding=0.0.0.0
 =&gt; Booting WEBrick
 =&gt; Rails 4.2.3 application starting in development on http://0.0.0.0:3000
 =&gt; Run `rails server -h` for more startup options
 =&gt; Ctrl-C to shutdown server
 </code></pre></div></div>
 
-<p>このコマンドを使うことで同じLAN内にいるクライアントからRailsが起動しているマシンのローカルIPをポート番号とともに（例: <code class="highlighter-rouge">192.168.1.xx:3000</code>）を叩けば、アプリケーションへとアクセス可能になります。</p>
+<p>このコマンドを使うことで同じLAN内にいるクライアントからRailsが起動しているマシンのローカルIPをポート番号とともに（例: <code class="language-plaintext highlighter-rouge">192.168.1.xx:3000</code>）を叩けば、アプリケーションへとアクセス可能になります。</p>
 
 <h2 id="なぜ0000">なぜ0.0.0.0？</h2>
 
-<p><code class="highlighter-rouge">rails server</code>コマンドはデフォルトで<strong>ループバックアドレス</strong>、つまりlocalhost(<code class="highlighter-rouge">127.0.0.1</code>)にバインドされます。ループバックアドレスは自分自身を指し示すアドレスなのでなので外部からのアクセスは弾かれます。</p>
+<p><code class="language-plaintext highlighter-rouge">rails server</code>コマンドはデフォルトで<strong>ループバックアドレス</strong>、つまりlocalhost(<code class="language-plaintext highlighter-rouge">127.0.0.1</code>)にバインドされます。ループバックアドレスは自分自身を指し示すアドレスなのでなので外部からのアクセスは弾かれます。</p>
 
 <blockquote>
   <p>常に「自分自身」を指すIPアドレスは、当然ですが、他のコンピュータとの通信などには使えません。</p>
@@ -111,9 +111,9 @@
   <p><a href="http://www.arearesearch.co.jp/learn/ip/09.html">ローカルループバックアドレス | IPラーニング</a></p>
 </blockquote>
 
-<p>よってデフォルトの<code class="highlighter-rouge">rails server</code>起動コマンドではでは外部からのアクセスは遮断されます。</p>
+<p>よってデフォルトの<code class="language-plaintext highlighter-rouge">rails server</code>起動コマンドではでは外部からのアクセスは遮断されます。</p>
 
-<p>一方、<code class="highlighter-rouge">0.0.0.0</code>はどうかというと、<code class="highlighter-rouge">0.0.0.0</code>のアドレスには複数の意味があり文脈によって意味が異なっています。今回の場合、ループバックアドレス含む全てのIPアドレスという意味です。ときに<code class="highlighter-rouge">0.0.0.0</code>のアドレスは<strong>ワイルドカードアドレス</strong>と言われることもあります。</p>
+<p>一方、<code class="language-plaintext highlighter-rouge">0.0.0.0</code>はどうかというと、<code class="language-plaintext highlighter-rouge">0.0.0.0</code>のアドレスには複数の意味があり文脈によって意味が異なっています。今回の場合、ループバックアドレス含む全てのIPアドレスという意味です。ときに<code class="language-plaintext highlighter-rouge">0.0.0.0</code>のアドレスは<strong>ワイルドカードアドレス</strong>と言われることもあります。</p>
 
 <blockquote>
   <p>システムにおけるすべてのインタフェースのすべてのIPアドレス</p>
@@ -121,7 +121,7 @@
   <p><a href="http://news.mynavi.jp/news/2016/10/25/414/">IPv4アドレス「0.0.0.0」の意味は? | マイナビニュース</a></p>
 </blockquote>
 
-<p>本記事で紹介した<code class="highlighter-rouge">rails server</code>のコマンドは<code class="highlighter-rouge">binding</code>オプションによって<code class="highlighter-rouge">0.0.0.0</code>に明示的にバインドすることにより、外部からのアクセスも許可しています。</p>
+<p>本記事で紹介した<code class="language-plaintext highlighter-rouge">rails server</code>のコマンドは<code class="language-plaintext highlighter-rouge">binding</code>オプションによって<code class="language-plaintext highlighter-rouge">0.0.0.0</code>に明示的にバインドすることにより、外部からのアクセスも許可しています。</p>
 
 <h2 id="参考">参考</h2>
 

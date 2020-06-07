@@ -153,12 +153,12 @@
 
 <p><img src="/images/posts/css-animate/browser.png" alt="対応状況"></p>
 
-<p>IEは10以降、それ以外のメインブラウザの最新版は対応済みですね。ベンダープレフィックスも<code class="highlighter-rouge">-webkit-</code>さえつければ大丈夫そうです。IE9以前を気にするかもしれませんが、<a href="https://www.adobe.com/jp/devnet/dreamweaver/articles/html5pack_css3_part6.html">グレースフル・デグラデーション</a>の考え方で＜装飾＞という意味においてはCSSアニメーションプロパティはどんどん使っていい機能かと思います。</p>
+<p>IEは10以降、それ以外のメインブラウザの最新版は対応済みですね。ベンダープレフィックスも<code class="language-plaintext highlighter-rouge">-webkit-</code>さえつければ大丈夫そうです。IE9以前を気にするかもしれませんが、<a href="https://www.adobe.com/jp/devnet/dreamweaver/articles/html5pack_css3_part6.html">グレースフル・デグラデーション</a>の考え方で＜装飾＞という意味においてはCSSアニメーションプロパティはどんどん使っていい機能かと思います。</p>
 
 <h2 id="cssアニメーションの書き方">
 <a class="anchor" href="#css%E3%82%A2%E3%83%8B%E3%83%A1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>CSSアニメーションの書き方</h2>
 
-<p>ではCSSアニメーションはどう書くか？　キーワードは<code class="highlighter-rouge">@keyframes</code>と<code class="highlighter-rouge">animation</code>の２つです。</p>
+<p>ではCSSアニメーションはどう書くか？　キーワードは<code class="language-plaintext highlighter-rouge">@keyframes</code>と<code class="language-plaintext highlighter-rouge">animation</code>の２つです。</p>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">@keyframes</span> <span class="err">&lt;アニメーションの名前&gt;</span> <span class="p">{</span>
     <span class="nt">0</span><span class="o">%</span> <span class="p">{</span> <span class="c">/* 定義 */</span> <span class="p">}</span>
@@ -167,7 +167,7 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>こんな感じで0%から100%にかけて特定のタイミングでのアニメーションスタイル定義を書いていきます。次にそのアニメーション名を使った<code class="highlighter-rouge">animation</code>をクラス内に加えます。</p>
+<p>こんな感じで0%から100%にかけて特定のタイミングでのアニメーションスタイル定義を書いていきます。次にそのアニメーション名を使った<code class="language-plaintext highlighter-rouge">animation</code>をクラス内に加えます。</p>
 
 <div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">.&lt;</span><span class="nt">class</span><span class="err">名</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="nl">animation</span><span class="p">:</span> <span class="err">&lt;アニメーションの名前&gt;</span> <span class="err">&lt;秒数&gt;</span><span class="n">s</span> <span class="p">;</span>
@@ -193,14 +193,14 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>透過度0から透明度1へのアニメーション（<code class="highlighter-rouge">anim</code>）を2秒（<code class="highlighter-rouge">2s</code>）毎にループ（<code class="highlighter-rouge">infinite</code>）させてます。このアニメーションは<code class="highlighter-rouge">post-image</code>クラスに適応されます。実際に使用の際は<code class="highlighter-rouge">-webkit-</code>プレフィックス付きの定義も必要なことに注意してください。</p>
+<p>透過度0から透明度1へのアニメーション（<code class="language-plaintext highlighter-rouge">anim</code>）を2秒（<code class="language-plaintext highlighter-rouge">2s</code>）毎にループ（<code class="language-plaintext highlighter-rouge">infinite</code>）させてます。このアニメーションは<code class="language-plaintext highlighter-rouge">post-image</code>クラスに適応されます。実際に使用の際は<code class="language-plaintext highlighter-rouge">-webkit-</code>プレフィックス付きの定義も必要なことに注意してください。</p>
 
 <h2 id="どこからアニメーションの着想を得るか">
 <a class="anchor" href="#%E3%81%A9%E3%81%93%E3%81%8B%E3%82%89%E3%82%A2%E3%83%8B%E3%83%A1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E7%9D%80%E6%83%B3%E3%82%92%E5%BE%97%E3%82%8B%E3%81%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>どこからアニメーションの着想を得るか</h2>
 
 <p>といっても「アニメーションのCSSスタイル定義するの面倒くさい」とか「自分のやりたい動きをどう書けばいいかわからない」という人も多いかと思います。そんな人は<a href="https://daneden.me/animate/">Animate.css</a>のページを見てみるとよいかと思います。</p>
 
-<p>これらのアニメーションは全てCSSにて動いているのですが、使い回しの効きそうなCSSで表現できる典型的なアニメーションは大体網羅されていると思うので、ここからアニメーションスタイルをパクってくると良いかと思います（CSSのサイズを気にしないという方は<code class="highlighter-rouge">animate.css</code>をそのままサイトに持ってきてもいいですね）。</p>
+<p>これらのアニメーションは全てCSSにて動いているのですが、使い回しの効きそうなCSSで表現できる典型的なアニメーションは大体網羅されていると思うので、ここからアニメーションスタイルをパクってくると良いかと思います（CSSのサイズを気にしないという方は<code class="language-plaintext highlighter-rouge">animate.css</code>をそのままサイトに持ってきてもいいですね）。</p>
 
 <p>CSSコードは下記のコードから引っ張ってきてください。</p>
 

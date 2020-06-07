@@ -108,7 +108,7 @@
 
 <h2 id="ソースコード">ソースコード</h2>
 
-<p>実際使ったコード、ベンチマーク結果はこちらに上がってます。コードは<code class="highlighter-rouge">lib/tasks/batch.rake</code>、スキーマは<code class="highlighter-rouge">schema.rb</code>、シードデータは<code class="highlighter-rouge">db/*_seed.csv</code>、ベンチマーク結果はCircleCIをそれぞれ参照ください。</p>
+<p>実際使ったコード、ベンチマーク結果はこちらに上がってます。コードは<code class="language-plaintext highlighter-rouge">lib/tasks/batch.rake</code>、スキーマは<code class="language-plaintext highlighter-rouge">schema.rb</code>、シードデータは<code class="language-plaintext highlighter-rouge">db/*_seed.csv</code>、ベンチマーク結果はCircleCIをそれぞれ参照ください。</p>
 
 <p><a href="https://github.com/toshimaru/rdm-rails5.1">https://github.com/toshimaru/rdm-rails5.1</a></p>
 
@@ -139,15 +139,15 @@
 
 <h3 id="なんでもincludesパターン">なんでもincludesパターン</h3>
 
-<p><code class="highlighter-rouge">joins</code>で良いのになんでも<code class="highlighter-rouge">includes</code>で解決しようとしちゃうパターン。このへんは下記の解説に詳しいです。</p>
+<p><code class="language-plaintext highlighter-rouge">joins</code>で良いのになんでも<code class="language-plaintext highlighter-rouge">includes</code>で解決しようとしちゃうパターン。このへんは下記の解説に詳しいです。</p>
 
 <p><a href="https://qiita.com/k0kubun/items/80c5a5494f53bb88dc58">ActiveRecordのjoinsとpreloadとincludesとeager_loadの違い - Qiita</a></p>
 
 <h3 id="too-many-find_or_create_by-パターン">Too many find_or_create_by パターン</h3>
 
-<p><code class="highlighter-rouge">find_or_create_by</code>は、オブジェクトが存在する場合は取得、なければ作成って挙動をするやつです。これをループ内で使いまくっちゃうパターン。</p>
+<p><code class="language-plaintext highlighter-rouge">find_or_create_by</code>は、オブジェクトが存在する場合は取得、なければ作成って挙動をするやつです。これをループ内で使いまくっちゃうパターン。</p>
 
-<p>そんなときはSQLのUPSERTの機能を使うのが得策。具体的にはMySQLであれば<code class="highlighter-rouge">INSERT...ON DUPLICATE KEY UPDATE</code>です。</p>
+<p>そんなときはSQLのUPSERTの機能を使うのが得策。具体的にはMySQLであれば<code class="language-plaintext highlighter-rouge">INSERT...ON DUPLICATE KEY UPDATE</code>です。</p>
 
 <p>残念なことにUPSERTはActiveRecordの標準機能では提供されていないので、<a href="https://github.com/zdennis/activerecord-import">activerecord-import</a>などのgemを使って解決する必要があります。</p>
 
@@ -176,12 +176,12 @@
 <ol>
   <li>前提事項としてDBの最適化はしないと述べた</li>
   <li>
-<code class="highlighter-rouge">User.created_at</code> にINDEXを貼ってもINDEX効かない</li>
+<code class="language-plaintext highlighter-rouge">User.created_at</code> にINDEXを貼ってもINDEX効かない</li>
 </ol>
 
-<p><code class="highlighter-rouge">User.created_at</code>にINDEX(<code class="highlighter-rouge">index_users_on_created_at</code>)を貼ったあとの実行計画がこちらになります。</p>
+<p><code class="language-plaintext highlighter-rouge">User.created_at</code>にINDEX(<code class="language-plaintext highlighter-rouge">index_users_on_created_at</code>)を貼ったあとの実行計画がこちらになります。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &gt;= '2017-01-01') \G
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &gt;= '2017-01-01') \G
 *************************** 1. row ***************************
            id: 1
   select_type: UPDATE
@@ -206,7 +206,7 @@ possible_keys: index_users_on_created_at
 
 <p>テストとして条件の範囲を小さくした実行計画がこちらになります。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &gt;= '2018-01-01') \G
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &gt;= '2018-01-01') \G
 *************************** 1. row ***************************
            id: 1
   select_type: UPDATE
@@ -229,7 +229,7 @@ possible_keys: index_users_on_created_at
 
 <p>会場であった質問です。こちらはRails consoleで実際のコードを動かしてあげれば一目瞭然です。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Post.group(:user_id).select("user_id, SUM(like_count) AS like_count").order("like_count DESC") .limit(100)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Post.group(:user_id).select("user_id, SUM(like_count) AS like_count").order("like_count DESC") .limit(100)
   Post Load (976.6ms)  SELECT  user_id, SUM(like_count) AS like_count FROM `posts` GROUP BY `posts`.`user_id` ORDER BY like_count DESC LIMIT 11
 =&gt; #&lt;ActiveRecord::Relation [#&lt;Post id: nil, user_id: 2632, like_count: 832&gt;, #&lt;Post id: nil, user_id: 51965, like_count: 800&gt;, #&lt;Post id: nil, user_id: 25068, like_count: 783&gt;, ...]&gt;
 
@@ -238,7 +238,7 @@ possible_keys: index_users_on_created_at
 =&gt; [2632, 51965, 25068, 8515, 84933, 67763, 89631, 69494, 78805, 17541, 53344, 7618, 92652, 13704, 94308, 96778, ...
 </code></pre></div></div>
 
-<p>一つ目の<code class="highlighter-rouge">.select</code>を使ったコードはログに<code class="highlighter-rouge">Post Load</code>と出現している通り、Postモデルがロードされている一方、<code class="highlighter-rouge">.pluck</code>のほうでは<code class="highlighter-rouge">Post Load</code>とはなにも出ず単純に走ったクエリのみがログに出力されています。</p>
+<p>一つ目の<code class="language-plaintext highlighter-rouge">.select</code>を使ったコードはログに<code class="language-plaintext highlighter-rouge">Post Load</code>と出現している通り、Postモデルがロードされている一方、<code class="language-plaintext highlighter-rouge">.pluck</code>のほうでは<code class="language-plaintext highlighter-rouge">Post Load</code>とはなにも出ず単純に走ったクエリのみがログに出力されています。</p>
 
 <h3 id="紹介したアンチパターンどれくらいの件数で障害に繋がりそう">紹介したアンチパターン、どれくらいの件数で障害に繋がりそう？</h3>
 

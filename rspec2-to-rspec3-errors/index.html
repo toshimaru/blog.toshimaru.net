@@ -83,18 +83,18 @@
   
   <p>遊びで作ってるRailsアプリケーションのRSpecのバージョンを２から３に上げたら、２では全部通ってたテストが３にした途端テストが100個くらいFailした。一体何が起こっているかわからなかったのでRSpec3の挙動の違いを調べてみることにした。</p>
 
-<p><code class="highlighter-rouge">rspec-rails</code>を<code class="highlighter-rouge">bundle install</code>したあと<code class="highlighter-rouge">rspec:install</code>する。</p>
+<p><code class="language-plaintext highlighter-rouge">rspec-rails</code>を<code class="language-plaintext highlighter-rouge">bundle install</code>したあと<code class="language-plaintext highlighter-rouge">rspec:install</code>する。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails g rspec:install
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rails g rspec:install
 create  .rspec
 create  spec
 create  spec/spec_helper.rb
 create  spec/rails_helper.rb
 </code></pre></div></div>
 
-<p>今までなかった<code class="highlighter-rouge">rails_helper.rb</code>ってのが作られている。<code class="highlighter-rouge">scaffold</code>で生成されるspecディレクトリの構成はこう。</p>
+<p>今までなかった<code class="language-plaintext highlighter-rouge">rails_helper.rb</code>ってのが作られている。<code class="language-plaintext highlighter-rouge">scaffold</code>で生成されるspecディレクトリの構成はこう。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spec
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spec
 ├── controllers
 │   └── users_controller_spec.rb
 ├── helpers
@@ -115,9 +115,9 @@ create  spec/rails_helper.rb
         └── show.html.erb_spec.rb
 </code></pre></div></div>
 
-<p>試しに<code class="highlighter-rouge">spec/controllers/users_controller_spec.rb</code>を開いてみると冒頭がこんな感じになっていました。</p>
+<p>試しに<code class="language-plaintext highlighter-rouge">spec/controllers/users_controller_spec.rb</code>を開いてみると冒頭がこんな感じになっていました。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>require 'rails_helper'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>require 'rails_helper'
 </code></pre></div></div>
 
 <p><a href="http://willnet.in/126">RSpec 3 時代の設定ファイル rails_helper.rb について</a></p>
@@ -126,7 +126,7 @@ create  spec/rails_helper.rb
   <p>というわけで、これまで require ‘spec_helper’ としていた箇所の大部分は require ‘rails_helper’ に置換してあげる必要がありそうですね。パーフェクト Ruby on Rails のテストの章は require ‘spec_helper’ となっているので、RSpec 3 のリリース版を利用する場合は適宜読み替えをお願いします。</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">spec_helper</code>を<code class="highlighter-rouge">rails_helper</code>に変えて、それらの２ファイルの設定をRSpec3用に見直せば全てのテストが問題なく通るようになりました、とさ。</p>
+<p><code class="language-plaintext highlighter-rouge">spec_helper</code>を<code class="language-plaintext highlighter-rouge">rails_helper</code>に変えて、それらの２ファイルの設定をRSpec3用に見直せば全てのテストが問題なく通るようになりました、とさ。</p>
 
 <p>RSpec3よりruby1.8,ruby1.9をサポートしなくなったり新しいマッチャーが増えたりしてるので変更点を下記より再度確認してみるとよいと思います。</p>
 

@@ -109,7 +109,7 @@
 <h2 id="install-selenium-webdriver">
 <a class="anchor" href="#install-selenium-webdriver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install selenium-webdriver</h2>
 
-<p>まずは<code class="highlighter-rouge">poltergeist</code> gemの代わりに、<code class="highlighter-rouge">selenium-webdriver</code>をインストール。</p>
+<p>まずは<code class="language-plaintext highlighter-rouge">poltergeist</code> gemの代わりに、<code class="language-plaintext highlighter-rouge">selenium-webdriver</code>をインストール。</p>
 
 <div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-  gem "poltergeist"
 </span><span class="gi">+  gem "selenium-webdriver"
@@ -118,7 +118,7 @@
 <h2 id="change-capybarajavascript_driver">
 <a class="anchor" href="#change-capybarajavascript_driver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Change Capybara.javascript_driver</h2>
 
-<p>次に<code class="highlighter-rouge">Capybara.javascript_driver</code>を<code class="highlighter-rouge">:poltergeist</code>から<code class="highlighter-rouge">:selenium_chrome_headless</code>に変更します。</p>
+<p>次に<code class="language-plaintext highlighter-rouge">Capybara.javascript_driver</code>を<code class="language-plaintext highlighter-rouge">:poltergeist</code>から<code class="language-plaintext highlighter-rouge">:selenium_chrome_headless</code>に変更します。</p>
 
 <div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">- require "capybara/poltergeist"
 - Capybara.javascript_driver = :poltergeist
@@ -126,7 +126,7 @@
 + Capybara.javascript_driver = :selenium_chrome_headless
 </span></code></pre></div></div>
 
-<p>ちなみに<code class="highlighter-rouge">:selenium_chrome_headless</code>の設定は下記の変更の中でcapybara内に取り込まれています。</p>
+<p>ちなみに<code class="language-plaintext highlighter-rouge">:selenium_chrome_headless</code>の設定は下記の変更の中でcapybara内に取り込まれています。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Capybara</span><span class="p">.</span><span class="nf">register_driver</span> <span class="ss">:selenium_chrome_headless</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
   <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span>
@@ -144,7 +144,7 @@
 <h3 id="on-macos">
 <a class="anchor" href="#on-macos" aria-hidden="true"><span class="octicon octicon-link"></span></a>On MacOS</h3>
 
-<p><code class="highlighter-rouge">chromedriver</code> が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラクです。</p>
+<p><code class="language-plaintext highlighter-rouge">chromedriver</code> が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラクです。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>brew cask <span class="nb">install </span>chromedriver
 <span class="go">Updating Homebrew...
@@ -166,15 +166,15 @@ No changes to formulae.
 
 <ul>
   <li>
-<code class="highlighter-rouge">brew install chromedriver</code>ではinstallできないので注意（<code class="highlighter-rouge">brew cask</code>経由にすること）</li>
+<code class="language-plaintext highlighter-rouge">brew install chromedriver</code>ではinstallできないので注意（<code class="language-plaintext highlighter-rouge">brew cask</code>経由にすること）</li>
   <li>
-<code class="highlighter-rouge">chromedriver-helper</code> gem が入っているとうまく動かない場合があるので注意</li>
+<code class="language-plaintext highlighter-rouge">chromedriver-helper</code> gem が入っているとうまく動かない場合があるので注意</li>
 </ul>
 
 <h3 id="on-circleci">
 <a class="anchor" href="#on-circleci" aria-hidden="true"><span class="octicon octicon-link"></span></a>On CircleCI</h3>
 
-<p>CircleCI上では、<code class="highlighter-rouge">ruby:x.x-node-browsers</code>のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。</p>
+<p>CircleCI上では、<code class="language-plaintext highlighter-rouge">ruby:x.x-node-browsers</code>のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="na">docker</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">circleci/ruby:2.5-node-browsers</span>
@@ -187,7 +187,7 @@ No changes to formulae.
 
 <p>これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failures:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failures:
 
   1) Authentication authorization screenshot
      Failure/Error: before { visit signin_path }
@@ -197,7 +197,7 @@ No changes to formulae.
      # ./spec/features/authentication_pages_spec.rb:9:in `block (3 levels) in &lt;top (required)&gt;'
 </code></pre></div></div>
 
-<p><del>本当は<code class="highlighter-rouge">sudo: false</code>の設定で動かしたかったのですがそれだと上手くいかなかったので<code class="highlighter-rouge">sudo</code>で起動させて<code class="highlighter-rouge">chromium-chromedriver</code>をテスト前にInstallしてパスを通すという方法でテストを通しました。</del></p>
+<p><del>本当は<code class="language-plaintext highlighter-rouge">sudo: false</code>の設定で動かしたかったのですがそれだと上手くいかなかったので<code class="language-plaintext highlighter-rouge">sudo</code>で起動させて<code class="language-plaintext highlighter-rouge">chromium-chromedriver</code>をテスト前にInstallしてパスを通すという方法でテストを通しました。</del></p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">sudo</span><span class="pi">:</span> <span class="s">required</span>
 <span class="na">language</span><span class="pi">:</span> <span class="s">ruby</span>
@@ -210,7 +210,7 @@ No changes to formulae.
 
 <p><strong>追記（2019年9月17日）</strong></p>
 
-<p><code class="highlighter-rouge">sudo</code> 無しでも下記のような設定でいけました。</p>
+<p><code class="language-plaintext highlighter-rouge">sudo</code> 無しでも下記のような設定でいけました。</p>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">dist</span><span class="pi">:</span> <span class="s">bionic</span>
 <span class="na">addons</span><span class="pi">:</span>

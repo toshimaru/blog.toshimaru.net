@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-05T10:31:05+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-08T06:38:06+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
 
 &lt;p&gt;当日あった質問、発表してみての感想などを書きたいと思います。&lt;/p&gt;
 
@@ -22,13 +22,13 @@
 
 &lt;p&gt;質問の文脈としては「POROファイルの置き場ってどこ？」という内容でした。&lt;/p&gt;
 
-&lt;p&gt;発表中でPOROは「Modelの補助輪」という表現をしましたが、役割としてはModelにあたるので置き場所も&lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt;配下で問題ないと考えます。&lt;/p&gt;
+&lt;p&gt;発表中でPOROは「Modelの補助輪」という表現をしましたが、役割としてはModelにあたるので置き場所も&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt;配下で問題ないと考えます。&lt;/p&gt;
 
-&lt;p&gt;特別な置き場を作りたくなってしまうかもしれませんが、Railsの提供するMVCのレールを逸脱しない範囲で独自路線を作っていくのが個人的には良いアプローチかなと考えています。POROをモデルの延長線上にあるものと考えれば、&lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にPOROが配置されているのは不自然ではないかと思います。&lt;/p&gt;
+&lt;p&gt;特別な置き場を作りたくなってしまうかもしれませんが、Railsの提供するMVCのレールを逸脱しない範囲で独自路線を作っていくのが個人的には良いアプローチかなと考えています。POROをモデルの延長線上にあるものと考えれば、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にPOROが配置されているのは不自然ではないかと思います。&lt;/p&gt;
 
-&lt;p&gt;もちろん &lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt; の内部でドメイン毎にnamespace（module）を持たせファイルを構造化していくのはアリだと思います。例えば下記の例です。&lt;/p&gt;
+&lt;p&gt;もちろん &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt; の内部でドメイン毎にnamespace（module）を持たせファイルを構造化していくのはアリだと思います。例えば下記の例です。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;app/models
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;app/models
 ├── application_record.rb
 ├── domain1
 │   └── plain_object.rb
@@ -40,7 +40,7 @@
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にフラットにファイルを置いていくと、テーブル数増加・コード肥大化とともにものすごい数になってしまいます。意味のある単位でディレクトリ（module）を切っておくのは今すぐできる手軽な構造化という意味で、早いうちに導入しておくと良いと思います。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にフラットにファイルを置いていくと、テーブル数増加・コード肥大化とともにものすごい数になってしまいます。意味のある単位でディレクトリ（module）を切っておくのは今すぐできる手軽な構造化という意味で、早いうちに導入しておくと良いと思います。&lt;/p&gt;
 
 &lt;h3 id=&quot;trailblazer-について&quot;&gt;trailblazer について&lt;/h3&gt;
 
@@ -245,7 +245,7 @@
 
 &lt;p&gt;なぜRailsアプリケーションのModel層は限界を迎えてしまうのでしょうか？&lt;/p&gt;
 
-&lt;p&gt;Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、&lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルがあれば&lt;code class=&quot;highlighter-rouge&quot;&gt;UsersController&lt;/code&gt;があり、Controllerのそれぞれのアクションに&lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルが紐づくという形です。&lt;/p&gt;
+&lt;p&gt;Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルがあれば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UsersController&lt;/code&gt;があり、Controllerのそれぞれのアクションに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルが紐づくという形です。&lt;/p&gt;
 
 &lt;p&gt;しかし下図&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。&lt;/p&gt;
 
@@ -302,7 +302,7 @@
 
 &lt;h3 id=&quot;concerns&quot;&gt;Concerns&lt;/h3&gt;
 
-&lt;p&gt;まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Recording&lt;/code&gt; Class&lt;sup id=&quot;fnref:6&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:6&quot; class=&quot;footnote&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;）。&lt;/p&gt;
+&lt;p&gt;まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Recording&lt;/code&gt; Class&lt;sup id=&quot;fnref:6&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:6&quot; class=&quot;footnote&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;）。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/concerns.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
@@ -310,7 +310,7 @@
 
 &lt;p&gt;&lt;a href=&quot;https://signalvnoise.com/posts/3372-put-chubby-models-on-a-diet-with-concerns&quot;&gt;Put chubby models on a diet with concerns&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;Modelの持っている能力（ability = &lt;code class=&quot;highlighter-rouge&quot;&gt;-able&lt;/code&gt; suffix）に着目してConcern moduleに切り出していくのが、Rails Wayっぽさがあると言えます。&lt;/p&gt;
+&lt;p&gt;Modelの持っている能力（ability = &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-able&lt;/code&gt; suffix）に着目してConcern moduleに切り出していくのが、Rails Wayっぽさがあると言えます。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/models/concerns/concernable.rb&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Concernable&lt;/span&gt;
@@ -324,11 +324,11 @@
 
 &lt;p&gt;RailsにおいてテーブルとModelは原則的に1対1で結びつきます。しかし、STIを使えば1つのテーブルで複数Model紐付けることができます。&lt;/p&gt;
 
-&lt;p&gt;下図は&lt;code class=&quot;highlighter-rouge&quot;&gt;players&lt;/code&gt;という単一テーブルに複数のクラスが結びついている図です&lt;sup id=&quot;fnref:5&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:5&quot; class=&quot;footnote&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;p&gt;下図は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;players&lt;/code&gt;という単一テーブルに複数のクラスが結びついている図です&lt;sup id=&quot;fnref:5&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:5&quot; class=&quot;footnote&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/sti.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Railsのコード例です。 &lt;code class=&quot;highlighter-rouge&quot;&gt;companies&lt;/code&gt; テーブルに紐づく &lt;code class=&quot;highlighter-rouge&quot;&gt;Firm&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Client&lt;/code&gt;モデルの例だと下記の通りです。&lt;/p&gt;
+&lt;p&gt;Railsのコード例です。 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;companies&lt;/code&gt; テーブルに紐づく &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Firm&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Client&lt;/code&gt;モデルの例だと下記の通りです。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/models/company.rb&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Company&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
@@ -349,7 +349,7 @@
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/polymorphic.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;上図の場合、通常のRails DB設計であれば &lt;code class=&quot;highlighter-rouge&quot;&gt;pictures&lt;/code&gt;テーブルが&lt;code class=&quot;highlighter-rouge&quot;&gt;employee_id&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;product_id&lt;/code&gt;を持っているべきですが、&lt;code class=&quot;highlighter-rouge&quot;&gt;imagable_id&lt;/code&gt;という1つカラムで複数のテーブルを従属させることができています。&lt;/p&gt;
+&lt;p&gt;上図の場合、通常のRails DB設計であれば &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pictures&lt;/code&gt;テーブルが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;employee_id&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;product_id&lt;/code&gt;を持っているべきですが、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;imagable_id&lt;/code&gt;という1つカラムで複数のテーブルを従属させることができています。&lt;/p&gt;
 
 &lt;p&gt;これをRailsのコードであらわすと下記の通りです。&lt;/p&gt;
 
@@ -375,7 +375,7 @@
 
 &lt;h3 id=&quot;accepts_nested_attributes_for&quot;&gt;accepts_nested_attributes_for&lt;/h3&gt;
 
-&lt;p&gt;ネストされたアトリビュートで関連リソースの作成・更新・削除を行うのが&lt;code class=&quot;highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;です。&lt;/p&gt;
+&lt;p&gt;ネストされたアトリビュートで関連リソースの作成・更新・削除を行うのが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;です。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
@@ -391,7 +391,7 @@
 &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Member&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:member&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;ただしこの&lt;code class=&quot;highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;はDHH自らが「消したい」と発言しており&lt;sup id=&quot;fnref:7&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:7&quot; class=&quot;footnote&quot;&gt;7&lt;/a&gt;&lt;/sup&gt;、積極的に使うのはやや躊躇われるかもしれません。&lt;/p&gt;
+&lt;p&gt;ただしこの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;はDHH自らが「消したい」と発言しており&lt;sup id=&quot;fnref:7&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:7&quot; class=&quot;footnote&quot;&gt;7&lt;/a&gt;&lt;/sup&gt;、積極的に使うのはやや躊躇われるかもしれません。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/dhh.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
@@ -404,7 +404,7 @@
       &lt;li&gt;⚠️『SQLアンチパターン』5章 EAV&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Value Object&lt;/strong&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;compose_of&lt;/code&gt;)
+  &lt;li&gt;&lt;strong&gt;Value Object&lt;/strong&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compose_of&lt;/code&gt;)
     &lt;ul&gt;
       &lt;li&gt;複数カラムをValueオブジェクトとして展開するときに便利&lt;/li&gt;
     &lt;/ul&gt;
@@ -602,7 +602,7 @@
   &lt;/li&gt;
   &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt; (Bulk Import)
     &lt;ul&gt;
-      &lt;li&gt;Rails 6: &lt;code class=&quot;highlighter-rouge&quot;&gt;insert_all&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;upsert_all&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;Rails 6: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;insert_all&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upsert_all&lt;/code&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/carrierwaveuploader/carrierwave&quot;&gt;carrierwave&lt;/a&gt;, &lt;a href=&quot;https://github.com/shrinerb/shrine&quot;&gt;shrine&lt;/a&gt; (File Uploader)
@@ -613,27 +613,27 @@
   &lt;/li&gt;
   &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/norman/friendly_id&quot;&gt;friendly_id&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;ActiveRecord: &lt;code class=&quot;highlighter-rouge&quot;&gt;to_param&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;ActiveRecord: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;to_param&lt;/code&gt;&lt;/li&gt;
       &lt;li&gt;参考: &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveRecord/Integration.html#method-i-to_param&quot;&gt;ActiveRecord::Integration&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/magnusvk/counter_culture&quot;&gt;counter_culture&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;ActiveRecord: &lt;code class=&quot;highlighter-rouge&quot;&gt;counter_cache&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;ActiveRecord: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;counter_cache&lt;/code&gt;&lt;/li&gt;
       &lt;li&gt;参考: &lt;a href=&quot;https://railsguides.jp/association_basics.html#belongs-to%E3%81%AE%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-counter-cache&quot;&gt;Active Record の関連付け&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;ID/Password認証
     &lt;ul&gt;
-      &lt;li&gt;ActiveModel: &lt;code class=&quot;highlighter-rouge&quot;&gt;has_secure_password&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;ActiveModel: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;has_secure_password&lt;/code&gt;&lt;/li&gt;
       &lt;li&gt;参考: &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html&quot;&gt;ActiveModel::SecurePassword::ClassMethods&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/rubyconfig/config&quot;&gt;config&lt;/a&gt; (YAML Config Management)
     &lt;ul&gt;
       &lt;li&gt;Rails Custom configuration:&lt;/li&gt;
-      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Rails::Application.config_for&lt;/code&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;config.x&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rails::Application.config_for&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.x&lt;/code&gt;&lt;/li&gt;
       &lt;li&gt;参考: &lt;a href=&quot;https://railsguides.jp/configuring.html#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E8%A8%AD%E5%AE%9A&quot;&gt;Rails アプリケーションを設定する - Railsガイド&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
@@ -646,7 +646,7 @@
 &lt;ul&gt;
   &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/pry/pry&quot;&gt;pry&lt;/a&gt;
     &lt;ul&gt;
-      &lt;li&gt;Ruby 2.4: &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.irb&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;Ruby 2.4: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;binding.irb&lt;/code&gt;&lt;/li&gt;
       &lt;li&gt;Ruby 2.7: REPL Syntax Highlighting&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
@@ -695,7 +695,7 @@
 
 &lt;h3 id=&quot;form-model&quot;&gt;Form Model&lt;/h3&gt;
 
-&lt;p&gt;Form Modelとは、&lt;code class=&quot;highlighter-rouge&quot;&gt;include ActiveModel&lt;/code&gt;したRubyクラスのことです。&lt;/p&gt;
+&lt;p&gt;Form Modelとは、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include ActiveModel&lt;/code&gt;したRubyクラスのことです。&lt;/p&gt;
 
 &lt;p&gt;巷ではForm Objectと呼ばれることが多いですが、＜Formに特化したActiveModel＞という意味で、あえてForm Modelと本発表では呼んでいます。&lt;/p&gt;
 
@@ -728,7 +728,7 @@
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;2以上&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;の代わりとして、複雑なフォームの組み立て時に利用&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;の代わりとして、複雑なフォームの組み立て時に利用&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
@@ -746,13 +746,13 @@
 
 &lt;p&gt;POROとはPlain Old Ruby Objectの略です。元ネタはPoEAAのPOJO (Plain Old Java Object)です。&lt;/p&gt;
 
-&lt;p&gt;POROは、ActiveRecordの機能に依存しない純粋なRuby実装です。なので&lt;code class=&quot;highlighter-rouge&quot;&gt;include ActiveModel&lt;/code&gt;しているRubyクラスは個人的にはPOROとは呼んでいません。&lt;/p&gt;
+&lt;p&gt;POROは、ActiveRecordの機能に依存しない純粋なRuby実装です。なので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include ActiveModel&lt;/code&gt;しているRubyクラスは個人的にはPOROとは呼んでいません。&lt;/p&gt;
 
 &lt;p&gt;純粋なRuby実装なのである意味、 &lt;strong&gt;Ruby Way&lt;/strong&gt; とも言うことができます。&lt;/p&gt;
 
 &lt;p&gt;POROの主な用途としてはModelの補助輪的な役割だと考えています。&lt;/p&gt;
 
-&lt;p&gt;例えば下記の例ではクラスメソッド&lt;code class=&quot;highlighter-rouge&quot;&gt;create!&lt;/code&gt;呼び出し時に引数を受け取って&lt;code class=&quot;highlighter-rouge&quot;&gt;create!&lt;/code&gt;インスタンスメソッド内でトランザクションを張って複数モデルの更新を行っています。&lt;/p&gt;
+&lt;p&gt;例えば下記の例ではクラスメソッド&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create!&lt;/code&gt;呼び出し時に引数を受け取って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create!&lt;/code&gt;インスタンスメソッド内でトランザクションを張って複数モデルの更新を行っています。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PostWithNotifications&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;creator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
@@ -773,7 +773,7 @@
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;このRubyクラスの場合、＜&lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt;作成とともに&lt;code class=&quot;highlighter-rouge&quot;&gt;Notification&lt;/code&gt;も作成する＞という複数モデル更新のユースケースをPOROに閉じ込めたということができるでしょう。&lt;/p&gt;
+&lt;p&gt;このRubyクラスの場合、＜&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt;作成とともに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Notification&lt;/code&gt;も作成する＞という複数モデル更新のユースケースをPOROに閉じ込めたということができるでしょう。&lt;/p&gt;
 
 &lt;h3 id=&quot;service-class&quot;&gt;Service Class&lt;/h3&gt;
 
@@ -841,7 +841,7 @@
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;この例では＜&lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;のサインアップ＞というユースケースにのみ特化したActiveRecordのModelを作成しています。&lt;/p&gt;
+&lt;p&gt;この例では＜&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;のサインアップ＞というユースケースにのみ特化したActiveRecordのModelを作成しています。&lt;/p&gt;
 
 &lt;p&gt;ただこの実装に関しては、1 Table 1 ModelというRailsのパラダイム（規約）を壊すことになってしまうので、いささか危険思想という印象があります。&lt;/p&gt;
 
@@ -975,7 +975,7 @@
 
 &lt;h2 id=&quot;なぜgithub-actionなのか&quot;&gt;なぜGitHub Actionなのか？&lt;/h2&gt;
 
-&lt;p&gt;以前に書いた記事のようにCircleCIでも問題はないものの、GitHub ActionsはデフォルトでPull Requestにコメント可能な &lt;code class=&quot;highlighter-rouge&quot;&gt;GITHUB_TOKEN&lt;/code&gt; を吐くことが可能で、そのへんのtoken周りの煩雑な設定が不要という点でCircleCIよりアドバンテージがあると言えます。&lt;/p&gt;
+&lt;p&gt;以前に書いた記事のようにCircleCIでも問題はないものの、GitHub ActionsはデフォルトでPull Requestにコメント可能な &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GITHUB_TOKEN&lt;/code&gt; を吐くことが可能で、そのへんのtoken周りの煩雑な設定が不要という点でCircleCIよりアドバンテージがあると言えます。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token&quot;&gt;Authenticating with the GITHUB_TOKEN - GitHub Help&lt;/a&gt;&lt;/p&gt;
 
@@ -1044,7 +1044,7 @@
 
 &lt;h2 id=&quot;レビューコメント&quot;&gt;レビューコメント&lt;/h2&gt;
 
-&lt;p&gt;設定がうまくいっていれば、下記のように &lt;code class=&quot;highlighter-rouge&quot;&gt;github-actions&lt;/code&gt; からの自動レビューコメントが付きます。&lt;/p&gt;
+&lt;p&gt;設定がうまくいっていれば、下記のように &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;github-actions&lt;/code&gt; からの自動レビューコメントが付きます。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/rubocop-actions/rubocop-by-github-actions.png&quot; alt=&quot;comment by github-actions&quot; /&gt;&lt;/p&gt;
 
@@ -1060,8 +1060,8 @@
 
 &lt;ul&gt;
   &lt;li&gt;bundler cache の設定&lt;/li&gt;
-  &lt;li&gt;rubocop cache の設定（&lt;code class=&quot;highlighter-rouge&quot;&gt;~/.cache/rubocop_cache&lt;/code&gt;）&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;--parallel&lt;/code&gt; オプションの追加&lt;/li&gt;
+  &lt;li&gt;rubocop cache の設定（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.cache/rubocop_cache&lt;/code&gt;）&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--parallel&lt;/code&gt; オプションの追加&lt;/li&gt;
 &lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rubocop" /><category term="github" /><category term="ci" /><category term="review" /><summary type="html">過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
 
 &lt;p&gt;特定日付が範囲内にあるかの判定を行うには &lt;a href=&quot;https://railsdoc.github.io/classes/ActiveSupport/TimeWithZone.html#method-i-between-3F&quot;&gt;ActiveSupport::TimeWithZone#between?&lt;/a&gt; が使える。&lt;/p&gt;
@@ -1082,7 +1082,7 @@
 &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;ただ上記の書き方の場合、始端もしくは終端が &lt;code class=&quot;highlighter-rouge&quot;&gt;nil&lt;/code&gt; の場合にエラーが出てしまう。&lt;/p&gt;
+&lt;p&gt;ただ上記の書き方の場合、始端もしくは終端が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nil&lt;/code&gt; の場合にエラーが出てしまう。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;today&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;between?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;no&quot;&gt;ArgumentError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;comparison&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;failed&lt;/span&gt;
@@ -1109,7 +1109,7 @@
 &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;下記の通り範囲内から外れた場合は &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt; が帰ってくる。&lt;/p&gt;
+&lt;p&gt;下記の通り範囲内から外れた場合は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;false&lt;/code&gt; が帰ってくる。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cover?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
@@ -1254,7 +1254,7 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 
 &lt;h3 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h3&gt;
 
-&lt;p&gt;適当なディレクトリを用意して、&lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
+&lt;p&gt;適当なディレクトリを用意して、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
 
 &lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.7&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nodejs yarnpkg
@@ -1277,12 +1277,12 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt;でyarnを入れると、yarn という実行ファイルではなく &lt;code class=&quot;highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt; という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt;でyarnを入れると、yarn という実行ファイルではなく &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt; という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;初期gemfile&quot;&gt;初期Gemfile&lt;/h3&gt;
 
-&lt;p&gt;下記の通り&lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;と&lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;を用意します。&lt;/p&gt;
+&lt;p&gt;下記の通り&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;を用意します。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'https://rubygems.org'&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'rails'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'~&amp;gt;6'&lt;/span&gt;
@@ -1296,12 +1296,12 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;現段階では &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; は空でOK&lt;/li&gt;
+  &lt;li&gt;現段階では &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; は空でOK&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;entrypointsh&quot;&gt;entrypoint.sh&lt;/h3&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;で&lt;code class=&quot;highlighter-rouge&quot;&gt;ENTRYPOINT&lt;/code&gt;として定義している &lt;code class=&quot;highlighter-rouge&quot;&gt;entrypoint.sh&lt;/code&gt; です。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ENTRYPOINT&lt;/code&gt;として定義している &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;entrypoint.sh&lt;/code&gt; です。&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
@@ -1315,7 +1315,7 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 
 &lt;h3 id=&quot;docker-composeyml&quot;&gt;docker-compose.yml&lt;/h3&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
 
 &lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3'&lt;/span&gt;
 &lt;span class=&quot;na&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
@@ -1338,22 +1338,22 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 
 &lt;ul&gt;
   &lt;li&gt;MySQL は 8.0 （現時点の最新バージョン）を使用&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD&lt;/code&gt; を設定することで &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt; が空でもrootで接続できるようにしておく&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD&lt;/code&gt; を設定することで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;password&lt;/code&gt; が空でもrootで接続できるようにしておく&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;rails-new&quot;&gt;rails new&lt;/h3&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; のコマンドをwebコンテナ上で実行してRailsのファイル群を生成します。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails new&lt;/code&gt; のコマンドをwebコンテナ上で実行してRailsのファイル群を生成します。&lt;/p&gt;
 
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rails new &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mysql
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;--force&lt;/code&gt; で既存ファイルを上書き&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--force&lt;/code&gt; で既存ファイルを上書き&lt;/li&gt;
   &lt;li&gt;DBはmysqlを指定&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Railsのファイル群が &lt;code class=&quot;highlighter-rouge&quot;&gt;rails new&lt;/code&gt; コマンドによって出来上がったので build します。&lt;/p&gt;
+&lt;p&gt;Railsのファイル群が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails new&lt;/code&gt; コマンドによって出来上がったので build します。&lt;/p&gt;
 
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose build
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1362,7 +1362,7 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 
 &lt;p&gt;このままではDBに接続できません。なぜならば host 名を変更する必要があるからです。&lt;/p&gt;
 
-&lt;p&gt;下記の通り &lt;code class=&quot;highlighter-rouge&quot;&gt;config/database.yml&lt;/code&gt; のhostの部分を &lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt; に置き換えましょう。&lt;/p&gt;
+&lt;p&gt;下記の通り &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config/database.yml&lt;/code&gt; のhostの部分を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt; に置き換えましょう。&lt;/p&gt;
 
 &lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;default&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;adapter&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mysql2&lt;/span&gt;
@@ -1380,9 +1380,9 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;host&lt;/code&gt; に &lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt; を設定
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;host&lt;/code&gt; に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt; を設定
     &lt;ul&gt;
-      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt; はコンテナ名になります&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt; はコンテナ名になります&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
@@ -1392,20 +1392,20 @@ HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみ�
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose up
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;localhost:3000&lt;/code&gt; でRailsが立ち上がるのでアクセスしてみましょう。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost:3000&lt;/code&gt; でRailsが立ち上がるのでアクセスしてみましょう。&lt;/p&gt;
 
 &lt;h2 id=&quot;error-caching_sha2_password-could-not-be-loaded&quot;&gt;Error: caching_sha2_password could not be loaded&lt;/h2&gt;
 
 &lt;p&gt;しかしここでRailsに接続すると、下記のようなエラーが発生します。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ActiveRecord::NoDatabaseError
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ActiveRecord::NoDatabaseError
 
 Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu/mariadb19/plugin/caching_sha2_password.so: cannot open shared object file: No such file or directory
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;これはwebコンテナが mysql 8.0 の&lt;code class=&quot;highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt;認証方式に対応していないためです。&lt;/p&gt;
+&lt;p&gt;これはwebコンテナが mysql 8.0 の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt;認証方式に対応していないためです。&lt;/p&gt;
 
-&lt;p&gt;下記の手順で &lt;code class=&quot;highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; を &lt;code class=&quot;highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;（旧来の認証方式）に変更しましょう。&lt;/p&gt;
+&lt;p&gt;下記の手順で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;（旧来の認証方式）に変更しましょう。&lt;/p&gt;
 
 &lt;h3 id=&quot;dbコンテナでmysqlクライアント起動&quot;&gt;DBコンテナでmysqlクライアント起動&lt;/h3&gt;
 
@@ -1426,7 +1426,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 &lt;p&gt;下記のクエリでユーザー一覧とその認証方式が閲覧できます。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
 +------------------+-----------+-----------------------+
 | User             | Host      | plugin                |
 +------------------+-----------+-----------------------+
@@ -1439,9 +1439,9 @@ Server version: 8.0.18 MySQL Community Server - GPL
 5 rows in set (0.00 sec)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;全て &lt;code class=&quot;highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; に設定されています。これを&lt;code class=&quot;highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;に変更します。&lt;/p&gt;
+&lt;p&gt;全て &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; に設定されています。これを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;に変更します。&lt;/p&gt;
 
-&lt;p&gt;今回対象となる &lt;code class=&quot;highlighter-rouge&quot;&gt;root@%&lt;/code&gt; のユーザー設定を &lt;code class=&quot;highlighter-rouge&quot;&gt;ALTER USER&lt;/code&gt; を使って変更しましょう。&lt;/p&gt;
+&lt;p&gt;今回対象となる &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root@%&lt;/code&gt; のユーザー設定を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ALTER USER&lt;/code&gt; を使って変更しましょう。&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;USER&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'%'&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IDENTIFIED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql_native_password&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;-- Query OK, 0 rows affected (0.02 sec)&lt;/span&gt;
@@ -1449,7 +1449,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 &lt;p&gt;変更されました。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
 +------------------+-----------+-----------------------+
 | User             | Host      | plugin                |
 +------------------+-----------+-----------------------+
@@ -1464,7 +1464,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 &lt;h2 id=&quot;yay-youre-on-rails&quot;&gt;“Yay! You’re on Rails!”&lt;/h2&gt;
 
-&lt;p&gt;DBが作成されていないよ、というメッセージが出るので &lt;code class=&quot;highlighter-rouge&quot;&gt;db:prepare&lt;/code&gt; でテーブルを作成します。&lt;/p&gt;
+&lt;p&gt;DBが作成されていないよ、というメッセージが出るので &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db:prepare&lt;/code&gt; でテーブルを作成します。&lt;/p&gt;
 
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;web bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rails db:prepare
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1863,7 +1863,7 @@ End: 99
 
 &lt;h2 id=&quot;goroutine-を使う&quot;&gt;Goroutine を使う&lt;/h2&gt;
 
-&lt;p&gt;Goの並行処理といえば Goroutine。こいつを使うには処理を関数化して &lt;code class=&quot;highlighter-rouge&quot;&gt;go&lt;/code&gt; というキーワードを付けるだけです。&lt;/p&gt;
+&lt;p&gt;Goの並行処理といえば Goroutine。こいつを使うには処理を関数化して &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go&lt;/code&gt; というキーワードを付けるだけです。&lt;/p&gt;
 
 &lt;p&gt;下記のように変更します。&lt;/p&gt;
 
@@ -1925,14 +1925,14 @@ End: 99
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;int&lt;/code&gt; 型の Channel を &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt; する&lt;/li&gt;
-  &lt;li&gt;ループ内の Goroutine の中で↑で作成した Channel に値、&lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt; を送信&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;int&lt;/code&gt; 型の Channel を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;make&lt;/code&gt; する&lt;/li&gt;
+  &lt;li&gt;ループ内の Goroutine の中で↑で作成した Channel に値、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;i&lt;/code&gt; を送信&lt;/li&gt;
   &lt;li&gt;2回目のループ内で Channel の値を受信して、Printする&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;実行すると下記の通り、Goroutine から受信される値の順番はバラバラで出力されました。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ go run channel.go
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ go run channel.go
 End: 95
 End: 98
 End: 5
@@ -1946,9 +1946,9 @@ End: 99
 
 &lt;h2 id=&quot;goroutine--waitgroup-を使う&quot;&gt;Goroutine + WaitGroup を使う&lt;/h2&gt;
 
-&lt;p&gt;しかし Channel を使うよりももっと良い書き方があるんです！ それが &lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; です。&lt;/p&gt;
+&lt;p&gt;しかし Channel を使うよりももっと良い書き方があるんです！ それが &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; です。&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; は複数の Goroutine の実行を待ってくれます。今回のプログラムの場合、下記のように書くことができます。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; は複数の Goroutine の実行を待ってくれます。今回のプログラムの場合、下記のように書くことができます。&lt;/p&gt;
 
 &lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// waitgroup.go&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
@@ -1976,10 +1976,10 @@ End: 99
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を宣言&lt;/li&gt;
-  &lt;li&gt;ループ内の Goroutine の処理の手前で &lt;code class=&quot;highlighter-rouge&quot;&gt;Add(1)&lt;/code&gt; してグループをインクリメントする&lt;/li&gt;
-  &lt;li&gt;Goroutine 内の最後で &lt;code class=&quot;highlighter-rouge&quot;&gt;Done()&lt;/code&gt; して Goroutine の処理が終わったことを &lt;code class=&quot;highlighter-rouge&quot;&gt;WaitGroup&lt;/code&gt; に教えてあげる&lt;/li&gt;
-  &lt;li&gt;ループ終了後に、&lt;code class=&quot;highlighter-rouge&quot;&gt;Wait()&lt;/code&gt; して &lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; の &lt;code class=&quot;highlighter-rouge&quot;&gt;Done&lt;/code&gt; を待つ&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を宣言&lt;/li&gt;
+  &lt;li&gt;ループ内の Goroutine の処理の手前で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add(1)&lt;/code&gt; してグループをインクリメントする&lt;/li&gt;
+  &lt;li&gt;Goroutine 内の最後で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Done()&lt;/code&gt; して Goroutine の処理が終わったことを &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WaitGroup&lt;/code&gt; に教えてあげる&lt;/li&gt;
+  &lt;li&gt;ループ終了後に、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Wait()&lt;/code&gt; して &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Done&lt;/code&gt; を待つ&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;実行すると下記の出力を得ることができます。&lt;/p&gt;
@@ -2002,7 +2002,7 @@ End: 70
 
 &lt;p&gt;そんなときに使えるのが&lt;a href=&quot;https://godoc.org/golang.org/x/sync/errgroup&quot;&gt;errgroup&lt;/a&gt;です。errgroup を使ったコードを下記に示します。&lt;/p&gt;
 
-&lt;p&gt;※下記のコードサンプル内では &lt;code class=&quot;highlighter-rouge&quot;&gt;i&lt;/code&gt; が90より大きい場合にエラーが発生するとしています。&lt;/p&gt;
+&lt;p&gt;※下記のコードサンプル内では &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;i&lt;/code&gt; が90より大きい場合にエラーが発生するとしています。&lt;/p&gt;
 
 &lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// errgroup.go&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
@@ -2036,10 +2036,10 @@ End: 70
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;golang.org/x/sync/errgroup&lt;/code&gt; をimportして &lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup.Group&lt;/code&gt; を宣言&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; 内で Goroutine の処理を定義&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; して &lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; で実行した Goroutine を待つ&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; の処理でエラーがあれば、一番最初のエラーを &lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; は返す&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;golang.org/x/sync/errgroup&lt;/code&gt; をimportして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup.Group&lt;/code&gt; を宣言&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; 内で Goroutine の処理を定義&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; して &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; で実行した Goroutine を待つ&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; の処理でエラーがあれば、一番最初のエラーを &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; は返す&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;実行すると下記の出力を得ることができます。&lt;/p&gt;
@@ -2062,13 +2062,13 @@ End: 74
 exit status 1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;全ての Goroutine を実行して最初に出会ったエラー、 &lt;code class=&quot;highlighter-rouge&quot;&gt;Error: 96&lt;/code&gt; が &lt;code class=&quot;highlighter-rouge&quot;&gt;Error occurred: 96&lt;/code&gt; として処理の最後で出力されていることがわかります。&lt;/p&gt;
+&lt;p&gt;全ての Goroutine を実行して最初に出会ったエラー、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Error: 96&lt;/code&gt; が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Error occurred: 96&lt;/code&gt; として処理の最後で出力されていることがわかります。&lt;/p&gt;
 
 &lt;h2 id=&quot;goroutine--errgroup--context-を使う&quot;&gt;Goroutine + errgroup + context を使う&lt;/h2&gt;
 
 &lt;p&gt;もう少し踏み込んで高度なエラー処理をしてみましょう。エラーが発生したときに後続の Goroutine をキャンセルしたいという場合はどうしたらよいでしょうか？&lt;/p&gt;
 
-&lt;p&gt;これは &lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; に加えて、&lt;a href=&quot;https://golang.org/pkg/context/&quot;&gt;context&lt;/a&gt;を組み合わせて使えば実現できます。&lt;/p&gt;
+&lt;p&gt;これは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; に加えて、&lt;a href=&quot;https://golang.org/pkg/context/&quot;&gt;context&lt;/a&gt;を組み合わせて使えば実現できます。&lt;/p&gt;
 
 &lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// errgroup_cancel.go&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
@@ -2111,8 +2111,8 @@ exit status 1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup.WithContext()&lt;/code&gt; を使って、&lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; と &lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt; を生成&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; 内でキャンセルされたときの処理を &lt;code class=&quot;highlighter-rouge&quot;&gt;case &amp;lt;-ctx.Done():&lt;/code&gt; 内に記述&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup.WithContext()&lt;/code&gt; を使って、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; と &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;context&lt;/code&gt; を生成&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; 内でキャンセルされたときの処理を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;case &amp;lt;-ctx.Done():&lt;/code&gt; 内に記述&lt;/li&gt;
   &lt;li&gt;non-nil error が返されると context はキャンセルされ、後続の Goroutine がキャンセルされる&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -2134,13 +2134,13 @@ Cenceled: 53
 exit status 1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Error: 98&lt;/code&gt; が発生し、後続の Goroutine がキャンセルされていることがわかります。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Error: 98&lt;/code&gt; が発生し、後続の Goroutine がキャンセルされていることがわかります。&lt;/p&gt;
 
 &lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;複数の Goroutine を取り扱う場合、&lt;code class=&quot;highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を使って制御（&lt;code class=&quot;highlighter-rouge&quot;&gt;Add&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Done&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Wait&lt;/code&gt;）すると良い&lt;/li&gt;
-  &lt;li&gt;複数の Goroutine をエラーハンドリングとともに取り扱う場合、 &lt;code class=&quot;highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; を使って制御（&lt;code class=&quot;highlighter-rouge&quot;&gt;Go&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Wait&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;WithContext&lt;/code&gt;）すると良い&lt;/li&gt;
+  &lt;li&gt;複数の Goroutine を取り扱う場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を使って制御（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Done&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Wait&lt;/code&gt;）すると良い&lt;/li&gt;
+  &lt;li&gt;複数の Goroutine をエラーハンドリングとともに取り扱う場合、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; を使って制御（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Go&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Wait&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WithContext&lt;/code&gt;）すると良い&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;参考情報&quot;&gt;参考情報&lt;/h2&gt;
@@ -2356,7 +2356,7 @@ exit status 1
           &lt;li&gt;いうなれば モノリシック・マイクロサービス という状況です&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
-      &lt;li&gt;Rails特有のあの 「&lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt; して &lt;code class=&quot;highlighter-rouge&quot;&gt;rails server&lt;/code&gt; すればアプリケーションが動く」というRailsキメてる感じがない&lt;/li&gt;
+      &lt;li&gt;Rails特有のあの 「&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt; して &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails server&lt;/code&gt; すればアプリケーションが動く」というRailsキメてる感じがない&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;個人GitHubアカウントが使えない
@@ -2505,8 +2505,8 @@ exit status 1
 &lt;p&gt;Railsモデルは下記のような状態です。&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;ユーザー（&lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;）は複数の記事（&lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt;）データをもっている&lt;/li&gt;
-  &lt;li&gt;ユーザー（&lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;）は１つのプロフィール（&lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt;）データをもっている&lt;/li&gt;
+  &lt;li&gt;ユーザー（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;）は複数の記事（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt;）データをもっている&lt;/li&gt;
+  &lt;li&gt;ユーザー（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;）は１つのプロフィール（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt;）データをもっている&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
@@ -2525,7 +2525,7 @@ exit status 1
 
 &lt;h2 id=&quot;has_oneをもったモデルをスキップする&quot;&gt;has_oneをもったモデルをスキップする&lt;/h2&gt;
 
-&lt;p&gt;やりたいこととしてはこのモデル構成の中心にいる &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; の関連をスキップして &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; と &lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt; を直接関連付けてやることです。つまり &lt;strong&gt;User has_one Profile&lt;/strong&gt;, &lt;strong&gt;User has_many Posts&lt;/strong&gt; の関係を、&lt;strong&gt;Profile has_many Posts&lt;/strong&gt; の関係にしちゃおう、ということです。&lt;/p&gt;
+&lt;p&gt;やりたいこととしてはこのモデル構成の中心にいる &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt; の関連をスキップして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; と &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt; を直接関連付けてやることです。つまり &lt;strong&gt;User has_one Profile&lt;/strong&gt;, &lt;strong&gt;User has_many Posts&lt;/strong&gt; の関係を、&lt;strong&gt;Profile has_many Posts&lt;/strong&gt; の関係にしちゃおう、ということです。&lt;/p&gt;
 
 &lt;p&gt;テーブル定義で表現すると下図の赤線の部分が今回やりたい関連の定義です。&lt;/p&gt;
 
@@ -2533,7 +2533,7 @@ exit status 1
 
 &lt;h3 id=&quot;モデル定義&quot;&gt;モデル定義&lt;/h3&gt;
 
-&lt;p&gt;上記のやりたいことはアソシエーションの定義において、&lt;code class=&quot;highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;primary_key&lt;/code&gt; などのオプションを駆使して実現可能です。&lt;/p&gt;
+&lt;p&gt;上記のやりたいことはアソシエーションの定義において、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;primary_key&lt;/code&gt; などのオプションを駆使して実現可能です。&lt;/p&gt;
 
 &lt;p&gt;下記がそのアソシエーション定義の完成形となります。&lt;/p&gt;
 
@@ -2553,7 +2553,7 @@ exit status 1
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;この定義により &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; → &lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt; → &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; の双方向の関連付けが定義することができました。&lt;/p&gt;
+&lt;p&gt;この定義により &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; → &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt; → &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; の双方向の関連付けが定義することができました。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#  Post Load (1.2ms)  SELECT  `posts`.* FROM `posts` ORDER BY `posts`.`id` ASC LIMIT 1&lt;/span&gt;
@@ -2565,18 +2565,18 @@ exit status 1
 &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;ActiveRecord::Associations::CollectionProxy [#&amp;lt;Post id: 1, user_id: 1, ...&quot;&amp;gt;, #&amp;lt;Post id: 2, user_id: 1, ...]&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;上結果の通り、&lt;code class=&quot;highlighter-rouge&quot;&gt;User Load&lt;/code&gt;を通すことなくお互いを呼び出すことができていることが確認できました。&lt;/p&gt;
+&lt;p&gt;上結果の通り、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User Load&lt;/code&gt;を通すことなくお互いを呼び出すことができていることが確認できました。&lt;/p&gt;
 
 &lt;h2 id=&quot;inverse_of-を設定する&quot;&gt;inverse_of を設定する&lt;/h2&gt;
 
-&lt;p&gt;上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは &lt;code class=&quot;highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt; オプションを使っているために、双方向の関連付けが不完全に設定されていることです。&lt;/p&gt;
+&lt;p&gt;上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt; オプションを使っているために、双方向の関連付けが不完全に設定されていることです。&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Active Recordでは標準的な名前同士の関連付けのほとんどをサポートしていて、自動的に認識できます。ただし、Active Recordでスコープや次のオプションを使った場合、双方向の関連付けは自動的に認識されません。&lt;/p&gt;
 
   &lt;ul&gt;
-    &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:through&lt;/code&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:foreign_key&lt;/code&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:through&lt;/code&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:foreign_key&lt;/code&gt;&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/blockquote&gt;
 
@@ -2594,7 +2594,7 @@ exit status 1
 
 &lt;h3 id=&quot;モデル定義inverse_of-version&quot;&gt;モデル定義（inverse_of version）&lt;/h3&gt;
 
-&lt;p&gt;これを解決するために &lt;code class=&quot;highlighter-rouge&quot;&gt;inverse_of&lt;/code&gt; を設定します。上述のコードを下記のように変更します。&lt;/p&gt;
+&lt;p&gt;これを解決するために &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inverse_of&lt;/code&gt; を設定します。上述のコードを下記のように変更します。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
@@ -2612,7 +2612,7 @@ exit status 1
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;これで下記コードは同じオブジェクトとなり、&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;を返すようになります。&lt;/p&gt;
+&lt;p&gt;これで下記コードは同じオブジェクトとなり、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true&lt;/code&gt;を返すようになります。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;

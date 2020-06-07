@@ -85,7 +85,7 @@
 
 <h2 id="環境">環境</h2>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform version
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform version
 Terraform v0.6.14
 </code></pre></div></div>
 
@@ -93,9 +93,9 @@ Terraform v0.6.14
 
 <h2 id="tfファイル作成">tfファイル作成</h2>
 
-<p>terraformファイル、例えば<code class="highlighter-rouge">test.tf</code>ファイルを下記のように作成します（<code class="highlighter-rouge">.tf</code>という拡張子でファイル名はなんでもよいようです）。</p>
+<p>terraformファイル、例えば<code class="language-plaintext highlighter-rouge">test.tf</code>ファイルを下記のように作成します（<code class="language-plaintext highlighter-rouge">.tf</code>という拡張子でファイル名はなんでもよいようです）。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Configure the DigitalOcean Provider
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Configure the DigitalOcean Provider
 provider "digitalocean" {
   token = "your_digitalocean_token"
 }
@@ -110,18 +110,18 @@ resource "digitalocean_droplet" "web" {
 }
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">token</code>にはDigitalOceanのあなた自身のトークンをセットしてください。</p>
+<p><code class="language-plaintext highlighter-rouge">token</code>にはDigitalOceanのあなた自身のトークンをセットしてください。</p>
 
-<p>ちなみに上記にある <code class="highlighter-rouge">ssh_keys</code> の id は下記のようにAPI経由で取得できます（jqを使ってます）。</p>
+<p>ちなみに上記にある <code class="language-plaintext highlighter-rouge">ssh_keys</code> の id は下記のようにAPI経由で取得できます（jqを使ってます）。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl "https://api.digitalocean.com/v2/account/keys" -H "Authorization: Bearer your_token" | jq ".ssh_keys[0].id"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl "https://api.digitalocean.com/v2/account/keys" -H "Authorization: Bearer your_token" | jq ".ssh_keys[0].id"
 </code></pre></div></div>
 
 <h2 id="terraform-実行プラン表示">terraform 実行プラン表示</h2>
 
-<p><code class="highlighter-rouge">terraform plan</code>で実行プランを表示できます。これで何が作成されるかを確認しましょう。</p>
+<p><code class="language-plaintext highlighter-rouge">terraform plan</code>で実行プランを表示できます。これで何が作成されるかを確認しましょう。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform plan
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform plan
 Refreshing Terraform state prior to plan...
 
 
@@ -154,9 +154,9 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 <h2 id="プラン実行">プラン実行</h2>
 
-<p>確認後は<code class="highlighter-rouge">terraform apply</code>で実際に作成を行えます。</p>
+<p>確認後は<code class="language-plaintext highlighter-rouge">terraform apply</code>で実際に作成を行えます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform apply
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform apply
 digitalocean_droplet.web: Creating...
 image:                "" =&gt; "ubuntu-14-04-x64"
 ipv4_address:         "" =&gt; "&lt;computed&gt;"
@@ -184,9 +184,9 @@ State path: terraform.tfstate
 
 <h2 id="作成物の情報表示">作成物の情報表示</h2>
 
-<p><code class="highlighter-rouge">terraform show</code> で作成物の情報を表示できます。</p>
+<p><code class="language-plaintext highlighter-rouge">terraform show</code> で作成物の情報を表示できます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform show
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform show
 digitalocean_droplet.web:
   id = 12808253
   image = ubuntu-14-04-x64
@@ -206,7 +206,7 @@ digitalocean_droplet.web:
 
 <p>ほっとくとどんどん課金されていきますので使い終わったら削除しましょう。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform destroy
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform destroy
 Do you really want to destroy?
   Terraform will delete all your managed infrastructure.
   There is no undo. Only 'yes' will be accepted to confirm.

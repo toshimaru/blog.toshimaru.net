@@ -84,7 +84,7 @@
 <li class="toc-entry toc-h2"><a href="#goの内部実装を覗いてみる">Goの内部実装を覗いてみる</a></li>
 <li class="toc-entry toc-h2"><a href="#goの標準日付フォーマット">Goの標準日付フォーマット</a></li>
 </ul>
-  <p>Goの現在時刻は <code class="highlighter-rouge">time.Now()</code> で取得することができるが、フォーマットされた現在日時はどのように取得すればよいのだろうか？</p>
+  <p>Goの現在時刻は <code class="language-plaintext highlighter-rouge">time.Now()</code> で取得することができるが、フォーマットされた現在日時はどのように取得すればよいのだろうか？</p>
 
 <h2 id="今日の日付の取得">
 <a class="anchor" href="#%E4%BB%8A%E6%97%A5%E3%81%AE%E6%97%A5%E4%BB%98%E3%81%AE%E5%8F%96%E5%BE%97" aria-hidden="true"><span class="octicon octicon-link"></span></a>今日の日付の取得</h2>
@@ -106,14 +106,14 @@
 
 <p>これで今日の日付を取得することができる。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2009-11-10 23:00:00 +0000 UTC m=+0.000000001
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2009-11-10 23:00:00 +0000 UTC m=+0.000000001
 2009年11月10日
 </code></pre></div></div>
 
 <h2 id="2006年1月2日の謎">
 <a class="anchor" href="#2006%E5%B9%B41%E6%9C%882%E6%97%A5%E3%81%AE%E8%AC%8E" aria-hidden="true"><span class="octicon octicon-link"></span></a>2006年1月2日の謎</h2>
 
-<p>しかしここで１つの疑問が残る。<code class="highlighter-rouge">Format()</code>の引数として与えられる <code class="highlighter-rouge">2006年01月02日</code> はどうして2006年1月2日なのだろうか？　2001年2月3日でもダメだし1234年5月6日でもダメだ。きっちり <strong>2006年1月2日</strong> でなければならない。</p>
+<p>しかしここで１つの疑問が残る。<code class="language-plaintext highlighter-rouge">Format()</code>の引数として与えられる <code class="language-plaintext highlighter-rouge">2006年01月02日</code> はどうして2006年1月2日なのだろうか？　2001年2月3日でもダメだし1234年5月6日でもダメだ。きっちり <strong>2006年1月2日</strong> でなければならない。</p>
 
 <p>この理由については下記の記事で解説されている。</p>
 
@@ -132,7 +132,7 @@
 <h2 id="goの内部実装を覗いてみる">
 <a class="anchor" href="#go%E3%81%AE%E5%86%85%E9%83%A8%E5%AE%9F%E8%A3%85%E3%82%92%E8%A6%97%E3%81%84%E3%81%A6%E3%81%BF%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goの内部実装を覗いてみる</h2>
 
-<p>もう少し深く理解するために、Goでどのように実装されているかを覗いてみる。それぞれの<code class="highlighter-rouge">const</code>がどの数値とマッピングするかがコメントで示されている。</p>
+<p>もう少し深く理解するために、Goでどのように実装されているかを覗いてみる。それぞれの<code class="language-plaintext highlighter-rouge">const</code>がどの数値とマッピングするかがコメントで示されている。</p>
 
 <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="p">(</span>
 	<span class="n">_</span>                        <span class="o">=</span> <span class="no">iota</span>
@@ -179,7 +179,7 @@
 
 <p>via. <a href="https://github.com/golang/go/blob/master/src/time/format.go">go/format.go at master · golang/go</a></p>
 
-<p>この実装をみると <code class="highlighter-rouge">2006-01-02</code> は <code class="highlighter-rouge">{stdLongYear}-{stdZeroMonth}-{stdZeroDay}</code> であることがわかる。</p>
+<p>この実装をみると <code class="language-plaintext highlighter-rouge">2006-01-02</code> は <code class="language-plaintext highlighter-rouge">{stdLongYear}-{stdZeroMonth}-{stdZeroDay}</code> であることがわかる。</p>
 
 <h2 id="goの標準日付フォーマット">
 <a class="anchor" href="#go%E3%81%AE%E6%A8%99%E6%BA%96%E6%97%A5%E4%BB%98%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goの標準日付フォーマット</h2>
@@ -222,7 +222,7 @@
 
 <p>RFC822Z の形式で下記のように出力される。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>10 Nov 09 23:00 +0000
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>10 Nov 09 23:00 +0000
 </code></pre></div></div>
 
 </div>

@@ -117,7 +117,7 @@
 <h2 id="jquery-15以上の書き方">
 <a class="anchor" href="#jquery-15%E4%BB%A5%E4%B8%8A%E3%81%AE%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>jQuery 1.5以上の書き方</h2>
 
-<p>1.5以降だと、<code class="highlighter-rouge">$.ajax()</code> は<a href="http://api.jquery.com/jQuery.ajax/#jqXHR">jqXHRオブジェクト</a>を返すようになります。それを利用した書き方はこう。</p>
+<p>1.5以降だと、<code class="language-plaintext highlighter-rouge">$.ajax()</code> は<a href="http://api.jquery.com/jQuery.ajax/#jqXHR">jqXHRオブジェクト</a>を返すようになります。それを利用した書き方はこう。</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
@@ -128,7 +128,7 @@
 <span class="p">});</span>
 </code></pre></div></div>
 
-<p>成功時の処理と失敗時の処理が<code class="highlighter-rouge">ajax()</code>と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。</p>
+<p>成功時の処理と失敗時の処理が<code class="language-plaintext highlighter-rouge">ajax()</code>と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。</p>
 
 <h2 id="jquery-18以上の書き方">
 <a class="anchor" href="#jquery-18%E4%BB%A5%E4%B8%8A%E3%81%AE%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>jQuery 1.8以上の書き方</h2>
@@ -143,14 +143,14 @@
 
 <ul>
   <li>
-<code class="highlighter-rouge">success()</code> は <code class="highlighter-rouge">done()</code> に、</li>
+<code class="language-plaintext highlighter-rouge">success()</code> は <code class="language-plaintext highlighter-rouge">done()</code> に、</li>
   <li>
-<code class="highlighter-rouge">error()</code> は <code class="highlighter-rouge">fail()</code> に、</li>
+<code class="language-plaintext highlighter-rouge">error()</code> は <code class="language-plaintext highlighter-rouge">fail()</code> に、</li>
   <li>
-<code class="highlighter-rouge">complete()</code> は <code class="highlighter-rouge">always()</code>を</li>
+<code class="language-plaintext highlighter-rouge">complete()</code> は <code class="language-plaintext highlighter-rouge">always()</code>を</li>
 </ul>
 
-<p>代わりに使ってね、ってことです。ということで、<code class="highlighter-rouge">success()</code>,<code class="highlighter-rouge">error()</code>は使わない。</p>
+<p>代わりに使ってね、ってことです。ということで、<code class="language-plaintext highlighter-rouge">success()</code>,<code class="language-plaintext highlighter-rouge">error()</code>は使わない。</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
@@ -161,7 +161,7 @@
 <span class="p">});</span>
 </code></pre></div></div>
 
-<p>あるいは<code class="highlighter-rouge">then()</code>を用いてこう書いてもいいでしょう。</p>
+<p>あるいは<code class="language-plaintext highlighter-rouge">then()</code>を用いてこう書いてもいいでしょう。</p>
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
@@ -171,7 +171,7 @@
 <span class="p">);</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">then()</code>の一個目の関数が成功時、二個目の関数が失敗時となります。</p>
+<p><code class="language-plaintext highlighter-rouge">then()</code>の一個目の関数が成功時、二個目の関数が失敗時となります。</p>
 
 <h2 id="発展編1deferredを用いた書き方">
 <a class="anchor" href="#%E7%99%BA%E5%B1%95%E7%B7%A81deferred%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>【発展編1】Deferredを用いた書き方</h2>
@@ -187,7 +187,7 @@
   <p>jQuery.Deferred() はコールバック関数の管理、実行に改善をもたらします。具体的には、jQuery.Deferred()は複数のコールバックの実行を柔軟に行うことができ、これらのコールバック関数は、オリジナルのコールバックのディスパッチが発生しているかどうかにかかわらず実行されます。</p>
 </blockquote>
 
-<p>要はコールバック関数の実行を延期(deferred)させて、<code class="highlighter-rouge">.then()</code> <code class="highlighter-rouge">.fail()</code> <code class="highlighter-rouge">.always()</code>なんかを使って柔軟にコールバックを管理、実行できるってことです（雑）。</p>
+<p>要はコールバック関数の実行を延期(deferred)させて、<code class="language-plaintext highlighter-rouge">.then()</code> <code class="language-plaintext highlighter-rouge">.fail()</code> <code class="language-plaintext highlighter-rouge">.always()</code>なんかを使って柔軟にコールバックを管理、実行できるってことです（雑）。</p>
 
 <p>詳しくは下記を読むとよいでしょう。</p>
 
@@ -241,7 +241,7 @@
 <h2 id="発展編2when-を用いた書き方">
 <a class="anchor" href="#%E7%99%BA%E5%B1%95%E7%B7%A82when-%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>【発展編2】$.when() を用いた書き方</h2>
 
-<p><code class="highlighter-rouge">$.when()</code>を用いると複数のdeferredオブジェクトをまとめて管理できます。</p>
+<p><code class="language-plaintext highlighter-rouge">$.when()</code>を用いると複数のdeferredオブジェクトをまとめて管理できます。</p>
 
 <p><a href="http://jsfiddle.net/toshimaru/nNMae/">jsfiddleでの実例はこちら</a></p>
 

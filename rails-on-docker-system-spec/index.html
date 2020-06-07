@@ -136,14 +136,14 @@
 <blockquote>
   <p>Before</p>
 
-  <div class="highlighter-rouge">
+  <div class="language-plaintext highlighter-rouge">
 <div class="highlight"><pre class="highlight"><code>Finished in 15.74 seconds (files took 7.65 seconds to load)
 152 examples, 0 failures
 </code></pre></div>  </div>
 
   <p>After</p>
 
-  <div class="highlighter-rouge">
+  <div class="language-plaintext highlighter-rouge">
 <div class="highlight"><pre class="highlight"><code>Finished in 58.46 seconds (files took 7.64 seconds to load)
 152 examples, 3 failures
 </code></pre></div>  </div>
@@ -159,7 +159,7 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>下記のようにJSを起動させる必要のない System テストは従来通りの<code class="highlighter-rouge">rack_test</code>、<code class="highlighter-rouge">js: true</code>なテストは<code class="highlighter-rouge">selenium_chrome_headless</code>に設定してやればテスト全体が高速に実行可能になりました。</p>
+<p>下記のようにJSを起動させる必要のない System テストは従来通りの<code class="language-plaintext highlighter-rouge">rack_test</code>、<code class="language-plaintext highlighter-rouge">js: true</code>なテストは<code class="language-plaintext highlighter-rouge">selenium_chrome_headless</code>に設定してやればテスト全体が高速に実行可能になりました。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
   <span class="o">...</span>
@@ -176,7 +176,7 @@
 <h2 id="dockerfile">
 <a class="anchor" href="#dockerfile" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dockerfile</h2>
 
-<p>今回利用した <code class="highlighter-rouge">Dockerfile</code> は Ruby 2.6 のベースイメージに <code class="highlighter-rouge">chromium-driver</code> をインストールしたコンテナとなります。</p>
+<p>今回利用した <code class="language-plaintext highlighter-rouge">Dockerfile</code> は Ruby 2.6 のベースイメージに <code class="language-plaintext highlighter-rouge">chromium-driver</code> をインストールしたコンテナとなります。</p>
 
 <div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ruby:2.6</span>
 
@@ -186,9 +186,9 @@
 <h3 id="chrome-failed-to-start-exited-abnormally">
 <a class="anchor" href="#chrome-failed-to-start-exited-abnormally" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chrome failed to start: exited abnormally</h3>
 
-<p>しかし、上述の環境において<code class="highlighter-rouge">rspec</code>を実行すると下記のようなエラーが発生します。</p>
+<p>しかし、上述の環境において<code class="language-plaintext highlighter-rouge">rspec</code>を実行すると下記のようなエラーが発生します。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failure/Error: Unable to infer file and line number from backtrace
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failure/Error: Unable to infer file and line number from backtrace
 
   Selenium::WebDriver::Error::UnknownError:
       unknown error: Chrome failed to start: exited abnormally
@@ -196,7 +196,7 @@
       (The process started from chrome location /usr/bin/chromium is no longer running, so ChromeDriver is assuming that Chrome has crashed.)
 </code></pre></div></div>
 
-<p>このエラーは Chrome が<code class="highlighter-rouge">sandbox</code>モードで起動していることに起因します。下記のような<code class="highlighter-rouge">no-sandbox</code>オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。</p>
+<p>このエラーは Chrome が<code class="language-plaintext highlighter-rouge">sandbox</code>モードで起動していることに起因します。下記のような<code class="language-plaintext highlighter-rouge">no-sandbox</code>オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Capybara</span><span class="p">.</span><span class="nf">register_driver</span> <span class="ss">:headless_chrome</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
   <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">tap</span> <span class="k">do</span> <span class="o">|</span><span class="n">opts</span><span class="o">|</span>
@@ -208,7 +208,7 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>こうして登録した<code class="highlighter-rouge">headless_chrome</code>をSystemTestに対して適応させてやればOKです。</p>
+<p>こうして登録した<code class="language-plaintext highlighter-rouge">headless_chrome</code>をSystemTestに対して適応させてやればOKです。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
   <span class="o">...</span>
@@ -236,9 +236,9 @@ Finished in 19.87 seconds (files took 8.8 seconds to load)
 <h2 id="公式ではno-sandboxをデフォルトにはしてくれない">
 <a class="anchor" href="#%E5%85%AC%E5%BC%8F%E3%81%A7%E3%81%AFno-sandbox%E3%82%92%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%81%AB%E3%81%AF%E3%81%97%E3%81%A6%E3%81%8F%E3%82%8C%E3%81%AA%E3%81%84" aria-hidden="true"><span class="octicon octicon-link"></span></a>公式ではno-sandboxをデフォルトにはしてくれない？</h2>
 
-<p>余談ですが、Capybara本体で登録されている<code class="highlighter-rouge">selenium_chrome_headless</code>に<code class="highlighter-rouge">no-sandbox</code>オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。</p>
+<p>余談ですが、Capybara本体で登録されている<code class="language-plaintext highlighter-rouge">selenium_chrome_headless</code>に<code class="language-plaintext highlighter-rouge">no-sandbox</code>オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。</p>
 
-<p><a href="https://github.com/teamcapybara/capybara/pull/2241">Add <code class="highlighter-rouge">no-sandbox</code> option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara</a></p>
+<p><a href="https://github.com/teamcapybara/capybara/pull/2241">Add <code class="language-plaintext highlighter-rouge">no-sandbox</code> option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara</a></p>
 
 <h3 id="securityを担保するためのsandbox">
 <a class="anchor" href="#security%E3%82%92%E6%8B%85%E4%BF%9D%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEsandbox" aria-hidden="true"><span class="octicon octicon-link"></span></a>Securityを担保するためのsandbox</h3>

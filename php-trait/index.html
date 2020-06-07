@@ -102,9 +102,9 @@
 <p>ではTraitを使うべき状況、使うと嬉しい状況とはどんな状況でしょうか？　まずは下記を満たす実装を普通にPHPで書いてみます。</p>
 
 <ul>
-  <li>人間(<code class="highlighter-rouge">Human</code>): 「話す」「逃げる」などの基本行動が可能</li>
-  <li>戦士(<code class="highlighter-rouge">Warrior</code>): 基本行動に加え「物理攻撃」が可能</li>
-  <li>魔法使い(<code class="highlighter-rouge">Wizard</code>): 基本行動に加え「魔法攻撃」が可能</li>
+  <li>人間(<code class="language-plaintext highlighter-rouge">Human</code>): 「話す」「逃げる」などの基本行動が可能</li>
+  <li>戦士(<code class="language-plaintext highlighter-rouge">Warrior</code>): 基本行動に加え「物理攻撃」が可能</li>
+  <li>魔法使い(<code class="language-plaintext highlighter-rouge">Wizard</code>): 基本行動に加え「魔法攻撃」が可能</li>
 </ul>
 
 <p>結果、このようになりました。</p>
@@ -147,17 +147,17 @@
 <span class="nx">Warrior</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; Warrior can use `attack` `talk` `escape` `commands`</span>
 <span class="nx">Wizard</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; Wizard can use `spell` `talk` `escape` `commands`</span></code></pre></figure>
 
-<p>基本行動可能な<code class="highlighter-rouge">Human</code>クラスがあってそれを継承した<code class="highlighter-rouge">Warrior</code>,<code class="highlighter-rouge">Wizard</code>がいて…。普通のコードかと思います。</p>
+<p>基本行動可能な<code class="language-plaintext highlighter-rouge">Human</code>クラスがあってそれを継承した<code class="language-plaintext highlighter-rouge">Warrior</code>,<code class="language-plaintext highlighter-rouge">Wizard</code>がいて…。普通のコードかと思います。</p>
 
 <h3 id="追加要件魔法戦士を追加したい">追加要件：「魔法戦士を追加したい！」</h3>
 
 <p>こんな要望がきました。「魔法戦士も追加したいんだよねー！」　さて上記のような実装に魔法戦士を加えるとしたらどうなるでしょうか？</p>
 
-<p>魔法も攻撃もできなきゃいけないから、まず<code class="highlighter-rouge">Warrior</code>を継承してその次に<code class="highlighter-rouge">Wizard</code>も継承して…と、ここで多重継承の問題が出てきますね。愚直に<code class="highlighter-rouge">Human</code>を継承した魔法戦士を作ってもいいのですが、同じコードを二度は書きたくないですよね。DRYに行きたいですよね、ね？</p>
+<p>魔法も攻撃もできなきゃいけないから、まず<code class="language-plaintext highlighter-rouge">Warrior</code>を継承してその次に<code class="language-plaintext highlighter-rouge">Wizard</code>も継承して…と、ここで多重継承の問題が出てきますね。愚直に<code class="language-plaintext highlighter-rouge">Human</code>を継承した魔法戦士を作ってもいいのですが、同じコードを二度は書きたくないですよね。DRYに行きたいですよね、ね？</p>
 
 <h3 id="traitを使ってみる">Traitを使ってみる</h3>
 
-<p>そこでTraitの出番です。<code class="highlighter-rouge">trait</code>であれば振る舞いを水平方向に構成できちゃうんです。え？よくわからない？　コードを見てください。</p>
+<p>そこでTraitの出番です。<code class="language-plaintext highlighter-rouge">trait</code>であれば振る舞いを水平方向に構成できちゃうんです。え？よくわからない？　コードを見てください。</p>
 
 <figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
@@ -204,7 +204,7 @@
 <span class="nv">$ww</span><span class="o">-&gt;</span><span class="na">spell</span><span class="p">();</span> <span class="c1">//=&gt; 魔法</span>
 <span class="nv">$ww</span><span class="o">-&gt;</span><span class="na">attack</span><span class="p">();</span> <span class="c1">//=&gt; 攻撃</span></code></pre></figure>
 
-<p>まずは<code class="highlighter-rouge">Attackable</code>、<code class="highlighter-rouge">Spellable</code>というトレイト、つまり「物理攻撃が可能である」「魔法攻撃が可能である」という特性を定義します。ここまでくればもう簡単。あとはそれを<code class="highlighter-rouge">WarriorWizard</code>クラス内で<code class="highlighter-rouge">use</code>してやるだけです。これで<code class="highlighter-rouge">WarriorWizard</code>は魔法も物理攻撃も可能になります。</p>
+<p>まずは<code class="language-plaintext highlighter-rouge">Attackable</code>、<code class="language-plaintext highlighter-rouge">Spellable</code>というトレイト、つまり「物理攻撃が可能である」「魔法攻撃が可能である」という特性を定義します。ここまでくればもう簡単。あとはそれを<code class="language-plaintext highlighter-rouge">WarriorWizard</code>クラス内で<code class="language-plaintext highlighter-rouge">use</code>してやるだけです。これで<code class="language-plaintext highlighter-rouge">WarriorWizard</code>は魔法も物理攻撃も可能になります。</p>
 
 <p>ね？簡単でしょ？</p>
 

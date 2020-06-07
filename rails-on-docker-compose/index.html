@@ -120,7 +120,7 @@
 <h3 id="dockerfile">
 <a class="anchor" href="#dockerfile" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dockerfile</h3>
 
-<p>適当なディレクトリを用意して、<code class="highlighter-rouge">Dockerfile</code>を下記の通り用意します。</p>
+<p>適当なディレクトリを用意して、<code class="language-plaintext highlighter-rouge">Dockerfile</code>を下記の通り用意します。</p>
 
 <div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ruby:2.7</span>
 <span class="k">RUN </span>apt-get update <span class="nt">-qq</span> <span class="o">&amp;&amp;</span> apt-get <span class="nb">install</span> <span class="nt">-y</span> nodejs yarnpkg
@@ -144,13 +144,13 @@
 
 <ul>
   <li>
-<code class="highlighter-rouge">yarnpkg</code>でyarnを入れると、yarn という実行ファイルではなく <code class="highlighter-rouge">yarnpkg</code> という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。</li>
+<code class="language-plaintext highlighter-rouge">yarnpkg</code>でyarnを入れると、yarn という実行ファイルではなく <code class="language-plaintext highlighter-rouge">yarnpkg</code> という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。</li>
 </ul>
 
 <h3 id="初期gemfile">
 <a class="anchor" href="#%E5%88%9D%E6%9C%9Fgemfile" aria-hidden="true"><span class="octicon octicon-link"></span></a>初期Gemfile</h3>
 
-<p>下記の通り<code class="highlighter-rouge">Gemfile</code>と<code class="highlighter-rouge">Gemfile.lock</code>を用意します。</p>
+<p>下記の通り<code class="language-plaintext highlighter-rouge">Gemfile</code>と<code class="language-plaintext highlighter-rouge">Gemfile.lock</code>を用意します。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 <span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'~&gt;6'</span>
@@ -164,13 +164,13 @@
 </code></pre></div></div>
 
 <ul>
-  <li>現段階では <code class="highlighter-rouge">Gemfile.lock</code> は空でOK</li>
+  <li>現段階では <code class="language-plaintext highlighter-rouge">Gemfile.lock</code> は空でOK</li>
 </ul>
 
 <h3 id="entrypointsh">
 <a class="anchor" href="#entrypointsh" aria-hidden="true"><span class="octicon octicon-link"></span></a>entrypoint.sh</h3>
 
-<p><code class="highlighter-rouge">Dockerfile</code>で<code class="highlighter-rouge">ENTRYPOINT</code>として定義している <code class="highlighter-rouge">entrypoint.sh</code> です。</p>
+<p><code class="language-plaintext highlighter-rouge">Dockerfile</code>で<code class="language-plaintext highlighter-rouge">ENTRYPOINT</code>として定義している <code class="language-plaintext highlighter-rouge">entrypoint.sh</code> です。</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="nb">set</span> <span class="nt">-e</span>
@@ -185,7 +185,7 @@
 <h3 id="docker-composeyml">
 <a class="anchor" href="#docker-composeyml" aria-hidden="true"><span class="octicon octicon-link"></span></a>docker-compose.yml</h3>
 
-<p><code class="highlighter-rouge">docker-compose.yml</code>を下記の通り用意します。</p>
+<p><code class="language-plaintext highlighter-rouge">docker-compose.yml</code>を下記の通り用意します。</p>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3'</span>
 <span class="na">services</span><span class="pi">:</span>
@@ -209,24 +209,24 @@
 <ul>
   <li>MySQL は 8.0 （現時点の最新バージョン）を使用</li>
   <li>
-<code class="highlighter-rouge">MYSQL_ALLOW_EMPTY_PASSWORD</code> を設定することで <code class="highlighter-rouge">password</code> が空でもrootで接続できるようにしておく</li>
+<code class="language-plaintext highlighter-rouge">MYSQL_ALLOW_EMPTY_PASSWORD</code> を設定することで <code class="language-plaintext highlighter-rouge">password</code> が空でもrootで接続できるようにしておく</li>
 </ul>
 
 <h3 id="rails-new">
 <a class="anchor" href="#rails-new" aria-hidden="true"><span class="octicon octicon-link"></span></a>rails new</h3>
 
-<p><code class="highlighter-rouge">rails new</code> のコマンドをwebコンテナ上で実行してRailsのファイル群を生成します。</p>
+<p><code class="language-plaintext highlighter-rouge">rails new</code> のコマンドをwebコンテナ上で実行してRailsのファイル群を生成します。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web bundle <span class="nb">exec </span>rails new <span class="nb">.</span> <span class="nt">--force</span> <span class="nt">--database</span><span class="o">=</span>mysql
 </code></pre></div></div>
 
 <ul>
   <li>
-<code class="highlighter-rouge">--force</code> で既存ファイルを上書き</li>
+<code class="language-plaintext highlighter-rouge">--force</code> で既存ファイルを上書き</li>
   <li>DBはmysqlを指定</li>
 </ul>
 
-<p>Railsのファイル群が <code class="highlighter-rouge">rails new</code> コマンドによって出来上がったので build します。</p>
+<p>Railsのファイル群が <code class="language-plaintext highlighter-rouge">rails new</code> コマンドによって出来上がったので build します。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose build
 </code></pre></div></div>
@@ -236,7 +236,7 @@
 
 <p>このままではDBに接続できません。なぜならば host 名を変更する必要があるからです。</p>
 
-<p>下記の通り <code class="highlighter-rouge">config/database.yml</code> のhostの部分を <code class="highlighter-rouge">db</code> に置き換えましょう。</p>
+<p>下記の通り <code class="language-plaintext highlighter-rouge">config/database.yml</code> のhostの部分を <code class="language-plaintext highlighter-rouge">db</code> に置き換えましょう。</p>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
   <span class="na">adapter</span><span class="pi">:</span> <span class="s">mysql2</span>
@@ -255,10 +255,10 @@
 
 <ul>
   <li>
-<code class="highlighter-rouge">host</code> に <code class="highlighter-rouge">db</code> を設定
+<code class="language-plaintext highlighter-rouge">host</code> に <code class="language-plaintext highlighter-rouge">db</code> を設定
     <ul>
       <li>
-<code class="highlighter-rouge">db</code> はコンテナ名になります</li>
+<code class="language-plaintext highlighter-rouge">db</code> はコンテナ名になります</li>
     </ul>
   </li>
 </ul>
@@ -268,21 +268,21 @@
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose up
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">localhost:3000</code> でRailsが立ち上がるのでアクセスしてみましょう。</p>
+<p><code class="language-plaintext highlighter-rouge">localhost:3000</code> でRailsが立ち上がるのでアクセスしてみましょう。</p>
 
 <h2 id="error-caching_sha2_password-could-not-be-loaded">
 <a class="anchor" href="#error-caching_sha2_password-could-not-be-loaded" aria-hidden="true"><span class="octicon octicon-link"></span></a>Error: caching_sha2_password could not be loaded</h2>
 
 <p>しかしここでRailsに接続すると、下記のようなエラーが発生します。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ActiveRecord::NoDatabaseError
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ActiveRecord::NoDatabaseError
 
 Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu/mariadb19/plugin/caching_sha2_password.so: cannot open shared object file: No such file or directory
 </code></pre></div></div>
 
-<p>これはwebコンテナが mysql 8.0 の<code class="highlighter-rouge">caching_sha2_password</code>認証方式に対応していないためです。</p>
+<p>これはwebコンテナが mysql 8.0 の<code class="language-plaintext highlighter-rouge">caching_sha2_password</code>認証方式に対応していないためです。</p>
 
-<p>下記の手順で <code class="highlighter-rouge">caching_sha2_password</code> を <code class="highlighter-rouge">mysql_native_password</code>（旧来の認証方式）に変更しましょう。</p>
+<p>下記の手順で <code class="language-plaintext highlighter-rouge">caching_sha2_password</code> を <code class="language-plaintext highlighter-rouge">mysql_native_password</code>（旧来の認証方式）に変更しましょう。</p>
 
 <h3 id="dbコンテナでmysqlクライアント起動">
 <a class="anchor" href="#db%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%A7mysql%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%B5%B7%E5%8B%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>DBコンテナでmysqlクライアント起動</h3>
@@ -305,7 +305,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 <p>下記のクエリでユーザー一覧とその認証方式が閲覧できます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; select User,Host,plugin from mysql.user;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; select User,Host,plugin from mysql.user;
 +------------------+-----------+-----------------------+
 | User             | Host      | plugin                |
 +------------------+-----------+-----------------------+
@@ -318,9 +318,9 @@ Server version: 8.0.18 MySQL Community Server - GPL
 5 rows in set (0.00 sec)
 </code></pre></div></div>
 
-<p>全て <code class="highlighter-rouge">caching_sha2_password</code> に設定されています。これを<code class="highlighter-rouge">mysql_native_password</code>に変更します。</p>
+<p>全て <code class="language-plaintext highlighter-rouge">caching_sha2_password</code> に設定されています。これを<code class="language-plaintext highlighter-rouge">mysql_native_password</code>に変更します。</p>
 
-<p>今回対象となる <code class="highlighter-rouge">root@%</code> のユーザー設定を <code class="highlighter-rouge">ALTER USER</code> を使って変更しましょう。</p>
+<p>今回対象となる <code class="language-plaintext highlighter-rouge">root@%</code> のユーザー設定を <code class="language-plaintext highlighter-rouge">ALTER USER</code> を使って変更しましょう。</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">USER</span> <span class="s1">'root'</span><span class="o">@</span><span class="s1">'%'</span> <span class="n">IDENTIFIED</span> <span class="k">WITH</span> <span class="n">mysql_native_password</span> <span class="k">BY</span> <span class="s1">''</span><span class="p">;</span>
 <span class="c1">-- Query OK, 0 rows affected (0.02 sec)</span>
@@ -328,7 +328,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 <p>変更されました。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; select User,Host,plugin from mysql.user;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; select User,Host,plugin from mysql.user;
 +------------------+-----------+-----------------------+
 | User             | Host      | plugin                |
 +------------------+-----------+-----------------------+
@@ -344,7 +344,7 @@ Server version: 8.0.18 MySQL Community Server - GPL
 <h2 id="yay-youre-on-rails">
 <a class="anchor" href="#yay-youre-on-rails" aria-hidden="true"><span class="octicon octicon-link"></span></a>“Yay! You’re on Rails!”</h2>
 
-<p>DBが作成されていないよ、というメッセージが出るので <code class="highlighter-rouge">db:prepare</code> でテーブルを作成します。</p>
+<p>DBが作成されていないよ、というメッセージが出るので <code class="language-plaintext highlighter-rouge">db:prepare</code> でテーブルを作成します。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose <span class="nb">exec </span>web bundle <span class="nb">exec </span>rails db:prepare
 </code></pre></div></div>

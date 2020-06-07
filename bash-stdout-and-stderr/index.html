@@ -114,26 +114,26 @@
       <td><strong>標準入力</strong></td>
       <td>デフォルトの入力データストリーム。<br>例えばコマンドのパイプラインなど。ターミナル上ではユーザーのキーボード入力のこと。</td>
       <td>0</td>
-      <td><code class="highlighter-rouge">stdin</code></td>
+      <td><code class="language-plaintext highlighter-rouge">stdin</code></td>
     </tr>
     <tr>
       <td><strong>標準出力</strong></td>
       <td>デフォルトの出力データストリーム。<br>ターミナル上ではユーザーの画面に表示される。</td>
       <td>1</td>
-      <td><code class="highlighter-rouge">stdout</code></td>
+      <td><code class="language-plaintext highlighter-rouge">stdout</code></td>
     </tr>
     <tr>
       <td><strong>標準エラー出力</strong></td>
       <td>デフォルトのエラーに関連する出力データストリーム。<br>ターミナル上ではユーザーの画面に表示される。</td>
       <td>2</td>
-      <td><code class="highlighter-rouge">stderr</code></td>
+      <td><code class="language-plaintext highlighter-rouge">stderr</code></td>
     </tr>
   </tbody>
 </table>
 
 <p>（出典: <a href="https://www.computerhope.com/jargon/f/file-descriptor.htm">What is a File Descriptor? - Stdin, stdout, and stderr</a> より翻訳）</p>
 
-<p>それぞれのファイルディスクリプタは下記のように <code class="highlighter-rouge">/dev/stderr</code>, <code class="highlighter-rouge">/dev/stdin</code>, <code class="highlighter-rouge">/dev/stdout</code> からも確認することができます</p>
+<p>それぞれのファイルディスクリプタは下記のように <code class="language-plaintext highlighter-rouge">/dev/stderr</code>, <code class="language-plaintext highlighter-rouge">/dev/stdin</code>, <code class="language-plaintext highlighter-rouge">/dev/stdout</code> からも確認することができます</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">ls</span> <span class="nt">-l</span> /dev/std<span class="o">{</span><span class="k">in</span>,out,err<span class="o">}</span>
 <span class="gp">lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stderr -&gt;</span><span class="w"> </span>fd/2
@@ -197,10 +197,10 @@ stderr
 
 <ul>
   <li>リダイレクト無し実行時と比較して、画面に表示される結果から stdout が出力されなくなった</li>
-  <li>画面に表示されなくなった代わりに、リダイレクト先の <code class="highlighter-rouge">stdout.txt</code> に stdout が出力されている</li>
+  <li>画面に表示されなくなった代わりに、リダイレクト先の <code class="language-plaintext highlighter-rouge">stdout.txt</code> に stdout が出力されている</li>
 </ul>
 
-<p>また上コマンドでは省略されていますが、リダイレクトのデフォルトは標準出力のファイルディスクリプタ「1」なので、<code class="highlighter-rouge">&gt;</code> の部分は <code class="highlighter-rouge">1&gt;</code> と書くこともできます。</p>
+<p>また上コマンドでは省略されていますが、リダイレクトのデフォルトは標準出力のファイルディスクリプタ「1」なので、<code class="language-plaintext highlighter-rouge">&gt;</code> の部分は <code class="language-plaintext highlighter-rouge">1&gt;</code> と書くこともできます。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh <span class="o">&gt;</span> stdout.txt
 <span class="gp">#</span><span class="w"> </span>下記のようにも書くことできる
@@ -221,7 +221,7 @@ stderr
 
 <ul>
   <li>リダイレクト無し実行時と比較して、画面に表示される結果から stderr が出力されなくなった</li>
-  <li>画面に表示されなくなった代わりに、リダイレクト先の <code class="highlighter-rouge">stderr.txt</code> に stderr が出力されている</li>
+  <li>画面に表示されなくなった代わりに、リダイレクト先の <code class="language-plaintext highlighter-rouge">stderr.txt</code> に stderr が出力されている</li>
 </ul>
 
 <h2 id="エラー出力を標準出力としてリダイレクト実行時">
@@ -238,7 +238,7 @@ stderr
 
 <ul>
   <li>リダイレクト実行時の画面表示は何もされない</li>
-  <li>リダイレクト先のファイル <code class="highlighter-rouge">stdout-stderr.txt</code> には stdout と stderr ともに出力されている</li>
+  <li>リダイレクト先のファイル <code class="language-plaintext highlighter-rouge">stdout-stderr.txt</code> には stdout と stderr ともに出力されている</li>
 </ul>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh &amp;&gt; stdout-stderr.txt
@@ -263,14 +263,14 @@ stderr
 </span></code></pre></div></div>
 
 <ul>
-  <li>標準出力である stdout は <code class="highlighter-rouge">stdout.txt</code> に出力される</li>
-  <li>標準エラー出力である stderr は <code class="highlighter-rouge">stderr.txt</code> に出力される</li>
+  <li>標準出力である stdout は <code class="language-plaintext highlighter-rouge">stdout.txt</code> に出力される</li>
+  <li>標準エラー出力である stderr は <code class="language-plaintext highlighter-rouge">stderr.txt</code> に出力される</li>
 </ul>
 
 <h2 id="出力をリダイレクトで捨てる">
 <a class="anchor" href="#%E5%87%BA%E5%8A%9B%E3%82%92%E3%83%AA%E3%83%80%E3%82%A4%E3%83%AC%E3%82%AF%E3%83%88%E3%81%A7%E6%8D%A8%E3%81%A6%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>出力をリダイレクトで捨てる</h2>
 
-<p><code class="highlighter-rouge">/dev/null</code>にリダイレクトすれば出力内容を捨てることができます。</p>
+<p><code class="language-plaintext highlighter-rouge">/dev/null</code>にリダイレクトすれば出力内容を捨てることができます。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh &amp;&gt; /dev/null
 </code></pre></div></div>

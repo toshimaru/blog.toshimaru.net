@@ -91,7 +91,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#auto-rubocop-on-circleci-powered-by-reviewdog" id="markdown-toc-auto-rubocop-on-circleci-powered-by-reviewdog">Auto-RuboCop on CircleCI powered by reviewdog</a>    <ul>
-      <li><a href="#1-configymlの設定" id="markdown-toc-1-configymlの設定">1. <code class="highlighter-rouge">config.yml</code>の設定</a></li>
+      <li><a href="#1-configymlの設定" id="markdown-toc-1-configymlの設定">1. <code class="language-plaintext highlighter-rouge">config.yml</code>の設定</a></li>
       <li><a href="#2コメントできるtokenを取得--設定" id="markdown-toc-2コメントできるtokenを取得--設定">2.コメントできるTokenを取得 &amp; 設定</a></li>
       <li><a href="#3-rubucopの結果をreviewdogで通知" id="markdown-toc-3-rubucopの結果をreviewdogで通知">3. rubucopの結果をreviewdogで通知</a></li>
     </ul>
@@ -108,9 +108,9 @@
 
 <p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/254">https://github.com/toshimaru/RailsTwitterClone/pull/254</a></p>
 
-<h3 id="1-configymlの設定">1. <code class="highlighter-rouge">config.yml</code>の設定</h3>
+<h3 id="1-configymlの設定">1. <code class="language-plaintext highlighter-rouge">config.yml</code>の設定</h3>
 
-<p>基本的には<a href="https://github.com/haya14busa/reviewdog#circle-ci">公式READMEのCircleCIセットアップ手順</a>通りですが、まずは下記のようにreviewdogのバイナリを<code class="highlighter-rouge">curl</code>経由で落とします。</p>
+<p>基本的には<a href="https://github.com/haya14busa/reviewdog#circle-ci">公式READMEのCircleCIセットアップ手順</a>通りですが、まずは下記のようにreviewdogのバイナリを<code class="language-plaintext highlighter-rouge">curl</code>経由で落とします。</p>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 環境変数でダウンロードするreviewdogのバージョンを指定</span>
 <span class="na">environment</span><span class="pi">:</span>
@@ -131,8 +131,8 @@
   <li><a href="https://github.com/settings/tokens">アクセストークンの取得ページ</a>にいく</li>
   <li>下記の権限を設定してTokenを発行
     <ul>
-      <li>Privateレポジトリの設定: <code class="highlighter-rouge">repo</code>をチェック</li>
-      <li>Publicレポジトリの設定: <code class="highlighter-rouge">public_repo</code>をチェック</li>
+      <li>Privateレポジトリの設定: <code class="language-plaintext highlighter-rouge">repo</code>をチェック</li>
+      <li>Publicレポジトリの設定: <code class="language-plaintext highlighter-rouge">public_repo</code>をチェック</li>
     </ul>
   </li>
 </ul>
@@ -143,7 +143,7 @@
   <li>CircleCIの環境変数の設定画面を開く</li>
   <li>下記の環境変数を設定
     <ul>
-      <li><code class="highlighter-rouge">REVIEWDOG_GITHUB_API_TOKEN</code>の値に前手順で取得したTokenを設定</li>
+      <li><code class="language-plaintext highlighter-rouge">REVIEWDOG_GITHUB_API_TOKEN</code>の値に前手順で取得したTokenを設定</li>
     </ul>
   </li>
 </ul>
@@ -152,14 +152,14 @@
 
 <h3 id="3-rubucopの結果をreviewdogで通知">3. rubucopの結果をreviewdogで通知</h3>
 
-<p>あとはいつも通りのrubocopのコマンドをパイプしてreviewdogに渡してあげればOK。その際のオプションは <code class="highlighter-rouge">-f=rubocop</code>（rubocopフォーマット指定）, <code class="highlighter-rouge">-reporter=github-pr-review</code>（GitHub PRレビューコメント形式の指定） の２つを指定します。</p>
+<p>あとはいつも通りのrubocopのコマンドをパイプしてreviewdogに渡してあげればOK。その際のオプションは <code class="language-plaintext highlighter-rouge">-f=rubocop</code>（rubocopフォーマット指定）, <code class="language-plaintext highlighter-rouge">-reporter=github-pr-review</code>（GitHub PRレビューコメント形式の指定） の２つを指定します。</p>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review</span>
 </code></pre></div></div>
 
 <h2 id="完成yamlイメージ">完成yamlイメージ</h2>
 
-<p><code class="highlighter-rouge">.circleci/config.yml</code>の完成イメージは下記です（完全なyamlファイル<a href="https://github.com/toshimaru/RailsTwitterClone/pull/254/files">当該Pull Request</a>より確認してください）。なおCircleCIはversion2.1を使用していることに注意してください（現時点の最新バージョン）。</p>
+<p><code class="language-plaintext highlighter-rouge">.circleci/config.yml</code>の完成イメージは下記です（完全なyamlファイル<a href="https://github.com/toshimaru/RailsTwitterClone/pull/254/files">当該Pull Request</a>より確認してください）。なおCircleCIはversion2.1を使用していることに注意してください（現時点の最新バージョン）。</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">2.1</span>
 <span class="na">executors</span><span class="pi">:</span>

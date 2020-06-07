@@ -132,7 +132,7 @@ End: 99
 <h2 id="goroutine-を使う">
 <a class="anchor" href="#goroutine-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goroutine を使う</h2>
 
-<p>Goの並行処理といえば Goroutine。こいつを使うには処理を関数化して <code class="highlighter-rouge">go</code> というキーワードを付けるだけです。</p>
+<p>Goの並行処理といえば Goroutine。こいつを使うには処理を関数化して <code class="language-plaintext highlighter-rouge">go</code> というキーワードを付けるだけです。</p>
 
 <p>下記のように変更します。</p>
 
@@ -196,14 +196,14 @@ End: 99
 
 <ul>
   <li>
-<code class="highlighter-rouge">int</code> 型の Channel を <code class="highlighter-rouge">make</code> する</li>
-  <li>ループ内の Goroutine の中で↑で作成した Channel に値、<code class="highlighter-rouge">i</code> を送信</li>
+<code class="language-plaintext highlighter-rouge">int</code> 型の Channel を <code class="language-plaintext highlighter-rouge">make</code> する</li>
+  <li>ループ内の Goroutine の中で↑で作成した Channel に値、<code class="language-plaintext highlighter-rouge">i</code> を送信</li>
   <li>2回目のループ内で Channel の値を受信して、Printする</li>
 </ul>
 
 <p>実行すると下記の通り、Goroutine から受信される値の順番はバラバラで出力されました。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go run channel.go
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go run channel.go
 End: 95
 End: 98
 End: 5
@@ -218,9 +218,9 @@ End: 99
 <h2 id="goroutine--waitgroup-を使う">
 <a class="anchor" href="#goroutine--waitgroup-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goroutine + WaitGroup を使う</h2>
 
-<p>しかし Channel を使うよりももっと良い書き方があるんです！ それが <code class="highlighter-rouge">sync.WaitGroup</code> です。</p>
+<p>しかし Channel を使うよりももっと良い書き方があるんです！ それが <code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> です。</p>
 
-<p><code class="highlighter-rouge">sync.WaitGroup</code> は複数の Goroutine の実行を待ってくれます。今回のプログラムの場合、下記のように書くことができます。</p>
+<p><code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> は複数の Goroutine の実行を待ってくれます。今回のプログラムの場合、下記のように書くことができます。</p>
 
 <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// waitgroup.go</span>
 <span class="k">package</span> <span class="n">main</span>
@@ -249,10 +249,10 @@ End: 99
 
 <ul>
   <li>
-<code class="highlighter-rouge">sync.WaitGroup</code> を宣言</li>
-  <li>ループ内の Goroutine の処理の手前で <code class="highlighter-rouge">Add(1)</code> してグループをインクリメントする</li>
-  <li>Goroutine 内の最後で <code class="highlighter-rouge">Done()</code> して Goroutine の処理が終わったことを <code class="highlighter-rouge">WaitGroup</code> に教えてあげる</li>
-  <li>ループ終了後に、<code class="highlighter-rouge">Wait()</code> して <code class="highlighter-rouge">sync.WaitGroup</code> の <code class="highlighter-rouge">Done</code> を待つ</li>
+<code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> を宣言</li>
+  <li>ループ内の Goroutine の処理の手前で <code class="language-plaintext highlighter-rouge">Add(1)</code> してグループをインクリメントする</li>
+  <li>Goroutine 内の最後で <code class="language-plaintext highlighter-rouge">Done()</code> して Goroutine の処理が終わったことを <code class="language-plaintext highlighter-rouge">WaitGroup</code> に教えてあげる</li>
+  <li>ループ終了後に、<code class="language-plaintext highlighter-rouge">Wait()</code> して <code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> の <code class="language-plaintext highlighter-rouge">Done</code> を待つ</li>
 </ul>
 
 <p>実行すると下記の出力を得ることができます。</p>
@@ -276,7 +276,7 @@ End: 70
 
 <p>そんなときに使えるのが<a href="https://godoc.org/golang.org/x/sync/errgroup">errgroup</a>です。errgroup を使ったコードを下記に示します。</p>
 
-<p>※下記のコードサンプル内では <code class="highlighter-rouge">i</code> が90より大きい場合にエラーが発生するとしています。</p>
+<p>※下記のコードサンプル内では <code class="language-plaintext highlighter-rouge">i</code> が90より大きい場合にエラーが発生するとしています。</p>
 
 <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// errgroup.go</span>
 <span class="k">package</span> <span class="n">main</span>
@@ -311,13 +311,13 @@ End: 70
 
 <ul>
   <li>
-<code class="highlighter-rouge">golang.org/x/sync/errgroup</code> をimportして <code class="highlighter-rouge">errgroup.Group</code> を宣言</li>
+<code class="language-plaintext highlighter-rouge">golang.org/x/sync/errgroup</code> をimportして <code class="language-plaintext highlighter-rouge">errgroup.Group</code> を宣言</li>
   <li>
-<code class="highlighter-rouge">eg.Go()</code> 内で Goroutine の処理を定義</li>
+<code class="language-plaintext highlighter-rouge">eg.Go()</code> 内で Goroutine の処理を定義</li>
   <li>
-<code class="highlighter-rouge">eg.Wait()</code> して <code class="highlighter-rouge">eg.Go()</code> で実行した Goroutine を待つ</li>
+<code class="language-plaintext highlighter-rouge">eg.Wait()</code> して <code class="language-plaintext highlighter-rouge">eg.Go()</code> で実行した Goroutine を待つ</li>
   <li>
-<code class="highlighter-rouge">eg.Go()</code> の処理でエラーがあれば、一番最初のエラーを <code class="highlighter-rouge">eg.Wait()</code> は返す</li>
+<code class="language-plaintext highlighter-rouge">eg.Go()</code> の処理でエラーがあれば、一番最初のエラーを <code class="language-plaintext highlighter-rouge">eg.Wait()</code> は返す</li>
 </ul>
 
 <p>実行すると下記の出力を得ることができます。</p>
@@ -340,14 +340,14 @@ End: 74
 exit status 1
 </span></code></pre></div></div>
 
-<p>全ての Goroutine を実行して最初に出会ったエラー、 <code class="highlighter-rouge">Error: 96</code> が <code class="highlighter-rouge">Error occurred: 96</code> として処理の最後で出力されていることがわかります。</p>
+<p>全ての Goroutine を実行して最初に出会ったエラー、 <code class="language-plaintext highlighter-rouge">Error: 96</code> が <code class="language-plaintext highlighter-rouge">Error occurred: 96</code> として処理の最後で出力されていることがわかります。</p>
 
 <h2 id="goroutine--errgroup--context-を使う">
 <a class="anchor" href="#goroutine--errgroup--context-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goroutine + errgroup + context を使う</h2>
 
 <p>もう少し踏み込んで高度なエラー処理をしてみましょう。エラーが発生したときに後続の Goroutine をキャンセルしたいという場合はどうしたらよいでしょうか？</p>
 
-<p>これは <code class="highlighter-rouge">errgroup</code> に加えて、<a href="https://golang.org/pkg/context/">context</a>を組み合わせて使えば実現できます。</p>
+<p>これは <code class="language-plaintext highlighter-rouge">errgroup</code> に加えて、<a href="https://golang.org/pkg/context/">context</a>を組み合わせて使えば実現できます。</p>
 
 <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// errgroup_cancel.go</span>
 <span class="k">package</span> <span class="n">main</span>
@@ -391,9 +391,9 @@ exit status 1
 
 <ul>
   <li>
-<code class="highlighter-rouge">errgroup.WithContext()</code> を使って、<code class="highlighter-rouge">errgroup</code> と <code class="highlighter-rouge">context</code> を生成</li>
+<code class="language-plaintext highlighter-rouge">errgroup.WithContext()</code> を使って、<code class="language-plaintext highlighter-rouge">errgroup</code> と <code class="language-plaintext highlighter-rouge">context</code> を生成</li>
   <li>
-<code class="highlighter-rouge">eg.Go()</code> 内でキャンセルされたときの処理を <code class="highlighter-rouge">case &lt;-ctx.Done():</code> 内に記述</li>
+<code class="language-plaintext highlighter-rouge">eg.Go()</code> 内でキャンセルされたときの処理を <code class="language-plaintext highlighter-rouge">case &lt;-ctx.Done():</code> 内に記述</li>
   <li>non-nil error が返されると context はキャンセルされ、後続の Goroutine がキャンセルされる</li>
 </ul>
 
@@ -415,14 +415,14 @@ Cenceled: 53
 exit status 1
 </span></code></pre></div></div>
 
-<p><code class="highlighter-rouge">Error: 98</code> が発生し、後続の Goroutine がキャンセルされていることがわかります。</p>
+<p><code class="language-plaintext highlighter-rouge">Error: 98</code> が発生し、後続の Goroutine がキャンセルされていることがわかります。</p>
 
 <h2 id="まとめ">
 <a class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
 
 <ul>
-  <li>複数の Goroutine を取り扱う場合、<code class="highlighter-rouge">sync.WaitGroup</code> を使って制御（<code class="highlighter-rouge">Add</code>, <code class="highlighter-rouge">Done</code>, <code class="highlighter-rouge">Wait</code>）すると良い</li>
-  <li>複数の Goroutine をエラーハンドリングとともに取り扱う場合、 <code class="highlighter-rouge">errgroup</code> を使って制御（<code class="highlighter-rouge">Go</code>, <code class="highlighter-rouge">Wait</code>, <code class="highlighter-rouge">WithContext</code>）すると良い</li>
+  <li>複数の Goroutine を取り扱う場合、<code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> を使って制御（<code class="language-plaintext highlighter-rouge">Add</code>, <code class="language-plaintext highlighter-rouge">Done</code>, <code class="language-plaintext highlighter-rouge">Wait</code>）すると良い</li>
+  <li>複数の Goroutine をエラーハンドリングとともに取り扱う場合、 <code class="language-plaintext highlighter-rouge">errgroup</code> を使って制御（<code class="language-plaintext highlighter-rouge">Go</code>, <code class="language-plaintext highlighter-rouge">Wait</code>, <code class="language-plaintext highlighter-rouge">WithContext</code>）すると良い</li>
 </ul>
 
 <h2 id="参考情報">

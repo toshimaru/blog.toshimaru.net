@@ -103,21 +103,21 @@
 <h2 id="jqueryでdeferredを使ってみる">jQueryでdeferredを使ってみる</h2>
 
 <h3 id="解決resolution--拒否rejection">解決(resolution) &amp; 拒否(rejection)</h3>
-<p>jQuery deferred関数の中核は、deferredの解決(resolve)/拒否(reject)を処理することだ。<code class="highlighter-rouge">$.Deferred().</code>でdeferredオブジェクトを作成できる。deferredオブジェクトの<code class="highlighter-rouge">done()</code>、<code class="highlighter-rouge">fail()</code>はそれぞれオブジェクトのresolveされたとき、rejectされたときに実行される関数を登録できる。</p>
+<p>jQuery deferred関数の中核は、deferredの解決(resolve)/拒否(reject)を処理することだ。<code class="language-plaintext highlighter-rouge">$.Deferred().</code>でdeferredオブジェクトを作成できる。deferredオブジェクトの<code class="language-plaintext highlighter-rouge">done()</code>、<code class="language-plaintext highlighter-rouge">fail()</code>はそれぞれオブジェクトのresolveされたとき、rejectされたときに実行される関数を登録できる。</p>
 
-<p>deferredをresolve/rejectすることは実際、<code class="highlighter-rouge">resolve()</code>,<code class="highlighter-rouge">reject()</code>を使うことで実現できる。<code class="highlighter-rouge">jQuery.ajax()</code>メソッドは内部的には、リクエストが正常に完了したときにdeferredの<code class="highlighter-rouge">resolve()</code>をコールし、リクエストが失敗したとき（例えばhttpステータスコードの404）に<code class="highlighter-rouge">reject()</code>をコールする。</p>
+<p>deferredをresolve/rejectすることは実際、<code class="language-plaintext highlighter-rouge">resolve()</code>,<code class="language-plaintext highlighter-rouge">reject()</code>を使うことで実現できる。<code class="language-plaintext highlighter-rouge">jQuery.ajax()</code>メソッドは内部的には、リクエストが正常に完了したときにdeferredの<code class="language-plaintext highlighter-rouge">resolve()</code>をコールし、リクエストが失敗したとき（例えばhttpステータスコードの404）に<code class="language-plaintext highlighter-rouge">reject()</code>をコールする。</p>
 
 <h3 id="deferredへ通知する-notifyとprogress">deferredへ通知する: notify()とprogress()</h3>
-<p>jQuery1.7からresolve/rejectに加えて、<code class="highlighter-rouge">progress</code>が導入された。、<code class="highlighter-rouge">progress()</code>により、deferred内で<code class="highlighter-rouge">notify()</code>がコールされたときに実行されるコールバック関数を登録することができ、resolved状態に対する「進捗(progress)」を表現できるようになった。<code class="highlighter-rouge">notify()</code>で事前にコールバックを登録しておくことで例えば、ロードに時間がかかるリソースを持つdeferredオブジェクトの定期的に更新されるプログレスバーを描画できる。deferredはロード中に通知(notify)され、ロード完了時に解決(resolve)される。</p>
+<p>jQuery1.7からresolve/rejectに加えて、<code class="language-plaintext highlighter-rouge">progress</code>が導入された。、<code class="language-plaintext highlighter-rouge">progress()</code>により、deferred内で<code class="language-plaintext highlighter-rouge">notify()</code>がコールされたときに実行されるコールバック関数を登録することができ、resolved状態に対する「進捗(progress)」を表現できるようになった。<code class="language-plaintext highlighter-rouge">notify()</code>で事前にコールバックを登録しておくことで例えば、ロードに時間がかかるリソースを持つdeferredオブジェクトの定期的に更新されるプログレスバーを描画できる。deferredはロード中に通知(notify)され、ロード完了時に解決(resolve)される。</p>
 
 <h3 id="promiseを返す">promise()を返す</h3>
-<p>deferred利用時のほとんどの場合、deferredの利用者にresolve/rejectを決めてほしくはないだろう。あなた自身でそれを管理したいはずだ。そのような場合には、<code class="highlighter-rouge">promise()</code>を返すのがよい。</p>
+<p>deferred利用時のほとんどの場合、deferredの利用者にresolve/rejectを決めてほしくはないだろう。あなた自身でそれを管理したいはずだ。そのような場合には、<code class="language-plaintext highlighter-rouge">promise()</code>を返すのがよい。</p>
 
-<p>jQuery用語的にいうと、promiseは「read-only deferred」だ。promiseはコールバック登録、deferred状態への問い合わせを可能にするが、状態の変更は不可だ(たとえばresolve/reject状態の変更)。 <code class="highlighter-rouge">jQuery.ajax()</code>メソッドはpromise()を返す。なぜならAJAXリクエストが成功したか失敗したかを決定するのは、その内部のコードで完結する話だからだ。</p>
+<p>jQuery用語的にいうと、promiseは「read-only deferred」だ。promiseはコールバック登録、deferred状態への問い合わせを可能にするが、状態の変更は不可だ(たとえばresolve/reject状態の変更)。 <code class="language-plaintext highlighter-rouge">jQuery.ajax()</code>メソッドはpromise()を返す。なぜならAJAXリクエストが成功したか失敗したかを決定するのは、その内部のコードで完結する話だからだ。</p>
 
 <h3 id="非同期イベントの同期化when">非同期イベントの同期化：when()</h3>
 
-<p><code class="highlighter-rouge">$.when()</code>は１つ以上のdeferredを受け入れ可能で、それら全てのdeferredオブジェクトが正常に完了(resove)したときにのみresolve状態となる新たなdeferredを作り出す。つまり<code class="highlighter-rouge">when()</code>により、非同期イベントを一つに統合することが可能になるのだ。</p>
+<p><code class="language-plaintext highlighter-rouge">$.when()</code>は１つ以上のdeferredを受け入れ可能で、それら全てのdeferredオブジェクトが正常に完了(resove)したときにのみresolve状態となる新たなdeferredを作り出す。つまり<code class="language-plaintext highlighter-rouge">when()</code>により、非同期イベントを一つに統合することが可能になるのだ。</p>
 
 <p>下記の例を考えてみよう。</p>
 
@@ -125,11 +125,11 @@
   <p>ある1つのUI表現に対して、2つの分割されたAJAXリクエストのデータが必要であり、UIのレンダリングには、それら２つのリクエストのデータが必須である。</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">when()</code>がないと、レンダリング前にどちらのリクエストも終わっていることを保証するために、コールバックをネストすることを強要されてしまう。さらに悪いことに、２つのAJAXリクエストが失敗時のエラーハンドリングコードが下記URLに示す通り２つに分散されてしまう。</p>
+<p><code class="language-plaintext highlighter-rouge">when()</code>がないと、レンダリング前にどちらのリクエストも終わっていることを保証するために、コールバックをネストすることを強要されてしまう。さらに悪いことに、２つのAJAXリクエストが失敗時のエラーハンドリングコードが下記URLに示す通り２つに分散されてしまう。</p>
 
 <iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/2s4Mg/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-<p>この代替案として、<code class="highlighter-rouge">when()</code>が使用可能なのだ。2つのAJAXリクエストによって分割されてしまったdeferredオブジェクトを1つに統合できる。<code class="highlighter-rouge">when()</code>はこれら2つの両リクエストが完了したときにのみresolveとなる。成功時のコールバックとしてUI要素のレンダリング処理を登録することができる。さらに、失敗時の処理は1つの箇所にまとめることができる（下記URL参照）。</p>
+<p>この代替案として、<code class="language-plaintext highlighter-rouge">when()</code>が使用可能なのだ。2つのAJAXリクエストによって分割されてしまったdeferredオブジェクトを1つに統合できる。<code class="language-plaintext highlighter-rouge">when()</code>はこれら2つの両リクエストが完了したときにのみresolveとなる。成功時のコールバックとしてUI要素のレンダリング処理を登録することができる。さらに、失敗時の処理は1つの箇所にまとめることができる（下記URL参照）。</p>
 
 <iframe width="100%" height="300" src="http://jsfiddle.net/mattbaker/wJ4bm/1/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
@@ -139,7 +139,7 @@
 
 <p>この状況では、プロフィールの遅延入力完了という点でdeferredが使われている。プロフィールを作成、「計算」している本質は実際のところ、人間である。このケースは「非同期である」と見做せる状況とはいえないかもしれないが、まさにdeferredが使える有効な状況である。</p>
 
-<p>ユーザーアクション（これは解決への進捗率を示している）によるdeferredを通知するために、<code class="highlighter-rouge">notify()</code>が使える。そして<code class="highlighter-rouge">resolve()</code>がプロフィール入力完了によるdeferredを通知するのに使える。プログレスバーを更新するには<code class="highlighter-rouge">progress()</code>を使ってコールバックをバインドし、ありがとうメッセージを表示するコールバックをバインドするのには<code class="highlighter-rouge">done()</code>を使う。</p>
+<p>ユーザーアクション（これは解決への進捗率を示している）によるdeferredを通知するために、<code class="language-plaintext highlighter-rouge">notify()</code>が使える。そして<code class="language-plaintext highlighter-rouge">resolve()</code>がプロフィール入力完了によるdeferredを通知するのに使える。プログレスバーを更新するには<code class="language-plaintext highlighter-rouge">progress()</code>を使ってコールバックをバインドし、ありがとうメッセージを表示するコールバックをバインドするのには<code class="language-plaintext highlighter-rouge">done()</code>を使う。</p>
 
 <p>下記に例を示そう。</p>
 
@@ -147,7 +147,7 @@
 
 <h3 id="最後に訳者より">最後に（訳者より）</h3>
 
-<p>原文にはdeferredの面白い使い方、<code class="highlighter-rouge">pipe()</code>も紹介されています。是非こちらも参照してみてください。</p>
+<p>原文にはdeferredの面白い使い方、<code class="language-plaintext highlighter-rouge">pipe()</code>も紹介されています。是非こちらも参照してみてください。</p>
 
 <p><a href="http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html">jQuery.Deferred is the most important client-side tool you have</a></p>
 

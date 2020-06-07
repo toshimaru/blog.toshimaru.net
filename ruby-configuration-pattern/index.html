@@ -83,7 +83,7 @@
 
 <div id="md-content">
   
-  <p>railsのgemでよくみかける初期設定ファイル、<code class="highlighter-rouge">config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
+  <p>railsのgemでよくみかける初期設定ファイル、<code class="language-plaintext highlighter-rouge">config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
 
 <h2 id="めざす完成形はコレ">めざす完成形はコレ！</h2>
 
@@ -96,7 +96,7 @@
 
 <h2 id="configureメソッドを用意">configureメソッドを用意</h2>
 
-<p>まずは<code class="highlighter-rouge">module</code>と<code class="highlighter-rouge">configure</code>というクラスメソッドを用意します。</p>
+<p>まずは<code class="language-plaintext highlighter-rouge">module</code>と<code class="language-plaintext highlighter-rouge">configure</code>というクラスメソッドを用意します。</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
@@ -107,7 +107,7 @@
 
 <h2 id="configurationクラス">Configurationクラス</h2>
 
-<p>次に実際の設定値が入る<code class="highlighter-rouge">Configuration</code>クラスを用意します。</p>
+<p>次に実際の設定値が入る<code class="language-plaintext highlighter-rouge">Configuration</code>クラスを用意します。</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
   <span class="nb">attr_accessor</span> <span class="ss">:my_value</span>
@@ -141,9 +141,9 @@
   <span class="k">end</span>
 <span class="k">end</span></code></pre></figure>
 
-<p>これでインスタンス化された<code class="highlighter-rouge">Configuration</code>クラスが出てきます。</p>
+<p>これでインスタンス化された<code class="language-plaintext highlighter-rouge">Configuration</code>クラスが出てきます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Konfig.configure {|config| p config}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Konfig.configure {|config| p config}
 #&lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value"&gt;
 </code></pre></div></div>
 
@@ -155,7 +155,7 @@
 <span class="no">Konfig</span><span class="p">.</span><span class="nf">configuration</span>
 <span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="abc"&gt;</span></code></pre></figure>
 
-<p><code class="highlighter-rouge">configure</code>で<code class="highlighter-rouge">Configuration</code>インスタンス作っててブロック内の<code class="highlighter-rouge">config</code>変数で<code class="highlighter-rouge">Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
+<p><code class="language-plaintext highlighter-rouge">configure</code>で<code class="language-plaintext highlighter-rouge">Configuration</code>インスタンス作っててブロック内の<code class="language-plaintext highlighter-rouge">config</code>変数で<code class="language-plaintext highlighter-rouge">Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
 
 <h3 id="参考">参考</h3>
 <ul>

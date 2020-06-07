@@ -97,9 +97,9 @@
 
 <h2 id="導入">導入</h2>
 
-<p>下記をGemfileに追加して<code class="highlighter-rouge">bundle install</code>.</p>
+<p>下記をGemfileに追加して<code class="language-plaintext highlighter-rouge">bundle install</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem 'pry-byebug', group: :development
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem 'pry-byebug', group: :development
 </code></pre></div></div>
 
 <h2 id="ユースケース">ユースケース</h2>
@@ -131,11 +131,11 @@
   <span class="k">end</span>
 <span class="k">end</span></code></pre></figure>
 
-<p>すると<code class="highlighter-rouge">binding.pry</code>を通る処理をした際に、下記のように表示されます。</p>
+<p>すると<code class="language-plaintext highlighter-rouge">binding.pry</code>を通る処理をした際に、下記のように表示されます。</p>
 
 <p>From: app/controllers/posts_controller.rb @ line 31 PostsController#create:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   26: def create
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   26: def create
    27:   @post = Post.new(post_params)
    28:   result = @post.complicated_logic
    29:   binding.pry
@@ -147,7 +147,7 @@
 
 <p>この状態で下記のように変数をみたりできます。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1] pry(#&lt;PostsController&gt;)&gt; result
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1] pry(#&lt;PostsController&gt;)&gt; result
 =&gt; true
 [2] pry(#&lt;PostsController&gt;)&gt; post_params
 =&gt; {"title"=&gt;"a", "category"=&gt;"b", "content"=&gt;"c"}
@@ -158,17 +158,17 @@
 <p>ステップ実行に使えるコマンドは下記４つ。</p>
 
 <ol>
-  <li><code class="highlighter-rouge">step</code></li>
-  <li><code class="highlighter-rouge">next</code></li>
-  <li><code class="highlighter-rouge">finish</code></li>
-  <li><code class="highlighter-rouge">continue</code></li>
+  <li><code class="language-plaintext highlighter-rouge">step</code></li>
+  <li><code class="language-plaintext highlighter-rouge">next</code></li>
+  <li><code class="language-plaintext highlighter-rouge">finish</code></li>
+  <li><code class="language-plaintext highlighter-rouge">continue</code></li>
 </ol>
 
-<p>次の行を実行したければ<code class="highlighter-rouge">step</code>、Pryセッションから抜けたい場合は<code class="highlighter-rouge">continue</code>を打てばよい。</p>
+<p>次の行を実行したければ<code class="language-plaintext highlighter-rouge">step</code>、Pryセッションから抜けたい場合は<code class="language-plaintext highlighter-rouge">continue</code>を打てばよい。</p>
 
 <h3 id="コマンドエイリアス">コマンドエイリアス</h3>
 
-<p>それぞれのコマンドをいちいち打つのがダルいので、プロジェクトルートに<code class="highlighter-rouge">.pryrc</code>を置きに下記のように書くとエイリアスを設定できるようだ。</p>
+<p>それぞれのコマンドをいちいち打つのがダルいので、プロジェクトルートに<code class="language-plaintext highlighter-rouge">.pryrc</code>を置きに下記のように書くとエイリアスを設定できるようだ。</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="no">PryByebug</span><span class="p">)</span>
   <span class="no">Pry</span><span class="p">.</span><span class="nf">commands</span><span class="p">.</span><span class="nf">alias_command</span> <span class="s1">'c'</span><span class="p">,</span> <span class="s1">'continue'</span>

@@ -148,7 +148,7 @@
   <li>バッチはrakeタスクとして実行する</li>
   <li>今回、最適化対象とするのは <strong>Userモデルのバッチ処理</strong>
     <ul>
-      <li>使用するUserモデルは<a href="https://github.com/plataformatec/devise/">devise</a>で作られるUserモデル(<code class="highlighter-rouge">rails generate devise:install</code>)を基本として、そのスキーマ定義にint型のpointカラムをつけたもの</li>
+      <li>使用するUserモデルは<a href="https://github.com/plataformatec/devise/">devise</a>で作られるUserモデル(<code class="language-plaintext highlighter-rouge">rails generate devise:install</code>)を基本として、そのスキーマ定義にint型のpointカラムをつけたもの</li>
       <li>pointカラムは登録ユーザーが自由につかえるポイントの意</li>
     </ul>
   </li>
@@ -156,8 +156,8 @@
   <li>
 <a href="https://dalibornasevic.com/posts/68-processing-large-csv-files-with-ruby">こちらのコード</a>を参考に処理の <strong>実行時間</strong> と <strong>メモリ使用量</strong> を計測する</li>
   <li>
-<code class="highlighter-rouge">execute</code>などによる直接SQL実行はせずにDB操作を行う</li>
-  <li>シンプルにするために、登録日 = <code class="highlighter-rouge">User.created_at</code>とする
+<code class="language-plaintext highlighter-rouge">execute</code>などによる直接SQL実行はせずにDB操作を行う</li>
+  <li>シンプルにするために、登録日 = <code class="language-plaintext highlighter-rouge">User.created_at</code>とする
     <ul>
       <li>Userのタイムゾーンは無いものとする（すべてUTCとして扱う）</li>
     </ul>
@@ -169,7 +169,7 @@
 <h2 id="オリジナルコード">
 <a class="anchor" href="#%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%89" aria-hidden="true"><span class="octicon octicon-link"></span></a>オリジナルコード</h2>
 
-<p>さて今回最適化するコードは下記です。処理内容としては <strong>全ユーザーの中から2017年以降の登録ユーザーへ100ポイントを付与する</strong> というものです。いかにも販促活動の一環としてありそうな話です（<code class="highlighter-rouge">2017年以降</code>のところの条件は別になんでも良かったのですが、処理対象をある程度確保するために今回はそのように設定しました）。</p>
+<p>さて今回最適化するコードは下記です。処理内容としては <strong>全ユーザーの中から2017年以降の登録ユーザーへ100ポイントを付与する</strong> というものです。いかにも販促活動の一環としてありそうな話です（<code class="language-plaintext highlighter-rouge">2017年以降</code>のところの条件は別になんでも良かったのですが、処理対象をある程度確保するために今回はそのように設定しました）。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Task: batch:original</span>
 <span class="no">User</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
@@ -203,7 +203,7 @@ Memory: 2219.72 MB
 <h2 id="最適化1-簡単な最適化">
 <a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%961-%E7%B0%A1%E5%8D%98%E3%81%AA%E6%9C%80%E9%81%A9%E5%8C%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化1: 簡単な最適化</h2>
 
-<p>まずは簡単な最適化から始めましょう。日付の比較は<code class="highlighter-rouge">String</code>を使うよりも<code class="highlighter-rouge">Date</code>クラスを使ったほうが速そうです。また、ループの中で何度も同じ値が使われるのも良くないので定数に切り出しちゃいましょう。結果、下記のコードのようになりました。</p>
+<p>まずは簡単な最適化から始めましょう。日付の比較は<code class="language-plaintext highlighter-rouge">String</code>を使うよりも<code class="language-plaintext highlighter-rouge">Date</code>クラスを使ったほうが速そうです。また、ループの中で何度も同じ値が使われるのも良くないので定数に切り出しちゃいましょう。結果、下記のコードのようになりました。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Task: batch:improvement1</span>
 <span class="no">POINT_DATE</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2017</span><span class="p">)</span>
@@ -233,7 +233,7 @@ Memory: 2244.71 MB
 
 <p>次はもう少し本格的な最適化を入れていきましょう。</p>
 
-<p>まずは<code class="highlighter-rouge">User.all.each</code>で全件ユーザーを取得している点が真っ先に気になるところです。これは <strong>全件取得せず2017年以降の登録ユーザーをあらかじめフィルターしてからループさせる</strong> ほうが良さそうです。</p>
+<p>まずは<code class="language-plaintext highlighter-rouge">User.all.each</code>で全件ユーザーを取得している点が真っ先に気になるところです。これは <strong>全件取得せず2017年以降の登録ユーザーをあらかじめフィルターしてからループさせる</strong> ほうが良さそうです。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Task: batch:improvement2</span>
 <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt;= ?"</span><span class="p">,</span> <span class="no">POINT_DATE</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
@@ -242,7 +242,7 @@ Memory: 2244.71 MB
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>あらかじめ処理対象ユーザーだけをフィルターできているので、ループ内の<code class="highlighter-rouge">if</code>も消すことができました。</p>
+<p>あらかじめ処理対象ユーザーだけをフィルターできているので、ループ内の<code class="language-plaintext highlighter-rouge">if</code>も消すことができました。</p>
 
 <h3 id="ベンチマーク-2">
 <a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
@@ -271,7 +271,7 @@ Memory: 1623.5 MB
 <h3 id="ベンチマーク-3">
 <a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake batch:improvement3
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake batch:improvement3
 Time: 290.88 secs
 Memory: 31.41 MB
 </code></pre></div></div>
@@ -281,11 +281,11 @@ Memory: 31.41 MB
 <h2 id="最適化4-in_batches--update_all-を使う">
 <a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%964-in_batches--update_all-%E3%82%92%E4%BD%BF%E3%81%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化4: in_batches &amp; update_all を使う</h2>
 
-<p>ここで一件一件<code class="highlighter-rouge">update</code>が走る点が気になってきました。そこはActiveRecordの<a href="http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all">update_all</a>を使ってまとめて更新するようにしてあげれば解決できそうです。</p>
+<p>ここで一件一件<code class="language-plaintext highlighter-rouge">update</code>が走る点が気になってきました。そこはActiveRecordの<a href="http://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all">update_all</a>を使ってまとめて更新するようにしてあげれば解決できそうです。</p>
 
-<p>また<code class="highlighter-rouge">update_all</code>は<code class="highlighter-rouge">ActiveRecord::Relation</code>のメソッドですが、<code class="highlighter-rouge">ActiveRecord::Relation</code>を先の<code class="highlighter-rouge">find_each</code>のように返してくれる便利メソッドが<a href="http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-in_batches">in_batches</a>です。</p>
+<p>また<code class="language-plaintext highlighter-rouge">update_all</code>は<code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code>のメソッドですが、<code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code>を先の<code class="language-plaintext highlighter-rouge">find_each</code>のように返してくれる便利メソッドが<a href="http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-in_batches">in_batches</a>です。</p>
 
-<p>この<code class="highlighter-rouge">in_batches</code>と<code class="highlighter-rouge">update_all</code>を組み合わせて処理してあげれば効率良く更新できそうな気がします。</p>
+<p>この<code class="language-plaintext highlighter-rouge">in_batches</code>と<code class="language-plaintext highlighter-rouge">update_all</code>を組み合わせて処理してあげれば効率良く更新できそうな気がします。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Task: batch:improvement4</span>
 <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt;= ?"</span><span class="p">,</span> <span class="no">POINT_DATE</span><span class="p">).</span><span class="nf">in_batches</span> <span class="k">do</span> <span class="o">|</span><span class="n">users</span><span class="o">|</span>
@@ -306,7 +306,7 @@ Memory: 7.26 MB
 <h2 id="最適化5-where--update_all">
 <a class="anchor" href="#%E6%9C%80%E9%81%A9%E5%8C%965-where--update_all" aria-hidden="true"><span class="octicon octicon-link"></span></a>最適化5: where &amp; update_all</h2>
 
-<p>勘の良い方なら既にお気づきですね。…ハイ、先のコードは<code class="highlighter-rouge">in_batches</code>すら不要です。単純にupdate対象を<code class="highlighter-rouge">where</code>でフィルターした上で<code class="highlighter-rouge">update_all</code>すれば良さそうです。出来上がったコードがこちら。</p>
+<p>勘の良い方なら既にお気づきですね。…ハイ、先のコードは<code class="language-plaintext highlighter-rouge">in_batches</code>すら不要です。単純にupdate対象を<code class="language-plaintext highlighter-rouge">where</code>でフィルターした上で<code class="language-plaintext highlighter-rouge">update_all</code>すれば良さそうです。出来上がったコードがこちら。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Task: batch:improvement5</span>
 <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"created_at &gt;= ?"</span><span class="p">,</span> <span class="no">POINT_DATE</span><span class="p">).</span><span class="nf">update_all</span><span class="p">(</span><span class="s2">"point = point + 100"</span><span class="p">)</span>
@@ -317,7 +317,7 @@ Memory: 7.26 MB
 <h3 id="ベンチマーク-5">
 <a class="anchor" href="#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>ベンチマーク</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake batch:improvement5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake batch:improvement5
 Time: 0.78 secs
 Memory: 0.82 MB
 </code></pre></div></div>
@@ -334,7 +334,7 @@ Memory: 0.82 MB
 <p lang="ja" dir="ltr">これcreated_atにインデックスがあろうがなかろうが全舐めして1秒弱で終わるレコード数ならいいのだけど、そうだとしてもsaveをupdate_allにした時点でcallbackが起きなくなって元と等価ではなくなるから仕事で真似するときは詳しい人にちゃんとレビューしてもらってから投入したほうがよさそう。</p>— Ryuta Kamizono (@kamipo) <a href="https://twitter.com/kamipo/status/970574529452900352?ref_src=twsrc%5Etfw">March 5, 2018</a>
 </blockquote>
 
-<p>kamipoさんからご指摘頂いたとおり、<code class="highlighter-rouge">update_all</code>は通常のActiveRecordの更新とは異なりcallback, validationをスキップするという仕様となっております。よってオリジナルコードとは等価な処理では無くなっているので、実際の現場においては<code class="highlighter-rouge">save</code>から<code class="highlighter-rouge">update_all</code>に変更する際は「本当にcallback, validationスキップしても大丈夫なんだっけ？」ということをしっかり考えてから実施するようにしてください。</p>
+<p>kamipoさんからご指摘頂いたとおり、<code class="language-plaintext highlighter-rouge">update_all</code>は通常のActiveRecordの更新とは異なりcallback, validationをスキップするという仕様となっております。よってオリジナルコードとは等価な処理では無くなっているので、実際の現場においては<code class="language-plaintext highlighter-rouge">save</code>から<code class="language-plaintext highlighter-rouge">update_all</code>に変更する際は「本当にcallback, validationスキップしても大丈夫なんだっけ？」ということをしっかり考えてから実施するようにしてください。</p>
 
 <blockquote>
   <p>it does not trigger Active Record callbacks or validations</p>
@@ -344,7 +344,7 @@ Memory: 0.82 MB
 
 <p>なお今回のコード例ではモデルのcallback, validationをスキップしても問題ないコードとして話を進めています。</p>
 
-<p>加えて、今回データベースの最適化は最適化の範囲外としたので<code class="highlighter-rouge">created_at</code>カラムのindexは貼りませんでした。実際の現場においてはRubyのコードレベルの最適化に加えてデータベースの最適化も考えてINDEXを貼ることも検討したほうがいいでしょう。</p>
+<p>加えて、今回データベースの最適化は最適化の範囲外としたので<code class="language-plaintext highlighter-rouge">created_at</code>カラムのindexは貼りませんでした。実際の現場においてはRubyのコードレベルの最適化に加えてデータベースの最適化も考えてINDEXを貼ることも検討したほうがいいでしょう。</p>
 
 <p><em>追記ここまで</em></p>
 

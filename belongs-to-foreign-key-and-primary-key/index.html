@@ -109,8 +109,8 @@
 <p>Railsモデルは下記のような状態です。</p>
 
 <ul>
-  <li>ユーザー（<code class="highlighter-rouge">User</code>）は複数の記事（<code class="highlighter-rouge">Post</code>）データをもっている</li>
-  <li>ユーザー（<code class="highlighter-rouge">User</code>）は１つのプロフィール（<code class="highlighter-rouge">Profile</code>）データをもっている</li>
+  <li>ユーザー（<code class="language-plaintext highlighter-rouge">User</code>）は複数の記事（<code class="language-plaintext highlighter-rouge">Post</code>）データをもっている</li>
+  <li>ユーザー（<code class="language-plaintext highlighter-rouge">User</code>）は１つのプロフィール（<code class="language-plaintext highlighter-rouge">Profile</code>）データをもっている</li>
 </ul>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
@@ -130,7 +130,7 @@
 <h2 id="has_oneをもったモデルをスキップする">
 <a class="anchor" href="#has_one%E3%82%92%E3%82%82%E3%81%A3%E3%81%9F%E3%83%A2%E3%83%87%E3%83%AB%E3%82%92%E3%82%B9%E3%82%AD%E3%83%83%E3%83%97%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>has_oneをもったモデルをスキップする</h2>
 
-<p>やりたいこととしてはこのモデル構成の中心にいる <code class="highlighter-rouge">User</code> の関連をスキップして <code class="highlighter-rouge">Post</code> と <code class="highlighter-rouge">Profile</code> を直接関連付けてやることです。つまり <strong>User has_one Profile</strong>, <strong>User has_many Posts</strong> の関係を、<strong>Profile has_many Posts</strong> の関係にしちゃおう、ということです。</p>
+<p>やりたいこととしてはこのモデル構成の中心にいる <code class="language-plaintext highlighter-rouge">User</code> の関連をスキップして <code class="language-plaintext highlighter-rouge">Post</code> と <code class="language-plaintext highlighter-rouge">Profile</code> を直接関連付けてやることです。つまり <strong>User has_one Profile</strong>, <strong>User has_many Posts</strong> の関係を、<strong>Profile has_many Posts</strong> の関係にしちゃおう、ということです。</p>
 
 <p>テーブル定義で表現すると下図の赤線の部分が今回やりたい関連の定義です。</p>
 
@@ -139,7 +139,7 @@
 <h3 id="モデル定義">
 <a class="anchor" href="#%E3%83%A2%E3%83%87%E3%83%AB%E5%AE%9A%E7%BE%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>モデル定義</h3>
 
-<p>上記のやりたいことはアソシエーションの定義において、<code class="highlighter-rouge">foreign_key</code>, <code class="highlighter-rouge">primary_key</code> などのオプションを駆使して実現可能です。</p>
+<p>上記のやりたいことはアソシエーションの定義において、<code class="language-plaintext highlighter-rouge">foreign_key</code>, <code class="language-plaintext highlighter-rouge">primary_key</code> などのオプションを駆使して実現可能です。</p>
 
 <p>下記がそのアソシエーション定義の完成形となります。</p>
 
@@ -159,7 +159,7 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>この定義により <code class="highlighter-rouge">Post</code> → <code class="highlighter-rouge">Profile</code>, <code class="highlighter-rouge">Profile</code> → <code class="highlighter-rouge">Post</code> の双方向の関連付けが定義することができました。</p>
+<p>この定義により <code class="language-plaintext highlighter-rouge">Post</code> → <code class="language-plaintext highlighter-rouge">Profile</code>, <code class="language-plaintext highlighter-rouge">Profile</code> → <code class="language-plaintext highlighter-rouge">Post</code> の双方向の関連付けが定義することができました。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Post</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">profile</span>
 <span class="c1">#  Post Load (1.2ms)  SELECT  `posts`.* FROM `posts` ORDER BY `posts`.`id` ASC LIMIT 1</span>
@@ -171,19 +171,19 @@
 <span class="o">=&gt;</span> <span class="c1">#&lt;ActiveRecord::Associations::CollectionProxy [#&lt;Post id: 1, user_id: 1, ..."&gt;, #&lt;Post id: 2, user_id: 1, ...]&gt;</span>
 </code></pre></div></div>
 
-<p>上結果の通り、<code class="highlighter-rouge">User Load</code>を通すことなくお互いを呼び出すことができていることが確認できました。</p>
+<p>上結果の通り、<code class="language-plaintext highlighter-rouge">User Load</code>を通すことなくお互いを呼び出すことができていることが確認できました。</p>
 
 <h2 id="inverse_of-を設定する">
 <a class="anchor" href="#inverse_of-%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>inverse_of を設定する</h2>
 
-<p>上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは <code class="highlighter-rouge">foreign_key</code> オプションを使っているために、双方向の関連付けが不完全に設定されていることです。</p>
+<p>上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは <code class="language-plaintext highlighter-rouge">foreign_key</code> オプションを使っているために、双方向の関連付けが不完全に設定されていることです。</p>
 
 <blockquote>
   <p>Active Recordでは標準的な名前同士の関連付けのほとんどをサポートしていて、自動的に認識できます。ただし、Active Recordでスコープや次のオプションを使った場合、双方向の関連付けは自動的に認識されません。</p>
 
   <ul>
-    <li><code class="highlighter-rouge">:through</code></li>
-    <li><code class="highlighter-rouge">:foreign_key</code></li>
+    <li><code class="language-plaintext highlighter-rouge">:through</code></li>
+    <li><code class="language-plaintext highlighter-rouge">:foreign_key</code></li>
   </ul>
 </blockquote>
 
@@ -202,7 +202,7 @@
 <h3 id="モデル定義inverse_of-version">
 <a class="anchor" href="#%E3%83%A2%E3%83%87%E3%83%AB%E5%AE%9A%E7%BE%A9inverse_of-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>モデル定義（inverse_of version）</h3>
 
-<p>これを解決するために <code class="highlighter-rouge">inverse_of</code> を設定します。上述のコードを下記のように変更します。</p>
+<p>これを解決するために <code class="language-plaintext highlighter-rouge">inverse_of</code> を設定します。上述のコードを下記のように変更します。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:posts</span>
@@ -220,7 +220,7 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>これで下記コードは同じオブジェクトとなり、<code class="highlighter-rouge">true</code>を返すようになります。</p>
+<p>これで下記コードは同じオブジェクトとなり、<code class="language-plaintext highlighter-rouge">true</code>を返すようになります。</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">profile1</span> <span class="o">=</span> <span class="no">Profile</span><span class="p">.</span><span class="nf">first</span>
 <span class="o">&gt;</span> <span class="n">profile2</span> <span class="o">=</span> <span class="n">profile1</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">profile</span>

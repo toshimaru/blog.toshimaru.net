@@ -123,7 +123,7 @@
 
 <p>まずはスロークエリとしてクエリログを全部吐くように設定。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>slow_query_log                = 1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>slow_query_log                = 1
 slow_query_log_file           = /var/lib/mysql/mysqld-slow.log
 long_query_time               = 0
 log-queries-not-using-indexes = 1
@@ -135,7 +135,7 @@ log-queries-not-using-indexes = 1
 <span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_image_name</span> <span class="k">ON</span> <span class="n">image</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">my.cnf</code>の設定は後に<code class="highlighter-rouge">too many connection</code>を観測していたので、<code class="highlighter-rouge">max_connections</code>を少しいじったくらいでそれ以外はいじってません。</p>
+<p><code class="language-plaintext highlighter-rouge">my.cnf</code>の設定は後に<code class="language-plaintext highlighter-rouge">too many connection</code>を観測していたので、<code class="language-plaintext highlighter-rouge">max_connections</code>を少しいじったくらいでそれ以外はいじってません。</p>
 
 <p>吐かれるクエリをザッと見て同じタイプのクエリが複数吐かれているのを観測できたので、アプリで複数のN+1の問題があることは想像がつきました。一方、例えば10秒とかかかるような激遅クエリが走っているわけではないので、何かしらの激遅クエリがボトルネックにはなってなさそうであることがわかりました。</p>
 
@@ -152,9 +152,9 @@ log-queries-not-using-indexes = 1
 
 <p>最初は画像がぶっ壊れてるのかと思ったのですが、見かけ上は全く同じ画像になっています。cmpを使ってバイナリのdiffをとってもこれといった差分は出ません。しかし画像のmd5を見てみると確かに値が違う。</p>
 
-<p>うーん…となり違うとしたら画像のメタデータかファイル末尾のなにかだろうと思い、viのxxdを使ってhexdump形式でファイルを確認してみました。ここでRubyの <code class="highlighter-rouge">file.puts</code> で画像ファイル末尾に改行が余計に入ってしまう点に気づけました。</p>
+<p>うーん…となり違うとしたら画像のメタデータかファイル末尾のなにかだろうと思い、viのxxdを使ってhexdump形式でファイルを確認してみました。ここでRubyの <code class="language-plaintext highlighter-rouge">file.puts</code> で画像ファイル末尾に改行が余計に入ってしまう点に気づけました。</p>
 
-<p>この問題で30分以上は時間を潰してしまいました。最初からシンプルに <code class="highlighter-rouge">File.write</code> あたりを使っておけばよかったなぁと後悔。</p>
+<p>この問題で30分以上は時間を潰してしまいました。最初からシンプルに <code class="language-plaintext highlighter-rouge">File.write</code> あたりを使っておけばよかったなぁと後悔。</p>
 
 <h3 id="nginx">NGINX</h3>
 
@@ -162,7 +162,7 @@ log-queries-not-using-indexes = 1
 
 <p>ここでCacheControlヘッダーあたりが怪しいということには気づけたのですがうまく設定を煮詰めることができずタイムアップ。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location /fonts/ {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>location /fonts/ {
     add_header Cache-Control "public";
 }
 location /js/ {
@@ -248,7 +248,7 @@ location /icons/ {
       <li>参考情報: <a href="https://qiita.com/tukiyo3/items/092fc32318bd3d1a0846">CentOS7で使われているsystemctlについて少しまとめた - Qiita</a></li>
     </ul>
   </li>
-  <li>サーバー作業中、<code class="highlighter-rouge">vim</code>という存在しないコマンドを叩いて何度エラーになったかわからないので大人しくサーバーにはvimを入れよう</li>
+  <li>サーバー作業中、<code class="language-plaintext highlighter-rouge">vim</code>という存在しないコマンドを叩いて何度エラーになったかわからないので大人しくサーバーにはvimを入れよう</li>
   <li>nginx力が低く効率的なサーバー構成を組めなかった
     <ul>
       <li>今回の敗因は何と言ってもicons問題を解決できずボトルネックをiconsからアプリケーションに移せなかったこと</li>
@@ -278,7 +278,7 @@ location /icons/ {
     </ul>
   </li>
   <li>confファイルのrepo管理が徹底できず雑管理してしまった</li>
-  <li>複数台でそれぞれのホスト間の名前解決どうしてるかを見るのに <code class="highlighter-rouge">/etc/hosts</code> はすぐに確認しておいてよかった</li>
+  <li>複数台でそれぞれのホスト間の名前解決どうしてるかを見るのに <code class="language-plaintext highlighter-rouge">/etc/hosts</code> はすぐに確認しておいてよかった</li>
 </ul>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">cat</span> /etc/hosts
@@ -305,7 +305,7 @@ location /icons/ {
 
 <p>ベンチマーカーの結果が安定しなかったり、開催日両日共に開始時間が遅れたりもしましたが、参加を終えてその不満も忘れるくらい準備が大変だったろうなぁとお察しします。あれだけのサーバー台数を参加者全員に用意するのは本当にすごい！</p>
 
-<p>出題についでですが、<code class="highlighter-rouge">Cache-Controle: Public, max-age</code>に関して何か色々物申す方がいらっしゃるようですが、これに関しては気づける人はちゃんと気づけたし特段奇問という印象は僕は受けなかったです。</p>
+<p>出題についでですが、<code class="language-plaintext highlighter-rouge">Cache-Controle: Public, max-age</code>に関して何か色々物申す方がいらっしゃるようですが、これに関しては気づける人はちゃんと気づけたし特段奇問という印象は僕は受けなかったです。</p>
 
 <p>コンテスト規模は年々拡大する一方ですが、今年も開催してくださりありがとうございました！</p>
 
