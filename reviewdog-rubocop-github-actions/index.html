@@ -168,7 +168,7 @@
         <span class="s">echo ::add-path::$HOME/bin</span>
     <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Run rubocop with reviewdog</span>
       <span class="na">env</span><span class="pi">:</span>
-        <span class="na">REVIEWDOG_GITHUB_API_TOKEN</span><span class="pi">:</span> <span class="s">$</span>
+        <span class="na">REVIEWDOG_GITHUB_API_TOKEN</span><span class="pi">:</span> <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
       <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec rubocop | reviewdog -reporter=github-pr-review -f=rubocop</span>
 </code></pre></div></div>
 
