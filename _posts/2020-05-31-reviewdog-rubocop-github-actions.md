@@ -80,7 +80,7 @@ jobs:
         echo ::add-path::$HOME/bin
     - name: Run rubocop with reviewdog
       env:
-        REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REVIEWDOG_GITHUB_API_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
       run: bundle exec rubocop | reviewdog -reporter=github-pr-review -f=rubocop
 ```
 
