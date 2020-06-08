@@ -4,13 +4,19 @@ title: reviewdogを使ってCI上でRuboCop自動レビューを動かす
 image: "/images/posts/rubocop_x_reviewdog.jpg"
 description: "rubocopの自動レビューをreviewdogを使ってやってみたのでその知見です。 Auto-RuboCop on CircleCI powered by reviewdog 僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。基本的には公式READMEのCircleCIセットアップ手順通りですが、まずは下記のようにreviewdogのバイナリをcurl経由で落とします。reviewdogにコメントさせるためにはコメントできる権限を持ったGitHub Tokenが必要になります。下記手順でGitHub Tokenを取得してください。"
 tags: review rubocop github circleci ci
-last_modified_at: 2020-05-30
+last_modified_at: 2020-06-08
 ---
 
 [rubocop](https://github.com/rubocop-hq/rubocop)の自動レビューを[reviewdog](https://github.com/haya14busa/reviewdog)を使ってやってみたのでその知見です。
 
 - toc
 {:toc}
+
+## 追記
+
+本記事の GitHub Actions 版を書きました。
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">blogged. | reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす - Hack Your Design! <a href="https://t.co/4u11iBjm6G">https://t.co/4u11iBjm6G</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1267121968307814401?ref_src=twsrc%5Etfw">May 31, 2020</a></blockquote>
 
 ## Auto-RuboCop on CircleCI powered by reviewdog
 

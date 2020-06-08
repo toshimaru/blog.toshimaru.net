@@ -5,10 +5,12 @@ image: "/images/posts/rubocop-actions/rubocop-actions.jpg"
 description: "過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。 本記事はそれのGitHub Actionsバージョンになります。　GitHub Actions上でreviewdogを使ってRuboCop自動レビューを動かすための設定を紹介します。"
 tags: rubocop github ci review
 toc: true
-last_modified_at: 2020-06-01
+last_modified_at: 2020-06-08
 ---
 
 過去に[reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事](/reviewdog-rubocop/)を書きました。
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Blogged. | reviewdogを使ってCI上でRuboCop自動レビューを動かす - Hack Your Design! <a href="https://t.co/8vdNUEIisX">https://t.co/8vdNUEIisX</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1064661783594491904?ref_src=twsrc%5Etfw">November 19, 2018</a></blockquote>
 
 本記事はそれの[GitHub Actions](https://github.com/features/actions)バージョンになります。
 
