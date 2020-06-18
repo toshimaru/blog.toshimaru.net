@@ -1,4 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-08T16:53:22+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-06-18T10:02:15+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">DependabotをGitHub公式Dependabotに移行させた</title><link href="https://blog.toshimaru.net/github-dependabot/" rel="alternate" type="text/html" title="DependabotをGitHub公式Dependabotに移行させた" /><published>2020-06-18T00:00:00+09:00</published><updated>2020-06-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-dependabot</id><content type="html" xml:base="https://blog.toshimaru.net/github-dependabot/">&lt;p&gt;&lt;a href=&quot;https://dependabot.com/blog/hello-github/&quot;&gt;2019年、DependabotがGitHubに買収された&lt;/a&gt;ことはご存知の通り。&lt;/p&gt;
+
+&lt;p&gt;そのDependabotの機能が公式機能として取り込まれたということので早速移行してみた。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.blog/2020-06-01-keep-all-your-packages-up-to-date-with-dependabot/&quot;&gt;Keep all your packages up to date with Dependabot - The GitHub Blog&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;dependabot管理画面から簡単移行&quot;&gt;Dependabot管理画面から簡単移行&lt;/h2&gt;
+
+&lt;p&gt;既存のDependabot管理画面から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Create config file&lt;/code&gt;をクリック。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/create-config.png&quot; alt=&quot;config&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;githubdependabotyml-作成&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/dependabot.yml&lt;/code&gt; 作成&lt;/h2&gt;
+
+&lt;p&gt;するとdependabot-preview氏がPull Requestを自動的に作ってくれる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/pr.png&quot; alt=&quot;pull request&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://github.com/toshimaru/auto-author-assign/pull/15&quot;&gt;Create Dependabot config file by dependabot-preview · Pull Request #15 · toshimaru/auto-author-assign&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;yamlの内容は下記の通り。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;updates&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;package-ecosystem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;npm&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;weekly&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;21:00'&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;open-pull-requests-limit&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;reviewers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;既存の設定をベースに自動的に内容を作成してくれた雰囲気。&lt;/p&gt;
+
+&lt;h2 id=&quot;移行完了&quot;&gt;移行完了&lt;/h2&gt;
+
+&lt;p&gt;PRをマージし、無事に移行が完了するとDependabot管理画面は下記のような表示となる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/finish.png&quot; alt=&quot;done&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;余談だが&lt;a href=&quot;https://github.blog/2019-06-17-github-acquires-pull-panda/&quot;&gt;同年に買収されたPull Panda&lt;/a&gt;のリマインダー機能もGitHubの公式機能に取り込まれている。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/managing-scheduled-reminders-for-your-team&quot;&gt;Managing scheduled reminders for your team - GitHub Help&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;良い機能がこのように＜買収→公式機能＞となっていくのは良い流れですね。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html">2019年、DependabotがGitHubに買収されたことはご存知の通り。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
 
 &lt;p&gt;当日あった質問、発表してみての感想などを書きたいと思います。&lt;/p&gt;
 
@@ -2496,141 +2544,4 @@ exit status 1
       &lt;p&gt;むしろ変えられなかったら辞めるくらいの気概を持ってやっていこうと思っています。 &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="転職" /><summary type="html">TL;DR</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/medpeer.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/medpeer.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</title><link href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/" rel="alternate" type="text/html" title="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法" /><published>2019-11-10T00:00:00+09:00</published><updated>2019-11-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key</id><content type="html" xml:base="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">&lt;h2 id=&quot;テーブル構成&quot;&gt;テーブル構成&lt;/h2&gt;
-
-&lt;p&gt;とあるRailsアプリケーションでこんなテーブル構成があったとします。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/belongs-to-foreign-key-and-primary-key/users-posts.png&quot; alt=&quot;table relation&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;railsモデル定義&quot;&gt;Railsモデル定義&lt;/h2&gt;
-
-&lt;p&gt;Railsモデルは下記のような状態です。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;ユーザー（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;）は複数の記事（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt;）データをもっている&lt;/li&gt;
-  &lt;li&gt;ユーザー（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;）は１つのプロフィール（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt;）データをもっている&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;has_oneをもったモデルをスキップする&quot;&gt;has_oneをもったモデルをスキップする&lt;/h2&gt;
-
-&lt;p&gt;やりたいこととしてはこのモデル構成の中心にいる &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt; の関連をスキップして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; と &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt; を直接関連付けてやることです。つまり &lt;strong&gt;User has_one Profile&lt;/strong&gt;, &lt;strong&gt;User has_many Posts&lt;/strong&gt; の関係を、&lt;strong&gt;Profile has_many Posts&lt;/strong&gt; の関係にしちゃおう、ということです。&lt;/p&gt;
-
-&lt;p&gt;テーブル定義で表現すると下図の赤線の部分が今回やりたい関連の定義です。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/belongs-to-foreign-key-and-primary-key/users-posts2.png&quot; alt=&quot;model relation 2&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;モデル定義&quot;&gt;モデル定義&lt;/h3&gt;
-
-&lt;p&gt;上記のやりたいことはアソシエーションの定義において、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;primary_key&lt;/code&gt; などのオプションを駆使して実現可能です。&lt;/p&gt;
-
-&lt;p&gt;下記がそのアソシエーション定義の完成形となります。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :user_id&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;この定義により &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; → &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt; → &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; の双方向の関連付けが定義することができました。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#  Post Load (1.2ms)  SELECT  `posts`.* FROM `posts` ORDER BY `posts`.`id` ASC LIMIT 1&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#  Profile Load (3.9ms)  SELECT  `profiles`.* FROM `profiles` WHERE `profiles`.`user_id` = 1 LIMIT 1&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#  Profile Load (0.8ms)  SELECT  `profiles`.* FROM `profiles` ORDER BY `profiles`.`id` ASC LIMIT 1&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#  Post Load (0.4ms)  SELECT  `posts`.* FROM `posts` WHERE `posts`.`user_id` = 1 LIMIT 11&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;ActiveRecord::Associations::CollectionProxy [#&amp;lt;Post id: 1, user_id: 1, ...&quot;&amp;gt;, #&amp;lt;Post id: 2, user_id: 1, ...]&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;上結果の通り、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User Load&lt;/code&gt;を通すことなくお互いを呼び出すことができていることが確認できました。&lt;/p&gt;
-
-&lt;h2 id=&quot;inverse_of-を設定する&quot;&gt;inverse_of を設定する&lt;/h2&gt;
-
-&lt;p&gt;上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt; オプションを使っているために、双方向の関連付けが不完全に設定されていることです。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Active Recordでは標準的な名前同士の関連付けのほとんどをサポートしていて、自動的に認識できます。ただし、Active Recordでスコープや次のオプションを使った場合、双方向の関連付けは自動的に認識されません。&lt;/p&gt;
-
-  &lt;ul&gt;
-    &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:through&lt;/code&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:foreign_key&lt;/code&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;via. &lt;a href=&quot;https://railsguides.jp/association_basics.html#%E5%8F%8C%E6%96%B9%E5%90%91%E9%96%A2%E9%80%A3%E4%BB%98%E3%81%91&quot;&gt;Active Record の関連付け - Rails ガイド&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;実際に試してみましょう。すると下記の通り、同じidを持ったインスタンスにもかかわらず違うオブジェクトとして生成されていることがわかります。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;equal?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;モデル定義inverse_of-version&quot;&gt;モデル定義（inverse_of version）&lt;/h3&gt;
-
-&lt;p&gt;これを解決するために &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inverse_of&lt;/code&gt; を設定します。上述のコードを下記のように変更します。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inverse_of: :posts&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inverse_of: :profile&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;これで下記コードは同じオブジェクトとなり、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true&lt;/code&gt;を返すようになります。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;equal?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;過去に書いた関連記事&quot;&gt;過去に書いた関連記事&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;/belongs_to-through/&quot;&gt;ActiveRecordでhas_many, throughとは逆の関連を定義する&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-belongs_to&quot;&gt;ActiveRecord::Associations::ClassMethods - belongs_to | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many&quot;&gt;ActiveRecord::Associations::ClassMethods - has_many | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="activerecord" /><category term="rails" /><summary type="html">テーブル構成</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="転職" /><summary type="html">TL;DR</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/medpeer.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/medpeer.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
