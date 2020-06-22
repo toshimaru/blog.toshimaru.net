@@ -2,7 +2,7 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>Jekyllマークダウンはデフォルトではなくkramdownを使おう - Hack Your Design!</title>
+  <title>JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -10,16 +10,16 @@
 
   <link rel="stylesheet" href="/css/main.css">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Jekyllマークダウンはデフォルトではなくkramdownを使おう - Hack Your Design!">
-  <meta property="og:title" content="Jekyllマークダウンはデフォルトではなくkramdownを使おう - Hack Your Design!">
-  <meta name="description" content="jekyllにおいて日本語リストがうまくhtmlに変換してくれないなーって調べてたら、どうやらデフォルトのmarkdownレンダラーではダメらしい。kramdownを使うとよい。">
-  <meta name="twitter:description" content="jekyllにおいて日本語リストがうまくhtmlに変換してくれないなーって調べてたら、どうやらデフォルトのmarkdownレンダラーではダメらしい。kramdownを使うとよい。">
-  <meta property="og:description" content="jekyllにおいて日本語リストがうまくhtmlに変換してくれないなーって調べてたら、どうやらデフォルトのmarkdownレンダラーではダメらしい。kramdownを使うとよい。">
-  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
-  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2013-04-10T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/jekyll-markdown/">
+  <meta name="twitter:title" content="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する - Hack Your Design!">
+  <meta property="og:title" content="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する - Hack Your Design!">
+  <meta name="description" content="Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。">
+  <meta name="twitter:description" content="Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。">
+  <meta property="og:description" content="Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-06-22T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -64,40 +64,84 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Jekyllマークダウンはデフォルトではなくkramdownを使おう</h1>
+  <h1 class="fadeInLeft">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2013-04-10T00:00:00+09:00" pubdate>2013/04/10</time>
+      <i class="icon-calendar"></i><time datetime="2020-06-22T00:00:00+09:00" pubdate>2020/06/22</time>
       <i class="icon-tags"></i> 
 <a href="/tag/jekyll/" rel="tag">jekyll</a>
 
+<a href="/tag/github/" rel="tag">github</a>
+
+<a href="/tag/ci/" rel="tag">ci</a>
+
 
     </div>
-    
+    <img class="post-image" src="/images/posts/github-pages/action-gh-pages.png" alt="(image)JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" />
   </div>
 </div>
 
 <div id="md-content">
   
-  <p><a href="https://github.com/jekyll/jekyll">jekyll</a> において日本語リストがうまくHTMLに変換してくれないなーって調べてたら、どうやらデフォルトのmarkdownレンダラーではダメらしい。</p>
+  <p>Jekyll製<a href="https://blog.toshima.ru/">英語ブログ</a>のGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。</p>
 
-<blockquote>
-  <p>Jekyll がデフォルトの markdown レンダラーとして採用している maruku は、どうも Unicode の扱いが怪しいらしい。日本語を使っているとフォーマットが崩れることがある。オプションとして選択可能な kramdown に入れ替えることをおすすめする。 _config.yml に次の1行を足すだけでいい。</p>
+<h2 id="今までのデプロイ方式">今までのデプロイ方式</h2>
 
-  <p><a href="http://radiumsoftware.tumblr.com/post/10543406778">GitHub Pagesを使うにあたって</a></p>
-</blockquote>
+<p>今までどうページソースをGitHub Pagesに自動デプロイしていたかでいうと、<a href="/autodeploy-jekyll/">Jekyllでgit pushをフックしてGithub Pagesへ自動デプロイ</a>するようにしていた。</p>
 
-<p><code class="language-plaintext highlighter-rouge">_config.yml</code> に下記を追記。</p>
+<p>この方法でも全く問題ないがセットアップがやや面倒。なので英語ブログは手動デプロイ状態のまま放置していた。今はGitHub Actionsを使ったデプロイ方式がナウそうだ、とのことで重い腰を上げてその方式をトライ。</p>
 
-<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">markdown</span><span class="pi">:</span> <span class="s">kramdown</span>
+<h2 id="新しいデプロイ方式">新しいデプロイ方式</h2>
+
+<p>対応したPull Request: <a href="https://github.com/toshimaru/blog.toshima.ru/pull/160">Deploy Automation with GitHub Actions · toshimaru/blog.toshima.ru</a></p>
+
+<p>やっていることとしては至ってシンプル。</p>
+
+<ul>
+  <li>masterブランチで変更があった場合にActionをトリガー</li>
+  <li><code class="language-plaintext highlighter-rouge">bundle install</code></li>
+  <li><code class="language-plaintext highlighter-rouge">jekyll build</code></li>
+  <li>生成した静的コンテンツのデータを<a href="https://github.com/peaceiris/actions-gh-pages">peaceiris/actions-gh-pages</a>を使って<code class="language-plaintext highlighter-rouge">gh-pages</code>ブランチにデプロイ</li>
+</ul>
+
+<h2 id="github-actions-configuration">GitHub Actions Configuration</h2>
+
+<p>実際のyamlファイルの設定は下記の通り。</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">on</span><span class="pi">:</span>
+  <span class="na">push</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">master</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">gh-pages-deploy</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v2</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Set up Ruby</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-ruby@v1</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">ruby-version</span><span class="pi">:</span> <span class="m">2.7</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">bundle install</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">bundle config set path 'vendor/bundle'</span>
+        <span class="s">bundle install</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Jekyll Build</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec jekyll build</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Deploy</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">peaceiris/actions-gh-pages@v3</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">personal_token</span><span class="pi">:</span> <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
+        <span class="na">publish_dir</span><span class="pi">:</span> <span class="s">./_site</span>
 </code></pre></div></div>
 
-<p>これで日本語リスト変換もうまくいきました。</p>
+<h2 id="従来と比べて良い点">従来と比べて良い点</h2>
+
+<p><code class="language-plaintext highlighter-rouge">gh-pages</code>ブランチにpushするにあたって<code class="language-plaintext highlighter-rouge">secrets.GITHUB_TOKEN</code> でトークンをセットするだけ。</p>
 
 </div>
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/jekyll-markdown/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/jekyll-deploy-with-github-actions/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -117,15 +161,15 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/jekyll-deploy-with-github-actions/" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</a></li>
+    <li><a href="/github-dependabot/" title="DependabotをGitHub公式Dependabotに移行させた">DependabotをGitHub公式Dependabotに移行させた</a></li>
   
-    <li><a href="/jekyll-4/" title="Jekyll v4.0 にアップデートした">Jekyll v4.0 にアップデートした</a></li>
+    <li><a href="/reviewdog-rubocop-github-actions/" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</a></li>
   
-    <li><a href="/jekyll-3/" title="Jekyll v3.0 にアップデートした">Jekyll v3.0 にアップデートした</a></li>
+    <li><a href="/github-actions-first-impression/" title="GitHub Actionsファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜">GitHub Actionsファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜</a></li>
+  
+    <li><a href="/reviewdog-rubocop/" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす">reviewdogを使ってCI上でRuboCop自動レビューを動かす</a></li>
   
     <li><a href="/autodeploy-jekyll/" title="Jekyllでgit pushをフックしてGithub Pagesへ自動デプロイするようにした">Jekyllでgit pushをフックしてGithub Pagesへ自動デプロイするようにした</a></li>
-  
-    <li><a href="/new-blog-concept/" title="Jekyllならここまでできる！ブログをJekyllで移行するにあたって考えるべきこと">Jekyllならここまでできる！ブログをJekyllで移行するにあたって考えるべきこと</a></li>
   
   </ul>
   </div>
@@ -145,14 +189,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/forecast.io/" title="Newer Post: iphone天気アプリの新定番, forecast.io"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/mentenability/" title="Older Post: メンテナンス性の高いコードを書く意義とは">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/github-dependabot/" title="Older Post: DependabotをGitHub公式Dependabotに移行させた">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -193,10 +233,10 @@
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/jekyll-markdown/"
+      "@id": "https://blog.toshimaru.net/jekyll-deploy-with-github-actions/"
     },
-    "headline": "Jekyllマークダウンはデフォルトではなくkramdownを使おう",
-    "datePublished": "2013-04-10T00:00:00+09:00",
+    "headline": "JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する",
+    "datePublished": "2020-06-22T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -209,9 +249,9 @@
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/icon.png"
+      "url": "https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png"
     },
-    "keywords": "jekyll"
+    "keywords": "jekyll, github, ci"
   },
   {
     
