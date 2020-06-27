@@ -4,6 +4,7 @@ title: DependabotをGitHub公式Dependabotに移行させた
 image: "/images/posts/github-dependabot/og.png"
 description: "2019年、DependabotがGitHubに買収されたことはご存知の通り。 そのDependabotの機能が公式機能として取り込まれたということので早速移行してみた。 Keep all your packages up to date with Dependabot - The GitHub Blog"
 tags: github ci
+last_modified_at: 2020-06-28
 ---
 
 [2019年、DependabotがGitHubに買収された](https://dependabot.com/blog/hello-github/)ことはご存知の通り。
@@ -48,6 +49,14 @@ updates:
 PRをマージし、無事に移行が完了するとDependabot管理画面は下記のような表示となる。
 
 ![done](/images/posts/github-dependabot/finish.png)
+
+下記の通りユーザー名は `dependabot-preview` `dependabot` へと変更されている。
+
+![log](/images/posts/github-dependabot/commit-log.png)
+
+新しいdependabotが作るPRはgithubの公式ロゴが入っている。
+
+![log](/images/posts/github-dependabot/new-pr.png)
 
 ----
 
