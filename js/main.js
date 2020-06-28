@@ -1,13 +1,15 @@
-$(() => {
-  $('#toggle-menu').on('click', () => {
-    $('#toggle-item').toggleClass('fadeInDown');
-    $('#navigation').toggleClass('active');
-  });
+"use strict"
 
-  $('.icon-search').on('click', () => {
-    let $txtbox;
-    $('#search-form').toggleClass('slideInRight');
-    $txtbox = $('.search-txt');
-    $txtbox.focus();
-  });
+const searchIcon = document.querySelector("#search-icon")
+searchIcon.addEventListener('click', () => {
+  const searchForm = document.querySelector("#search-form")
+  searchForm.classList.toggle("slideInRight")
+  const searchBox = document.querySelector('.search-txt')
+  searchBox.focus()
+})
+
+const menu = document.querySelector("#toggle-menu")
+menu.addEventListener('click', () => {
+  const navigation = document.querySelector('#navigation')
+  navigation.classList.toggle("active")
 })
