@@ -2,7 +2,7 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較 - Hack Your Design!</title>
+  <title>Rubyで数値の0埋め - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -10,16 +10,16 @@
 
   <link rel="stylesheet" href="/css/main.css">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較 - Hack Your Design!">
-  <meta property="og:title" content="HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較 - Hack Your Design!">
-  <meta name="description" content="HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。比較として使用したRubyのバージョンは下記です。 Ruby 2.1.6 Ruby 2.2.2">
-  <meta name="twitter:description" content="HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。比較として使用したRubyのバージョンは下記です。 Ruby 2.1.6 Ruby 2.2.2">
-  <meta property="og:description" content="HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。比較として使用したRubyのバージョンは下記です。 Ruby 2.1.6 Ruby 2.2.2">
-  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
-  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2015-07-24T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/string-vs-symbol-in-hash/">
+  <meta name="twitter:title" content="Rubyで数値の0埋め - Hack Your Design!">
+  <meta property="og:title" content="Rubyで数値の0埋め - Hack Your Design!">
+  <meta name="description" content="Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。">
+  <meta name="twitter:description" content="Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。">
+  <meta property="og:description" content="Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-06-30T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/ruby-0-padding/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -61,125 +61,113 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較</h1>
+  <h1 class="fadeInLeft">Rubyで数値の0埋め</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2015-07-24T00:00:00+09:00" pubdate>2015/07/24</time>
+      <i class="icon-calendar"></i><time datetime="2020-06-30T00:00:00+09:00" pubdate>2020/06/30</time>
       <i class="icon-tags"></i> 
 <a href="/tag/ruby/" rel="tag">ruby</a>
 
 
     </div>
-    
+    <img class="post-image" src="/images/posts/ruby/zero-padding.png" alt="(image)Rubyで数値の0埋め" title="Rubyで数値の0埋め" />
   </div>
 </div>
 
 <div id="md-content">
-  
-  <p>HashキーのStringアクセスとSymbolアクセスはどっちが早いのか？ ということで比較してみます。コードは<a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">こちら</a>を参考にしました。</p>
-
-<h2 id="前提条件">前提条件</h2>
-
-<p>比較として使用したRubyのバージョンは下記です。</p>
-
+  <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#tldr">TL;DR</a></li>
+<li class="toc-entry toc-h2"><a href="#rubyで数値の0埋め">Rubyで数値の0埋め</a></li>
+<li class="toc-entry toc-h2"><a href="#rubocopのオススメ書き方">RuboCopのオススメ書き方</a>
 <ul>
-  <li>Ruby 2.1.6</li>
-  <li>Ruby 2.2.2</li>
+<li class="toc-entry toc-h3"><a href="#favor-format-over-sprintf">Favor format over sprintf</a></li>
+<li class="toc-entry toc-h3"><a href="#favor-format-over-string">Favor format over String#%</a></li>
+<li class="toc-entry toc-h3"><a href="#prefer-annotated-tokens">Prefer annotated tokens</a></li>
 </ul>
-
-<p>またベンチマークには下記のgemを使用しています。</p>
-
-<ul>
-  <li><a href="https://github.com/evanphx/benchmark-ips">evanphx/benchmark-ips</a></li>
+</li>
+<li class="toc-entry toc-h2"><a href="#結論">結論</a></li>
 </ul>
+  <p>Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。</p>
 
-<h3 id="ベンチマークコード">ベンチマーク・コード</h3>
+<h2 id="tldr">
+<a class="anchor" href="#tldr" aria-hidden="true"><span class="octicon octicon-link"></span></a>TL;DR</h2>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
+<p>結論としては下記のように書くとよい。</p>
 
-<span class="no">STRING_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"foo"</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span> <span class="p">}</span>
-<span class="no">SYMBOL_HASH</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:foo</span> <span class="o">=&gt;</span> <span class="s2">"bar"</span>  <span class="p">}</span>
-
-<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)</span> <span class="p">{</span> <span class="no">STRING_HASH</span><span class="p">[</span><span class="s2">"foo"</span><span class="p">]</span> <span class="p">}</span>
-  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">)</span> <span class="p">{</span> <span class="no">SYMBOL_HASH</span><span class="p">[</span><span class="ss">:foo</span><span class="p">]</span>  <span class="p">}</span>
-<span class="k">end</span></code></pre></figure>
-
-<h2 id="ruby-21">Ruby 2.1</h2>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Calculating -------------------------------------
-              string    70.713k i/100ms
-              symbol    93.805k i/100ms
--------------------------------------------------
-              string      3.356M (± 7.6%) i/s -     16.688M
-              symbol      6.363M (± 8.3%) i/s -     31.612M
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">format</span><span class="p">(</span><span class="s2">"number: %09&lt;number&gt;d"</span><span class="p">,</span> <span class="ss">number: </span><span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
 </code></pre></div></div>
 
-<p>シンボルを使った方がハッシュのアクセスは2倍ほど速い。</p>
+<h2 id="rubyで数値の0埋め">
+<a class="anchor" href="#ruby%E3%81%A7%E6%95%B0%E5%80%A4%E3%81%AE0%E5%9F%8B%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rubyで数値の0埋め</h2>
 
-<h2 id="ruby-22">Ruby 2.2</h2>
+<p>Rubyで数値の0埋めしようと思うとこんな感じのコードになる。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Calculating -------------------------------------
-              string    77.873k i/100ms
-              symbol    78.367k i/100ms
--------------------------------------------------
-              string      5.604M (± 7.8%) i/s -     27.879M
-              symbol      6.463M (± 8.2%) i/s -     32.130M
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sprintf</span><span class="p">(</span><span class="s2">"number: %09d"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
 </code></pre></div></div>
 
-<p>シンボルを使った方がハッシュのアクセスは速いが、Stringでのハッシュのアクセス速度はシンボルのそれと大きく変わらない値となっている。</p>
+<p><a href="https://docs.ruby-lang.org/ja/latest/doc/print_format.html">sprintf フォーマット</a>はC由来の関数だ。<code class="language-plaintext highlighter-rouge">%09d</code>の意味としては<code class="language-plaintext highlighter-rouge">%d</code>が数値、<code class="language-plaintext highlighter-rouge">09</code>は9桁の0埋めという意味になる。</p>
 
-<h2 id="結論">結論</h2>
-<p>シンボルを使ったキーの方がHashのアクセスは速い。2.1だとそれが顕著。しかし2.2以降はそう変わらない速度になってきている。</p>
+<p>また、<a href="https://docs.ruby-lang.org/ja/latest/class/String.html#I_--25">String#%</a>を使う方法もある。<code class="language-plaintext highlighter-rouge">sprintf</code>と同じ挙動をする。</p>
 
-<hr />
-
-<h3 id="おまけjsonの場合">【おまけ】JSONの場合</h3>
-
-<p>JSONをパースした場合。下記のコードで<code class="language-plaintext highlighter-rouge">symbolize_names</code>した場合とそうでない場合を比較。</p>
-
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'json'</span>
-<span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
-
-<span class="no">SAMPLE_JSON</span> <span class="o">=</span> <span class="s1">'{"a": 1, "b": 2, "c": 3}'</span>
-
-<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
-  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">);</span> <span class="nb">hash</span><span class="p">[</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">}</span>
-  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"symbol"</span><span class="p">)</span> <span class="p">{</span> <span class="nb">hash</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="no">SAMPLE_JSON</span><span class="p">,</span> <span class="ss">symbolize_names: </span><span class="kp">true</span><span class="p">);</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:c</span><span class="p">]</span> <span class="p">}</span>
-<span class="k">end</span></code></pre></figure>
-
-<h3 id="ruby-21-1">Ruby 2.1</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Calculating -------------------------------------
-          string    11.910k i/100ms
-          symbol    11.072k i/100ms
--------------------------------------------------
-          string    148.480k (± 4.5%) i/s -    750.330k
-          symbol    141.624k (± 5.3%) i/s -    708.608k
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"number: %09d"</span> <span class="o">%</span> <span class="mi">1</span> <span class="c1">#=&gt; "number: 000000001"</span>
 </code></pre></div></div>
 
-<h3 id="ruby-22-1">Ruby 2.2</h3>
+<p>こちらのほうがより簡潔な表記だ。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Calculating -------------------------------------
-              string    11.980k i/100ms
-              symbol    11.129k i/100ms
--------------------------------------------------
-              string    150.421k (± 6.5%) i/s -    754.740k
-              symbol    137.871k (± 9.1%) i/s -    689.998k
+<h2 id="rubocopのオススメ書き方">
+<a class="anchor" href="#rubocop%E3%81%AE%E3%82%AA%E3%82%B9%E3%82%B9%E3%83%A1%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>RuboCopのオススメ書き方</h2>
+
+<p>上述の書き方でも問題ないのだが、rubocop（デフォルト設定）に通すと下記の通り怒られる。</p>
+
+<h3 id="favor-format-over-sprintf">
+<a class="anchor" href="#favor-format-over-sprintf" aria-hidden="true"><span class="octicon octicon-link"></span></a>Favor format over sprintf</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C: Style/FormatString: Favor format over sprintf.
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">symbolize_names</code>せずに純粋なStringのほうが若干速いという結果が得られた。</p>
+<p><code class="language-plaintext highlighter-rouge">sprintf</code>ではなく<code class="language-plaintext highlighter-rouge">format</code>を使え、と。また <code class="language-plaintext highlighter-rouge">String#%</code> を使った書き方も下記の指摘がくる。</p>
 
-<h3 id="参考">参考</h3>
-<ul>
-  <li><a href="http://www.sitepoint.com/unraveling-string-key-performance-ruby-2-2/">Unraveling String Key Performance in Ruby 2.2</a></li>
-  <li><a href="http://blog.kazu69.net/2014/11/29/ruby-benchmarks-to-measure-benchmark-ips-was-so-helpful/">Rubyのベンチマークを計測するのにbenchmark-ipsが便利そうだった | 69log</a></li>
-</ul>
+<h3 id="favor-format-over-string">
+<a class="anchor" href="#favor-format-over-string" aria-hidden="true"><span class="octicon octicon-link"></span></a>Favor format over String#%</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C: Style/FormatString: Favor format over String#%.
+</code></pre></div></div>
+
+<p>ちなみに<code class="language-plaintext highlighter-rouge">format</code>は<code class="language-plaintext highlighter-rouge">sprintf</code>のエイリアス関数。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rb_define_global_function</span><span class="p">(</span><span class="s">"sprintf"</span><span class="p">,</span> <span class="n">f_sprintf</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">rb_define_global_function</span><span class="p">(</span><span class="s">"format"</span><span class="p">,</span> <span class="n">f_sprintf</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>ref. <a href="https://github.com/ruby/ruby/blob/946e5cc668f66a4a0b79461047d3fcba8b71eef0/object.c#L4630-L4631">ruby/object.c at 946e5cc668f66a4a0b79461047d3fcba8b71eef0 · ruby/ruby</a></p>
+
+<p>rubocopの指摘に従って下記のように修正してみる。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">format</span><span class="p">(</span><span class="s2">"number: %09d"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
+</code></pre></div></div>
+
+<h3 id="prefer-annotated-tokens">
+<a class="anchor" href="#prefer-annotated-tokens" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prefer annotated tokens</h3>
+
+<p>これでもrubocopに下記のように怒られる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C: Style/FormatStringToken: Prefer annotated tokens (like %&lt;foo&gt;s) over unannotated tokens (like %s).
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">&lt;foo&gt;</code>のようなannotated tokenを使って名前を与えてやれ、とのことらしい。</p>
+
+<h2 id="結論">
+<a class="anchor" href="#%E7%B5%90%E8%AB%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>結論</h2>
+
+<p>rubocopの指摘を乗り越えて、最終的には下記で完成です。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">format</span><span class="p">(</span><span class="s2">"number: %09&lt;number&gt;d"</span><span class="p">,</span> <span class="ss">number: </span><span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
+</code></pre></div></div>
 
 </div>
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/string-vs-symbol-in-hash/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/ruby-0-padding/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -199,8 +187,6 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/ruby-0-padding/" title="Rubyで数値の0埋め">Rubyで数値の0埋め</a></li>
-  
     <li><a href="/datetime-range-check/" title="[Ruby]日時が特定日時の範囲内にあるかのチェック">[Ruby]日時が特定日時の範囲内にあるかのチェック</a></li>
   
     <li><a href="/ruby-hash-sort/" title="RubyでHashのKey/Valueをソートする">RubyでHashのKey/Valueをソートする</a></li>
@@ -208,6 +194,8 @@
     <li><a href="/ruby-heredoc/" title="Rubyのヒアドキュメントの書き方いろいろ">Rubyのヒアドキュメントの書き方いろいろ</a></li>
   
     <li><a href="/infrastructure-as-ruby-code-2016/" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</a></li>
+  
+    <li><a href="/ruby-immutable-string/" title="Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する">Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する</a></li>
   
   </ul>
   </div>
@@ -227,14 +215,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/work-style-difference/" title="Newer Post: 日米ワークスタイル比較"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/publish-rails-app-in-lan/" title="Older Post: RailsアプリケーションをLAN内に公開する">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/jekyll-deploy-with-github-actions/" title="Older Post: JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -275,10 +259,10 @@
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/string-vs-symbol-in-hash/"
+      "@id": "https://blog.toshimaru.net/ruby-0-padding/"
     },
-    "headline": "HashキーのStringアクセスとSymbolアクセスのパフォーマンス比較",
-    "datePublished": "2015-07-24T00:00:00+09:00",
+    "headline": "Rubyで数値の0埋め",
+    "datePublished": "2020-06-30T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -291,7 +275,7 @@
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/icon.png"
+      "url": "https://blog.toshimaru.net/images/posts/ruby/zero-padding.png"
     },
     "keywords": "ruby"
   },
