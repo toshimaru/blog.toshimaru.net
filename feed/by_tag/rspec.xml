@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/rspec.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/rspec.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
+
+&lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
+
+&lt;p&gt;今回SystemSpecを導入したのは下記のような環境です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;プロジェクト: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/&quot;&gt;RailsTwitterClone&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;docker-compose&lt;/li&gt;
+  &lt;li&gt;Ruby 2.6&lt;/li&gt;
+  &lt;li&gt;chromium-driver&lt;/li&gt;
+  &lt;li&gt;gem
+    &lt;ul&gt;
+      &lt;li&gt;rails (5.2)&lt;/li&gt;
+      &lt;li&gt;rspec-rails&lt;/li&gt;
+      &lt;li&gt;selenium-webdriver&lt;/li&gt;
+      &lt;li&gt;capybara&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;対応pull-request&quot;&gt;対応Pull Request&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/506/files&quot;&gt;Re-try System Spec by toshimaru · Pull Request #506 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;私のsystemspec遅すぎ&quot;&gt;私のSystemSpec、遅すぎ…？&lt;/h2&gt;
+
+&lt;p&gt;実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。&lt;/p&gt;
+
+&lt;p&gt;当時のPull Requestがこちら: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/216&quot;&gt;Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Before&lt;/p&gt;
+
+  &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 15.74 seconds (files took 7.65 seconds to load)
+152 examples, 0 failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+
+  &lt;p&gt;After&lt;/p&gt;
+
+  &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 58.46 seconds (files took 7.64 seconds to load)
+152 examples, 3 failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;下記のようにJSを起動させる必要のない System テストは従来通りの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack_test&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;js: true&lt;/code&gt;なテストは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に設定してやればテスト全体が高速に実行可能になりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rack_test&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+
+&lt;p&gt;今回利用した &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; は Ruby 2.6 のベースイメージに &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromium-driver&lt;/code&gt; をインストールしたコンテナとなります。&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.6&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nodejs chromium-driver 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;chrome-failed-to-start-exited-abnormally&quot;&gt;Chrome failed to start: exited abnormally&lt;/h3&gt;
+
+&lt;p&gt;しかし、上述の環境において&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspec&lt;/code&gt;を実行すると下記のようなエラーが発生します。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failure/Error: Unable to infer file and line number from backtrace
+
+  Selenium::WebDriver::Error::UnknownError:
+      unknown error: Chrome failed to start: exited abnormally
+      (unknown error: DevToolsActivePort file doesn't exist)
+      (The process started from chrome location /usr/bin/chromium is no longer running, so ChromeDriver is assuming that Chrome has crashed.)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このエラーは Chrome が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sandbox&lt;/code&gt;モードで起動していることに起因します。下記のような&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tap&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--headless&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--disable-gpu&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--no-sandbox&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こうして登録した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;headless_chrome&lt;/code&gt;をSystemTestに対して適応させてやればOKです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これできちんとDocker上でSystemSpecが通るようになりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web rspec
+&lt;span class=&quot;go&quot;&gt;
+Randomized with seed 30150
+............................................................................................................Capybara starting Puma...
+* Version 4.1.1 , codename: Fourth and One
+* Min threads: 0, max threads: 4
+* Listening on tcp://127.0.0.1:38789
+&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;...............................................
+&lt;/span&gt;&lt;span class=&quot;go&quot;&gt;
+Finished in 19.87 seconds (files took 8.8 seconds to load)
+155 examples, 0 failures
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;公式ではno-sandboxをデフォルトにはしてくれない&quot;&gt;公式ではno-sandboxをデフォルトにはしてくれない？&lt;/h2&gt;
+
+&lt;p&gt;余談ですが、Capybara本体で登録されている&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/teamcapybara/capybara/pull/2241&quot;&gt;Add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt; option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;securityを担保するためのsandbox&quot;&gt;Securityを担保するためのsandbox&lt;/h3&gt;
+
+&lt;p&gt;sandboxはセキュリティを高めるための環境なので基本的には &lt;strong&gt;デフォルトで no-sandbox にするべきではない&lt;/strong&gt; という判断のようです。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md&quot;&gt;Sandbox&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/ngron/items/f61b8635b4d67f666d75&quot;&gt;Rails + Selenium + DockerでSystemSpecの環境構築 - Qiita&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://news.mynavi.jp/article/20081009-a027/&quot;&gt;Google Chrome サンドボックスで実現するセキュリティ、Windowsの機能に依存 | マイナビニュース&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="rails" /><category term="docker" /><summary type="html">Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える</title><link href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/" rel="alternate" type="text/html" title="Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える" /><published>2018-08-04T00:00:00+09:00</published><updated>2019-09-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/poltergeist-to-selenium-webdriver</id><content type="html" xml:base="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">&lt;p&gt;RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、&lt;a href=&quot;https://github.com/teampoltergeist/poltergeist&quot;&gt;poltergeist&lt;/a&gt;から&lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/headless/README.md&quot;&gt;Headless Chrome&lt;/a&gt;に乗り換えてみたのでそのときのメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;対応-pull-request&quot;&gt;対応 Pull Request&lt;/h2&gt;
+
+&lt;p&gt;今回対応したPull Requestはこちら。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/211&quot;&gt;Use headless Chrome instead of PhantomJS(poltergeist) by toshimaru · Pull Request #211 · toshimaru/RailsTwitterClone · GitHub&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;思ったよりも差分はコンパクトにまとまりました。&lt;/p&gt;
+
+&lt;h2 id=&quot;install-selenium-webdriver&quot;&gt;Install selenium-webdriver&lt;/h2&gt;
+
+&lt;p&gt;まずは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;poltergeist&lt;/code&gt; gemの代わりに、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium-webdriver&lt;/code&gt;をインストール。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;-  gem &quot;poltergeist&quot;
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+  gem &quot;selenium-webdriver&quot;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;change-capybarajavascript_driver&quot;&gt;Change Capybara.javascript_driver&lt;/h2&gt;
+
+&lt;p&gt;次に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Capybara.javascript_driver&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:poltergeist&lt;/code&gt;から&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;に変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;- require &quot;capybara/poltergeist&quot;
+- Capybara.javascript_driver = :poltergeist
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+ require &quot;selenium-webdriver&quot;
++ Capybara.javascript_driver = :selenium_chrome_headless
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ちなみに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;の設定は下記の変更の中でcapybara内に取り込まれています。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--headless'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--disable-gpu'&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce&quot;&gt;add default selenium chrome driver registrations · teamcapybara/capybara@0275eab · GitHub&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;install-chromedriver&quot;&gt;Install chromedriver&lt;/h2&gt;
+
+&lt;h3 id=&quot;on-macos&quot;&gt;On MacOS&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromedriver&lt;/code&gt; が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラクです。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;brew cask &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;chromedriver
+&lt;span class=&quot;go&quot;&gt;Updating Homebrew...
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Auto-updated Homebrew!
+&lt;span class=&quot;go&quot;&gt;Updated 1 tap (homebrew/cask).
+No changes to formulae.
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Satisfying dependencies
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Downloading https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;####################################################################### 100.0%&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Verifying checksum &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Installing Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Extracting nested container chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Linking Binary &lt;span class=&quot;s1&quot;&gt;'chromedriver'&lt;/span&gt; to &lt;span class=&quot;s1&quot;&gt;'/usr/local/bin/chromedriver'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;🍺  chromedriver was successfully installed!
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;注意事項&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew install chromedriver&lt;/code&gt;ではinstallできないので注意（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew cask&lt;/code&gt;経由にすること）&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromedriver-helper&lt;/code&gt; gem が入っているとうまく動かない場合があるので注意&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;on-circleci&quot;&gt;On CircleCI&lt;/h3&gt;
+
+&lt;p&gt;CircleCI上では、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby:x.x-node-browsers&lt;/code&gt;のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.5-node-browsers&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用しています。&lt;/p&gt;
+
+&lt;h3 id=&quot;on-travisci&quot;&gt;On TravisCI&lt;/h3&gt;
+
+&lt;p&gt;これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failures:
+
+  1) Authentication authorization screenshot
+     Failure/Error: before { visit signin_path }
+
+     Selenium::WebDriver::Error::WebDriverError:
+        Unable to find Mozilla geckodriver. Please download the server from https://github.com/mozilla/geckodriver/releases and place it somewhere on your PATH. More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
+     # ./spec/features/authentication_pages_spec.rb:9:in `block (3 levels) in &amp;lt;top (required)&amp;gt;'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;del&gt;本当は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo: false&lt;/code&gt;の設定で動かしたかったのですがそれだと上手くいかなかったので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt;で起動させて&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromium-chromedriver&lt;/code&gt;をテスト前にInstallしてパスを通すという方法でテストを通しました。&lt;/del&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;required&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;before_install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sudo apt-get install -y chromium-chromedriver&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;del&gt;(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)&lt;/del&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;追記（2019年9月17日）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; 無しでも下記のような設定でいけました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;dist&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bionic&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;chrome&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;stable&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;apt&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;chromium-chromedriver&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;参考Pull Request: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/524/files&quot;&gt;No sudo on TravisCI by toshimaru · Pull Request #524 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ohbarye.hatenablog.jp/entry/2018/03/10/232300&quot;&gt;PhantomJS + Poltergeist を Selenium + Headless Chrome で置き換える (1) Rails + Capybara による feature spec 編 - valid,invalid&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.speee.jp/entry/2017/06/15/135636&quot;&gt;RSpec の feature spec でヘッドレス Chrome を使う - Speee DEVELOPER BLOG&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://y-yagi.tumblr.com/post/166831012790/rails%E9%9B%91%E3%81%ABsystem-test%E3%81%A7headless-chrome%E3%82%92%E4%BD%BF%E3%81%86&quot;&gt;[Rails]雑にSystem TestでHeadless Chromeを使う | 日々雑記&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rspec" /><category term="chrome" /><summary type="html">RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/chromedriver.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/chromedriver.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</title><link href="https://blog.toshimaru.net/coverage-with-codeclimate/" rel="alternate" type="text/html" title="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話" /><published>2015-03-18T00:00:00+09:00</published><updated>2019-08-20T00:00:00+09:00</updated><id>https://blog.toshimaru.net/coverage-with-codeclimate</id><content type="html" xml:base="https://blog.toshimaru.net/coverage-with-codeclimate/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone&quot;&gt;趣味で立ち上げているプロジェクト&lt;/a&gt;をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。&lt;/p&gt;
+
+&lt;h2 id=&quot;どんなサービスを使うか&quot;&gt;どんなサービスを使うか&lt;/h2&gt;
+
+&lt;p&gt;自分がRails/Rubyプロジェクト(not Private)をGitHubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測サービスであったりコードの品質の計測サービスであったりする。それらのサービス群をまとめると下記のようになる。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;サービス&lt;/th&gt;
+      &lt;th&gt;用途&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://travis-ci.org/repositories&quot;&gt;Travis CI&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;CI回す&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://coveralls.io/&quot;&gt;Coveralls&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;カバレッジ率を計測&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://codeclimate.com/&quot;&gt;Code Climate&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;コード品質を計測&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://gemnasium.com/dashboard&quot;&gt;Gemnasium&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;del&gt;Gemのバージョンチェック&lt;/del&gt; 既にcloseされたサービスです&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;strong&gt;※ Publicなレポジトリであれば全て無料で使えます&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloud.githubusercontent.com/assets/803398/6694382/558b6f5c-cd1d-11e4-96ff-1e67d5905e83.png&quot; alt=&quot;badges&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;【図】SaaSの利用により表示できるようになるバッジ群&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;coveralls--codeclimate&quot;&gt;Coveralls → CodeClimate&lt;/h2&gt;
+
+&lt;p&gt;今回その内の１つであるCoverallsをCodeClimateに移行してみたのですが、そのきっかけとしてはCircleCIでCodeClimateとのインテグレーションが推奨されていたから。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://docs.travis-ci.com/user/code-climate/&quot;&gt;Travis CI: Using Code Climate with Travis CI&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいし、TravisCIの勧めるCodeClimateに統合してみることとした。&lt;/p&gt;
+
+&lt;h2 id=&quot;手順&quot;&gt;手順&lt;/h2&gt;
+
+&lt;h3 id=&quot;set-code-climate-token&quot;&gt;Set Code Climate token&lt;/h3&gt;
+
+&lt;p&gt;CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.travis.yml&lt;/code&gt;にセット。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;code_climate&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;repo_token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;adf08323...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;intall-codeclimate-reporter&quot;&gt;Intall CodeClimate reporter&lt;/h3&gt;
+
+&lt;p&gt;codeclimate-test-reporter を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;のtest groupに追加する。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;codeclimate-test-reporter&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;require: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;CodeClimateのセットアップインストラクション通りに書くとこう。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spec/rails_helper.rb&lt;/code&gt;に書きます。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;codeclimate-test-reporter&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;CodeClimate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestReporter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;simplecovと同居させる&quot;&gt;Simplecovと同居させる&lt;/h3&gt;
+
+&lt;p&gt;私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'simplecov'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;codeclimate-test-reporter&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Formatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MultiFormatter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Formatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;HTMLFormatter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;CodeClimate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestReporter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Formatter&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このようにSimpleCovのformatterに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CodeClimate::TestReporter::Formatter&lt;/code&gt;を入れてやれば :ok:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png&quot; alt=&quot;codeclimate&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter&quot;&gt;Using Code Climate’s new test reporter together with Coveralls and SimpleCov’s HTML Formatter&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="ci" /><summary type="html">趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" /><media:content medium="image" url="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RSpecが通ったり落ちたりしたときにはseed値を指定する</title><link href="https://blog.toshimaru.net/rspec-occasional-fail/" rel="alternate" type="text/html" title="RSpecが通ったり落ちたりしたときにはseed値を指定する" /><published>2014-09-23T00:00:00+09:00</published><updated>2014-09-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rspec-occasional-fail</id><content type="html" xml:base="https://blog.toshimaru.net/rspec-occasional-fail/">&lt;p&gt;RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。&lt;/p&gt;
+
+&lt;h2 id=&quot;バージョン情報&quot;&gt;バージョン情報&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;rails (4.1.5)&lt;/li&gt;
+  &lt;li&gt;rspec (3.1.0)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;random-order-rspec&quot;&gt;Random order RSpec&lt;/h2&gt;
+
+&lt;p&gt;RSpecを順番に依存させないために&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spec_helper.rb&lt;/code&gt;でこんな設定がされている。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Run specs in random order to surface order dependencies. If you find an&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# order dependency and want to debug it, you can fix the order by providing&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# the seed, which is printed after each run.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#     --seed 1234&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;random&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この設定によりテスト実行の順序がランダムになり、順序に依存しないテストの記述が可能となる。シード値はテストの最後に得られる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Randomized with seed 724
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;シード値を指定して実行&quot;&gt;シード値を指定して実行&lt;/h2&gt;
+
+&lt;p&gt;Failしたテストのこのシード値を設定してテストを走らせればFailしたテストの順番を再現できる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bundle exec rspec --seed 724 --fail-fast
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--seed&lt;/code&gt;でシード値を指定、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--fail-fast&lt;/code&gt;を設定してFailしたときにテストを即時終了させるようにする。&lt;/p&gt;
+
+&lt;p&gt;こうすればFailするテストを再現できて、どのテストがどこでテスト実行順番に依存して落ちているのかがわかります。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://ikm.hatenablog.jp/entry/2013/03/26/003838&quot;&gt;ランダムに落ちるspecの修正で便利だったRSpecの2つの設定&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><summary type="html">RSpecがたまに落ちたり通ったりする。そんなときはRSpecのテスト実行順序によりテストがFailしている可能性が高い。つまりあるテストがあるテストの実行後じゃないと通らない、みたいな状況に陥っている可能性があり、これは順番に依存したテストなのでよろしくない状態である。</summary></entry><entry><title type="html">RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話</title><link href="https://blog.toshimaru.net/rspec2-to-rspec3-errors/" rel="alternate" type="text/html" title="RSpec2からRSpec3にバージョン上げたらテストがFailしまくった話" /><published>2014-07-19T00:00:00+09:00</published><updated>2014-07-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rspec2-to-rspec3-errors</id><content type="html" xml:base="https://blog.toshimaru.net/rspec2-to-rspec3-errors/">&lt;p&gt;遊びで作ってるRailsアプリケーションのRSpecのバージョンを２から３に上げたら、２では全部通ってたテストが３にした途端テストが100個くらいFailした。一体何が起こっているかわからなかったのでRSpec3の挙動の違いを調べてみることにした。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspec-rails&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;したあと&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspec:install&lt;/code&gt;する。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rails g rspec:install
+create  .rspec
+create  spec
+create  spec/spec_helper.rb
+create  spec/rails_helper.rb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;今までなかった&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails_helper.rb&lt;/code&gt;ってのが作られている。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;scaffold&lt;/code&gt;で生成されるspecディレクトリの構成はこう。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;spec
+├── controllers
+│   └── users_controller_spec.rb
+├── helpers
+│   └── users_helper_spec.rb
+├── models
+│   └── user_spec.rb
+├── rails_helper.rb
+├── requests
+│   └── users_spec.rb
+├── routing
+│   └── users_routing_spec.rb
+├── spec_helper.rb
+└── views
+    └── users
+        ├── edit.html.erb_spec.rb
+        ├── index.html.erb_spec.rb
+        ├── new.html.erb_spec.rb
+        └── show.html.erb_spec.rb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;試しに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spec/controllers/users_controller_spec.rb&lt;/code&gt;を開いてみると冒頭がこんな感じになっていました。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;require 'rails_helper'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://willnet.in/126&quot;&gt;RSpec 3 時代の設定ファイル rails_helper.rb について&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;というわけで、これまで require ‘spec_helper’ としていた箇所の大部分は require ‘rails_helper’ に置換してあげる必要がありそうですね。パーフェクト Ruby on Rails のテストの章は require ‘spec_helper’ となっているので、RSpec 3 のリリース版を利用する場合は適宜読み替えをお願いします。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spec_helper&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails_helper&lt;/code&gt;に変えて、それらの２ファイルの設定をRSpec3用に見直せば全てのテストが問題なく通るようになりました、とさ。&lt;/p&gt;
+
+&lt;p&gt;RSpec3よりruby1.8,ruby1.9をサポートしなくなったり新しいマッチャーが増えたりしてるので変更点を下記より再度確認してみるとよいと思います。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://myronmars.to/n/dev-blog/2014/05/notable-changes-in-rspec-3&quot;&gt;Notable Changes in RSpec 3&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="rspec" /><summary type="html">遊びで作ってるRailsアプリケーションのRSpecのバージョンを２から３に上げたら、２では全部通ってたテストが３にした途端テストが100個くらいFailした。一体何が起こっているかわからなかったのでRSpec3の挙動の違いを調べてみることにした。</summary></entry></feed>

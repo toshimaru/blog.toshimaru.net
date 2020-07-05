@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/chrome.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/chrome.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える</title><link href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/" rel="alternate" type="text/html" title="Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える" /><published>2018-08-04T00:00:00+09:00</published><updated>2019-09-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/poltergeist-to-selenium-webdriver</id><content type="html" xml:base="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">&lt;p&gt;RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、&lt;a href=&quot;https://github.com/teampoltergeist/poltergeist&quot;&gt;poltergeist&lt;/a&gt;から&lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/headless/README.md&quot;&gt;Headless Chrome&lt;/a&gt;に乗り換えてみたのでそのときのメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;対応-pull-request&quot;&gt;対応 Pull Request&lt;/h2&gt;
+
+&lt;p&gt;今回対応したPull Requestはこちら。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/211&quot;&gt;Use headless Chrome instead of PhantomJS(poltergeist) by toshimaru · Pull Request #211 · toshimaru/RailsTwitterClone · GitHub&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;思ったよりも差分はコンパクトにまとまりました。&lt;/p&gt;
+
+&lt;h2 id=&quot;install-selenium-webdriver&quot;&gt;Install selenium-webdriver&lt;/h2&gt;
+
+&lt;p&gt;まずは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;poltergeist&lt;/code&gt; gemの代わりに、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium-webdriver&lt;/code&gt;をインストール。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;-  gem &quot;poltergeist&quot;
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+  gem &quot;selenium-webdriver&quot;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;change-capybarajavascript_driver&quot;&gt;Change Capybara.javascript_driver&lt;/h2&gt;
+
+&lt;p&gt;次に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Capybara.javascript_driver&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:poltergeist&lt;/code&gt;から&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;に変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;- require &quot;capybara/poltergeist&quot;
+- Capybara.javascript_driver = :poltergeist
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+ require &quot;selenium-webdriver&quot;
++ Capybara.javascript_driver = :selenium_chrome_headless
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ちなみに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;の設定は下記の変更の中でcapybara内に取り込まれています。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--headless'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--disable-gpu'&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce&quot;&gt;add default selenium chrome driver registrations · teamcapybara/capybara@0275eab · GitHub&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;install-chromedriver&quot;&gt;Install chromedriver&lt;/h2&gt;
+
+&lt;h3 id=&quot;on-macos&quot;&gt;On MacOS&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromedriver&lt;/code&gt; が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラクです。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;brew cask &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;chromedriver
+&lt;span class=&quot;go&quot;&gt;Updating Homebrew...
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Auto-updated Homebrew!
+&lt;span class=&quot;go&quot;&gt;Updated 1 tap (homebrew/cask).
+No changes to formulae.
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Satisfying dependencies
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Downloading https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;####################################################################### 100.0%&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Verifying checksum &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Installing Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Extracting nested container chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Linking Binary &lt;span class=&quot;s1&quot;&gt;'chromedriver'&lt;/span&gt; to &lt;span class=&quot;s1&quot;&gt;'/usr/local/bin/chromedriver'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;🍺  chromedriver was successfully installed!
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;注意事項&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew install chromedriver&lt;/code&gt;ではinstallできないので注意（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew cask&lt;/code&gt;経由にすること）&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromedriver-helper&lt;/code&gt; gem が入っているとうまく動かない場合があるので注意&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;on-circleci&quot;&gt;On CircleCI&lt;/h3&gt;
+
+&lt;p&gt;CircleCI上では、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby:x.x-node-browsers&lt;/code&gt;のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.5-node-browsers&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用しています。&lt;/p&gt;
+
+&lt;h3 id=&quot;on-travisci&quot;&gt;On TravisCI&lt;/h3&gt;
+
+&lt;p&gt;これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failures:
+
+  1) Authentication authorization screenshot
+     Failure/Error: before { visit signin_path }
+
+     Selenium::WebDriver::Error::WebDriverError:
+        Unable to find Mozilla geckodriver. Please download the server from https://github.com/mozilla/geckodriver/releases and place it somewhere on your PATH. More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
+     # ./spec/features/authentication_pages_spec.rb:9:in `block (3 levels) in &amp;lt;top (required)&amp;gt;'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;del&gt;本当は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo: false&lt;/code&gt;の設定で動かしたかったのですがそれだと上手くいかなかったので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt;で起動させて&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromium-chromedriver&lt;/code&gt;をテスト前にInstallしてパスを通すという方法でテストを通しました。&lt;/del&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;required&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;before_install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sudo apt-get install -y chromium-chromedriver&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;del&gt;(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)&lt;/del&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;追記（2019年9月17日）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; 無しでも下記のような設定でいけました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;dist&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bionic&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;chrome&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;stable&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;apt&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;chromium-chromedriver&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;参考Pull Request: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/524/files&quot;&gt;No sudo on TravisCI by toshimaru · Pull Request #524 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ohbarye.hatenablog.jp/entry/2018/03/10/232300&quot;&gt;PhantomJS + Poltergeist を Selenium + Headless Chrome で置き換える (1) Rails + Capybara による feature spec 編 - valid,invalid&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.speee.jp/entry/2017/06/15/135636&quot;&gt;RSpec の feature spec でヘッドレス Chrome を使う - Speee DEVELOPER BLOG&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://y-yagi.tumblr.com/post/166831012790/rails%E9%9B%91%E3%81%ABsystem-test%E3%81%A7headless-chrome%E3%82%92%E4%BD%BF%E3%81%86&quot;&gt;[Rails]雑にSystem TestでHeadless Chromeを使う | 日々雑記&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rspec" /><category term="chrome" /><summary type="html">RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/chromedriver.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/chromedriver.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい</title><link href="https://blog.toshimaru.net/chromebook-firstimpression/" rel="alternate" type="text/html" title="Chromebookを使ってみた WEBだけ使えればいい人にはオススメ、開発マシンとしては難しい" /><published>2014-03-09T00:00:00+09:00</published><updated>2014-03-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/chromebook-firstimpression</id><content type="html" xml:base="https://blog.toshimaru.net/chromebook-firstimpression/">&lt;p&gt;&lt;a href=&quot;http://blog.livedoor.jp/itsoku/archives/37545648.html&quot;&gt;ついに激安PCのChromeBookが日本上陸！東芝が来月にも発売へ&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Chromebookが日本にも来るようですね。カナダにて一足先にChromebookを一週間ほど触ってみたので、その感想を書いてみようと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;スペック&quot;&gt;スペック&lt;/h2&gt;
+
+&lt;p&gt;購入したのはSamsungのChromebook. ３万円くらいでした。安い。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/chromebook/chromebook1.jpg&quot; alt=&quot;chromebook pic 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;特徴はざっくりこんな感じ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;11.6 インチディスプレイ&lt;/li&gt;
+  &lt;li&gt;約1キログラム&lt;/li&gt;
+  &lt;li&gt;2GB メモリ&lt;/li&gt;
+  &lt;li&gt;16GB SSD&lt;/li&gt;
+  &lt;li&gt;Samsung Exynos 5 Dual Processor&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://www.google.com/intl/ms/chrome/devices/samsung-chromebook.html#specs&quot;&gt;Samsung Chromebook&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;重さも軽くノートのように持ち運べるので携帯性は優れてて良いかと。SSD容量が少ないのは「ファイルはローカルじゃなくWEBに置いてね」というChromeOSの思想から気にしちゃいけないところ。動作に関してはタブ何十枚も一度に開いたり動画を閲覧してたりするとモッサリするかなって感じだった。&lt;/p&gt;
+
+&lt;p&gt;何より驚いたのは起動の早さでした。本当に10秒くらいで起動するんですよ、これが。見てて気持ちよかった。&lt;/p&gt;
+
+&lt;h2 id=&quot;chrome-osの思想&quot;&gt;Chrome OSの思想&lt;/h2&gt;
+
+&lt;p&gt;ChromeOSは全ての作業がブラウザ/WEBで実行可能になりつつある昨今、生まれるべくして生まれたOSだと思う。僕らが日々パソコンの前に座って行う作業はウェブ上で可能な作業へとシフトしていっている。メールチェックはOutlookからGmailへと、ドキュメント作成はWord/ExcelからGoogleDocsへと、各種データはローカル保存からEvernote,DropBoxなどのクラウドストレージへと移行している。プログラミングですら&lt;a href=&quot;https://c9.io/&quot;&gt;Cloud9 IDE&lt;/a&gt;などのサービスでウェブ上で可能になっている。&lt;/p&gt;
+
+&lt;p&gt;ChromeOSには従来のようなデスクトップやファイルといった発想はない。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Googleアカウントを利用してログインする。Google Chrome OSのユーザインタフェースは、基本的にGoogle Chromeだけが全面に出ている形で、デスクトップやファイルブラウザなどは無く、すべてのアプリケーションはウェブアプリケーションという形でGoogle Chromeにインストールされ、実行される。インストールしたアプリはGoogle Chromeにショートカットを作成してアクセスすることが出来る。&lt;/p&gt;
+
+  &lt;p&gt;&lt;a href=&quot;http://ja.wikipedia.org/wiki/Google_Chrome_OS&quot;&gt;Google Chrome OS - Wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;起動するとこんな画面。一見他OSのデスクトップのようにファイルが置けたりするんじゃないの？って思うかもしれないけどそんなことはない。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/chromebook/chromebook2.jpg&quot; alt=&quot;chromebook pic 2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;基本的にアプリケーションはChrome上で動作するアプリケーションのみなので、下部にズラって並んでるのはChromeアプリのショートカットアイコン。クリックするとChromeが開きWEBアプリが起動する感じ。&lt;/p&gt;
+
+&lt;h2 id=&quot;開発者マシンとして利用可能&quot;&gt;開発者マシンとして利用可能？&lt;/h2&gt;
+
+&lt;p&gt;自分は開発者なので開発者マシンとして利用可能かも試してみた。&lt;/p&gt;
+
+&lt;p&gt;結論から言うと現時点では難しいという印象。&lt;/p&gt;
+
+&lt;h3 id=&quot;developer-mode&quot;&gt;Developer Mode&lt;/h3&gt;
+
+&lt;p&gt;Chromebookには&lt;a href=&quot;http://www.chromium.org/chromium-os/chromiumos-design-docs/developer-mode&quot;&gt;Developerモード&lt;/a&gt;というのがあって、これをONにすることでシェル操作が可能になったりする。例えば自分のSamsung Chromebookであれば&lt;a href=&quot;http://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/samsung-arm-chromebook#TOC-Developer-Mode&quot;&gt;この手順&lt;/a&gt;でDeveloperモードがONにできた。&lt;/p&gt;
+
+&lt;h3 id=&quot;chrome上で動作する代替アプリケーション&quot;&gt;Chrome上で動作する代替アプリケーション&lt;/h3&gt;
+
+&lt;p&gt;Chrome上で動作する開発者用のアプリケーションとしてはこんなのが紹介されてる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://chrome.google.com/webstore/detail/secure-shell/pnhechapfaindjhompbnflcldabbghjo&quot;&gt;Secure Shell&lt;/a&gt; - ターミナル、SSHクライアント&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://chrome.google.com/webstore/detail/chrome-remote-desktop/gbchcmhmhahfdphkhkmpfmihenigjmpp&quot;&gt;Chrome Remote Desktop&lt;/a&gt; - リモートデスクトップ&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://chrome.google.com/webstore/detail/text/mmfbcljfglbokpmkimbfghdkjmjhdgbg&quot;&gt;Text&lt;/a&gt; - テキストエディタ&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://chrome.google.com/webstore/detail/beagle-term/gkdofhllgfohlddimiiildbgoggdpoea&quot;&gt;Beagle Term&lt;/a&gt; - ターミナルエミュレータ&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://chrome.google.com/webstore/detail/cloud9/nbdmccoknlfggadpfkmcpnamfnbkmkcp&quot;&gt;Cloud9&lt;/a&gt; - オンラインIDE&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://runnable.com/&quot;&gt;Runnable&lt;/a&gt; - クラウドベースIDE&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;http://www.chromium.org/chromium-os/developing-apps-on-your-chromium-os-device&quot;&gt;Developing apps on your Chromebook&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;どれも悪くはないけど痒いところには手が届かない感じ。&lt;/p&gt;
+
+&lt;h3 id=&quot;その他&quot;&gt;その他&lt;/h3&gt;
+
+&lt;p&gt;他にも&lt;a href=&quot;http://jeremyckahn.github.io/blog/2013/02/09/setting-up-a-local-development-environment-in-chrome-os/&quot;&gt;Setting Up a Local Development Environment in Chrome OS&lt;/a&gt;や&lt;a href=&quot;http://lifehacker.com/how-to-install-linux-on-a-chromebook-and-unlock-its-ful-509039343&quot;&gt;How to Install Linux on a Chromebook and Unlock Its Full Potential&lt;/a&gt;なんかを参考に&lt;a href=&quot;https://github.com/dnschneid/crouton&quot;&gt;crouton&lt;/a&gt;を使ってみたりしたけど、まだまだ発展途中という印象だった。&lt;/p&gt;
+
+&lt;h3 id=&quot;tips&quot;&gt;Tips&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.chromestory.com/google-chromebook/&quot;&gt;100 Tips for Your Google Chromebook&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;パソコンの普段の使い方が「Gmailでメールチェック」「YouTube/ニコ動などで動画視聴」「Twitter/Facebook閲覧」などWEBに閉じている方であれば、Chromebookはオススメできます。WindowsやMacよりも低価格ですし、悪い買い物ではないと思います。&lt;/p&gt;
+
+&lt;p&gt;ただ仕事での利用、ソフトウェア開発などの利用シーンにおいてはオススメできません。「Chrome縛り」でイケると思ってchromebook試用してみたが、僕は思ったより辛かった。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="chrome" /><summary type="html">ついに激安PCのChromeBookが日本上陸！東芝が来月にも発売へ</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/chromebook/chromebook2.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/chromebook/chromebook2.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">細かすぎて伝わらないChrome Developerツール・テクニック集</title><link href="https://blog.toshimaru.net/chrome-dev-tool/" rel="alternate" type="text/html" title="細かすぎて伝わらないChrome Developerツール・テクニック集" /><published>2013-12-20T00:00:00+09:00</published><updated>2019-08-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/chrome-dev-tool</id><content type="html" xml:base="https://blog.toshimaru.net/chrome-dev-tool/">&lt;p&gt;&lt;a href=&quot;http://www.adventar.org/calendars/62&quot;&gt;Frontrend Advent Calendar 2013&lt;/a&gt;、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;consolelog以外にも便利なconsoleメソッドがある&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.log&lt;/code&gt;以外にも便利なconsoleメソッドがある！&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.log()&lt;/code&gt;とかは常識でしょうが、それ以外にも実はconsole系メソッドが多くあります。下記のような感じ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.error()&lt;/code&gt;: コンソールにエラー出力&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.warn()&lt;/code&gt;: コンソールに警告出力&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.assert()&lt;/code&gt;: アサーション。第一引数がfalseだった場合に第二引数の文字列を出力。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.time()&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.timeEnd()&lt;/code&gt;: タイマー機能。前者でタイマースタート、後者でタイマーストップ。引数の文字列でタイマーIDを識別している。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;例えば下記のコード例では&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.time&lt;/code&gt;を使って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getElementById&lt;/code&gt;とjQueryのセレクターのパフォーマンスの違いを計測しています。結果はChromeConsoleを開いてResultを押してどうぞご自身の目で確認してみてください。&lt;/p&gt;
+
+&lt;iframe width=&quot;100%&quot; height=&quot;300&quot; src=&quot;http://jsfiddle.net/toshimaru/tr8Vg/5/embedded/&quot; allowfullscreen=&quot;allowfullscreen&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;ちなみに私の環境上での結果。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/chromedev/result.png&quot; alt=&quot;assert&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;consoleassert&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.assert&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;簡易的な&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;false&lt;/code&gt;テストであれば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;console.assert()&lt;/code&gt;が使えます。例えばこんなコード。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function returnTrue() { return false; }
+console.assert(returnTrue(), 'Trueをreturnすべきだよ！')
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こんな感じで表示されます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/chromedev/assert.png&quot; alt=&quot;assert&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;cssマッピングでchromeからcss変更を直接反映&quot;&gt;CSSマッピングでChromeからCSS変更を直接反映！&lt;/h2&gt;
+
+&lt;p&gt;CSSマッピングの機能を使うことでChrome上のCSS変更を直接反映することができます。簡単な手順はこうです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ChromeDevツールの歯車アイコンで開くメニューからWorkspaceを追加&lt;/li&gt;
+  &lt;li&gt;マッピングしたいファイルを選択し、右クリックして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Map to File System Resource...&lt;/code&gt;をクリックする。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/chromedev/css-map.png&quot; alt=&quot;css mapping&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Image from &lt;a href=&quot;http://liginc.co.jp/web/tool/browser/38012&quot;&gt;Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;これで準備OK！ Chrome上で直接ヴィジュアルを確認しながらいい具合に変更を加えてれば、ローカル上のファイルも変更されます。&lt;/p&gt;
+
+&lt;h2 id=&quot;ソースマッピングにsassを使う&quot;&gt;ソースマッピングにSASSを使う！&lt;/h2&gt;
+
+&lt;p&gt;CSSよりもやっぱり時代はLESS,SASSなどのCSSプリプロセッサーですよねー。ということで実はCSSマッピングにSASSも使えるんです。ただし下記の点に注意してください。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Sass 3.3以上&lt;/strong&gt;が必要&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Chrome Canary&lt;/strong&gt;を使う&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;chrome://flags&lt;/strong&gt; にアクセスしてデベロッパーツールを有効にする&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;↓Enable Developer Tools experimentsをONにする↓&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/chromedev/dev-flag.png&quot; alt=&quot;css mapping&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;詳しい手順は&lt;a href=&quot;http://dev.classmethod.jp/etc/scss-source-maps-debug/&quot;&gt;こちら（Chrome CanaryでSCSS(Sass)のデバックを試してみました。）&lt;/a&gt;で確認してみてください。良きCSSライフを！&lt;/p&gt;
+
+&lt;h2 id=&quot;androidをchromeでリモートデバック可能&quot;&gt;AndroidをChromeでリモートデバック可能！&lt;/h2&gt;
+
+&lt;p&gt;下記動画でPaul Irish氏がリモートデバッギングを簡単に解説してくれてます。この動画でどんなことができるか簡単に把握することができます。&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;//www.youtube.com/embed/Q7rEFEMpwe4&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;実機をChromeDevツールでデバッグできるのはとても喜ばしいことです。注意点は下記。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://play.google.com/store/apps/details?id=com.chrome.beta&quot;&gt;Chrome Beta&lt;/a&gt;がAndroidに必要&lt;/li&gt;
+  &lt;li&gt;USBでAndroidと接続が必要&lt;/li&gt;
+  &lt;li&gt;アンドロイド上でDeveloperオプションを有効にする必要があります。ONにするためには設定からBuild Numberをゴニョゴニョする必要があります&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;詳しい解説は&lt;a href=&quot;https://developers.google.com/chrome-developer-tools/docs/remote-debugging&quot;&gt;こちら（Remote Debugging Chrome on Android）&lt;/a&gt;を参照。&lt;/p&gt;
+
+&lt;h2 id=&quot;fpsを確認してヌルヌル動作を目指そう&quot;&gt;FPSを確認してヌルヌル動作を目指そう！&lt;/h2&gt;
+
+&lt;p&gt;たとえば下記のかなりリッチなパララックスウェブサイト。ちょっと見てみてください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://letsfreecongress.org/&quot;&gt;Money wins Elections&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;パララックス効果はサイトをリッチに見せることができる最近良く使われるテクニックではありますが、一方ローエンドPCでの動作も気にしたいところです。上サイトをTimelineからレコーディングしてみます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/chromedev/chrome-timeline.png&quot; alt=&quot;timeline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上のグレイ線が30FPSのライン、下の線が60FPSのラインです。途中のぶわーって広がるエフェクトのところで30FPSまで落ちているのが確認できます。体感的にも少しガクついている感じです。ローエンドPCだともっとガクつくことでしょう。&lt;/p&gt;
+
+&lt;p&gt;（※本機能の使い方もPaul Irish氏が&lt;a href=&quot;http://www.youtube.com/watch?v=bqfoYaKCYUI&quot;&gt;Fluent 2013&lt;/a&gt;の講演で紹介しています。）&lt;/p&gt;
+
+&lt;h2 id=&quot;おわりに&quot;&gt;おわりに&lt;/h2&gt;
+
+&lt;p&gt;ここで紹介した以外にもまだまだ便利な使い方がChromeDeveloperツールにはあります。自分もまだ全然把握できていません。もし「この機能が便利！」ってのがありましたら是非とも教えてくださいまし〜。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.igvita.com/slides/2012/devtools-tips-and-tricks/&quot;&gt;Wait, DevTools could do THAT?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.asial.co.jp/1036&quot;&gt;【Javascript】consoleオブジェクトが持つlog以外の便利メソッド18（前編）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developers.google.com/chrome-developer-tools/docs/console&quot;&gt;Using the Console&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://liginc.co.jp/web/tool/browser/38012&quot;&gt;Web屋ならチェックしておきたい！作業効率が激変するChrome DevToolsの便利な使い方まとめ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developers.google.com/chrome-developer-tools/docs/css-preprocessors#toc-requirements&quot;&gt;Working with CSS Preprocessors&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dev.classmethod.jp/etc/scss-source-maps-debug/&quot;&gt;【Source Maps】Chrome CanaryでSCSS(Sass)のデバックを試してみました。&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="chrome" /><summary type="html">Frontrend Advent Calendar 2013、20日目の記事でございます。フロントエンド関連の記事として細かすぎて伝わりにくいであろうChrome Developerツールの使い方を紹介してみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/chromedev/chrome-dev.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/chromedev/chrome-dev.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">ChromeのDevToolでlocalStrageのデータをイジイジする</title><link href="https://blog.toshimaru.net/chrome-dev-tool-localstrage/" rel="alternate" type="text/html" title="ChromeのDevToolでlocalStrageのデータをイジイジする" /><published>2013-08-15T00:00:00+09:00</published><updated>2013-08-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/chrome-dev-tool-localstrage</id><content type="html" xml:base="https://blog.toshimaru.net/chrome-dev-tool-localstrage/">&lt;p&gt;ChromeのDevToolでローカルストレージのデータをイジったことなかったけど、簡単にできたのでメモ。&lt;/p&gt;
+
+&lt;p&gt;例えばTODOデータをローカルストレージに保存している&lt;a href=&quot;http://todomvc.com/architecture-examples/backbone/&quot;&gt;TodoMVC&lt;/a&gt;で上記のようにデータを作ってみる。&lt;/p&gt;
+
+&lt;p&gt;こんな感じで閲覧できる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/localstrage/ls.png&quot; alt=&quot;chrome-localstrage&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;ローカルストレージのデータを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TODO1&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TODO123&lt;/code&gt;に変更してみる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/localstrage/ls2.png&quot; alt=&quot;chrome-localstrage&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;ページをリロードしてみる。ローカルストレージからデータの初期化が行われるので、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TODO123&lt;/code&gt;になっていることが確認できます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/localstrage/ls3.png&quot; alt=&quot;chrome-localstrage&quot; /&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="chrome" /><summary type="html">ChromeのDevToolでローカルストレージのデータをイジったことなかったけど、簡単にできたのでメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/localstrage/todo.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/localstrage/todo.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

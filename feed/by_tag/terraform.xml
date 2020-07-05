@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/terraform.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/terraform.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">terraformでDigitalOceanに簡単ドロップレット作成</title><link href="https://blog.toshimaru.net/terraform/" rel="alternate" type="text/html" title="terraformでDigitalOceanに簡単ドロップレット作成" /><published>2016-04-05T00:00:00+09:00</published><updated>2016-04-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/terraform</id><content type="html" xml:base="https://blog.toshimaru.net/terraform/">&lt;p&gt;&lt;a href=&quot;https://www.terraform.io/&quot;&gt;Terraform&lt;/a&gt;を使って1円クラウド、&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;DigitalOcean&lt;/a&gt;にドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。&lt;/p&gt;
+
+&lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform version
+Terraform v0.6.14
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記のバージョンの terraform を使っていきます。&lt;/p&gt;
+
+&lt;h2 id=&quot;tfファイル作成&quot;&gt;tfファイル作成&lt;/h2&gt;
+
+&lt;p&gt;terraformファイル、例えば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;test.tf&lt;/code&gt;ファイルを下記のように作成します（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.tf&lt;/code&gt;という拡張子でファイル名はなんでもよいようです）。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Configure the DigitalOcean Provider
+provider &quot;digitalocean&quot; {
+  token = &quot;your_digitalocean_token&quot;
+}
+
+# Create a web server
+resource &quot;digitalocean_droplet&quot; &quot;web&quot; {
+  image = &quot;ubuntu-14-04-x64&quot;
+  name = &quot;web-1&quot;
+  region = &quot;sfo1&quot;
+  size = &quot;512mb&quot;
+  ssh_keys = [123456]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;token&lt;/code&gt;にはDigitalOceanのあなた自身のトークンをセットしてください。&lt;/p&gt;
+
+&lt;p&gt;ちなみに上記にある &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ssh_keys&lt;/code&gt; の id は下記のようにAPI経由で取得できます（jqを使ってます）。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl &quot;https://api.digitalocean.com/v2/account/keys&quot; -H &quot;Authorization: Bearer your_token&quot; | jq &quot;.ssh_keys[0].id&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;terraform-実行プラン表示&quot;&gt;terraform 実行プラン表示&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;terraform plan&lt;/code&gt;で実行プランを表示できます。これで何が作成されるかを確認しましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform plan
+Refreshing Terraform state prior to plan...
+
+
+The Terraform execution plan has been generated and is shown below.
+Resources are shown in alphabetical order for quick scanning. Green resources
+will be created (or destroyed and then created if an existing resource
+exists), yellow resources are being changed in-place, and red resources
+will be destroyed.
+
+Note: You didn't specify an &quot;-out&quot; parameter to save this plan, so when
+&quot;apply&quot; is called, Terraform can't guarantee this is what will execute.
+
++ digitalocean_droplet.web
+    image:                &quot;&quot; =&amp;gt; &quot;ubuntu-14-04-x64&quot;
+    ipv4_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    ipv4_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    ipv6_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    ipv6_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    locked:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    name:                 &quot;&quot; =&amp;gt; &quot;web-1&quot;
+    region:               &quot;&quot; =&amp;gt; &quot;sfo1&quot;
+    size:                 &quot;&quot; =&amp;gt; &quot;512mb&quot;
+    ssh_keys.#:           &quot;&quot; =&amp;gt; &quot;1&quot;
+    ssh_keys.0:           &quot;&quot; =&amp;gt; &quot;123456&quot;
+    status:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;プラン実行&quot;&gt;プラン実行&lt;/h2&gt;
+
+&lt;p&gt;確認後は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;terraform apply&lt;/code&gt;で実際に作成を行えます。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform apply
+digitalocean_droplet.web: Creating...
+image:                &quot;&quot; =&amp;gt; &quot;ubuntu-14-04-x64&quot;
+ipv4_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+ipv4_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+ipv6_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+ipv6_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+locked:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+name:                 &quot;&quot; =&amp;gt; &quot;web-1&quot;
+region:               &quot;&quot; =&amp;gt; &quot;sfo1&quot;
+size:                 &quot;&quot; =&amp;gt; &quot;512mb&quot;
+ssh_keys.#:           &quot;&quot; =&amp;gt; &quot;1&quot;
+ssh_keys.0:           &quot;&quot; =&amp;gt; &quot;123456&quot;
+status:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+digitalocean_droplet.web: Creation complete
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+The state of your infrastructure has been saved to the path
+below. This state is required to modify and destroy your
+infrastructure, so keep it safe. To inspect the complete state
+use the `terraform show` command.
+
+State path: terraform.tfstate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;作成物の情報表示&quot;&gt;作成物の情報表示&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;terraform show&lt;/code&gt; で作成物の情報を表示できます。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform show
+digitalocean_droplet.web:
+  id = 12808253
+  image = ubuntu-14-04-x64
+  ipv4_address = 1.2.3.4
+  locked = false
+  name = web-1
+  region = sfo1
+  size = 512mb
+  ssh_keys.# = 1
+  ssh_keys.0 = 123456
+  status = active
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;確かにできあがってます。&lt;/p&gt;
+
+&lt;h2 id=&quot;ドロップレット削除&quot;&gt;ドロップレット削除&lt;/h2&gt;
+
+&lt;p&gt;ほっとくとどんどん課金されていきますので使い終わったら削除しましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform destroy
+Do you really want to destroy?
+  Terraform will delete all your managed infrastructure.
+  There is no undo. Only 'yes' will be accepted to confirm.
+
+  Enter a value: yes
+
+digitalocean_droplet.web: Refreshing state... (ID: 12808253)
+digitalocean_droplet.web: Destroying...
+digitalocean_droplet.web: Destruction complete
+
+Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;&lt;img src=&quot;/images/digitalocean.png&quot; alt=&quot;digitalocean&quot; /&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="terraform" /><summary type="html">Terraformを使って1円クラウド、DigitalOceanにドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/terraform.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/terraform.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

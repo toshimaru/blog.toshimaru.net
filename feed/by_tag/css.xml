@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/css.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/css.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">CSS3アニメーションを使ってサイトをリッチに表現する</title><link href="https://blog.toshimaru.net/css-animation/" rel="alternate" type="text/html" title="CSS3アニメーションを使ってサイトをリッチに表現する" /><published>2013-12-11T00:00:00+09:00</published><updated>2018-08-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/css-animation</id><content type="html" xml:base="https://blog.toshimaru.net/css-animation/">&lt;style type=&quot;text/css&quot;&gt;
+@-webkit-keyframes anim {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+@keyframes anim　{
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+.post-image  {
+  -ms-animation: anim 2s infinite;
+  -webkit-animation: anim 2s infinite;
+  animation: anim 2s infinite;
+}
+&lt;/style&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.adventar.org/calendars/57&quot;&gt;CSS Property Advent Calendar 2013&lt;/a&gt;の11日目の記事としてCSSアニメーションのプロパティを紹介をします。&lt;/p&gt;
+
+&lt;h2 id=&quot;なぜcssアニメーションなのか&quot;&gt;なぜCSSアニメーションなのか？&lt;/h2&gt;
+
+&lt;p&gt;さて本ブログでもタイトルやアイキャッチ画像のイメージの表示にちょっとしたCSS3アニメーションを採用しています。ほんのちょっとのCSSの記述なんですがサイトがイイ感じにリッチに見えてとても気に入ってます。&lt;/p&gt;
+
+&lt;p&gt;jQueryなんかでも&lt;a href=&quot;https://api.jquery.com/animate/&quot;&gt;.animate()&lt;/a&gt;を使えばアニメーションができますね。ではなぜCSS3アニメーションなのか？　そこからエントリを始めてみたいと思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;パフォーマンス的観点-css-vs-jquery&quot;&gt;パフォーマンス的観点 CSS vs jQuery&lt;/h3&gt;
+
+&lt;p&gt;DEV.OPERAにて&lt;a href=&quot;https://dev.opera.com/articles/css3-vs-jquery-animations/&quot;&gt;CSS3 vs jQueryアニメーションの比較&lt;/a&gt;が行われています。ここではjQueryとCSS3によるアニメーションどちらが優れているかがレポートされており、最終的な勝者はCSS3だとして記事を結んでいます。本比較において使われているCSS3のアニメーションサンプルとjQueryのアニメーションサンプルを私のChrome(Canary)上でも比較してみました。&lt;/p&gt;
+
+&lt;p&gt;肉眼でもCSSアニメーションのほうが綺麗に見える気がします。DevTools上でも実際、Rendering、Paintイベントをフィルターしてみたところ、実際jQueryのほうがイベントの粒度が荒いことが見て取れます。&lt;/p&gt;
+
+&lt;h3 id=&quot;1-cssによるアニメーション&quot;&gt;1. CSSによるアニメーション&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/css-animate/1.png&quot; alt=&quot;比較１&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/css-animate/A.png&quot; alt=&quot;比較A&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;イベントが安定して滑らかに流れています。メモリ効率も良い感じ。&lt;/p&gt;
+
+&lt;h3 id=&quot;2-jqueryによるアニメーション&quot;&gt;2. jQueryによるアニメーション&lt;/h3&gt;
+
+&lt;p&gt;一方、jQueryはどうでしょうか。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/css-animate/2.png&quot; alt=&quot;比較２&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/css-animate/B.png&quot; alt=&quot;比較B&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;イベントの流れの傾斜がCSSより緩やかで、たまに上画像のようにもたつくことがあります。メモリ効率も山状に上がってよろしくない感じです。&lt;/p&gt;
+
+&lt;p&gt;上記の結果からCSSアニメーションを使って良いシーンであれば、&lt;strong&gt;パフォーマンス的にCSSはjQueryよりも優れている&lt;/strong&gt; と言えます。&lt;/p&gt;
+
+&lt;h2 id=&quot;ブラウザ対応状況&quot;&gt;ブラウザ対応状況&lt;/h2&gt;
+
+&lt;p&gt;CSS3プロパティだとブラウザ対応状況が心配なところ。&lt;a href=&quot;https://caniuse.com/#search=keyframes&quot;&gt;サポート状況はこんな感じ&lt;/a&gt;です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/css-animate/browser.png&quot; alt=&quot;対応状況&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;IEは10以降、それ以外のメインブラウザの最新版は対応済みですね。ベンダープレフィックスも&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-webkit-&lt;/code&gt;さえつければ大丈夫そうです。IE9以前を気にするかもしれませんが、&lt;a href=&quot;https://www.adobe.com/jp/devnet/dreamweaver/articles/html5pack_css3_part6.html&quot;&gt;グレースフル・デグラデーション&lt;/a&gt;の考え方で＜装飾＞という意味においてはCSSアニメーションプロパティはどんどん使っていい機能かと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;cssアニメーションの書き方&quot;&gt;CSSアニメーションの書き方&lt;/h2&gt;
+
+&lt;p&gt;ではCSSアニメーションはどう書くか？　キーワードは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@keyframes&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;animation&lt;/code&gt;の２つです。&lt;/p&gt;
+
+&lt;div class=&quot;language-css highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@keyframes&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;&amp;lt;アニメーションの名前&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;/* 定義 */&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;/* 定義 */&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;/* 定義 */&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こんな感じで0%から100%にかけて特定のタイミングでのアニメーションスタイル定義を書いていきます。次にそのアニメーション名を使った&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;animation&lt;/code&gt;をクラス内に加えます。&lt;/p&gt;
+
+&lt;div class=&quot;language-css highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;.&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;名&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;animation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;&amp;lt;アニメーションの名前&amp;gt;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;&amp;lt;秒数&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;あとはこのクラス名をDOM内のアニメーションしたい要素に加えればOKです。&lt;/p&gt;
+
+&lt;p&gt;では具体例。実際に本記事タイトル下でフェードインさせている画像のCSSを見てみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-css highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@-webkit-keyframes&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;anim&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;opacity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;opacity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@keyframes&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;anim&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;　&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;opacity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;opacity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;.post-image&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;-ms-animation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;anim&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2s&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;infinite&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;-webkit-animation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;anim&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2s&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;infinite&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;animation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;anim&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2s&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;infinite&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;透過度0から透明度1へのアニメーション（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;anim&lt;/code&gt;）を2秒（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2s&lt;/code&gt;）毎にループ（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;infinite&lt;/code&gt;）させてます。このアニメーションは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;post-image&lt;/code&gt;クラスに適応されます。実際に使用の際は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-webkit-&lt;/code&gt;プレフィックス付きの定義も必要なことに注意してください。&lt;/p&gt;
+
+&lt;h2 id=&quot;どこからアニメーションの着想を得るか&quot;&gt;どこからアニメーションの着想を得るか&lt;/h2&gt;
+
+&lt;p&gt;といっても「アニメーションのCSSスタイル定義するの面倒くさい」とか「自分のやりたい動きをどう書けばいいかわからない」という人も多いかと思います。そんな人は&lt;a href=&quot;https://daneden.me/animate/&quot;&gt;Animate.css&lt;/a&gt;のページを見てみるとよいかと思います。&lt;/p&gt;
+
+&lt;p&gt;これらのアニメーションは全てCSSにて動いているのですが、使い回しの効きそうなCSSで表現できる典型的なアニメーションは大体網羅されていると思うので、ここからアニメーションスタイルをパクってくると良いかと思います（CSSのサイズを気にしないという方は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;animate.css&lt;/code&gt;をそのままサイトに持ってきてもいいですね）。&lt;/p&gt;
+
+&lt;p&gt;CSSコードは下記のコードから引っ張ってきてください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/daneden/animate.css/blob/master/animate.css&quot;&gt;animate.css/animate.css at master&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;皆さんもCSSアニメーションをサイトのちょっとしたところに取り入れてサイトをリッチにみせてみてはいかがでしょうか。&lt;/p&gt;
+
+&lt;p&gt;ただ１つ注意したいのが、基本的に人の目は動いているものに行きやすく、過度なアニメーションの使用、または派手すぎるアニメーションの動きはユーザー体験を著しく下げるので「使いすぎ注意」ということを忘れずに。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/CSS/@keyframes&quot;&gt;@keyframes - CSS / MDN&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/daneden/animate.css&quot;&gt;daneden/animate.css - GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="css" /><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/css-animate/block.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/css-animate/block.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">CSS3でフリップアニメーションの実装</title><link href="https://blog.toshimaru.net/css-flip/" rel="alternate" type="text/html" title="CSS3でフリップアニメーションの実装" /><published>2013-10-05T00:00:00+09:00</published><updated>2013-10-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/css-flip</id><content type="html" xml:base="https://blog.toshimaru.net/css-flip/">&lt;p&gt;CSSでフリップアニメーション実装してみます。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://toshimaru.net/demo/css-flip/&quot; class=&quot;btn btn-primary&quot;&gt;Demo&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;CSS/HTMLそれぞれのソースは以下のような感じです。&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/toshimaru/6402ad27da9f39554518.js&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://davidwalsh.name/css-flip&quot;&gt;Create a CSS Flipping Animation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="css" /><summary type="html">CSSでフリップアニメーション実装してみます。</summary></entry><entry><title type="html">Responsive Web Design 時代の画像スライダー</title><link href="https://blog.toshimaru.net/responsive-web-design/" rel="alternate" type="text/html" title="Responsive Web Design 時代の画像スライダー" /><published>2012-10-11T00:00:00+09:00</published><updated>2012-10-11T00:00:00+09:00</updated><id>https://blog.toshimaru.net/responsive-web-design</id><content type="html" xml:base="https://blog.toshimaru.net/responsive-web-design/">&lt;p&gt;え？　&quot;れすぽんしぶうぇぶでざいん&quot;って何かって？&lt;/p&gt;
+&lt;p&gt;なかなか日本では聞きなれないような気がしなくもないですがこんな意味です。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Responsive web design (often abbreviated to RWD) is an approach to web design in which a site is crafted to provide an optimal viewing experience&amp;mdash;easy reading and navigation with a minimum of resizing, panning, and scrolling&amp;mdash;across a wide range of devices (from desktop computer monitors to mobile phones).&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Responsive_web_design&quot;&gt;Responsive web design (wikipedia)&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;つまり、レスポンシブWEBデザインとは、デバイスの幅に応じてWebの見た目（レイアウトとかサイズとか）が最適化されるWebデザインの手法のことです。タブレット、スマホの台頭によってますます重要視されている手法ですね。&lt;/p&gt;
+&lt;p&gt;さて、本題。本日は画像スライダーのお話。&lt;/p&gt;
+&lt;p&gt;先日画像スライダーを実装する機会があったので「js slider」なんかでググって一番最初に出てくる&lt;a href=&quot;http://www.slidesjs.com/&quot;&gt;slidesjs&lt;/a&gt;で画像スライダーを実装するわけです。でもスマホやタブレット見て分かる通り、全然それらのデバイスに最適化されてませんね。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2012/10/slider2.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://toshimaru.net/demo/slidesjs/&quot;&gt;http://toshimaru.net/demo/slidesjs/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;幅がデバイスに応じて変わったりもしないので、ちゃんと最適化されるような違う画像スライダーを探してみます。&lt;/p&gt;
+&lt;p&gt;んでたどり着いたのが&lt;a href=&quot;http://flexslider.woothemes.com/&quot;&gt;FlexSlider2&lt;/a&gt;。ちゃんとPCでもタブレットでも最適化されて表示されますね。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2012/10/slider3.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2012/10/slider1.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;スマホ、タブレット対応が必須な今、しっかりレスポンシブデザインを心がけてWEB制作をしていきたいところです。&lt;/p&gt;
+&lt;h3&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://ascii.jp/elem/000/000/697/697463/&quot;&gt;レスポンシブWebデザインとは&lt;/a&gt; &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="css" /><category term="design" /><category term="html" /><category term="javascript" /><summary type="html">え？　&quot;れすぽんしぶうぇぶでざいん&quot;って何かって？ なかなか日本では聞きなれないような気がしなくもないですがこんな意味です。 Responsive web design (often abbreviated to RWD) is an approach to web design in which a site is crafted to provide an optimal viewing experience&amp;mdash;easy reading and navigation with a minimum of resizing, panning, and scrolling&amp;mdash;across a wide range of devices (from desktop computer monitors to mobile phones). Responsive web design (wikipedia) つまり、レスポンシブWEBデザインとは、デバイスの幅に応じてWebの見た目（レイアウトとかサイズとか）が最適化されるWebデザインの手法のことです。タブレット、スマホの台頭によってますます重要視されている手法ですね。 さて、本題。本日は画像スライダーのお話。 先日画像スライダーを実装する機会があったので「js slider」なんかでググって一番最初に出てくるslidesjsで画像スライダーを実装するわけです。でもスマホやタブレット見て分かる通り、全然それらのデバイスに最適化されてませんね。 http://toshimaru.net/demo/slidesjs/ 幅がデバイスに応じて変わったりもしないので、ちゃんと最適化されるような違う画像スライダーを探してみます。 んでたどり着いたのがFlexSlider2。ちゃんとPCでもタブレットでも最適化されて表示されますね。 スマホ、タブレット対応が必須な今、しっかりレスポンシブデザインを心がけてWEB制作をしていきたいところです。 参考 レスポンシブWebデザインとは</summary></entry><entry><title type="html">アスペクト比を計算するWebアプリを作成しました</title><link href="https://blog.toshimaru.net/web/" rel="alternate" type="text/html" title="アスペクト比を計算するWebアプリを作成しました" /><published>2012-10-01T00:00:00+09:00</published><updated>2018-01-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/web</id><content type="html" xml:base="https://blog.toshimaru.net/web/">&lt;p&gt;&lt;a href=&quot;http://ratiocalculator.toshimaru.net/&quot; class=&quot;btn btn-primary&quot;&gt;Ratio Calculator&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://ratiocalculator.toshimaru.net/&quot;&gt;http://ratiocalculator.toshimaru.net/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;様々なアスペクト比を計算するWebアプリを作成しました。作ったきっかけは16:9の画像をいろいろと使っていて、いちいちサイズ計算するのが面倒だったから。&lt;/p&gt;
+
+&lt;p&gt;使った言語、環境など紹介します。&lt;/p&gt;
+
+&lt;h2 id=&quot;フロントエンド&quot;&gt;フロントエンド&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;HTML5&lt;/li&gt;
+  &lt;li&gt;CSS3 (with Bootstrap)&lt;/li&gt;
+  &lt;li&gt;jQuery&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;バックエンド&quot;&gt;バックエンド&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;del&gt;Google App Engine&lt;/del&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;del&gt;Python (&lt;a href=&quot;http://flask.pocoo.org/&quot;&gt;Flask&lt;/a&gt;)&lt;/del&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;追記&lt;/strong&gt;: バックエンドはGoogleAppEngineからGitHub Pagesに移行しています。ソースは下記GitHub URLにて公開しています。&lt;/p&gt;
+
+&lt;p&gt;https://github.com/toshimaru/ratiocalculator&lt;/p&gt;
+
+&lt;h2 id=&quot;インスパイアされたサービス&quot;&gt;インスパイアされたサービス&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://zeller-lab.com/img-width/&quot;&gt;Web計。&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="css" /><category term="html" /><category term="javascript" /><summary type="html">Ratio Calculator http://ratiocalculator.toshimaru.net/ 様々なアスペクト比を計算するWebアプリを作成しました。作ったきっかけは16:9の画像をいろいろと使っていて、いちいちサイズ計算するのが面倒だったから。 使った言語、環境など紹介します。 フロントエンド HTML5 CSS3 (with Bootstrap) jQuery バックエンド Google App Engine Python (Flask) 追記: バックエンドはGoogleAppEngineからGitHub Pagesに移行しています。ソースは下記GitHub URLにて公開しています。 https://github.com/toshimaru/ratiocalculator インスパイアされたサービス Web計。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/2012/10/ratiocal.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/2012/10/ratiocal.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Twitter Search API をJSで呼んでみる</title><link href="https://blog.toshimaru.net/twitter-search-api-js/" rel="alternate" type="text/html" title="Twitter Search API をJSで呼んでみる" /><published>2012-09-23T00:00:00+09:00</published><updated>2012-09-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/twitter-search-api-js</id><content type="html" xml:base="https://blog.toshimaru.net/twitter-search-api-js/">&lt;p&gt;Twitter search API をJSを使って呼ぶ簡単なサンプルを作ってみました。せっかくなので、Bootstrap &amp;amp; Hogan.js という二つのTwitter製オープンソースフレームワークを使ってみました。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;【!追記】現在はTwitter APIの仕様変更にて動かなくなっています。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://toshimaru.net/demo/gettweet/&quot;&gt;http://toshimaru.net/demo/gettweet/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2012/09/twitter.png&quot; alt=&quot;twitter search api&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;使っている言語など。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;HTML: html5&lt;/li&gt;
+  &lt;li&gt;JS: jQuery, &lt;a href=&quot;http://twitter.github.com/hogan.js/&quot;&gt;hogan.js(template engine)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;CSS: &lt;a href=&quot;http://twitter.github.com/bootstrap/&quot;&gt;bootstrap&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://dev.twitter.com/docs/api/1/get/search&quot;&gt;GET search&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.asial.co.jp/659&quot;&gt;Twitter-APIを使ってみました&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="css" /><category term="javascript" /><category term="jquery" /><summary type="html">Twitter search API をJSを使って呼ぶ簡単なサンプルを作ってみました。せっかくなので、Bootstrap &amp;amp; Hogan.js という二つのTwitter製オープンソースフレームワークを使ってみました。</summary></entry><entry><title type="html">CSS3 を使って円を描く</title><link href="https://blog.toshimaru.net/157392690/" rel="alternate" type="text/html" title="CSS3 を使って円を描く" /><published>2012-08-27T00:00:00+09:00</published><updated>2012-08-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/157392690</id><content type="html" xml:base="https://blog.toshimaru.net/157392690/">&lt;p&gt;現時点の本ブログデザインの左上の日付表示の部分。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://toshimaru.github.com/demo/circle.html&quot;&gt;&lt;img src=&quot;/images/2012/08/circle.png&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;script src=&quot;https://gist.github.com/3495190.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;気をつけたいのはFirefox13から、接頭辞付き-moz-border-radiusプロパティをサポートしなくなったこと（&lt;a href=&quot;https://dev.mozilla.jp/2012/05/firefox13-backward-compatibility/&quot;&gt;参考&lt;/a&gt;）。代わりにborder-radiusを使用してください。&lt;/p&gt;
+&lt;p&gt;さらに駆使すれば星やハートも描くこともできるみたいです。詳しくは下記。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://css-tricks.com/examples/ShapesOfCSS/&quot;&gt;The Shapes of CSS&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.cardeo.ca/how-to-create-circles-with-css3-and-no-images/&quot;&gt;How To Create Circles With CSS3 and No Images&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="css" /><summary type="html">現時点の本ブログデザインの左上の日付表示の部分。 気をつけたいのはFirefox13から、接頭辞付き-moz-border-radiusプロパティをサポートしなくなったこと（参考）。代わりにborder-radiusを使用してください。 さらに駆使すれば星やハートも描くこともできるみたいです。詳しくは下記。 The Shapes of CSS 参考 How To Create Circles With CSS3 and No Images</summary></entry></feed>

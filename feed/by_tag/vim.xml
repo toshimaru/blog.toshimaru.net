@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/vim.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/vim.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">はてなブックマークFirefox拡張をvimperatorで使う</title><link href="https://blog.toshimaru.net/firefoxvimperator/" rel="alternate" type="text/html" title="はてなブックマークFirefox拡張をvimperatorで使う" /><published>2011-11-28T00:00:00+09:00</published><updated>2011-11-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/firefoxvimperator</id><content type="html" xml:base="https://blog.toshimaru.net/firefoxvimperator/">&lt;ul&gt;
+&lt;li&gt; はてなブックマークFirefox拡張をFirefoxに導入 &lt;/li&gt;
+&lt;li&gt; 下記の一行をvimeperatorrcに追加。
+&lt;ul&gt;
+&lt;li&gt; ない場合は、mkvimperatorrcと打って作成。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;javascript if (typeof hBookmark != 'undefined') liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: this});&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これにて設定完了。 cでブクマ。Cでブコメ表示。 hbで始まるコマンドでブクマ検索したり、ブコメ検索したりできます。&lt;/p&gt;
+&lt;h3&gt;参考&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;http://subtech.g.hatena.ne.jp/secondlife/20090402/1238655382&quot;&gt;http://subtech.g.hatena.ne.jp/secondlife/20090402/1238655382&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vim" /><summary type="html">はてなブックマークFirefox拡張をFirefoxに導入 下記の一行をvimeperatorrcに追加。 ない場合は、mkvimperatorrcと打って作成。 javascript if (typeof hBookmark != 'undefined') liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: this}); これにて設定完了。 cでブクマ。Cでブコメ表示。 hbで始まるコマンドでブクマ検索したり、ブコメ検索したりできます。 参考 http://subtech.g.hatena.ne.jp/secondlife/20090402/1238655382</summary></entry><entry><title type="html">vimでHTMLタグ上を効率的にカーソル移動する</title><link href="https://blog.toshimaru.net/79430508/" rel="alternate" type="text/html" title="vimでHTMLタグ上を効率的にカーソル移動する" /><published>2011-11-09T00:00:00+09:00</published><updated>2011-11-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/79430508</id><content type="html" xml:base="https://blog.toshimaru.net/79430508/">&lt;p&gt;vimを使っててふと思った。HTMLタグもPHPの対応括弧（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{}&lt;/code&gt;とか）のカーソル移動みたいに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%&lt;/code&gt;で対応タグに飛べないかと。&lt;/p&gt;
+
+&lt;p&gt;調べると初期状態で無効化されているだけで、しっかりデフォルトのvimに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%&lt;/code&gt;移動を拡張するスクリプトが用意されておりました。&lt;/p&gt;
+
+&lt;p&gt;下記の一行を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.vimrc&lt;/code&gt;に追加すればよろし。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;source $VIMRUNTIMEmacros/matchit.vim
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;さらに詳しくは以下を見るべし！&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://nanasi.jp/articles/vim/matchit_vim.html&quot;&gt;matchit.vim : 「%」による対応括弧へのカーソル移動機能を拡張 — 名無しのvim使い&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vim" /><summary type="html">vimを使っててふと思った。HTMLタグもPHPの対応括弧（{}とか）のカーソル移動みたいに%で対応タグに飛べないかと。</summary></entry><entry><title type="html">Vimで行末の空白を保存時に自動削除する設定</title><link href="https://blog.toshimaru.net/vim/" rel="alternate" type="text/html" title="Vimで行末の空白を保存時に自動削除する設定" /><published>2011-11-03T00:00:00+09:00</published><updated>2011-11-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vim</id><content type="html" xml:base="https://blog.toshimaru.net/vim/">&lt;p&gt;下記の一行を.vimrcに追加するだけでOK。&lt;/p&gt;
+&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;autocmd BufWritePre * :%s/\s\+$//e&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;ただ、絶対に必要な行末のスペースがあった場合にそれを気づかないうちに消してしまうことがあるので注意！！！&lt;/p&gt;
+&lt;p&gt;その他、英語ですが便利な空白削除系の設定が下記にあります。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://vim.wikia.com/wiki/Remove_unwanted_spaces&quot;&gt;Remove unwanted spaces&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vim" /><summary type="html">下記の一行を.vimrcに追加するだけでOK。 autocmd BufWritePre * :%s/\s\+$//e</summary></entry></feed>

@@ -1,0 +1,1257 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/ruby.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/ruby.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rubyで数値の0埋め</title><link href="https://blog.toshimaru.net/ruby-0-padding/" rel="alternate" type="text/html" title="Rubyで数値の0埋め" /><published>2020-06-30T00:00:00+09:00</published><updated>2020-06-30T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-0-padding</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-0-padding/">&lt;p&gt;Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
+
+&lt;p&gt;結論としては下記のように書くとよい。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09&amp;lt;number&amp;gt;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;number: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rubyで数値の0埋め&quot;&gt;Rubyで数値の0埋め&lt;/h2&gt;
+
+&lt;p&gt;Rubyで数値の0埋めしようと思うとこんな感じのコードになる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.ruby-lang.org/ja/latest/doc/print_format.html&quot;&gt;sprintf フォーマット&lt;/a&gt;はC由来の関数だ。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%09d&lt;/code&gt;の意味としては&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%d&lt;/code&gt;が数値、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;09&lt;/code&gt;は9桁の0埋めという意味になる。&lt;/p&gt;
+
+&lt;p&gt;また、&lt;a href=&quot;https://docs.ruby-lang.org/ja/latest/class/String.html#I_--25&quot;&gt;String#%&lt;/a&gt;を使う方法もある。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sprintf&lt;/code&gt;と同じ挙動をする。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09d&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こちらのほうがより簡潔な表記だ。&lt;/p&gt;
+
+&lt;h2 id=&quot;rubocopのオススメ書き方&quot;&gt;RuboCopのオススメ書き方&lt;/h2&gt;
+
+&lt;p&gt;上述の書き方でも問題ないのだが、rubocop（デフォルト設定）に通すと下記の通り怒られる。&lt;/p&gt;
+
+&lt;h3 id=&quot;favor-format-over-sprintf&quot;&gt;Favor format over sprintf&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C: Style/FormatString: Favor format over sprintf.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sprintf&lt;/code&gt;ではなく&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;format&lt;/code&gt;を使え、と。また &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String#%&lt;/code&gt; を使った書き方も下記の指摘がくる。&lt;/p&gt;
+
+&lt;h3 id=&quot;favor-format-over-string&quot;&gt;Favor format over String#%&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C: Style/FormatString: Favor format over String#%.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ちなみに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;format&lt;/code&gt;は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sprintf&lt;/code&gt;のエイリアス関数。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;rb_define_global_function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sprintf&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f_sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;rb_define_global_function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;format&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f_sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ref. &lt;a href=&quot;https://github.com/ruby/ruby/blob/946e5cc668f66a4a0b79461047d3fcba8b71eef0/object.c#L4630-L4631&quot;&gt;ruby/object.c at 946e5cc668f66a4a0b79461047d3fcba8b71eef0 · ruby/ruby&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;rubocopの指摘に従って下記のように修正してみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;prefer-annotated-tokens&quot;&gt;Prefer annotated tokens&lt;/h3&gt;
+
+&lt;p&gt;これでもrubocopに下記のように怒られる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C: Style/FormatStringToken: Prefer annotated tokens (like %&amp;lt;foo&amp;gt;s) over unannotated tokens (like %s).
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;foo&amp;gt;&lt;/code&gt;のようなannotated tokenを使って名前を与えてやれ、とのことらしい。&lt;/p&gt;
+
+&lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
+
+&lt;p&gt;rubocopの指摘を乗り越えて、最終的には下記で完成です。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09&amp;lt;number&amp;gt;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;number: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
+
+&lt;p&gt;特定日付が範囲内にあるかの判定を行うには &lt;a href=&quot;https://railsdoc.github.io/classes/ActiveSupport/TimeWithZone.html#method-i-between-3F&quot;&gt;ActiveSupport::TimeWithZone#between?&lt;/a&gt; が使える。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 日時.between?(始端, 終端)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;between?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tomorrow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実際に範囲内チェックを行うとこんな感じ。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;between?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tomorrow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;between?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;week&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ago&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;between?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tomorrow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;week&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;since&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ただ上記の書き方の場合、始端もしくは終端が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nil&lt;/code&gt; の場合にエラーが出てしまう。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;today&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;between?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;ArgumentError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;comparison&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;failed&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:in&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`between?`&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rangecover-で範囲内判定&quot;&gt;Range#cover? で範囲内判定&lt;/h2&gt;
+
+&lt;p&gt;上述の問題が回避するには、Rubyの &lt;a href=&quot;https://docs.ruby-lang.org/ja/2.7.0/method/Range/i/cover=3f.html&quot;&gt;Range#cover?&lt;/a&gt; が使える。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# (始端..終端).cover? 日時&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tomorrow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cover?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;始端終端が-nil-の場合&quot;&gt;始端/終端が nil の場合&lt;/h3&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 始端がnil&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tomorrow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cover?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 終端がnil&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cover?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;下記の通り範囲内から外れた場合は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;false&lt;/code&gt; が帰ってくる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;yesterday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cover?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tomorrow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cover?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="rails" /><summary type="html">TimeWithZone#between? で範囲内判定</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-range.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-range.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RubyでHashのKey/Valueをソートする</title><link href="https://blog.toshimaru.net/ruby-hash-sort/" rel="alternate" type="text/html" title="RubyでHashのKey/Valueをソートする" /><published>2019-09-03T00:00:00+09:00</published><updated>2019-09-03T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-hash-sort</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-hash-sort/">&lt;p&gt;RubyでHashのKey/Valueをソートするにはどうしたらよいでしょうか。&lt;/p&gt;
+
+&lt;h2 id=&quot;ベースとなるhashデータ&quot;&gt;ベースとなるHashデータ&lt;/h2&gt;
+
+&lt;p&gt;今回ソートの対象となるベースとなるHashデータは下記のとおりです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;c: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;z: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;y: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;a: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;x: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;hashのkeyをソート&quot;&gt;HashのKeyをソート&lt;/h2&gt;
+
+&lt;h3 id=&quot;hashのkeyを昇順にソート&quot;&gt;HashのKeyを昇順にソート&lt;/h3&gt;
+
+&lt;p&gt;HashのKeyのソートであれば素直に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sort&lt;/code&gt; を呼べばいけます。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ただこのままだとArrayのかたちなので、再びHashに戻すために&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;to_h&lt;/code&gt;を付けてHashに戻してやりましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;hashのkeyを降順にソート&quot;&gt;HashのKeyを降順にソート&lt;/h3&gt;
+
+&lt;p&gt;では次に降順にソートです。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reverse&lt;/code&gt;でいけます。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reverse&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;hashのvalueをソート&quot;&gt;HashのValueをソート&lt;/h2&gt;
+
+&lt;h3 id=&quot;hashのvalueを昇順にソート&quot;&gt;HashのValueを昇順にソート&lt;/h3&gt;
+
+&lt;p&gt;次にHashのValueはどうでしょうか？ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sort_by&lt;/code&gt; を使えばいけます。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort_by&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort_by&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;hashのvalueを降順にソート&quot;&gt;HashのValueを降順にソート&lt;/h3&gt;
+
+&lt;p&gt;降順は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reverse&lt;/code&gt;を使ってこうです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort_by&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;reverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ただ今回のHashデータのようにValueがIntegerの場合は、下記のほうがスマートです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort_by&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_h&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">RubyでHashのKey/Valueをソートするにはどうしたらよいでしょうか。</summary></entry><entry><title type="html">Rubyのヒアドキュメントの書き方いろいろ</title><link href="https://blog.toshimaru.net/ruby-heredoc/" rel="alternate" type="text/html" title="Rubyのヒアドキュメントの書き方いろいろ" /><published>2017-08-04T00:00:00+09:00</published><updated>2017-08-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-heredoc</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-heredoc/">&lt;p&gt;Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;識別子&quot;&gt;&amp;lt;&amp;lt;識別子&lt;/h2&gt;
+
+&lt;p&gt;これがRubyのヒアドキュメントの基本型となります。識別子である&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EOS&lt;/code&gt;の始点の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;&amp;lt;EOS&lt;/code&gt;から次に出てくる&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EOS&lt;/code&gt;までの囲まれている部分が文字列となります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    Hello,
+
+    World!
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    Hello,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    World!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記のコードのコメントアウトされている箇所が定義した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hello&lt;/code&gt;メソッドの出力結果となります。&lt;/p&gt;
+
+&lt;h2 id=&quot;-識別子&quot;&gt;&amp;lt;&amp;lt;-識別子&lt;/h2&gt;
+
+&lt;p&gt;上記のコードは終端の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EOS&lt;/code&gt;の位置が気に食わないですか？　たしかにdef~endの中で一段ネストさせたいですね。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-&lt;/code&gt;（ダッシュ）を識別子の手前に置けば、こんな書き方が可能です。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    Hello,
+
+    World!
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  EOS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    Hello,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    World!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで終端の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EOS&lt;/code&gt;がメソッドの内部でネストされて可読性が上がりましたね。&lt;/p&gt;
+
+&lt;h2 id=&quot;識別子-1&quot;&gt;&amp;lt;&amp;lt;~識別子&lt;/h2&gt;
+
+&lt;p&gt;でもちょっと待って下さい。本当にほしい文字列は先頭に空白のない文字列だったんです。でも安心してください、Ruby2.3以降は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~&lt;/code&gt;（チルダ）を識別子の手前に置いてこう書けるんです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;~&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOS&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    Hello,
+
+    World!
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  EOS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#Hello,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#World!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これでHelloという文字列の手前にあるネストの空白も消してくれました。&lt;/p&gt;
+
+&lt;h2 id=&quot;豆知識-github-syntax-highlight&quot;&gt;豆知識. GitHub Syntax Highlight&lt;/h2&gt;
+
+&lt;p&gt;下記のようにGitHub上にてヒアドキュメントの識別子にsyntaxの指定をすると、GitHub syntax highlightが効くようになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;a&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RUBY&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;
+    def hello
+      puts &quot;Hello World!&quot;
+    end
+&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;  RUBY&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/heredoc_rb.png&quot; alt=&quot;heredoc&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.ruby-lang.org/ja/latest/doc/spec=2fliteral.html#here&quot;&gt;リテラル (Ruby 2.4.0) ヒアドキュメント (行指向文字列リテラル)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://qiita.com/Linda_pp/items/32fddbbe117cf03fef0f&quot;&gt;Ruby のヒアドキュメントすごい - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。</summary></entry><entry><title type="html">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</title><link href="https://blog.toshimaru.net/infrastructure-as-ruby-code-2016/" rel="alternate" type="text/html" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました" /><published>2016-11-06T00:00:00+09:00</published><updated>2016-11-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/infrastructure-as-ruby-code-2016</id><content type="html" xml:base="https://blog.toshimaru.net/infrastructure-as-ruby-code-2016/">&lt;p&gt;第二回Roppongi.rbを&lt;a href=&quot;http://roppongirb.connpass.com/event/42633/&quot;&gt;「Infrastructure x Ruby」というテーマで開催&lt;/a&gt;した。&lt;/p&gt;
+
+&lt;p&gt;僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容でオープニングLTとして発表したので、その内容をブログにもまとめておく（前回発表分の発表内容まとめはこちら: &lt;a href=&quot;http://blog.toshimaru.net/roppongirb-speeding-up-rails/&quot;&gt;Roppongi.rbで「Rails高速化戦略」を発表しました&lt;/a&gt;）。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;786983b0a1f94d1ca1250aa48ce94ed0&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;目的&quot;&gt;目的&lt;/h2&gt;
+
+&lt;p&gt;発表の目的としては世に言われる &lt;strong&gt;Infrastructure as Code&lt;/strong&gt; の認識・理解を参加者であわせること。&lt;/p&gt;
+
+&lt;h2 id=&quot;infrastructure-as-codeの意義&quot;&gt;Infrastructure as Codeの意義&lt;/h2&gt;
+
+&lt;p&gt;大きく３つあると思っている。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;インフラ構築手順を秘伝のタレ化させない&lt;/li&gt;
+  &lt;li&gt;手順をコードに落としてインフラへの変更をトラッキングする&lt;/li&gt;
+  &lt;li&gt;手順を不変（immutable）にする&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;秘伝のタレ&quot;&gt;秘伝のタレ&lt;/h3&gt;
+
+&lt;p&gt;秘伝のタレ。一体どういう意味だろうか。まるで秘伝のタレのように継ぎ足し継ぎ足し変更が入り代々受け継がれてきたサーバーを形容する表現が &lt;strong&gt;秘伝のタレ&lt;/strong&gt; だ。&lt;/p&gt;
+
+&lt;p&gt;秘伝のタレが代々受け継がれている環境なんかでは、メンテナンスされているかどうかまるでわからない「サーバー構築手順書.xls」なんてモノがあったりする。そしてそれは大体において手順書通りにはうまくいかないのが常だ。&lt;/p&gt;
+
+&lt;p&gt;インフラ担当者のアタマにしか入っていない隠し味なんかがあったりするとオワタ状態＼(^o^)／。その担当者が退職したりすると誰も現プロダクション環境は再現できません、という状況が出来上がる。&lt;/p&gt;
+
+&lt;h3 id=&quot;コード化するということ&quot;&gt;コード化するということ&lt;/h3&gt;
+
+&lt;p&gt;秘伝のタレ化を防ぐために、コード化という行為を行う。ではコード化されることで良い事とはなんだろうか。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コード化される&lt;/li&gt;
+  &lt;li&gt;➜ Gitでトラック可能になる&lt;/li&gt;
+  &lt;li&gt;➜ Githubでプルリク可能になる&lt;/li&gt;
+  &lt;li&gt;➜ Githubでレビュー可能になる&lt;/li&gt;
+  &lt;li&gt;➜ :blush: = HAPPY!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。:surfer:&lt;/p&gt;
+
+&lt;h2 id=&quot;immutable-infrastructure&quot;&gt;Immutable Infrastructure&lt;/h2&gt;
+
+&lt;p&gt;次に手順を不変（Immutable）にするということについて。Immutableという言葉はインフラ的文脈ではImmutable Infrastructureという言葉が有名かと思う。&lt;/p&gt;
+
+&lt;p&gt;Immutable Infrastructureについては、&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;rebuild.fmでnaoyaさんやmizzyさんがmiyagawaさんと話して&lt;/a&gt;いたり、&lt;a href=&quot;https://speakerdeck.com/naoya/immutable-infrastructure-number-jawsdays&quot;&gt;naoyaさんが発表していたり&lt;/a&gt;したあたりを契機に日本でも浸透した言葉だと思っている。&lt;/p&gt;
+
+&lt;p&gt;出自はというとChad Fowler氏が書いた下記の記事。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://chadfowler.com/2013/06/23/immutable-deployments.html&quot;&gt;Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;immutable-infrastructure-のキーワード&quot;&gt;Immutable Infrastructure のキーワード&lt;/h3&gt;
+
+&lt;p&gt;Immutable Infrastructureを僕なりに解釈すると、その言葉の本質は下記のキーワードで表せると思う。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Immutable （不変）&lt;/li&gt;
+  &lt;li&gt;Disposable（使い捨て）&lt;/li&gt;
+  &lt;li&gt;Reproducible （再現可能）&lt;/li&gt;
+  &lt;li&gt;Idempotence（冪等性）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaaSの登場が大きいと思っている。どういうことかというとIaaSでボタン１つでサーバーを上げて必要なくなったら捨てるダイナミックなサーバー、つまり &lt;strong&gt;Disposable&lt;/strong&gt; なサーバーが誕生したということが背景の１つにある。&lt;/p&gt;
+
+&lt;p&gt;そして、オートスケーリングの恩恵を享受するためにはサーバー・プロビジョニング自動化作業が必要となる。スケール前提のサーバー群はいつ何時でも既存のサーバーと同じ状態のサーバーが立ち上がる必要がある&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。つまり、構築手順を &lt;strong&gt;Immutable&lt;/strong&gt; にし &lt;strong&gt;Reproducible&lt;/strong&gt; なサーバー環境にする(= &lt;strong&gt;Idempotence&lt;/strong&gt; を担保する)ことが必要。&lt;/p&gt;
+
+&lt;h2 id=&quot;構成管理ツールの歴史&quot;&gt;構成管理ツールの歴史&lt;/h2&gt;
+
+&lt;p&gt;メジャーなプロビジョニングツール(構成管理ツール)の歴史を追ってみる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;2005年 &lt;a href=&quot;https://docs.puppet.com/puppet/&quot;&gt;Puppet&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;2009年 &lt;a href=&quot;https://www.chef.io/chef/&quot;&gt;Chef&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;2012年 &lt;a href=&quot;https://www.ansible.com&quot;&gt;Ansible&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;2014年 &lt;a href=&quot;https://www.terraform.io&quot;&gt;Terraform&lt;/a&gt;, &lt;a href=&quot;https://github.com/itamae-kitchen/itamae&quot;&gt;Itamae&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;実装言語別分類&quot;&gt;実装言語別分類&lt;/h2&gt;
+
+&lt;p&gt;実装言語別に分類してみる。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Ruby実装&lt;/th&gt;
+      &lt;th&gt;Go実装&lt;/th&gt;
+      &lt;th&gt;Python実装&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Puppet, Chef, Itamae, Serverkit&lt;/td&gt;
+      &lt;td&gt;Terraform&lt;/td&gt;
+      &lt;td&gt;Ansible&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;表現別分類&quot;&gt;表現別分類&lt;/h2&gt;
+
+&lt;p&gt;インフラストラクチャをどうコードで表現しているかの表現体形で分類してみる。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;RubyによるDSL&lt;/th&gt;
+      &lt;th&gt;HCLによるDSL&lt;/th&gt;
+      &lt;th&gt;YAML&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Puppet, Chef, Itamae&lt;/td&gt;
+      &lt;td&gt;Terraform&lt;/td&gt;
+      &lt;td&gt;Ansible, Serverkit&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;why-yaml&quot;&gt;Why YAML?&lt;/h3&gt;
+
+&lt;p&gt;なぜYAMLで表現するのか？ まずはXML/JSONより記述がラクという点がある。そしてYAMLは人間にとってよみやすい、かきやすい、わかりやすいという特徴がある。そしてRailsの設定ファイルなどで一般的に使われている記述フォーマットなので、学習コストが低いという点が利点である。&lt;/p&gt;
+
+&lt;h3 id=&quot;why-hcl&quot;&gt;Why HCL?&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/hashicorp/hcl&quot;&gt;HCL&lt;/a&gt; とは HashiCorp configuration language の略。HCLの&lt;a href=&quot;https://github.com/hashicorp/hcl#why&quot;&gt;READMEではHLCについてこう説明&lt;/a&gt;されている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;:x: JSONダメ。なぜならコメントかけない。しんどい。&lt;/li&gt;
+  &lt;li&gt;:x: YAMLもダメ。なぜなら初心者には記法むずかしい！&lt;/li&gt;
+  &lt;li&gt;:x: Rubyとかもダメ。なぜなら自由度高すぎぃ！複雑すぎぃ！&lt;/li&gt;
+  &lt;li&gt;:o: よろしい、ならば独自言語だ。ということで生まれたのが &lt;strong&gt;HCL&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;why-ruby&quot;&gt;Why Ruby?&lt;/h3&gt;
+
+&lt;p&gt;なぜRubyを採用するか？ まずはDSLが書きやすいという点。そしてRSpecなどのRuby DSLに代表されるようにRuby DSLは宣言的な記述が可能である。宣言的ということはコードを読んだだけでそのコードの意図が伝わりやすいということだ。そしてDSLといってもRubyはRuby。RubyなのでRubyでできることは何でもできちゃうので、自由度が高い（これは悪い意味に作用することもあってやりすぎるとChefのレシピそのものが秘伝のタレ化する可能性があるので注意）。&lt;/p&gt;
+
+&lt;h2 id=&quot;infrastructure-as-code-の概念整理&quot;&gt;Infrastructure as Code の概念整理&lt;/h2&gt;
+
+&lt;p&gt;Infrastructure as Code の概念を整理してみたい。&lt;a href=&quot;http://mizzy.org/blog/2013/10/29/1/&quot;&gt;mizzyさんのブログでは&lt;/a&gt;、プロビジョニングのレイヤーを下記のように分けるような考え方が紹介されていた。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/provisioning-tools.png&quot; alt=&quot;provisioning layers&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;シンプルなプロビジョニングレイヤーの考え方&quot;&gt;シンプルなプロビジョニング・レイヤーの考え方&lt;/h2&gt;
+
+&lt;p&gt;オーケストレーションなどというと抽象的なのとInfrastructure as Codeのスコープが広くなってしまうと思うので、シンプルにこんな風に考えてみるのはどうだろうか。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/infra-as-code-layers.png&quot; alt=&quot;infra-as-code-layers&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上記の考え方で先の構成管理ツールを分類するとこんな感じだ。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/provisioning-categorize.png&quot; alt=&quot;provisioning categorize&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;しかしこれで本当に全てはコード化されるか、というとそうではない。サーバーのプロビジョニングでコード化されるのはAWSサービス群のほんの一部、EC2のみだ。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/aws-services.png&quot; alt=&quot;AWS services&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;infrastructure-as-code-のカバー範囲&quot;&gt;Infrastructure as Code のカバー範囲&lt;/h2&gt;
+
+&lt;p&gt;IaaSは仮想サーバ以外にもさまざまなサービスを提供している。AWSの例でいうと、ELB, RDS, VPC, S3, CloudFront, IAM, SecurityGroup などなど。&lt;/p&gt;
+
+&lt;p&gt;それらに対するオペレーションをAWS Management ConsoleなどのGUIでやるべきだろうか？&lt;/p&gt;
+
+&lt;h3 id=&quot;gui-configuration-is-hard&quot;&gt;GUI Configuration is hard…&lt;/h3&gt;
+
+&lt;p&gt;さきほどのImmutable Infrastructureの文脈でいうと、GUIによる操作はImmutableではない。なぜならGUIは変わるかもしれないし、GUI操作は明確な言語化できないほどにファジーだからだ。では重要な設定をそのGUI任せにしていいのだろうか？&lt;/p&gt;
+
+&lt;p&gt;Route53やSecurityGroupなどオペレーションミスで一歩間違うと大障害になりかねない。これらのGUIの設定をimmutableにはできないだろうか。じゃあimmutableなインターフェースであるAPIを叩けばいいじゃない。というところで、&lt;strong&gt;Configuration as Code&lt;/strong&gt; という言葉が出て来る。&lt;/p&gt;
+
+&lt;p&gt;この考え方を使えばInfrastructure as Codeの概念をさらに良い感じに敷衍できるのではないかと僕は考えた。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/configuratino-as-code.png&quot; alt=&quot;Configuration as Code*&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;こう考えるとIaaSの各種サービス群もコード化の対象として捉えることができる。&lt;/p&gt;
+
+&lt;h2 id=&quot;全てがコードになる例&quot;&gt;全てがコードになる例&lt;/h2&gt;
+
+&lt;h3 id=&quot;route53-configuration&quot;&gt;Route53 Configuration&lt;/h3&gt;
+
+&lt;p&gt;Route53のコード化例。こんな感じにRuby DSLになる&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;hosted_zone&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;example.com.&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;rrset&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;example.com.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;A&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ttl&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resource_records&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;127.0.0.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;127.0.0.2&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/roadworker&quot;&gt;roadworker&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;aws_route53_record&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;www&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;zone_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;${aws_route53_zone.primary.zone_id}&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;www.example.com&quot;&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;A&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;ttl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;300&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;records&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;${aws_eip.lb.public_ip}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://www.terraform.io/docs/providers/aws/r/route.html&quot;&gt;AWS: aws_route - Terraform by HashiCorp&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cloudwatch-alarm&quot;&gt;CloudWatch Alarm&lt;/h3&gt;
+
+&lt;p&gt;CloudWatchのAlarmだってDSLになる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;alarm&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;alarm1&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;AWS/EC2&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;metric_name&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CPUUtilization&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;dimensions&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;InstanceId&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;i-XXXXXXXX&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;period&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;statistic&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:average&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;threshold&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;gt;=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;50.0&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;evaluation_periods&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;actions_enabled&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;alarm_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ok_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;insufficient_data_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;arn:aws:sns:us-east-1:123456789012:my_topic&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/radiosonde&quot;&gt;radiosonde&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;datadog-alert-configuration&quot;&gt;Datadog Alert Configuration&lt;/h3&gt;
+
+&lt;p&gt;さらにコード化される対象はIaaSだけではない。Datadogという監視のアラート設定もコード化される。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;monitor&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Check load avg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;metric alert&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;avg(last_5m):avg:ddstat.load_avg.1m{host:i-XXXXXXXX} &amp;gt; 1&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;@winebarrel@example.net&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;locked&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;new_host_delay&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;notify_no_data&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;no_data_timeframe&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;notify_audit&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;silenced&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/barkdog&quot;&gt;barkdog&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;github-member-management&quot;&gt;Github Member Management&lt;/h3&gt;
+
+&lt;p&gt;Githubのメンバー管理だってTerraformでできちゃうんだぜ。&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;github_membership&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;membership_for_some_user&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SomeUser&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;role&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;member&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;github_repository&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;example&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;example&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;My awesome codebase&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;github_repository_collaborator&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;a_repo_collaborator&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;our-cool-repo&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SomeUser&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;permission&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;admin&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://www.terraform.io/docs/providers/github/&quot;&gt;Provider: GitHub - Terraform by HashiCorp&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;全てがプルリクになる&quot;&gt;全てがプルリクになる&lt;/h2&gt;
+
+&lt;p&gt;冒頭に述べたように、コード化されるということはGithubに乗せてプルリクエストを出せるということだ。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/pull-request.png&quot; alt=&quot;Pull Request&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;こんなふうにプルリクになっているとレビューも簡単。&lt;/p&gt;
+
+&lt;h2 id=&quot;コード化するメリット&quot;&gt;コード化するメリット&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;レビューによるチェック体制により、より安全なConfigurationオペレーションを実現できる&lt;/li&gt;
+  &lt;li&gt;CIサービスと連携させてテスト・CDの自動化も可能となる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コード化することによりGithubワークフロー（プルリク→レビュー→マージ）に乗ることができてハッピー :smile:&lt;/li&gt;
+  &lt;li&gt;Infrastructure as Code = Server Configuration as Code + Service Configuration as Code ➜ サーバーだけではなく、サービスそれ自体もコード化されていく。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;感想&quot;&gt;感想&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;今回の発表はKeynoteでスライド作ったけど、Keynoteはレイアウトとかテーマの設定が自由にできてDecksetよりはデザイン凝ろうと思ったときに便利。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/ryotarai/itamae-infra-as-code-xian-zhuang-que-ren-hui&quot;&gt;Itamae - Infra as Code 現状確認会&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;Rebuild: 25: Immutable Infrastructure&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/naoya/infrastructure-as-code&quot;&gt;Infrastructure as Code // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://mizzy.org/blog/2016/04/22/1/&quot;&gt;Infrastructure as Code 再考&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://chadfowler.com/2013/06/23/immutable-deployments.html&quot;&gt;Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://martinfowler.com/bliki/InfrastructureAsCode.html&quot;&gt;InfrastructureAsCode&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;特定のサーバーにデータに依存してしまわないように、データ的にはステートレスなサーバー構成が前提となる &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="roppongirb" /><category term="aws" /><category term="presentation" /><summary type="html">第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/roppongirb2/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/roppongirb2/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する</title><link href="https://blog.toshimaru.net/ruby-immutable-string/" rel="alternate" type="text/html" title="Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する" /><published>2016-07-24T00:00:00+09:00</published><updated>2019-09-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-immutable-string</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-immutable-string/">&lt;h2 id=&quot;immutable-string-in-ruby3&quot;&gt;Immutable String in Ruby3&lt;/h2&gt;
+
+&lt;p&gt;&lt;del&gt;Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている&lt;/del&gt;。（&lt;strong&gt;追記あり&lt;/strong&gt;）&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;http://d.hatena.ne.jp/ku-ma-me/20151004/p1&quot;&gt;[Ruby] Ruby 3.0 の特大の非互換について - まめめも&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.freeze&lt;/code&gt;を付けてプルリクエストを投げる輩が大挙してきたことだ。&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;— 追記ここから —&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;追記2019-08-07&quot;&gt;追記（2019-08-07）&lt;/h3&gt;
+
+&lt;p&gt;「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、「&lt;strong&gt;Ruby3 では文字列をデフォルトで immutable にはしない&lt;/strong&gt;」という決定がMatzによってなされた。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;So I officially abandon making frozen-string-literals default (for Ruby3).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://bugs.ruby-lang.org/issues/11473&quot;&gt;Feature #11473: Immutable String literal in Ruby 3 - Ruby master - Ruby Issue Tracking System&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;したがって、Ruby3以降も文字列をimmutableにしたければ、引き続き&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;frozen_string_literal: true&lt;/code&gt;のマジックコメントが必要となる。&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;— 追記ここまで —&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;immutable-string-in-ruby23&quot;&gt;Immutable String in Ruby2.3+&lt;/h2&gt;
+
+&lt;p&gt;実は Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のようにマジックコメントを書けばよい。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;frozen_string_literal-の機能を試す&quot;&gt;frozen_string_literal の機能を試す&lt;/h2&gt;
+
+&lt;p&gt;実際に試してみよう。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;frozen_string_literal&lt;/code&gt;の設定が入っているRubyコードと入っていないRubyコードの２つを用意して実行してみる。&lt;/p&gt;
+
+&lt;h3 id=&quot;frozen_string_literal入りのコード&quot;&gt;frozen_string_literal入りのコード&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;string_with_frozen_option.rb&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行すると全て同じ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;object_id&lt;/code&gt; が返ってくる。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;ruby string_with_frozen_option.rb
+&lt;span class=&quot;go&quot;&gt;70212460463280
+70212460463280
+70212460463280
+70212460463280
+70212460463280
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;frozen_string_literal無しのコード&quot;&gt;frozen_string_literal無しのコード&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;string_without_frozen_option.rb&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実行すると全て違う &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;object_id&lt;/code&gt; が返ってくる。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;ruby string_without_frozen_option.rb
+&lt;span class=&quot;go&quot;&gt;70277165754460
+70277165754200
+70277165754080
+70277165754000
+70277165753940
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;frozen_string_literal-はファイル毎に設定される&quot;&gt;frozen_string_literal はファイル毎に設定される&lt;/h2&gt;
+
+&lt;p&gt;たとえば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;frozen_string_literal&lt;/code&gt;の設定が入ったものと入っていないファイルが実行された場合はどうなるだろうか。Railsで試してみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ApplicationController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActionController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;before_action&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:not_frozen&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;not_frozen&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WelcomeController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WelcomeController#index&lt;/code&gt;が実行された場合、ログは下記のようになる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;70346238891860
+70346238891080
+70346238890280
+70346238889340
+70346238888420
+...
+70346229343820
+70346229343820
+70346229343820
+70346229343820
+70346229343820
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;つまり&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;frozen_string_literal&lt;/code&gt;が書かれた&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WelcomeController&lt;/code&gt;上で定義された文字列だけが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;freeze&lt;/code&gt;されていることがわかる。&lt;/p&gt;
+
+&lt;h2 id=&quot;mutableなstringを定義するにはどうしたらよい&quot;&gt;mutableなStringを定義するにはどうしたらよい？&lt;/h2&gt;
+
+&lt;p&gt;一度 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;frozen_string_literal: true&lt;/code&gt; のコードを入れると全ての文字列が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.freeze&lt;/code&gt;されるので、下記のようなコードは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RuntimeError&lt;/code&gt;となる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bc&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; test.rb:3:in `&amp;lt;main&amp;gt;': can't modify frozen String (RuntimeError)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;stringdup&quot;&gt;String#dup&lt;/h3&gt;
+
+&lt;p&gt;この場合の対処法としてはfreezeを解除したい文字列に対して、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.dup&lt;/code&gt;を付けてやれば解決する。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;dup&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bc&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; abc&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;string&quot;&gt;String#+@&lt;/h3&gt;
+
+&lt;p&gt;あるいは、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String#+@&lt;/code&gt;を使って下記のようにも書ける。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# frozen_string_literal: true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bc&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; abc&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こちらのほうが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dup&lt;/code&gt;するよりも&lt;a href=&quot;https://gist.github.com/k0kubun/e3da77cae2c132badd386c96f2de5768&quot;&gt;パフォーマンスが優れている&lt;/a&gt;ので、こちらの書き方のほうがベターである。&lt;/p&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;Ruby3 の Immutable String に先駆けて、Ruby2.3 以上が前提の実行環境では、積極的に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;frozen_string_literal: true&lt;/code&gt;のマジックコメント設定をしていくべき。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://wyeworks.com/blog/2015/12/1/immutable-strings-in-ruby-2-dot-3&quot;&gt;Immutable strings in Ruby 2.3&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://bugs.ruby-lang.org/issues/8976&quot;&gt;Feature #8976: file-scope freeze_string directive - Ruby trunk - Ruby Issue Tracking System&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/k0kubun/items/1c3e605645ba5ff683a1&quot;&gt;Perfect Frozen String Literal - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Immutable String in Ruby3</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/frozenstring.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/frozenstring.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Roppongi.rbで「Rails高速化戦略」を発表しました</title><link href="https://blog.toshimaru.net/roppongirb-speeding-up-rails/" rel="alternate" type="text/html" title="Roppongi.rbで「Rails高速化戦略」を発表しました" /><published>2016-07-19T00:00:00+09:00</published><updated>2016-07-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/roppongirb-speeding-up-rails</id><content type="html" xml:base="https://blog.toshimaru.net/roppongirb-speeding-up-rails/">&lt;p&gt;自分がオーガナイザーを務めた &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/&quot;&gt;Roppongi.rb #1&lt;/a&gt;で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;37881a2ec2214ef39d85820f3327bbc2&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;発表内容をこちらのブログでも文章形式でざっとまとめてみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-ruby-遅いよね&quot;&gt;Rails (Ruby) 遅いよね&lt;/h2&gt;
+
+&lt;p&gt;RailsないしRubyはプログラミング言語の中では速くはない言語であることは言うまでもないと思う&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。 実際に「Rails/Ruby遅いよねって今まで思ったことある方どれくらいいますか？」と会場でも聞いてみたところ、予想では半数以上手を挙げてくれると思ったのだけど、実際は30人中3~4人くらい。あまりにも意外な結果だったので自分なりに理由を分析してみると２つあるかなと思う。&lt;/p&gt;
+
+&lt;h3 id=&quot;パフォーマンスを求められないから&quot;&gt;パフォーマンスを求められないから&lt;/h3&gt;
+
+&lt;p&gt;例えば社内の数人が使うような管理画面の場合。この場合、パフォーマンスよりも機能性（ちゃんと検索・閲覧できるかとかCRUD操作ができるかとか）などが優先されると思う。数人だけが使うのでアクセススパイクもないし、パフォーマンスが問題にもなりにくい。&lt;/p&gt;
+
+&lt;h3 id=&quot;railsをフレームワークとして使っていないから&quot;&gt;Railsをフレームワークとして使っていないから&lt;/h3&gt;
+
+&lt;p&gt;すごくパフォーマンスを求められるWebアプリの場合、それが事前にわかっているならまずは言語選択レベルでRailsを選択しないかもしれない。今ならGoとかElixirとかScalaとか代替言語もあるのでそちらを選択した場合はRailsは使わないことになるのでRailsの遅さで困ることもない。&lt;/p&gt;
+
+&lt;h2 id=&quot;それでもやっぱりrailsだ&quot;&gt;それでもやっぱりRailsだ…!&lt;/h2&gt;
+
+&lt;p&gt;それでもやっぱりRuby好きのRubyっ子であれば、Rubyは使いたい… ということで、Railsの高速化をする上での戦略を紹介。&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-version-up&quot;&gt;Ruby Version Up&lt;/h2&gt;
+
+&lt;p&gt;まずはRubyバージョンアップ。Rubyバージョンの歴史はこんな感じになっている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;2013.2: Ruby 2.0&lt;/li&gt;
+  &lt;li&gt;2013.12: Ruby 2.1&lt;/li&gt;
+  &lt;li&gt;2014.12: Ruby 2.2&lt;/li&gt;
+  &lt;li&gt;2015.12: Ruby 2.3&lt;/li&gt;
+  &lt;li&gt;20xx: Ruby 3.0&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;去年matzの口からRuby3のコンセプトが発表された。その驚くべき内容が &lt;strong&gt;Ruby 3 x 3&lt;/strong&gt; 。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/ruby3x3.png&quot; alt=&quot;ruby 3 x 3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://www.youtube.com/watch?v=E9bO1uqs4Oc&quot;&gt;Ruby3 challenges - RubyKaigi 2015 Keynote - YouTube&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;とあるrailsアプリの場合&quot;&gt;とあるRailsアプリの場合&lt;/h2&gt;
+
+&lt;p&gt;会社で取り組んでいるプロダクトのRubyのバージョンは基本的に最新バージョンを使うようにしているものの、中にはレガシーな環境もある。下記はあるプロダクトでRuby2.0 から Ruby2.1に上げた例。結果としては、Ruby 2.0 =&amp;gt; 2.1 Ruby Version Up だけで レスポンス速度が約2倍向上した。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/ruby2_0-to-2_1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;このようにRubyバージョンアップによりアプリケーションコード変更ゼロでも&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;、速度改善が期待できる。古いRubyお使いの方は今すぐRubyのバージョンアップ！&lt;/p&gt;
+
+&lt;h2 id=&quot;what-about-rails&quot;&gt;What about Rails?&lt;/h2&gt;
+
+&lt;p&gt;じゃあRailsはどうだろうか。下記は&lt;a href=&quot;https://github.com/amatsuda&quot;&gt;amatsuda&lt;/a&gt;さんのmatzのRuby 3x3 を受けての発表。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/rails3x.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://speakerdeck.com/a_matsuda/3x-rails&quot;&gt;3x Rails // Speaker Deck&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?&lt;/code&gt;が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、というような発表。&lt;/p&gt;
+
+&lt;p&gt;下記は同じ&lt;a href=&quot;https://github.com/amatsuda&quot;&gt;amatsuda&lt;/a&gt;さんが発表された&lt;a href=&quot;http://togetter.com/li/955629&quot;&gt;Rails Upgrade Casual Talks&lt;/a&gt;での資料です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/rails-verup1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://speakerdeck.com/a_matsuda/rails-upgrade-casual-talks&quot;&gt;Rails Upgrade Casual Talks // Speaker Deck&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;たしかに色んな機能が追加されている中、Railsが劇的に速くなることは考えにくい。解決策は…?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/rails-verup2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;歯を食いしばってRails/Rubyをバージョンアップ&lt;/strong&gt; :innocent:&lt;/p&gt;
+
+&lt;p&gt;Rails 遅くなってもRuby は速くなっているので、どちらも最新版をしっかり追っかけていけば、遅くなることなくRailsの機能拡張も追っかけていけるのでOK.&lt;/p&gt;
+
+&lt;h2 id=&quot;ボトルネックを潰す&quot;&gt;ボトルネックを潰す&lt;/h2&gt;
+
+&lt;p&gt;Railsアプリをどうボトルネックを発見し潰していくか？&lt;/p&gt;
+
+&lt;h3 id=&quot;推測するな計測せよ&quot;&gt;推測するな、計測せよ　&lt;/h3&gt;
+
+&lt;p&gt;ボトルネックは計測して数値で示すもの。ボトルネックを発見するためのサービス・ツールをいくつか紹介。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://newrelic.com/&quot;&gt;New Relic&lt;/a&gt;: 無料で使えて導入もラクでよい&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/MiniProfiler/rack-mini-profiler&quot;&gt;rack-mini-profiler&lt;/a&gt;: 開発環境導入する。クエリやpartialレンダー時間を表示。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/kainosnoema/rack-lineprof&quot;&gt;rack-lineprof&lt;/a&gt;: Rubyのコードを行単位で計測したい場合に有効&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ツールを使った結果ボトルネックになりやすい箇所というとRDBまわり。それを解決するgem・機能を紹介。&lt;/p&gt;
+
+&lt;h2 id=&quot;activerecord-optimization&quot;&gt;ActiveRecord Optimization&lt;/h2&gt;
+
+&lt;h3 id=&quot;mag_right-問題発見型&quot;&gt;:mag_right: 問題発見型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/flyerhzm/bullet&quot;&gt;bullet&lt;/a&gt;: Kill &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;N+1&lt;/code&gt; issue!&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/joker1007/activerecord-cause&quot;&gt;activerecord-cause&lt;/a&gt;: Logs where ActiveRecord actually loads record&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;key-dbスキーマ最適化型&quot;&gt;:key: DBスキーマ最適化型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/pboling/flag_shih_tzu&quot;&gt;flag_shih_tzu&lt;/a&gt;: Bit fields for ActiveRecord&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://guides.rubyonrails.org/association_basics.html#counter-cache&quot;&gt;counter-cache&lt;/a&gt;: cacheing count query result
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/magnusvk/counter_culture&quot;&gt;counter_culture&lt;/a&gt;: Better counter-cache&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;zap-クエリ効率化型&quot;&gt;:zap: クエリ効率化型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/k0kubun/activerecord-precount&quot;&gt;activerecord-precount&lt;/a&gt;: Yet another counter_cache alternative.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt;: bulk inserting data&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;クエリを意識してactiverecord使いこなそう&quot;&gt;クエリを意識してActiveRecord使いこなそう&lt;/h2&gt;
+
+&lt;p&gt;ActiveRecordもといORマッパの良さってDBを意識しなくて済むところ。でも高速化を行う上でクエリは避けられない壁。DBを意識せずコードを書いている最近のワカモノはもっとクエリを意識しよう！ &lt;del&gt;老害っぽい発言だ&lt;/del&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;パーシャルレンダリングを減らす&quot;&gt;パーシャルレンダリングを減らす&lt;/h2&gt;
+
+&lt;h3 id=&quot;n1-partial-rendering&quot;&gt;N+1 partial rendering&lt;/h3&gt;
+
+&lt;p&gt;データN個分&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;render&lt;/code&gt;処理が走ってしまうのを、個人的に &lt;strong&gt;N+1 rendering&lt;/strong&gt; と呼んでいる。データの数N+親のビュー1回で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;N+1&lt;/code&gt;. 例えばこんなコード。&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/index --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/_item --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Show'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Edit'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;edit_item_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Destroy'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;method: :delete&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この場合のログはこうなる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Processing by ItemsController#index as HTML
+  Rendering items/index.html.erb within layouts/application
+  Item Load (0.3ms)  SELECT &quot;items&quot;.* FROM &quot;items&quot;
+  Rendered items/_item.html.erb (0.5ms)
+  Rendered items/_item.html.erb (0.3ms)
+  ...snip...
+  Rendered items/_item.html.erb (0.5ms)
+  Rendered items/_item.html.erb (0.3ms)
+  Rendered items/index.html.erb within layouts/application (57.7ms)
+Completed 200 OK in 80ms (Views: 77.1ms | ActiveRecord: 0.3ms)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Viewで80msくらいかかっている。&lt;/p&gt;
+
+&lt;h3 id=&quot;collection-rendering&quot;&gt;Collection rendering&lt;/h3&gt;
+
+&lt;p&gt;上記の場合、Collectionレンダーの機能を使えばもっと効率的にrenderできる。&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/index --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@items&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/_item --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Show'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Edit'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;edit_item_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Destroy'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;method: :delete&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この場合のログはこうなる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Processing by ItemsController#index as HTML
+  Rendering items/index.html.erb within layouts/application
+  Item Load (0.4ms)  SELECT &quot;items&quot;.* FROM &quot;items&quot;
+  Rendered collection of items/_item.html.erb [29 times] (6.9ms)
+  Rendered items/index.html.erb within layouts/application (10.3ms)
+Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ビューで25msくらい。だいたい上記の例と比べると1/3くらいになっている。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-caching&quot;&gt;Rails caching&lt;/h2&gt;
+
+&lt;p&gt;RailsのCacheの仕組みとして&lt;a href=&quot;http://guides.rubyonrails.org/caching_with_rails.html&quot;&gt;公式ガイド&lt;/a&gt;で3つ紹介されているのだが、ご存知だろうか。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Fragment Cache&lt;/strong&gt;: View fragment caching.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Action Cache&lt;/strong&gt;: Controller’s action caching (removed in Rails4).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Page Cache&lt;/strong&gt;: Static page caching (removed in Rails4).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;1-fragment-cache&quot;&gt;1. Fragment Cache&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/cache-fragment.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;グローバルナビ・サイドバーなどの多く呼ばれる共通コンテンツに有効&lt;/li&gt;
+  &lt;li&gt;重い処理が走るビューの一部分であればあるほど高速化が期待できる&lt;/li&gt;
+  &lt;li&gt;Advanced Usage: &lt;strong&gt;Russian Doll Caching&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;2-action-cache&quot;&gt;2. Action Cache&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/action-cache.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rails4で削除されてgem化: &lt;a href=&quot;https://github.com/rails/actionpack-action_caching&quot;&gt;actionpack-action_caching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Viewの手前のControllerのAction自体の処理が重い場合に有効&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache_path&lt;/code&gt; でキャッシュキーをカスタマイズ可能
+    &lt;ul&gt;
+      &lt;li&gt;モデルのupdated_at を組み込んだり、PC/スマフォでキャッシュビュー出し分け可能&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;3-page-cache&quot;&gt;3. Page Cache&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Rails4で削除されてgem化: &lt;a href=&quot;https://github.com/rails/actionpack-page_caching&quot;&gt;actionpack-page_caching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;キャッシュ対象となるControllerのActionの生成するHTMLをまるっと静的ファイルに吐き出す&lt;/li&gt;
+  &lt;li&gt;その静的ファイルをNGINXなどのWeb Server/Reverse Proxyでハンドリング&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;railsのキャッシュ戦略&quot;&gt;Railsのキャッシュ戦略&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Railsデフォルトの FragmentCache を使ってビューのレンダリングを高速化&lt;/li&gt;
+  &lt;li&gt;それでもダメな場合や Controller 自体の処理が重い場合なら、ActionCache/PageCache を検討&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;warning-注意&quot;&gt;:warning: 注意&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;キャッシュしても根っこの問題は消えない&lt;/li&gt;
+  &lt;li&gt;キャッシュのライフサイクル管理&lt;/li&gt;
+  &lt;li&gt;用法用量を守って正しくお使いください&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;キャッシュしても根っこの問題はバイパスされるだけでそれ自体が解決されるわけではないので、本質的にはその根っこの問題を潰すほうがキャッシュより優先すべき。キャッシュによって&lt;strong&gt;臭いものには蓋&lt;/strong&gt;をしていないか。キャッシュによって大きなボトルネックが隠蔽されていないか。本質的な問題を潰した上でなお高速化したい場合にキャッシュを利用するのが筋の良いキャッシュ戦略だと思う。&lt;/p&gt;
+
+&lt;p&gt;またキャッシュを行うことでそのライフサイクル管理も必要になってくることはアタマに入れておきたい。どういう場合にキャッシュがexpireすべきなのか(あるいはexpireすべきでないのか)、updateすべきなのか、削除すべきなのか。この辺もきちんと考えた上でキャッシュに取り組みたい。&lt;/p&gt;
+
+&lt;h2 id=&quot;静的ファイル配信&quot;&gt;静的ファイル配信&lt;/h2&gt;
+
+&lt;h3 id=&quot;nginx&quot;&gt;NGINX&lt;/h3&gt;
+
+&lt;p&gt;プロダクション運用においては実際Railsが静的ファイルまでサーブすることはなくて、下記のようにNGINXに静的ファイルをサーブさせることが多い。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/nginx.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cdn&quot;&gt;CDN&lt;/h3&gt;
+
+&lt;p&gt;さらに言うと、Railsの吐く assets:precompile の成果物は、CDNに乗せちゃって配信を最適化してやるともっとよい。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/nginx-cdn.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;レイテンシに負けないプロトコル--http2&quot;&gt;レイテンシに負けないプロトコル = HTTP/2&lt;/h2&gt;
+
+&lt;p&gt;バンド幅大きくなってもページロード時間は大きく変わらない。&lt;strong&gt;光の速度はこれ以上速くならない&lt;/strong&gt;。じゃあどうするか。解決策がHTTP/2.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/http2-latency.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;http://www.slideshare.net/kazuho/dena-http2&quot;&gt;ウェブを速くするためにDeNAがやっていること - HTTP/2と、さらにその先&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;下記のBEFORE/AFTERは画像の配信をHTTPからHTTP/2に変更した場合のリクエストをキャプチャしたもの。&lt;/p&gt;
+
+&lt;h3 id=&quot;before-http2&quot;&gt;Before HTTP/2&lt;/h3&gt;
+
+&lt;p&gt;HTTP/2前の状態。リクエストが順番に走っていることが見て取れる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/before-http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;after-http2&quot;&gt;After HTTP/2&lt;/h3&gt;
+
+&lt;p&gt;HTTP/2後の状態。リクエストが見事に多重化されている。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/after-http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.httpvshttps.com/&quot;&gt;こちらのページ&lt;/a&gt;ではHTTPSの画像ロードの速度の速さを体感できる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/HTTP_vs_HTTPS.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ユーザーの体感速度--サーバーサイドレスポンス--クライアントサイドスピード&quot;&gt;ユーザーの体感速度 = サーバーサイドレスポンス + クライアントサイド・スピード&lt;/h2&gt;
+
+&lt;p&gt;仮にサーバーレスポンスタイムを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1ms&lt;/code&gt;にしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。&lt;/p&gt;
+
+&lt;h3 id=&quot;rails-helloworld-app-の場合&quot;&gt;Rails HelloWorld App の場合&lt;/h3&gt;
+
+&lt;p&gt;Rails5をほぼ素の状態でHello Worldという文字列を出力するアプリをHerokuにデプロイして&lt;a href=&quot;https://developers.google.com/speed/pagespeed/insights/&quot;&gt;Google PageSpeed Insights&lt;/a&gt;で計測してみた。&lt;/p&gt;
+
+&lt;p&gt;結果は80点以下… :weary:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/render-block-js.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Should Fix&lt;/code&gt;として報告されているのは、headタグ内にあるJS読み込みが Render Blocking してますよ、という内容のもの。Webの高速化はサーバーサイドだけで済むようなラクなもんじゃない。&lt;/p&gt;
+
+&lt;h2 id=&quot;amp-zap&quot;&gt;AMP :zap:&lt;/h2&gt;
+
+&lt;p&gt;AMPはWeb高速化のベストプラクティスを詰め込んだ仕様/制限のこと。詳しくは下記が参考になる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@cramforce/why-amp-is-fast-7d2ff1f48597#.tcozirlt5&quot;&gt;Why AMP is fast — Medium&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://mozaic.fm/episodes/22/amp.html&quot;&gt;ep22 AMP | mozaic.fm&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;またAMPに対応するとページが速くなる他にもおいしいことがあって、GoogleがAMPページをキャッシュしてコンテンツ配信を肩代わりしてくれるのだ。いうなればAMPのためのGoogle無料CDN。これでオーガニック検索のトラフィックはだいぶラクになるかも？&lt;/p&gt;
+
+&lt;p&gt;僕も自分の&lt;a href=&quot;http://blog.toshima.ru/&quot;&gt;英語Tipsブログ&lt;/a&gt;をAMP化してみたが非常に高速にページが表示できている。(完全にAMP化はできていないのだけど) まだAMP試していない人は、AMPすげーはやいのでぜひその速さを体感してみてほしい。そしてWebの高速化にまっすぐ向き合ってもらいたいと思う。&lt;/p&gt;
+
+&lt;h2 id=&quot;その他の参考資料&quot;&gt;その他の参考資料&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/mirakui/high-performance-rails-long-edition&quot;&gt;High Performance Rails (long edition) // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/joker1007/railspahuomansuji-ben-falseki&quot;&gt;Railsパフォーマンス基本のキ // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://parashuto.com/rriver/development/page-speed-optimization&quot;&gt;デザイナーやディレクターも知っておきたい、ページ表示速度の高速化の基本 – Rriver&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;roppongirb-イベントについて&quot;&gt;Roppongi.rb イベントについて&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://twitter.com/hashtag/roppongirb?f=tweets&amp;amp;vertical=default&quot;&gt;#roppongirb hashtag on Twitter&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;イベント発表資料: &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/presentation/&quot;&gt;Roppongi.rb 資料一覧 - connpass&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://morizyun.github.io/blog/roppongi-rb-ruby-rails/&quot;&gt;Roppongi.rb #1 発表の密度が濃くて楽しかったYO! - 酒と泪とRubyとRailsと&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://www.techempower.com/benchmarks/&quot;&gt;Round 12 results - TechEmpower Framework Benchmarks&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;ただしRubyバージョン差異による非互換性を解消するための変更は必要だけどね。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="ruby" /><category term="roppongirb" /><category term="presentation" /><category term="web" /><summary type="html">自分がオーガナイザーを務めた Roppongi.rb #1で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/roppongirb/title.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/roppongirb/title.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RubyのJSONパーサーのパース速度比較</title><link href="https://blog.toshimaru.net/json-parser-benchmark/" rel="alternate" type="text/html" title="RubyのJSONパーサーのパース速度比較" /><published>2015-12-13T00:00:00+09:00</published><updated>2015-12-13T00:00:00+09:00</updated><id>https://blog.toshimaru.net/json-parser-benchmark</id><content type="html" xml:base="https://blog.toshimaru.net/json-parser-benchmark/">&lt;p&gt;標準のJSONパーサーとは別に&lt;a href=&quot;https://www.ruby-toolbox.com/categories/JSON_Parsers&quot;&gt;いくつかのJSONパーサー&lt;/a&gt;実装がRuby gemにはある。それらを比較としてベンチマークとってみた。&lt;/p&gt;
+
+&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ruby 2.2.2 を使います&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/evanphx/benchmark-ips&quot;&gt;benchmark-ips&lt;/a&gt;でベンチとる&lt;/li&gt;
+  &lt;li&gt;パースするJSONは30KB程度のサイズ&lt;/li&gt;
+  &lt;li&gt;比較対象は下記3つ
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;http://ruby-doc.org/stdlib-2.2.0/libdoc/json/rdoc/JSON.html&quot;&gt;Module: JSON&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/brianmario/yajl-ruby&quot;&gt;yajl&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/ohler55/oj&quot;&gt;oj&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ruby-code&quot;&gt;Ruby code&lt;/h2&gt;
+
+&lt;p&gt;書いてみた。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'uri'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'net/http'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'json'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'yajl'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'oj'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'benchmark/ips'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;URI&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;http://complex/json/url.json&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ips&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;JSON.parse&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Yajl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Yajl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Parser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Oj&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Oj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;compare!&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;result&quot;&gt;Result&lt;/h2&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Calculating -------------------------------------
+          JSON.parse    99.000  i/100ms
+                Yajl   108.000  i/100ms
+                  Oj   173.000  i/100ms
+-------------------------------------------------
+          JSON.parse      1.123k (± 8.4%) i/s -      5.643k
+                Yajl      1.105k (± 2.8%) i/s -      5.616k
+                  Oj      1.838k (± 3.2%) i/s -      9.342k
+
+Comparison:
+                  Oj:     1838.3 i/s
+          JSON.parse:     1123.1 i/s - 1.64x slower
+                Yajl:     1105.2 i/s - 1.66x slower
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;OjがJSON.parseやYajlより1.5倍〜1.8倍ほど高速という結果が得られた。&lt;/p&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;Oj使ってこ。&lt;/p&gt;
+
+&lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
+
+&lt;p&gt;こんなPRを見つけた。 &lt;a href=&quot;https://github.com/fluent/fluentd/pull/748&quot;&gt;Use ‘oj’ for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="json" /><category term="ruby" /><summary type="html">標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。</summary></entry><entry><title type="html">rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較</title><link href="https://blog.toshimaru.net/destructive-method-performance/" rel="alternate" type="text/html" title="rubyの破壊的メソッドと非破壊的メソッドのパフォーマンス比較" /><published>2015-11-06T00:00:00+09:00</published><updated>2015-11-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/destructive-method-performance</id><content type="html" xml:base="https://blog.toshimaru.net/destructive-method-performance/">&lt;p&gt;Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。&lt;/p&gt;
+
+&lt;p&gt;Rubyのバージョンは2.2です。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'benchmark'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100_000&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;bm&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;非破壊的&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;a: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;c: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;d: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;破壊的&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;a: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;b: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;c: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;d: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user     system      total        real
+非破壊的  0.330000   0.010000   0.340000 (  0.337557)
+破壊的  0.170000   0.000000   0.170000 (  0.177394)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;破壊的のほうが速い。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;破壊的メソッド (「!」が付くメソッド) はそうでないのに比べ概して高速。 しかし最近は非破壊的メソッドも高速化されてきているので以前ほど 違わなくなってきているのは確かだ。 たとえば gsub と gsub! だと作業自体は gsub のほうが高速だったりする。 計測してみると非破壊的メソッドが遅いことが多いのは、 無駄なオブジェクトが増えて GC が起きているからである。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;http://i.loveruby.net/w/OptimizingRubyProgram.html&quot;&gt;LoveRubyNet Wiki: OptimizingRubyProgram&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;なるほど。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gsub&lt;/code&gt;でも検証してみよう。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;bm&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;非破壊的&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;hello,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/(\r\n|\r|\n)/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;br /&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;破壊的&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;hello,&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gsub!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/(\r\n|\r|\n)/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;br /&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user     system      total        real
+非破壊的  0.410000   0.010000   0.420000 (  0.420611)
+破壊的  0.420000   0.000000   0.420000 (  0.418214)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こちらは結果はほとんど変わらなかった。&lt;/p&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;多くの場合、破壊的メソッドのほうが速い。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyの破壊的メソッドと非破壊的メソッドってどっちが速いのだろう？ 直感的には破壊的メソッドのほうが速そうだけど実際は…ということで調べてみた。</summary></entry><entry><title type="html">Ruby Gem Configuration Pattern</title><link href="https://blog.toshimaru.net/ruby-configuration-pattern/" rel="alternate" type="text/html" title="Ruby Gem Configuration Pattern" /><published>2015-09-01T00:00:00+09:00</published><updated>2015-09-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-configuration-pattern</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-configuration-pattern/">&lt;p&gt;railsのgemでよくみかける初期設定ファイル、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config/initializers/foo.rb&lt;/code&gt;。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。&lt;/p&gt;
+
+&lt;h2 id=&quot;めざす完成形はコレ&quot;&gt;めざす完成形はコレ！&lt;/h2&gt;
+
+&lt;p&gt;完成系として、下記を想定してみます。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# config/initializers/konfig.rb&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Konfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'my configuration value'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;configureメソッドを用意&quot;&gt;configureメソッドを用意&lt;/h2&gt;
+
+&lt;p&gt;まずは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;module&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;configure&lt;/code&gt;というクラスメソッドを用意します。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Konfig&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;configurationクラス&quot;&gt;Configurationクラス&lt;/h2&gt;
+
+&lt;p&gt;次に実際の設定値が入る&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;クラスを用意します。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Configuration&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_accessor&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:my_value&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'default value'&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;完成形&quot;&gt;完成形&lt;/h2&gt;
+
+&lt;p&gt;次にこれを組み合わせてみましょう。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Konfig&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@configuration&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Configuration&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;attr_accessor&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:my_value&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'default value'&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;これでインスタンス化された&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;クラスが出てきます。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; Konfig.configure {|config| p config}
+#&amp;lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value=&quot;default value&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Konfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abc&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;abc&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Konfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; #&amp;lt;Konfig::Configuration:0x007fa9730aace8 @my_value=&quot;abc&quot;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;configure&lt;/code&gt;で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;インスタンス作っててブロック内の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config&lt;/code&gt;変数で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;インスタンスに設定注入していくようなイメージですね。&lt;/p&gt;
+
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://robots.thoughtbot.com/mygem-configure-block&quot;&gt;MyGem.configure Block&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jimsei.hatenablog.com/entry/20120721/1342855783&quot;&gt;クラスインスタンス変数にアクセサを利用しアクセスする - ひたすら事務&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://o.inchiki.jp/obbr/168&quot;&gt;Rubyのクラスインスタンス変数をアクセサで定義する&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="rails" /><summary type="html">railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</summary></entry></feed>

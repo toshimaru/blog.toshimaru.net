@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/facebook.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/facebook.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">開発者がfacebook「いいね！」ボタン設置時に注意すべきこと</title><link href="https://blog.toshimaru.net/facebook/" rel="alternate" type="text/html" title="開発者がfacebook「いいね！」ボタン設置時に注意すべきこと" /><published>2013-04-16T00:00:00+09:00</published><updated>2013-04-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/facebook</id><content type="html" xml:base="https://blog.toshimaru.net/facebook/">&lt;p&gt;Facebookの&lt;a href=&quot;https://developers.facebook.com/docs/reference/plugins/like/&quot;&gt;いいね！ボタン&lt;/a&gt;設置をする際に、いくつか注意すべき点がありますのでまとめます。&lt;/p&gt;
+
+&lt;h2 id=&quot;設置方法について&quot;&gt;設置方法について&lt;/h2&gt;
+
+&lt;p&gt;設置方法に関してはいろんなページで紹介されているので、その手順に従えばOKです。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.facebook-japan.com/iine.html&quot;&gt;「いいね！」ボタンを設置しよう&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;注意すべきはhtml5の設置コードだとIEの古いブラウザで動かない場合があるので、Iframeを使うところでしょうか。（ただし機能に制限あり）&lt;/p&gt;
+
+&lt;h2 id=&quot;shareボタンとはなんだ&quot;&gt;Shareボタンとはなんだ?&lt;/h2&gt;
+&lt;p&gt;もうほとんどのサイトで見かけませんが一部の古いサイトでは、Likeボタンではなく、Shareボタンというのを見かけました。ですが本ボタンはもう&lt;strong&gt;廃止予定なので使わないでください。&lt;/strong&gt;公式ページでも「We deprecated the Share Button when we launched the Like button」（いいねボタンを作ったときにシェアボタンは廃止したよ！）と説明されています。&lt;/p&gt;
+
+&lt;h2 id=&quot;ogタグとはなんだ&quot;&gt;OGタグとはなんだ？&lt;/h2&gt;
+&lt;p&gt;OGタグ、つまりオープングラフタグとはウェブページがオープングラフの情報を持つために付加されるメタデータです。オープングラフとは、例えば「太郎さんが◯◯というウェブページでいいねボタンを押した」といったときの、◯◯に入る規格化された情報を示します。オープングラフについては詳しくは公式の「&lt;a href=&quot;http://ogp.me/&quot;&gt;The Open Graph protocol&lt;/a&gt;」を見てみてください。&lt;/p&gt;
+
+&lt;p&gt;OGタグとは具体的に下記のようにhtmlのheadタグ内のmetaタグとして表現されます。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;head&amp;gt;
+&amp;lt;title&amp;gt;The Rock (1996)&amp;lt;/title&amp;gt;
+&amp;lt;meta property=&quot;og:title&quot; content=&quot;The Rock&quot; /&amp;gt;
+&amp;lt;meta property=&quot;og:type&quot; content=&quot;video.movie&quot; /&amp;gt;
+&amp;lt;meta property=&quot;og:url&quot; content=&quot;http://www.imdb.com/title/tt0117500/&quot; /&amp;gt;
+&amp;lt;meta property=&quot;og:image&quot; content=&quot;http://ia.media-imdb.com/images/rock.jpg&quot; /&amp;gt;
+...
+&amp;lt;/head&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;いいねボタンのデバッグツールを使おう&quot;&gt;いいねボタンのデバッグツールを使おう！&lt;/h2&gt;
+&lt;p&gt;開発者おなじみだと思いますが。こちらを使ってOGタグのテストをしましょう。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://developers.facebook.com/tools/debug&quot;&gt;Debugger&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;※私が設置したサイトはたまたま海外IP判定を行なっていたのでFacebook側がうまくOGタグを認識してくれませんでした。FacebookサーバからOGタグが読み込めるように海外facebook IPは許可しておきましょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;ボタンのテストにはテストユーザを使おう&quot;&gt;ボタンのテストにはテストユーザを使おう！&lt;/h2&gt;
+
+&lt;p&gt;テストの度に自分のプライベートアカウントを使うのはイヤですよね。そんなときは公式で提供されているテストユーザ作成サービスを使いましょう。詳しくは下記。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.koikikukan.com/archives/2011/09/11-013333.php&quot;&gt;Facebookがテストユーザー作成・編集画面をリリース&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ボタン押したときに承認が出てきた&quot;&gt;ボタン押したときに「承認」が出てきた&lt;/h2&gt;
+&lt;p&gt;いいねをテストしまっくてたら「承認」ボタンが表示されるようになりました。この例は下記でレポートされているようにけっこう根が深い問題です。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;その「承認」ボタンは、最近の導入した「いいね」ボタンに対する”like-jacking attack” への対応の一環です。ボタンの使われ方などを基準に、ボタンの設置ページで”like-jacking”が発生してることが推測された場合に、「承認」のステップが入ることになります。&lt;/p&gt;
+
+  &lt;p&gt;&lt;a href=&quot;http://blog.bricoleur.in/archives/1216&quot;&gt;facebookの「いいね」ボタンに「承認」が必要となるケースについて&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;facebook側は”like-jacking attack”が発生している可能性があるサイトをプログラムで自動検出して、「承認」ボタンを表示させているようです。&lt;/p&gt;
+
+&lt;p&gt;そしてこの「承認」ボタンはマニュアルでの解除依頼は受け付けていないようです。つまり「うちのサイトはスパムじゃないから承認ボタンは消してくれ！」とfacebookに依頼しても取り合ってはくれない、ということです。&lt;/p&gt;
+
+&lt;p&gt;上記でテストユーザを使えばいくらテストしても大丈夫なんでしょうか。それともいいねを取り消せばOKなのでしょうか。いずれにしても”like-jacking attack”と判定されうるような行動は避けたほうがよさそうです。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="facebook" /><summary type="html">Facebookのいいね！ボタン設置をする際に、いくつか注意すべき点がありますのでまとめます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/facebook.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/facebook.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

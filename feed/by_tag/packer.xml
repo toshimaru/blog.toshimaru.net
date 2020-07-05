@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/packer.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/packer.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">packerを使ってDigital Ocean上にイメージを作成する</title><link href="https://blog.toshimaru.net/digitalocean-image-with-packer/" rel="alternate" type="text/html" title="packerを使ってDigital Ocean上にイメージを作成する" /><published>2014-03-16T00:00:00+09:00</published><updated>2014-03-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/digitalocean-image-with-packer</id><content type="html" xml:base="https://blog.toshimaru.net/digitalocean-image-with-packer/">&lt;p&gt;＜前回のあらすじ＞&lt;br /&gt;
+&lt;a href=&quot;/digital-ocean-vagrant-puppet/&quot;&gt;1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.packer.io/&quot;&gt;packer&lt;/a&gt;を使ってDigital Ocean上にイメージを作成してみたのでそのときのメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;packerとは&quot;&gt;Packerとは？&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.vagrantup.com/&quot;&gt;Vagrant&lt;/a&gt;がVMの構築とかAWS/Digitgal Oceanでのインスタンス作成とかを抽象化して、プログラマブルにすることが可能なツールだとしたら、Packerはそれをさらに抽象化して、1つの設定ファイル(JSON)からAWS, Digital Ocean, VirtualBox向けのイメージを作成できるツール。&lt;/p&gt;
+
+&lt;h2 id=&quot;digital-oceanにイメージ作成する&quot;&gt;Digital Oceanにイメージ作成する&lt;/h2&gt;
+
+&lt;p&gt;今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ mkdir packer-test
+$ cd packer-test
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;次にpackerの設定ファイルを用意。ファイル名は何でもよいっぽい。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ touch Packer.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このように書く。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;builders&quot;: [
+    {
+      &quot;type&quot;: &quot;digitalocean&quot;,
+      &quot;client_id&quot;: &quot;your_client_id&quot;,
+      &quot;api_key&quot;: &quot;your_api_key&quot;,
+      &quot;image_id&quot;: 1505447,
+      &quot;region_id&quot;: 3,
+      &quot;size_id&quot;: 66
+    }
+  ],
+
+  &quot;provisioners&quot;: [
+    {
+      &quot;type&quot;: &quot;shell&quot;,
+      &quot;script&quot;: &quot;setup.sh&quot;
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;builder&lt;/code&gt;でタイプをチョイス。今回は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;digitalocean&lt;/code&gt;を選択。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;client_id&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;api_key&lt;/code&gt;を設定。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;image_id&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;region_id&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;size_id&lt;/code&gt;のint値については&lt;a href=&quot;https://developers.digitalocean.com/&quot;&gt;こちらのDigitalOcean API&lt;/a&gt;を見るとよいっぽい。&lt;/p&gt;
+
+&lt;p&gt;プロビジョニングのタイプは今回はシンプルにshellを設定。適当に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setup.sh&lt;/code&gt;を作る。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ echo &quot;echo 'hello world'&quot; &amp;gt; setup.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;packer&quot;&gt;Packer!&lt;/h2&gt;
+
+&lt;p&gt;packerビルドしてみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ packer build Packer.json
+digitalocean output will be in this color.
+
+==&amp;gt; digitalocean: Creating temporary ssh key for droplet...
+==&amp;gt; digitalocean: Creating droplet...
+==&amp;gt; digitalocean: Waiting for droplet to become active...
+==&amp;gt; digitalocean: Waiting for SSH to become available...
+==&amp;gt; digitalocean: Connected to SSH!
+==&amp;gt; digitalocean: Provisioning with shell script: setup.sh
+    digitalocean: hello world!
+    digitalocean:
+==&amp;gt; digitalocean: Gracefully shutting down droplet...
+==&amp;gt; digitalocean: Creating snapshot: packer-1395033724
+==&amp;gt; digitalocean: Waiting for snapshot to complete...
+==&amp;gt; digitalocean: Destroying droplet...
+==&amp;gt; digitalocean: Deleting temporary ssh key...
+Build 'digitalocean' finished.
+
+==&amp;gt; Builds finished. The artifacts of successful builds are:
+--&amp;gt; digitalocean: A snapshot was created: 'packer-1395033724' in region 'San Francisco 1'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;結果&quot;&gt;結果&lt;/h2&gt;
+
+&lt;p&gt;Before,Afterで見てみる。&lt;/p&gt;
+
+&lt;p&gt;Before:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/packer/do-before.png&quot; alt=&quot;before&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/packer/do-after.png&quot; alt=&quot;after&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;イメージのスナップショット（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;packer-1395033724&lt;/code&gt;）が作成されてますね。&lt;/p&gt;
+
+&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;packerはあくまでもイメージを作成するツールであり、イメージを管理するツールではないようです。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Packer only builds images. It does not attempt to manage them in any way.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;See. &lt;a href=&quot;http://www.packer.io/intro/getting-started/build-image.html&quot;&gt;http://www.packer.io/intro/getting-started/build-image.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;また、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;builders&lt;/code&gt;の設定を変更することで、&lt;a href=&quot;http://www.packer.io/docs/builders/amazon.html&quot;&gt;Amazon EC2&lt;/a&gt;や&lt;a href=&quot;http://www.packer.io/docs/builders/googlecompute.html&quot;&gt;Google Compute Engine&lt;/a&gt;とかにもイメージ作成できるようですね。&lt;/p&gt;
+
+&lt;h3 id=&quot;github-repo&quot;&gt;Github Repo&lt;/h3&gt;
+
+&lt;p&gt;今回使ったものをGithubにおいておきます。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/packer-digitalocean-sample&quot;&gt;https://github.com/toshimaru/packer-digitalocean-sample&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;&lt;img src=&quot;/images/digitalocean.png&quot; alt=&quot;digitalocean&quot; /&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="packer" /><summary type="html">＜前回のあらすじ＞ 1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/packer/packer.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/packer/packer.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

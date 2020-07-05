@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/composer.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/composer.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Composerで始める PHPのライブラリ管理</title><link href="https://blog.toshimaru.net/how-to-use-composer-autoload/" rel="alternate" type="text/html" title="Composerで始める PHPのライブラリ管理" /><published>2013-10-24T00:00:00+09:00</published><updated>2013-10-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-use-composer-autoload</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-use-composer-autoload/">&lt;p&gt;PHPも&lt;a href=&quot;http://getcomposer.org/&quot;&gt;Composer&lt;/a&gt;の登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;composerのインストール&quot;&gt;Composerのインストール&lt;/h2&gt;
+
+&lt;p&gt;PHPのバージョンは5.3以降が必要です。PHP5.2以前はさっさと捨てるべし！&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -s https://getcomposer.org/installer | php
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;さてこれで&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer.phar&lt;/code&gt;が手に入りました。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer&lt;/code&gt;コマンドを使えるようにするためにパスの通った場所に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer.phar&lt;/code&gt;を移動しましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo mv composer.phar /usr/local/bin/composer
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer&lt;/code&gt;コマンド準備完了です。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ composer
+   ______
+  / ____/___  ____ ___  ____  ____  ________  _____
+ / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                    /_/
+Composer version b482ebe0ca18321d9322bd913af73c1c55adebf1 2013-09-23 09:55:49
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;依存関係の記述&quot;&gt;依存関係の記述&lt;/h2&gt;
+
+&lt;p&gt;composerはプロジェクトルートの &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer.json&lt;/code&gt; ファイルにライブラリを記述することで依存関係の管理を行います。（composer.jsonはnpmにおけるpackage.jsonみたいなものです）早速ファイルを作ってライブラリを記述してみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ touch composer.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer.json&lt;/code&gt;ファイルに下記のように記述します。ここではPHPUnitをインストールしてみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+    &quot;require&quot;: {
+        &quot;phpunit/phpunit&quot;: &quot;3.7.*&quot;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;ライブラリのインストール&quot;&gt;ライブラリのインストール&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer.json&lt;/code&gt;ファイルを記述し終えたら、composerコマンドでライブラリのインストールを行います。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ composer install
+Loading composer repositories with package information
+Installing dependencies (including require-dev)
+  - Installing symfony/yaml (v2.3.6)
+    Loading from cache
+
+  - ..............
+
+  - Installing phpunit/phpunit (3.7.28)
+    Loading from cache
+
+phpunit/phpunit suggests installing phpunit/php-invoker (&amp;gt;=1.1.0,&amp;lt;1.2.0)
+Writing lock file
+Generating autoload files
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;うまいこといきました。ライブラリは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vendor&lt;/code&gt;ディレクトリ下に格納されます。この時同時にバージョン情報が書かれた&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;composer.lock&lt;/code&gt;ファイルも生成します。&lt;/p&gt;
+
+&lt;h2 id=&quot;ライブラリのアップデート&quot;&gt;ライブラリのアップデート&lt;/h2&gt;
+
+&lt;p&gt;ライブラリのアップデートに関しては下記のコマンドでOK.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ composer update
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;モダンなPHPパッケージ管理であればComposer一択でしょう。PEARとの使い分けに関しては&lt;a href=&quot;http://ja.phptherightway.com/#依存関係の管理&quot;&gt;PHP Right Way&lt;/a&gt;にはこのように書いてあります。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Composer を使うのは、ひとつのプロジェクトにおける依存関係を管理するとき。&lt;/li&gt;
+    &lt;li&gt;PEAR を使うのは、システム全体の PHP 環境の依存関係を管理するとき。&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;大抵の場合、後者のようにシステム全体で依存性管理をしなきゃならん理由はないと思うのでComposerで依存管理を行いましょう！&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="php" /><category term="composer" /><summary type="html">PHPもComposerの登場によりライブラリのインストール、依存性管理が格段に楽になりました。既にPHPのライブラリ管理のスタンダードになっていますが、改めてComposerの導入手順について紹介してみたいと思います。</summary></entry></feed>

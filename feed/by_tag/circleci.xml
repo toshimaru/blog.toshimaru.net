@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/circleci.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/circleci.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">はじめてのCircleCI Orbsを公開した</title><link href="https://blog.toshimaru.net/my-first-circleci-orbs/" rel="alternate" type="text/html" title="はじめてのCircleCI Orbsを公開した" /><published>2018-12-02T00:00:00+09:00</published><updated>2018-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/my-first-circleci-orbs</id><content type="html" xml:base="https://blog.toshimaru.net/my-first-circleci-orbs/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install &lt;a href=&quot;https://t.co/Ikd11JmEFd&quot;&gt;https://t.co/Ikd11JmEFd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw&quot;&gt;November 30, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;はじめてのCircleCI Orbsを公開した。そのメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;circleci-orbsとは&quot;&gt;CircleCI Orbsとは&lt;/h2&gt;
+
+&lt;p&gt;2018年11月に正式公開されたCircleCI Orbs。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;本日Orbsをリリースしました🥳OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。&lt;/p&gt;&amp;mdash; CircleCI Japan (@CircleCIJapan) &lt;a href=&quot;https://twitter.com/CircleCIJapan/status/1060285769124696064?ref_src=twsrc%5Etfw&quot;&gt;November 7, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。&lt;/p&gt;
+
+&lt;h2 id=&quot;作ってみた&quot;&gt;作ってみた&lt;/h2&gt;
+
+&lt;p&gt;僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;をCircleCI Orbsを使って共通化してみることにしてみました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;結果できたのがこちら: &lt;a href=&quot;https://circleci.com/orbs/registry/orb/toshimaru/bundle-install&quot;&gt;CircleCI Orb Registry - toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;GitHubソースコードはこちら: &lt;a href=&quot;https://github.com/toshimaru/bundle-install&quot;&gt;toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;作り方&quot;&gt;作り方&lt;/h2&gt;
+
+&lt;h3 id=&quot;install-circleci-command&quot;&gt;Install circleci command&lt;/h3&gt;
+
+&lt;p&gt;まずはcircleciコマンドを入手。MacOSの場合下記のようにbrewで入れることができます。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install circleci
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;namespace-作成&quot;&gt;namespace 作成&lt;/h3&gt;
+
+&lt;p&gt;namespaceを取得します。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci namespace create toshimaru github toshimaru
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;orb-作成&quot;&gt;Orb 作成&lt;/h3&gt;
+
+&lt;p&gt;namespace以下のorb名を作成します。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb create toshimaru/bundle-install
+Orb toshimaru/bundle-install created.
+Please note that any versions you publish of this orb are world-readable.
+
+You can now register versions of toshimaru/bundle-install using circleci orb publish.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;publish-circleci-orb&quot;&gt;Publish CircleCI Orb&lt;/h3&gt;
+
+&lt;p&gt;作成した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orb.yml&lt;/code&gt;を公開します。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb publish src/orb.yml toshimaru/bundle-install@0.0.1
+Orb toshimaru/bundle-install@0.0.1 was published.
+Please note that this is an open orb and is world-readable.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;作成したorbを使う&quot;&gt;作成したOrbを使う&lt;/h2&gt;
+
+&lt;p&gt;次に作成したOrbを使う側、呼び出す側の設定です。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;bundle-install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/bundle-install@0.1.0&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle-install/bundle-install&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# - bundle exec rspec&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;実際に下記のPRでOrbの変更例が見れますのでご参照ください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/264/files&quot;&gt;Introduce CircleCI Orbs by toshimaru · Pull Request #264&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考にした記事&quot;&gt;参考にした記事&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;全体的にこちらの手順を参考にさせていただきました。 &lt;a href=&quot;https://blog.tsub.me/post/introducing-to-circleci-orbs/&quot;&gt;CircleCI Orbs 入門 | tsub’s blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><category term="oss" /><summary type="html">I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install https://t.co/Ikd11JmEFd&amp;mdash; toshimaru (@toshimaru_e) November 30, 2018</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">reviewdogを使ってCI上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop/" rel="alternate" type="text/html" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす" /><published>2018-11-19T00:00:00+09:00</published><updated>2020-06-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop/">&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop&quot;&gt;rubocop&lt;/a&gt;の自動レビューを&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;reviewdog&lt;/a&gt;を使ってやってみたのでその知見です。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#追記&quot; id=&quot;markdown-toc-追記&quot;&gt;追記&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#auto-rubocop-on-circleci-powered-by-reviewdog&quot; id=&quot;markdown-toc-auto-rubocop-on-circleci-powered-by-reviewdog&quot;&gt;Auto-RuboCop on CircleCI powered by reviewdog&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#1-configymlの設定&quot; id=&quot;markdown-toc-1-configymlの設定&quot;&gt;1. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.yml&lt;/code&gt;の設定&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#2コメントできるtokenを取得--設定&quot; id=&quot;markdown-toc-2コメントできるtokenを取得--設定&quot;&gt;2.コメントできるTokenを取得 &amp;amp; 設定&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#3-rubucopの結果をreviewdogで通知&quot; id=&quot;markdown-toc-3-rubucopの結果をreviewdogで通知&quot;&gt;3. rubucopの結果をreviewdogで通知&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#完成yamlイメージ&quot; id=&quot;markdown-toc-完成yamlイメージ&quot;&gt;完成yamlイメージ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#なぜreviewdogなのか&quot; id=&quot;markdown-toc-なぜreviewdogなのか&quot;&gt;なぜreviewdogなのか&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#最後に&quot; id=&quot;markdown-toc-最後に&quot;&gt;最後に&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#参考資料&quot; id=&quot;markdown-toc-参考資料&quot;&gt;参考資料&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
+
+&lt;p&gt;本記事の GitHub Actions 版を書きました。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;blogged. | reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす - Hack Your Design! &lt;a href=&quot;https://t.co/4u11iBjm6G&quot;&gt;https://t.co/4u11iBjm6G&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1267121968307814401?ref_src=twsrc%5Etfw&quot;&gt;May 31, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;auto-rubocop-on-circleci-powered-by-reviewdog&quot;&gt;Auto-RuboCop on CircleCI powered by reviewdog&lt;/h2&gt;
+
+&lt;p&gt;僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/254&quot;&gt;https://github.com/toshimaru/RailsTwitterClone/pull/254&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;1-configymlの設定&quot;&gt;1. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.yml&lt;/code&gt;の設定&lt;/h3&gt;
+
+&lt;p&gt;基本的には&lt;a href=&quot;https://github.com/haya14busa/reviewdog#circle-ci&quot;&gt;公式READMEのCircleCIセットアップ手順&lt;/a&gt;通りですが、まずは下記のようにreviewdogのバイナリを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;curl&lt;/code&gt;経由で落とします。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 環境変数でダウンロードするreviewdogのバージョンを指定&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;REVIEWDOG_VERSION&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;0.9.11&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# reviewdogをcurlでダウンロード&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install reviewdog&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;amp;&amp;amp; chmod +x ./reviewdog&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2コメントできるtokenを取得--設定&quot;&gt;2.コメントできるTokenを取得 &amp;amp; 設定&lt;/h3&gt;
+
+&lt;p&gt;reviewdogにコメントさせるためにはコメントできる権限を持ったGitHub Tokenが必要になります。下記手順でGitHub Tokenを取得してください。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/settings/tokens&quot;&gt;アクセストークンの取得ページ&lt;/a&gt;にいく&lt;/li&gt;
+  &lt;li&gt;下記の権限を設定してTokenを発行
+    &lt;ul&gt;
+      &lt;li&gt;Privateレポジトリの設定: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repo&lt;/code&gt;をチェック&lt;/li&gt;
+      &lt;li&gt;Publicレポジトリの設定: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;public_repo&lt;/code&gt;をチェック&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これでTokenが発行できましたので、次にそのTokenの設定です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CircleCIの環境変数の設定画面を開く&lt;/li&gt;
+  &lt;li&gt;下記の環境変数を設定
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;REVIEWDOG_GITHUB_API_TOKEN&lt;/code&gt;の値に前手順で取得したTokenを設定&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;これにてreviewdogにコメントできる権限が付与されました。&lt;/p&gt;
+
+&lt;h3 id=&quot;3-rubucopの結果をreviewdogで通知&quot;&gt;3. rubucopの結果をreviewdogで通知&lt;/h3&gt;
+
+&lt;p&gt;あとはいつも通りのrubocopのコマンドをパイプしてreviewdogに渡してあげればOK。その際のオプションは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-f=rubocop&lt;/code&gt;（rubocopフォーマット指定）, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-reporter=github-pr-review&lt;/code&gt;（GitHub PRレビューコメント形式の指定） の２つを指定します。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;完成yamlイメージ&quot;&gt;完成yamlイメージ&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.circleci/config.yml&lt;/code&gt;の完成イメージは下記です（完全なyamlファイル&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/254/files&quot;&gt;当該Pull Request&lt;/a&gt;より確認してください）。なおCircleCIはversion2.1を使用していることに注意してください（現時点の最新バージョン）。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;executors&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;working_directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;~/app&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.5-node-browsers&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;RAILS_ENV&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;test&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;REVIEWDOG_VERSION&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;0.9.11&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle_install&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install reviewdog&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+            &lt;span class=&quot;s&quot;&gt;curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;amp;&amp;amp; chmod +x ./reviewdog&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;workflows&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;...省略...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;なぜreviewdogなのか&quot;&gt;なぜreviewdogなのか&lt;/h2&gt;
+
+&lt;p&gt;ruboop自動レビューのための既にあるツールとしては、&lt;a href=&quot;https://github.com/packsaddle/ruby-saddler&quot;&gt;Saddler&lt;/a&gt;や&lt;a href=&quot;https://github.com/prontolabs/pronto&quot;&gt;pronto&lt;/a&gt;などがありますが、なぜそれらを使わずにreviewdogを採用したのかというと下記の理由からです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Goのシングルバイナリポン置き（curlワンコマンド）でSetupがめちゃくちゃ楽&lt;/li&gt;
+  &lt;li&gt;Language Agnostic （Ruby以外もGo, PHP, Pythonなど他言語で使える）&lt;/li&gt;
+  &lt;li&gt;Go実装でパフォーマンスが良い&lt;/li&gt;
+  &lt;li&gt;Activeにメンテされている&lt;/li&gt;
+  &lt;li&gt;READMEドキュメントが充実している&lt;/li&gt;
+  &lt;li&gt;日本人が作っている！（おまけ理由&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;本記事ではRubyプロジェクトのrubocop checkをreviewdogを使ってCircleCI上で動かす例を紹介しました。&lt;/p&gt;
+
+&lt;p&gt;公式READMEにはTravisCI上での動かし方であったり、GitHubの新機能・GitHub Checks形式での動かし方も記載されておりますので、興味があるかたは公式READMEをご参照ください。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;haya14busa/reviewdog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://haya14busa.com/reviewdog/&quot;&gt;reviewdog を飼ってコードレビューや開発を改善しませんか - haya14busa&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/azu/items/c563da0b5455a1b1dca2&quot;&gt;reviewdogを使ってtextlintの結果をPull Requestに書き込む方法 - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="review" /><category term="rubocop" /><category term="github" /><category term="circleci" /><category term="ci" /><summary type="html">rubocopの自動レビューをreviewdogを使ってやってみたのでその知見です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop_x_reviewdog.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop_x_reviewdog.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

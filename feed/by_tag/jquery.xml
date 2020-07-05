@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/jquery.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/jquery.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">jQueryでHTMLタグ要素をcreateElement使わずに生成する</title><link href="https://blog.toshimaru.net/jqueryhidden-inputjquery/" rel="alternate" type="text/html" title="jQueryでHTMLタグ要素をcreateElement使わずに生成する" /><published>2016-01-17T00:00:00+09:00</published><updated>2016-01-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jqueryhidden-inputjquery</id><content type="html" xml:base="https://blog.toshimaru.net/jqueryhidden-inputjquery/">&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
+
+&lt;p&gt;とある&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;form&amp;gt;&lt;/code&gt;があってその中にjQueryで動的にinput hiddenタグ要素を生成&amp;amp;追加して送信したい。&lt;/p&gt;
+
+&lt;h2 id=&quot;方法&quot;&gt;方法&lt;/h2&gt;
+
+&lt;p&gt;要素を生成しようと思ったときにぱっと思いつくのは、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;document.createElement&lt;/code&gt;だが、jQueryを使うと下記のように簡潔にかける。&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;targetId&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  ...
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;input&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;attr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;hidden&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;input_id&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12345&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;#targetId&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;また下記のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;attr&lt;/code&gt;を使わずに書くことができる（コメントで教えていただきました taku hhara さん、ありがとうございます）。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;lt;input&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;hidden&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;input_id&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12345&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;#targetId&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;テキストの入ったdivを生成&quot;&gt;テキストの入ったdivを生成&lt;/h2&gt;
+
+&lt;p&gt;上述のテクニックを使った下記のようなテキストの入った&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;div&lt;/code&gt;要素も生成できます。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;div&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;hoge&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;fuga&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;piyo&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このコードは下記コードと同じ結果を得られます。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;div id=&quot;hoge&quot;&amp;gt;&amp;lt;span class=&quot;fuga&quot;&amp;gt;piyo&amp;lt;/span&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(コードは&lt;a href=&quot;http://ginpen.com/2012/12/01/jquery-core-func/&quot;&gt;jQueryの$()が多機能すぎる件について。5種類も仕事があるよ。&lt;/a&gt;より引用)&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/2408043/jquery-create-hidden-form-element-on-the-fly&quot;&gt;Jquery - Create hidden form element on the fly&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/268490/jquery-document-createelement-equivalent&quot;&gt;jQuery document.createElement equivalent?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="javascript" /><category term="jquery" /><summary type="html">やりたいこと</summary></entry><entry><title type="html">jQueryイベントデリゲーションを利用して遅延取得されるDOMにイベントをアタッチする</title><link href="https://blog.toshimaru.net/jquery-event-delegation/" rel="alternate" type="text/html" title="jQueryイベントデリゲーションを利用して遅延取得されるDOMにイベントをアタッチする" /><published>2015-03-24T00:00:00+09:00</published><updated>2015-03-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jquery-event-delegation</id><content type="html" xml:base="https://blog.toshimaru.net/jquery-event-delegation/">&lt;p&gt;jQueryイベントデリゲーションをコードとともにおさらい。&lt;/p&gt;
+
+&lt;h2 id=&quot;no-event-delegation&quot;&gt;No Event Delegation&lt;/h2&gt;
+
+&lt;p&gt;デリゲーションしないパターン。何が問題なのか。&lt;/p&gt;
+
+&lt;p&gt;まずは「default item」をクリックする。「clicked!」になったね。「Add List」する。そいつをもう一度クリック。「clicked!」になってほしい。あれ、何も起こらないね？&lt;/p&gt;
+
+&lt;p data-height=&quot;268&quot; data-theme-id=&quot;0&quot; data-slug-hash=&quot;MYLYxq&quot; data-default-tab=&quot;result&quot; data-user=&quot;toshimaru&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/toshimaru/pen/MYLYxq/&quot;&gt;No `.on` selector &lt;/a&gt; by toshi (&lt;a href=&quot;http://codepen.io/toshimaru&quot;&gt;@toshimaru&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;//assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;なぜならjQueryのセレクタ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$(&quot;#list li&quot;)&lt;/code&gt;では、初期のDOMにしかイベントがアタッチされないから。後から追加されるDOMに対してはイベントアタッチはされない。&lt;/p&gt;
+
+&lt;h2 id=&quot;use-event-delegation&quot;&gt;Use Event Delegation&lt;/h2&gt;
+
+&lt;p&gt;イベントデリゲーションするバターン。こちらではどうでしょう？&lt;/p&gt;
+
+&lt;p&gt;まずは「default item」をクリックする。「clicked!」になったね。「Add List」する。そいつをもう一度クリック。「clicked!」になった。Add Listで追加されたDOMに対してもしっかりイベントが補足されるようになっている。&lt;/p&gt;
+
+&lt;p data-height=&quot;259&quot; data-theme-id=&quot;0&quot; data-slug-hash=&quot;dPaPEY&quot; data-default-tab=&quot;result&quot; data-user=&quot;toshimaru&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/toshimaru/pen/dPaPEY/&quot;&gt;Use `.on` selector&lt;/a&gt; by toshi (&lt;a href=&quot;http://codepen.io/toshimaru&quot;&gt;@toshimaru&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;//assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$(&quot;#list&quot;).on&lt;/code&gt;の第二引数としてセレクタ（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;li&lt;/code&gt;）を渡すことで、しっかり&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$(&quot;#list&quot;)&lt;/code&gt;のリスト要素全てにイベントがデリゲートされていますね。 :on:&lt;/p&gt;
+
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://learn.jquery.com/events/event-delegation/&quot;&gt;Understanding Event Delegation | jQuery Learning Center&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://api.jquery.com/on/&quot;&gt;.on() | jQuery API Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="jquery" /><summary type="html">jQueryイベントデリゲーションをコードとともにおさらい。</summary></entry><entry><title type="html">jQuery使いが知っておくべきjQueryテクニック8選</title><link href="https://blog.toshimaru.net/jquery-8-tips/" rel="alternate" type="text/html" title="jQuery使いが知っておくべきjQueryテクニック8選" /><published>2013-12-23T00:00:00+09:00</published><updated>2013-12-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jquery-8-tips</id><content type="html" xml:base="https://blog.toshimaru.net/jquery-8-tips/">&lt;p&gt;本記事は&lt;a href=&quot;http://www.adventar.org/calendars/135&quot;&gt;jQuery Advent Calendar 2013&lt;/a&gt;の23日目の記事となります。今回はjQuery使いとして覚えておきたいテクニックを個人的に8つピックアップしてみました。&lt;/p&gt;
+
+&lt;p&gt;日本との時差の関係で更新が24日になっているでしょうが気にせずいきましょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;1-jquery-2x-vs-1x&quot;&gt;1. jQuery 2.x vs 1.x&lt;/h2&gt;
+
+&lt;p&gt;１つ目はテクニックというよりTipsになります。jQueryには最新版の2.x系と1.x系があります。さてどのようにバージョンを選べばいいでしょうか？&lt;/p&gt;
+
+&lt;p&gt;2.x系からの大きな変更点としては&lt;strong&gt;IE6/7/8のサポート廃止&lt;/strong&gt;です。一方、1.x系は&lt;strong&gt;IE6/7/8ブラウザをサポート&lt;/strong&gt;しています。&lt;/p&gt;
+
+&lt;p&gt;よってまとめると&lt;strong&gt;IE6/7/8をサポートしたいのであれば1.x系を使用、サポートしないのであれば2.x系を使用&lt;/strong&gt;しましょう。2.x系のほうがサイズも小さく、速度も早いので旧ブラウザを切れるのであれば2.x系を推奨です。&lt;/p&gt;
+
+&lt;h2 id=&quot;2-イベントハンドリングには-on-を使うべし&quot;&gt;2. イベントハンドリングには on() を使うべし&lt;/h2&gt;
+
+&lt;p&gt;イベントハンドリングのメソッドがjQuery1.7以前だと&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bind()&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;live()&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;delegate()&lt;/code&gt;やらいろいろあったのが、jQuery1.7で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on()&lt;/code&gt;でまとめられました。&lt;/p&gt;
+
+&lt;p&gt;ではここで疑問。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;click()&lt;/code&gt;などではなく、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on()&lt;/code&gt;を使うことで何が嬉しいのでしょうか？　大きく３つあります。&lt;/p&gt;
+
+&lt;p&gt;１つ目は複数のイベントを登録できるということです。下記では&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;click&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mouseenter&lt;/code&gt;の２つのイベントを１つの処理にアタッチしてます。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; src=&quot;http://jsfiddle.net/toshimaru/YDur2/2/embed/&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;２つ目、オブジェクトを引数に取ることができ、複数イベントをアタッチできます。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; src=&quot;http://jsfiddle.net/toshimaru/cANuP/1/embed/&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;３つ目、第二引数にアタッチ先のセレクターを指定することができます。これでなにが嬉しいかというとAJAXなどで遅延して取得してくるような要素に対しても事前にイベントを設定することができます。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; src=&quot;http://jsfiddle.net/toshimaru/hSZLY/1/embed/&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;いわずもがなですが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;off()&lt;/code&gt;でイベントをデタッチできることも&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on()&lt;/code&gt;の良い所です。&lt;/p&gt;
+
+&lt;h2 id=&quot;3-ajaxには-done-fail-を使うべし&quot;&gt;3. AJAXには done(), fail() を使うべし&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blog.toshimaru.net/jquery-ajaxdeferredajax/&quot;&gt;去年のjQuery Advent Calendar&lt;/a&gt;で書いた通りです。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ajax.html&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;success!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error!!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記の書き方よりも、&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ajax.html&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;success!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error!!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こっちのほうがPromiseでモダンな形式です。&lt;/p&gt;
+
+&lt;h2 id=&quot;4-ajaxだけじゃなくショートカットメソッドも活用すべし&quot;&gt;4. ajax()だけじゃなくショートカット・メソッドも活用すべし&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ajax()&lt;/code&gt;がオプションで色々出来過ぎちゃってついつい&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ajax()&lt;/code&gt;を使いがちですが、jQueryには&lt;a href=&quot;http://api.jquery.com/category/ajax/shorthand-methods/&quot;&gt;Ajaxショートカットメソッドがある&lt;/a&gt;んです！&lt;/p&gt;
+
+&lt;p&gt;例えばデータをPOSTするAJAX。下記に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ajax()&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;post()&lt;/code&gt;の二通り書き方を載せましたが、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;post()&lt;/code&gt;のほうがシンプルでよさ気ですね。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; src=&quot;http://jsfiddle.net/toshimaru/BkNfr/2/embed/&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;5-find-を使って絞り込むべし&quot;&gt;5. find() を使って絞り込むべし&lt;/h2&gt;
+
+&lt;p&gt;これもわりと有名ですかね。下記のセレクタは、&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;.foo #bar&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find()&lt;/code&gt;を使ったほうが良いとされています。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;.foo&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;#bar&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;6-カスタムイベントを定義する&quot;&gt;6. カスタムイベントを定義する&lt;/h2&gt;
+
+&lt;p&gt;下記のコードでは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;show.price&lt;/code&gt;というカスタムイベントを定義しています。クリック時に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;show.price&lt;/code&gt;イベントを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;trigger()&lt;/code&gt;しています。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; src=&quot;http://jsfiddle.net/toshimaru/JHYhR/1/embed/&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;7-属性を指定してdomエレメントを生成できる&quot;&gt;7. 属性を指定してDOMエレメントを生成できる&lt;/h2&gt;
+
+&lt;p&gt;こんな感じでAタグが生成できます。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;a&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;href&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;http://google.com/&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// [&amp;lt;a href=​&quot;http:​/​/​google.com/​&quot; title=​&quot;google&quot;&amp;gt;​google​&amp;lt;/a&amp;gt;​ ]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;$.mapと組み合わせるとなかなかよいかもしれません。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;links&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;google.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;yahoo.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;list&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;a&amp;gt;&amp;lt;/a&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;href&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;LINK&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; [&amp;lt;ul&amp;gt;​&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//        &amp;lt;li&amp;gt;​&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//        &amp;lt;a href=​&quot;google.com&quot;&amp;gt;​LINK​&amp;lt;/a&amp;gt;​&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//        &amp;lt;/li&amp;gt;​&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//        &amp;lt;li&amp;gt;​&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//        &amp;lt;a href=​&quot;yahoo.com&quot;&amp;gt;​LINK​&amp;lt;/a&amp;gt;​&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//        &amp;lt;/li&amp;gt;​&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//    &amp;lt;/ul&amp;gt;​ ]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;8-form送信時は-serialize-を使って値をまとめて取得すべし&quot;&gt;8. form送信時は serialize() を使って値をまとめて取得すべし&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;serialize()&lt;/code&gt;を使うことでform内のinputの値をまとめて取得できます。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; src=&quot;http://jsfiddle.net/toshimaru/3GG3c/3/embed/&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.jquery.com/2013/04/18/jquery-2-0-released/&quot;&gt;jQuery 2.0 Released&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="jquery" /><summary type="html">本記事はjQuery Advent Calendar 2013の23日目の記事となります。今回はjQuery使いとして覚えておきたいテクニックを個人的に8つピックアップしてみました。</summary></entry><entry><title type="html">jQueryでページ最下部のスクロール時のイベントをキャッチする</title><link href="https://blog.toshimaru.net/jquery-bottom-scroll/" rel="alternate" type="text/html" title="jQueryでページ最下部のスクロール時のイベントをキャッチする" /><published>2013-07-29T00:00:00+09:00</published><updated>2013-07-29T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jquery-bottom-scroll</id><content type="html" xml:base="https://blog.toshimaru.net/jquery-bottom-scroll/">&lt;p&gt;ユースケースとしては、Twitterのタイムライン表示ページのように最下部までスクロールしたら、そのイベントをキャッチして次ページのツイートをAutoloadして表示させたい！みたいなとき。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;scroll&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scrollHeight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scrollPosition&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scrollTop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scrollHeight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scrollPosition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scrollHeight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// when scroll to bottom of the page&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上コードでは、ウインドウのスクロール時にスクロール位置が今どれだけなのかを差分を見て計算してる。それが0以下になったら次ページを表示させるようなコードを書けばよい。&lt;/p&gt;
+
+&lt;p&gt;上記の例では「最下部」をイベントの発火ポイントにしたけど、「下記○○％に入ったら」とかでもよさそう。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.softel.co.jp/blogs/jquery/archives/742&quot;&gt;ページの下までスクロールしたときに何らかの処理を実行する例&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="jquery" /><summary type="html">ユースケースとしては、Twitterのタイムライン表示ページのように最下部までスクロールしたら、そのイベントをキャッチして次ページのツイートをAutoloadして表示させたい！みたいなとき。</summary></entry><entry><title type="html">【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール</title><link href="https://blog.toshimaru.net/jquerydeferred-is-most-important-client/" rel="alternate" type="text/html" title="【翻訳】DeferredはjQueryにおける最も重要なクライアントサイドツール" /><published>2013-05-08T00:00:00+09:00</published><updated>2013-05-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jquerydeferred-is-most-important-client</id><content type="html" xml:base="https://blog.toshimaru.net/jquerydeferred-is-most-important-client/">&lt;p&gt;&lt;a href=&quot;http://blog.toshimaru.net/jquery-ajaxdeferredajax/&quot;&gt;jQueryのDeferredを用いたモダンなAjax処理の書き方&lt;/a&gt;が結構読んでもらっているみたいなので、今回はdeferred第二弾として、&lt;a href=&quot;http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html&quot;&gt;jQuery.Deferred is the most important client-side tool you have&lt;/a&gt;の翻訳をしました。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;jQueryのdeferredの導入は、近年のjQueryの歴史における最もパワフルな拡張だ。jQuery自体はとくに新しい概念ではないが、deferredの導入は多くのクライアントサイド開発者にとってメリットがある。非同期プロセスにおいてdeferredパターンはシンプルでありながらも、パワフルなツールだ。皆さんご承知の通り、クライアントサイドの開発においてそういった非同期を使う状況は数多く存在する。&lt;/p&gt;
+
+&lt;p&gt;ここでは、deferredおよびjQueryによって提供されるAPIについて概観する。読者が理解できるよう多くの例を掲載した。あなたはこの記事を読み終わる頃にはdeferredとは何か、いつ使うべきものかが知ることができよう。&lt;/p&gt;
+
+&lt;h2 id=&quot;概要&quot;&gt;概要&lt;/h2&gt;
+
+&lt;p&gt;“Deferred”パターンとは、完了するかもしれない、あるいは完了しないかもしれない処理単位のプロキシのように振る舞うオブジェクトを表す。このパターンはどんな非同期処理にでも適応することができる。少し例をあげると、Ajaxリクエスト、アニメーション、Webワーカーだ。ユーザの行動さえも「遅延処理(delayed computation)」の対象とみなすことができるのである。&lt;/p&gt;
+
+&lt;p&gt;Deferredの最もシンプルな使い方は、処理が終わったときあるいは失敗したときに何が起こるかを明示できるようにすることだ。jQueryの実装だと、deferedがうまく解決(resolve)したとき、あるいはエラーで拒否(reject)されたとき、あるいはいくつかの進行中の処理から解決状態だと通知(notify)されたとき（後述）に走るであろうコールバック関数の登録が可能となる。&lt;/p&gt;
+
+&lt;p&gt;おそらく既に読者はこのDefrredパターンを使っている。なぜならjQuery Ajax関数はdeferredインターフェースを実装したオブジェクトを返すからだ。それはAjaxリクエストが成功したときにresolveされ、HTTPリクエストが失敗したときにrejectされる。&lt;/p&gt;
+
+&lt;h2 id=&quot;理解すべき１つの重要なこと&quot;&gt;理解すべき１つの重要なこと&lt;/h2&gt;
+&lt;p&gt;deferredは非同期処理における「いつ」を抽象化する。deferredは無制限に繰り返すことができる。この挙動のポイントは、もしdeferredが既にresolveならば、直ちに登録されているコールバックを実行することだ。処理単位(たとえばAjaxリクエスト)が終わっているかどうかは気にする必要がない。単純にコールバックをdeferredにバインドし、それが既にresolveであれば実行し、あるいはそれが未来にresolve状態になったときに実行する。&lt;/p&gt;
+
+&lt;h2 id=&quot;jqueryでdeferredを使ってみる&quot;&gt;jQueryでdeferredを使ってみる&lt;/h2&gt;
+
+&lt;h3 id=&quot;解決resolution--拒否rejection&quot;&gt;解決(resolution) &amp;amp; 拒否(rejection)&lt;/h3&gt;
+&lt;p&gt;jQuery deferred関数の中核は、deferredの解決(resolve)/拒否(reject)を処理することだ。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$.Deferred().&lt;/code&gt;でdeferredオブジェクトを作成できる。deferredオブジェクトの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;done()&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fail()&lt;/code&gt;はそれぞれオブジェクトのresolveされたとき、rejectされたときに実行される関数を登録できる。&lt;/p&gt;
+
+&lt;p&gt;deferredをresolve/rejectすることは実際、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;resolve()&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reject()&lt;/code&gt;を使うことで実現できる。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jQuery.ajax()&lt;/code&gt;メソッドは内部的には、リクエストが正常に完了したときにdeferredの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;resolve()&lt;/code&gt;をコールし、リクエストが失敗したとき（例えばhttpステータスコードの404）に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reject()&lt;/code&gt;をコールする。&lt;/p&gt;
+
+&lt;h3 id=&quot;deferredへ通知する-notifyとprogress&quot;&gt;deferredへ通知する: notify()とprogress()&lt;/h3&gt;
+&lt;p&gt;jQuery1.7からresolve/rejectに加えて、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;progress&lt;/code&gt;が導入された。、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;progress()&lt;/code&gt;により、deferred内で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;notify()&lt;/code&gt;がコールされたときに実行されるコールバック関数を登録することができ、resolved状態に対する「進捗(progress)」を表現できるようになった。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;notify()&lt;/code&gt;で事前にコールバックを登録しておくことで例えば、ロードに時間がかかるリソースを持つdeferredオブジェクトの定期的に更新されるプログレスバーを描画できる。deferredはロード中に通知(notify)され、ロード完了時に解決(resolve)される。&lt;/p&gt;
+
+&lt;h3 id=&quot;promiseを返す&quot;&gt;promise()を返す&lt;/h3&gt;
+&lt;p&gt;deferred利用時のほとんどの場合、deferredの利用者にresolve/rejectを決めてほしくはないだろう。あなた自身でそれを管理したいはずだ。そのような場合には、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;promise()&lt;/code&gt;を返すのがよい。&lt;/p&gt;
+
+&lt;p&gt;jQuery用語的にいうと、promiseは「read-only deferred」だ。promiseはコールバック登録、deferred状態への問い合わせを可能にするが、状態の変更は不可だ(たとえばresolve/reject状態の変更)。 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jQuery.ajax()&lt;/code&gt;メソッドはpromise()を返す。なぜならAJAXリクエストが成功したか失敗したかを決定するのは、その内部のコードで完結する話だからだ。&lt;/p&gt;
+
+&lt;h3 id=&quot;非同期イベントの同期化when&quot;&gt;非同期イベントの同期化：when()&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$.when()&lt;/code&gt;は１つ以上のdeferredを受け入れ可能で、それら全てのdeferredオブジェクトが正常に完了(resove)したときにのみresolve状態となる新たなdeferredを作り出す。つまり&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;when()&lt;/code&gt;により、非同期イベントを一つに統合することが可能になるのだ。&lt;/p&gt;
+
+&lt;p&gt;下記の例を考えてみよう。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ある1つのUI表現に対して、2つの分割されたAJAXリクエストのデータが必要であり、UIのレンダリングには、それら２つのリクエストのデータが必須である。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;when()&lt;/code&gt;がないと、レンダリング前にどちらのリクエストも終わっていることを保証するために、コールバックをネストすることを強要されてしまう。さらに悪いことに、２つのAJAXリクエストが失敗時のエラーハンドリングコードが下記URLに示す通り２つに分散されてしまう。&lt;/p&gt;
+
+&lt;iframe width=&quot;100%&quot; height=&quot;300&quot; src=&quot;http://jsfiddle.net/mattbaker/2s4Mg/embedded/&quot; allowfullscreen=&quot;allowfullscreen&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;この代替案として、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;when()&lt;/code&gt;が使用可能なのだ。2つのAJAXリクエストによって分割されてしまったdeferredオブジェクトを1つに統合できる。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;when()&lt;/code&gt;はこれら2つの両リクエストが完了したときにのみresolveとなる。成功時のコールバックとしてUI要素のレンダリング処理を登録することができる。さらに、失敗時の処理は1つの箇所にまとめることができる（下記URL参照）。&lt;/p&gt;
+
+&lt;iframe width=&quot;100%&quot; height=&quot;300&quot; src=&quot;http://jsfiddle.net/mattbaker/wJ4bm/1/embedded/&quot; allowfullscreen=&quot;allowfullscreen&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;
+
+&lt;h3 id=&quot;人間もまた非同期だ&quot;&gt;人間もまた非同期だ&lt;/h3&gt;
+
+&lt;p&gt;Webサイトやアプリーケーション上の数多くのモノは非同期である。これにはあなた自身さえも含まれている。考えてみよう、あなたのサイトはユーザにプロフィールを作成するように依頼する。プロフィールを十分にユーザに埋めさせるよう、あなたはどれくらい入力が完了しているかプログレスバーを表示させる。それらの入力が完了するとプログレスバーを変更させ、全て入力し終えたときには「ありがとうございます」というメッセージを表示させる。&lt;/p&gt;
+
+&lt;p&gt;この状況では、プロフィールの遅延入力完了という点でdeferredが使われている。プロフィールを作成、「計算」している本質は実際のところ、人間である。このケースは「非同期である」と見做せる状況とはいえないかもしれないが、まさにdeferredが使える有効な状況である。&lt;/p&gt;
+
+&lt;p&gt;ユーザーアクション（これは解決への進捗率を示している）によるdeferredを通知するために、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;notify()&lt;/code&gt;が使える。そして&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;resolve()&lt;/code&gt;がプロフィール入力完了によるdeferredを通知するのに使える。プログレスバーを更新するには&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;progress()&lt;/code&gt;を使ってコールバックをバインドし、ありがとうメッセージを表示するコールバックをバインドするのには&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;done()&lt;/code&gt;を使う。&lt;/p&gt;
+
+&lt;p&gt;下記に例を示そう。&lt;/p&gt;
+
+&lt;iframe width=&quot;100%&quot; height=&quot;300&quot; src=&quot;http://jsfiddle.net/TTUrQ/10/embedded/&quot; allowfullscreen=&quot;allowfullscreen&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;
+
+&lt;h3 id=&quot;最後に訳者より&quot;&gt;最後に（訳者より）&lt;/h3&gt;
+
+&lt;p&gt;原文にはdeferredの面白い使い方、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pipe()&lt;/code&gt;も紹介されています。是非こちらも参照してみてください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://eng.wealthfront.com/2012/12/jquerydeferred-is-most-important-client.html&quot;&gt;jQuery.Deferred is the most important client-side tool you have&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jquery" /><category term="翻訳" /><summary type="html">jQueryのDeferredを用いたモダンなAjax処理の書き方が結構読んでもらっているみたいなので、今回はdeferred第二弾として、jQuery.Deferred is the most important client-side tool you haveの翻訳をしました。</summary></entry><entry><title type="html">jQueryのDeferredを用いたモダンなAjax処理の書き方</title><link href="https://blog.toshimaru.net/jquery-ajaxdeferredajax/" rel="alternate" type="text/html" title="jQueryのDeferredを用いたモダンなAjax処理の書き方" /><published>2012-12-13T00:00:00+09:00</published><updated>2012-12-13T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jquery-ajaxdeferredajax</id><content type="html" xml:base="https://blog.toshimaru.net/jquery-ajaxdeferredajax/">&lt;p&gt;本エントリは&lt;a href=&quot;http://www.adventar.org/calendars/29&quot;&gt;軽めのjQuery Advent Calendar 2012&lt;/a&gt;の14日目の記事として書きます。軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong class=&quot;red&quot;&gt;※ Twitter API仕様変更によりTwitter APIを使ったコード例は現在動作しなくなっていることにご注意。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;jquery-14以前の書き方&quot;&gt;jQuery 1.4以前の書き方&lt;/h2&gt;
+
+&lt;p&gt;まずは、少し古めのコード、昔のjQueryの本とかでよく見る書き方。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ajax.html&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;success!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error!!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;jquery-15以上の書き方&quot;&gt;jQuery 1.5以上の書き方&lt;/h2&gt;
+
+&lt;p&gt;1.5以降だと、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$.ajax()&lt;/code&gt; は&lt;a href=&quot;http://api.jquery.com/jQuery.ajax/#jqXHR&quot;&gt;jqXHRオブジェクト&lt;/a&gt;を返すようになります。それを利用した書き方はこう。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ajax.html&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;success!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error!!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;成功時の処理と失敗時の処理が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ajax()&lt;/code&gt;と並列に書くことができ、コード全体の見通しがぐっとよくなりましたね。&lt;/p&gt;
+
+&lt;h2 id=&quot;jquery-18以上の書き方&quot;&gt;jQuery 1.8以上の書き方&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://api.jquery.com/jQuery.ajax/&quot;&gt;公式リファレンス&lt;/a&gt;いわく、&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Deprecation Notice: The jqXHR.success(), jqXHR.error(), and jqXHR.complete() callbacks will be deprecated in jQuery 1.8. To prepare your code for their eventual removal, use jqXHR.done(), jqXHR.fail(), and jqXHR.always() instead.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;つまり要約するとjQuery1.8から&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;success()&lt;/code&gt; は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;done()&lt;/code&gt; に、&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;error()&lt;/code&gt; は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fail()&lt;/code&gt; に、&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;complete()&lt;/code&gt; は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;always()&lt;/code&gt;を&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;代わりに使ってね、ってことです。ということで、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;success()&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;error()&lt;/code&gt;は使わない。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ajax.html&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;success!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error!!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;あるいは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;then()&lt;/code&gt;を用いてこう書いてもいいでしょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ajax.html&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;success!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;error!!&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;then()&lt;/code&gt;の一個目の関数が成功時、二個目の関数が失敗時となります。&lt;/p&gt;
+
+&lt;h2 id=&quot;発展編1deferredを用いた書き方&quot;&gt;【発展編1】Deferredを用いた書き方&lt;/h2&gt;
+
+&lt;p&gt;上述した例の中でさりげなくDeferredな書き方を使っていましたが、発展編ということでこのDeferredな書き方をさらに突き詰めてみましょう。&lt;/p&gt;
+
+&lt;h3 id=&quot;deferredとは何か&quot;&gt;deferredとは何か？&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;jQuery.Deferred() introduces several enhancements to the way callbacks are managed and invoked. In particular, jQuery.Deferred() provides flexible ways to provide multiple callbacks, and these callbacks can be invoked regardless of whether the original callback dispatch has already occurred. jQuery Deferred is based on the CommonJS Promises/A design.&lt;/p&gt;
+
+  &lt;p&gt;jQuery.Deferred() はコールバック関数の管理、実行に改善をもたらします。具体的には、jQuery.Deferred()は複数のコールバックの実行を柔軟に行うことができ、これらのコールバック関数は、オリジナルのコールバックのディスパッチが発生しているかどうかにかかわらず実行されます。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;要はコールバック関数の実行を延期(deferred)させて、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.then()&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.fail()&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.always()&lt;/code&gt;なんかを使って柔軟にコールバックを管理、実行できるってことです（雑）。&lt;/p&gt;
+
+&lt;p&gt;詳しくは下記を読むとよいでしょう。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://msdn.microsoft.com/en-us/magazine/gg723713.aspx&quot;&gt;Creating Responsive Applications Using jQuery Deferred and Promises&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://twitter.com/tokkonopapa&quot;&gt;@tokkonoPapa&lt;/a&gt;さんによる上記事の翻訳はこちら → &lt;a href=&quot;http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/jquery-deferred-for-responsive-applications-basic/&quot;&gt;jQueryのDeferredとPromiseで応答性の良いアプリをー基本編&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;論より実践。deferredをうまく使ったAjaxコードを見てみましょう。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jsfiddle.net/toshimaru/yP58L/1/light/&quot;&gt;jsfiddleでの実例はこちら&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Twitter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;defer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Deferred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;http://search.twitter.com/search.json&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;na&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;na&quot;&gt;rpp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;dataType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;jsonp&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;defer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;defer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;defer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;#button&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;click&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Twitter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;jquery deferred&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+           &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;#tweets&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;lt;br/&amp;gt;&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;見てわかるとおり、Deferredを使うことでtwitterの検索を行うAjax部分と結果取得時のイベント処理部分が分離できます。&lt;/p&gt;
+
+&lt;p&gt;これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;Twitter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;query hoge&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* ...code... */&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。&lt;/p&gt;
+
+&lt;h2 id=&quot;発展編2when-を用いた書き方&quot;&gt;【発展編2】$.when() を用いた書き方&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$.when()&lt;/code&gt;を用いると複数のdeferredオブジェクトをまとめて管理できます。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jsfiddle.net/toshimaru/nNMae/&quot;&gt;jsfiddleでの実例はこちら&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// `Twitter`のコードは同上&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// var Twitter = { ... }&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;#button&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;click&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;when&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Twitter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;jquery deferred&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Twitter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;jquery when&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;when内のDeferredオブジェクト全ての処理が完了すると、その後の処理が発火します。複数のAJAX結果をまとめて処理したいってときに使えます。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;いかがだったでしょうか？ Deferredオブジェクトを使うことでより楽しいAjaxライフが送れそうですね。ワクワクしますね。&lt;/p&gt;
+
+&lt;p&gt;本日紹介したコードは&lt;a href=&quot;https://gist.github.com/4269484&quot;&gt;gist&lt;/a&gt;にも上げております。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://d.hatena.ne.jp/aoe-tk/20110515/1305471586&quot;&gt;jQueryのDeferredオブジェクトについて調べてみた&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://tokkono.cute.coocan.jp/blog/slow/index.php/programming/how-happy-with-jquery-deferred-for-your-applications/&quot;&gt;jQueryのDeferredとPromiseで応答性の良いアプリをー実践編&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="jquery" /><category term="javascript" /><category term="ajax" /><summary type="html">本エントリは軽めのjQuery Advent Calendar 2012の14日目の記事として書きます。軽めといいながら少し重めになってしまった感がありますが、初めてのAdvent Calendar参加ということでご勘弁を。</summary></entry><entry><title type="html">jQueryで画像を順番にfadeInする</title><link href="https://blog.toshimaru.net/jqueryfadein/" rel="alternate" type="text/html" title="jQueryで画像を順番にfadeInする" /><published>2012-09-30T00:00:00+09:00</published><updated>2012-09-30T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jqueryfadein</id><content type="html" xml:base="https://blog.toshimaru.net/jqueryfadein/">&lt;p&gt;写真をクールに１枚づつフェードインしていく。画像共有サイトで見たエフェクトです。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://toshimaru.net/demo/order-fade/&quot;&gt;http://toshimaru.net/demo/order-fade/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2012/09/images.png&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;ポイントは&lt;code&gt;$(&quot;img:hidden:first&quot;)&lt;/code&gt;で画像のhidden状態をセレクトして、再帰的にフェードインかけているところです。下記のコードのような感じ。&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&quot;https://gist.github.com/3747845.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jquery" /><summary type="html">写真をクールに１枚づつフェードインしていく。画像共有サイトで見たエフェクトです。</summary></entry><entry><title type="html">Twitter Search API をJSで呼んでみる</title><link href="https://blog.toshimaru.net/twitter-search-api-js/" rel="alternate" type="text/html" title="Twitter Search API をJSで呼んでみる" /><published>2012-09-23T00:00:00+09:00</published><updated>2012-09-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/twitter-search-api-js</id><content type="html" xml:base="https://blog.toshimaru.net/twitter-search-api-js/">&lt;p&gt;Twitter search API をJSを使って呼ぶ簡単なサンプルを作ってみました。せっかくなので、Bootstrap &amp;amp; Hogan.js という二つのTwitter製オープンソースフレームワークを使ってみました。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;【!追記】現在はTwitter APIの仕様変更にて動かなくなっています。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://toshimaru.net/demo/gettweet/&quot;&gt;http://toshimaru.net/demo/gettweet/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/2012/09/twitter.png&quot; alt=&quot;twitter search api&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;使っている言語など。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;HTML: html5&lt;/li&gt;
+  &lt;li&gt;JS: jQuery, &lt;a href=&quot;http://twitter.github.com/hogan.js/&quot;&gt;hogan.js(template engine)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;CSS: &lt;a href=&quot;http://twitter.github.com/bootstrap/&quot;&gt;bootstrap&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://dev.twitter.com/docs/api/1/get/search&quot;&gt;GET search&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.asial.co.jp/659&quot;&gt;Twitter-APIを使ってみました&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="css" /><category term="javascript" /><category term="jquery" /><summary type="html">Twitter search API をJSを使って呼ぶ簡単なサンプルを作ってみました。せっかくなので、Bootstrap &amp;amp; Hogan.js という二つのTwitter製オープンソースフレームワークを使ってみました。</summary></entry></feed>

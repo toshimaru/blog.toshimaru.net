@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/network.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/network.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">RailsアプリケーションをLAN内に公開する</title><link href="https://blog.toshimaru.net/publish-rails-app-in-lan/" rel="alternate" type="text/html" title="RailsアプリケーションをLAN内に公開する" /><published>2015-07-17T00:00:00+09:00</published><updated>2015-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/publish-rails-app-in-lan</id><content type="html" xml:base="https://blog.toshimaru.net/publish-rails-app-in-lan/">&lt;p&gt;普通に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails server&lt;/code&gt;した場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからローカルIPではアクセスすることができません。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rails server
+=&amp;gt; Booting WEBrick
+=&amp;gt; Rails 4.2.3 application starting in development on http://localhost:3000
+=&amp;gt; Run `rails server -h` for more startup options
+=&amp;gt; Ctrl-C to shutdown server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これをLAN内に公開したい場合はどうするか。下記のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;binding&lt;/code&gt;のオプションを付けてその値として&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt;を指定します。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rails server --binding=0.0.0.0
+=&amp;gt; Booting WEBrick
+=&amp;gt; Rails 4.2.3 application starting in development on http://0.0.0.0:3000
+=&amp;gt; Run `rails server -h` for more startup options
+=&amp;gt; Ctrl-C to shutdown server
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このコマンドを使うことで同じLAN内にいるクライアントからRailsが起動しているマシンのローカルIPをポート番号とともに（例: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.1.xx:3000&lt;/code&gt;）を叩けば、アプリケーションへとアクセス可能になります。&lt;/p&gt;
+
+&lt;h2 id=&quot;なぜ0000&quot;&gt;なぜ0.0.0.0？&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails server&lt;/code&gt;コマンドはデフォルトで&lt;strong&gt;ループバックアドレス&lt;/strong&gt;、つまりlocalhost(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;127.0.0.1&lt;/code&gt;)にバインドされます。ループバックアドレスは自分自身を指し示すアドレスなのでなので外部からのアクセスは弾かれます。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;常に「自分自身」を指すIPアドレスは、当然ですが、他のコンピュータとの通信などには使えません。&lt;/p&gt;
+
+  &lt;p&gt;&lt;a href=&quot;http://www.arearesearch.co.jp/learn/ip/09.html&quot;&gt;ローカルループバックアドレス | IPラーニング&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;よってデフォルトの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails server&lt;/code&gt;起動コマンドではでは外部からのアクセスは遮断されます。&lt;/p&gt;
+
+&lt;p&gt;一方、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt;はどうかというと、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt;のアドレスには複数の意味があり文脈によって意味が異なっています。今回の場合、ループバックアドレス含む全てのIPアドレスという意味です。ときに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt;のアドレスは&lt;strong&gt;ワイルドカードアドレス&lt;/strong&gt;と言われることもあります。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;システムにおけるすべてのインタフェースのすべてのIPアドレス&lt;/p&gt;
+
+  &lt;p&gt;&lt;a href=&quot;http://news.mynavi.jp/news/2016/10/25/414/&quot;&gt;IPv4アドレス「0.0.0.0」の意味は? | マイナビニュース&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;本記事で紹介した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails server&lt;/code&gt;のコマンドは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;binding&lt;/code&gt;オプションによって&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.0.0.0&lt;/code&gt;に明示的にバインドすることにより、外部からのアクセスも許可しています。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/29132719/rails-application-not-visible-to-local-network&quot;&gt;osx yosemite - Rails application not visible to local network - Stack Overflow&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://fossbytes.com/ip-address-0-0-0-0-meaning-default-route-uses/&quot;&gt;What Does The IP Address 0.0.0.0 Really Mean? What Are Its Different Uses?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="network" /><summary type="html">普通にrails serverした場合、デフォルトでlocalhost:3000でリッスンするので、LAN(Local Area Network)内の外部のクライアントからローカルIPではアクセスすることができません。</summary></entry><entry><title type="html">MacOSでMACアドレスを変更するコマンド</title><link href="https://blog.toshimaru.net/change-mac-address/" rel="alternate" type="text/html" title="MacOSでMACアドレスを変更するコマンド" /><published>2013-08-02T00:00:00+09:00</published><updated>2013-08-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/change-mac-address</id><content type="html" xml:base="https://blog.toshimaru.net/change-mac-address/">&lt;h2 id=&quot;macアドレスの変更コマンド&quot;&gt;MACアドレスの変更コマンド&lt;/h2&gt;
+
+&lt;p&gt;MACアドレスを変更するコマンドが思ったより簡単に実行できたのでご紹介。(環境はMac OS X 10.8)&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;ifconfig en0 ether XX:XX:XX:XX:XX:XX
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;XX:XX:XX:XX:XX:XX&lt;/code&gt; の部分に変更したいMACアドレスを入れて実行してください。&lt;/p&gt;
+
+&lt;h2 id=&quot;ランダムなmacアドレスを生成&quot;&gt;ランダムなMACアドレスを生成&lt;/h2&gt;
+
+&lt;p&gt;MACアドレスを適当に生成したければこちらをどうぞ。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;openssl rand &lt;span class=&quot;nt&quot;&gt;-hex&lt;/span&gt; 6 | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/\(..\)/\1:/g; s/.$//'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このコマンドで下記のようなランダムなMACアドレスを生成してくれます。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;f8:e4:03:88:9d:37
+83:c8:ab:8b:39:4d
+0b:ad:21:f1:03:9c
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://whatismyipaddress.com/change-mac&quot;&gt;How do I change my MAC address?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="mac" /><category term="network" /><summary type="html">MACアドレスの変更コマンド</summary></entry><entry><title type="html">SNMPサーバを立てて、クライアントからsnmpwalkする</title><link href="https://blog.toshimaru.net/snmpsnmpwalk/" rel="alternate" type="text/html" title="SNMPサーバを立てて、クライアントからsnmpwalkする" /><published>2011-12-04T00:00:00+09:00</published><updated>2011-12-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/snmpsnmpwalk</id><content type="html" xml:base="https://blog.toshimaru.net/snmpsnmpwalk/">&lt;p&gt;お仕事でSNMPを使うことがありましたので勉強がてらメモ。&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre&gt;$ sudo apt-get install snmp snmpd&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;localhostにsnmpwalkしてMIBツリーの情報を取得できます。&lt;/p&gt;
+
+&lt;div&gt;
+&lt;pre&gt;$ snmpwalk -v 1 -c public localhost
+ iso.3.6.1.2.1.1.1.0 = STRING: &amp;quot;Linux ubuntu 3.0.0-12-generic #20-Ubuntu SMP Fri Oct 7 14:56:25 UTC 2011 x86_64&amp;quot;
+ iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.10
+（以下略...）&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;デフォルトの状態だとlocalhostのみで外部からsnmpwalkできないので、/etc/snmp/snmpd.conf　のagentAddressを下記のように編集してsnmpdを再起動する。&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre&gt;agentAddress  udp:161&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これで外部からsnmpwalkできるようになります。&lt;/p&gt;
+
+&lt;h3&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html&quot;&gt;http://www.atmarkit.co.jp/flinux/rensai/root07/root07c.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html&quot;&gt;http://www.uetyi.mydns.jp/wordpress/snmp-setting/entry-137.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="linux" /><category term="network" /><summary type="html">お仕事でSNMPを使うことがありましたので勉強がてらメモ。 $ sudo apt-get install snmp snmpd</summary></entry><entry><title type="html">vmware上のubuntuのネットワーク設定</title><link href="https://blog.toshimaru.net/vmwareubuntu/" rel="alternate" type="text/html" title="vmware上のubuntuのネットワーク設定" /><published>2011-11-02T00:00:00+09:00</published><updated>2011-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vmwareubuntu</id><content type="html" xml:base="https://blog.toshimaru.net/vmwareubuntu/">&lt;p&gt;をちょっとメモ&lt;/p&gt;
+&lt;p&gt;まずはeth0に静的IPを割り振りましょう。/etc/network/interfaces を下記のような感じで書き換える。&lt;/p&gt;
+&lt;p&gt;（参考：&lt;a href=&quot;http://tobysoft.net/wiki/index.php?Ubuntu%2F%A5%A4%A5%F3%A5%B9%A5%C8%A1%BC%A5%EB%B8%E5%A4%CE%C0%DF%C4%EA#v8e1badd&quot;&gt;Ubuntu/インストール後の設定&lt;/a&gt; ）&lt;/p&gt;
+&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static         # ↓ 注意：この日本語コメントは削除してください（でないとかしくなります）
+        address 192.168.0.100  # ← IPアドレス
+        network 192.168.0.0  # ← (サブ)ネットワークのアドレス .0で終わるはず
+        netmask 255.255.255.0  # ← ネットマスク
+        broadcast 192.168.0.255 # ←ブロードキャストアドレス .255で終わるはず
+        :ateway 192.168.0.1  # ← ゲートウェイ（ルーター）のアドレス
+        dns-nameservers 192.168.0.10  # ← DNSのアドレス&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;設定を変えたら以下のコマンドで設定を反映させます。&lt;/p&gt;
+&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;sudo /etc/init.d/networking restart&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;するとこんなエラー。&lt;/p&gt;
+&lt;div class=&quot;CodeRay&quot;&gt;
+  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;eth0: ERROR while getting interface flags: No such device&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;これに対しては、以下の対応をするとよいよう。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt; /etc/udev/rules.d/70-persistent-net.rulesの SUBSYSTEM==&amp;rdquo;net&amp;rdquo;から始まる行を削除（またはコメントアウト） &lt;/li&gt;
+&lt;li&gt; /etc/udev/rules.d/75-persistent-net-generator.rulesの以下2行を削除（またはコメントアウト） &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;(参考：&lt;a href=&quot;http://namahage.dip.jp/blog/2107&quot;&gt;vmwareのubuntuを別PCへ移動で eth0: ERROR&lt;/a&gt;）&lt;/p&gt;
+&lt;p&gt;これで問題なく通りましたとさ。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="linux" /><category term="network" /><summary type="html">をちょっとメモ まずはeth0に静的IPを割り振りましょう。/etc/network/interfaces を下記のような感じで書き換える。 （参考：Ubuntu/インストール後の設定 ） auto lo iface lo inet loopback</summary></entry></feed>

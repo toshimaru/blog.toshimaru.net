@@ -1,181 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Rubyで数値の0埋め</title><link href="https://blog.toshimaru.net/ruby-0-padding/" rel="alternate" type="text/html" title="Rubyで数値の0埋め" /><published>2020-06-30T00:00:00+09:00</published><updated>2020-06-30T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-0-padding</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-0-padding/">&lt;p&gt;Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。&lt;/p&gt;
-
-&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
-
-&lt;p&gt;結論としては下記のように書くとよい。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09&amp;lt;number&amp;gt;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;number: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;rubyで数値の0埋め&quot;&gt;Rubyで数値の0埋め&lt;/h2&gt;
-
-&lt;p&gt;Rubyで数値の0埋めしようと思うとこんな感じのコードになる。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://docs.ruby-lang.org/ja/latest/doc/print_format.html&quot;&gt;sprintf フォーマット&lt;/a&gt;はC由来の関数だ。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%09d&lt;/code&gt;の意味としては&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%d&lt;/code&gt;が数値、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;09&lt;/code&gt;は9桁の0埋めという意味になる。&lt;/p&gt;
-
-&lt;p&gt;また、&lt;a href=&quot;https://docs.ruby-lang.org/ja/latest/class/String.html#I_--25&quot;&gt;String#%&lt;/a&gt;を使う方法もある。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sprintf&lt;/code&gt;と同じ挙動をする。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09d&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;こちらのほうがより簡潔な表記だ。&lt;/p&gt;
-
-&lt;h2 id=&quot;rubocopのオススメ書き方&quot;&gt;RuboCopのオススメ書き方&lt;/h2&gt;
-
-&lt;p&gt;上述の書き方でも問題ないのだが、rubocop（デフォルト設定）に通すと下記の通り怒られる。&lt;/p&gt;
-
-&lt;h3 id=&quot;favor-format-over-sprintf&quot;&gt;Favor format over sprintf&lt;/h3&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C: Style/FormatString: Favor format over sprintf.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sprintf&lt;/code&gt;ではなく&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;format&lt;/code&gt;を使え、と。また &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String#%&lt;/code&gt; を使った書き方も下記の指摘がくる。&lt;/p&gt;
-
-&lt;h3 id=&quot;favor-format-over-string&quot;&gt;Favor format over String#%&lt;/h3&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C: Style/FormatString: Favor format over String#%.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;ちなみに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;format&lt;/code&gt;は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sprintf&lt;/code&gt;のエイリアス関数。&lt;/p&gt;
-
-&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;rb_define_global_function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sprintf&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f_sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;rb_define_global_function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;format&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f_sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;ref. &lt;a href=&quot;https://github.com/ruby/ruby/blob/946e5cc668f66a4a0b79461047d3fcba8b71eef0/object.c#L4630-L4631&quot;&gt;ruby/object.c at 946e5cc668f66a4a0b79461047d3fcba8b71eef0 · ruby/ruby&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;rubocopの指摘に従って下記のように修正してみる。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;prefer-annotated-tokens&quot;&gt;Prefer annotated tokens&lt;/h3&gt;
-
-&lt;p&gt;これでもrubocopに下記のように怒られる。&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C: Style/FormatStringToken: Prefer annotated tokens (like %&amp;lt;foo&amp;gt;s) over unannotated tokens (like %s).
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;foo&amp;gt;&lt;/code&gt;のようなannotated tokenを使って名前を与えてやれ、とのことらしい。&lt;/p&gt;
-
-&lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
-
-&lt;p&gt;rubocopの指摘を乗り越えて、最終的には下記で完成です。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09&amp;lt;number&amp;gt;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;number: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</title><link href="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/" rel="alternate" type="text/html" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" /><published>2020-06-22T00:00:00+09:00</published><updated>2020-06-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-deploy-with-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/">&lt;p&gt;Jekyll製&lt;a href=&quot;https://blog.toshima.ru/&quot;&gt;英語ブログ&lt;/a&gt;のGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。&lt;/p&gt;
-
-&lt;h2 id=&quot;今までのデプロイ方式&quot;&gt;今までのデプロイ方式&lt;/h2&gt;
-
-&lt;p&gt;今までどうページソースをGitHub Pagesに自動デプロイしていたかでいうと、&lt;a href=&quot;/autodeploy-jekyll/&quot;&gt;Jekyllでgit pushをフックしてGithub Pagesへ自動デプロイ&lt;/a&gt;するようにしていた。&lt;/p&gt;
-
-&lt;p&gt;この方法でも全く問題ないがセットアップがやや面倒。なので英語ブログは手動デプロイ状態のまま放置していた。今はGitHub Actionsを使ったデプロイ方式がナウそうだ、とのことで重い腰を上げてその方式をトライ。&lt;/p&gt;
-
-&lt;h2 id=&quot;新しいデプロイ方式&quot;&gt;新しいデプロイ方式&lt;/h2&gt;
-
-&lt;p&gt;対応したPull Request: &lt;a href=&quot;https://github.com/toshimaru/blog.toshima.ru/pull/160&quot;&gt;Deploy Automation with GitHub Actions · toshimaru/blog.toshima.ru&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;やっていることとしては至ってシンプル。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;masterブランチで変更があった場合にActionをトリガー&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;生成した静的コンテンツのデータを&lt;a href=&quot;https://github.com/peaceiris/actions-gh-pages&quot;&gt;peaceiris/actions-gh-pages&lt;/a&gt;を使って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにデプロイ&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;github-actions-configuration&quot;&gt;GitHub Actions Configuration&lt;/h2&gt;
-
-&lt;p&gt;実際のyamlファイルの設定は下記の通り。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;branches&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;master&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;gh-pages-deploy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Set up Ruby&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.7&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle config set path 'vendor/bundle'&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Jekyll Build&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec jekyll build&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deploy&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;peaceiris/actions-gh-pages@v3&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;personal_token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;publish_dir&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./_site&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;従来と比べて良い点&quot;&gt;従来と比べて良い点&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにpushするにあたって&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; でトークンをセットするだけ。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><category term="github" /><category term="ci" /><summary type="html">Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">DependabotをGitHub公式Dependabotに移行させた</title><link href="https://blog.toshimaru.net/github-dependabot/" rel="alternate" type="text/html" title="DependabotをGitHub公式Dependabotに移行させた" /><published>2020-06-18T00:00:00+09:00</published><updated>2020-06-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-dependabot</id><content type="html" xml:base="https://blog.toshimaru.net/github-dependabot/">&lt;p&gt;&lt;a href=&quot;https://dependabot.com/blog/hello-github/&quot;&gt;2019年、DependabotがGitHubに買収された&lt;/a&gt;ことはご存知の通り。&lt;/p&gt;
-
-&lt;p&gt;そのDependabotの機能が公式機能として取り込まれたということので早速移行してみた。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.blog/2020-06-01-keep-all-your-packages-up-to-date-with-dependabot/&quot;&gt;Keep all your packages up to date with Dependabot - The GitHub Blog&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;dependabot管理画面から簡単移行&quot;&gt;Dependabot管理画面から簡単移行&lt;/h2&gt;
-
-&lt;p&gt;既存のDependabot管理画面から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Create config file&lt;/code&gt;をクリック。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/create-config.png&quot; alt=&quot;config&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;githubdependabotyml-作成&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/dependabot.yml&lt;/code&gt; 作成&lt;/h2&gt;
-
-&lt;p&gt;するとdependabot-preview氏がPull Requestを自動的に作ってくれる。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/pr.png&quot; alt=&quot;pull request&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;via. &lt;a href=&quot;https://github.com/toshimaru/auto-author-assign/pull/15&quot;&gt;Create Dependabot config file by dependabot-preview · Pull Request #15 · toshimaru/auto-author-assign&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;yamlの内容は下記の通り。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;updates&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;package-ecosystem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;npm&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/&quot;&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;weekly&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;21:00'&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;open-pull-requests-limit&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;reviewers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;既存の設定をベースに自動的に内容を作成してくれた雰囲気。&lt;/p&gt;
-
-&lt;h2 id=&quot;移行完了&quot;&gt;移行完了&lt;/h2&gt;
-
-&lt;p&gt;PRをマージし、無事に移行が完了するとDependabot管理画面は下記のような表示となる。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/finish.png&quot; alt=&quot;done&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;下記の通りユーザー名は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dependabot-preview&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dependabot&lt;/code&gt; へと変更されている。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/commit-log.png&quot; alt=&quot;log&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;新しいdependabotが作るPRはgithubの公式ロゴが入っている。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/new-pr.png&quot; alt=&quot;log&quot; /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;余談だが&lt;a href=&quot;https://github.blog/2019-06-17-github-acquires-pull-panda/&quot;&gt;同年に買収されたPull Panda&lt;/a&gt;のリマインダー機能もGitHubの公式機能に取り込まれている。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/managing-scheduled-reminders-for-your-team&quot;&gt;Managing scheduled reminders for your team - GitHub Help&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;良い機能がこのように＜買収→公式機能＞となっていくのは良い流れですね。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html">2019年、DependabotがGitHubに買収されたことはご存知の通り。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/rails.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/rails.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
 
 &lt;p&gt;当日あった質問、発表してみての感想などを書きたいと思います。&lt;/p&gt;
 
@@ -1146,102 +969,7 @@
       &lt;p&gt;Ruby/Rails公式の提供する機能はgemより貧弱だったりするのであしからず &lt;a href=&quot;#fnref:10&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt; &lt;a href=&quot;#fnref:10:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rails" /><category term="activerecord" /><summary type="html">銀座Rails#21で「Fat Modelの倒し方」と題して発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/" rel="alternate" type="text/html" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす" /><published>2020-05-31T00:00:00+09:00</published><updated>2020-06-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/">&lt;p&gt;過去に&lt;a href=&quot;/reviewdog-rubocop/&quot;&gt;reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事&lt;/a&gt;を書きました。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. | reviewdogを使ってCI上でRuboCop自動レビューを動かす - Hack Your Design! &lt;a href=&quot;https://t.co/8vdNUEIisX&quot;&gt;https://t.co/8vdNUEIisX&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1064661783594491904?ref_src=twsrc%5Etfw&quot;&gt;November 19, 2018&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;本記事はそれの&lt;a href=&quot;https://github.com/features/actions&quot;&gt;GitHub Actions&lt;/a&gt;バージョンになります。&lt;/p&gt;
-
-&lt;h2 id=&quot;なぜgithub-actionなのか&quot;&gt;なぜGitHub Actionなのか？&lt;/h2&gt;
-
-&lt;p&gt;以前に書いた記事のようにCircleCIでも問題はないものの、GitHub ActionsはデフォルトでPull Requestにコメント可能な &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GITHUB_TOKEN&lt;/code&gt; を吐くことが可能で、そのへんのtoken周りの煩雑な設定が不要という点でCircleCIよりアドバンテージがあると言えます。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token&quot;&gt;Authenticating with the GITHUB_TOKEN - GitHub Help&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsのほうが優れている印象があります。&lt;/p&gt;
-
-&lt;h2 id=&quot;基本のrubocop設定&quot;&gt;基本のrubocop設定&lt;/h2&gt;
-
-&lt;p&gt;GitHub Actionsで動かす基本となるrubocop設定は下記の通りです。&lt;/p&gt;
-
-&lt;p&gt;※ 実際はbundlerのキャッシュの設定などが必要ですが今回は設定していません&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/workflows/rubocop.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.6&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run rubocop&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;上述の設定をベースにreviewdogを使った自動レビューの設定を追加していきます。&lt;/p&gt;
-
-&lt;h2 id=&quot;reviewdogによる自動レビューを追加&quot;&gt;reviewdogによる自動レビューを追加&lt;/h2&gt;
-
-&lt;p&gt;追加するのは下記の2ステップです。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Setup reviewdog: reviewdog のバイナリをインストール&lt;/li&gt;
-  &lt;li&gt;Run rubocop with reviewdog: rubocop の指摘を reviewdog に渡してPRコメントを付けさせる&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;yamlファイルとしては下記になります。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/workflows/rubocop.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.6&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Setup reviewdog&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;mkdir -p $HOME/bin &amp;amp;&amp;amp; curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b $HOME/bin&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;echo ::add-path::$HOME/bin&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run rubocop with reviewdog&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;REVIEWDOG_GITHUB_API_TOKEN&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | reviewdog -reporter=github-pr-review -f=rubocop&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;レビューコメント&quot;&gt;レビューコメント&lt;/h2&gt;
-
-&lt;p&gt;設定がうまくいっていれば、下記のように &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;github-actions&lt;/code&gt; からの自動レビューコメントが付きます。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/rubocop-actions/rubocop-by-github-actions.png&quot; alt=&quot;comment by github-actions&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;実際に動かしてみたpull-request&quot;&gt;実際に動かしてみたPull Request&lt;/h2&gt;
-
-&lt;p&gt;実際にこの構成で設定してみたPRは下記になります。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/Test/pull/16&quot;&gt;rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
-
-&lt;p&gt;本記事ではミニマルな設定を紹介しましたが、実行高速化のために実際は下記の設定もあわせてしたほうが良いでしょう。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;bundler cache の設定&lt;/li&gt;
-  &lt;li&gt;rubocop cache の設定（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.cache/rubocop_cache&lt;/code&gt;）&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--parallel&lt;/code&gt; オプションの追加&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rubocop" /><category term="github" /><category term="ci" /><category term="review" /><summary type="html">過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rails" /><category term="activerecord" /><summary type="html">銀座Rails#21で「Fat Modelの倒し方」と題して発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">[Ruby]日時が特定日時の範囲内にあるかのチェック</title><link href="https://blog.toshimaru.net/datetime-range-check/" rel="alternate" type="text/html" title="[Ruby]日時が特定日時の範囲内にあるかのチェック" /><published>2020-05-17T00:00:00+09:00</published><updated>2020-05-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/datetime-range-check</id><content type="html" xml:base="https://blog.toshimaru.net/datetime-range-check/">&lt;h1 id=&quot;timewithzonebetween-で範囲内判定&quot;&gt;TimeWithZone#between? で範囲内判定&lt;/h1&gt;
 
 &lt;p&gt;特定日付が範囲内にあるかの判定を行うには &lt;a href=&quot;https://railsdoc.github.io/classes/ActiveSupport/TimeWithZone.html#method-i-between-3F&quot;&gt;ActiveSupport::TimeWithZone#between?&lt;/a&gt; が使える。&lt;/p&gt;
 
@@ -1294,132 +1022,7 @@
 &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tomorrow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cover?&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="rails" /><summary type="html">TimeWithZone#between? で範囲内判定</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-range.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-range.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">【レビュー】HHKB Hybrid Type-S をしばらく使ってみた感想</title><link href="https://blog.toshimaru.net/hhkb-hybrid-type-s/" rel="alternate" type="text/html" title="【レビュー】HHKB Hybrid Type-S をしばらく使ってみた感想" /><published>2020-05-02T00:00:00+09:00</published><updated>2020-05-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/hhkb-hybrid-type-s</id><content type="html" xml:base="https://blog.toshimaru.net/hhkb-hybrid-type-s/">&lt;p&gt;&lt;a href=&quot;https://happyhackingkb.com/jp/products/hybrid_types/&quot;&gt;HHKB Professional
-HYBRID Type-S&lt;/a&gt; を購入してしばらく経ったので使ってみた感想を書いてみます。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;例のブツです &lt;a href=&quot;https://twitter.com/hashtag/HHKB?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#HHKB&lt;/a&gt; &lt;a href=&quot;https://t.co/agDV1Hol5Z&quot;&gt;pic.twitter.com/agDV1Hol5Z&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1206387903632248833?ref_src=twsrc%5Etfw&quot;&gt;December 16, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B082TXLC2B&amp;amp;linkId=c5256b54070710d4ccbe87264a98553d&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B082TSZ27D&amp;amp;linkId=06db5d4f52a7b49dce985f7445194cbb&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;購入モチベーション&quot;&gt;購入モチベーション&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;not Type-SなHHKBはややうるさい&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;自分でタイピングしているときは気にならないけど、隣でバシバシ叩かれているのを体験するとやや音が耳障りなときがある。ノイズを気にせずタイピングできるように静音性のある Type-S が欲しかった&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Type-C接続&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;mini USB接続で macbook の Type-C と接続しているのがどうも時代遅れ感があってイヤだった&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Bluetooth接続&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;BT無線接続でもキーボードを接続したかった&lt;/li&gt;
-      &lt;li&gt;⚠️ Bluetooth接続できるのは、macOS 10.15（Catalina）以降&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;その他
-    &lt;ul&gt;
-      &lt;li&gt;（&lt;a href=&quot;https://medpeer.co.jp/recruit/workplace/development.html&quot;&gt;会社の補助&lt;/a&gt;が出る 😏）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;購入したモデル&quot;&gt;購入したモデル&lt;/h2&gt;
-
-&lt;p&gt;カラーは白、日本語配列を購入しました。&lt;/p&gt;
-
-&lt;p&gt;今までは中二心をくすぐる墨カラーを使用していましたが、キーの視認性が悪く不便と気づいてしまったので白をセレクトしました（大人になったのね、私）。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/hhkb/white-hhkb.jpg&quot; alt=&quot;白、日本語配列HHKB&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;下記エントリで紹介した通り、尊師スタイルで利用しています。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;/macbook-hhkb-sonshi-style/&quot;&gt;俺流 MacBook+HHKB 最強尊師スタイル&lt;/a&gt;&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B077ZSGQDH&amp;amp;linkId=254fa7761170460244a7a889534107de&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;hhkb-hybrid-特徴&quot;&gt;HHKB Hybrid 特徴&lt;/h2&gt;
-
-&lt;h3 id=&quot;無線接続有線接続&quot;&gt;無線接続/有線接続&lt;/h3&gt;
-
-&lt;p&gt;名前のHybridというのはどうやら無線接続・有線接続のハイブリッド接続が可能、という意味っぽいです。&lt;/p&gt;
-
-&lt;p&gt;これにより、シーンに合わせて下記のように使い分けできるのは便利かもしれません。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;自宅メインで接続するときは有線接続&lt;/li&gt;
-  &lt;li&gt;持ち運び利用するときは無線接続&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;なお、無線の給電がバッテリーではなく乾電池なのは「HHKBを長く使ってもらうため」とのこと。バッテリーだと確かにヘタってしまうので、乾電池の採用はPFUらしい設計思想と言えるかもしれません。&lt;/p&gt;
-
-&lt;h3 id=&quot;usb-type-c&quot;&gt;USB Type-C&lt;/h3&gt;
-
-&lt;p&gt;HHKB Hybrid ではUSB Type-Cによる接続が可能です。&lt;/p&gt;
-
-&lt;p&gt;上述の通り僕は尊師スタイルでHHKBを使っているのでディスプレイとHHKB接続面がぶつからないように下記のL字のUSB Type-Cケーブルを購入しておきました。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B07PLRNWQ7&amp;amp;linkId=012378bddd1c67b23ef7468a9f50f430&quot;&gt;&lt;/iframe&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/hhkb/hhkbcover.jpg&quot; alt=&quot;キーボードルーフ&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;☝️キャンペーンで無料で付いてきたキーボードルーフ。キーボード隙間に入り込むホコリを防げて地味に便利。&lt;/p&gt;
-
-&lt;h2 id=&quot;しばらく使ってみた感想&quot;&gt;しばらく使ってみた感想&lt;/h2&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot; data-conversation=&quot;none&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Type-S、静かだし打ち心地もソフトで気持ちいい&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1207643044020801538?ref_src=twsrc%5Etfw&quot;&gt;December 19, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;静音性&quot;&gt;静音性&lt;/h3&gt;
-
-&lt;p&gt;キータイプしてまず驚くのは、その静音性。&lt;/p&gt;
-
-&lt;p&gt;not Type-SなHHKBを使ったことのなかった僕にとってType-Sを触ったのはこれが初でした。Type-SじゃなくともHHKBは十分に静かだと感じていたのですが、いざType-Sを使ってみると無印HHKBに比してやはり静か。&lt;/p&gt;
-
-&lt;p&gt;更に静音性を極めたい方であれば、PFU公式のHHKB吸振マットがあるのでこちらを購入すると良さそうです。&lt;/p&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B08344W1DY&amp;amp;linkId=2671483c8c0b7897242464be48511332&quot;&gt;&lt;/iframe&gt;
-
-&lt;p&gt;これだけの静音性であれば、HHKB使用時の同僚や家族からの「（うるせーな、こいつのキーボード…）」と思われる恐怖からは、いくばくか逃れることができると思います。&lt;/p&gt;
-
-&lt;h2 id=&quot;キータッチ&quot;&gt;キータッチ&lt;/h2&gt;
-
-&lt;p&gt;静音性とあわせて、キータッチもType-Sはだいぶソフトな印象があります。&lt;/p&gt;
-
-&lt;p&gt;これに関しては好みが分かれると思っていて「確かな打鍵感や音が好み」という方はType-Sではないほうが、好みではないかと思いました。&lt;/p&gt;
-
-&lt;p&gt;かくいう僕もそっちのタイプで、カチャカチャ鳴っているほうが＜俺仕事してる感＞が出て好きなんですよね（笑）。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Type-SなHHKB, not Type-SなHHKBを両方使った結果、not Type-SなHHKBのほうが好きということがわかった。「ｶﾁｬｶﾁｬ...ｯターン!!!」したい僕のような人間にとっては確かな打鍵感や打鍵時のフィードバックがあったほうが嬉しいのだ&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1222712303713312770?ref_src=twsrc%5Etfw&quot;&gt;January 30, 2020&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Type-C・Bluetooth接続は良いぞ&lt;/li&gt;
-  &lt;li&gt;Type-S は静かで良い
-    &lt;ul&gt;
-      &lt;li&gt;周囲に人がいる職場や家庭で使う場合はType-Sが良いのではないでしょうか&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;キータッチの感触は not Type-S のほうが個人的には好き&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B082TXLC2B&amp;amp;linkId=c5256b54070710d4ccbe87264a98553d&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B082TSZ27D&amp;amp;linkId=06db5d4f52a7b49dce985f7445194cbb&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B082TQK2SB&amp;amp;linkId=666af27170fbdef39da1b8d2de31e88d&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B082TYNNL2&amp;amp;linkId=70759e0c4f584e35a0935d040fa17d96&quot;&gt;&lt;/iframe&gt;
-
-&lt;h2 id=&quot;おまけ&quot;&gt;おまけ&lt;/h2&gt;
-
-&lt;p&gt;HHKBの持ち運びに100均のペットボトルクッションケースがシンデレラ・フィットという噂を聞いて試してみたらたしかにいい感じにフィットしました。公式ケースだとけっこういいお値段するのでオススメです。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;もしお知り合いに、「HHKBの新型を買って、持ち歩きたいけど安いクッションケースないんだよなー」という人がいたら、100均で売ってたペットボトルクッションケースがシンデレラフィットですよ、と伝えてあげてください。&lt;br /&gt; &lt;a href=&quot;https://twitter.com/hashtag/HHKB?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#HHKB&lt;/a&gt; &lt;a href=&quot;https://t.co/zgopIDk2vJ&quot;&gt;pic.twitter.com/zgopIDk2vJ&lt;/a&gt;&lt;/p&gt;&amp;mdash; いちのせさん (@yuhkiichinose) &lt;a href=&quot;https://twitter.com/yuhkiichinose/status/1206531899209863168?ref_src=twsrc%5Etfw&quot;&gt;December 16, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B073XGWYVH&amp;amp;linkId=1cfa8610e160a15364c222146ccca7cd&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B07DC5732N&amp;amp;linkId=743a7be3aa6974683f9ad656223c2d8d&quot;&gt;&lt;/iframe&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><summary type="html">HHKB Professional HYBRID Type-S を購入してしばらく経ったので使ってみた感想を書いてみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/hhkb/hhkb-hybrid.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/hhkb/hhkb-hybrid.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">docker-compose で Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2020-01-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="rails" /><summary type="html">TimeWithZone#between? で範囲内判定</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-range.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-range.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">docker-compose で Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2020-01-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
 
 &lt;h2 id=&quot;ゴール&quot;&gt;ゴール&lt;/h2&gt;
 
@@ -1656,348 +1259,709 @@ Server version: 8.0.18 MySQL Community Server - GPL
 
 &lt;ul&gt;
   &lt;li&gt;過去に同じことをやったときのエントリ: &lt;a href=&quot;docker-compose-rails/&quot;&gt;docker-compose で Rails 環境を構築する&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><category term="mysql" /><category term="rails" /><summary type="html">docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">転職活動（2019年）</title><link href="https://blog.toshimaru.net/job-change-2019/" rel="alternate" type="text/html" title="転職活動（2019年）" /><published>2019-12-23T00:00:00+09:00</published><updated>2019-12-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/job-change-2019</id><content type="html" xml:base="https://blog.toshimaru.net/job-change-2019/">&lt;p&gt;2019年は&lt;a href=&quot;/join-medpeer/&quot;&gt;転職&lt;/a&gt;というイベントがあった。&lt;/p&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><category term="mysql" /><category term="rails" /><summary type="html">docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</title><link href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/" rel="alternate" type="text/html" title="ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法" /><published>2019-11-10T00:00:00+09:00</published><updated>2019-11-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key</id><content type="html" xml:base="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">&lt;h2 id=&quot;テーブル構成&quot;&gt;テーブル構成&lt;/h2&gt;
 
-&lt;p&gt;どんな感じで転職活動をしたのかを備忘録として残しておこうと思う。&lt;/p&gt;
+&lt;p&gt;とあるRailsアプリケーションでこんなテーブル構成があったとします。&lt;/p&gt;
 
-&lt;h2 id=&quot;対象読者&quot;&gt;対象読者&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/belongs-to-foreign-key-and-primary-key/users-posts.png&quot; alt=&quot;table relation&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;主に自分のために残しておいているが、下記のような人に役立つかもしれない。&lt;/p&gt;
+&lt;h2 id=&quot;railsモデル定義&quot;&gt;Railsモデル定義&lt;/h2&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;ソフトウェアエンジニアとして転職を考えている人&lt;/li&gt;
-  &lt;li&gt;今後転職するかもしれないソフトウェアエンジニア&lt;/li&gt;
-  &lt;li&gt;各社の採用担当者、あるいはヘッドハンター&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;採用経路について&quot;&gt;採用経路について&lt;/h2&gt;
-
-&lt;h3 id=&quot;サービス経由&quot;&gt;サービス経由&lt;/h3&gt;
-
-&lt;p&gt;前回の転職活動の場合は &lt;a href=&quot;https://www.wantedly.com/&quot;&gt;Wantedly&lt;/a&gt;をメインで使って、そこから繋がったいくつかの会社を訪問した上で転職（就職）先を決めた。そのあたりは下記の記事にまとめてある。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://blog.toshimaru.net/job-hunting-fin/&quot;&gt;就活日記(完) 就職&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;今回使ったのは主にスカウト型のサービスがメイン。転職市場におけるエンジニアは未だ売り手市場。スカウト系のサービスに登録しておくだけで、ありがたいことに黙っていても捌ききれないくらいスカウトメッセージが頂ける（もちろんある程度以上にWebにアウトプットがあることが前提）。&lt;/p&gt;
-
-&lt;p&gt;なのでスタンスとしては転職意欲有無にかかわらずスカウト系のサービスには登録しておき、面白そうな会社や興味のある会社からスカウトメッセージを頂ければ話を聞きに行くという方針にしていた。&lt;/p&gt;
-
-&lt;p&gt;時間が無限にあれば、全ての面白そうな会社に実際に足を運んで話を聞いてみたい気持ちはあったものの、残念ながら時間は有限なのでハードルは高めに設定して本当に興味のある会社だけに絞って話を聞きに行っていた。&lt;/p&gt;
-
-&lt;p&gt;具体的にどんなサービスを使ったかというと下記の通り。&lt;/p&gt;
-
-&lt;p&gt;※本転職活動時に使用したサービスは★を付けている。&lt;/p&gt;
+&lt;p&gt;Railsモデルは下記のような状態です。&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;★ &lt;a href=&quot;https://findy-code.io/&quot;&gt;Findy&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;GitHub スキル偏差値&lt;/strong&gt; 確認のために登録したのがきっかけ&lt;/li&gt;
-      &lt;li&gt;知らない面白い企業との出会いが多かった印象&lt;/li&gt;
-      &lt;li&gt;軽い気持ちで登録したらたくさんスカウトが来すぎて対応に手が回らなくなったので、途中でスカウト機能は切った&lt;/li&gt;
-      &lt;li&gt;「スキル偏差値」「あなたの想定年収」「獲得した称号」など知りたくなるものが多く、バイラルさせる機能作りが上手なサービスという印象
-        &lt;ul&gt;
-          &lt;li&gt;登録して &lt;a href=&quot;https://twitter.com/hashtag/findy?src=hashtag_click&quot;&gt;#findy&lt;/a&gt; ハッシュタグとかで他のエンジニアと比較するだけでも面白さあるかも&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
+  &lt;li&gt;ユーザー（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;）は複数の記事（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt;）データをもっている&lt;/li&gt;
+  &lt;li&gt;ユーザー（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;）は１つのプロフィール（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt;）データをもっている&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;👇こんな感じで称号とかGETできて面白さがある&lt;/p&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/findy.png&quot; alt=&quot;findy&quot; /&gt;&lt;/p&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://lapras.com/&quot;&gt;LAPRAS&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;求職者側としては自分のActivity Logを眺めるだけでも、レジュメ作成の参考になりそう
-        &lt;ul&gt;
-          &lt;li&gt;Tagsによるスコアリングで自分の得意領域を見る&lt;/li&gt;
-          &lt;li&gt;Activity Logで開発者としてどんな活動をしているか振り返る&lt;/li&gt;
-          &lt;li&gt;LAPRAS SCOREで相対的な評価を確認する&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;（採用側として試用した経験から）採用側からみてもTagsのスコアはよくできてると思う&lt;/li&gt;
-      &lt;li&gt;登録している企業が少ないのか面白い企業との出会いは少なかった印象
-        &lt;ul&gt;
-          &lt;li&gt;個人的には良いサービスだと思っているのでもっと多くの企業が使ってもいいかもなーと思っているが、成果報酬型ではなく月額課金型なのが小さい企業にとっての導入の敷居を上げているのかもしれない&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;👇LAPRASのスコアリング&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/lapras1.png&quot; alt=&quot;lapras&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/lapras2.png&quot; alt=&quot;lapras&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://job-draft.jp/&quot;&gt;転職ドラフト&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;自らの市場価値の見極めを目的として登録&lt;/li&gt;
-      &lt;li&gt;サービスのわりと初期から登録して定期的にちょこちょこ使っていた&lt;/li&gt;
-      &lt;li&gt;スカウトする企業側にとってみると実際に会ったことのない人に高額のスカウト送るのはなかなか勇気がいるアクション
-        &lt;ul&gt;
-          &lt;li&gt;そんな中でも高いスカウトを出している企業は事業がノリノリで調子良さそうだとか、エンジニアの給与水準が良さそうとかいろいろ想像できたりできる&lt;/li&gt;
-          &lt;li&gt;僕に比較的高額のオファー出してくれた企業にはほぼ会いに行って話を聞くようにしていた&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;過去に書いた関連記事: &lt;a href=&quot;/engineer-hiring/#%E5%B9%B4%E5%8F%8E%E3%81%AE%E9%80%8F%E6%98%8E%E5%8C%96&quot;&gt;年収の透明化（『その「エンジニア採用」が不幸を生む』を読んだ）&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;ダイレクトメッセージ経由&quot;&gt;ダイレクトメッセージ経由&lt;/h3&gt;
-
-&lt;p&gt;採用担当者、ヘッドハンターからのダイレクトメール。こちらから直接企業の担当者に連絡したダイレクトメッセージも含む。&lt;/p&gt;
-
-&lt;p&gt;本転職活動時に使用した経路には★を付けている。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;★ &lt;strong&gt;Email&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;ほぼ毎日チェックするので、知らない人（採用担当者、ヘッドハンター）から連絡もらうのはEメールが個人的に一番嬉しい
-        &lt;ul&gt;
-          &lt;li&gt;基本は返信しないスタイルだったけど、たまーに気が向いたときに返信する
-            &lt;ul&gt;
-              &lt;li&gt;（＠担当者さん 返信しないけどきちんと見てます！お返事できずすみません＞＜ ）&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;Eメールは埋もれがちなので本格的に密に連絡取り合うなら、工夫して使ったほうが良さそうという学び&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;★ &lt;strong&gt;Twitter&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;自分から直接企業の採用担当者に連絡するときに使った&lt;/li&gt;
-      &lt;li&gt;既にTwitter上で繋がってる人はTwitter経由で連絡いただけて実際に数回会った
-        &lt;ul&gt;
-          &lt;li&gt;Twitterで既に繋がってる人と合うのは心理的障壁が低いし安心感があった&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Facebook&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Twitterと同様、既に繋がってる人との連絡チャンネルとして利用しているので、何回か繋がっていない人から連絡はいただけたけど基本はスルー&lt;/li&gt;
-      &lt;li&gt;エンジニア的には Twitter のほうが親和性の高いSNSなように感じる&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Linkedin&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Linkdin は海外のリクルーターとのやり取りでは有用だが日本語圏だと殆ど使われないので今回はスルー（謎の海外リクルーターから謎のメッセージはしばしば来たりする）&lt;/li&gt;
-      &lt;li&gt;海外就労を考えてる人であればちゃんとプロフィールは運用したほうが良い
-        &lt;ul&gt;
-          &lt;li&gt;参考記事: &lt;a href=&quot;/how-to-find-job-in-Vancouver/&quot;&gt;僕が単身海外（バンクーバー）に来て仕事を見つけるまでにやったこと &lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;手紙&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;del&gt;通称・首狩り族からの手紙&lt;/del&gt;&lt;/li&gt;
-      &lt;li&gt;数年前に一度だけ貰ったことがある
-        &lt;ul&gt;
-          &lt;li&gt;あまりもらわないので逆に目を引いたので、飛び道具的には便利かも&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;経歴書レジュメ&quot;&gt;経歴書・レジュメ&lt;/h2&gt;
-
-&lt;p&gt;企業に提出した経歴書について。フォーマットに関しては&lt;a href=&quot;/tag/%E6%B5%B7%E5%A4%96%E5%B0%B1%E5%8A%B4/&quot;&gt;海外就労&lt;/a&gt;のときに使った &lt;strong&gt;レジュメ形式&lt;/strong&gt; を採用した。&lt;/p&gt;
-
-&lt;p&gt;海外形式のレジュメとは、大体A4一枚程度まとめた経歴書・スキルのハイライトだ。この形式のメリットとしては、求職者にとっては紙幅が限られている中で書く必要があるので、自分のアピールポイントにフォーカスしなければならなくなる点。そして経歴・スキルの紹介が冗長な表現でなく、洗練された簡潔な表現になる点。&lt;/p&gt;
-
-&lt;p&gt;採用側にとっても一枚くらいにまとまっていると書類選考時に判断しやすいし、面接時も質問しやすい（A45枚くらいの経歴書送られて来ても見るの大変だし、5年前の経歴とか聞いても仕方ないよね的な）。&lt;/p&gt;
-
-&lt;p&gt;最初はこの経歴をWeb上にオープンにしようと思ったが、案件詳細などオープンにできない項目もあるので、publicに公開するのはやめた。時間があれば限られた人だけが見れるようなポートフォリオサイトを作ろうと思ったが、今回はそんな時間はなかったのでsecret gist に markdownで期間限定closed公開した（つまりURLを知っている人だけが見れる）。&lt;/p&gt;
-
-&lt;p&gt;こうすることで各企業の担当者にはテキストでURLだけお伝えすればよくなるので便利だった。Wordとかで書いてPDFとかにして送付とかはダルすぎる。&lt;/p&gt;
-
-&lt;h3 id=&quot;レジュメを公開する&quot;&gt;レジュメを公開する&lt;/h3&gt;
-
-&lt;p&gt;今回僕はレジュメを公開しなかったけど、公開できる内容だけを書いてGitHub上にオープンにするのもアリだと思う。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://qiita.com/okohs/items/abcad0b4aefa585bc50b&quot;&gt;職務経歴書をGitHubで管理しよう - Qiita&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;テンプレート: &lt;a href=&quot;https://github.com/okohs/Curriculum-Vitae-template&quot;&gt;okohs/Curriculum-Vitae-template&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;レジュメの内容&quot;&gt;レジュメの内容&lt;/h3&gt;
-
-&lt;p&gt;具体的にレジュメに盛り込んだ内容としては下記のようなイメージ。&lt;/p&gt;
-
-&lt;div class=&quot;language-md highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gu&quot;&gt;## 略歴&lt;/span&gt;
-経歴のサマリ（大学卒業〜現職に至るまでの略歴を300字くらいで書いた）
-
-&lt;span class=&quot;gu&quot;&gt;## スキル&lt;/span&gt;
-自分のスキルの列挙（プログラミング言語、Webフレームワーク、データベース、IaaS/SasSとかの項目別に列挙した）
-
-&lt;span class=&quot;gu&quot;&gt;## 職務経歴&lt;/span&gt;
-
-&lt;span class=&quot;gu&quot;&gt;### 経歴1(2018-2019)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; 経歴の説明
-
-&lt;span class=&quot;gu&quot;&gt;### 経歴2(2017-2018)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; 経歴の説明
-
-（...経歴が続く。5年以上前の古い経歴に関してはアピールしたい経歴だけを記述）
-
-&lt;span class=&quot;gu&quot;&gt;## OSSコントリビュート&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; gemのリンクとか, npmのリンクとかどのOSSにコントリビュートしたかとかアピールしたいOSSアウトプットを列挙
-
-&lt;span class=&quot;gu&quot;&gt;## 登壇歴&lt;/span&gt;
-https://speakerdeck.com/toshimaru
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;略歴、スキル、職務経歴とかはよくあるやつ。それらに加えてアピールしたいアウトプットとして「&lt;strong&gt;OSSコントリビュート&lt;/strong&gt;」「&lt;strong&gt;登壇歴&lt;/strong&gt;」の項目を追加した。&lt;/p&gt;
+&lt;h2 id=&quot;has_oneをもったモデルをスキップする&quot;&gt;has_oneをもったモデルをスキップする&lt;/h2&gt;
 
-&lt;h3 id=&quot;日本の履歴書という悪習&quot;&gt;日本の履歴書という悪習&lt;/h3&gt;
+&lt;p&gt;やりたいこととしてはこのモデル構成の中心にいる &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt; の関連をスキップして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; と &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt; を直接関連付けてやることです。つまり &lt;strong&gt;User has_one Profile&lt;/strong&gt;, &lt;strong&gt;User has_many Posts&lt;/strong&gt; の関係を、&lt;strong&gt;Profile has_many Posts&lt;/strong&gt; の関係にしちゃおう、ということです。&lt;/p&gt;
 
-&lt;p&gt;余談だが、どこの企業も大体履歴書を求められたわけだけど、日本の伝統的履歴書フォーマットは早く変えて欲しいと思う。年齢とか性別とかで採用不採用を決めるのは基本NGなので、アメリカのように違法にして履歴書には記述させないようにしてほしい。&lt;/p&gt;
+&lt;p&gt;テーブル定義で表現すると下図の赤線の部分が今回やりたい関連の定義です。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/job-change-2019/resume.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/belongs-to-foreign-key-and-primary-key/users-posts2.png&quot; alt=&quot;model relation 2&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;via. &lt;a href=&quot;https://uki-studyabroad.com/japanvsusa-resume/&quot;&gt;日本VSアメリカ：履歴書の違い編 | アメリカ留学UKIの節約生活&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;モデル定義&quot;&gt;モデル定義&lt;/h3&gt;
 
-&lt;p&gt;下記も参考までに:&lt;/p&gt;
+&lt;p&gt;上記のやりたいことはアソシエーションの定義において、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;primary_key&lt;/code&gt; などのオプションを駆使して実現可能です。&lt;/p&gt;
+
+&lt;p&gt;下記がそのアソシエーション定義の完成形となります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :user_id&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この定義により &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; → &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Profile&lt;/code&gt; → &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt; の双方向の関連付けが定義することができました。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Post Load (1.2ms)  SELECT  `posts`.* FROM `posts` ORDER BY `posts`.`id` ASC LIMIT 1&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Profile Load (3.9ms)  SELECT  `profiles`.* FROM `profiles` WHERE `profiles`.`user_id` = 1 LIMIT 1&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Profile Load (0.8ms)  SELECT  `profiles`.* FROM `profiles` ORDER BY `profiles`.`id` ASC LIMIT 1&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Post Load (0.4ms)  SELECT  `posts`.* FROM `posts` WHERE `posts`.`user_id` = 1 LIMIT 11&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;ActiveRecord::Associations::CollectionProxy [#&amp;lt;Post id: 1, user_id: 1, ...&quot;&amp;gt;, #&amp;lt;Post id: 2, user_id: 1, ...]&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上結果の通り、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User Load&lt;/code&gt;を通すことなくお互いを呼び出すことができていることが確認できました。&lt;/p&gt;
+
+&lt;h2 id=&quot;inverse_of-を設定する&quot;&gt;inverse_of を設定する&lt;/h2&gt;
+
+&lt;p&gt;上記のコードでやりたいことが実現できましたが、まだ１つだけ問題があります。それは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foreign_key&lt;/code&gt; オプションを使っているために、双方向の関連付けが不完全に設定されていることです。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Active Recordでは標準的な名前同士の関連付けのほとんどをサポートしていて、自動的に認識できます。ただし、Active Recordでスコープや次のオプションを使った場合、双方向の関連付けは自動的に認識されません。&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:through&lt;/code&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:foreign_key&lt;/code&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://railsguides.jp/association_basics.html#%E5%8F%8C%E6%96%B9%E5%90%91%E9%96%A2%E9%80%A3%E4%BB%98%E3%81%91&quot;&gt;Active Record の関連付け - Rails ガイド&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;実際に試してみましょう。すると下記の通り、同じidを持ったインスタンスにもかかわらず違うオブジェクトとして生成されていることがわかります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;Profile id: 1, user_id: 1, ...&quot;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;equal?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;モデル定義inverse_of-version&quot;&gt;モデル定義（inverse_of version）&lt;/h3&gt;
+
+&lt;p&gt;これを解決するために &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inverse_of&lt;/code&gt; を設定します。上述のコードを下記のように変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_one&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inverse_of: :posts&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Profile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: :user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inverse_of: :profile&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで下記コードは同じオブジェクトとなり、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true&lt;/code&gt;を返すようになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;profile&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;equal?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;profile2&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;過去に書いた関連記事&quot;&gt;過去に書いた関連記事&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://note.com/ruiu/n/na45effd9778e&quot;&gt;アメリカの面接で質問してはいけない事項について｜Rui Ueyama｜note&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://jsite.mhlw.go.jp/osaka-roudoukyoku/hourei_seido_tetsuzuki/shokugyou_shoukai/hourei_seido/kosei/futeki.html&quot;&gt;就職差別につながるおそれのある不適切な質問の例 | 大阪労働局&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/belongs_to-through/&quot;&gt;ActiveRecordでhas_many, throughとは逆の関連を定義する&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;面接&quot;&gt;面接&lt;/h2&gt;
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;あまりガチガチな技術質問はされなかった
+  &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-belongs_to&quot;&gt;ActiveRecord::Associations::ClassMethods - belongs_to | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://railsdoc.github.io/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many&quot;&gt;ActiveRecord::Associations::ClassMethods - has_many | RailsDoc(β)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="activerecord" /><category term="rails" /><summary type="html">テーブル構成</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
+
+&lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
+
+&lt;p&gt;今回SystemSpecを導入したのは下記のような環境です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;プロジェクト: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/&quot;&gt;RailsTwitterClone&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;docker-compose&lt;/li&gt;
+  &lt;li&gt;Ruby 2.6&lt;/li&gt;
+  &lt;li&gt;chromium-driver&lt;/li&gt;
+  &lt;li&gt;gem
     &lt;ul&gt;
-      &lt;li&gt;逆にいうとGitHubとかである程度アウトプットしてるのでそれをもって技術力は大丈夫だと判断していただけたようだ
-        &lt;ul&gt;
-          &lt;li&gt;オープンなアウトプットみて評価していただけるのありがたいし、普段からみんなオープンなアウトプットはしておこう&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;もう少し技術的なハードな質問が来るだろうと身構えていたので、それがなかったのはちょっとだけ寂しかった
-        &lt;ul&gt;
-          &lt;li&gt;その代わりにカルチャーマッチはきちんと面談・面接時に見られていたと思う&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;僕側から見たのはやりたいことができるか、事業・サービスへ共感できるかや成長性があるかなどに加えて、安定性・福利厚生なども見た
-    &lt;ul&gt;
-      &lt;li&gt;独り身だったときは自分本位で思考していたが、家族ができると家族を養う義務感・責任も出てきてそうも言ってられないので、割と安定志向な要素（待遇、安定性、福利厚生）も見た
-        &lt;ul&gt;
-          &lt;li&gt;例えば＜スタートアップ入って一発当てる＞的なリスクは取りにくくなったように感じている&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;実際どのへん見て決めたかは以前のエントリにも書いた: &lt;a href=&quot;/join-medpeer/&quot;&gt;メドピア株式会社で働いてます&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;rails (5.2)&lt;/li&gt;
+      &lt;li&gt;rspec-rails&lt;/li&gt;
+      &lt;li&gt;selenium-webdriver&lt;/li&gt;
+      &lt;li&gt;capybara&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;外資系gafamについて&quot;&gt;外資系（GAFAM）について&lt;/h2&gt;
+&lt;h2 id=&quot;対応pull-request&quot;&gt;対応Pull Request&lt;/h2&gt;
 
-&lt;p&gt;一点、転職活動をする中での後悔があるとすれば、それはGAFAM（Google、Amazon、Facebook、Apple、Microsoft）などの外資系を受けなかったことだ。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/506/files&quot;&gt;Re-try System Spec by toshimaru · Pull Request #506 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;外資系は多くのポジションでコンピュータサイエンスの知識を必須スキルとしており（僕は文系なのでそのへんは弱い）、また日系企業のようにカジュアルに話を聞きに行けるエントリーポイントも用意されていないことが多く、そもそも自分にマッチしたポジションがあるかどうかが不明で積極的に受けに行かなかった。&lt;/p&gt;
+&lt;h2 id=&quot;私のsystemspec遅すぎ&quot;&gt;私のSystemSpec、遅すぎ…？&lt;/h2&gt;
 
-&lt;p&gt;しかし、きちんと探せばマッチするポジションもあったかもしれないので、外資系の選考フローを体験するという意味でもちゃんと探しておけばよかったと思っている。&lt;/p&gt;
+&lt;p&gt;実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。&lt;/p&gt;
 
-&lt;p&gt;（GAFAM に入社している人ってどうやってポジションマッチ見極めているのだろう… いきなりバシッと面接入るのかな…）&lt;/p&gt;
+&lt;p&gt;当時のPull Requestがこちら: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/216&quot;&gt;Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;企業とのコミュニケーション&quot;&gt;企業とのコミュニケーション&lt;/h2&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Before&lt;/p&gt;
 
-&lt;p&gt;企業とやり取りしてて、コミュニケーションですれ違う場面が数回あって、求職者・採用担当者ともにコミュニケーションには気をつけるべきだと思う。&lt;/p&gt;
+  &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 15.74 seconds (files took 7.65 seconds to load)
+152 examples, 0 failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://docs.komagata.org/5632&quot;&gt;人事リセット問題&lt;/a&gt;に代表されるように、ミスコミュニケーションとしては下記のような場合だ。&lt;/p&gt;
+  &lt;p&gt;After&lt;/p&gt;
+
+  &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 58.46 seconds (files took 7.64 seconds to load)
+152 examples, 3 failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;下記のようにJSを起動させる必要のない System テストは従来通りの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack_test&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;js: true&lt;/code&gt;なテストは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に設定してやればテスト全体が高速に実行可能になりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rack_test&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+
+&lt;p&gt;今回利用した &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; は Ruby 2.6 のベースイメージに &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromium-driver&lt;/code&gt; をインストールしたコンテナとなります。&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.6&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nodejs chromium-driver 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;chrome-failed-to-start-exited-abnormally&quot;&gt;Chrome failed to start: exited abnormally&lt;/h3&gt;
+
+&lt;p&gt;しかし、上述の環境において&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspec&lt;/code&gt;を実行すると下記のようなエラーが発生します。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failure/Error: Unable to infer file and line number from backtrace
+
+  Selenium::WebDriver::Error::UnknownError:
+      unknown error: Chrome failed to start: exited abnormally
+      (unknown error: DevToolsActivePort file doesn't exist)
+      (The process started from chrome location /usr/bin/chromium is no longer running, so ChromeDriver is assuming that Chrome has crashed.)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このエラーは Chrome が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sandbox&lt;/code&gt;モードで起動していることに起因します。下記のような&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tap&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--headless&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--disable-gpu&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--no-sandbox&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こうして登録した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;headless_chrome&lt;/code&gt;をSystemTestに対して適応させてやればOKです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これできちんとDocker上でSystemSpecが通るようになりました。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web rspec
+&lt;span class=&quot;go&quot;&gt;
+Randomized with seed 30150
+............................................................................................................Capybara starting Puma...
+* Version 4.1.1 , codename: Fourth and One
+* Min threads: 0, max threads: 4
+* Listening on tcp://127.0.0.1:38789
+&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;...............................................
+&lt;/span&gt;&lt;span class=&quot;go&quot;&gt;
+Finished in 19.87 seconds (files took 8.8 seconds to load)
+155 examples, 0 failures
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;公式ではno-sandboxをデフォルトにはしてくれない&quot;&gt;公式ではno-sandboxをデフォルトにはしてくれない？&lt;/h2&gt;
+
+&lt;p&gt;余談ですが、Capybara本体で登録されている&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/teamcapybara/capybara/pull/2241&quot;&gt;Add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt; option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;securityを担保するためのsandbox&quot;&gt;Securityを担保するためのsandbox&lt;/h3&gt;
+
+&lt;p&gt;sandboxはセキュリティを高めるための環境なので基本的には &lt;strong&gt;デフォルトで no-sandbox にするべきではない&lt;/strong&gt; という判断のようです。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md&quot;&gt;Sandbox&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;カジュアル面談のつもりでいったら企業側の担当者が面接のつもりで出てきた
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/ngron/items/f61b8635b4d67f666d75&quot;&gt;Rails + Selenium + DockerでSystemSpecの環境構築 - Qiita&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://news.mynavi.jp/article/20081009-a027/&quot;&gt;Google Chrome サンドボックスで実現するセキュリティ、Windowsの機能に依存 | マイナビニュース&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="rails" /><category term="docker" /><summary type="html">Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">SmartHR社に体験入社してきた</title><link href="https://blog.toshimaru.net/smarthr-job-trial/" rel="alternate" type="text/html" title="SmartHR社に体験入社してきた" /><published>2019-07-22T00:00:00+09:00</published><updated>2019-07-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/smarthr-job-trial</id><content type="html" xml:base="https://blog.toshimaru.net/smarthr-job-trial/">&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;体験入社してます &lt;a href=&quot;https://t.co/f2Ga5LE5Es&quot;&gt;pic.twitter.com/f2Ga5LE5Es&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1149139455657119744?ref_src=twsrc%5Etfw&quot;&gt;July 11, 2019&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;SmartHR社の体験入社に参加してきました。同社の体験入社制度に関しては下記の記事に詳しいです。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://tech.smarthr.jp/entry/2018/09/20/120000&quot;&gt;エンジニア向けの体験入社制度ができました - SmartHR Tech Blog&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;今回は体験入社を１スプリント分の一週間、営業日換算で４日間体験入社させてもらいました。&lt;/p&gt;
+
+&lt;h2 id=&quot;なぜ参加したか&quot;&gt;なぜ参加したか？&lt;/h2&gt;
+
+&lt;p&gt;SmartHR社のことは&lt;a href=&quot;https://blog.shojimiyata.com/entry/2018/06/01/112424&quot;&gt;RubyKaigi&lt;/a&gt;や&lt;a href=&quot;https://speakerdeck.com/miyasho88/we-are-hiring&quot;&gt;会社紹介資料&lt;/a&gt;などを通して知っており、傍目から良い会社そうだなぁという印象は持っていました。実際にSmartHRの中の人たちとも面談を通して直接話す中で、SmartHR社での働き方に興味が湧き、今回「体験入社をしてみたい！」という僕の申し出を受け入れてもらったかたちとなります。&lt;/p&gt;
+
+&lt;p&gt;僕が特にSmartHR社に関して良いと思った点、興味があった点は下記です。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;オープンな社風&lt;/strong&gt;
     &lt;ul&gt;
-      &lt;li&gt;あるいはカジュアル面談のはずなのに面接された&lt;/li&gt;
+      &lt;li&gt;会社として＜オープンな社風＞が根付いているように見受けられ、良いと思った&lt;/li&gt;
+      &lt;li&gt;このオープンな社風というトピックに関しては下記のブログに詳しいです
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;https://blog.shojimiyata.com/entry/2018/02/15/125904&quot;&gt;SmartHR が組織運営で一番大切にしていること - 宮田昇始のブログ&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;カジュアル面談のあとに選考ステップ進むとは言ってないのに、一次面接の日程案内を飛ばしてきた&lt;/li&gt;
-  &lt;li&gt;企業側の担当者との連絡が途絶える
+  &lt;li&gt;&lt;strong&gt;スタートアップ企業としてはありえない退職率の低さ&lt;/strong&gt;
     &lt;ul&gt;
-      &lt;li&gt;あるいは一つ一つの連絡のレスポンスが遅い&lt;/li&gt;
+      &lt;li&gt;僕自身、30人くらいの規模から数百人規模になっていく組織のスケール過程を身をもって体験しましたが、こういうスタートアップ企業は端的に言って＜激動の時代＞となります。その荒波の中にあっては振り落とされる人がいたり、いわゆる音楽性の違いによって退出していく人も多くいるはずですが、SmartHR社の場合はそんなことになっておらず、単純にその雰囲気および組織運営の手法に興味がありました&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;企業側の申し送り事項の伝達不足
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;なにをやったか&quot;&gt;なにをやったか？&lt;/h2&gt;
+
+&lt;p&gt;体験入社としてJoinしたチームはSmartHR本体の開発をするチームでした。なので今回はSmartHR本体のいくつかの機能改修やバグ修正をやりました。&lt;/p&gt;
+
+&lt;p&gt;初日に行われたスプリント計画に一緒に参加して、Jiraのチケットをいくつかアサインしてもらいました。アサインされたチケットは下記のようなものです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.e-gov.go.jp/shinsei/&quot;&gt;e-Gov電子申請&lt;/a&gt;まわりの改修&lt;/li&gt;
+  &lt;li&gt;小さなバグ修正&lt;/li&gt;
+  &lt;li&gt;APIの改修&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;また上記とは別に一通りのスクラムセレモニーや全社員を対象に行っている経営会議共有会にも参加させてもらいました。&lt;/p&gt;
+
+&lt;h2 id=&quot;成果&quot;&gt;成果&lt;/h2&gt;
+
+&lt;h3 id=&quot;一日目&quot;&gt;一日目&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;開発環境セットアップ&lt;/li&gt;
+  &lt;li&gt;経営会議共有会参加&lt;/li&gt;
+  &lt;li&gt;スプリントレビュー、スプリントレトロスペクティブ、スプリント計画に参加&lt;/li&gt;
+  &lt;li&gt;開発成果: 1 PR&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;二日目&quot;&gt;二日目&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;負債返済のためのモブプロ会に参加&lt;/li&gt;
+  &lt;li&gt;開発成果: 2PR&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;三日目&quot;&gt;三日目&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;バックログリファインメントに参加&lt;/li&gt;
+  &lt;li&gt;開発成果: 2PR, 1Merge&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;四日目&quot;&gt;四日目&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;開発成果: 3PR 4Merge&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;総評&quot;&gt;総評&lt;/h3&gt;
+
+&lt;p&gt;一部未マージなPRを残すことになってしまったものの、当初にアサインされたチケットはすべて着手することができた点は良かったです💪。結果としては、受け入れチームの期待値と同等かそれ以上の成果は残せたようで良かったです😄。&lt;/p&gt;
+
+&lt;h2 id=&quot;体験入社してみての感想&quot;&gt;体験入社してみての感想&lt;/h2&gt;
+
+&lt;h3 id=&quot;開発編&quot;&gt;開発編&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;開発環境セットアップはWikiにまとめられておりWiki通りの手順で進めていけばすんなり構築することができた
     &lt;ul&gt;
-      &lt;li&gt;「（それは既に前回の選考ステップで伝えたんだが？ もう一回聞く？）」みたいなケース&lt;/li&gt;
+      &lt;li&gt;Rails以外のバックエンドはDocker化されておりバージョンまわりでハマることも無いようになっていて良かった&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;教科書通りのスクラムセレモニーを実施しており、きちんとスクラム回してて偉いなぁという印象でした（僕がスクラムマスターっぽい立ち回りするときはけっこうスクラムセレモニーサボっているので…）&lt;/li&gt;
+  &lt;li&gt;良い意味で粛々とプロダクト開発を進めている印象だった
+    &lt;ul&gt;
+      &lt;li&gt;いわゆるスタートアップなキラキラ系イケイケWeb開発という感じではなかった（決して悪い意味ではないです）&lt;/li&gt;
+      &lt;li&gt;一人ひとりがプロダクトに向き合い、オーナーシップをもって開発に取り組んでいる&lt;/li&gt;
+      &lt;li&gt;大人な人が多くきちんと協調して開発を進めている印象&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;＜個人＞ではなく、＜チーム＞で課題を解決する姿勢が素晴らしいと思いました&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;例えばデスク（サービスデスク/ヘルプデスク）対応、コードレビューの対応、リリース作業など忙しくて手を付けられそうな人がいれば、手が空いている人が「（私が）やりますよ」と自然に手を挙げて対応をデリゲーションしていっている雰囲気は素晴らしいと感じました
+        &lt;ul&gt;
+          &lt;li&gt;これをチームで自然にできるようになるのはそう簡単なことではないので、チームとして成熟している証だと感じました&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;僕はもうエンジニアとしてはシニアレベルだしタスクは丸投げでも全然構わなかったけど、きちんと計画の時点で開発方針まである程度あたりをつけて落とし込んでくれたお陰で、とても開発がスムーズに進められました。受け入れメンバーの皆さまには感謝です&lt;/li&gt;
+  &lt;li&gt;開発の中できちんと技術負債を減らすことにも尽力されていて良いなぁと思いました
+    &lt;ul&gt;
+      &lt;li&gt;技術負債担当チームがあったり技術負債返済モブプロ（with &lt;a href=&quot;https://twitter.com/netwillnet&quot;&gt;willnet&lt;/a&gt;さん）みたいな取り組みをしていたり&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;現在の規模でもCTOの芹澤さんがバリバリコード書いている雰囲気があり意外でした&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;開発以外編&quot;&gt;開発以外編&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;退職率の低さについて
+    &lt;ul&gt;
+      &lt;li&gt;やはり第一に採用でカルチャーマッチする人のみをきちんと選んで採っている点が大きそうです
+        &lt;ul&gt;
+          &lt;li&gt;参考: &lt;a href=&quot;https://smarthr.co.jp/vision&quot;&gt;Mission | 株式会社SmartHR&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;良いところも悪いところもすべてオープンにする姿勢が社員に響いているのではないでしょうか
+        &lt;ul&gt;
+          &lt;li&gt;経営会議共有会では出せる数値は詳らかに全部出す&lt;/li&gt;
+          &lt;li&gt;経営会議共有会の最後には代表・宮田さんへのAMA（Ask Me Anything）コーナーみたいなのもあって良かった&lt;/li&gt;
+          &lt;li&gt;都合の悪いことも含めて情報を隠さない → 現場の不安が変に増幅することもない&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;普段、自分が受け入れチーム側としてオンボーディングを実施することが多かったけど、今回受け入れてもらう側として参加できて新鮮だった&lt;/li&gt;
+  &lt;li&gt;今回の体験入社で初めてSmartHRを実際に使わせてもらったけど、とても便利でした。一度使うとたぶん紙での提出とか面倒くさくなりますね。
+    &lt;ul&gt;
+      &lt;li&gt;各社、SmartHRの導入よろしく頼む🙏&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;僕自身は採用にも関わったことのある人間なので、採用担当と面談・面接担当者との伝達漏れが発生するのはある程度想像・理解できるので上記のようなことが発生してもそんな気にしなかったけど、そうじゃない人であればけっこうイメージが悪いと思う（各社の採用担当者は気を付けて欲しい）。&lt;/p&gt;
+&lt;h2 id=&quot;smarthr社にマッチしそうな人について&quot;&gt;SmartHR社にマッチしそうな人について&lt;/h2&gt;
 
-&lt;p&gt;僕は若かりし頃にヘッドハンターに誘われるまま面談だと思ってノコノコ会社に着いていったらガチガチの人生最強クラスの圧迫面接された経験があるので、それがトラウマになっていることもあって企業担当者との期待値すり合わせはわりと丁寧にやっている方だと思う。&lt;/p&gt;
+&lt;p&gt;体験入社してみてSmartHR社にマッチしそうな人、逆にマッチしなそうと感じる人を書いてみます。&lt;/p&gt;
 
-&lt;p&gt;求職者側の自衛として、ある程度気を付けて企業担当者とコミュニケーションを取るに越したことはないと思う（本来は企業側の担当者がしっかりせぇという話）。&lt;/p&gt;
-
-&lt;h2 id=&quot;おすすめ企業&quot;&gt;おすすめ企業&lt;/h2&gt;
-
-&lt;p&gt;せっかくなので今回の転職活動をしつつオススメ企業なんかを書いてみる。&lt;/p&gt;
+&lt;h3 id=&quot;マッチしそうな人&quot;&gt;マッチしそうな人&lt;/h3&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://medpeer.co.jp/&quot;&gt;メドピア&lt;/a&gt;
+  &lt;li&gt;SmartHR というサービスが好きな人&lt;/li&gt;
+  &lt;li&gt;会社・チーム一丸となってプロダクト作りをしたい人&lt;/li&gt;
+  &lt;li&gt;Railsでのサービス作りが好きな人&lt;/li&gt;
+  &lt;li&gt;チームワークが得意、好きな人&lt;/li&gt;
+  &lt;li&gt;オープンな社風に共感できる人&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;マッチしなそうな人&quot;&gt;マッチしなそうな人&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;プロダクトよりもエッジな技術をひたすら突き詰めたいという人&lt;/li&gt;
+  &lt;li&gt;チームワークよりも孤独な作業が好きな人&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;smarthr社への応募はこちらから&quot;&gt;SmartHR社への応募はこちらから&lt;/h3&gt;
+
+&lt;p&gt;上記の「マッチしそうな人」にピンときた方は応募してみると良いかと思います！&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://smarthr.co.jp/recruit&quot;&gt;Recruit | 株式会社SmartHR&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;子会社創業メンバーも募集しているようです。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;そろそろ起業しようかな？と思ってるけど「共同創業者がいない」「ネタがない」というエンジニアさん、SmartHRの子会社の創業メンバーとして一発当てませんか？&lt;br /&gt;&lt;br /&gt;いま2つの会社があなたを求めてます！お金の心配なく、事業とプロダクトに集中できます。興味ある方ぜひDMください！&lt;br /&gt;&lt;br /&gt;（続く&lt;/p&gt;&amp;mdash; 宮田 昇始 (@miyasho88) &lt;a href=&quot;https://twitter.com/miyasho88/status/1151047024613236736?ref_src=twsrc%5Etfw&quot;&gt;July 16, 2019&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;smarthrについてもっと知りたい&quot;&gt;SmartHRについてもっと知りたい！&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;「SmartHRについてもっと知りたい！」&lt;/strong&gt;という方はこちらもどうぞ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://shanaiho.smarthr.co.jp/&quot;&gt;SmartHRオープン社内報&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.smarthr.jp/&quot;&gt;SmartHR Tech Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.shojimiyata.com/&quot;&gt;宮田昇始のブログ&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+
+&lt;p&gt;他社のスクラム・スプリントを経験するのはなかなかない貴重な機会なので、それを一通り体験できたのはとても良かったです。受け入れていただいたSmartHRさん、ありがとうございました！&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="tech" /><category term="rails" /><summary type="html">体験入社してます pic.twitter.com/f2Ga5LE5Es&amp;mdash; toshimaru (@toshimaru_e) July 11, 2019</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/smarthr.jpeg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/smarthr.jpeg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました</title><link href="https://blog.toshimaru.net/make-rails-documents-seo-search-engine-optimized/" rel="alternate" type="text/html" title="Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました" /><published>2019-02-25T00:00:00+09:00</published><updated>2019-02-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/make-rails-documents-seo-search-engine-optimized</id><content type="html" xml:base="https://blog.toshimaru.net/make-rails-documents-seo-search-engine-optimized/">&lt;p&gt;&lt;a href=&quot;https://roppongirb.connpass.com/event/118218/&quot;&gt;Roppongi.rb #8&lt;/a&gt;にて「Make Rails Documents SEO(Search Engine Optimized)」と題して発表してきた。&lt;/p&gt;
+
+&lt;h2 id=&quot;発表スライド&quot;&gt;発表スライド&lt;/h2&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;2238d7f3d662436b943b125a7b10fec1&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;railsdocgithubio&quot;&gt;railsdoc.github.io&lt;/h2&gt;
+
+&lt;p&gt;発表では僕が過去に行ったいくつかのRails公式ドキュメントのSEO対応の紹介とともに、現在進めているプロジェクトである&lt;a href=&quot;https://railsdoc.github.io/&quot;&gt;railsdoc.github.io&lt;/a&gt;を紹介した。&lt;/p&gt;
+
+&lt;p&gt;GitHub: &lt;a href=&quot;https://github.com/railsdoc/railsdoc.github.io&quot;&gt;railsdoc/railsdoc.github.io: Rails API Documentation.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;railsdocgithubioのゴール&quot;&gt;railsdoc.github.ioのゴール&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://api.rubyonrails.org/&quot;&gt;api.rubyonrails.org&lt;/a&gt;をSEO強くする&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://api.rubyonrails.org/&quot;&gt;api.rubyonrails.org&lt;/a&gt;を使いやすくする&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下記はついでにできると良いなーと考えていること。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;フロントの技術を少しだけモダンに
     &lt;ul&gt;
-      &lt;li&gt;現職&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;/join-medpeer/&quot;&gt;以前のエントリ&lt;/a&gt;に書いたとおり&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://getbootstrap.com/&quot;&gt;bootstrap&lt;/a&gt;を使ってデザイン構成しやすくする&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://gunosy.co.jp/&quot;&gt;Gunosy&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;前職&lt;/li&gt;
-      &lt;li&gt;数値/KPIをきちんと追う文化&lt;/li&gt;
-      &lt;li&gt;若い人・新卒が優秀&lt;/li&gt;
-      &lt;li&gt;機械学習やデータ分析が強い&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://smarthr.jp/&quot;&gt;SmartHR&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;/smarthr-job-trial/&quot;&gt;体験入社&lt;/a&gt;でファンになった会社&lt;/li&gt;
-      &lt;li&gt;現職でSmartHR使っているけど良いプロダクト&lt;/li&gt;
-      &lt;li&gt;オープンな社風が素敵&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://layerx.co.jp/&quot;&gt;LayerX&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;元・Gunosy福島さんがMBO&lt;/li&gt;
-      &lt;li&gt;初期のGunosyを彷彿とさせる技術者集団&lt;/li&gt;
-      &lt;li&gt;ブロックチェーンに可能性を感じる人には最高そう&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://note.com/fukkyy&quot;&gt;福島さんのnote&lt;/a&gt;は必読&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://machimachi.com/&quot;&gt;マチマチ&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://twitter.com/ikuma&quot;&gt;@ikuma&lt;/a&gt;さんの地域活性化のヴィジョンや組織づくりの方針には共感&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://kyash.co/&quot;&gt;Kyash&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;直接話を聞きに行ったわけではないが、世に存在するなんちゃらPayシリーズと比べて一番決済体験が良いので個人的に応援しているサービス&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;「ビッグデータでAI！大規模システム！大量アクセス！マイクロサービス！」やりたいって人
-    &lt;ul&gt;
-      &lt;li&gt;そもそもビッグデータや大量アクセスがある企業が少ないので、特に具体的な企業名は上げないけど誰でも知ってるような名の通っているサービス作っている会社に行くといいんじゃないでしょうか
-        &lt;ul&gt;
-          &lt;li&gt;AI周りでは先進的な企業をちょこちょこ見かけたけど僕には良し悪しが判断付かなかったので正直わからない&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;メガベンチャーとかはたくさん選択肢あるし、優秀な人も多く在籍しているだろうし狙い目かもしれない&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="転職" /><summary type="html">2019年は転職というイベントがあった。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/job-change-2019/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/job-change-2019/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+  &lt;li&gt;GitHubといい感じの連携&lt;/li&gt;
+  &lt;li&gt;AMP対応もできると良さそう&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;railsdocgithubioの今後&quot;&gt;railsdoc.github.ioの今後&lt;/h2&gt;
+
+&lt;p&gt;発表内で紹介したが今後については下記のように考えている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コードベース整備中 &amp;amp; 未実装箇所の実装&lt;/li&gt;
+  &lt;li&gt;folk版sdocじゃない独自のドキュメント生成gemを作りたい&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;紹介したprissue&quot;&gt;紹介したPR/Issue&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/weblog/pull/88&quot;&gt;Introduce jekyll-seo-tag by toshimaru · Pull Request #88 · rails/weblog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/homepage/pull/73&quot;&gt;Add Jekyll SEO tag and Jekyll sitemap by benbalter · Pull Request #73 · rails/homepage&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/34860&quot;&gt;Make Ruby on Rails Guides SNS-friendly by toshimaru · Pull Request #34860 · rails/rails&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/issues/27633&quot;&gt;No Rails 5 in apidock.com/rails · Issue #27633 · rails/rails&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;紹介したrails公式ドキュメント&quot;&gt;紹介したRails公式ドキュメント&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;rubyonrails.org&quot;&gt;rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;weblog.rubyonrails.org&quot;&gt;weblog.rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;guides.rubyonrails.org&quot;&gt;guides.rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;api.rubyonrails.org&quot;&gt;api.rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;その他&quot;&gt;その他&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;発表には&lt;a href=&quot;https://www.deckset.com/&quot;&gt;Deckset 2&lt;/a&gt;を使った（ずっとDeckset1使ってたけど2にUpdateした）&lt;/li&gt;
+  &lt;li&gt;何かあればイシューに書いてほしい &lt;a href=&quot;https://github.com/railsdoc/railsdoc.github.io/issues&quot;&gt;github.com/railsdoc/railsdoc.github.io/issues&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="seo" /><category term="rails" /><summary type="html">Roppongi.rb #8にて「Make Rails Documents SEO(Search Engine Optimized)」と題して発表してきた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/roppongirb8/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/roppongirb8/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える</title><link href="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/" rel="alternate" type="text/html" title="Rails E2Eテストで poltergeist から Headless Chrome へと乗り換える" /><published>2018-08-04T00:00:00+09:00</published><updated>2019-09-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/poltergeist-to-selenium-webdriver</id><content type="html" xml:base="https://blog.toshimaru.net/poltergeist-to-selenium-webdriver/">&lt;p&gt;RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、&lt;a href=&quot;https://github.com/teampoltergeist/poltergeist&quot;&gt;poltergeist&lt;/a&gt;から&lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/headless/README.md&quot;&gt;Headless Chrome&lt;/a&gt;に乗り換えてみたのでそのときのメモ。&lt;/p&gt;
+
+&lt;h2 id=&quot;対応-pull-request&quot;&gt;対応 Pull Request&lt;/h2&gt;
+
+&lt;p&gt;今回対応したPull Requestはこちら。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/211&quot;&gt;Use headless Chrome instead of PhantomJS(poltergeist) by toshimaru · Pull Request #211 · toshimaru/RailsTwitterClone · GitHub&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;思ったよりも差分はコンパクトにまとまりました。&lt;/p&gt;
+
+&lt;h2 id=&quot;install-selenium-webdriver&quot;&gt;Install selenium-webdriver&lt;/h2&gt;
+
+&lt;p&gt;まずは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;poltergeist&lt;/code&gt; gemの代わりに、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium-webdriver&lt;/code&gt;をインストール。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;-  gem &quot;poltergeist&quot;
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+  gem &quot;selenium-webdriver&quot;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;change-capybarajavascript_driver&quot;&gt;Change Capybara.javascript_driver&lt;/h2&gt;
+
+&lt;p&gt;次に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Capybara.javascript_driver&lt;/code&gt;を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:poltergeist&lt;/code&gt;から&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;に変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gd&quot;&gt;- require &quot;capybara/poltergeist&quot;
+- Capybara.javascript_driver = :poltergeist
+&lt;/span&gt;&lt;span class=&quot;gi&quot;&gt;+ require &quot;selenium-webdriver&quot;
++ Capybara.javascript_driver = :selenium_chrome_headless
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ちなみに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:selenium_chrome_headless&lt;/code&gt;の設定は下記の変更の中でcapybara内に取り込まれています。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--headless'&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--disable-gpu'&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://github.com/teamcapybara/capybara/commit/0275eab42c610cd1ccde7947b051d0b00857b9ce&quot;&gt;add default selenium chrome driver registrations · teamcapybara/capybara@0275eab · GitHub&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;install-chromedriver&quot;&gt;Install chromedriver&lt;/h2&gt;
+
+&lt;h3 id=&quot;on-macos&quot;&gt;On MacOS&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromedriver&lt;/code&gt; が必要になってくるが、Macの場合はbrewで入れちゃうのが一番ラクです。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;brew cask &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;chromedriver
+&lt;span class=&quot;go&quot;&gt;Updating Homebrew...
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Auto-updated Homebrew!
+&lt;span class=&quot;go&quot;&gt;Updated 1 tap (homebrew/cask).
+No changes to formulae.
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Satisfying dependencies
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Downloading https://chromedriver.storage.googleapis.com/2.41/chromedriver_mac64.zip
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;####################################################################### 100.0%&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Verifying checksum &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Installing Cask chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Extracting nested container chromedriver
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Linking Binary &lt;span class=&quot;s1&quot;&gt;'chromedriver'&lt;/span&gt; to &lt;span class=&quot;s1&quot;&gt;'/usr/local/bin/chromedriver'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;🍺  chromedriver was successfully installed!
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;注意事項&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew install chromedriver&lt;/code&gt;ではinstallできないので注意（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew cask&lt;/code&gt;経由にすること）&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromedriver-helper&lt;/code&gt; gem が入っているとうまく動かない場合があるので注意&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;on-circleci&quot;&gt;On CircleCI&lt;/h3&gt;
+
+&lt;p&gt;CircleCI上では、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ruby:x.x-node-browsers&lt;/code&gt;のCircleCI公式Ruby Dokcer Imageを使っていればきちんと動作しました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.5-node-browsers&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上記の設定の場合、Ruby2.5のnode-browsersバージョンをベースイメージとして使用しています。&lt;/p&gt;
+
+&lt;h3 id=&quot;on-travisci&quot;&gt;On TravisCI&lt;/h3&gt;
+
+&lt;p&gt;これが今回の対応で一番ハマった設定でした。いろいろ試しましたが下記のエラーがなかなか解決できませんでした。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failures:
+
+  1) Authentication authorization screenshot
+     Failure/Error: before { visit signin_path }
+
+     Selenium::WebDriver::Error::WebDriverError:
+        Unable to find Mozilla geckodriver. Please download the server from https://github.com/mozilla/geckodriver/releases and place it somewhere on your PATH. More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
+     # ./spec/features/authentication_pages_spec.rb:9:in `block (3 levels) in &amp;lt;top (required)&amp;gt;'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;del&gt;本当は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo: false&lt;/code&gt;の設定で動かしたかったのですがそれだと上手くいかなかったので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt;で起動させて&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromium-chromedriver&lt;/code&gt;をテスト前にInstallしてパスを通すという方法でテストを通しました。&lt;/del&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;required&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;before_install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sudo apt-get install -y chromium-chromedriver&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ln -s /usr/lib/chromium-browser/chromedriver ~/bin/chromedriver&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;del&gt;(もう少しスマートなやり方をご存知の方は教えていただけると嬉しいです🙏)&lt;/del&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;追記（2019年9月17日）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; 無しでも下記のような設定でいけました。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;dist&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bionic&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;chrome&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;stable&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;apt&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;chromium-chromedriver&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;参考Pull Request: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/524/files&quot;&gt;No sudo on TravisCI by toshimaru · Pull Request #524 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://ohbarye.hatenablog.jp/entry/2018/03/10/232300&quot;&gt;PhantomJS + Poltergeist を Selenium + Headless Chrome で置き換える (1) Rails + Capybara による feature spec 編 - valid,invalid&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.speee.jp/entry/2017/06/15/135636&quot;&gt;RSpec の feature spec でヘッドレス Chrome を使う - Speee DEVELOPER BLOG&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://y-yagi.tumblr.com/post/166831012790/rails%E9%9B%91%E3%81%ABsystem-test%E3%81%A7headless-chrome%E3%82%92%E4%BD%BF%E3%81%86&quot;&gt;[Rails]雑にSystem TestでHeadless Chromeを使う | 日々雑記&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rspec" /><category term="chrome" /><summary type="html">RailsのCapybaraを使ったE2Eテスト(feature spec)をこの度、poltergeistからHeadless Chromeに乗り換えてみたのでそのときのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/chromedriver.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/chromedriver.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RuboCopチームにgemの名前を譲った話</title><link href="https://blog.toshimaru.net/rubocop-rails-config/" rel="alternate" type="text/html" title="RuboCopチームにgemの名前を譲った話" /><published>2018-07-17T00:00:00+09:00</published><updated>2018-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config/">&lt;p&gt;かねてより僕が開発していた&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemをRuboCop公式チームの要望により譲った。&lt;/p&gt;
+
+&lt;p&gt;僕がこのgemを作った経緯とかは下記の記事の通り。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;つくったやつ | Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design! &lt;a href=&quot;https://t.co/szG0eLPetS&quot;&gt;https://t.co/szG0eLPetS&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/958123075572195331?ref_src=twsrc%5Etfw&quot;&gt;January 29, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
+
+&lt;p&gt;名前を譲ることになったきっかけは下記のIssue。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop/issues/5976&quot;&gt;Extract Rails Cops in a separate · Issue #5976 · rubocop-hq/rubocop&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;より正確にいうとこのIssueの前に&lt;a href=&quot;https://rubykaigi.org/2018/&quot;&gt;RubyKaigi 2018&lt;/a&gt;の懇親会でRuboCop作者から僕へ間接的に打診があり、上記のIssueに至る。&lt;/p&gt;
+
+&lt;p&gt;RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を作りたい。gem名はrubocop-railsとしたい。名前を頂戴！」と感じ。僕の想いとしては「RuboCop公式チームとして使いたい名前ということであればどうぞどうぞ。わかりやすい名前を付けることはRubyコミュニティ全体の利益にもなるだろうしね！」という感じ。&lt;/p&gt;
+
+&lt;h2 id=&quot;譲るにあたりやったこと&quot;&gt;譲るにあたりやったこと&lt;/h2&gt;
+
+&lt;p&gt;下記のようなIssueを作成して進めていった。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails/issues/31&quot;&gt;[IMPORTANT ANNOUNCEMENT] Transfer rubocop-rails gem to RuboCop Team · Issue #31 · toshimaru/rubocop-rails&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; に代わる新しいgemを作成: &lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; の新しいversionを切って、post_install_messageでRenameの旨を周知&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails_config&lt;/code&gt; のほうに簡単にUpdateできるようなUpdate Generator Taskを用意&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; というgemに新しいOwnerを付与&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; のRename前の古いバージョンをrubygemsから削除&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一番最後の &lt;strong&gt;古いバージョンをrubygemsから削除&lt;/strong&gt; はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果、古いバージョンを消してでもgemのRename周知を優先させようと思い至った。これに関しては正直正解はないと思う。&lt;/p&gt;
+
+&lt;h2 id=&quot;rubocopコミッターのkoicさんが発表してくださいました&quot;&gt;RuboCopコミッターのkoicさんが発表してくださいました&lt;/h2&gt;
+
+&lt;p&gt;本件に関してはRuboCopコミッターの&lt;a href=&quot;https://twitter.com/koic&quot;&gt;@koic&lt;/a&gt;さんも先日の&lt;a href=&quot;https://techplay.jp/event/679666&quot;&gt;Rails Developers Meetup 2018 Day 3 Extreme&lt;/a&gt;にて発表して頂いたようです。:innocent:&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-slide=&quot;57&quot; data-id=&quot;612849c52252464d8a63fc97f90c6091&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;発表エントリ: &lt;a href=&quot;http://koic.hatenablog.com/entry/railsdm-2018-day3-extreme&quot;&gt;Rails Developers Meetup 2018 Day 3 Extreme に登壇した - koicの日記&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;エピソードのご紹介ありがとうございました。:pray:&lt;/p&gt;
+
+&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+
+&lt;p&gt;なお、gemを消す方法に関しては下記を参考にさせてもらった。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blog.s21g.com/articles/1755&quot;&gt;公開した gem を削除する方法 - ヽ( ・∀・)ノくまくまー - s21g&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><category term="oss" /><summary type="html">かねてより僕が開発していたrubocop-railsというgemをRuboCop公式チームの要望により譲った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

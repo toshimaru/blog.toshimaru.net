@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/bash.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/bash.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">標準出力、標準エラー出力のリダイレクト方法まとめ</title><link href="https://blog.toshimaru.net/bash-stdout-and-stderr/" rel="alternate" type="text/html" title="標準出力、標準エラー出力のリダイレクト方法まとめ" /><published>2019-11-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/bash-stdout-and-stderr</id><content type="html" xml:base="https://blog.toshimaru.net/bash-stdout-and-stderr/">&lt;p&gt;標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。&lt;/p&gt;
+
+&lt;h2 id=&quot;標準入力-標準出力-標準エラー出力とは&quot;&gt;標準入力, 標準出力, 標準エラー出力とは？&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;種類&lt;/th&gt;
+      &lt;th&gt;説明&lt;/th&gt;
+      &lt;th&gt;ファイルディスクリプタ&lt;/th&gt;
+      &lt;th&gt;省略形&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;標準入力&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;デフォルトの入力データストリーム。&lt;br /&gt;例えばコマンドのパイプラインなど。ターミナル上ではユーザーのキーボード入力のこと。&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdin&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;標準出力&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;デフォルトの出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;標準エラー出力&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;デフォルトのエラーに関連する出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stderr&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;（出典: &lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor? - Stdin, stdout, and stderr&lt;/a&gt; より翻訳）&lt;/p&gt;
+
+&lt;p&gt;それぞれのファイルディスクリプタは下記のように &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/stderr&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/stdin&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/stdout&lt;/code&gt; からも確認することができます&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; /dev/std&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;,out,err&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stderr -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/2
+&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdin -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/0
+&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdout -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;標準出力-標準エラー出力するシェルスクリプト&quot;&gt;標準出力, 標準エラー出力するシェルスクリプト&lt;/h2&gt;
+
+&lt;p&gt;今回使用するベースとなるシェルスクリプトは下記になります。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.sh
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;/bin/sh
+&lt;span class=&quot;go&quot;&gt;echo &quot;stdout&quot;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;echo &quot;stderr&quot; &amp;gt;&lt;/span&gt;&amp;amp;2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;stdout という文字列を標準出力&lt;/li&gt;
+  &lt;li&gt;stderr という文字列を標準エラー出力&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;このようなコードとなっております。&lt;/p&gt;
+
+&lt;h3 id=&quot;rubyバージョン&quot;&gt;Rubyバージョン&lt;/h3&gt;
+
+&lt;p&gt;ちなみに今回のシェルスクリプトをRubyで表現すると下記のようになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env ruby&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stdout&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;warn&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stderr&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;リダイレクト無し実行時&quot;&gt;リダイレクト無し実行時&lt;/h2&gt;
+
+&lt;p&gt;まずは何もリダイレクトの設定をしないで実行してみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh
+&lt;span class=&quot;go&quot;&gt;stdout
+stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;標準出力、エラー出力ともに画面に表示される&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;標準出力リダイレクト有り実行時&quot;&gt;標準出力リダイレクト有り実行時&lt;/h2&gt;
+
+&lt;p&gt;次はリダイレクトを設定して実行してみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
+&lt;span class=&quot;go&quot;&gt;stderr
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stdout が出力されなくなった&lt;/li&gt;
+  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に stdout が出力されている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;また上コマンドでは省略されていますが、リダイレクトのデフォルトは標準出力のファイルディスクリプタ「1」なので、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; の部分は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1&amp;gt;&lt;/code&gt; と書くこともできます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;エラー出力リダイレクト有り実行時&quot;&gt;エラー出力リダイレクト有り実行時&lt;/h2&gt;
+
+&lt;p&gt;次はエラー出力だけリダイレクトするようにしてみましょう。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 2&amp;gt; stderr.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
+&lt;span class=&quot;go&quot;&gt;stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stderr が出力されなくなった&lt;/li&gt;
+  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に stderr が出力されている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;エラー出力を標準出力としてリダイレクト実行時&quot;&gt;エラー出力を標準出力としてリダイレクト実行時&lt;/h2&gt;
+
+&lt;p&gt;続いてエラー出力を標準出力としてまとめて出力するようにリダイレクトしてみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
+&lt;span class=&quot;go&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;リダイレクト実行時の画面表示は何もされない&lt;/li&gt;
+  &lt;li&gt;リダイレクト先のファイル &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout-stderr.txt&lt;/code&gt; には stdout と stderr ともに出力されている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
+&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp; stdout-stderr.txt
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;標準出力エラー出力を別々にリダイレクト実行時&quot;&gt;標準出力＆エラー出力を別々にリダイレクト実行時&lt;/h2&gt;
+
+&lt;p&gt;標準出力と標準エラー出力をそれぞれ別にリダイレクトするようにしてみます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt 2&amp;gt; stderr.txt
+&lt;span class=&quot;go&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
+&lt;span class=&quot;go&quot;&gt;stdout
+
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
+&lt;span class=&quot;go&quot;&gt;stderr
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;標準出力である stdout は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に出力される&lt;/li&gt;
+  &lt;li&gt;標準エラー出力である stderr は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に出力される&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;出力をリダイレクトで捨てる&quot;&gt;出力をリダイレクトで捨てる&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/null&lt;/code&gt;にリダイレクトすれば出力内容を捨てることができます。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; /dev/null
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/laikuaut/items/e1cc312ffc7ec2c872fc&quot;&gt;bash: 標準出力、標準エラー出力をファイル、画面それぞれに出力する方法 - Qiita&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="shell" /><category term="bash" /><summary type="html">標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/stdout.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/stdout.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RubyとGoとBashで並行処理のパフォーマンス比較をしてみた</title><link href="https://blog.toshimaru.net/ruby-vs-go/" rel="alternate" type="text/html" title="RubyとGoとBashで並行処理のパフォーマンス比較をしてみた" /><published>2015-03-05T00:00:00+09:00</published><updated>2019-11-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-vs-go</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-vs-go/">&lt;p&gt;Rubyで書いたコードをGoで書き直したらどれくらい早くなるかを検証したくてやってみた。ついでにBashでもどうなるかも比較した。&lt;/p&gt;
+
+&lt;p&gt;画像ファイルをダウンロードするだけの単純な処理での比較。複雑な処理になるとまた結果は全然違ってくると思います。あしからず。&lt;/p&gt;
+
+&lt;h2 id=&quot;比較する処理内容&quot;&gt;比較する処理内容&lt;/h2&gt;
+
+&lt;p&gt;100個の画像をダウンロードするコードをサンプルにやってみた。&lt;/p&gt;
+
+&lt;h2 id=&quot;rubyの場合&quot;&gt;Rubyの場合&lt;/h2&gt;
+
+&lt;p&gt;Ruby 2.6 で検証。&lt;/p&gt;
+
+&lt;h3 id=&quot;直列ダウンロード&quot;&gt;直列ダウンロード&lt;/h3&gt;
+
+&lt;p&gt;まずは何も考えず順番に１つ１つダウンロードするRubyコード。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# no_thread.rb&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'open-uri'&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./images/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;write&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;ruby no_thread.rb
+&lt;span class=&quot;go&quot;&gt;ruby no_thread.rb  1.85s user 0.28s system 1% cpu 2:05.11 total
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実行時間: 約2分。遅い&lt;/li&gt;
+  &lt;li&gt;CPU: 1％。CPUはほとんど使い切れていないことがわかる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;threadで並行ダウンロード&quot;&gt;Threadで並行ダウンロード&lt;/h3&gt;
+
+&lt;p&gt;Threadを使って並行に処理してみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# thread.rb&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'open-uri'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./images/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;write&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;ruby thread.rb
+&lt;span class=&quot;go&quot;&gt;ruby thread.rb  1.64s user 0.28s system 71% cpu 2.670 total
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実行時間: 2.6秒。劇的な改善&lt;/li&gt;
+  &lt;li&gt;CPU: 70％。うまくCPUも使えている&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;goの場合&quot;&gt;Goの場合&lt;/h2&gt;
+
+&lt;p&gt;Goで書き直してみる。Goのバージョンは1.13を使用。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://qiita.com/keisukeP/items/f4d680eb9e8f93263fa9&quot;&gt;こちらのコード&lt;/a&gt;を参考に書いてみた。&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// go.go&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;io&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;net/http&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;os&quot;&lt;/span&gt;
+	&lt;span class=&quot;s&quot;&gt;&quot;sync&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WaitGroup&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;images/%d.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nb&quot;&gt;panic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+				&lt;span class=&quot;nb&quot;&gt;panic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;defer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Body&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;defer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}()&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;go-runで実行&quot;&gt;Go runで実行&lt;/h3&gt;
+
+&lt;p&gt;コンパイルせずに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go run&lt;/code&gt;で実行してみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;go run go.go
+&lt;span class=&quot;go&quot;&gt;go run go.go  0.79s user 0.37s system 25% cpu 4.532 total
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実行時間: 約4.5秒&lt;/li&gt;
+  &lt;li&gt;CPU: 25％&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;build済みバイナリで実行&quot;&gt;build済みバイナリで実行&lt;/h3&gt;
+
+&lt;p&gt;buildして実行する。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go build go.go
+&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt; ./go
+&lt;span class=&quot;go&quot;&gt;./go  0.23s user 0.12s system 11% cpu 3.111 total
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実行時間: 約3秒。RubyのThreadコードより少し遅かった&lt;/li&gt;
+  &lt;li&gt;CPU: 約10％。速度のわりにCPU消費が著しく低い！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;bashの場合&quot;&gt;Bashの場合&lt;/h2&gt;
+
+&lt;p&gt;Bash（シェルスクリプト）の場合も試してみる。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# bash.bash&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;seq &lt;/span&gt;1 100&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
+  &lt;/span&gt;wget &lt;span class=&quot;nt&quot;&gt;--background&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--quiet&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-O&lt;/span&gt; images/&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;.png &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /dev/null
+&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt; ./bash.bash
+&lt;span class=&quot;go&quot;&gt;./bash.bash  0.25s user 0.30s system 43% cpu 1.241 total
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;実行時間: 約1.2秒。速い！&lt;/li&gt;
+  &lt;li&gt;CPU: 約40%&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;p&gt;単純な並行ダウンロードという処理において、実行速度だけでいうとRubyもThreadを使えばGoと同じ速度は出せるということがわかった。&lt;/p&gt;
+
+&lt;p&gt;一方でCPUコストに関してはビルド済みのGoバイナリのほうが圧倒的低く済むということが判明した。つまり複雑な計算処理においてはGoがRubyよりずっとアドバンテージがあるであろうことがわかった。&lt;/p&gt;
+
+&lt;p&gt;今回は単純な処理なのでRubyとGoの間で処理速度に大きな差は生まれなかったものの、比較するロジックが複雑化すればするほどRubyはGoに負けそうな予感がした。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="go" /><category term="bash" /><summary type="html">Rubyで書いたコードをGoで書き直したらどれくらい早くなるかを検証したくてやってみた。ついでにBashでもどうなるかも比較した。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-vs-go.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-vs-go.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説</title><link href="https://blog.toshimaru.net/sh3iz/" rel="alternate" type="text/html" title="「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説" /><published>2012-12-24T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/sh3iz</id><content type="html" xml:base="https://blog.toshimaru.net/sh3iz/">&lt;p&gt;&lt;a href=&quot;http://d.hatena.ne.jp/shi3z/20121217/1355695824&quot;&gt;たった一行でもっと高画質の画像を集める方法&lt;/a&gt;にあったシェルスクリプトのコード。&lt;/p&gt;
+
+&lt;h2 id=&quot;ソース&quot;&gt;ソース&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;matome_url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;cnt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;j &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;1..10&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
+  for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;curl &lt;span class=&quot;nv&quot;&gt;$matome_url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\?&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$j&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'_jWidgetData'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed &lt;/span&gt;s/&lt;span class=&quot;se&quot;&gt;\&amp;amp;&lt;/span&gt;quot&lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;/g | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\:\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]*&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; 3 &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
+    &lt;/span&gt;curl &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$2_$cnt&lt;/span&gt;.jpg &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;cnt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;expr&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cnt&lt;/span&gt; + 1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;done
+done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;その中の１行、このコードの意味がよくわからなかったので調べてみた。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;curl &lt;span class=&quot;nv&quot;&gt;$matome_url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\?&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$j&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'_jWidgetData'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed &lt;/span&gt;s/&lt;span class=&quot;se&quot;&gt;\&amp;amp;&lt;/span&gt;quot&lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;/g | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\:\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]*&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; 3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;バラすと下記のようになる。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl https://matome.naver.jp/odai/2128076173257260401 | &lt;span class=&quot;c&quot;&gt;# curlでデータ取得&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'_jWidgetData'&lt;/span&gt; |                                   &lt;span class=&quot;c&quot;&gt;# _jWidgetData(画像URLが含まれている行)をgrep&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sed &lt;/span&gt;s/&lt;span class=&quot;se&quot;&gt;\&amp;amp;&lt;/span&gt;quot&lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;/g |                                   &lt;span class=&quot;c&quot;&gt;# &amp;amp;quot; を &quot; に変換&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\:\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]*&quot;&lt;/span&gt; |                             &lt;span class=&quot;c&quot;&gt;# url&quot;:&quot;http:~ をgrepで抜き出す&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; 3                                          &lt;span class=&quot;c&quot;&gt;# ⇡をurl,:,http:~ の３つに分割してURLである３つめをcut!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;出力結果&quot;&gt;出力結果&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://imgcc.naver.jp/kaze/mission/USER/20121010/16/112376/0/800x1126x5e102d37fb7211123e76a10.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121009/16/112376/1/1134x1548x5a8f6dace3e8a811e2caeb.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121222/16/112376/1/1152x1643xa71b65cd2d7ccfbd9ab501.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121022/16/112376/3/1470x2048xf91af81cc31725554aa6a1.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121223/16/112376/0/800x1067xce40c56866a0c1349b12d40.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121223/16/112376/1/800x1067xda8507d549b33034789af92.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121222/16/112376/0/1120x1680xe367f4d20758df59051771.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121218/16/112376/3/800x1200xf0e163f978b6340999a3627.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121220/16/112376/2/800x1149x504004fca0a43ae177b6b94.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121220/16/112376/1/909x1346xbc20b11869f748acf5dfcb9.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121220/16/112376/0/1066x1600x961a7ad10008867d0b4dc4.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121218/16/112376/1/703x1024x9c2810c4630ee676e88581e.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121215/16/112376/0/1226x1671x7380daad05950ec9f27aa1.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121218/16/112376/5/900x1280x8feb008f284438ae077799f.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121219/16/112376/0/799x1200xa22a34c73b464cc8c008887.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121219/16/112376/1/1200x800x596d41a8093f6663d2f51d5.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121216/16/112376/1/1500x2150x03d096234d12754f302cae.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121216/16/112376/0/683x1024x85dc2bb2d1fb1168ee2815c.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121214/16/112376/2/530x800x764574c1e912f5a46846fe56.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121214/16/112376/3/1280x1900x1ce4cf74906fd926a96f41.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121214/16/112376/0/900x1200xaca3d3fec5d57eec05c514a.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121214/16/112376/8/531x800xc515ec8798a9a4032daca277.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121207/16/112376/24/1033x1550x7c9c3cd8928ab0fbf19548.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121202/16/112376/1/1033x1550x6e0dc201a49d96d93740d1.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121208/16/112376/1/1033x1550xf007fde2a5343d1a0a55d1.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/7/854x1280xeabf817b9a607e419f2472f.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/6/896x1280x08f71b1d54aa4bd5c2ef364.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/5/1280x1682xd727f8325bec6c51d47212.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/4/800x1067xcec4822757324881e9978c9.jpg
+http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/3/1280x1920x0a1ca8283d2796132f14e3.jpg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この「◯◯で水着画像を集める」系のネタ元はPHPでしたが、シェルでもいけちゃうんですね。奥深い・・・&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="linux" /><category term="shell" /><category term="bash" /><summary type="html">たった一行でもっと高画質の画像を集める方法にあったシェルスクリプトのコード。</summary></entry></feed>

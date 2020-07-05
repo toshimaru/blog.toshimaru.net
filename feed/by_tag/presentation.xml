@@ -1,0 +1,2224 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/presentation.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-07-06T00:05:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/presentation.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜" /><published>2020-06-05T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model-after</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model-after/">&lt;p&gt;本記事は『&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表しました&lt;/a&gt;』の後編になります。&lt;/p&gt;
+
+&lt;p&gt;当日あった質問、発表してみての感想などを書きたいと思います。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#当日の質問&quot; id=&quot;markdown-toc-当日の質問&quot;&gt;当日の質問&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#ファイルの置き場について&quot; id=&quot;markdown-toc-ファイルの置き場について&quot;&gt;ファイルの置き場について&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#trailblazer-について&quot; id=&quot;markdown-toc-trailblazer-について&quot;&gt;trailblazer について&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#初リモート登壇してみて&quot; id=&quot;markdown-toc-初リモート登壇してみて&quot;&gt;初リモート登壇してみて&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#セットアップ&quot; id=&quot;markdown-toc-セットアップ&quot;&gt;セットアップ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#感想&quot; id=&quot;markdown-toc-感想&quot;&gt;感想&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#special-thanks&quot; id=&quot;markdown-toc-special-thanks&quot;&gt;Special Thanks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;当日の質問&quot;&gt;当日の質問&lt;/h2&gt;
+
+&lt;h3 id=&quot;ファイルの置き場について&quot;&gt;ファイルの置き場について&lt;/h3&gt;
+
+&lt;p&gt;質問の文脈としては「POROファイルの置き場ってどこ？」という内容でした。&lt;/p&gt;
+
+&lt;p&gt;発表中でPOROは「Modelの補助輪」という表現をしましたが、役割としてはModelにあたるので置き場所も&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt;配下で問題ないと考えます。&lt;/p&gt;
+
+&lt;p&gt;特別な置き場を作りたくなってしまうかもしれませんが、Railsの提供するMVCのレールを逸脱しない範囲で独自路線を作っていくのが個人的には良いアプローチかなと考えています。POROをモデルの延長線上にあるものと考えれば、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にPOROが配置されているのは不自然ではないかと思います。&lt;/p&gt;
+
+&lt;p&gt;もちろん &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt; の内部でドメイン毎にnamespace（module）を持たせファイルを構造化していくのはアリだと思います。例えば下記の例です。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;app/models
+├── application_record.rb
+├── domain1
+│   └── plain_object.rb
+├── domain2
+│   └── plain_object.rb
+├── domain3
+│   └── plain_object.rb
+|
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/models&lt;/code&gt;にフラットにファイルを置いていくと、テーブル数増加・コード肥大化とともにものすごい数になってしまいます。意味のある単位でディレクトリ（module）を切っておくのは今すぐできる手軽な構造化という意味で、早いうちに導入しておくと良いと思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;trailblazer-について&quot;&gt;trailblazer について&lt;/h3&gt;
+
+&lt;p&gt;「&lt;a href=&quot;https://github.com/trailblazer/trailblazer&quot;&gt;trailblazer&lt;/a&gt; についてどう思う？」という話がありました。今回の発表にあたりtrailblazerはノーマークだったので、当日は「ちゃんと調べて触ったわけではないので、正直わかりません」という回答をしました。&lt;/p&gt;
+
+&lt;p&gt;trailblazer自体は、2015年頃に&lt;a href=&quot;https://devchat.tv/ruby-rogues/206-rr-trailblazer-with-nick-sutterer/&quot;&gt;Ruby Rogues Podcast&lt;/a&gt;で聞いて知っていて、当時は「へ〜、興味深いコンセプトのフレームワークだけど、Not for meかな〜」「RailsのMVC構造とは違って小難しそうなフレームワークだな〜」などと思っていました。&lt;/p&gt;
+
+&lt;p&gt;今回の発表を通して改めて trailblazer を評価してみると、&lt;strong&gt;Railsの巨大化にともなって発生するペインポイントを回避するためによく考えられたアーキテクチャだ&lt;/strong&gt; と思いました。&lt;/p&gt;
+
+&lt;p&gt;trailblazer は「高度に抽象化（high-level abstractions）されたRubyフレームワーク」だと謳っています。「何と比べて高度か？」というと、明らかに「Rails（MVCアーキテクチャ）と比べて高度だ」と考えることができます。具体的にはMVCアーキテクチャと比べて、大規模化しても破綻しにくいアーキテクチャになっているかと思います。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/trailblazer.png&quot; alt=&quot;trailblazer&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;一方でtrailblazerアーキテクチャの中には「Railsでもgemとか使えば表現できるよね？」っていう部分もあるのは事実だと思います。trailblazerのアドバンテージとしては &lt;strong&gt;gem拡張なし&lt;/strong&gt; で &lt;strong&gt;標準で&lt;/strong&gt; 実現できる点と言えます。素の状態で破綻しにくいアーキテクチャが提供されています。&lt;/p&gt;
+
+&lt;p&gt;Hanamiにも共通して言えることなのですが、trailblazerを採用するときのディスアドバンテージはこんな感じでしょうか。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;gem拡張に乏しい
+    &lt;ul&gt;
+      &lt;li&gt;やりたいことをやれるgemが転がっているか？&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;ハマったときのトラブルシュートの難しさ
+    &lt;ul&gt;
+      &lt;li&gt;ドキュメントは十分にあるか？&lt;/li&gt;
+      &lt;li&gt;コミュニティは成熟しているか？&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;バグを踏んだときの問題解決の難しさ
+    &lt;ul&gt;
+      &lt;li&gt;アクティブなメンテナはどれだけいるか？&lt;/li&gt;
+      &lt;li&gt;バグを報告したらすぐ反応して直してくれるか？&lt;/li&gt;
+      &lt;li&gt;Pull Request を upstream にカジュアルに投げることができそうか？&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上述したデメリットを考えると、Hanamiないしtrailblazerがどれだけ優秀なアーキテクチャであっても採用は慎重にならざるを得ないと言えます。&lt;/p&gt;
+
+&lt;p&gt;Ruby on Railsの優位性はRuby Webフレームワークの圧倒的デファクトになっていることです。gemエコシステムやコミュニティ、ドキュメント、ブログ記事がしっかり整っているのは圧倒的アドバンテージと言えるのではないでしょうか。&lt;/p&gt;
+
+&lt;h2 id=&quot;初リモート登壇してみて&quot;&gt;初リモート登壇してみて&lt;/h2&gt;
+
+&lt;h3 id=&quot;セットアップ&quot;&gt;セットアップ&lt;/h3&gt;
+
+&lt;p&gt;今回の発表が初の&lt;a href=&quot;https://zoom.us/&quot;&gt;Zoom&lt;/a&gt;によるリモート登壇でした。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;初リモート登壇セットアップ &lt;a href=&quot;https://twitter.com/hashtag/ginzarails?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#ginzarails&lt;/a&gt; &lt;a href=&quot;https://t.co/Ays780ImG9&quot;&gt;pic.twitter.com/Ays780ImG9&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1261229167036653570?ref_src=twsrc%5Etfw&quot;&gt;May 15, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;macOS + iPad の2画面を&lt;a href=&quot;https://support.apple.com/ja-jp/HT210380&quot;&gt;Sidecar&lt;/a&gt;を使って実現した形となります。通常登壇だとスピーカーノートを手元のマシンに映して、プレゼン資料をプロジェクタに映して…とするところですが、リモート登壇だとプロジェクタにあたる部分が無いのでサブディスプレイは必須だなと感じました。&lt;/p&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B07PRX2Q11&amp;amp;linkId=496cfb91e959b3c29be79559c0666db9&quot;&gt;&lt;/iframe&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B07H27J698&amp;amp;linkId=aa0e907ba05d2a0e01a21b30e73d5b86&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;リモート発表ということもありネットワークが一番の心配事だったのですが、Google WiFiルーター ⇔ macOS とのネットワーク優先度をMAXにして、5GHz帯を掴むようにして発表に臨むことで、特に問題は発生しませんでした。&lt;/p&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B084ZCV6M5&amp;amp;linkId=dd1f57286c1fe56f3d3bc5db74ef399e&quot;&gt;&lt;/iframe&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B01MAW2294&amp;amp;linkId=bdc1818106278e95163b1f29f12bfdd9&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;また発声がキレイに通るように、ノイズキャンセリングApp・&lt;a href=&quot;https://krisp.ai/&quot;&gt;Krisp&lt;/a&gt;を導入していました（&lt;a href=&quot;https://ref.krisp.ai/u/ud778344eb&quot;&gt;こちら&lt;/a&gt;から登録すると一ヶ月無料で使えます）。リモート時代には必須。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;リモート戦国時代を生き抜くために Krisp を年間購読した&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1252784955878305792?ref_src=twsrc%5Etfw&quot;&gt;April 22, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;プレゼンツールはおなじみの&lt;a href=&quot;https://www.deckset.com/&quot;&gt;Deckset&lt;/a&gt;。マークダウンでまとめられるのはGood、一方でデザインを凝ろうとするとパワポやキーノートより逆に大変なのでそのへんは課題感あります。&lt;/p&gt;
+
+&lt;h3 id=&quot;感想&quot;&gt;感想&lt;/h3&gt;
+
+&lt;p&gt;正直な気持ちをいうと、「発表するならジェスチャーが使えて、オーディエンスの顔・反応が見れて、緊張感を持って臨めるリアル登壇が良いかなー」って考えだったのですが、コロナが長期化しそうな状況を鑑みて今回のリモート登壇にチャレンジしてみることにしました。&lt;/p&gt;
+
+&lt;p&gt;実際にやってみて良かったこととしては、お家環境で椅子に座ってノンビリ発表できるのでそこまで疲れないという点でした。あとZoomはリモート登壇にはとても便利なツール（良い背景画像が無かったので今回はバーチャル背景を使わなかったのが若干後悔）。&lt;/p&gt;
+
+&lt;p&gt;逆に難しいなと思ったのはやっぱりオーディエンスの反応が見えない点。ここは運営側で&lt;a href=&quot;http://commentscreen.com/&quot;&gt;Comment Screen&lt;/a&gt;環境を用意してもらえたことで、発表中のオーディエンスへの質問や反応はある程度見ることができました。またこれは登壇者側・参加者側どちらでもそうなのですが、リアル現場での懇親会のように発表後にカジュアルに話せないのはちょっと残念だなーと思う点です。&lt;/p&gt;
+
+&lt;p&gt;総じてリモート登壇を初めての体験できてよかったと思います。&lt;/p&gt;
+
+&lt;p&gt;あと今回いただいた30分という尺はある程度まとまった量の発表をゆっくり進行するには丁度良い尺でした。それ以上の長さになると発表者側もオーディエンス側もダレそうだなぁという印象。&lt;/p&gt;
+
+&lt;h2 id=&quot;special-thanks&quot;&gt;Special Thanks&lt;/h2&gt;
+
+&lt;p&gt;本発表はもともと銀座Rails#18で発表予定だったものです。改めての発表機会をいただき、銀座Rails運営の皆様ありがとうございました。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;イベントキャンセルによってお蔵入りした発表資料。普通に喋ったら20分超えの大作だっただけに残念。。。コロナが落ち着くまでは蔵出しせずに寝かせておくかな...😷 &lt;a href=&quot;https://t.co/Qzu2YNQyve&quot;&gt;pic.twitter.com/Qzu2YNQyve&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1229425295930716160?ref_src=twsrc%5Etfw&quot;&gt;February 17, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;Rails Model の限界を考えるにあたり、&lt;a href=&quot;https://twitter.com/_yasaichi&quot;&gt;yasaichiさん&lt;/a&gt;、&lt;a href=&quot;https://github.com/hshimoyama&quot;&gt;hshiroyamaさん&lt;/a&gt;の発表を参考にさせていただきました。ありがとうございました。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;b5579c5fa5fa4e479ec81fda3b231eb2&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;ce30c3cf9433471283e24855f6bdd2b4&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;1年前に「Ruby on Railsの正体と向き合い方」というテーマで登壇したときに、時間の関係で言及できなかった「コードレベルの向き合い方」の詳細が綺麗に整理された上でまとまっていて、いたく感動してしまった。おすすめ / Fat Modelの倒し方 / how to deal with fat model &lt;a href=&quot;https://t.co/0vMubQfiLb&quot;&gt;https://t.co/0vMubQfiLb&lt;/a&gt;&lt;/p&gt;&amp;mdash; (やさいち|yasaichi) (@_yasaichi) &lt;a href=&quot;https://twitter.com/_yasaichi/status/1264889633332060160?ref_src=twsrc%5Etfw&quot;&gt;May 25, 2020&lt;/a&gt;&lt;/blockquote&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rails" /><summary type="html">本記事は『銀座Rails#21で「Fat Modelの倒し方」を発表しました』の後編になります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og2.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og2.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表しました</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表しました" /><published>2020-06-01T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model/">&lt;p&gt;&lt;a href=&quot;https://ginza-rails.connpass.com/event/173610/&quot;&gt;銀座Rails#21&lt;/a&gt;で「Fat Modelの倒し方」と題して発表してきました。&lt;/p&gt;
+
+&lt;h2 id=&quot;発表スライド&quot;&gt;発表スライド&lt;/h2&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;fa367404507c4311aa3eeb087fc45a6e&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;目次&quot;&gt;目次&lt;/h2&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#発表スライド&quot; id=&quot;markdown-toc-発表スライド&quot;&gt;発表スライド&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#目次&quot; id=&quot;markdown-toc-目次&quot;&gt;目次&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#fat-rails-stage&quot; id=&quot;markdown-toc-fat-rails-stage&quot;&gt;Fat Rails Stage&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#fat-model対処のための３つのアプローチ&quot; id=&quot;markdown-toc-fat-model対処のための３つのアプローチ&quot;&gt;Fat Model対処のための３つのアプローチ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#rails-modelの限界&quot; id=&quot;markdown-toc-rails-modelの限界&quot;&gt;Rails Modelの限界&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#rails-modelはなぜ辛くなるのか&quot; id=&quot;markdown-toc-rails-modelはなぜ辛くなるのか&quot;&gt;Rails Modelはなぜ辛くなるのか？&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#目指すべきゴール&quot; id=&quot;markdown-toc-目指すべきゴール&quot;&gt;目指すべきゴール&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#rails-way&quot; id=&quot;markdown-toc-rails-way&quot;&gt;Rails Way&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#concerns&quot; id=&quot;markdown-toc-concerns&quot;&gt;Concerns&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#sti&quot; id=&quot;markdown-toc-sti&quot;&gt;STI&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#polymorphic-association&quot; id=&quot;markdown-toc-polymorphic-association&quot;&gt;Polymorphic Association&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#accepts_nested_attributes_for&quot; id=&quot;markdown-toc-accepts_nested_attributes_for&quot;&gt;accepts_nested_attributes_for&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#その他細かめのテクニック&quot; id=&quot;markdown-toc-その他細かめのテクニック&quot;&gt;その他細かめのテクニック&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#rails-wayまとめ&quot; id=&quot;markdown-toc-rails-wayまとめ&quot;&gt;「Rails Way」まとめ&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#sub-rails-way&quot; id=&quot;markdown-toc-sub-rails-way&quot;&gt;Sub-Rails Way&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#view-model&quot; id=&quot;markdown-toc-view-model&quot;&gt;View Model&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#権限管理認可&quot; id=&quot;markdown-toc-権限管理認可&quot;&gt;権限管理・認可&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#interactor&quot; id=&quot;markdown-toc-interactor&quot;&gt;Interactor&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#特定の課題の解決&quot; id=&quot;markdown-toc-特定の課題の解決&quot;&gt;特定の課題の解決&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#それrailsでできるよ&quot; id=&quot;markdown-toc-それrailsでできるよ&quot;&gt;「それRailsでできるよ」&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#それrubyでできるよ&quot; id=&quot;markdown-toc-それrubyでできるよ&quot;&gt;「それRubyでできるよ」&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#saasに切り出す&quot; id=&quot;markdown-toc-saasに切り出す&quot;&gt;SaaSに切り出す&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#sub-rails-wayまとめ&quot; id=&quot;markdown-toc-sub-rails-wayまとめ&quot;&gt;「Sub-Rails Way」まとめ&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#non-rails-way&quot; id=&quot;markdown-toc-non-rails-way&quot;&gt;Non-Rails Way&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#form-model&quot; id=&quot;markdown-toc-form-model&quot;&gt;Form Model&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#poro&quot; id=&quot;markdown-toc-poro&quot;&gt;PORO&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#service-class&quot; id=&quot;markdown-toc-service-class&quot;&gt;Service Class&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#1-table-multiple-models&quot; id=&quot;markdown-toc-1-table-multiple-models&quot;&gt;1 Table Multiple Models&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#non-rails-wayまとめ&quot; id=&quot;markdown-toc-non-rails-wayまとめ&quot;&gt;「Non-Rails Way」まとめ&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#全体のまとめ&quot; id=&quot;markdown-toc-全体のまとめ&quot;&gt;全体のまとめ&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#参考資料&quot; id=&quot;markdown-toc-参考資料&quot;&gt;参考資料&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#後編質問感想編&quot; id=&quot;markdown-toc-後編質問感想編&quot;&gt;後編（質問・感想編）&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;fat-rails-stage&quot;&gt;Fat Rails Stage&lt;/h2&gt;
+
+&lt;p&gt;肥大化したRailsアプリケーション（Fat Rails Application）において最も辛いレイヤーはどこでしょうか？&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Fat View&lt;/li&gt;
+  &lt;li&gt;Fat Controller&lt;/li&gt;
+  &lt;li&gt;Fat Model&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;僕はFat Modelだと考えています。&lt;/p&gt;
+
+&lt;p&gt;下記は「RailsがどのようにFatになっていくか」段階を示した表です。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Fat Stage&lt;/th&gt;
+      &lt;th&gt;Rails習熟度&lt;/th&gt;
+      &lt;th&gt;Fat Layer&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;低&lt;/td&gt;
+      &lt;td&gt;Fat View&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;中&lt;/td&gt;
+      &lt;td&gt;Fat Controller&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;高&lt;/td&gt;
+      &lt;td&gt;Fat Model&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;まずはFatステージ1。Railsというものを全然知らない超初心者が陥るステージです。ビューに何でもかんでもロジックを書いちゃう。その結果がFat Viewです。&lt;/p&gt;
+
+&lt;p&gt;次にFatステージ2。ある程度Railsに慣れてきた開発者が陥るステージです。Modelへのロジック分離がうまくできず、Controllerにロジックが集中する。その結果はFat Controllerです。&lt;/p&gt;
+
+&lt;p&gt;最後がFatステージ3。Railsを習熟したエンジニアであればModelにロジックを寄せていくのが定石です。その結果出来上がるのはFat Modelです。&lt;/p&gt;
+
+&lt;p&gt;このように &lt;strong&gt;どんなにRailsに習熟してようと最終的にぶつかる壁がFat Model&lt;/strong&gt; です。&lt;/p&gt;
+
+&lt;h2 id=&quot;fat-model対処のための３つのアプローチ&quot;&gt;Fat Model対処のための３つのアプローチ&lt;/h2&gt;
+
+&lt;p&gt;Fat Modelを倒すためのアプローチとして、僕は下記の3つに分けて整理すれば良いのではと考えました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Rails Way&lt;/li&gt;
+  &lt;li&gt;Sub-Rails Way&lt;/li&gt;
+  &lt;li&gt;Non-Rails Way&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;rails-modelの限界&quot;&gt;Rails Modelの限界&lt;/h2&gt;
+
+&lt;p&gt;なぜRailsアプリケーションのModel層は限界を迎えてしまうのでしょうか？&lt;/p&gt;
+
+&lt;p&gt;Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルがあれば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UsersController&lt;/code&gt;があり、Controllerのそれぞれのアクションに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルが紐づくという形です。&lt;/p&gt;
+
+&lt;p&gt;しかし下図&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/controllers-model.jpg&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;続いてのスライドです&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://speakerd.s3.amazonaws.com/presentations/ce30c3cf9433471283e24855f6bdd2b4/slide_42.jpg?12161035&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;ここのキーワードとしては &lt;strong&gt;ユースケース&lt;/strong&gt;。いろんなユースケースを1つのModelで表現しなければならないという状況が辛いと言えます。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-modelはなぜ辛くなるのか&quot;&gt;Rails Modelはなぜ辛くなるのか？&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1つのModelが複数の異なるユースケースに密結合して実装されるとき
+    &lt;ul&gt;
+      &lt;li&gt;→ ある条件やcontextに紐付いたValidation/Callback処理&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;1つのフォームで複数のサブリソースが更新されるとき（フォームとModelが1対1で紐付かないとき）
+    &lt;ul&gt;
+      &lt;li&gt;→ 1つのModelを起点とした複数Modelを跨ぐトランザクション処理&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上述の限界は、Rails ModelとDBのテーブルが一対一で紐づくRailsの世界観に起因する限界と言えます。&lt;/p&gt;
+
+&lt;h2 id=&quot;目指すべきゴール&quot;&gt;目指すべきゴール&lt;/h2&gt;
+
+&lt;p&gt;ではどうRailsの限界を乗り越えていけばいいでしょうか？&lt;/p&gt;
+
+&lt;p&gt;下記は横軸がコードベースのサイズ、縦軸がペイン（痛みの度合い）を描いたグラフです&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/growth.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;赤線はバニラRailsです。コードベースのサイズとともにペインが増大しています。&lt;/p&gt;
+
+&lt;p&gt;緑線はストラクチャードRails。コードベースが増大してもペインが増大しません。&lt;/p&gt;
+
+&lt;p&gt;僕の発表の言うところでは、赤線（バニラRails）がRails Way、緑線（ストラクチャードRails）がSub-Rails・Non-Rails Wayにあたります。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/growth2.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;ということで我々の基本的なゴールとしてはこの緑線、すなわち、 &lt;strong&gt;コードベースが大きくなってもペインが増大しないRailsコードベース&lt;/strong&gt; を目指しましょう、ということになります。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-way&quot;&gt;Rails Way&lt;/h2&gt;
+
+&lt;p&gt;小学生の絵みたいで恐縮なんですが、Rails Wayを絵にするとこんなイメージです。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/rails-way.png&quot; alt=&quot;fit&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;つまり &lt;strong&gt;Railsのレールに沿った開発アプローチ&lt;/strong&gt; です。&lt;/p&gt;
+
+&lt;h3 id=&quot;concerns&quot;&gt;Concerns&lt;/h3&gt;
+
+&lt;p&gt;まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Recording&lt;/code&gt; Class&lt;sup id=&quot;fnref:6&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:6&quot; class=&quot;footnote&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;）。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/concerns.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;注意すべきは、ConcernのRails公式ガイドはありません。強いて言うなら下記の記事でDHHがConcernを紹介しています。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://signalvnoise.com/posts/3372-put-chubby-models-on-a-diet-with-concerns&quot;&gt;Put chubby models on a diet with concerns&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Modelの持っている能力（ability = &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-able&lt;/code&gt; suffix）に着目してConcern moduleに切り出していくのが、Rails Wayっぽさがあると言えます。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/models/concerns/concernable.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Concernable&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;extend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveSupport&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Concern&lt;/span&gt;
+
+  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;your&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;concern&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;sti&quot;&gt;STI&lt;/h3&gt;
+
+&lt;p&gt;RailsにおいてテーブルとModelは原則的に1対1で結びつきます。しかし、STIを使えば1つのテーブルで複数Model紐付けることができます。&lt;/p&gt;
+
+&lt;p&gt;下図は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;players&lt;/code&gt;という単一テーブルに複数のクラスが結びついている図です&lt;sup id=&quot;fnref:5&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:5&quot; class=&quot;footnote&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/sti.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Railsのコード例です。 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;companies&lt;/code&gt; テーブルに紐づく &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Firm&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Client&lt;/code&gt;モデルの例だと下記の通りです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/models/company.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Company&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# app/models/firm.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Firm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Company&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# app/models/client.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Company&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;polymorphic-association&quot;&gt;Polymorphic Association&lt;/h3&gt;
+
+&lt;p&gt;1つのポリモーフィック関連付け定義で複数のテーブルを従属させることができるのがポリモーフィック関連です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/polymorphic.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上図の場合、通常のRails DB設計であれば &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pictures&lt;/code&gt;テーブルが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;employee_id&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;product_id&lt;/code&gt;を持っているべきですが、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;imagable_id&lt;/code&gt;という1つカラムで複数のテーブルを従属させることができています。&lt;/p&gt;
+
+&lt;p&gt;これをRailsのコードであらわすと下記の通りです。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/models/picture.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Picture&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:imageable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;polymorphic: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# app/models/employee.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Employee&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:pictures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;as: :imageable&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# app/models/product.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Product&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:pictures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;as: :imageable&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ただし注意点があります。ポリモーフィック関連は『SQLアンチパターン』6章でアンチパターンとして紹介されており、使用する際は気をつける必要があります。&lt;/p&gt;
+
+&lt;p&gt;詳しくは『SQLアンチパターン』を読んでいただければと思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;accepts_nested_attributes_for&quot;&gt;accepts_nested_attributes_for&lt;/h3&gt;
+
+&lt;p&gt;ネストされたアトリビュートで関連リソースの作成・更新・削除を行うのが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;accepts_nested_attributes_for&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;member: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'joe'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;posts_attributes: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;title: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Kari, the awesome Ruby documentation browser!'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;title: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'The egalitarian assumption of the modern citizen'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Member&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:member&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ただしこの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;はDHH自らが「消したい」と発言しており&lt;sup id=&quot;fnref:7&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:7&quot; class=&quot;footnote&quot;&gt;7&lt;/a&gt;&lt;/sup&gt;、積極的に使うのはやや躊躇われるかもしれません。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/dhh.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;その他細かめのテクニック&quot;&gt;その他細かめのテクニック&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Serialize Attribute&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;json型カラムへのメタデータ保存に便利&lt;/li&gt;
+      &lt;li&gt;⚠️『SQLアンチパターン』5章 EAV&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Value Object&lt;/strong&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;compose_of&lt;/code&gt;)
+    &lt;ul&gt;
+      &lt;li&gt;複数カラムをValueオブジェクトとして展開するときに便利&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Validation Class&lt;/strong&gt;/&lt;strong&gt;Callback Class&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;クラスとして分離可能 → 分離することで複数モデルで再利用可能に&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;rails-wayまとめ&quot;&gt;「Rails Way」まとめ&lt;/h3&gt;
+
+&lt;p&gt;全体としては、Rails WayだけではFat Modelを倒す手段として手数が少なく物足りないと感じます。&lt;/p&gt;
+
+&lt;p&gt;アプリケーションサイズがFatになっている時点でそのRailsアプリケーションは中規模以上のサイズが見込まれますから、正直Rails WayだけでFat Modelを倒すのは無理だと思います。&lt;/p&gt;
+
+&lt;p&gt;❌ Concerns, Validation ClassなどFat ModelをDRYに記述する手段にはなるが、構造的にダイエットする手段にはなっていません。あくまでそれらは局所的なダイエットに留まっています。&lt;/p&gt;
+
+&lt;p&gt;❌ STI, PolymorphicなどはDB設計と密結合したソリューションで、完全なコードレベルの解決にはなっていません。また、アンチパターンとして紹介されているように、それ自体が技術負債になりえる構造的問題を孕んでいます。&lt;/p&gt;
+
+&lt;h2 id=&quot;sub-rails-way&quot;&gt;Sub-Rails Way&lt;/h2&gt;
+
+&lt;p&gt;Sub-Rails Wayはレールを補強・拡張しつつレールに乗るスタイルです。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/sub-rails-way.png&quot; alt=&quot;fit&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;レールを何を使って補強・拡張するのでしょうか？それは下記２つになります。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;gem&lt;/li&gt;
+  &lt;li&gt;SaaS&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;view-model&quot;&gt;View Model&lt;/h3&gt;
+
+&lt;p&gt;ModelにおけるView関連ロジックを &lt;strong&gt;View Model&lt;/strong&gt; として切り出す手法です。&lt;/p&gt;
+
+&lt;p&gt;Development of Further PoEAAで&lt;a href=&quot;https://martinfowler.com/eaaDev/PresentationModel.html&quot;&gt;Presentation Model&lt;/a&gt;という概念で紹介されているパターンにあたると考えています。ModelをDecoratorパターンっぽく拡張しているのでDecoratorとも呼ばれることが多いです&lt;sup id=&quot;fnref:8&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:8&quot; class=&quot;footnote&quot;&gt;8&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;このView Modelの良いところとしては、Fat Model の対処として機能するだけでなく、Fat View の対処としても機能する点です。&lt;/p&gt;
+
+&lt;p&gt;💎 gemの実装としては下記のようなものがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/drapergem/draper&quot;&gt;draper&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/amatsuda/active_decorator&quot;&gt;active_decorator&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;🔧 draperの場合、コードは下記のようになります（ArticleモデルのDecoratorクラス）。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/decorators/article_decorator.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ArticleDecorator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Draper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Decorator&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;delegate_all&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;publication_status&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;published?&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;Published at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;published_at&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;Unpublished&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;published_at&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;published_at&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;%A, %B %e&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;権限管理認可&quot;&gt;権限管理・認可&lt;/h3&gt;
+
+&lt;p&gt;管理画面実装において逃げられない実装は認証とあわせて、権限管理・認可ではないでしょうか？&lt;/p&gt;
+
+&lt;p&gt;ResourceのCRUDでユーザーのアクセス制御するのが「Railsらしい」権限管理と考えています。&lt;/p&gt;
+
+&lt;p&gt;💎 gemの実装としては下記のようなものです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/varvet/pundit&quot;&gt;pundit&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/kyuden/banken&quot;&gt;banken&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/CanCanCommunity/cancancan&quot;&gt;cancancan&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;🔧 punditの場合、コードは下記の通りです（Postモデルの認可クラス）。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/policies/post_policy.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PostPolicy&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;attr_reader&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:post&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;update?&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;admin?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;or&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;published?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;interactor&quot;&gt;Interactor&lt;/h3&gt;
+
+&lt;p&gt;InteractorはClean Architecture由来する概念です。&lt;/p&gt;
+
+&lt;p&gt;下記の図は見たことある方も多くいらっしゃるかもしれません。赤い部分がClean Architectureにおけるユースケース層になります。このユースケース層に Interactor が表現されています。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;ユースケース層というアプローチはとても良いと思っています。なぜなら先程「1つのModelが複数の異なるユースケースに密結合して実装されるとき―」と言いましたが、そのユースケースをまさにInteractorとして表現できるからです。&lt;/p&gt;
+
+&lt;p&gt;個人的にClean ArchitectureとRailsは相性が良いと思っていて、このようにMVC+InteractorでClean Architectureのそれぞれの層と一致させることができるからです。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/Clean_Coder_Blog.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;💎 gemとしては下記があります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/collectiveidea/interactor-rails&quot;&gt;interactor-rails&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;(not Rails) &lt;a href=&quot;https://github.com/hanami&quot;&gt;hanami&lt;/a&gt;’s &lt;a href=&quot;https://github.com/hanami/utils/blob/master/lib/hanami/interactor.rb&quot;&gt;Interactor&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;hanamiはRailsではありませんが、Clean Architectureに強く影響を受けたRuby製Webフレームワークです。hanamiには Interactor の仕組みが標準で実装されています。&lt;/p&gt;
+
+&lt;p&gt;🔧 interactor-railsの場合のコードは下記の通りです（ユーザーを認証するクラス）。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/interactors/authenticate_user.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuthenticateUser&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Interactor&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;authenticate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;secret_token&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fail!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;message: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;authenticate_user.failure&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Inside your controller,&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AuthenticateUser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;特定の課題の解決&quot;&gt;特定の課題の解決&lt;/h3&gt;
+
+&lt;p&gt;特定の課題を解決するgemとしては例えば下記のようなものがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;論理削除&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;💎 gem: &lt;a href=&quot;https://github.com/jhawthorn/discard&quot;&gt;discard&lt;/a&gt;, &lt;a href=&quot;https://github.com/rubysherpas/paranoia&quot;&gt;paranoia&lt;/a&gt;, &lt;a href=&quot;https://github.com/ActsAsParanoid/acts_as_paranoid&quot;&gt;acts_as_paranoid&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;⚠️ &lt;a href=&quot;https://www.slideshare.net/t_wada/ronsakucasual&quot;&gt;SQLアンチパターン 幻の第26章「とりあえず削除フラグ」&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;要素のソート・並び替え&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;💎 gem: &lt;a href=&quot;https://github.com/brendon/acts_as_list&quot;&gt;acts_as_list&lt;/a&gt;, &lt;a href=&quot;https://github.com/mixonic/ranked-model&quot;&gt;ranked-model&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;State Machine&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;💎 gem: &lt;a href=&quot;https://github.com/aasm/aasm&quot;&gt;aasm&lt;/a&gt;, &lt;a href=&quot;https://github.com/amatsuda/stateful_enum&quot;&gt;stateful_enum&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Tagging&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;💎 gem: &lt;a href=&quot;https://github.com/mbleigh/acts-as-taggable-on&quot;&gt;acts-as-taggable-on&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;HashをActiveRecordっぽく操作&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;💎 gem: &lt;a href=&quot;https://github.com/zilkey/active_hash&quot;&gt;active_hash&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;解決したい課題に応じて導入していくのが良いと思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;それrailsでできるよ&quot;&gt;「それRailsでできるよ」&lt;sup id=&quot;fnref:10&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:10&quot; class=&quot;footnote&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
+
+&lt;p&gt;逆にgemを使わずともRails標準で解決できるよって課題も多く存在します。例えば下記のような例です。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/brainspec/enumerize&quot;&gt;enumerize&lt;/a&gt; (Emumerized Attributes)
+    &lt;ul&gt;
+      &lt;li&gt;Rails 4.1: ActiveRecord enum&lt;/li&gt;
+      &lt;li&gt;参考. &lt;a href=&quot;https://api.rubyonrails.org/v5.2.3/classes/ActiveRecord/Enum.html&quot;&gt;ActiveRecord::Enum&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/eagletmt/switch_point&quot;&gt;switch_point&lt;/a&gt; (Database R/W Split)
+    &lt;ul&gt;
+      &lt;li&gt;Rails 6: Multi-DB&lt;/li&gt;
+      &lt;li&gt;参考: &lt;a href=&quot;https://railsguides.jp/active_record_multiple_databases.html&quot;&gt;Active Record で複数のデータベース利用 - Railsガイド&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt; (Bulk Import)
+    &lt;ul&gt;
+      &lt;li&gt;Rails 6: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;insert_all&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upsert_all&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/carrierwaveuploader/carrierwave&quot;&gt;carrierwave&lt;/a&gt;, &lt;a href=&quot;https://github.com/shrinerb/shrine&quot;&gt;shrine&lt;/a&gt; (File Uploader)
+    &lt;ul&gt;
+      &lt;li&gt;Rails 5.2: Active Storage&lt;/li&gt;
+      &lt;li&gt;参考: &lt;a href=&quot;https://railsguides.jp/active_storage_overview.html&quot;&gt;Active Storage の概要 - Railsガイド&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/norman/friendly_id&quot;&gt;friendly_id&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;ActiveRecord: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;to_param&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;参考: &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveRecord/Integration.html#method-i-to_param&quot;&gt;ActiveRecord::Integration&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/magnusvk/counter_culture&quot;&gt;counter_culture&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;ActiveRecord: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;counter_cache&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;参考: &lt;a href=&quot;https://railsguides.jp/association_basics.html#belongs-to%E3%81%AE%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3-counter-cache&quot;&gt;Active Record の関連付け&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;ID/Password認証
+    &lt;ul&gt;
+      &lt;li&gt;ActiveModel: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;has_secure_password&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;参考: &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveModel/SecurePassword/ClassMethods.html&quot;&gt;ActiveModel::SecurePassword::ClassMethods&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/rubyconfig/config&quot;&gt;config&lt;/a&gt; (YAML Config Management)
+    &lt;ul&gt;
+      &lt;li&gt;Rails Custom configuration:&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rails::Application.config_for&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.x&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;参考: &lt;a href=&quot;https://railsguides.jp/configuring.html#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E8%A8%AD%E5%AE%9A&quot;&gt;Rails アプリケーションを設定する - Railsガイド&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;それrubyでできるよ&quot;&gt;「それRubyでできるよ」&lt;sup id=&quot;fnref:10:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:10&quot; class=&quot;footnote&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
+
+&lt;p&gt;gemを使わずともRubyでもできるよってケースもあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;:gem: &lt;a href=&quot;https://github.com/pry/pry&quot;&gt;pry&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Ruby 2.4: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;binding.irb&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;Ruby 2.7: REPL Syntax Highlighting&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;saasに切り出す&quot;&gt;SaaSに切り出す&lt;/h3&gt;
+
+&lt;p&gt;処理をSaaSに切り出す、という意味では下記の例があります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://auth0.com/jp/&quot;&gt;Auth0&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;ユーザー認証ロジックをAuth0に移譲&lt;/li&gt;
+      &lt;li&gt;認証にともなうMFA、パスワードリセット、セキュリティ対策などの面倒な実装をAuth0が肩代わり&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://sentry.io/welcome/&quot;&gt;Sentry&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;エラー通知をSentryに移譲&lt;/li&gt;
+      &lt;li&gt;サービスにエラーをぽんぽん投げ込めばいい感じにエラーをアグリゲーション・可視化・各種通知してくれる&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://newrelic.co.jp/&quot;&gt;NewRelic&lt;/a&gt;/&lt;a href=&quot;https://www.datadoghq.com/ja/&quot;&gt;Datadog&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;APM (Application Performance Monitoring)を NewRelic/Datadog APMでやる&lt;/li&gt;
+      &lt;li&gt;自前で Elasticsearch + Kibana 環境を構築してもいいが、構築コスト・運用コストともに高くつく&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;sub-rails-wayまとめ&quot;&gt;「Sub-Rails Way」まとめ&lt;/h3&gt;
+
+&lt;p&gt;gem を使うことでFat Model対処法のバリエーションがぐっと広がります。独自実装でModelを太らせることをせず、使えるgemは積極的に利用していくとよいでしょう。&lt;/p&gt;
+
+&lt;p&gt;一方、gemを使わずともRails標準で解決できることも実は多くあるので見極めた上でgem導入しましょう。&lt;/p&gt;
+
+&lt;p&gt;また、選択肢はさほど多くないものの、最近はさまざまな便利SaaSが出ているので SaaSを使うのもFat Model対抗手段の１つとして検討してもよいでしょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;non-rails-way&quot;&gt;Non-Rails Way&lt;/h2&gt;
+
+&lt;p&gt;Non-Railsはレールに乗らない別のレール、独自路線のことです。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/non-rails-way.png&quot; alt=&quot;fit&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;つまり自らレールを作っていくスタイルです。&lt;/p&gt;
+
+&lt;h3 id=&quot;form-model&quot;&gt;Form Model&lt;/h3&gt;
+
+&lt;p&gt;Form Modelとは、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include ActiveModel&lt;/code&gt;したRubyクラスのことです。&lt;/p&gt;
+
+&lt;p&gt;巷ではForm Objectと呼ばれることが多いですが、＜Formに特化したActiveModel＞という意味で、あえてForm Modelと本発表では呼んでいます。&lt;/p&gt;
+
+&lt;p&gt;フォームとForm Modelは一対一で紐付きます。こうすることで &lt;strong&gt;特定の＜Formのユースケース＞に対応したModel&lt;/strong&gt; が作成可能になります。&lt;/p&gt;
+
+&lt;p&gt;💎 gemの実装としては下記のようなものがあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/trailblazer/reform&quot;&gt;reform&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/dry-rb/&quot;&gt;dry-rb&lt;/a&gt;シリーズ（旧・&lt;a href=&quot;https://github.com/solnic/virtus&quot;&gt;virtus&lt;/a&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Form Modelの使い所としては下記のように整理できると思います。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;紐づく&lt;br /&gt;テーブル数&lt;/th&gt;
+      &lt;th&gt;Form Modelのユースケース&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;問い合わせフォームなどテーブルを作るまでもないフォームで利用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;-&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2以上&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;の代わりとして、複雑なフォームの組み立て時に利用&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;テーブルとフォームが1対1で紐づく場合はRails Wayで解決させるのが素直な実装&lt;/p&gt;
+
+&lt;p&gt;その他の特定のユースケースに特化したForm Model実装としては、下記のようなものが考えられます。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;SearchForm: 条件に基づく検索に特化したフォーム&lt;/li&gt;
+  &lt;li&gt;DownloadForm: CSVなどのダウンロードに特化したフォーム&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;poro&quot;&gt;PORO&lt;/h3&gt;
+
+&lt;p&gt;POROとはPlain Old Ruby Objectの略です。元ネタはPoEAAのPOJO (Plain Old Java Object)です。&lt;/p&gt;
+
+&lt;p&gt;POROは、ActiveRecordの機能に依存しない純粋なRuby実装です。なので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;include ActiveModel&lt;/code&gt;しているRubyクラスは個人的にはPOROとは呼んでいません。&lt;/p&gt;
+
+&lt;p&gt;純粋なRuby実装なのである意味、 &lt;strong&gt;Ruby Way&lt;/strong&gt; とも言うことができます。&lt;/p&gt;
+
+&lt;p&gt;POROの主な用途としてはModelの補助輪的な役割だと考えています。&lt;/p&gt;
+
+&lt;p&gt;例えば下記の例ではクラスメソッド&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create!&lt;/code&gt;呼び出し時に引数を受け取って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create!&lt;/code&gt;インスタンスメソッド内でトランザクションを張って複数モデルの更新を行っています。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PostWithNotifications&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;creator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;creator: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;creator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;body: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;creator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@creator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;creator&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@body&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;create_post!&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;create_notifications!&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;    
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;このRubyクラスの場合、＜&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post&lt;/code&gt;作成とともに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Notification&lt;/code&gt;も作成する＞という複数モデル更新のユースケースをPOROに閉じ込めたということができるでしょう。&lt;/p&gt;
+
+&lt;h3 id=&quot;service-class&quot;&gt;Service Class&lt;/h3&gt;
+
+&lt;p&gt;続いてはサービスクラスです。&lt;/p&gt;
+
+&lt;p&gt;サービスクラスに関してはもしかしたら賛否両論あるかもしれません。サービスという概念がデカすぎる故に、人によって使い方・解釈が異なり、サービスクラスにまつわる巷のすれ違いを起こしている印象があります。&lt;/p&gt;
+
+&lt;p&gt;サービスクラスに関してはまずはサービスの定義問題があると思っています。つまり「あなたの言うServiceってなんですか？」という問題です。&lt;/p&gt;
+
+&lt;p&gt;一口にサービスといっても様々な文脈のサービスがあります。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Architecture&lt;/th&gt;
+      &lt;th&gt;Service Name&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;PoEAA&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Service Layer&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;DDD&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Service Class&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;Onion Architecture&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;Application Service, Domain Service&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;Rails “Service”&lt;/strong&gt; ?&lt;/td&gt;
+      &lt;td&gt;上記のどれでもない”Service”&lt;br /&gt;上記を組み合わせた”Service”&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;「どういう文脈のサービスか？」を明確にした上で議論しないとサービスクラスの定義・概念がボンヤリしてしまう印象です。なのでサービスクラスを導入する際は、サービスクラスの定義・使い方を明確にした上でチームに導入していくのが良いと思います。&lt;/p&gt;
+
+&lt;p&gt;個人的な見解にはなりますが、＜特定のユースケースの解決＞という意味においてはInteractorのほうが少なくともRailsにおいては筋が良いと考えています。&lt;/p&gt;
+
+&lt;p&gt;また、個人的に下手にサービスという巨大で強い概念を持ち込むより、POROという概念で雑にまとめたほうが好みだったりします。&lt;/p&gt;
+
+&lt;h3 id=&quot;1-table-multiple-models&quot;&gt;1 Table Multiple Models&lt;/h3&gt;
+
+&lt;p&gt;一つのテーブルに複数Modelを紐付けるアプローチです。&lt;/p&gt;
+
+&lt;p&gt;Rails WayだとSTIでのみこれは実現可能ですが、STIを使わずにがんばってアプリケーションコードで複数モデルを表現しちゃいましょうというやり方です。&lt;/p&gt;
+
+&lt;p&gt;コードにすると、例えば下記のようなコードになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User::AsSignUp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;validates&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;after_create&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:send_welcome_email&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;send_welcome_email&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この例では＜&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;のサインアップ＞というユースケースにのみ特化したActiveRecordのModelを作成しています。&lt;/p&gt;
+
+&lt;p&gt;ただこの実装に関しては、1 Table 1 ModelというRailsのパラダイム（規約）を壊すことになってしまうので、いささか危険思想という印象があります。&lt;/p&gt;
+
+&lt;p&gt;ただ僕自身実際にプロダクションに導入して運用した経験はないので、もし実運用における成功例お持ちの方がいれば教えていただけると幸いです。&lt;/p&gt;
+
+&lt;h3 id=&quot;non-rails-wayまとめ&quot;&gt;「Non-Rails Way」まとめ&lt;/h3&gt;
+
+&lt;p&gt;4つの Non-Railsを紹介しました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Form Model&lt;/li&gt;
+  &lt;li&gt;PORO&lt;/li&gt;
+  &lt;li&gt;Service Class&lt;/li&gt;
+  &lt;li&gt;1 Table Multiple Models&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;これらをうまく導入できればFat Modelを倒す強力な武器となるのは間違いないでしょう。&lt;/p&gt;
+
+&lt;p&gt;どれをどう導入するかに関しては正解はないと思うのでチームにあった手法を選択すると良いと考えています。&lt;/p&gt;
+
+&lt;p&gt;といっても「どれを導入すればいいかわからん…」ってなると思うので個人的なおすすめアプローチを紹介すると、モデルを太らせてしまうような複雑なフォームに関してはForm Modelで表現するのがわかりやすいと思います。&lt;/p&gt;
+
+&lt;p&gt;何らかのユースケースに特化したクラスを作りたいのであれば、Sub-Railsのセクションで紹介したInteractorを使うのが個人的にはオススメです。&lt;/p&gt;
+
+&lt;p&gt;上記で足りないユースケースが出てきた場合、POROと総称してModelの補助輪となるようなRubyクラスを用意してあげると良いかと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;全体のまとめ&quot;&gt;全体のまとめ&lt;/h2&gt;
+
+&lt;p&gt;Fat Modelを倒すための3つのアプローチを紹介しました。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Rails Way&lt;/strong&gt;: Railsの規約に沿った開発アプローチ&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Sub-Rails Way&lt;/strong&gt;: Railsの規約をgemで補強・拡張するアプローチ&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Non-Rails Way&lt;/strong&gt;: Railsの規約から外れる独自実装アプローチ&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;まずは、 &lt;strong&gt;Rails Way&lt;/strong&gt; + &lt;strong&gt;Sub-Rails Way&lt;/strong&gt; でFat Modelをダイエットできないか考えましょう。小規模なRailsアプリケーションであれば Rails Way + Sub-Rails Way で十分戦えると思います。&lt;/p&gt;
+
+&lt;p&gt;Rails Way + Sub-Rails Way だけで立ち行かなくなった場合に、必要に応じて適切な &lt;strong&gt;Non-Rails Way&lt;/strong&gt; を取り入れていきましょう。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Non-Rails Way&lt;/strong&gt; はチーム毎に最適解があると思っています。チームで合意できる独自路線を選択・導入すればよいのではないでしょうか。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;書籍
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://amzn.to/2TO3ZTe&quot;&gt;エンタープライズアプリケーションアーキテクチャパターン&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://amzn.to/2XfXKJT&quot;&gt;Clean Architecture　達人に学ぶソフトウェアの構造と設計&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://amzn.to/3exaz8y&quot;&gt;エリック・エヴァンスのドメイン駆動設計&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://leanpub.com/growing-rails&quot;&gt;Growing Rails Applications in Practice&lt;/a&gt; by Henning Koch and Thomas Eisenbarth&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;アーキテクチャにまつわる資料
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://martinfowler.com/eaaDev/&quot;&gt;Martin Fowler: Development of Further Patterns of Enterprise Application Architecture&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html&quot;&gt;Clean Coder Blog: The Clean Architecture&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/&quot;&gt;The Onion Architecture : part 1 | Programming with Palermo&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://guides.hanamirb.org/architecture/interactors/&quot;&gt;Architecture: Interactors | Hanami Guides&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://qiita.com/yuku_t/items/961194a5443b618a4cac&quot;&gt;中規模Web開発のためのMVC分割とレイヤアーキテクチャ - Qiita&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Rails公式ドキュメント
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://guides.rubyonrails.org/association_basics.html&quot;&gt;Active Record Associations — Ruby on Rails Guides&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://guides.rubyonrails.org/active_model_basics.html&quot;&gt;Active Model Basics — Ruby on Rails Guides&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html&quot;&gt;accepts_nested_attributes_for&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html&quot;&gt;ActiveRecord::Inheritance&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://api.rubyonrails.org/v6.0.2.1/classes/ActiveSupport/Concern.html&quot;&gt;ActiveSupport::Concern&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Form Model (Form Object)について
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://tech.libinc.co.jp/entry/2019/04/05/113000&quot;&gt;Railsで複数モデルを扱うフォームをすっきり書く（Formオブジェクト） - LiBz Tech Blog&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://moneyforward.com/engineers_blog/2018/12/15/formobject/&quot;&gt;accepts_nested_attributes_forを使わず、複数の子レコードを保存する | Money Forward Engineers’ Blog&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://discourse.clean-rails.org/t/model-form-1-1/14&quot;&gt;Model と画面上の form が1対1で一致しない場合、どのように実装するのが綺麗なのか？ - clean-rails.org&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Service Class (Service Object) について
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://techracho.bpsinc.jp/hachi8833/2017_10_16/46482&quot;&gt;Railsで重要なパターンpart 1: Service Object（翻訳）｜TechRacho（テックラッチョ）〜エンジニアの「？」を「！」に〜｜BPS株式会社&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://qiita.com/joker1007/items/2a03500017766bdb0234&quot;&gt;てめえらのRailsはオブジェクト指向じゃねえ！まずはCallbackクラス、Validatorクラスを活用しろ！ - Qiita&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://intersect.whitefusion.io/the-art-of-code/why-service-objects-are-an-anti-pattern&quot;&gt;Why Service Objects are an Anti-Pattern — INTERSECT&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://techracho.bpsinc.jp/hachi8833/2018_04_16/55130&quot;&gt;Service Objectがアンチパターンである理由とよりよい代替手段（翻訳）｜TechRacho（テックラッチョ）〜エンジニアの「？」を「！」に〜｜BPS株式会社&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/willnet/concerns-about-concerns&quot;&gt;Concerns about Concerns - Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tech.kitchhike.com/entry/2018/02/28/221159&quot;&gt;Decorator と Presenter を使い分けて、 Rails を ViewModel ですっきりさせよう - KitchHike Tech Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://qiita.com/hanachin_/items/ba1dd93905567d88145c&quot;&gt;ActiveRecordのモデルが1つだとつらい - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;後編質問感想編&quot;&gt;後編（質問・感想編）&lt;/h2&gt;
+
+&lt;p&gt;別記事にまとめました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/how-to-deal-with-fat-model-after&quot;&gt;銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;http://weblog.jamisbuck.org/2006/10/18/skinny-controller-fat-model&quot;&gt;Buckblog: Skinny Controller, Fat Model&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:a&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://speakerdeck.com/hshimoyama/rails-with-applicationmodel&quot;&gt;ApplicationModel のある風景 - Speaker Deck&lt;/a&gt; &lt;a href=&quot;#fnref:a&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:b&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://speakerdeck.com/yasaichi/what-is-ruby-on-rails-and-how-to-deal-with-it&quot;&gt;Ruby on Railsの正体と向き合い方 - Speaker Deck&lt;/a&gt; &lt;a href=&quot;#fnref:b&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:c&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://leanpub.com/growing-rails&quot;&gt;Growing Rails Applications in Practice&lt;/a&gt; &lt;a href=&quot;#fnref:c&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:6&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://twitter.com/dhh/status/964244090224128001&quot;&gt;https://twitter.com/dhh/status/964244090224128001&lt;/a&gt; &lt;a href=&quot;#fnref:6&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:5&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;PoEAA: &lt;a href=&quot;https://www.martinfowler.com/eaaCatalog/singleTableInheritance.html&quot;&gt;Single Table Inheritance&lt;/a&gt; &lt;a href=&quot;#fnref:5&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:7&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/26976#discussion_r87855694&quot;&gt;https://github.com/rails/rails/pull/26976#discussion_r87855694&lt;/a&gt; &lt;a href=&quot;#fnref:7&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:8&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;参考: &lt;a href=&quot;https://amzn.to/3cekmi3&quot;&gt;『Rubyによるデザインパターン』&lt;/a&gt; 第11章 オブジェクトを改良する：Decorator &lt;a href=&quot;#fnref:8&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:10&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;Ruby/Rails公式の提供する機能はgemより貧弱だったりするのであしからず &lt;a href=&quot;#fnref:10&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt; &lt;a href=&quot;#fnref:10:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rails" /><category term="activerecord" /><summary type="html">銀座Rails#21で「Fat Modelの倒し方」と題して発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ginzarails-21/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました</title><link href="https://blog.toshimaru.net/make-rails-documents-seo-search-engine-optimized/" rel="alternate" type="text/html" title="Roppongi.rb#8で「Make Rails Documents SEO(Search Engine Optimized)」を発表しました" /><published>2019-02-25T00:00:00+09:00</published><updated>2019-02-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/make-rails-documents-seo-search-engine-optimized</id><content type="html" xml:base="https://blog.toshimaru.net/make-rails-documents-seo-search-engine-optimized/">&lt;p&gt;&lt;a href=&quot;https://roppongirb.connpass.com/event/118218/&quot;&gt;Roppongi.rb #8&lt;/a&gt;にて「Make Rails Documents SEO(Search Engine Optimized)」と題して発表してきた。&lt;/p&gt;
+
+&lt;h2 id=&quot;発表スライド&quot;&gt;発表スライド&lt;/h2&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;2238d7f3d662436b943b125a7b10fec1&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;railsdocgithubio&quot;&gt;railsdoc.github.io&lt;/h2&gt;
+
+&lt;p&gt;発表では僕が過去に行ったいくつかのRails公式ドキュメントのSEO対応の紹介とともに、現在進めているプロジェクトである&lt;a href=&quot;https://railsdoc.github.io/&quot;&gt;railsdoc.github.io&lt;/a&gt;を紹介した。&lt;/p&gt;
+
+&lt;p&gt;GitHub: &lt;a href=&quot;https://github.com/railsdoc/railsdoc.github.io&quot;&gt;railsdoc/railsdoc.github.io: Rails API Documentation.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;railsdocgithubioのゴール&quot;&gt;railsdoc.github.ioのゴール&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://api.rubyonrails.org/&quot;&gt;api.rubyonrails.org&lt;/a&gt;をSEO強くする&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://api.rubyonrails.org/&quot;&gt;api.rubyonrails.org&lt;/a&gt;を使いやすくする&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下記はついでにできると良いなーと考えていること。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;フロントの技術を少しだけモダンに
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://getbootstrap.com/&quot;&gt;bootstrap&lt;/a&gt;を使ってデザイン構成しやすくする&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;GitHubといい感じの連携&lt;/li&gt;
+  &lt;li&gt;AMP対応もできると良さそう&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;railsdocgithubioの今後&quot;&gt;railsdoc.github.ioの今後&lt;/h2&gt;
+
+&lt;p&gt;発表内で紹介したが今後については下記のように考えている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コードベース整備中 &amp;amp; 未実装箇所の実装&lt;/li&gt;
+  &lt;li&gt;folk版sdocじゃない独自のドキュメント生成gemを作りたい&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;紹介したprissue&quot;&gt;紹介したPR/Issue&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/weblog/pull/88&quot;&gt;Introduce jekyll-seo-tag by toshimaru · Pull Request #88 · rails/weblog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/homepage/pull/73&quot;&gt;Add Jekyll SEO tag and Jekyll sitemap by benbalter · Pull Request #73 · rails/homepage&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/pull/34860&quot;&gt;Make Ruby on Rails Guides SNS-friendly by toshimaru · Pull Request #34860 · rails/rails&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rails/rails/issues/27633&quot;&gt;No Rails 5 in apidock.com/rails · Issue #27633 · rails/rails&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;紹介したrails公式ドキュメント&quot;&gt;紹介したRails公式ドキュメント&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;rubyonrails.org&quot;&gt;rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;weblog.rubyonrails.org&quot;&gt;weblog.rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;guides.rubyonrails.org&quot;&gt;guides.rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;api.rubyonrails.org&quot;&gt;api.rubyonrails.org&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;その他&quot;&gt;その他&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;発表には&lt;a href=&quot;https://www.deckset.com/&quot;&gt;Deckset 2&lt;/a&gt;を使った（ずっとDeckset1使ってたけど2にUpdateした）&lt;/li&gt;
+  &lt;li&gt;何かあればイシューに書いてほしい &lt;a href=&quot;https://github.com/railsdoc/railsdoc.github.io/issues&quot;&gt;github.com/railsdoc/railsdoc.github.io/issues&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="seo" /><category term="rails" /><summary type="html">Roppongi.rb #8にて「Make Rails Documents SEO(Search Engine Optimized)」と題して発表してきた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/roppongirb8/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/roppongirb8/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</title><link href="https://blog.toshimaru.net/rdm2018-active-record-anti-patterns/" rel="alternate" type="text/html" title="railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました" /><published>2018-03-27T00:00:00+09:00</published><updated>2018-03-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rdm2018-active-record-anti-patterns</id><content type="html" xml:base="https://blog.toshimaru.net/rdm2018-active-record-anti-patterns/">&lt;p&gt;&lt;a href=&quot;https://railsdm.github.io/2018/&quot;&gt;Rails Developers Meetup 2018&lt;/a&gt;で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。&lt;/p&gt;
+
+&lt;h2 id=&quot;発表資料&quot;&gt;発表資料&lt;/h2&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;2bb9d7ceea4b4987bf4c8618a53a1e68&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;発表概要&quot;&gt;発表概要&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ActiveRecordはWebエンジニア達が嫌う（？）SQLを書かずとも、Rubyオブジェクトで気軽にデータベースへアクセスできる魔法のようなツールです。しかし便利な反面、何も考えずにゴリゴリActiveRecordを使ってDBアクセスしていると、劇的に重たいクエリが発行されたり非効率的なクエリが量産されたりします。&lt;/p&gt;
+
+  &lt;p&gt;本発表ではそれらActiveRecordで陥りがちな罠をパターン化し、ActiveRecordデータ処理アンチパターンとして発表します。&lt;/p&gt;
+
+  &lt;p&gt;※発表では実際のサンプルコードとともにパフォーマンスの計測結果も紹介します。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;事前に公開したエントリ&quot;&gt;事前に公開したエントリ&lt;/h2&gt;
+
+&lt;p&gt;発表資料に出てくる最初の事例はこちらがベースの事例となっています。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今月末のRails Developer Meetupに先駆けてRailsの遅いバッチ処理を400倍速くする話を書きました  | Rails/ActiveRecord バッチ処理の最適化 - Hack Your Design! &lt;a href=&quot;https://t.co/i7JZnZcuLc&quot;&gt;https://t.co/i7JZnZcuLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/970546164725501952?ref_src=twsrc%5Etfw&quot;&gt;March 5, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;ソースコード&quot;&gt;ソースコード&lt;/h2&gt;
+
+&lt;p&gt;実際使ったコード、ベンチマーク結果はこちらに上がってます。コードは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lib/tasks/batch.rake&lt;/code&gt;、スキーマは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schema.rb&lt;/code&gt;、シードデータは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db/*_seed.csv&lt;/code&gt;、ベンチマーク結果はCircleCIをそれぞれ参照ください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rdm-rails5.1&quot;&gt;https://github.com/toshimaru/rdm-rails5.1&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;発表モチベーション&quot;&gt;発表モチベーション&lt;/h2&gt;
+
+&lt;p&gt;今回の発表に至るモチベーションとしては、僕が実際に踏んだActiveRecordの重い処理とか他のエンジニアが書いたActiveRecordコードのパフォーマンス改善のための修正などをやっている中で、その良くない処理及びそれに対する解決アプローチがパターン化できると思ったからです。&lt;/p&gt;
+
+&lt;p&gt;僕のアタマの中に「こういうアンチパターンがありそう」というアンチパターン候補がある程度リストアップされていたので、今回の発表を機にそれらにそれっぽい名前を付けて、同時に机上の空論にならないようにそれらをコードに落として、聞き手がイメージしやすいように具体的な事例とともに紹介しました。&lt;/p&gt;
+
+&lt;p&gt;結果として、自分の中にあったActiveRecordアンチパターンを命名とともに整理できたことは大変良かったと思っています。またこの資料さえチームに共有しとけば、今後レビューのときとかでもアンチパターンに関するコミュニケーションがしやすくなって個人的に助かりそうです。&lt;/p&gt;
+
+&lt;h2 id=&quot;紹介したアンチパターン&quot;&gt;紹介したアンチパターン&lt;/h2&gt;
+
+&lt;p&gt;発表内で紹介したアンチパターンがこちらです。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;All Each Pattern&lt;/li&gt;
+  &lt;li&gt;N+1 Update Queries Pattern&lt;/li&gt;
+  &lt;li&gt;Ruby Aggregation Pattern&lt;/li&gt;
+  &lt;li&gt;N+1 Queries Pattern&lt;/li&gt;
+  &lt;li&gt;Unnecessary Query Pattern&lt;/li&gt;
+  &lt;li&gt;Unnecessary Mode Initialization Pattern&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;紹介できなかったアンチパターン&quot;&gt;紹介できなかったアンチパターン&lt;/h2&gt;
+
+&lt;p&gt;何かしらアンチパターン化できそうだけど、時間の都合上しなかったアンチパターンがこちらです。発表しなかったので命名は適当です。&lt;/p&gt;
+
+&lt;h3 id=&quot;なんでもincludesパターン&quot;&gt;なんでもincludesパターン&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;joins&lt;/code&gt;で良いのになんでも&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;includes&lt;/code&gt;で解決しようとしちゃうパターン。このへんは下記の解説に詳しいです。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://qiita.com/k0kubun/items/80c5a5494f53bb88dc58&quot;&gt;ActiveRecordのjoinsとpreloadとincludesとeager_loadの違い - Qiita&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;too-many-find_or_create_by-パターン&quot;&gt;Too many find_or_create_by パターン&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find_or_create_by&lt;/code&gt;は、オブジェクトが存在する場合は取得、なければ作成って挙動をするやつです。これをループ内で使いまくっちゃうパターン。&lt;/p&gt;
+
+&lt;p&gt;そんなときはSQLのUPSERTの機能を使うのが得策。具体的にはMySQLであれば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INSERT...ON DUPLICATE KEY UPDATE&lt;/code&gt;です。&lt;/p&gt;
+
+&lt;p&gt;残念なことにUPSERTはActiveRecordの標準機能では提供されていないので、&lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt;などのgemを使って解決する必要があります。&lt;/p&gt;
+
+&lt;h3 id=&quot;has_many関連のcount方法いろいろあるよ問題&quot;&gt;has_many関連のcount方法いろいろあるよ問題&lt;/h3&gt;
+
+&lt;p&gt;ちゃんとパターン化できていませんが、この問題もなかなか難しい問題です。どのメソッド使ったらよいかはケースバイケースで変わってくるので詳しくは下記を参照されたし。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://qiita.com/nay3/items/1cda39fb58569d832203&quot;&gt;ActiveRecord の has_many関連、件数を調べるメソッドはどれを使えばいい？ - Qiita&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;q--a&quot;&gt;Q &amp;amp; A&lt;/h2&gt;
+
+&lt;h3 id=&quot;アンチパターンの出典は&quot;&gt;アンチパターンの出典は？&lt;/h3&gt;
+
+&lt;p&gt;全部オレです（笑&lt;/p&gt;
+
+&lt;p&gt;一応元ネタというかインスパイアを受けた本としては発表内でも紹介している『SQLアンチパターン』です。&lt;/p&gt;
+
+&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=4873115892&amp;amp;linkId=6903fbe4f4a55cf4f47b4036bf2f350a&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;こちらの本が原著は英語で書かれており、それに倣うかたちで英語でアンチパターンを命名しました。まぁ平たく言うとカッコつけて英語にしました以上の理由はありません :smile:&lt;/p&gt;
+
+&lt;h3 id=&quot;事例１usercreated_atにindex貼らないの&quot;&gt;（事例１）User.created_atにINDEX貼らないの？&lt;/h3&gt;
+
+&lt;p&gt;下記二点の理由により貼りませんでした。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;前提事項としてDBの最適化はしないと述べた&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.created_at&lt;/code&gt; にINDEXを貼ってもINDEX効かない&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User.created_at&lt;/code&gt;にINDEX(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;index_users_on_created_at&lt;/code&gt;)を貼ったあとの実行計画がこちらになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &amp;gt;= '2017-01-01') \G
+*************************** 1. row ***************************
+           id: 1
+  select_type: UPDATE
+        table: users
+   partitions: NULL
+         type: index
+possible_keys: index_users_on_created_at
+          key: PRIMARY
+      key_len: 8
+          ref: NULL
+         rows: 99574
+     filtered: 100.00
+        Extra: Using where
+1 row in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;INDEX貼ってても対象範囲が大きいとINDEX効かなくなるんです。そして今回のケースはそれに当たります。（この挙動、実は僕も全然知りませんでした…）&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;mysqlで検索の対象範囲が大きくなりすぎるとindexが効かなくなるの知らなかった | [MYSQL] datetimeカラムのインデックスの使われ方をテストしてみた │ revdev &lt;a href=&quot;https://t.co/2JK7VD7Ttv&quot;&gt;https://t.co/2JK7VD7Ttv&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/974924182369722368?ref_src=twsrc%5Etfw&quot;&gt;March 17, 2018&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;テストとして条件の範囲を小さくした実行計画がこちらになります。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; EXPLAIN UPDATE `users` SET point = point + 100 WHERE (created_at &amp;gt;= '2018-01-01') \G
+*************************** 1. row ***************************
+           id: 1
+  select_type: UPDATE
+        table: users
+   partitions: NULL
+         type: range
+possible_keys: index_users_on_created_at
+          key: index_users_on_created_at
+      key_len: 5
+          ref: const
+         rows: 5903
+     filtered: 100.00
+        Extra: Using where
+1 row in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;きちんとこちらではINDEXが効いてます。&lt;/p&gt;
+
+&lt;h3 id=&quot;事例２改善１のコードのモデルってロードされている&quot;&gt;（事例２）改善１のコードのモデルってロードされている？&lt;/h3&gt;
+
+&lt;p&gt;会場であった質問です。こちらはRails consoleで実際のコードを動かしてあげれば一目瞭然です。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; Post.group(:user_id).select(&quot;user_id, SUM(like_count) AS like_count&quot;).order(&quot;like_count DESC&quot;) .limit(100)
+  Post Load (976.6ms)  SELECT  user_id, SUM(like_count) AS like_count FROM `posts` GROUP BY `posts`.`user_id` ORDER BY like_count DESC LIMIT 11
+=&amp;gt; #&amp;lt;ActiveRecord::Relation [#&amp;lt;Post id: nil, user_id: 2632, like_count: 832&amp;gt;, #&amp;lt;Post id: nil, user_id: 51965, like_count: 800&amp;gt;, #&amp;lt;Post id: nil, user_id: 25068, like_count: 783&amp;gt;, ...]&amp;gt;
+
+&amp;gt; Post.group(:user_id).order(&quot;SUM(like_count) DESC&quot;) .limit(3000).pluck(:user_id)
+   (668.3ms)  SELECT  `posts`.`user_id` FROM `posts` GROUP BY `posts`.`user_id` ORDER BY SUM(like_count) DESC LIMIT 3000
+=&amp;gt; [2632, 51965, 25068, 8515, 84933, 67763, 89631, 69494, 78805, 17541, 53344, 7618, 92652, 13704, 94308, 96778, ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;一つ目の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.select&lt;/code&gt;を使ったコードはログに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post Load&lt;/code&gt;と出現している通り、Postモデルがロードされている一方、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.pluck&lt;/code&gt;のほうでは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Post Load&lt;/code&gt;とはなにも出ず単純に走ったクエリのみがログに出力されています。&lt;/p&gt;
+
+&lt;h3 id=&quot;紹介したアンチパターンどれくらいの件数で障害に繋がりそう&quot;&gt;紹介したアンチパターン、どれくらいの件数で障害に繋がりそう？&lt;/h3&gt;
+
+&lt;p&gt;今回紹介した事例は数千件-数十万くらいの程度のデータ量なのでそこまで酷いパフォーマンス結果は出ませんでしたが、例えば事例１でこれがUserレコード数百万件とか、事例３でレコードが数十万件くらいのオーダーになってくるとボトルネックが表出しそうかな、という印象です。&lt;/p&gt;
+
+&lt;p&gt;いずれにせよそこそこの規模のアプリケーションになってくると、数百万レコードを扱うのは当たり前の世界になってくると思うので、そのレコード数をどうActiveRecordの世界で上手に扱うは逃げられないテーマになってくるかなと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;発表を終えて&quot;&gt;発表を終えて&lt;/h2&gt;
+
+&lt;p&gt;30minsと長めの発表は&lt;a href=&quot;/aws-summit-tokyo-2015/&quot;&gt;AWS Summitぶり&lt;/a&gt;だったので時間配分にやや不安があったけど、当日は発表を巻くこともなく余裕をもって25分くらいで発表を終えられたのでよかったです。&lt;/p&gt;
+
+&lt;h2 id=&quot;その他の資料&quot;&gt;その他の資料&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rails Developer Meetup 2018の全体の発表資料はこちら: &lt;a href=&quot;https://qiita.com/dyoshimitsu/items/20a41ab656d2da80e4d9&quot;&gt;Rails Developers Meetup 2018 スライドまとめ - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="activerecord" /><category term="rails" /><summary type="html">Rails Developers Meetup 2018で「ActiveRecordデータ処理アンチパターン」というタイトルで発表してきました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2018.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2018.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました</title><link href="https://blog.toshimaru.net/why-we-use-ruby-on-rails/" rel="alternate" type="text/html" title="railsdm2017で「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由─」を発表しました" /><published>2017-12-11T00:00:00+09:00</published><updated>2017-12-11T00:00:00+09:00</updated><id>https://blog.toshimaru.net/why-we-use-ruby-on-rails</id><content type="html" xml:base="https://blog.toshimaru.net/why-we-use-ruby-on-rails/">&lt;p&gt;&lt;a href=&quot;https://techplay.jp/event/631431&quot;&gt;Rails Developers Meetup 2017&lt;/a&gt;でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;68db83f9e02946f08a45817d8fb25b09&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;※公開用に一部スライドを編集してあります:wink:&lt;/p&gt;
+
+&lt;h2 id=&quot;テーマ設定について&quot;&gt;テーマ設定について&lt;/h2&gt;
+
+&lt;p&gt;Web開発においてGoやPython、PHP、Node.js、Scala、Elixirなど様々な選択肢がある中で「なぜ今、Ruby/Railsを使うのか？」というテーマを個人的に掘り下げてみたかったのでこの機会に発表してみることにしてみました。&lt;/p&gt;
+
+&lt;h2 id=&quot;railsの2つの哲学&quot;&gt;Railsの2つの哲学&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;DRY&lt;/strong&gt; (Don’t Repeat Yourself): 同じことを繰り返さない&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;CoC&lt;/strong&gt; (Convention over Configuration): 設定より規約&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Railsの哲学は上記の２つがありますが、個人的にはDRYよりもCoCがずっと重要だと思ってます。なぜならDRYはプログラミング行為において普遍的な考え方である一方、CoCはRailsが定めたRails独自の規約だからです。&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-on-railsの本質&quot;&gt;Ruby on Railsの本質&lt;/h2&gt;
+
+&lt;p&gt;Ruby on Railsの本質は、&lt;strong&gt;センスの良い規約（=Rail）によって設定および設計の手間を最小限にした&lt;/strong&gt; ことだと考えます。&lt;/p&gt;
+
+&lt;p&gt;この規約により我々は設定にまつわるコードを数百行書いたりとかする必要もなくなりましたし、設計工程で生じがちな＜俺の考える最強のアプリケーション設計バトル＞や＜俺の考える最強のデータベース設計選手権＞を緩和しコミュニケーションコストを大幅にカットすることができました（とはいえその規約に規定されていない部分の設計はどうするんだという問題は残りますが…）。&lt;/p&gt;
+
+&lt;p&gt;この規約によって我々はRuby on Railsで &lt;strong&gt;圧倒的コード量の少なさと生産性の高さを実現&lt;/strong&gt; できました。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails批判〇〇の方が速いよ&quot;&gt;Rails批判:「〇〇の方が速いよ」&lt;/h2&gt;
+
+&lt;p&gt;パフォーマンス要件がマストでないときにRailsを使いましょう。パフォーマンス要件がマストのケースにおいては（e.g. 広告サーバー）そもそもRubyという言語選択はするべきでないです。&lt;/p&gt;
+
+&lt;p&gt;「速い」の定義をどこにおくかも重要なポイントです。この速さを「処理系の速さ」としたらRubyはGoなどには負けますが、「開発の速さ」とした場合はどうでしょうか？　我々にとって価値のある速さはどちらでしょうか？　例えばスタートアップなどにおいて1日でも1時間でも早くPDCAサイクルを回したい場合にRailsのほうが最適ではないでしょうか。&lt;/p&gt;
+
+&lt;p&gt;またエンドユーザーにとっての速さは必ずしも処理系の速さとは一致しない点も気をつけてください。かの超絶高速なサイト&lt;a href=&quot;https://dev.to/&quot;&gt;dev.to&lt;/a&gt;はRails製であるという事実を忘れないでください。&lt;/p&gt;
+
+&lt;h3 id=&quot;devtoはrails製であるという事実&quot;&gt;dev.toはRails製であるという事実&lt;/h3&gt;
+
+&lt;p&gt;この事実から言えることは &lt;strong&gt;サービス特性と要素技術を正しく理解・把握した上で最適なアーキテクチャを選択する&lt;/strong&gt; ことが重要ということです。&lt;/p&gt;
+
+&lt;p&gt;例えば&lt;a href=&quot;https://dev.to/&quot;&gt;dev.to&lt;/a&gt; の場合、キャッシュしやすいというサービス特性を利用して、Railsで生成されるコンテンツを爆速CDNであるFastlyに載せて配信させました。これにより結果的に最高の爆速UXを提供できているのです。&lt;/p&gt;
+
+&lt;p&gt;つまり速さという点において問題になるレイヤーはアプリケーションサーバーのレイヤーだけではないということです。&lt;/p&gt;
+
+&lt;h2 id=&quot;rubyrailsが遅いという前に&quot;&gt;Ruby/Railsが遅いという前に&lt;/h2&gt;
+
+&lt;p&gt;「Ruby/Railsが遅い!」という前に下記はしっかり確認していただきたいものです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;自分のアプリケーション設計やテーブル設計の失敗の責任を、言語やフレームワークに押し付けてはいないか&lt;/li&gt;
+  &lt;li&gt;するべき最適化をする前に遅いと斬り捨ててはいないか&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;僕の経験上、Railsで”ちゃんと”作ることができれば、爆速ではないかもしれませんがまぁまぁ速いくらいのサイトは実現可能だと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;高速化の努力&quot;&gt;高速化の努力&lt;/h2&gt;
+
+&lt;p&gt;とはいえ高速化の努力はあって、Ruby3に向けてのRuby高速化（いわゆる&lt;a href=&quot;http://gihyo.jp/news/report/01/rubykaigi2017/0003&quot;&gt;Ruby3x3&lt;/a&gt;）や、&lt;a href=&quot;https://github.com/Shopify/bootsnap&quot;&gt;bootsnap&lt;/a&gt;のようなRailsの起動高速などの努力があります。&lt;/p&gt;
+
+&lt;h2 id=&quot;2018年ruby-on-railsという選択&quot;&gt;2018年、Ruby on Railsという選択&lt;/h2&gt;
+
+&lt;p&gt;小〜中規模のWebアプリケーション（言い換えるとマイクロサービス化を考えなくても済むような規模）であればRailsで十分戦えると考えています。&lt;/p&gt;
+
+&lt;p&gt;なので2018年もRuby on Railsは有効なWebアプリケーションフレームワークの選択肢であり続けでしょう。少なくとも、Ruby on Railsを超えるようなベターオルタナティブが出現しない限りはそうでしょう。&lt;/p&gt;
+
+&lt;h2 id=&quot;発表を終えて&quot;&gt;発表を終えて&lt;/h2&gt;
+
+&lt;p&gt;本発表を聞いた人には「じゃあ一生Ruby/Railsを使い続けるのか？」と思われるかもしれませんが、今後Railsくらいの生産性を発揮できてRailsより速いフレームワークが出現するのであれば全然乗り換える準備はあります。&lt;/p&gt;
+
+&lt;p&gt;ただドキュメント・ライブラリ・運用実績などの周辺環境も含めてRuby/Rails並みに整うのは相当厳しいように思われますので、あと３年位はRailsの寿命は続くのかなという印象です。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;誰か日本でRubyKaigiじゃなくてRailsKaigiをオーガナイズしてくれる人はいないものか（チラッ&lt;br /&gt;めちゃくちゃ人集まることは絶対間違いないと思うのだけど。。。&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/841439645011394564?ref_src=twsrc%5Etfw&quot;&gt;March 14, 2017&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;以前書いたこれ、現場の知見の共有という意味では &lt;a href=&quot;https://twitter.com/hashtag/railsdm?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#railsdm&lt;/a&gt; がやっていってくれてる感ある &lt;a href=&quot;https://t.co/XLGDEEKooR&quot;&gt;https://t.co/XLGDEEKooR&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/940369828451303424?ref_src=twsrc%5Etfw&quot;&gt;December 11, 2017&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;その他の発表スライドなどはこちら &lt;a href=&quot;https://railsdm.github.io/2017/&quot;&gt;Rails Developers Meetup 2017&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;当日のTweetまとめ &lt;a href=&quot;https://togetter.com/li/1179895&quot;&gt;Rails Developers Meetup 2017 #railsdm - Togetter&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="presentation" /><summary type="html">Rails Developers Meetup 2017でLT枠をいただき、「「Railsでまだ消耗しているの？」─僕らがRailsで戦い続ける理由（ワケ）─」と題して発表してきました。ざっくり発表内容をこちらにもまとめてみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2017.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/railsdm/rdm2017.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</title><link href="https://blog.toshimaru.net/infrastructure-as-ruby-code-2016/" rel="alternate" type="text/html" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました" /><published>2016-11-06T00:00:00+09:00</published><updated>2016-11-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/infrastructure-as-ruby-code-2016</id><content type="html" xml:base="https://blog.toshimaru.net/infrastructure-as-ruby-code-2016/">&lt;p&gt;第二回Roppongi.rbを&lt;a href=&quot;http://roppongirb.connpass.com/event/42633/&quot;&gt;「Infrastructure x Ruby」というテーマで開催&lt;/a&gt;した。&lt;/p&gt;
+
+&lt;p&gt;僕はその中で「Infrastructure as (Ruby) Code の現状確認」という内容でオープニングLTとして発表したので、その内容をブログにもまとめておく（前回発表分の発表内容まとめはこちら: &lt;a href=&quot;http://blog.toshimaru.net/roppongirb-speeding-up-rails/&quot;&gt;Roppongi.rbで「Rails高速化戦略」を発表しました&lt;/a&gt;）。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;786983b0a1f94d1ca1250aa48ce94ed0&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;目的&quot;&gt;目的&lt;/h2&gt;
+
+&lt;p&gt;発表の目的としては世に言われる &lt;strong&gt;Infrastructure as Code&lt;/strong&gt; の認識・理解を参加者であわせること。&lt;/p&gt;
+
+&lt;h2 id=&quot;infrastructure-as-codeの意義&quot;&gt;Infrastructure as Codeの意義&lt;/h2&gt;
+
+&lt;p&gt;大きく３つあると思っている。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;インフラ構築手順を秘伝のタレ化させない&lt;/li&gt;
+  &lt;li&gt;手順をコードに落としてインフラへの変更をトラッキングする&lt;/li&gt;
+  &lt;li&gt;手順を不変（immutable）にする&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;秘伝のタレ&quot;&gt;秘伝のタレ&lt;/h3&gt;
+
+&lt;p&gt;秘伝のタレ。一体どういう意味だろうか。まるで秘伝のタレのように継ぎ足し継ぎ足し変更が入り代々受け継がれてきたサーバーを形容する表現が &lt;strong&gt;秘伝のタレ&lt;/strong&gt; だ。&lt;/p&gt;
+
+&lt;p&gt;秘伝のタレが代々受け継がれている環境なんかでは、メンテナンスされているかどうかまるでわからない「サーバー構築手順書.xls」なんてモノがあったりする。そしてそれは大体において手順書通りにはうまくいかないのが常だ。&lt;/p&gt;
+
+&lt;p&gt;インフラ担当者のアタマにしか入っていない隠し味なんかがあったりするとオワタ状態＼(^o^)／。その担当者が退職したりすると誰も現プロダクション環境は再現できません、という状況が出来上がる。&lt;/p&gt;
+
+&lt;h3 id=&quot;コード化するということ&quot;&gt;コード化するということ&lt;/h3&gt;
+
+&lt;p&gt;秘伝のタレ化を防ぐために、コード化という行為を行う。ではコード化されることで良い事とはなんだろうか。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コード化される&lt;/li&gt;
+  &lt;li&gt;➜ Gitでトラック可能になる&lt;/li&gt;
+  &lt;li&gt;➜ Githubでプルリク可能になる&lt;/li&gt;
+  &lt;li&gt;➜ Githubでレビュー可能になる&lt;/li&gt;
+  &lt;li&gt;➜ :blush: = HAPPY!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;このようにコード化されることでソフトウェア開発のグッドプラクティスであるGithub Workflowに乗ることができる。:surfer:&lt;/p&gt;
+
+&lt;h2 id=&quot;immutable-infrastructure&quot;&gt;Immutable Infrastructure&lt;/h2&gt;
+
+&lt;p&gt;次に手順を不変（Immutable）にするということについて。Immutableという言葉はインフラ的文脈ではImmutable Infrastructureという言葉が有名かと思う。&lt;/p&gt;
+
+&lt;p&gt;Immutable Infrastructureについては、&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;rebuild.fmでnaoyaさんやmizzyさんがmiyagawaさんと話して&lt;/a&gt;いたり、&lt;a href=&quot;https://speakerdeck.com/naoya/immutable-infrastructure-number-jawsdays&quot;&gt;naoyaさんが発表していたり&lt;/a&gt;したあたりを契機に日本でも浸透した言葉だと思っている。&lt;/p&gt;
+
+&lt;p&gt;出自はというとChad Fowler氏が書いた下記の記事。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://chadfowler.com/2013/06/23/immutable-deployments.html&quot;&gt;Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;immutable-infrastructure-のキーワード&quot;&gt;Immutable Infrastructure のキーワード&lt;/h3&gt;
+
+&lt;p&gt;Immutable Infrastructureを僕なりに解釈すると、その言葉の本質は下記のキーワードで表せると思う。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Immutable （不変）&lt;/li&gt;
+  &lt;li&gt;Disposable（使い捨て）&lt;/li&gt;
+  &lt;li&gt;Reproducible （再現可能）&lt;/li&gt;
+  &lt;li&gt;Idempotence（冪等性）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Immutable Infrastructureが登場した背景にはAWS, GCPを始めとするIaaSの登場が大きいと思っている。どういうことかというとIaaSでボタン１つでサーバーを上げて必要なくなったら捨てるダイナミックなサーバー、つまり &lt;strong&gt;Disposable&lt;/strong&gt; なサーバーが誕生したということが背景の１つにある。&lt;/p&gt;
+
+&lt;p&gt;そして、オートスケーリングの恩恵を享受するためにはサーバー・プロビジョニング自動化作業が必要となる。スケール前提のサーバー群はいつ何時でも既存のサーバーと同じ状態のサーバーが立ち上がる必要がある&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。つまり、構築手順を &lt;strong&gt;Immutable&lt;/strong&gt; にし &lt;strong&gt;Reproducible&lt;/strong&gt; なサーバー環境にする(= &lt;strong&gt;Idempotence&lt;/strong&gt; を担保する)ことが必要。&lt;/p&gt;
+
+&lt;h2 id=&quot;構成管理ツールの歴史&quot;&gt;構成管理ツールの歴史&lt;/h2&gt;
+
+&lt;p&gt;メジャーなプロビジョニングツール(構成管理ツール)の歴史を追ってみる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;2005年 &lt;a href=&quot;https://docs.puppet.com/puppet/&quot;&gt;Puppet&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;2009年 &lt;a href=&quot;https://www.chef.io/chef/&quot;&gt;Chef&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;2012年 &lt;a href=&quot;https://www.ansible.com&quot;&gt;Ansible&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;2014年 &lt;a href=&quot;https://www.terraform.io&quot;&gt;Terraform&lt;/a&gt;, &lt;a href=&quot;https://github.com/itamae-kitchen/itamae&quot;&gt;Itamae&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;実装言語別分類&quot;&gt;実装言語別分類&lt;/h2&gt;
+
+&lt;p&gt;実装言語別に分類してみる。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Ruby実装&lt;/th&gt;
+      &lt;th&gt;Go実装&lt;/th&gt;
+      &lt;th&gt;Python実装&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Puppet, Chef, Itamae, Serverkit&lt;/td&gt;
+      &lt;td&gt;Terraform&lt;/td&gt;
+      &lt;td&gt;Ansible&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;表現別分類&quot;&gt;表現別分類&lt;/h2&gt;
+
+&lt;p&gt;インフラストラクチャをどうコードで表現しているかの表現体形で分類してみる。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;RubyによるDSL&lt;/th&gt;
+      &lt;th&gt;HCLによるDSL&lt;/th&gt;
+      &lt;th&gt;YAML&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Puppet, Chef, Itamae&lt;/td&gt;
+      &lt;td&gt;Terraform&lt;/td&gt;
+      &lt;td&gt;Ansible, Serverkit&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;why-yaml&quot;&gt;Why YAML?&lt;/h3&gt;
+
+&lt;p&gt;なぜYAMLで表現するのか？ まずはXML/JSONより記述がラクという点がある。そしてYAMLは人間にとってよみやすい、かきやすい、わかりやすいという特徴がある。そしてRailsの設定ファイルなどで一般的に使われている記述フォーマットなので、学習コストが低いという点が利点である。&lt;/p&gt;
+
+&lt;h3 id=&quot;why-hcl&quot;&gt;Why HCL?&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/hashicorp/hcl&quot;&gt;HCL&lt;/a&gt; とは HashiCorp configuration language の略。HCLの&lt;a href=&quot;https://github.com/hashicorp/hcl#why&quot;&gt;READMEではHLCについてこう説明&lt;/a&gt;されている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;:x: JSONダメ。なぜならコメントかけない。しんどい。&lt;/li&gt;
+  &lt;li&gt;:x: YAMLもダメ。なぜなら初心者には記法むずかしい！&lt;/li&gt;
+  &lt;li&gt;:x: Rubyとかもダメ。なぜなら自由度高すぎぃ！複雑すぎぃ！&lt;/li&gt;
+  &lt;li&gt;:o: よろしい、ならば独自言語だ。ということで生まれたのが &lt;strong&gt;HCL&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;why-ruby&quot;&gt;Why Ruby?&lt;/h3&gt;
+
+&lt;p&gt;なぜRubyを採用するか？ まずはDSLが書きやすいという点。そしてRSpecなどのRuby DSLに代表されるようにRuby DSLは宣言的な記述が可能である。宣言的ということはコードを読んだだけでそのコードの意図が伝わりやすいということだ。そしてDSLといってもRubyはRuby。RubyなのでRubyでできることは何でもできちゃうので、自由度が高い（これは悪い意味に作用することもあってやりすぎるとChefのレシピそのものが秘伝のタレ化する可能性があるので注意）。&lt;/p&gt;
+
+&lt;h2 id=&quot;infrastructure-as-code-の概念整理&quot;&gt;Infrastructure as Code の概念整理&lt;/h2&gt;
+
+&lt;p&gt;Infrastructure as Code の概念を整理してみたい。&lt;a href=&quot;http://mizzy.org/blog/2013/10/29/1/&quot;&gt;mizzyさんのブログでは&lt;/a&gt;、プロビジョニングのレイヤーを下記のように分けるような考え方が紹介されていた。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/provisioning-tools.png&quot; alt=&quot;provisioning layers&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;シンプルなプロビジョニングレイヤーの考え方&quot;&gt;シンプルなプロビジョニング・レイヤーの考え方&lt;/h2&gt;
+
+&lt;p&gt;オーケストレーションなどというと抽象的なのとInfrastructure as Codeのスコープが広くなってしまうと思うので、シンプルにこんな風に考えてみるのはどうだろうか。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/infra-as-code-layers.png&quot; alt=&quot;infra-as-code-layers&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上記の考え方で先の構成管理ツールを分類するとこんな感じだ。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/provisioning-categorize.png&quot; alt=&quot;provisioning categorize&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;しかしこれで本当に全てはコード化されるか、というとそうではない。サーバーのプロビジョニングでコード化されるのはAWSサービス群のほんの一部、EC2のみだ。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/aws-services.png&quot; alt=&quot;AWS services&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;infrastructure-as-code-のカバー範囲&quot;&gt;Infrastructure as Code のカバー範囲&lt;/h2&gt;
+
+&lt;p&gt;IaaSは仮想サーバ以外にもさまざまなサービスを提供している。AWSの例でいうと、ELB, RDS, VPC, S3, CloudFront, IAM, SecurityGroup などなど。&lt;/p&gt;
+
+&lt;p&gt;それらに対するオペレーションをAWS Management ConsoleなどのGUIでやるべきだろうか？&lt;/p&gt;
+
+&lt;h3 id=&quot;gui-configuration-is-hard&quot;&gt;GUI Configuration is hard…&lt;/h3&gt;
+
+&lt;p&gt;さきほどのImmutable Infrastructureの文脈でいうと、GUIによる操作はImmutableではない。なぜならGUIは変わるかもしれないし、GUI操作は明確な言語化できないほどにファジーだからだ。では重要な設定をそのGUI任せにしていいのだろうか？&lt;/p&gt;
+
+&lt;p&gt;Route53やSecurityGroupなどオペレーションミスで一歩間違うと大障害になりかねない。これらのGUIの設定をimmutableにはできないだろうか。じゃあimmutableなインターフェースであるAPIを叩けばいいじゃない。というところで、&lt;strong&gt;Configuration as Code&lt;/strong&gt; という言葉が出て来る。&lt;/p&gt;
+
+&lt;p&gt;この考え方を使えばInfrastructure as Codeの概念をさらに良い感じに敷衍できるのではないかと僕は考えた。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/configuratino-as-code.png&quot; alt=&quot;Configuration as Code*&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;こう考えるとIaaSの各種サービス群もコード化の対象として捉えることができる。&lt;/p&gt;
+
+&lt;h2 id=&quot;全てがコードになる例&quot;&gt;全てがコードになる例&lt;/h2&gt;
+
+&lt;h3 id=&quot;route53-configuration&quot;&gt;Route53 Configuration&lt;/h3&gt;
+
+&lt;p&gt;Route53のコード化例。こんな感じにRuby DSLになる&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;hosted_zone&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;example.com.&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;rrset&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;example.com.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;A&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ttl&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resource_records&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;127.0.0.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;127.0.0.2&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/roadworker&quot;&gt;roadworker&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;aws_route53_record&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;www&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;zone_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;${aws_route53_zone.primary.zone_id}&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;www.example.com&quot;&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;A&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;ttl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;300&quot;&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;records&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;${aws_eip.lb.public_ip}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://www.terraform.io/docs/providers/aws/r/route.html&quot;&gt;AWS: aws_route - Terraform by HashiCorp&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cloudwatch-alarm&quot;&gt;CloudWatch Alarm&lt;/h3&gt;
+
+&lt;p&gt;CloudWatchのAlarmだってDSLになる。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;alarm&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;alarm1&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;AWS/EC2&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;metric_name&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CPUUtilization&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;dimensions&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;InstanceId&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;i-XXXXXXXX&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;period&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;statistic&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:average&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;threshold&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;gt;=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;50.0&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;evaluation_periods&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;actions_enabled&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;alarm_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ok_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;insufficient_data_actions&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;arn:aws:sns:us-east-1:123456789012:my_topic&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/radiosonde&quot;&gt;radiosonde&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;datadog-alert-configuration&quot;&gt;Datadog Alert Configuration&lt;/h3&gt;
+
+&lt;p&gt;さらにコード化される対象はIaaSだけではない。Datadogという監視のアラート設定もコード化される。&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;monitor&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Check load avg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;metric alert&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;avg(last_5m):avg:ddstat.load_avg.1m{host:i-XXXXXXXX} &amp;gt; 1&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;@winebarrel@example.net&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;locked&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;new_host_delay&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;notify_no_data&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;no_data_timeframe&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;notify_audit&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;silenced&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://github.com/winebarrel/barkdog&quot;&gt;barkdog&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;github-member-management&quot;&gt;Github Member Management&lt;/h3&gt;
+
+&lt;p&gt;Githubのメンバー管理だってTerraformでできちゃうんだぜ。&lt;/p&gt;
+
+&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;github_membership&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;membership_for_some_user&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SomeUser&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;role&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;member&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;github_repository&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;example&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;example&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;My awesome codebase&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;github_repository_collaborator&quot;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;a_repo_collaborator&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;our-cool-repo&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SomeUser&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;permission&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;admin&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;powered by &lt;a href=&quot;https://www.terraform.io/docs/providers/github/&quot;&gt;Provider: GitHub - Terraform by HashiCorp&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;全てがプルリクになる&quot;&gt;全てがプルリクになる&lt;/h2&gt;
+
+&lt;p&gt;冒頭に述べたように、コード化されるということはGithubに乗せてプルリクエストを出せるということだ。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb2/pull-request.png&quot; alt=&quot;Pull Request&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;こんなふうにプルリクになっているとレビューも簡単。&lt;/p&gt;
+
+&lt;h2 id=&quot;コード化するメリット&quot;&gt;コード化するメリット&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;レビューによるチェック体制により、より安全なConfigurationオペレーションを実現できる&lt;/li&gt;
+  &lt;li&gt;CIサービスと連携させてテスト・CDの自動化も可能となる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;コード化することによりGithubワークフロー（プルリク→レビュー→マージ）に乗ることができてハッピー :smile:&lt;/li&gt;
+  &lt;li&gt;Infrastructure as Code = Server Configuration as Code + Service Configuration as Code ➜ サーバーだけではなく、サービスそれ自体もコード化されていく。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;感想&quot;&gt;感想&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;今回の発表はKeynoteでスライド作ったけど、Keynoteはレイアウトとかテーマの設定が自由にできてDecksetよりはデザイン凝ろうと思ったときに便利。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/ryotarai/itamae-infra-as-code-xian-zhuang-que-ren-hui&quot;&gt;Itamae - Infra as Code 現状確認会&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;Rebuild: 25: Immutable Infrastructure&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/naoya/infrastructure-as-code&quot;&gt;Infrastructure as Code // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://mizzy.org/blog/2016/04/22/1/&quot;&gt;Infrastructure as Code 再考&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://chadfowler.com/2013/06/23/immutable-deployments.html&quot;&gt;Trash Your Servers and Burn Your Code: Immutable Infrastructure and Disposable Components&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://martinfowler.com/bliki/InfrastructureAsCode.html&quot;&gt;InfrastructureAsCode&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;特定のサーバーにデータに依存してしまわないように、データ的にはステートレスなサーバー構成が前提となる &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="roppongirb" /><category term="aws" /><category term="presentation" /><summary type="html">第二回Roppongi.rbを「Infrastructure x Ruby」というテーマで開催した。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/roppongirb2/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/roppongirb2/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Roppongi.rbで「Rails高速化戦略」を発表しました</title><link href="https://blog.toshimaru.net/roppongirb-speeding-up-rails/" rel="alternate" type="text/html" title="Roppongi.rbで「Rails高速化戦略」を発表しました" /><published>2016-07-19T00:00:00+09:00</published><updated>2016-07-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/roppongirb-speeding-up-rails</id><content type="html" xml:base="https://blog.toshimaru.net/roppongirb-speeding-up-rails/">&lt;p&gt;自分がオーガナイザーを務めた &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/&quot;&gt;Roppongi.rb #1&lt;/a&gt;で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;37881a2ec2214ef39d85820f3327bbc2&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;発表内容をこちらのブログでも文章形式でざっとまとめてみたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-ruby-遅いよね&quot;&gt;Rails (Ruby) 遅いよね&lt;/h2&gt;
+
+&lt;p&gt;RailsないしRubyはプログラミング言語の中では速くはない言語であることは言うまでもないと思う&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。 実際に「Rails/Ruby遅いよねって今まで思ったことある方どれくらいいますか？」と会場でも聞いてみたところ、予想では半数以上手を挙げてくれると思ったのだけど、実際は30人中3~4人くらい。あまりにも意外な結果だったので自分なりに理由を分析してみると２つあるかなと思う。&lt;/p&gt;
+
+&lt;h3 id=&quot;パフォーマンスを求められないから&quot;&gt;パフォーマンスを求められないから&lt;/h3&gt;
+
+&lt;p&gt;例えば社内の数人が使うような管理画面の場合。この場合、パフォーマンスよりも機能性（ちゃんと検索・閲覧できるかとかCRUD操作ができるかとか）などが優先されると思う。数人だけが使うのでアクセススパイクもないし、パフォーマンスが問題にもなりにくい。&lt;/p&gt;
+
+&lt;h3 id=&quot;railsをフレームワークとして使っていないから&quot;&gt;Railsをフレームワークとして使っていないから&lt;/h3&gt;
+
+&lt;p&gt;すごくパフォーマンスを求められるWebアプリの場合、それが事前にわかっているならまずは言語選択レベルでRailsを選択しないかもしれない。今ならGoとかElixirとかScalaとか代替言語もあるのでそちらを選択した場合はRailsは使わないことになるのでRailsの遅さで困ることもない。&lt;/p&gt;
+
+&lt;h2 id=&quot;それでもやっぱりrailsだ&quot;&gt;それでもやっぱりRailsだ…!&lt;/h2&gt;
+
+&lt;p&gt;それでもやっぱりRuby好きのRubyっ子であれば、Rubyは使いたい… ということで、Railsの高速化をする上での戦略を紹介。&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-version-up&quot;&gt;Ruby Version Up&lt;/h2&gt;
+
+&lt;p&gt;まずはRubyバージョンアップ。Rubyバージョンの歴史はこんな感じになっている。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;2013.2: Ruby 2.0&lt;/li&gt;
+  &lt;li&gt;2013.12: Ruby 2.1&lt;/li&gt;
+  &lt;li&gt;2014.12: Ruby 2.2&lt;/li&gt;
+  &lt;li&gt;2015.12: Ruby 2.3&lt;/li&gt;
+  &lt;li&gt;20xx: Ruby 3.0&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;去年matzの口からRuby3のコンセプトが発表された。その驚くべき内容が &lt;strong&gt;Ruby 3 x 3&lt;/strong&gt; 。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/ruby3x3.png&quot; alt=&quot;ruby 3 x 3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://www.youtube.com/watch?v=E9bO1uqs4Oc&quot;&gt;Ruby3 challenges - RubyKaigi 2015 Keynote - YouTube&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;とあるrailsアプリの場合&quot;&gt;とあるRailsアプリの場合&lt;/h2&gt;
+
+&lt;p&gt;会社で取り組んでいるプロダクトのRubyのバージョンは基本的に最新バージョンを使うようにしているものの、中にはレガシーな環境もある。下記はあるプロダクトでRuby2.0 から Ruby2.1に上げた例。結果としては、Ruby 2.0 =&amp;gt; 2.1 Ruby Version Up だけで レスポンス速度が約2倍向上した。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/ruby2_0-to-2_1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;このようにRubyバージョンアップによりアプリケーションコード変更ゼロでも&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;、速度改善が期待できる。古いRubyお使いの方は今すぐRubyのバージョンアップ！&lt;/p&gt;
+
+&lt;h2 id=&quot;what-about-rails&quot;&gt;What about Rails?&lt;/h2&gt;
+
+&lt;p&gt;じゃあRailsはどうだろうか。下記は&lt;a href=&quot;https://github.com/amatsuda&quot;&gt;amatsuda&lt;/a&gt;さんのmatzのRuby 3x3 を受けての発表。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/rails3x.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://speakerdeck.com/a_matsuda/3x-rails&quot;&gt;3x Rails // Speaker Deck&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?&lt;/code&gt;が付いていることで分かる通り3倍速くなるという発表というより、まだまだRailsは速くするために工夫の余地があるよ、というような発表。&lt;/p&gt;
+
+&lt;p&gt;下記は同じ&lt;a href=&quot;https://github.com/amatsuda&quot;&gt;amatsuda&lt;/a&gt;さんが発表された&lt;a href=&quot;http://togetter.com/li/955629&quot;&gt;Rails Upgrade Casual Talks&lt;/a&gt;での資料です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/rails-verup1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://speakerdeck.com/a_matsuda/rails-upgrade-casual-talks&quot;&gt;Rails Upgrade Casual Talks // Speaker Deck&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;たしかに色んな機能が追加されている中、Railsが劇的に速くなることは考えにくい。解決策は…?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/rails-verup2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;歯を食いしばってRails/Rubyをバージョンアップ&lt;/strong&gt; :innocent:&lt;/p&gt;
+
+&lt;p&gt;Rails 遅くなってもRuby は速くなっているので、どちらも最新版をしっかり追っかけていけば、遅くなることなくRailsの機能拡張も追っかけていけるのでOK.&lt;/p&gt;
+
+&lt;h2 id=&quot;ボトルネックを潰す&quot;&gt;ボトルネックを潰す&lt;/h2&gt;
+
+&lt;p&gt;Railsアプリをどうボトルネックを発見し潰していくか？&lt;/p&gt;
+
+&lt;h3 id=&quot;推測するな計測せよ&quot;&gt;推測するな、計測せよ　&lt;/h3&gt;
+
+&lt;p&gt;ボトルネックは計測して数値で示すもの。ボトルネックを発見するためのサービス・ツールをいくつか紹介。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://newrelic.com/&quot;&gt;New Relic&lt;/a&gt;: 無料で使えて導入もラクでよい&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/MiniProfiler/rack-mini-profiler&quot;&gt;rack-mini-profiler&lt;/a&gt;: 開発環境導入する。クエリやpartialレンダー時間を表示。&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/kainosnoema/rack-lineprof&quot;&gt;rack-lineprof&lt;/a&gt;: Rubyのコードを行単位で計測したい場合に有効&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ツールを使った結果ボトルネックになりやすい箇所というとRDBまわり。それを解決するgem・機能を紹介。&lt;/p&gt;
+
+&lt;h2 id=&quot;activerecord-optimization&quot;&gt;ActiveRecord Optimization&lt;/h2&gt;
+
+&lt;h3 id=&quot;mag_right-問題発見型&quot;&gt;:mag_right: 問題発見型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/flyerhzm/bullet&quot;&gt;bullet&lt;/a&gt;: Kill &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;N+1&lt;/code&gt; issue!&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/joker1007/activerecord-cause&quot;&gt;activerecord-cause&lt;/a&gt;: Logs where ActiveRecord actually loads record&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;key-dbスキーマ最適化型&quot;&gt;:key: DBスキーマ最適化型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/pboling/flag_shih_tzu&quot;&gt;flag_shih_tzu&lt;/a&gt;: Bit fields for ActiveRecord&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://guides.rubyonrails.org/association_basics.html#counter-cache&quot;&gt;counter-cache&lt;/a&gt;: cacheing count query result
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/magnusvk/counter_culture&quot;&gt;counter_culture&lt;/a&gt;: Better counter-cache&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;zap-クエリ効率化型&quot;&gt;:zap: クエリ効率化型&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/k0kubun/activerecord-precount&quot;&gt;activerecord-precount&lt;/a&gt;: Yet another counter_cache alternative.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/zdennis/activerecord-import&quot;&gt;activerecord-import&lt;/a&gt;: bulk inserting data&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;クエリを意識してactiverecord使いこなそう&quot;&gt;クエリを意識してActiveRecord使いこなそう&lt;/h2&gt;
+
+&lt;p&gt;ActiveRecordもといORマッパの良さってDBを意識しなくて済むところ。でも高速化を行う上でクエリは避けられない壁。DBを意識せずコードを書いている最近のワカモノはもっとクエリを意識しよう！ &lt;del&gt;老害っぽい発言だ&lt;/del&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;パーシャルレンダリングを減らす&quot;&gt;パーシャルレンダリングを減らす&lt;/h2&gt;
+
+&lt;h3 id=&quot;n1-partial-rendering&quot;&gt;N+1 partial rendering&lt;/h3&gt;
+
+&lt;p&gt;データN個分&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;render&lt;/code&gt;処理が走ってしまうのを、個人的に &lt;strong&gt;N+1 rendering&lt;/strong&gt; と呼んでいる。データの数N+親のビュー1回で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;N+1&lt;/code&gt;. 例えばこんなコード。&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/index --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/_item --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Show'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Edit'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;edit_item_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Destroy'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;method: :delete&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この場合のログはこうなる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Processing by ItemsController#index as HTML
+  Rendering items/index.html.erb within layouts/application
+  Item Load (0.3ms)  SELECT &quot;items&quot;.* FROM &quot;items&quot;
+  Rendered items/_item.html.erb (0.5ms)
+  Rendered items/_item.html.erb (0.3ms)
+  ...snip...
+  Rendered items/_item.html.erb (0.5ms)
+  Rendered items/_item.html.erb (0.3ms)
+  Rendered items/index.html.erb within layouts/application (57.7ms)
+Completed 200 OK in 80ms (Views: 77.1ms | ActiveRecord: 0.3ms)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Viewで80msくらいかかっている。&lt;/p&gt;
+
+&lt;h3 id=&quot;collection-rendering&quot;&gt;Collection rendering&lt;/h3&gt;
+
+&lt;p&gt;上記の場合、Collectionレンダーの機能を使えばもっと効率的にrenderできる。&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/index --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@items&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- views/items/_item --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Show'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Edit'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;edit_item_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;td&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Destroy'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;method: :delete&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;この場合のログはこうなる。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Processing by ItemsController#index as HTML
+  Rendering items/index.html.erb within layouts/application
+  Item Load (0.4ms)  SELECT &quot;items&quot;.* FROM &quot;items&quot;
+  Rendered collection of items/_item.html.erb [29 times] (6.9ms)
+  Rendered items/index.html.erb within layouts/application (10.3ms)
+Completed 200 OK in 29ms (Views: 26.4ms | ActiveRecord: 0.4ms)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ビューで25msくらい。だいたい上記の例と比べると1/3くらいになっている。&lt;/p&gt;
+
+&lt;h2 id=&quot;rails-caching&quot;&gt;Rails caching&lt;/h2&gt;
+
+&lt;p&gt;RailsのCacheの仕組みとして&lt;a href=&quot;http://guides.rubyonrails.org/caching_with_rails.html&quot;&gt;公式ガイド&lt;/a&gt;で3つ紹介されているのだが、ご存知だろうか。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Fragment Cache&lt;/strong&gt;: View fragment caching.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Action Cache&lt;/strong&gt;: Controller’s action caching (removed in Rails4).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Page Cache&lt;/strong&gt;: Static page caching (removed in Rails4).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;1-fragment-cache&quot;&gt;1. Fragment Cache&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/cache-fragment.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;グローバルナビ・サイドバーなどの多く呼ばれる共通コンテンツに有効&lt;/li&gt;
+  &lt;li&gt;重い処理が走るビューの一部分であればあるほど高速化が期待できる&lt;/li&gt;
+  &lt;li&gt;Advanced Usage: &lt;strong&gt;Russian Doll Caching&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;2-action-cache&quot;&gt;2. Action Cache&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/action-cache.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rails4で削除されてgem化: &lt;a href=&quot;https://github.com/rails/actionpack-action_caching&quot;&gt;actionpack-action_caching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Viewの手前のControllerのAction自体の処理が重い場合に有効&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache_path&lt;/code&gt; でキャッシュキーをカスタマイズ可能
+    &lt;ul&gt;
+      &lt;li&gt;モデルのupdated_at を組み込んだり、PC/スマフォでキャッシュビュー出し分け可能&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;3-page-cache&quot;&gt;3. Page Cache&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Rails4で削除されてgem化: &lt;a href=&quot;https://github.com/rails/actionpack-page_caching&quot;&gt;actionpack-page_caching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;キャッシュ対象となるControllerのActionの生成するHTMLをまるっと静的ファイルに吐き出す&lt;/li&gt;
+  &lt;li&gt;その静的ファイルをNGINXなどのWeb Server/Reverse Proxyでハンドリング&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;railsのキャッシュ戦略&quot;&gt;Railsのキャッシュ戦略&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Railsデフォルトの FragmentCache を使ってビューのレンダリングを高速化&lt;/li&gt;
+  &lt;li&gt;それでもダメな場合や Controller 自体の処理が重い場合なら、ActionCache/PageCache を検討&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;warning-注意&quot;&gt;:warning: 注意&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;キャッシュしても根っこの問題は消えない&lt;/li&gt;
+  &lt;li&gt;キャッシュのライフサイクル管理&lt;/li&gt;
+  &lt;li&gt;用法用量を守って正しくお使いください&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;キャッシュしても根っこの問題はバイパスされるだけでそれ自体が解決されるわけではないので、本質的にはその根っこの問題を潰すほうがキャッシュより優先すべき。キャッシュによって&lt;strong&gt;臭いものには蓋&lt;/strong&gt;をしていないか。キャッシュによって大きなボトルネックが隠蔽されていないか。本質的な問題を潰した上でなお高速化したい場合にキャッシュを利用するのが筋の良いキャッシュ戦略だと思う。&lt;/p&gt;
+
+&lt;p&gt;またキャッシュを行うことでそのライフサイクル管理も必要になってくることはアタマに入れておきたい。どういう場合にキャッシュがexpireすべきなのか(あるいはexpireすべきでないのか)、updateすべきなのか、削除すべきなのか。この辺もきちんと考えた上でキャッシュに取り組みたい。&lt;/p&gt;
+
+&lt;h2 id=&quot;静的ファイル配信&quot;&gt;静的ファイル配信&lt;/h2&gt;
+
+&lt;h3 id=&quot;nginx&quot;&gt;NGINX&lt;/h3&gt;
+
+&lt;p&gt;プロダクション運用においては実際Railsが静的ファイルまでサーブすることはなくて、下記のようにNGINXに静的ファイルをサーブさせることが多い。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/nginx.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cdn&quot;&gt;CDN&lt;/h3&gt;
+
+&lt;p&gt;さらに言うと、Railsの吐く assets:precompile の成果物は、CDNに乗せちゃって配信を最適化してやるともっとよい。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/nginx-cdn.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;レイテンシに負けないプロトコル--http2&quot;&gt;レイテンシに負けないプロトコル = HTTP/2&lt;/h2&gt;
+
+&lt;p&gt;バンド幅大きくなってもページロード時間は大きく変わらない。&lt;strong&gt;光の速度はこれ以上速くならない&lt;/strong&gt;。じゃあどうするか。解決策がHTTP/2.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/http2-latency.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;http://www.slideshare.net/kazuho/dena-http2&quot;&gt;ウェブを速くするためにDeNAがやっていること - HTTP/2と、さらにその先&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;下記のBEFORE/AFTERは画像の配信をHTTPからHTTP/2に変更した場合のリクエストをキャプチャしたもの。&lt;/p&gt;
+
+&lt;h3 id=&quot;before-http2&quot;&gt;Before HTTP/2&lt;/h3&gt;
+
+&lt;p&gt;HTTP/2前の状態。リクエストが順番に走っていることが見て取れる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/before-http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;after-http2&quot;&gt;After HTTP/2&lt;/h3&gt;
+
+&lt;p&gt;HTTP/2後の状態。リクエストが見事に多重化されている。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/after-http2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.httpvshttps.com/&quot;&gt;こちらのページ&lt;/a&gt;ではHTTPSの画像ロードの速度の速さを体感できる。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/HTTP_vs_HTTPS.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ユーザーの体感速度--サーバーサイドレスポンス--クライアントサイドスピード&quot;&gt;ユーザーの体感速度 = サーバーサイドレスポンス + クライアントサイド・スピード&lt;/h2&gt;
+
+&lt;p&gt;仮にサーバーレスポンスタイムを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1ms&lt;/code&gt;にしたとしても、十分に速くなったとはいえない。なぜなら最終的にユーザーが感じるであろうウェブページの体感速度はサーバーサイドのレスポンス速度とクライアントサイドでのページロードのスピードを足し合わせたものだから。サーバーが0msでレスポンス返しても10秒間クライアントサイドの画面が真っ白だったら、ユーザーにとってはそれは10秒待たされてるのと一緒。&lt;/p&gt;
+
+&lt;h3 id=&quot;rails-helloworld-app-の場合&quot;&gt;Rails HelloWorld App の場合&lt;/h3&gt;
+
+&lt;p&gt;Rails5をほぼ素の状態でHello Worldという文字列を出力するアプリをHerokuにデプロイして&lt;a href=&quot;https://developers.google.com/speed/pagespeed/insights/&quot;&gt;Google PageSpeed Insights&lt;/a&gt;で計測してみた。&lt;/p&gt;
+
+&lt;p&gt;結果は80点以下… :weary:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/roppongirb/render-block-js.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Should Fix&lt;/code&gt;として報告されているのは、headタグ内にあるJS読み込みが Render Blocking してますよ、という内容のもの。Webの高速化はサーバーサイドだけで済むようなラクなもんじゃない。&lt;/p&gt;
+
+&lt;h2 id=&quot;amp-zap&quot;&gt;AMP :zap:&lt;/h2&gt;
+
+&lt;p&gt;AMPはWeb高速化のベストプラクティスを詰め込んだ仕様/制限のこと。詳しくは下記が参考になる。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@cramforce/why-amp-is-fast-7d2ff1f48597#.tcozirlt5&quot;&gt;Why AMP is fast — Medium&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://mozaic.fm/episodes/22/amp.html&quot;&gt;ep22 AMP | mozaic.fm&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;またAMPに対応するとページが速くなる他にもおいしいことがあって、GoogleがAMPページをキャッシュしてコンテンツ配信を肩代わりしてくれるのだ。いうなればAMPのためのGoogle無料CDN。これでオーガニック検索のトラフィックはだいぶラクになるかも？&lt;/p&gt;
+
+&lt;p&gt;僕も自分の&lt;a href=&quot;http://blog.toshima.ru/&quot;&gt;英語Tipsブログ&lt;/a&gt;をAMP化してみたが非常に高速にページが表示できている。(完全にAMP化はできていないのだけど) まだAMP試していない人は、AMPすげーはやいのでぜひその速さを体感してみてほしい。そしてWebの高速化にまっすぐ向き合ってもらいたいと思う。&lt;/p&gt;
+
+&lt;h2 id=&quot;その他の参考資料&quot;&gt;その他の参考資料&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/mirakui/high-performance-rails-long-edition&quot;&gt;High Performance Rails (long edition) // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/joker1007/railspahuomansuji-ben-falseki&quot;&gt;Railsパフォーマンス基本のキ // Speaker Deck&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://parashuto.com/rriver/development/page-speed-optimization&quot;&gt;デザイナーやディレクターも知っておきたい、ページ表示速度の高速化の基本 – Rriver&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;roppongirb-イベントについて&quot;&gt;Roppongi.rb イベントについて&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://twitter.com/hashtag/roppongirb?f=tweets&amp;amp;vertical=default&quot;&gt;#roppongirb hashtag on Twitter&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;イベント発表資料: &lt;a href=&quot;http://roppongirb.connpass.com/event/33502/presentation/&quot;&gt;Roppongi.rb 資料一覧 - connpass&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://morizyun.github.io/blog/roppongi-rb-ruby-rails/&quot;&gt;Roppongi.rb #1 発表の密度が濃くて楽しかったYO! - 酒と泪とRubyとRailsと&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://www.techempower.com/benchmarks/&quot;&gt;Round 12 results - TechEmpower Framework Benchmarks&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;ただしRubyバージョン差異による非互換性を解消するための変更は必要だけどね。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="ruby" /><category term="roppongirb" /><category term="presentation" /><category term="web" /><summary type="html">自分がオーガナイザーを務めた Roppongi.rb #1で「Rails高速化戦略」という題で発表してきました。スライドは下記になります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/roppongirb/title.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/roppongirb/title.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">JSON Schemaについて発表しました</title><link href="https://blog.toshimaru.net/json-schema-collaboration/" rel="alternate" type="text/html" title="JSON Schemaについて発表しました" /><published>2015-12-09T00:00:00+09:00</published><updated>2015-12-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/json-schema-collaboration</id><content type="html" xml:base="https://blog.toshimaru.net/json-schema-collaboration/">&lt;p&gt;「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題して&lt;a href=&quot;http://gunosy-beer.connpass.com/event/22825/&quot;&gt;エムスリー x Gunosy Beer bash&lt;/a&gt;で発表してきました。&lt;/p&gt;
+
+&lt;p&gt;当日ハッシュタグ: &lt;a href=&quot;https://twitter.com/hashtag/gunosybeer?src=hash&quot;&gt;#gunosybeer hashtag on Twitter&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;発表資料point_down&quot;&gt;発表資料:point_down:&lt;/h2&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;ddf8953b3746496a848dd7e4038ece4e&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h1 id=&quot;2-types-of-json-schema&quot;&gt;2 Types of JSON Schema&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://json-schema.org/&quot;&gt;JSON Schema and Hyper-Schema&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;JSON Schema&lt;/li&gt;
+  &lt;li&gt;JSON Hyper-Schema&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/json-schema.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;json-schema&quot;&gt;JSON Schema&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;JSONの &lt;strong&gt;データフォーマット&lt;/strong&gt; を記述する&lt;/li&gt;
+  &lt;li&gt;人間にも機械にもわかりやすいドキュメント&lt;/li&gt;
+  &lt;li&gt;フォームでサブミットするデータのバリデーションに使える&lt;/li&gt;
+  &lt;li&gt;自動テストにも使える&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;json-hyper-schema&quot;&gt;JSON Hyper-Schema&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Web APIの仕様&lt;/strong&gt; を記述する&lt;/li&gt;
+  &lt;li&gt;APIで期待するデータをJSON Schemaの形式で記述&lt;/li&gt;
+  &lt;li&gt;日本ではこっちの方がポピュラー？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;観測範囲内だと日本のコミュニティでJSON Schemaといったときにこちらを指すことが多い気がする。&lt;/p&gt;
+
+&lt;h2 id=&quot;コラボレーション図&quot;&gt;コラボレーション図&lt;/h2&gt;
+
+&lt;p&gt;JSON Schemaでコラボレーションした事例を紹介するよ。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+------------------+
+|                  |
+|  Client-side JS  |
+|     (React)      |
+|                  |
++---+--------+-----+
+    |        ^
+    |        |            +---------------+
+    |  JSON  |  &amp;lt;-------- |  JSON Schema  |
+    |        |            +---------------+
+    v        |
++---+--------+-----+
+|                  |
+| Server-side API  |
+|     (Rails)      |
+|                  |
++------------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;json-schema-for-us&quot;&gt;JSON Schema for us&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;For Humans
+    &lt;ul&gt;
+      &lt;li&gt;Clear specification&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;For Apps
+    &lt;ul&gt;
+      &lt;li&gt;useful for Validation&lt;/li&gt;
+      &lt;li&gt;useful for Test&lt;/li&gt;
+      &lt;li&gt;etc.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;repositories&quot;&gt;Repositories&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;:point_down: Rails API Repo :point_down:&lt;/li&gt;
+  &lt;li&gt;:point_right: &lt;strong&gt;JSON Schema Repo&lt;/strong&gt; :point_left:&lt;/li&gt;
+  &lt;li&gt;:point_up_2: Frontend Repo :point_up_2:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;バックエンドAPIのレポジトリ、フロントエンドのJSレポジトリ、共通で使うJSON Schemaのためのレポジトリ、これら３つを用意した。&lt;/p&gt;
+
+&lt;h2 id=&quot;workflow&quot;&gt;Workflow&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;必要なAPIとそこに含まれるべきデータを洗い出し&lt;/li&gt;
+  &lt;li&gt;1をJSON Schemaに落としこむ&lt;/li&gt;
+  &lt;li&gt;プルリク！&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;1は仕様・ワイヤーをもとにマークダウンでもスプレッドシートでも荒くアウトプット出す。&lt;/p&gt;
+
+&lt;p&gt;バックエンドエンジニアとフロントエンドエンジニアが共通認識を深めながらJSON Schemaレポジトリを育てていく。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/schema-pr.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;get-usersid&quot;&gt;GET /users/{id}&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# user.schema.yml&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;$schema&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;http://json-schema.org/draft-04/schema#&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;User&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;An User&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;object&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;properties&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;integer&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;email&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;minLength&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;maxLength&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;32&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;id&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;email&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PUT /users/{id}&lt;/code&gt;とかもスキーマ使いまわせる。&lt;/p&gt;
+
+&lt;h2 id=&quot;json-schema-validation&quot;&gt;JSON Schema Validation&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'json-schema'&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;type&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;object&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;required&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;properties&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;type&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;integer&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Validator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;validate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;rspec-json-schema-matcher&quot;&gt;RSpec JSON Schema Matcher&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Fetching the current user&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;with valid auth token&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;returns the current user&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;auth_header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Auth-Token&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;auth_token&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v1_current_user_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;auth_header&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;match_response_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;user&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;参考: &lt;a href=&quot;https://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher&quot;&gt;Validating JSON Schemas with an RSpec Matcher&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-json-schema-library&quot;&gt;Ruby JSON Schema Library&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/ruby-json-schema/json-schema&quot;&gt;ruby-json-schema/json-schema&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/brandur/json_schema&quot;&gt;brandur/json_schema&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ダッシュとアンダースコア！ わかりにくい！！&lt;/p&gt;
+
+&lt;h2 id=&quot;json-schema-vs-json_schema&quot;&gt;json-schema vs json_schema&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;depending on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;json-schema&lt;/code&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/airbrake/airbrake&quot;&gt;airbrake/airbrake&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/square/fdoc&quot;&gt;square/fdoc&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;json-schema-vs-json_schema-1&quot;&gt;json-schema vs json_schema&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;depending on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;json_schema&lt;/code&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/interagent/committee&quot;&gt;interagent/committee&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/interagent/prmd&quot;&gt;interagent/prmd&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/increments/qiita-rb&quot;&gt;increments/qiita-rb&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/r7kamura/rack-json_schema&quot;&gt;r7kamura/rack-json_schema&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://github.com/r7kamura/jdoc&quot;&gt;r7kamura/jdoc&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;javascript-json-schema-library&quot;&gt;JavaScript JSON Schema Library&lt;/h2&gt;
+
+&lt;p&gt;弊社フロンエンドエンジニアのオススメ2つ。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/mafintosh/is-my-json-valid&quot;&gt;mafintosh/is-my-json-valid&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/epoberezkin/ajv&quot;&gt;epoberezkin/ajv&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;json書くのツラい問題&quot;&gt;JSON書くのツラい問題&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;「閉じカッコがー!!」&lt;/li&gt;
+  &lt;li&gt;「カンマがー!!!!」&lt;/li&gt;
+  &lt;li&gt;「コメントがー!!!!!!」&lt;/li&gt;
+  &lt;li&gt;「クオテーションがー!!!!!!」&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;黙ってYAMLで書こう。&lt;/strong&gt; こっちのが可読性もよいしミスも少ないし書きやすいです。&lt;/p&gt;
+
+&lt;h2 id=&quot;json-schemaの今とこれから&quot;&gt;JSON Schemaの今とこれから&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema&quot;&gt;json-schema/json-schema&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/ima.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema/wiki/v5-Proposals&quot;&gt;JSON Schema v5 Proposals&lt;/a&gt;が出されている段階&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema/issues&quot;&gt;Issue&lt;/a&gt;や&lt;a href=&quot;https://groups.google.com/forum/#!forum/json-schema&quot;&gt;Google Groups&lt;/a&gt;を追うとよさげ&lt;/li&gt;
+  &lt;li&gt;v5への具体的なロードマップは引かれていない模様&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/korekara.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;json-schemaコラボでよかったこと&quot;&gt;JSON Schemaコラボでよかったこと&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;バックエンドエンジニアとフロントエンドエンジニアの仕様の共通認識&lt;/li&gt;
+  &lt;li&gt;JSON Schemaを先に定義しておくことでバックエンドエンジニアとフロントエンドエンジニアが疎に開発できる&lt;/li&gt;
+  &lt;li&gt;JSON Schemaでバグの混入を防ぐ&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;所感&quot;&gt;所感&lt;/h2&gt;
+&lt;p&gt;時間にシビアなLT形式だったので発表途中でぶった切られた。もう少し簡潔にすべきだったかもしれない。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jsonschema" /><category term="json" /><category term="presentation" /><summary type="html">「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題してエムスリー x Gunosy Beer bashで発表してきました。</summary></entry><entry><title type="html">AWS Summit Tokyo 2015で発表してきました</title><link href="https://blog.toshimaru.net/aws-summit-tokyo-2015/" rel="alternate" type="text/html" title="AWS Summit Tokyo 2015で発表してきました" /><published>2015-06-05T00:00:00+09:00</published><updated>2015-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/aws-summit-tokyo-2015</id><content type="html" xml:base="https://blog.toshimaru.net/aws-summit-tokyo-2015/">&lt;p&gt;&lt;a href=&quot;http://www.awssummit.tokyo/&quot;&gt;AWS Summit Tokyo 2015&lt;/a&gt;でGunosyのモバイルプッシュ通知基盤について発表してきました。下記が当日の発表スライドになります。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;9d7bd2a0fda94826b67f162e2fd3bdbd&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://speakerdeck.com/toshimaru/900mo-daunrodoapuri-gunosy-wozhi-eruda-gui-mo-mobairuputusiyutong-zhi-ji-pan-1&quot;&gt;900万ダウンロードアプリ『Gunosy』を支える大規模モバイルプッシュ通知基盤 // Speaker Deck&lt;/a&gt;&lt;sup id=&quot;fnref:longurl&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:longurl&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;発表を追えて&quot;&gt;発表を追えて&lt;/h2&gt;
+
+&lt;p&gt;今回これほどの大舞台で30分以上（与えられた時間は40分）話すのは始めての機会でしたので、緊張しましたが悪いものではなく心地のよい緊張感でした。正直、私の発表の裏が&lt;a href=&quot;https://speakerdeck.com/mirakui/developer-productivity-in-cookpad&quot;&gt;Cookpadさんの発表&lt;/a&gt;だったのでそんなに人は集まらないのかなーと想定していましたが、嬉しい事に約70-80名くらいの方々に聴講していただけました。（圧倒的感謝！）&lt;/p&gt;
+
+&lt;p&gt;40分という比較的長い枠でしたが時間にせかされることなくじっくり話せて大体35分強で発表を終えることができました。今回のように40分くらいの発表の場合、（スライドのスタイルにもよりますが）大体スライド枚数50~60枚程度が調度良いように感じました。あと、早く終わりすぎたり、時間オーバーしてしまうリスクを減らすためにも事前に最低一回発表を通しておいて時間をしっかり見積もっておくことは重要だと感じました。&lt;/p&gt;
+
+&lt;p&gt;余談になりますが、当日のTwitterタイムラインを見てるとカメラの音・フラッシュがうるさいという声が多く出てました。私の発表でもそうしたのですが、事前に資料をWEBにアップロードして講演最初にWEBに既にアップロード済みな旨を伝えるとよいと思いました。&lt;/p&gt;
+
+&lt;h2 id=&quot;スライド中の参考リンク&quot;&gt;スライド中の参考リンク&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://monstar-lab.com/column/140911_01&quot;&gt;【Android】GCMのregistrationIdの一意性 - Monstar Lab, Inc.&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dev.classmethod.jp/cloud/aws/sns-mobile-token/&quot;&gt;Amazon SNS のモバイルトークン管理についてのベストプラクティス ｜ Developers.IO&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/conmame/sns-mobile-push&quot;&gt;気軽なSNS Mobile Push の話&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://qiita.com/ykf/items/4978a9ccf0dd1cc6a19b&quot;&gt;iOS8アップデートでアプリへのプッシュ通知でハマる点 - Qiita&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/shimy_net/amazon-sns-mobile-push&quot;&gt;Amazon SNS Mobile Push を使ってみる&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developers.google.com/android/reference/com/google/android/gms/iid/InstanceID&quot;&gt;InstanceID - Google APIs for Android - Google Developers&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;その他のリンク&quot;&gt;その他のリンク&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dev.classmethod.jp/cloud/aws/awssummit-tokyo-2015-dev-05/&quot;&gt;[レポート][Dev-05:Mobile] 900万ダウンロードアプリ『Gunosy』を支える大規模モバイルプッシュ通知基盤 #AWSSummit ｜ Developers.IO&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://twitter.com/hashtag/AWSSummit?src=hash&quot;&gt;Tweets about #AWSSummit hashtag on Twitter&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:longurl&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;speakerdeckのURLが非常に汚いですが公開した後に&lt;a href=&quot;http://sotarok.hatenablog.com/entry/2014/10/11/133123&quot;&gt;URLを制御できる&lt;/a&gt;ことを教えてもらいました。URLを変更して元URLが404になるのも不便かと思いますので、今回はこの汚いURLでお許しください。 &lt;a href=&quot;#fnref:longurl&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="presentation" /><summary type="html">AWS Summit Tokyo 2015でGunosyのモバイルプッシュ通知基盤について発表してきました。下記が当日の発表スライドになります。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/aws_summit_tokyo_2015.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/aws_summit_tokyo_2015.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">天下一bot武闘会でクソbotたちを発表してきました</title><link href="https://blog.toshimaru.net/tenkaichi-bot/" rel="alternate" type="text/html" title="天下一bot武闘会でクソbotたちを発表してきました" /><published>2015-04-25T00:00:00+09:00</published><updated>2015-04-25T00:00:00+09:00</updated><id>https://blog.toshimaru.net/tenkaichi-bot</id><content type="html" xml:base="https://blog.toshimaru.net/tenkaichi-bot/">&lt;p&gt;先日&lt;a href=&quot;http://connpass.com/event/12689/&quot;&gt;天下一bot武闘会&lt;/a&gt;で僕が作った :shit: botたちを発表してきました。&lt;/p&gt;
+
+&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;d050418ad57e4a67821c7e1ec7d5a73a&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;つくった-shit-bots&quot;&gt;つくった :shit: bots&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-shinchoku-dou&quot;&gt;hubot-shinchoku-dou&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-hibi-no-kokoro&quot;&gt;hubot-hibi-no-kokoro&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-hanakin&quot;&gt;hubot-hanakin&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-hikakin&quot;&gt;hubot-hikakin&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;ほんとにしょーもないクソbotたちですが、発表することにより彼らを:shit:世界から救えた気がして満足しています。:angel:&lt;/p&gt;
+
+&lt;p&gt;スライド作成に使ったアプリは&lt;a href=&quot;http://www.decksetapp.com/&quot;&gt;Deckset&lt;/a&gt;ってやつです。現時点でMac専用アプリ、デザインのカスタマイズも非力ですがなんといってもmarkdown書けばそれっぽいスライドが仕上がるのがとても良い。今後も使っていきたいアプリである。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://twitter.com/search?f=realtime&amp;amp;q=%23tenkabot&amp;amp;src=typd&quot;&gt;#tenkabot - Twitter Search&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/moqada/hubot-shinchoku&quot;&gt;moqada/hubot-shinchoku&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://r7kamura.hatenablog.com/entry/2015/04/18/011129&quot;&gt;天下一bot武闘会で発表しました - ✘╹◡╹✘&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="hubot" /><category term="presentation" /><category term="oss" /><summary type="html">先日天下一bot武闘会で僕が作った :shit: botたちを発表してきました。</summary></entry></feed>
