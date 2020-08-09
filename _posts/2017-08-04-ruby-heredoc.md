@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Rubyのヒアドキュメントの書き方いろいろ
-description: Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。 <<識別子 これがRubyのヒアドキュメントの基本型となります。識別子であるEOSの始点の<<EOSから次に出てくるEOSまでの囲まれている部分が文字列となります。
+description: "Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。 <<識別子 これがRubyのヒアドキュメントの基本型となります。識別子であるEOSの始点の<<EOSから次に出てくるEOSまでの囲まれている部分が文字列となります。"
 tags: ruby
 toc: true
+last_modified_at: 2020-08-08
 ---
 
 Rubyの覚えてそうで覚えられないヒアドキュメントの書き方をまとめてみたいと思います。
@@ -22,9 +23,14 @@ EOS
 end
 
 hello
-#    Hello,
-#
-#    World!
+```
+
+**出力結果：**
+
+```
+    Hello,
+
+    World!
 ```
 
 上記のコードのコメントアウトされている箇所が定義した`hello`メソッドの出力結果となります。
@@ -43,9 +49,14 @@ def hello
 end
 
 hello
-#    Hello,
-#
-#    World!
+```
+
+**出力結果：**
+
+```
+    Hello,
+
+    World!
 ```
 
 これで終端の`EOS`がメソッドの内部でネストされて可読性が上がりましたね。
@@ -64,14 +75,21 @@ def hello
 end
 
 hello
-#Hello,
-#
-#World!
+```
+
+**出力結果：**
+
+```
+Hello,
+
+World!
 ```
 
 これでHelloという文字列の手前にあるネストの空白も消してくれました。
 
-## 豆知識. GitHub Syntax Highlight
+---
+
+## Tips① GitHub Syntax Highlight
 
 下記のようにGitHub上にてヒアドキュメントの識別子にsyntaxの指定をすると、GitHub syntax highlightが効くようになります。
 
@@ -87,7 +105,29 @@ end
 
 ![heredoc](/images/posts/heredoc_rb.png)
 
+## Tips② 引数内のヒアドキュメントの書き方
+
+下記のクエリの実行もヒアドキュメントを使って見やすく書き直すこともできます。
+
+
+```rb
+Post.find_by_sql("SELECT p.title, c.author FROM posts p, comments c WHERE p.id = c.post_id")
+```
+
+(引用元: [ActiveRecord::Querying \| RailsDoc](https://railsdoc.github.io/classes/ActiveRecord/Querying.html#method-i-find_by_sql))
+
+
+```rb
+Post.find_by_sql(<<~SQL)
+  SELECT p.title, c.author
+  FROM posts p, comments c
+  WHERE p.id = c.post_id
+SQL
+```
+
+ポイントとしては引数に置いたヒアドキュメントの識別子を丸括弧で一度閉じることができるという点です。
+
 ## 参考
 
-- [リテラル (Ruby 2.4.0) ヒアドキュメント (行指向文字列リテラル)](https://docs.ruby-lang.org/ja/latest/doc/spec=2fliteral.html#here)
-- [Ruby のヒアドキュメントすごい - Qiita](http://qiita.com/Linda_pp/items/32fddbbe117cf03fef0f)
+- [リテラル (Ruby 2.7.0 リファレンスマニュアル)](https://docs.ruby-lang.org/ja/latest/doc/spec=2fliteral.html#here)
+- [Ruby: ヒアドキュメントの引数やメソッド呼び出しは「開始行」に置こう｜TechRacho（テックラッチョ）〜エンジニアの「？」を「！」に〜｜BPS株式会社](https://techracho.bpsinc.jp/hachi8833/2019_05_30/74930)
