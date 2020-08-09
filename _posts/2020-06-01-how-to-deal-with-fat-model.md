@@ -610,7 +610,7 @@ Rails Way + Sub-Rails Way だけで立ち行かなくなった場合に、必要
 
 別記事にまとめました。
 
-[銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜](/how-to-deal-with-fat-model-after)
+[銀座Rails#21で「Fat Modelの倒し方」を発表しました 〜質問・感想編〜](/how-to-deal-with-fat-model-after)
 
 [^1]: [Buckblog: Skinny Controller, Fat Model](http://weblog.jamisbuck.org/2006/10/18/skinny-controller-fat-model)
 [^5]: PoEAA: [Single Table Inheritance](https://www.martinfowler.com/eaaCatalog/singleTableInheritance.html)

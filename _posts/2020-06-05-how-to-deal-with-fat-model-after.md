@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 銀座Rails#21で「Fat Modelの倒し方」を発表した 〜質問・感想編〜
+title: 銀座Rails#21で「Fat Modelの倒し方」を発表しました 〜質問・感想編〜
 image: "/images/posts/ginzarails-21/og2.jpg"
 description: "本記事は『銀座Rails#21で「Fat Modelの倒し方」を発表しました』の後編になります。当日あった質問、発表してみての感想などを書きたいと思います。当日の質問： ファイルの置き場について trailblazer について"
 tags: presentation rails
