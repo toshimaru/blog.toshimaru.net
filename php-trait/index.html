@@ -109,40 +109,40 @@
 <figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
 <span class="kd">class</span> <span class="nc">Human</span> <span class="p">{</span>
-    <span class="k">function</span> <span class="nf">talk</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">talk</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'話す'</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">function</span> <span class="nf">escape</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">escape</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'逃げる'</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="cd">/**
      * 使用可能なコマンド一覧を出力
      */</span>
-    <span class="k">static</span> <span class="k">function</span> <span class="nf">commands</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="k">function</span> <span class="n">commands</span><span class="p">()</span> <span class="p">{</span>
         <span class="nv">$class</span> <span class="o">=</span> <span class="nb">get_called_class</span><span class="p">();</span>
-        <span class="k">echo</span> <span class="nv">$class</span> <span class="o">.</span> <span class="s1">' can use '</span><span class="p">;</span>
+        <span class="k">echo</span> <span class="nv">$class</span> <span class="mf">.</span> <span class="s1">' can use '</span><span class="p">;</span>
         <span class="k">foreach</span> <span class="p">(</span><span class="nb">get_class_methods</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$method</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">echo</span> <span class="s2">"`</span><span class="si">{</span><span class="nv">$method</span><span class="si">}</span><span class="s2">` "</span><span class="p">;</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="kd">class</span> <span class="nc">Warrior</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
-    <span class="k">function</span> <span class="nf">attack</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">Warrior</span> <span class="kd">extends</span> <span class="nc">Human</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">attack</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'攻撃'</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="kd">class</span> <span class="nc">Wizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
-    <span class="k">function</span> <span class="nf">spell</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">Wizard</span> <span class="kd">extends</span> <span class="nc">Human</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">spell</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'魔法'</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nx">Warrior</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; Warrior can use `attack` `talk` `escape` `commands`</span>
-<span class="nx">Wizard</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; Wizard can use `spell` `talk` `escape` `commands`</span></code></pre></figure>
+<span class="nc">Warrior</span><span class="o">::</span><span class="nf">commands</span><span class="p">();</span> <span class="c1">//=&gt; Warrior can use `attack` `talk` `escape` `commands`</span>
+<span class="nc">Wizard</span><span class="o">::</span><span class="nf">commands</span><span class="p">();</span> <span class="c1">//=&gt; Wizard can use `spell` `talk` `escape` `commands`</span></code></pre></figure>
 
 <p>基本行動可能な<code class="language-plaintext highlighter-rouge">Human</code>クラスがあってそれを継承した<code class="language-plaintext highlighter-rouge">Warrior</code>,<code class="language-plaintext highlighter-rouge">Wizard</code>がいて…。普通のコードかと思います。</p>
 
@@ -159,47 +159,47 @@
 <figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
 
 <span class="kd">trait</span> <span class="nc">Attackable</span> <span class="p">{</span>
-    <span class="k">function</span> <span class="nf">attack</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">attack</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'攻撃'</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="kd">trait</span> <span class="nc">Spellable</span> <span class="p">{</span>
-    <span class="k">function</span> <span class="nf">spell</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">spell</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'魔法'</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="kd">class</span> <span class="nc">Human</span> <span class="p">{</span>
-    <span class="k">function</span> <span class="nf">talk</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">talk</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'話す'</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">function</span> <span class="nf">escape</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">function</span> <span class="n">escape</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">echo</span> <span class="s1">'逃げる'</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="cd">/**
      * 使用可能なコマンド一覧を出力
      */</span>
-    <span class="k">static</span> <span class="k">function</span> <span class="nf">commands</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">static</span> <span class="k">function</span> <span class="n">commands</span><span class="p">()</span> <span class="p">{</span>
         <span class="nv">$class</span> <span class="o">=</span> <span class="nb">get_called_class</span><span class="p">();</span>
-        <span class="k">echo</span> <span class="nv">$class</span> <span class="o">.</span> <span class="s1">' can use '</span><span class="p">;</span>
+        <span class="k">echo</span> <span class="nv">$class</span> <span class="mf">.</span> <span class="s1">' can use '</span><span class="p">;</span>
         <span class="k">foreach</span> <span class="p">(</span><span class="nb">get_class_methods</span><span class="p">(</span><span class="nv">$class</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$method</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">echo</span> <span class="s2">"`</span><span class="si">{</span><span class="nv">$method</span><span class="si">}</span><span class="s2">` "</span><span class="p">;</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="kd">class</span> <span class="nc">WarriorWizard</span> <span class="k">extends</span> <span class="nx">Human</span> <span class="p">{</span>
-    <span class="kn">use</span> <span class="nn">Attackable</span><span class="err">, Spellable</span><span class="p">;</span>
+<span class="kd">class</span> <span class="nc">WarriorWizard</span> <span class="kd">extends</span> <span class="nc">Human</span> <span class="p">{</span>
+    <span class="kn">use</span> <span class="nc">Attackable</span><span class="p">,</span> <span class="nc">Spellable</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nx">WarriorWizard</span><span class="o">::</span><span class="na">commands</span><span class="p">();</span> <span class="c1">//=&gt; WarriorWizard can use `talk` `escape` `commands` `attack` `spell`</span>
+<span class="nc">WarriorWizard</span><span class="o">::</span><span class="nf">commands</span><span class="p">();</span> <span class="c1">//=&gt; WarriorWizard can use `talk` `escape` `commands` `attack` `spell`</span>
 
-<span class="nv">$ww</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WarriorWizard</span><span class="p">();</span>
-<span class="nv">$ww</span><span class="o">-&gt;</span><span class="na">spell</span><span class="p">();</span> <span class="c1">//=&gt; 魔法</span>
-<span class="nv">$ww</span><span class="o">-&gt;</span><span class="na">attack</span><span class="p">();</span> <span class="c1">//=&gt; 攻撃</span></code></pre></figure>
+<span class="nv">$ww</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">WarriorWizard</span><span class="p">();</span>
+<span class="nv">$ww</span><span class="o">-&gt;</span><span class="nf">spell</span><span class="p">();</span> <span class="c1">//=&gt; 魔法</span>
+<span class="nv">$ww</span><span class="o">-&gt;</span><span class="nf">attack</span><span class="p">();</span> <span class="c1">//=&gt; 攻撃</span></code></pre></figure>
 
 <p>まずは<code class="language-plaintext highlighter-rouge">Attackable</code>、<code class="language-plaintext highlighter-rouge">Spellable</code>というトレイト、つまり「物理攻撃が可能である」「魔法攻撃が可能である」という特性を定義します。ここまでくればもう簡単。あとはそれを<code class="language-plaintext highlighter-rouge">WarriorWizard</code>クラス内で<code class="language-plaintext highlighter-rouge">use</code>してやるだけです。これで<code class="language-plaintext highlighter-rouge">WarriorWizard</code>は魔法も物理攻撃も可能になります。</p>
 
