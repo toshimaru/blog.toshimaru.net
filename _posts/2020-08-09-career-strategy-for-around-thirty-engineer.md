@@ -5,6 +5,7 @@ image: "/images/posts/career/slide_0.jpg"
 description: "リードエンジニアから学ぶMedPeerのプロダクト開発という僕が所属する企業のイベントで、「アラサーエンジニアの生存戦略」というタイトルで発表しました。もともとの発表の着想となったエントリはこちらになります。 エンジニアリングとは常に学習し続けることである。思うに、コードを書かず学習意欲を失ってしまった35歳のおじさんたちが自分がコードが書けないこと・学ばないことの言い訳として言い出し始めたのがこの「35歳定年説」の真実じゃないだろうか。"
 tags: presentation
 hideimage: true
+last_modified_at: 2020-09-11
 ---
 
 [リードエンジニアから学ぶMedPeerのプロダクト開発](https://medpeer.connpass.com/event/181835/)という僕が所属する企業のイベントで、「[アラサーエンジニアの生存戦略](https://speakerdeck.com/toshimaru/career-strategy-for-around-thirty-engineer)」というタイトルで発表しました。
@@ -82,9 +83,9 @@ hideimage: true
   - [OSS活動が転職のきっかけになった](http://blog.kazuhooku.com/2017/01/fastly.html)のは良い話
 - [mattn](https://github.com/mattn) さん
   - OSSの世界で大活躍している方
-    - 本当に幅広くOSSコントリビュートされていて尊敬します
+  - 本当に幅広くOSSコントリビュートされていてすごいなぁと尊敬します
 - Guido van Rossum
-  - Python の作者。GoogleからDropboxに転職した。
+  - Python の作者。GoogleからDropboxに転職
   - 引退に至る最後の最後までエンジニアリングし続けた人。カッコイイ！
     - > While mypy was one of the projects Guido spent a lot of his time on, he also cared deeply about making engineering culture, both at Dropbox and in the Python community, more inclusive for women.
     - [Thank you, Guido \| Dropbox Blog](https://blog.dropbox.com/topics/company/thank-you--guido)
@@ -155,6 +156,13 @@ hideimage: true
 ![自分の道は自分で決める](https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_68.jpg)
 
 <!-- （説教臭いのでカット）年齢を経るにつれ人間の価値観は良い意味でも悪い意味でも固定化していきます。（僕の発表含め）それに口出しする人がいるかもしれません。それに「うるせぇ」と返せるくらいの軸を持ちましょう。他人に耳を貸すなという意味ではありません。他の人の話を聴いた上でそれを自分の中で消化（昇華）して、「これが俺の人生だ」って納得して、胸を張って言える人生が素敵だなぁと思います。 -->
+
+## 発表を終えて
+
+- 今回はエモめ成分多めの発表だったので Keynote を使ってスライドを作成しました
+  - 図・絵を自由に入れられたり、レイアウトを柔軟に変えたりできるのは良い（markdownで作ったスライドだとこうもいきません）
+- 画像素材は [pixabay](https://pixabay.com/ja/) を使わせていただきました
+- リモート発表は[銀座Railsの前回](/how-to-deal-with-fat-model-after/)に引き続き二回目だったので、慣れた感じでスンナリできました
 
 [^1]: ここではあくまで知名度のある人だけ書きます。ですが有名であることがロールモデルになる人の必要条件というわけではありません。
 [^2]: 実際、はてブコメントを観ていると「アラサーより上の世代だけどわかる」というコメントが寄せられていました。
