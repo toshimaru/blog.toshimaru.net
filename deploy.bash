@@ -1,5 +1,6 @@
 #!/bin/bash
-if [[ $TRAVIS_BRANCH == "master" ]]; then
+
+if [[ $TRAVIS_BRANCH == "main" ]]; then
   echo "Deploy to Github Page ($TRAVIS_BRANCH)"
   bundle exec rake autodeploy
 else
