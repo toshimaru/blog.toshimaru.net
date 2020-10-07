@@ -2,7 +2,7 @@ sudo: false
 language: ruby
 cache: bundler
 rvm:
-  - 2.6.3
+  - 2.6.6
 
 before_install:
   - gem install bundler
@@ -20,11 +20,3 @@ env:
     - GIT_COMMITTER_EMAIL="me@toshimaru.net"
     - GIT_AUTHOR_NAME="Toshimaru via TravisCI"
     - GIT_AUTHOR_EMAIL="me@toshimaru.net"
-
-# rvm is unset in deploy phase. so don't use it.
-# ref. https://github.com/travis-ci/travis-ci/issues/5205
-# deploy:
-#   provider: script
-#   script: rvm $TRAVIS_RUBY_VERSION do bundle exec rake autodeploy
-#   on:
-#     branch: master
