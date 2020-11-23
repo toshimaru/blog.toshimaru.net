@@ -19,7 +19,7 @@
   <meta property="og:description" content="Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/rubocop-rail.png" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2018-01-30T00:00:00+09:00"><meta property="article:modified_time" content="2018-07-15T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/rubocop-rails/">
+  <meta property="article:published_time" content="2018-01-30T00:00:00+09:00"><meta property="article:modified_time" content="2020-11-23T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/rubocop-rails/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -63,7 +63,7 @@
   <h1 class="fadeInLeft">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2018-01-30T00:00:00+09:00" pubdate>2018/01/30 (更新: 2018/07/15)</time>
+      <i class="icon-calendar"></i><time datetime="2018-01-30T00:00:00+09:00" pubdate>2018/01/30 (更新: 2020/11/23)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/rails/" rel="tag">rails</a>
 
@@ -81,11 +81,15 @@
 
 <div id="md-content">
   
-  <p>【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、<a href="https://github.com/toshimaru/rubocop-rails_config">rubocop-rails_config</a>というgemにRenameされました。</p>
+  <p>【追記】本記事で紹介しているgem, <code class="language-plaintext highlighter-rouge">rubocop-rails</code>は公式RuboCopチームの要望により、<a href="https://github.com/toshimaru/rubocop-rails_config">rubocop-rails_config</a>というgemにRenameされました。</p>
 
-<p>本gemご利用の方は下記のrubocop-rails_configでのご利用お願いします。</p>
+<p>本gemご利用の方は下記の<code class="language-plaintext highlighter-rouge">rubocop-rails_config</code>のご利用をお願いします。</p>
 
 <p><a href="https://github.com/toshimaru/rubocop-rails_config">toshimaru/rubocop-rails_config</a></p>
+
+<blockquote class="twitter-tweet">
+<p lang="ja" dir="ltr">Blogged. RuboCopチームにgemの名前を譲った話 - Hack Your Design! <a href="https://t.co/vumSGBK3UN">https://t.co/vumSGBK3UN</a></p>— toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1019011276561833985?ref_src=twsrc%5Etfw">July 17, 2018</a>
+</blockquote>
 
 <hr>
 
@@ -101,11 +105,11 @@
 
 <p>RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もありますが「誰がお前の作った設定に従うか！」という気持ちも無くはない。</p>
 
-<p>「何かしらRuboCop設定のレールが欲しいよね〜〜〜 <img class="emoji" title=":railway_car:" alt=":railway_car:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f683.png" height="20" width="20">」というところで閃き<img class="emoji" title=":bulb:" alt=":bulb:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f4a1.png" height="20" width="20">、「だったら公式railsチームの用意した<code class="language-plaintext highlighter-rouge">rubocop.yml</code>を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a> gemを作りました。</p>
+<p>「何かしらRuboCop設定のレールが欲しいよね〜 <img class="emoji" title=":railway_car:" alt=":railway_car:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f683.png" height="20" width="20">」というところで閃き<img class="emoji" title=":bulb:" alt=":bulb:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f4a1.png" height="20" width="20">、「だったらrailsチームの用意した公式<code class="language-plaintext highlighter-rouge">rubocop.yml</code>を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a> gemを作りました。</p>
 
 <h2 id="使い方">使い方</h2>
 
-<p>使い方はrubocop-railsをinstallした後に、下記の設定を記述した<code class="language-plaintext highlighter-rouge">rubocop.yml</code>を用意する。</p>
+<p>使い方は <code class="language-plaintext highlighter-rouge">rubocop-rails</code> をinstallした後に、下記の設定を記述した <code class="language-plaintext highlighter-rouge">rubocop.yml</code> を用意する。</p>
 
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">inherit_gem</span><span class="pi">:</span>
   <span class="na">rubocop-rails</span><span class="pi">:</span>
@@ -118,18 +122,20 @@
 
 <p>実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くないです。</p>
 
-<p>また副次効果として、Railsにコントリビュートするときに普段からこのgemの設定に慣れておくと、Rails公式rubocop設定違反にならないコードを書けて便利。 <img class="emoji" title=":innocent:" alt=":innocent:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f607.png" height="20" width="20"></p>
+<p>また副次効果として、普段からこのgemの設定に慣れておくと、Rails本体にコントリビュートするときにRailsのrubocop設定違反にならないコードを書けて便利。 <img class="emoji" title=":innocent:" alt=":innocent:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f607.png" height="20" width="20"></p>
 
 <h2 id="こんなrubocop設定もあるよ">こんなRuboCop設定もあるよ</h2>
 
-<p>他の＜いい感じ＞に設定されたRuboCop設定も紹介してみます。これらの設定はきちんとチーム・会社でディスカッションされた上で作られたものだと思いますので信頼できるものかと思います。</p>
+<p>他の＜いい感じ＞に設定されたRuboCop設定も紹介します。</p>
 
 <ul>
   <li>GitHubの場合: <a href="https://github.com/github/rubocop-github">github/rubocop-github</a>
 </li>
-  <li>SideCIでお馴染みのActcatの場合: <a href="https://github.com/sideci/meowcop">sideci/meowcop</a>
+  <li>Siderの場合: <a href="https://github.com/sider/meowcop">sider/meowcop</a>
 </li>
 </ul>
+
+<p>これらの設定はきちんとチーム・会社でディスカッションされた上で作られたものだと思いますので、こちらもあわせて導入を検討してみてもいいかもしれません。</p>
 
 </div>
 
@@ -160,9 +166,9 @@
   
     <li><a href="/ruby-configuration-pattern/" title="Ruby Gem Configuration Pattern">Ruby Gem Configuration Pattern</a></li>
   
-    <li><a href="/reviewdog-rubocop-github-actions/" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</a></li>
+    <li><a href="/rubocop-rails-config-v1/" title="rubocop-rails_config v1.0 をリリースした">rubocop-rails_config v1.0 をリリースした</a></li>
   
-    <li><a href="/reviewdog-rubocop/" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす">reviewdogを使ってCI上でRuboCop自動レビューを動かす</a></li>
+    <li><a href="/reviewdog-rubocop-github-actions/" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</a></li>
   
   </ul>
   </div>
@@ -220,7 +226,7 @@
     },
     "headline": "Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った",
     "datePublished": "2018-01-30T00:00:00+09:00",
-    "dateModified": "2018-07-15T00:00:00+09:00","author": {
+    "dateModified": "2020-11-23T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
