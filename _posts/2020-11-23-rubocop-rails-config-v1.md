@@ -2,7 +2,7 @@
 layout: post
 title: rubocop-rails_config v1.0 をリリースした
 image: "/images/posts/rubocop-rails-config/readme.png"
-description:
+description: rubocop-rails_config gem の v1.0 をリリースした。 rubocop-rails_config v1.0.0 has been released!
 tags: rubocop
 ---
 
