@@ -1,4 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/ci.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-11-24T01:27:09+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/ci.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</title><link href="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/" rel="alternate" type="text/html" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" /><published>2020-06-22T00:00:00+09:00</published><updated>2020-06-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-deploy-with-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/">&lt;p&gt;Jekyll製&lt;a href=&quot;https://blog.toshima.ru/&quot;&gt;英語ブログ&lt;/a&gt;のGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/ci.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2020-12-06T22:57:21+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/ci.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った</title><link href="https://blog.toshimaru.net/auto-author-assign/" rel="alternate" type="text/html" title="PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った" /><published>2020-12-06T00:00:00+09:00</published><updated>2020-12-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/auto-author-assign</id><content type="html" xml:base="https://blog.toshimaru.net/auto-author-assign/">&lt;p&gt;本記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2020/github-actions&quot;&gt;GitHub Actions Advent Calendar 2020&lt;/a&gt;６日目の記事です。&lt;/p&gt;
+
+&lt;p&gt;今日は作ったGitHub Actions、&lt;a href=&quot;https://github.com/toshimaru/auto-author-assign&quot;&gt;auto-author-assign&lt;/a&gt;の紹介をしたいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;作ったきっかけ&quot;&gt;作ったきっかけ&lt;/h2&gt;
+
+&lt;p&gt;Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Assignee&lt;/code&gt;）はそのPR作者自身になるかと思います。&lt;/p&gt;
+
+&lt;p&gt;その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。&lt;/p&gt;
+
+&lt;h2 id=&quot;何が嬉しいか&quot;&gt;何が嬉しいか？&lt;/h2&gt;
+
+&lt;p&gt;たくさんの人がPRを出しまくる、そんな大規模プロジェクトだとPR一覧を開いたときに&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;「誰がPRの担当者なのか？」がアイコンで一目でわかるようになる&lt;/li&gt;
+  &lt;li&gt;（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Author&lt;/code&gt; に加えて）&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Assignee&lt;/code&gt; によるフィルターができるようになる&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;あたりが嬉しさになります。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/auto-author-assign/pull-request-list.png&quot; alt=&quot;PR list&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;設定&quot;&gt;設定&lt;/h2&gt;
+
+&lt;p&gt;リポジトリに &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/workflows/auto-author-assign.yml&lt;/code&gt; みたいなファイルを用意して下記のように設定すればOK。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Auto&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Assign'&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;pull_request_target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;opened&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;reopened&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;assign-author&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/auto-author-assign@v1.2.0&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;repo-token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;$&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;on-pull_request-ではアサイン失敗することがある&quot;&gt;on: pull_request ではアサイン失敗することがある&lt;/h3&gt;
+
+&lt;p&gt;最初、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on: pull_request&lt;/code&gt; でイベント発火させていたのですが、これだとfolkしたレポジトリからのPRで下記エラーが出てアサインが失敗します。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Error: Resource not accessible by integration
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;なぜなら folk したレポジトリからは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; にアクセスできないためです。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This event is similar to pull_request, except that it runs in the context of the base repository of the pull request (snip) This means that you can more safely make your secrets available to the workflows triggered by the pull request&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;via. &lt;a href=&quot;https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#pull_request_target&quot;&gt;Events that trigger workflows - GitHub Docs&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;ということで、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on: pull_request_target&lt;/code&gt; 使ってActionを起動させる必要があります。&lt;/p&gt;
+
+&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
+
+&lt;p&gt;本Actionは&lt;a href=&quot;https://dev.to/devteam/announcing-the-github-actions-hackathon-on-dev-3ljn&quot;&gt;GitHub Actions Hackathon&lt;/a&gt;にも提出しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://dev.to/toshimaru/assign-pull-request-author-automatically-with-github-actions-2i9o&quot;&gt;Assign pull request author automatically with GitHub Actions - DEV Community 👩‍💻👨‍💻&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="github_actions" /><category term="ci" /><category term="github" /><summary type="html">本記事はGitHub Actions Advent Calendar 2020６日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</title><link href="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/" rel="alternate" type="text/html" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" /><published>2020-06-22T00:00:00+09:00</published><updated>2020-06-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-deploy-with-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/">&lt;p&gt;Jekyll製&lt;a href=&quot;https://blog.toshima.ru/&quot;&gt;英語ブログ&lt;/a&gt;のGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。&lt;/p&gt;
 
 &lt;h2 id=&quot;今までのデプロイ方式&quot;&gt;今までのデプロイ方式&lt;/h2&gt;
 
