@@ -2,7 +2,7 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>【git】error There was a problem with the editor 'vi'. - Hack Your Design!</title>
+  <title>git switch養成ギプス - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -10,16 +10,16 @@
 
   <link rel="stylesheet" href="/css/main.css">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="【git】error There was a problem with the editor 'vi'. - Hack Your Design!">
-  <meta property="og:title" content="【git】error There was a problem with the editor 'vi'. - Hack Your Design!">
-  <meta name="description" content="MacのVimにてコミットメッセージを書いて"wq"するとこんなエラーが出た。error There was a problem with the editor 'vi'.">
-  <meta name="twitter:description" content="MacのVimにてコミットメッセージを書いて"wq"するとこんなエラーが出た。error There was a problem with the editor 'vi'.">
-  <meta property="og:description" content="MacのVimにてコミットメッセージを書いて"wq"するとこんなエラーが出た。error There was a problem with the editor 'vi'.">
-  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
-  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2012-11-28T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/">
+  <meta name="twitter:title" content="git switch養成ギプス - Hack Your Design!">
+  <meta property="og:title" content="git switch養成ギプス - Hack Your Design!">
+  <meta name="description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使っている人をちらほら見るので、git switchに移行していくためのコツを書いてみます。">
+  <meta name="twitter:description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使っている人をちらほら見るので、git switchに移行していくためのコツを書いてみます。">
+  <meta property="og:description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使っている人をちらほら見るので、git switchに移行していくためのコツを書いてみます。">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/git-switch.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/git-switch.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2020-12-09T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/git-switch-restore/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -61,45 +61,93 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">【git】error There was a problem with the editor 'vi'.</h1>
+  <h1 class="fadeInLeft">git switch養成ギプス</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2012-11-28T00:00:00+09:00" pubdate>2012/11/28</time>
+      <i class="icon-calendar"></i><time datetime="2020-12-09T00:00:00+09:00" pubdate>2020/12/09</time>
       <i class="icon-tags"></i> 
 <a href="/tag/git/" rel="tag">git</a>
 
 
     </div>
-    
+    <img class="post-image" src="/images/posts/git-switch.png" alt="(image)git switch養成ギプス" title="git switch養成ギプス" />
   </div>
 </div>
 
 <div id="md-content">
   
-  <h2 id="problem">Problem</h2>
+  <p>本記事は<a href="https://qiita.com/advent-calendar/2020/git">Git Advent Calendar 2020</a> 9日目の記事です。</p>
 
-<p>MacのVimにてコミットメッセージを書いて<code class="language-plaintext highlighter-rouge">wq</code>するとこんなエラーが出た。</p>
+<p>git 2.23 にて <code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code> というコマンドが導入されたことはみなさん既にご存知のことかと思います。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit
-error: There was a problem with the editor 'vi'.
-Please supply the message using either -m or -F option.
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">One of our favorite open source projects has a big update... Git 2.23 is here!<br /><br />Read all about the latest release and new features ✨<a href="https://t.co/fpQICF8Onc">https://t.co/fpQICF8Onc</a></p>&mdash; GitHub (@github) <a href="https://twitter.com/github/status/1162474366380269568?ref_src=twsrc%5Etfw">August 16, 2019</a></blockquote>
+
+<p>雑に要約すると「<code class="language-plaintext highlighter-rouge">git checkout</code>に機能もたせすぎてわかりにくくなっちゃったから、<code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code>でわかりやすくしたよ！」ってことだと思います。</p>
+
+<p>一方、まだ<code class="language-plaintext highlighter-rouge">git switch</code>に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も<code class="language-plaintext highlighter-rouge">git checkout</code>を使っている人をちらほら見るので、<code class="language-plaintext highlighter-rouge">git switch</code>に移行していくためのコツを書いてみます。</p>
+
+<h2 id="結論">結論</h2>
+
+<p><strong><code class="language-plaintext highlighter-rouge">switch</code> のaliasを設定しろ、そして<code class="language-plaintext highlighter-rouge">checkout</code>のaliasを捨てろ</strong></p>
+
+<h2 id="git-checkout-only時代">git checkout only時代</h2>
+
+<p><code class="language-plaintext highlighter-rouge">checkout</code>というコマンドは長ったらしいのでaliasを設定して運用していたのではないでしょうか。</p>
+
+<p>僕の場合、下記のようにaliasを設定しました。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
+[alias]
+  co = checkout
 </code></pre></div></div>
 
-<h2 id="solution">Solution</h2>
+<p>ただこれだと <code class="language-plaintext highlighter-rouge">git checkout</code>をそのまま便利に使い続けてしまうので、思い切ってこいつを削除してしまうと良いかと思います。</p>
 
-<p>明示的に使用するエディタをvimの絶対パスを設定してあげればOK.</p>
+<p>もしくは下記のようにメッセージ出すとかでもOK。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git config --global core.editor /usr/bin/vim
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
+[alias]
+  co = !echo "Use git switch/restore instead!"
 </code></pre></div></div>
 
-<h2 id="参考">参考</h2>
+<h2 id="git-switch時代">git switch時代</h2>
 
-<p><a href="http://tooky.co.uk/2010/04/08/there-was-a-problem-with-the-editor-vi-git-on-mac-os-x.html"> Fixing "There was a problem with the editor 'vi'" for Git on Mac OS X Snow Leopard</a></p>
+<p><code class="language-plaintext highlighter-rouge">git switch</code> を使いやすくするために下記のようなaliasを設定します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
+[alias]
+  sw = switch
+  swc = switch -c
+</code></pre></div></div>
+
+<p>こうすることでcheckoutコマンドが下記のように生まれ変わります。</p>
+
+<h3 id="main-branch-へ切り替え">main branch へ切り替え</h3>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git checkout main
+</code></pre></div></div>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch
+<span class="gp">$</span><span class="w"> </span>git sw main
+</code></pre></div></div>
+
+<h3 id="main-branch-から-hoge-branch-作成">main branch から hoge branch 作成</h3>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">git checkout -b hoge main
+</span></code></pre></div></div>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch <span class="nt">-c</span>
+<span class="go">g swc hoge main
+</span></code></pre></div></div>
+
+<h2 id="余談">余談</h2>
+
+<p><code class="language-plaintext highlighter-rouge">git restore</code>に対する良いaliasは今のところ見つかっていません。<code class="language-plaintext highlighter-rouge">git reset</code>とalias的に名前空間かぶつかるのでまだ良い命名できていないんですよね。</p>
 
 </div>
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/git-switch-restore/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -119,8 +167,6 @@ Please supply the message using either -m or -F option.
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/git-switch-restore/" title="git switch養成ギプス">git switch養成ギプス</a></li>
-  
     <li><a href="/git-log-p-s/" title="gitのログから特定の文字列を含むコミットを採掘する">gitのログから特定の文字列を含むコミットを採掘する</a></li>
   
     <li><a href="/github-and-hub/" title="Github+hubコマンドで快適なGithubライフを営む">Github+hubコマンドで快適なGithubライフを営む</a></li>
@@ -128,6 +174,8 @@ Please supply the message using either -m or -F option.
     <li><a href="/git-revert-mainline/" title="Gitのrevertの-m(mainline)オプションについて">Gitのrevertの-m(mainline)オプションについて</a></li>
   
     <li><a href="/git-with-author/" title="【git】直前の数個のコミットの歴史を著作者とともに修正する">【git】直前の数個のコミットの歴史を著作者とともに修正する</a></li>
+  
+    <li><a href="/macgiterror-there-was-a-problem-with-the-edit/" title="【git】error There was a problem with the editor 'vi'.">【git】error There was a problem with the editor 'vi'.</a></li>
   
   </ul>
   </div>
@@ -147,14 +195,10 @@ Please supply the message using either -m or -F option.
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/git-with-author/" title="Newer Post: 【git】直前の数個のコミットの歴史を著作者とともに修正する"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/scala-play-framework-with-mac/" title="Older Post: [scala] play framework with Mac">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/auto-author-assign/" title="Older Post: PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -195,10 +239,10 @@ Please supply the message using either -m or -F option.
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/"
+      "@id": "https://blog.toshimaru.net/git-switch-restore/"
     },
-    "headline": "【git】error There was a problem with the editor 'vi'.",
-    "datePublished": "2012-11-28T00:00:00+09:00",
+    "headline": "git switch養成ギプス",
+    "datePublished": "2020-12-09T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -211,7 +255,7 @@ Please supply the message using either -m or -F option.
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/icon.png"
+      "url": "https://blog.toshimaru.net/images/posts/git-switch.png"
     },
     "keywords": "git"
   },
