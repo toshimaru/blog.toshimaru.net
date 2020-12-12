@@ -4,6 +4,7 @@ title: 頑張らない在宅ワーク環境
 image: "/images/posts/wfh-og.jpg"
 description: "Withコロナの時代においてリモートワーク、もっというとWork from Homeーーすなわち在宅ワークは当たり前のものとなりました。 今日は在りモノを活用しつつ、安価に整えられるそこそこの在宅ワーク環境を「頑張らない在宅ワーク環境」と題してまとめてみようと思います。"
 tags: wfh productivity
+last_modified_at: 2020-12-13
 ---
 
 この記事は [生産性向上のための環境整備2020 【PR】 Lenovo Advent Calendar 2020](https://qiita.com/advent-calendar/2020/lenovo_env) 12日目の記事です。
@@ -154,6 +155,12 @@ Beforeコロナ時代に、カフェとかからリモート会議繋ぐとめ�
 余談で実は今年引越ししたのですが、本記事で紹介したようなセットアップさえ整っていれば、下記のとおり引越し後の部屋の片隅に引っ越しダンボールを積み上げて、即席のスタンディング環境を用意することができました。
 
 <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">最強のWFH環境（2020年） <a href="https://t.co/bwEdUgNUmX">pic.twitter.com/bwEdUgNUmX</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1325591907687309312?ref_src=twsrc%5Etfw">November 9, 2020</a></blockquote>
+
+最後に在宅ワークのお供として飲んでいるコーヒーグッズのおすすめを置いておきます。
+
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B00EJADDW4&linkId=71ac203f4b5d035f61d3cf6b8ff11888"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B074MX813G&linkId=a2f0a0cd65b264b7d5319baf90080eb7"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=toshimaru-22&language=ja_JP&o=9&p=8&l=as4&m=amazon&f=ifr&ref=as_ss_li_til&asins=B07VFLG85K&linkId=34e1630223bc31fb9d8a438140d41ba5"></iframe>
 
 [^1]: 一方で本当に良いと思えるものはケチらずお金を投資してよいと思ってます。
 [^2]: たまに姿勢を変えて考え込んだり、ダラーっとリラックスしつつコーヒーを飲んだりするときにそれらが邪魔になったりするので常に使っているわけではありません。
