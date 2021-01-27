@@ -1,4 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/go.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-01-27T23:34:41+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/go.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">複数のGoroutineをWaitGroup（ErrGroup）で制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;div class=&quot;info&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/go.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-01-28T02:32:07+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/go.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</title><link href="https://blog.toshimaru.net/dependabot-gomod/" rel="alternate" type="text/html" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）" /><published>2021-01-27T00:00:00+09:00</published><updated>2021-01-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/dependabot-gomod</id><content type="html" xml:base="https://blog.toshimaru.net/dependabot-gomod/">&lt;p&gt;Dependabot が GitHub の公式機能の一部として利用可能になりました。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;blogged. | DependabotをGitHub公式Dependabotに移行させた - Hack Your Design! &lt;a href=&quot;https://t.co/6Mb0XDSaSC&quot;&gt;https://t.co/6Mb0XDSaSC&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1273437750499270659?ref_src=twsrc%5Etfw&quot;&gt;June 18, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;ただ go modules のアップデートに関しては、アップデート時に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; を実行してくれないという問題がありました。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;renovate ならオプションでやってくれるみたいなのでGoプロジェクトはこっちに乗り換えるかー&lt;a href=&quot;https://t.co/qVbkb5UXlA&quot;&gt;https://t.co/qVbkb5UXlA&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1219800597982932992?ref_src=twsrc%5Etfw&quot;&gt;January 22, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;代替として、&lt;a href=&quot;https://github.com/renovatebot/renovate&quot;&gt;Renovate&lt;/a&gt;という &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; してくれるアップデーターを使っていました。&lt;/p&gt;
+
+&lt;p&gt;しかし、この度 Dependabot が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; も実行してくれるようになっていました。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Dependabot: `go mod tidy` and `vendor` support &lt;a href=&quot;https://t.co/x9Wwj0yuMG&quot;&gt;https://t.co/x9Wwj0yuMG&lt;/a&gt;&lt;/p&gt;&amp;mdash; GitHub Changelog (@GHchangelog) &lt;a href=&quot;https://twitter.com/GHchangelog/status/1318223496569290752?ref_src=twsrc%5Etfw&quot;&gt;October 19, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;dependabot-go-modules設定&quot;&gt;Dependabot Go Modules設定&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/dependabot.yml&lt;/code&gt; ファイルを作って、下記のように記述すればOK。&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/dependabot.yml&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;updates&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;package-ecosystem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gomod&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Location of package manifests&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;weekly&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;下記のPRの通り、きちんと &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; をやってくれています。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/nyan/pull/104&quot;&gt;github.com/toshimaru/nyan/pull/104&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.blog/changelog/2020-10-19-dependabot-go-mod-tidy-and-vendor-support/&quot;&gt;Dependabot: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vendor&lt;/code&gt; support - GitHub Changelog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/golang/go/wiki/Modules&quot;&gt;Modules · golang/go Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">Dependabot が GitHub の公式機能の一部として利用可能になりました。</summary></entry><entry><title type="html">複数のGoroutineをWaitGroup（ErrGroup）で制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;div class=&quot;info&quot;&gt;
   &lt;h5&gt;追記&lt;/h5&gt;
   &lt;p&gt;errgroup について追記しました。&lt;/p&gt;
 &lt;/div&gt;

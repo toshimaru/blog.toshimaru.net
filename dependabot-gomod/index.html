@@ -2,7 +2,7 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>Syntax HighlightされるcatコマンドをGoで作った - Hack Your Design!</title>
+  <title>Dependabot で go modules の自動アップデートをする（go mod tidy付き） - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -10,17 +10,16 @@
 
   <link rel="stylesheet" href="/css/main.css">
 
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Syntax HighlightされるcatコマンドをGoで作った - Hack Your Design!">
-  <meta property="og:title" content="Syntax HighlightされるcatコマンドをGoで作った - Hack Your Design!">
-  <meta name="description" content="Goの習作としてSyntax Highlight可能な`cat`コマンドを作った。モチベーション 全く同じコンセプトのツールとしてccatがあるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。 更に強力なcatコマンドとしてRust製のbatがあるのだが、これをccatとともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。 ちなみにccatとの実装の違いでいうと、ccatはsynatax highlightにsourcegraph/syntaxhighlightを使っていて、今回作ったnyanはalecthomas/chromaを使っている。">
-  <meta name="twitter:description" content="Goの習作としてSyntax Highlight可能な`cat`コマンドを作った。モチベーション 全く同じコンセプトのツールとしてccatがあるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。 更に強力なcatコマンドとしてRust製のbatがあるのだが、これをccatとともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。 ちなみにccatとの実装の違いでいうと、ccatはsynatax highlightにsourcegraph/syntaxhighlightを使っていて、今回作ったnyanはalecthomas/chromaを使っている。">
-  <meta property="og:description" content="Goの習作としてSyntax Highlight可能な`cat`コマンドを作った。モチベーション 全く同じコンセプトのツールとしてccatがあるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。 更に強力なcatコマンドとしてRust製のbatがあるのだが、これをccatとともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。 ちなみにccatとの実装の違いでいうと、ccatはsynatax highlightにsourcegraph/syntaxhighlightを使っていて、今回作ったnyanはalecthomas/chromaを使っている。">
-  
-  <meta property="og:image" content="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" />
-  <meta name="twitter:image" content="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2019-08-15T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/go-nyan-cat/">
+  <meta name="twitter:title" content="Dependabot で go modules の自動アップデートをする（go mod tidy付き） - Hack Your Design!">
+  <meta property="og:title" content="Dependabot で go modules の自動アップデートをする（go mod tidy付き） - Hack Your Design!">
+  <meta name="description" content="Dependabot が GitHub の公式機能の一部として利用可能になりました。ただ go modules のアップデートに関しては、アップデート時に go mod tidy を実行してくれないという問題がありました。代替として、Renovateという go mod tidy してくれるアップデーターを使っていました。しかし、この度 Dependabot が go mod tidy も実行してくれるようになっていました。">
+  <meta name="twitter:description" content="Dependabot が GitHub の公式機能の一部として利用可能になりました。ただ go modules のアップデートに関しては、アップデート時に go mod tidy を実行してくれないという問題がありました。代替として、Renovateという go mod tidy してくれるアップデーターを使っていました。しかし、この度 Dependabot が go mod tidy も実行してくれるようになっていました。">
+  <meta property="og:description" content="Dependabot が GitHub の公式機能の一部として利用可能になりました。ただ go modules のアップデートに関しては、アップデート時に go mod tidy を実行してくれないという問題がありました。代替として、Renovateという go mod tidy してくれるアップデーターを使っていました。しかし、この度 Dependabot が go mod tidy も実行してくれるようになっていました。">
+  <meta name="twitter:image" content="https://blog.toshimaru.net/icon.png" />
+  <meta property="og:image" content="https://blog.toshimaru.net/icon.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2021-01-27T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/dependabot-gomod/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -62,78 +61,63 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Syntax HighlightされるcatコマンドをGoで作った</h1>
+  <h1 class="fadeInLeft">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2019-08-15T00:00:00+09:00" pubdate>2019/08/15</time>
+      <i class="icon-calendar"></i><time datetime="2021-01-27T00:00:00+09:00" pubdate>2021/01/27</time>
       <i class="icon-tags"></i> 
 <a href="/tag/go/" rel="tag">go</a>
 
-<a href="/tag/oss/" rel="tag">oss</a>
-
 
     </div>
-    <img class="post-image" src="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" alt="(image)Syntax HighlightされるcatコマンドをGoで作った" title="Syntax HighlightされるcatコマンドをGoで作った" />
+    
   </div>
 </div>
 
 <div id="md-content">
   
-  <p>Goの習作としてSyntax Highlight可能な<code class="language-plaintext highlighter-rouge">cat</code>コマンドを作った。</p>
+  <p>Dependabot が GitHub の公式機能の一部として利用可能になりました。</p>
 
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">夏休みの工作で作ったやつ。Go 製の Syntax Highlight な cat コマンド. | toshimaru/nyan: Colored `cat` command. <a href="https://t.co/lu1CL4YdDi">https://t.co/lu1CL4YdDi</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1161656766100230144?ref_src=twsrc%5Etfw">August 14, 2019</a></blockquote>
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">blogged. | DependabotをGitHub公式Dependabotに移行させた - Hack Your Design! <a href="https://t.co/6Mb0XDSaSC">https://t.co/6Mb0XDSaSC</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1273437750499270659?ref_src=twsrc%5Etfw">June 18, 2020</a></blockquote>
 
-<h2 id="モチベーション">モチベーション</h2>
+<p>ただ go modules のアップデートに関しては、アップデート時に <code class="language-plaintext highlighter-rouge">go mod tidy</code> を実行してくれないという問題がありました。</p>
 
-<p>全く同じコンセプトのツールとして<a href="https://github.com/jingweno/ccat">ccat</a>があるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。</p>
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">renovate ならオプションでやってくれるみたいなのでGoプロジェクトはこっちに乗り換えるかー<a href="https://t.co/qVbkb5UXlA">https://t.co/qVbkb5UXlA</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1219800597982932992?ref_src=twsrc%5Etfw">January 22, 2020</a></blockquote>
 
-<p>更に強力な<code class="language-plaintext highlighter-rouge">cat</code>コマンドとしてRust製の<a href="https://github.com/sharkdp/bat">bat</a>があるのだが、これを<code class="language-plaintext highlighter-rouge">ccat</code>とともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。</p>
+<p>代替として、<a href="https://github.com/renovatebot/renovate">Renovate</a>という <code class="language-plaintext highlighter-rouge">go mod tidy</code> してくれるアップデーターを使っていました。</p>
 
-<p>ちなみに<code class="language-plaintext highlighter-rouge">ccat</code>との実装の違いでいうと、<code class="language-plaintext highlighter-rouge">ccat</code>はsynatax highlightに<a href="https://github.com/sourcegraph/syntaxhighlight">sourcegraph/syntaxhighlight</a>を使っていて、今回作った<code class="language-plaintext highlighter-rouge">nyan</code>は<a href="https://github.com/alecthomas/chroma">alecthomas/chroma</a>を使っている。</p>
+<p>しかし、この度 Dependabot が <code class="language-plaintext highlighter-rouge">go mod tidy</code> も実行してくれるようになっていました。</p>
 
-<h2 id="使ったgoライブラリサービスなど">使ったGoライブラリ・サービスなど</h2>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Dependabot: `go mod tidy` and `vendor` support <a href="https://t.co/x9Wwj0yuMG">https://t.co/x9Wwj0yuMG</a></p>&mdash; GitHub Changelog (@GHchangelog) <a href="https://twitter.com/GHchangelog/status/1318223496569290752?ref_src=twsrc%5Etfw">October 19, 2020</a></blockquote>
 
-<h3 id="goライブラリ">Goライブラリ</h3>
+<h2 id="dependabot-go-modules設定">Dependabot Go Modules設定</h2>
 
-<ul>
-  <li>パッケージ管理: <a href="https://blog.golang.org/using-go-modules">go modules</a></li>
-  <li>CLIライブラリ: <a href="https://github.com/spf13/cobra">cobra</a></li>
-  <li>Syntax Highlightライブラリ: <a href="https://github.com/alecthomas/chroma">chroma</a></li>
-  <li>リリース管理: <a href="https://github.com/goreleaser/goreleaser">goreleaser</a>
-    <ul>
-      <li>homebrew tapへのリリースも自動でやってくれている: <a href="https://github.com/toshimaru/homebrew-nyan">homebrew-nyan</a></li>
-    </ul>
-  </li>
-  <li>テストライブラリ: <a href="https://github.com/stretchr/testify">testify</a>/assert</li>
-</ul>
+<p><code class="language-plaintext highlighter-rouge">.github/dependabot.yml</code> ファイルを作って、下記のように記述すればOK。</p>
 
-<h3 id="サービス">サービス</h3>
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/dependabot.yml</span>
+<span class="na">version</span><span class="pi">:</span> <span class="m">2</span>
+<span class="na">updates</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s2">"</span><span class="s">gomod"</span>
+    <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span> <span class="c1"># Location of package manifests</span>
+    <span class="na">schedule</span><span class="pi">:</span>
+      <span class="na">interval</span><span class="pi">:</span> <span class="s2">"</span><span class="s">weekly"</span>
+</code></pre></div></div>
 
-<ul>
-  <li>CI: <a href="https://travis-ci.com">TravisCI</a></li>
-  <li>Code Coverage: <a href="https://codeclimate.com">Code Climate</a></li>
-</ul>
+<p>下記のPRの通り、きちんと <code class="language-plaintext highlighter-rouge">go mod tidy</code> をやってくれています。</p>
 
-<h2 id="今後の展望">今後の展望</h2>
+<p><a href="https://github.com/toshimaru/nyan/pull/104">github.com/toshimaru/nyan/pull/104</a></p>
+
+<h2 id="参考">参考</h2>
 
 <ul>
-  <li>今回CIはTravisで動かしたけど先日リリースされた<a href="https://github.blog/2019-08-08-github-actions-now-supports-ci-cd/">GitHub Actons(v2)</a>が使えるようになったら乗り換えたい</li>
-  <li>行番号表示などの機能拡張も今後やっていきたい</li>
-</ul>
-
-<h2 id="goでツール書いてみた感想">Goでツール書いてみた感想</h2>
-
-<ul>
-  <li>パッケージ管理の機能が言語としてサポートされたのは嬉しい（Go 1.11〜）</li>
-  <li>プログラムのコンパイル、実行、テストなどすべてが早いので開発体験がとても良い</li>
-  <li>普段はRubyを使うことが多いが、書き味の良さではGoはRubyに負けるかもだけど、Goは堅牢で高速なアプリケーションを書くのに良い</li>
-  <li>Goコミュニティは日本でもとても活発だし、ライブラリのエコシステムも整っているのが素晴らしい</li>
+  <li><a href="https://github.blog/changelog/2020-10-19-dependabot-go-mod-tidy-and-vendor-support/">Dependabot: <code class="language-plaintext highlighter-rouge">go mod tidy</code> and <code class="language-plaintext highlighter-rouge">vendor</code> support - GitHub Changelog</a></li>
+  <li><a href="https://github.com/golang/go/wiki/Modules">Modules · golang/go Wiki</a></li>
 </ul>
 
 </div>
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/go-nyan-cat/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/dependabot-gomod/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -153,15 +137,13 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/dependabot-gomod/" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</a></li>
-  
     <li><a href="/goroutine-with-waitgroup/" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する">複数のGoroutineをWaitGroup（ErrGroup）で制御する</a></li>
+  
+    <li><a href="/go-nyan-cat/" title="Syntax HighlightされるcatコマンドをGoで作った">Syntax HighlightされるcatコマンドをGoで作った</a></li>
   
     <li><a href="/go-time-format/" title="Goの日付フォーマット 〜＜2006年1月2日＞の謎〜">Goの日付フォーマット 〜＜2006年1月2日＞の謎〜</a></li>
   
     <li><a href="/ruby-vs-go/" title="RubyとGoとBashで並行処理のパフォーマンス比較をしてみた">RubyとGoとBashで並行処理のパフォーマンス比較をしてみた</a></li>
-  
-    <li><a href="/my-first-circleci-orbs/" title="はじめてのCircleCI Orbsを公開した">はじめてのCircleCI Orbsを公開した</a></li>
   
   </ul>
   </div>
@@ -181,14 +163,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/github-actions-first-impression/" title="Newer Post: GitHub Actionsファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/hrt-review/" title="Older Post: アンチパターンから学ぶHRTなコードレビュー">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/no-hustle-wfh-setup/" title="Older Post: 頑張らない在宅ワーク環境">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -229,10 +207,10 @@
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/go-nyan-cat/"
+      "@id": "https://blog.toshimaru.net/dependabot-gomod/"
     },
-    "headline": "Syntax HighlightされるcatコマンドをGoで作った",
-    "datePublished": "2019-08-15T00:00:00+09:00",
+    "headline": "Dependabot で go modules の自動アップデートをする（go mod tidy付き）",
+    "datePublished": "2021-01-27T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -245,9 +223,9 @@
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png"
+      "url": "https://blog.toshimaru.net/icon.png"
     },
-    "keywords": "go, oss"
+    "keywords": "go"
   },
   {
     
