@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/mac.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-15T19:00:28+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/mac.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Macbookでファン・照明・電源に問題が生じたときはSMCリセット</title><link href="https://blog.toshimaru.net/macbook-smc-reset/" rel="alternate" type="text/html" title="Macbookでファン・照明・電源に問題が生じたときはSMCリセット" /><published>2015-10-07T00:00:00+09:00</published><updated>2015-10-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/macbook-smc-reset</id><content type="html" xml:base="https://blog.toshimaru.net/macbook-smc-reset/">&lt;p&gt;ファンが周り続けたときにSMCリセットしたら解決したよ、という話。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/mac.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-22T09:01:15+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/mac.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Macbookでファン・照明・電源に問題が生じたときはSMCリセット</title><link href="https://blog.toshimaru.net/macbook-smc-reset/" rel="alternate" type="text/html" title="Macbookでファン・照明・電源に問題が生じたときはSMCリセット" /><published>2015-10-07T00:00:00+09:00</published><updated>2015-10-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/macbook-smc-reset</id><content type="html" xml:base="https://blog.toshimaru.net/macbook-smc-reset/">&lt;p&gt;ファンが周り続けたときにSMCリセットしたら解決したよ、という話。&lt;/p&gt;
 
 &lt;h2 id=&quot;発生した問題&quot;&gt;発生した問題&lt;/h2&gt;
 &lt;ul&gt;
@@ -167,7 +167,7 @@
 
 &lt;p&gt;MACアドレスを適当に生成したければこちらをどうぞ。&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;openssl rand &lt;span class=&quot;nt&quot;&gt;-hex&lt;/span&gt; 6 | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/\(..\)/\1:/g; s/.$//'&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;openssl rand &lt;span class=&quot;nt&quot;&gt;-hex&lt;/span&gt; 6 | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;s/\(..\)/\1:/g; s/.$//&apos;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;このコマンドで下記のようなランダムなMACアドレスを生成してくれます。&lt;/p&gt;
@@ -199,7 +199,7 @@ ERROR: Error installing rails:
  ERROR: Failed to build gem native extension.
 
 /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby extconf.rb
-mkmf.rb can't find header files for ruby at /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/ruby.h&lt;/pre&gt;&lt;/div&gt;
+mkmf.rb can&apos;t find header files for ruby at /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/ruby.h&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;いろいろ調べたところ結局macのCommand line toolsがインストールされていないことが原因のよう。XcodeからそれをインストールしてOK（下記参照）。&lt;/p&gt;
 
