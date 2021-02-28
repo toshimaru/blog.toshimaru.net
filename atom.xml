@@ -1,4 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-22T09:01:15+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</title><link href="https://blog.toshimaru.net/dependabot-gomod/" rel="alternate" type="text/html" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）" /><published>2021-01-27T00:00:00+09:00</published><updated>2021-01-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/dependabot-gomod</id><content type="html" xml:base="https://blog.toshimaru.net/dependabot-gomod/">&lt;p&gt;Dependabot が GitHub の公式機能の一部として利用可能になりました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-28T18:36:05+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。&lt;/p&gt;
+
+&lt;p&gt;（gem名としては &lt;a href=&quot;https://github.com/rubygems/rubygems&quot;&gt;rubygems/rubygems&lt;/a&gt; にインスパイアされて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundled_gems&lt;/code&gt; とした）&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/bundled_gems&quot;&gt;toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+
+&lt;p&gt;もともとは、GitHub Actionに &lt;a href=&quot;https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows&quot;&gt;cache機能&lt;/a&gt;が来る前に作ったもの。&lt;/p&gt;
+
+&lt;p&gt;GitHub Action でCIしていた場合、cache機能がないと毎回 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。&lt;/p&gt;
+
+&lt;p&gt;また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。&lt;/p&gt;
+
+&lt;p&gt;「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。&lt;/p&gt;
+
+&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+
+&lt;h3 id=&quot;インストール&quot;&gt;インストール&lt;/h3&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;bundled_gems
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem&lt;/code&gt; コマンドが利用可能になる。&lt;/p&gt;
+
+&lt;h3 id=&quot;gemfilelock-内のgemのインストール&quot;&gt;Gemfile.lock 内のgemのインストール&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bgem install gem_name
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こうすることで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;内に記載されている &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem_name&lt;/code&gt; のバージョンを読み取ってそれをインストールしてくれる（内部的には &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem install gem_name:version&lt;/code&gt; を走らせている）。&lt;/p&gt;
+
+&lt;p&gt;例としては、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem install rubocop&lt;/code&gt;とした場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記載されているバージョンの &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop&lt;/code&gt; をインストールする。&lt;/p&gt;
+
+&lt;h2 id=&quot;課題&quot;&gt;課題&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;installするgemの子となる依存gemのバージョンまでは解決してくれない点
+    &lt;ul&gt;
+      &lt;li&gt;このへん実装しようと思っていたら、先にGitHub公式の &lt;a href=&quot;https://github.com/actions/cache&quot;&gt;actions/cache&lt;/a&gt;が来てしまった次第。。。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;special-thanks&quot;&gt;Special Thanks&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; のパースに関しては、&lt;a href=&quot;https://github.com/ledsun&quot;&gt;@ledsun&lt;/a&gt; さんにサンプルをいただきました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。ありがとうございました。&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://github.com/ledsun/orgen&quot;&gt;ledsun/orgen&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html">Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</title><link href="https://blog.toshimaru.net/dependabot-gomod/" rel="alternate" type="text/html" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）" /><published>2021-01-27T00:00:00+09:00</published><updated>2021-01-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/dependabot-gomod</id><content type="html" xml:base="https://blog.toshimaru.net/dependabot-gomod/">&lt;p&gt;Dependabot が GitHub の公式機能の一部として利用可能になりました。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;blogged. | DependabotをGitHub公式Dependabotに移行させた - Hack Your Design! &lt;a href=&quot;https://t.co/6Mb0XDSaSC&quot;&gt;https://t.co/6Mb0XDSaSC&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1273437750499270659?ref_src=twsrc%5Etfw&quot;&gt;June 18, 2020&lt;/a&gt;&lt;/blockquote&gt;
 
@@ -805,60 +859,4 @@
 
 &lt;h2 id=&quot;従来と比べて良い点&quot;&gt;従来と比べて良い点&lt;/h2&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにpushするにあたって&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; でトークンをセットするだけ。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><category term="github" /><category term="ci" /><summary type="html">Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">DependabotをGitHub公式Dependabotに移行させた</title><link href="https://blog.toshimaru.net/github-dependabot/" rel="alternate" type="text/html" title="DependabotをGitHub公式Dependabotに移行させた" /><published>2020-06-18T00:00:00+09:00</published><updated>2020-06-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-dependabot</id><content type="html" xml:base="https://blog.toshimaru.net/github-dependabot/">&lt;p&gt;&lt;a href=&quot;https://dependabot.com/blog/hello-github/&quot;&gt;2019年、DependabotがGitHubに買収された&lt;/a&gt;ことはご存知の通り。&lt;/p&gt;
-
-&lt;p&gt;そのDependabotの機能が公式機能として取り込まれたということので早速移行してみた。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.blog/2020-06-01-keep-all-your-packages-up-to-date-with-dependabot/&quot;&gt;Keep all your packages up to date with Dependabot - The GitHub Blog&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;dependabot管理画面から簡単移行&quot;&gt;Dependabot管理画面から簡単移行&lt;/h2&gt;
-
-&lt;p&gt;既存のDependabot管理画面から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Create config file&lt;/code&gt;をクリック。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/create-config.png&quot; alt=&quot;config&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;githubdependabotyml-作成&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/dependabot.yml&lt;/code&gt; 作成&lt;/h2&gt;
-
-&lt;p&gt;するとdependabot-preview氏がPull Requestを自動的に作ってくれる。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/pr.png&quot; alt=&quot;pull request&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;via. &lt;a href=&quot;https://github.com/toshimaru/auto-author-assign/pull/15&quot;&gt;Create Dependabot config file by dependabot-preview · Pull Request #15 · toshimaru/auto-author-assign&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;yamlの内容は下記の通り。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;updates&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;package-ecosystem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;npm&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/&quot;&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;weekly&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;21:00&apos;&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;open-pull-requests-limit&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;reviewers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;既存の設定をベースに自動的に内容を作成してくれた雰囲気。&lt;/p&gt;
-
-&lt;h2 id=&quot;移行完了&quot;&gt;移行完了&lt;/h2&gt;
-
-&lt;p&gt;PRをマージし、無事に移行が完了するとDependabot管理画面は下記のような表示となる。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/finish.png&quot; alt=&quot;done&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;下記の通りユーザー名は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dependabot-preview&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dependabot&lt;/code&gt; へと変更されている。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/commit-log.png&quot; alt=&quot;log&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;新しいdependabotが作るPRはgithubの公式ロゴが入っている。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/new-pr.png&quot; alt=&quot;log&quot; /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;余談だが&lt;a href=&quot;https://github.blog/2019-06-17-github-acquires-pull-panda/&quot;&gt;同年に買収されたPull Panda&lt;/a&gt;のリマインダー機能もGitHubの公式機能に取り込まれている。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/managing-scheduled-reminders-for-your-team&quot;&gt;Managing scheduled reminders for your team - GitHub Help&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;良い機能がこのように＜買収→公式機能＞となっていくのは良い流れですね。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html">2019年、DependabotがGitHubに買収されたことはご存知の通り。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにpushするにあたって&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; でトークンをセットするだけ。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><category term="github" /><category term="ci" /><summary type="html">Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

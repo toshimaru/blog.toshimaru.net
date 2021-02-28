@@ -2,7 +2,7 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>Rubyで数値の0埋め - Hack Your Design!</title>
+  <title>Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -12,14 +12,14 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="Rubyで数値の0埋め - Hack Your Design!">
-  <meta property="og:title" content="Rubyで数値の0埋め - Hack Your Design!">
-  <meta name="description" content="Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。">
-  <meta name="twitter:description" content="Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。">
-  <meta property="og:description" content="Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。">
-  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" />
-  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2020-06-30T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/ruby-0-padding/">
+  <meta name="twitter:title" content="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った - Hack Your Design!">
+  <meta property="og:title" content="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った - Hack Your Design!">
+  <meta name="description" content="Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。 toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.">
+  <meta name="twitter:description" content="Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。 toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.">
+  <meta property="og:description" content="Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。 toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.">
+  <meta property="og:image" content="https://blog.toshimaru.net/images/posts/bgem.png" />
+  <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/bgem.png" /><meta property="og:type" content="article">
+  <meta property="article:published_time" content="2021-02-28T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/rubygems-bundled-gems/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -61,113 +61,85 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">Rubyで数値の0埋め</h1>
+  <h1 class="fadeInLeft">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2020-06-30T00:00:00+09:00" pubdate>2020/06/30</time>
+      <i class="icon-calendar"></i><time datetime="2021-02-28T00:00:00+09:00" pubdate>2021/02/28</time>
       <i class="icon-tags"></i> 
 <a href="/tag/ruby/" rel="tag">ruby</a>
 
+<a href="/tag/gem/" rel="tag">gem</a>
+
+<a href="/tag/oss/" rel="tag">oss</a>
+
 
     </div>
-    <img class="post-image" src="/images/posts/ruby/zero-padding.png" alt="(image)Rubyで数値の0埋め" title="Rubyで数値の0埋め" />
+    <img class="post-image" src="/images/posts/bgem.png" alt="(image)Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" />
   </div>
 </div>
 
 <div id="md-content">
-  <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h2"><a href="#tldr">TL;DR</a></li>
-<li class="toc-entry toc-h2"><a href="#rubyで数値の0埋め">Rubyで数値の0埋め</a></li>
-<li class="toc-entry toc-h2"><a href="#rubocopのオススメ書き方">RuboCopのオススメ書き方</a>
+  
+  <p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</p>
+
+<p>（gem名としては <a href="https://github.com/rubygems/rubygems">rubygems/rubygems</a> にインスパイアされて <code class="language-plaintext highlighter-rouge">bundled_gems</code> とした）</p>
+
+<p><a href="https://github.com/toshimaru/bundled_gems">toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.</a></p>
+
+<h2 id="モチベーション">モチベーション</h2>
+
+<p>もともとは、GitHub Actionに <a href="https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows">cache機能</a>が来る前に作ったもの。</p>
+
+<p>GitHub Action でCIしていた場合、cache機能がないと毎回 <code class="language-plaintext highlighter-rouge">bundle install</code>走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。</p>
+
+<p>また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。</p>
+
+<p>「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。</p>
+
+<h2 id="使い方">使い方</h2>
+
+<h3 id="インストール">インストール</h3>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>gem <span class="nb">install </span>bundled_gems
+</code></pre></div></div>
+
+<p>これで <code class="language-plaintext highlighter-rouge">bgem</code> コマンドが利用可能になる。</p>
+
+<h3 id="gemfilelock-内のgemのインストール">Gemfile.lock 内のgemのインストール</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bgem install gem_name
+</code></pre></div></div>
+
+<p>こうすることで <code class="language-plaintext highlighter-rouge">Gemfile.lock</code>内に記載されている <code class="language-plaintext highlighter-rouge">gem_name</code> のバージョンを読み取ってそれをインストールしてくれる（内部的には <code class="language-plaintext highlighter-rouge">gem install gem_name:version</code> を走らせている）。</p>
+
+<p>例としては、<code class="language-plaintext highlighter-rouge">bgem install rubocop</code>とした場合、<code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記載されているバージョンの <code class="language-plaintext highlighter-rouge">rubocop</code> をインストールする。</p>
+
+<h2 id="課題">課題</h2>
+
 <ul>
-<li class="toc-entry toc-h3"><a href="#favor-format-over-sprintf">Favor format over sprintf</a></li>
-<li class="toc-entry toc-h3"><a href="#favor-format-over-string">Favor format over String#%</a></li>
-<li class="toc-entry toc-h3"><a href="#prefer-annotated-tokens">Prefer annotated tokens</a></li>
+  <li>installするgemの子となる依存gemのバージョンまでは解決してくれない点
+    <ul>
+      <li>このへん実装しようと思っていたら、先にGitHub公式の <a href="https://github.com/actions/cache">actions/cache</a>が来てしまった次第。。。</li>
+    </ul>
+  </li>
 </ul>
-</li>
-<li class="toc-entry toc-h2"><a href="#結論">結論</a></li>
-</ul>
-  <p>Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。</p>
 
-<h2 id="tldr">
-<a class="anchor" href="#tldr" aria-hidden="true"><span class="octicon octicon-link"></span></a>TL;DR</h2>
+<h2 id="special-thanks">Special Thanks</h2>
 
-<p>結論としては下記のように書くとよい。</p>
+<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code> のパースに関しては、<a href="https://github.com/ledsun">@ledsun</a> さんにサンプルをいただきました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>。ありがとうございました。</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">format</span><span class="p">(</span><span class="s2">"number: %09&lt;number&gt;d"</span><span class="p">,</span> <span class="ss">number: </span><span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
-</code></pre></div></div>
-
-<h2 id="rubyで数値の0埋め">
-<a class="anchor" href="#ruby%E3%81%A7%E6%95%B0%E5%80%A4%E3%81%AE0%E5%9F%8B%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rubyで数値の0埋め</h2>
-
-<p>Rubyで数値の0埋めしようと思うとこんな感じのコードになる。</p>
-
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sprintf</span><span class="p">(</span><span class="s2">"number: %09d"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
-</code></pre></div></div>
-
-<p><a href="https://docs.ruby-lang.org/ja/latest/doc/print_format.html">sprintf フォーマット</a>はC由来の関数だ。<code class="language-plaintext highlighter-rouge">%09d</code>の意味としては<code class="language-plaintext highlighter-rouge">%d</code>が数値、<code class="language-plaintext highlighter-rouge">09</code>は9桁の0埋めという意味になる。</p>
-
-<p>また、<a href="https://docs.ruby-lang.org/ja/latest/class/String.html#I_--25">String#%</a>を使う方法もある。<code class="language-plaintext highlighter-rouge">sprintf</code>と同じ挙動をする。</p>
-
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"number: %09d"</span> <span class="o">%</span> <span class="mi">1</span> <span class="c1">#=&gt; "number: 000000001"</span>
-</code></pre></div></div>
-
-<p>こちらのほうがより簡潔な表記だ。</p>
-
-<h2 id="rubocopのオススメ書き方">
-<a class="anchor" href="#rubocop%E3%81%AE%E3%82%AA%E3%82%B9%E3%82%B9%E3%83%A1%E6%9B%B8%E3%81%8D%E6%96%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>RuboCopのオススメ書き方</h2>
-
-<p>上述の書き方でも問題ないのだが、rubocop（デフォルト設定）に通すと下記の通り怒られる。</p>
-
-<h3 id="favor-format-over-sprintf">
-<a class="anchor" href="#favor-format-over-sprintf" aria-hidden="true"><span class="octicon octicon-link"></span></a>Favor format over sprintf</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C: Style/FormatString: Favor format over sprintf.
-</code></pre></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">sprintf</code>ではなく<code class="language-plaintext highlighter-rouge">format</code>を使え、と。また <code class="language-plaintext highlighter-rouge">String#%</code> を使った書き方も下記の指摘がくる。</p>
-
-<h3 id="favor-format-over-string">
-<a class="anchor" href="#favor-format-over-string" aria-hidden="true"><span class="octicon octicon-link"></span></a>Favor format over String#%</h3>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C: Style/FormatString: Favor format over String#%.
-</code></pre></div></div>
-
-<p>ちなみに<code class="language-plaintext highlighter-rouge">format</code>は<code class="language-plaintext highlighter-rouge">sprintf</code>のエイリアス関数。</p>
-
-<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rb_define_global_function</span><span class="p">(</span><span class="s">"sprintf"</span><span class="p">,</span> <span class="n">f_sprintf</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">rb_define_global_function</span><span class="p">(</span><span class="s">"format"</span><span class="p">,</span> <span class="n">f_sprintf</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-</code></pre></div></div>
-
-<p>ref. <a href="https://github.com/ruby/ruby/blob/946e5cc668f66a4a0b79461047d3fcba8b71eef0/object.c#L4630-L4631">ruby/object.c at 946e5cc668f66a4a0b79461047d3fcba8b71eef0 · ruby/ruby</a></p>
-
-<p>rubocopの指摘に従って下記のように修正してみる。</p>
-
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">format</span><span class="p">(</span><span class="s2">"number: %09d"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
-</code></pre></div></div>
-
-<h3 id="prefer-annotated-tokens">
-<a class="anchor" href="#prefer-annotated-tokens" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prefer annotated tokens</h3>
-
-<p>これでもrubocopに下記のように怒られる。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C: Style/FormatStringToken: Prefer annotated tokens (like %&lt;foo&gt;s) over unannotated tokens (like %s).
-</code></pre></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">&lt;foo&gt;</code>のようなannotated tokenを使って名前を与えてやれ、とのことらしい。</p>
-
-<h2 id="結論">
-<a class="anchor" href="#%E7%B5%90%E8%AB%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>結論</h2>
-
-<p>rubocopの指摘を乗り越えて、最終的には下記で完成です。</p>
-
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">format</span><span class="p">(</span><span class="s2">"number: %09&lt;number&gt;d"</span><span class="p">,</span> <span class="ss">number: </span><span class="mi">1</span><span class="p">)</span> <span class="c1">#=&gt; "number: 000000001"</span>
-</code></pre></div></div>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://github.com/ledsun/orgen">ledsun/orgen</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
 
 </div>
 
 <ul id="social-buttons">
-  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/ruby-0-padding/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
+  <li class="hatena"><a href="https://b.hatena.ne.jp/entry/s/blog.toshimaru.net/rubygems-bundled-gems/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a></li>
   <li class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-via="toshimaru_e">Tweet</a></li>
   <li class="facebook"><div class="fb-like" data-layout="button_count" data-action="like" data-show-faces="false"></div></li>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -187,15 +159,15 @@
   <h3>関連記事</h3>
   <ul>
   
-    <li><a href="/rubygems-bundled-gems/" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</a></li>
+    <li><a href="/rubocop-rails/" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</a></li>
   
-    <li><a href="/datetime-range-check/" title="[Ruby]日時が特定日時の範囲内にあるかのチェック">[Ruby]日時が特定日時の範囲内にあるかのチェック</a></li>
+    <li><a href="/gem-rack-simple-user-agent/" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った">Railsでデバイス判定するrack-simple_user_agentというgemを作った</a></li>
   
-    <li><a href="/ruby-hash-sort/" title="RubyでHashのKey/Valueをソートする">RubyでHashのKey/Valueをソートする</a></li>
+    <li><a href="/ruby-configuration-pattern/" title="Ruby Gem Configuration Pattern">Ruby Gem Configuration Pattern</a></li>
   
-    <li><a href="/ruby-heredoc/" title="Rubyのヒアドキュメントの書き方いろいろ">Rubyのヒアドキュメントの書き方いろいろ</a></li>
+    <li><a href="/go-nyan-cat/" title="Syntax HighlightされるcatコマンドをGoで作った">Syntax HighlightされるcatコマンドをGoで作った</a></li>
   
-    <li><a href="/infrastructure-as-ruby-code-2016/" title="Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました">Roppongi.rb#2で「Infrastructure as (Ruby) Code の現状確認」を発表しました</a></li>
+    <li><a href="/my-first-circleci-orbs/" title="はじめてのCircleCI Orbsを公開した">はじめてのCircleCI Orbsを公開した</a></li>
   
   </ul>
   </div>
@@ -215,14 +187,10 @@
 
 <div class="post-pagination clearfix">
   
-  <div class="newer">
-    <a href="/career-strategy-for-around-thirty-engineer/" title="Newer Post: 「アラサーエンジニアの生存戦略」を発表しました"><i class="icon-chevron-left"></i>  Newer</a>
-  </div>
-  
 
   
   <div class="older">
-    <a href="/jekyll-deploy-with-github-actions/" title="Older Post: JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する">Older  <i class="icon-chevron-right"></i></a>
+    <a href="/dependabot-gomod/" title="Older Post: Dependabot で go modules の自動アップデートをする（go mod tidy付き）">Older  <i class="icon-chevron-right"></i></a>
   </div>
   
 </div>
@@ -263,10 +231,10 @@
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "Blog",
-      "@id": "https://blog.toshimaru.net/ruby-0-padding/"
+      "@id": "https://blog.toshimaru.net/rubygems-bundled-gems/"
     },
-    "headline": "Rubyで数値の0埋め",
-    "datePublished": "2020-06-30T00:00:00+09:00",
+    "headline": "Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った",
+    "datePublished": "2021-02-28T00:00:00+09:00",
     "author": {
       "@type": "Person",
       "name": "Toshimaru",
@@ -279,9 +247,9 @@
     },
     "image": {
       "@type": "ImageObject",
-      "url": "https://blog.toshimaru.net/images/posts/ruby/zero-padding.png"
+      "url": "https://blog.toshimaru.net/images/posts/bgem.png"
     },
-    "keywords": "ruby"
+    "keywords": "ruby, gem, oss"
   },
   {
     

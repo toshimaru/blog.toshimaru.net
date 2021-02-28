@@ -1,4 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/gem.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-22T09:01:15+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/gem.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="https://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails/">&lt;p&gt;【追記】本記事で紹介しているgem, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt;は公式RuboCopチームの要望により、&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;というgemにRenameされました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/gem.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-28T18:36:05+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/gem.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。&lt;/p&gt;
+
+&lt;p&gt;（gem名としては &lt;a href=&quot;https://github.com/rubygems/rubygems&quot;&gt;rubygems/rubygems&lt;/a&gt; にインスパイアされて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundled_gems&lt;/code&gt; とした）&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/bundled_gems&quot;&gt;toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+
+&lt;p&gt;もともとは、GitHub Actionに &lt;a href=&quot;https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows&quot;&gt;cache機能&lt;/a&gt;が来る前に作ったもの。&lt;/p&gt;
+
+&lt;p&gt;GitHub Action でCIしていた場合、cache機能がないと毎回 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。&lt;/p&gt;
+
+&lt;p&gt;また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。&lt;/p&gt;
+
+&lt;p&gt;「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。&lt;/p&gt;
+
+&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+
+&lt;h3 id=&quot;インストール&quot;&gt;インストール&lt;/h3&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;bundled_gems
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;これで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem&lt;/code&gt; コマンドが利用可能になる。&lt;/p&gt;
+
+&lt;h3 id=&quot;gemfilelock-内のgemのインストール&quot;&gt;Gemfile.lock 内のgemのインストール&lt;/h3&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bgem install gem_name
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;こうすることで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;内に記載されている &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem_name&lt;/code&gt; のバージョンを読み取ってそれをインストールしてくれる（内部的には &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem install gem_name:version&lt;/code&gt; を走らせている）。&lt;/p&gt;
+
+&lt;p&gt;例としては、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem install rubocop&lt;/code&gt;とした場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記載されているバージョンの &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop&lt;/code&gt; をインストールする。&lt;/p&gt;
+
+&lt;h2 id=&quot;課題&quot;&gt;課題&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;installするgemの子となる依存gemのバージョンまでは解決してくれない点
+    &lt;ul&gt;
+      &lt;li&gt;このへん実装しようと思っていたら、先にGitHub公式の &lt;a href=&quot;https://github.com/actions/cache&quot;&gt;actions/cache&lt;/a&gt;が来てしまった次第。。。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;special-thanks&quot;&gt;Special Thanks&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; のパースに関しては、&lt;a href=&quot;https://github.com/ledsun&quot;&gt;@ledsun&lt;/a&gt; さんにサンプルをいただきました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。ありがとうございました。&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://github.com/ledsun/orgen&quot;&gt;ledsun/orgen&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html">Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="https://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails/">&lt;p&gt;【追記】本記事で紹介しているgem, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt;は公式RuboCopチームの要望により、&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;というgemにRenameされました。&lt;/p&gt;
 
 &lt;p&gt;本gemご利用の方は下記の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails_config&lt;/code&gt;のご利用をお願いします。&lt;/p&gt;
 
