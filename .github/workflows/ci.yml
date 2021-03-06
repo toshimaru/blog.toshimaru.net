@@ -10,14 +10,6 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.0
-    - uses: actions/cache@v2
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-bundler-${{ hashFiles('**/Gemfile.lock')}}
-        restore-keys: ${{ runner.os }}-bundler-
-    - name: bundle install
-      run: |
-        bundle config set path 'vendor/bundle'
-        bundle install --jobs 4 --retry 3
+        bundler-cache: true
     - name: Jekyll Build
       run: bundle exec jekyll build
