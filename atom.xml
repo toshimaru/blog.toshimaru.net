@@ -1,4 +1,94 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-28T18:36:05+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-06T17:43:25+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">CircleCIのベースイメージを次世代イメージ cimg に移行する</title><link href="https://blog.toshimaru.net/use-circleci-cimg/" rel="alternate" type="text/html" title="CircleCIのベースイメージを次世代イメージ cimg に移行する" /><published>2021-03-05T00:00:00+09:00</published><updated>2021-03-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/use-circleci-cimg</id><content type="html" xml:base="https://blog.toshimaru.net/use-circleci-cimg/">&lt;p&gt;2020年にCircleCIの次世代イメージ・cimg が登場しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところの&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;cimg/rubyに移行&lt;/a&gt;してみたので紹介します。&lt;/p&gt;
+
+&lt;h2 id=&quot;ベースイメージの変更&quot;&gt;ベースイメージの変更&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へ変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; executors:
+   default:
+     working_directory: ~/app
+     docker:
+&lt;span class=&quot;gi&quot;&gt;+      - image: circleci/ruby:2.7-node-browsers
+&lt;/span&gt;&lt;span class=&quot;gd&quot;&gt;-      - image: cimg/ruby:2.7-browsers
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;circleci-公式-orb-の利用&quot;&gt;CircleCI 公式 Orb の利用&lt;/h2&gt;
+
+&lt;p&gt;今回の変更とあわせて、下記２つのCircleCI公式Orbも導入しました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;ruby&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby@1.1.2&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;browser-tools&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/browser-tools@1.1.3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rspec-の実行&quot;&gt;RSpec の実行&lt;/h2&gt;
+
+&lt;p&gt;上述のOrbを有効活用することで&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;bundle Install&lt;/li&gt;
+  &lt;li&gt;chromedriverインストール&lt;/li&gt;
+  &lt;li&gt;rspecの実行&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;のstepを下記のようにシンプルに記述することが可能になります。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rspec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chrome&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chromedriver&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bin/rails db:schema:load --trace&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rspec-test&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rubocop-の実行&quot;&gt;rubocop の実行&lt;/h2&gt;
+
+&lt;p&gt;rubocop の実行も同様に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; Orbに組み込まれており、簡単に実行できます。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rubocop-check&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;最終形&quot;&gt;最終形&lt;/h2&gt;
+
+&lt;p&gt;実際に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へと移行した Pull Request の全体像としては下記のようになります。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;Migrate CircleCI image from circleci/ruby to cimg/ruby by toshimaru · Pull Request&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;紹介したCircleCI Orbs
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/images/image/cimg/ruby&quot;&gt;cimg/ruby - CircleCI&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/CircleCI-Public/circleci-demo-ruby-rails/blob/master/.circleci/config.yml&quot;&gt;circleci-demo-ruby-rails/config.yml at master · CircleCI-Public/circleci-demo-ruby-rails&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://circleci.com/ja/blog/announcing-our-next-generation-convenience-images-smaller-faster-more-deterministic/&quot;&gt;次世代コンビニエンス イメージをリリース: より小さく、速く、確定的&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><category term="ci" /><summary type="html">2020年にCircleCIの次世代イメージ・cimg が登場しました1。 次世代コンビニエンス イメージをリリース: より小さく、速く、確定的 &amp;#8617;</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cimg.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cimg.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。&lt;/p&gt;
 
 &lt;p&gt;（gem名としては &lt;a href=&quot;https://github.com/rubygems/rubygems&quot;&gt;rubygems/rubygems&lt;/a&gt; にインスパイアされて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundled_gems&lt;/code&gt; とした）&lt;/p&gt;
 
@@ -806,57 +896,4 @@
 &lt;p&gt;rubocopの指摘を乗り越えて、最終的には下記で完成です。&lt;/p&gt;
 
 &lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;number: %09&amp;lt;number&amp;gt;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;number: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;number: 000000001&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</title><link href="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/" rel="alternate" type="text/html" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" /><published>2020-06-22T00:00:00+09:00</published><updated>2020-06-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-deploy-with-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/">&lt;p&gt;Jekyll製&lt;a href=&quot;https://blog.toshima.ru/&quot;&gt;英語ブログ&lt;/a&gt;のGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。&lt;/p&gt;
-
-&lt;h2 id=&quot;今までのデプロイ方式&quot;&gt;今までのデプロイ方式&lt;/h2&gt;
-
-&lt;p&gt;今までどうページソースをGitHub Pagesに自動デプロイしていたかでいうと、&lt;a href=&quot;/autodeploy-jekyll/&quot;&gt;Jekyllでgit pushをフックしてGithub Pagesへ自動デプロイ&lt;/a&gt;するようにしていた。&lt;/p&gt;
-
-&lt;p&gt;この方法でも全く問題ないがセットアップがやや面倒。なので英語ブログは手動デプロイ状態のまま放置していた。今はGitHub Actionsを使ったデプロイ方式がナウそうだ、とのことで重い腰を上げてその方式をトライ。&lt;/p&gt;
-
-&lt;h2 id=&quot;新しいデプロイ方式&quot;&gt;新しいデプロイ方式&lt;/h2&gt;
-
-&lt;p&gt;対応したPull Request: &lt;a href=&quot;https://github.com/toshimaru/blog.toshima.ru/pull/160&quot;&gt;Deploy Automation with GitHub Actions · toshimaru/blog.toshima.ru&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;やっていることとしては至ってシンプル。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;masterブランチで変更があった場合にActionをトリガー&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;生成した静的コンテンツのデータを&lt;a href=&quot;https://github.com/peaceiris/actions-gh-pages&quot;&gt;peaceiris/actions-gh-pages&lt;/a&gt;を使って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにデプロイ&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;github-actions-configuration&quot;&gt;GitHub Actions Configuration&lt;/h2&gt;
-
-&lt;p&gt;実際のyamlファイルの設定は下記の通り。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;branches&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;master&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;gh-pages-deploy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Set up Ruby&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.7&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle config set path &apos;vendor/bundle&apos;&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Jekyll Build&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec jekyll build&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deploy&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;peaceiris/actions-gh-pages@v3&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;personal_token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;publish_dir&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./_site&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;従来と比べて良い点&quot;&gt;従来と比べて良い点&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにpushするにあたって&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; でトークンをセットするだけ。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><category term="github" /><category term="ci" /><summary type="html">Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><summary type="html">Rubyで数値の0埋めするときの書き方をよく忘れるのでメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby/zero-padding.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

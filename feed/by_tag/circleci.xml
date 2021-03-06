@@ -1,4 +1,94 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/circleci.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-02-28T18:36:05+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/circleci.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">はじめてのCircleCI Orbsを公開した</title><link href="https://blog.toshimaru.net/my-first-circleci-orbs/" rel="alternate" type="text/html" title="はじめてのCircleCI Orbsを公開した" /><published>2018-12-02T00:00:00+09:00</published><updated>2018-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/my-first-circleci-orbs</id><content type="html" xml:base="https://blog.toshimaru.net/my-first-circleci-orbs/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install &lt;a href=&quot;https://t.co/Ikd11JmEFd&quot;&gt;https://t.co/Ikd11JmEFd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw&quot;&gt;November 30, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/circleci.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-06T17:43:25+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/circleci.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">CircleCIのベースイメージを次世代イメージ cimg に移行する</title><link href="https://blog.toshimaru.net/use-circleci-cimg/" rel="alternate" type="text/html" title="CircleCIのベースイメージを次世代イメージ cimg に移行する" /><published>2021-03-05T00:00:00+09:00</published><updated>2021-03-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/use-circleci-cimg</id><content type="html" xml:base="https://blog.toshimaru.net/use-circleci-cimg/">&lt;p&gt;2020年にCircleCIの次世代イメージ・cimg が登場しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+
+&lt;p&gt;個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところの&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;cimg/rubyに移行&lt;/a&gt;してみたので紹介します。&lt;/p&gt;
+
+&lt;h2 id=&quot;ベースイメージの変更&quot;&gt;ベースイメージの変更&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へ変更します。&lt;/p&gt;
+
+&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; executors:
+   default:
+     working_directory: ~/app
+     docker:
+&lt;span class=&quot;gi&quot;&gt;+      - image: circleci/ruby:2.7-node-browsers
+&lt;/span&gt;&lt;span class=&quot;gd&quot;&gt;-      - image: cimg/ruby:2.7-browsers
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;circleci-公式-orb-の利用&quot;&gt;CircleCI 公式 Orb の利用&lt;/h2&gt;
+
+&lt;p&gt;今回の変更とあわせて、下記２つのCircleCI公式Orbも導入しました。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;ruby&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby@1.1.2&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;browser-tools&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/browser-tools@1.1.3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rspec-の実行&quot;&gt;RSpec の実行&lt;/h2&gt;
+
+&lt;p&gt;上述のOrbを有効活用することで&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;bundle Install&lt;/li&gt;
+  &lt;li&gt;chromedriverインストール&lt;/li&gt;
+  &lt;li&gt;rspecの実行&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;のstepを下記のようにシンプルに記述することが可能になります。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rspec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chrome&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chromedriver&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bin/rails db:schema:load --trace&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rspec-test&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rubocop-の実行&quot;&gt;rubocop の実行&lt;/h2&gt;
+
+&lt;p&gt;rubocop の実行も同様に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; Orbに組み込まれており、簡単に実行できます。&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rubocop-check&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;最終形&quot;&gt;最終形&lt;/h2&gt;
+
+&lt;p&gt;実際に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へと移行した Pull Request の全体像としては下記のようになります。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;Migrate CircleCI image from circleci/ruby to cimg/ruby by toshimaru · Pull Request&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;紹介したCircleCI Orbs
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/images/image/cimg/ruby&quot;&gt;cimg/ruby - CircleCI&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/CircleCI-Public/circleci-demo-ruby-rails/blob/master/.circleci/config.yml&quot;&gt;circleci-demo-ruby-rails/config.yml at master · CircleCI-Public/circleci-demo-ruby-rails&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://circleci.com/ja/blog/announcing-our-next-generation-convenience-images-smaller-faster-more-deterministic/&quot;&gt;次世代コンビニエンス イメージをリリース: より小さく、速く、確定的&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><category term="ci" /><summary type="html">2020年にCircleCIの次世代イメージ・cimg が登場しました1。 次世代コンビニエンス イメージをリリース: より小さく、速く、確定的 &amp;#8617;</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cimg.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cimg.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">はじめてのCircleCI Orbsを公開した</title><link href="https://blog.toshimaru.net/my-first-circleci-orbs/" rel="alternate" type="text/html" title="はじめてのCircleCI Orbsを公開した" /><published>2018-12-02T00:00:00+09:00</published><updated>2018-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/my-first-circleci-orbs</id><content type="html" xml:base="https://blog.toshimaru.net/my-first-circleci-orbs/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install &lt;a href=&quot;https://t.co/Ikd11JmEFd&quot;&gt;https://t.co/Ikd11JmEFd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw&quot;&gt;November 30, 2018&lt;/a&gt;&lt;/blockquote&gt;
 
 &lt;p&gt;はじめてのCircleCI Orbsを公開した。そのメモ。&lt;/p&gt;
 
