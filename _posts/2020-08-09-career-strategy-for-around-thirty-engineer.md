@@ -5,7 +5,7 @@ image: "/images/posts/career/slide_0.jpg"
 description: "リードエンジニアから学ぶMedPeerのプロダクト開発という僕が所属する企業のイベントで、「アラサーエンジニアの生存戦略」というタイトルで発表しました。もともとの発表の着想となったエントリはこちらになります。 エンジニアリングとは常に学習し続けることである。思うに、コードを書かず学習意欲を失ってしまった35歳のおじさんたちが自分がコードが書けないこと・学ばないことの言い訳として言い出し始めたのがこの「35歳定年説」の真実じゃないだろうか。"
 tags: presentation
 hideimage: true
-last_modified_at: 2020-09-11
+last_modified_at: 2021-03-01
 ---
 
 [リードエンジニアから学ぶMedPeerのプロダクト開発](https://medpeer.connpass.com/event/181835/)という僕が所属する企業のイベントで、「[アラサーエンジニアの生存戦略](https://speakerdeck.com/toshimaru/career-strategy-for-around-thirty-engineer)」というタイトルで発表しました。
@@ -75,7 +75,7 @@ last_modified_at: 2020-09-11
 
 ### 35歳定年説とか関係なさそうな人
 
-- Miyagawa さん
+- [Miyagawa](https://twitter.com/miyagawa) さん
   - [Rebuild.fm](https://rebuild.fm/)のホストの方
   - 昔からPerl Hackerとして有名で、現Fastly勤務、アメリカ在住
 - [kazuho](https://twitter.com/kazuho) さん
@@ -94,6 +94,16 @@ last_modified_at: 2020-09-11
   - 彼のすごさはこの記事に集約されています。絶対マネはできませんが...
     - > 僕は、1 日に少なくとも 3,000 行程度、多く書くときで 10,000 行以上のプログラムを書くことができる。その結果、多い月で 10 万行 / 月くらいである。なお、言語は書くソフトウェアの性質上、大半が C 言語である。
     - [論理的思考の放棄 - 登 大遊 (Daiyuu Nobori) の個人日記](https://softether.hatenadiary.org/entry/20070324/p1)
+- [rui](https://twitter.com/rui314)さん
+  - [Turing Complete FM](https://turingcomplete.fm/) のホストの方
+  - [低レイヤを知りたい人のためのCコンパイラ作成入門](https://www.sigbus.info/compilerbook)を公開されている。無料ながらめちゃくちゃいいコンテンツ！
+  - YouTube でもプログラミング配信したり質問を受け付けたり情報発信している [Rui Ueyama - YouTube](https://www.youtube.com/channel/UCyEOiuZoutEJrE3zvfJV7aQ)
+
+追記:
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Ruiさんもこう言ってるし先般の僕の発表とかは真に受けないようにしましょう。 <a href="https://t.co/BEeDTtugtV">https://t.co/BEeDTtugtV</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1305744154182389760?ref_src=twsrc%5Etfw">September 15, 2020</a></blockquote>
+
+※ ちなみにruiさんの当該Tweetは僕に対するエアリプってわけではないようです[^3]。
 
 ### 楽しんで技術学習している人
 
@@ -168,3 +178,4 @@ last_modified_at: 2020-09-11
 
 [^1]: ここではあくまで知名度のある人だけ書きます。ですが有名であることがロールモデルになる人の必要条件というわけではありません。
 [^2]: 実際、はてブコメントを観ていると「アラサーより上の世代だけどわかる」というコメントが寄せられていました。
+[^3]: <https://twitter.com/rui314/status/1305744753078595584>
