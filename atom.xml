@@ -1,4 +1,152 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-08T10:19:29+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）</title><link href="https://blog.toshimaru.net/enable-disqus-again/" rel="alternate" type="text/html" title="Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）" /><published>2021-03-07T00:00:00+09:00</published><updated>2021-03-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/enable-disqus-again</id><content type="html" xml:base="https://blog.toshimaru.net/enable-disqus-again/">&lt;p&gt;タイトルの通り。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-16T08:57:00+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/">&lt;p&gt;本記事では、マルチステージビルド構成の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;のビルドの並列実行について紹介したいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Docker Desktop v3.2.1
+    &lt;ul&gt;
+      &lt;li&gt;Docker v20.10&lt;/li&gt;
+      &lt;li&gt;Docker Compose v1.28&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/docker/desktop1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+
+&lt;p&gt;今回テストで使うマルチステージビルドのサンプルとなる&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;は下記です。&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test1&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test2&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test3&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test1 /tmp /tmp&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test2 /tmp /tmp&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test3 /tmp /tmp&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;直列実行-vs-並列実行&quot;&gt;直列実行 vs 並列実行&lt;/h2&gt;
+
+&lt;p&gt;実際に上述の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; のビルドを並列実行しない場合（直列実行）と並列実行する場合の結果を比較してみます。&lt;/p&gt;
+
+&lt;h3 id=&quot;並列実行しない場合&quot;&gt;並列実行しない場合&lt;/h3&gt;
+
+&lt;p&gt;並列実行をOFFにして実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=0&lt;/code&gt; の環境変数をセットして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker build&lt;/code&gt;を行います。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;DOCKER_BUILDKIT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Sending build context to Docker daemon  331.1MB
+Step 1/13 : FROM alpine as test1
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;gp&quot;&gt;Step 2/13 : RUN sleep 10.1 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test1
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;11b4518313de
+&lt;span class=&quot;go&quot;&gt;Step 3/13 : FROM alpine as test2
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;gp&quot;&gt;Step 4/13 : RUN sleep 10.2 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test2
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;c61101646517
+&lt;span class=&quot;go&quot;&gt;Step 5/13 : FROM alpine as test3
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;gp&quot;&gt;Step 6/13 : RUN sleep 10.3 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test3
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;1aa97a170923
+&lt;span class=&quot;go&quot;&gt;Step 7/13 : FROM alpine
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;go&quot;&gt;Step 8/13 : RUN echo &quot;build start&quot;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;8b2b09749321
+&lt;span class=&quot;gp&quot;&gt;Step 9/13 : RUN sleep 10.0 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from main
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;bc3f772d3fb1
+&lt;span class=&quot;go&quot;&gt;Step 10/13 : COPY --from=test1 /tmp /tmp
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0f861020f1c0
+&lt;span class=&quot;go&quot;&gt;Step 11/13 : COPY --from=test2 /tmp /tmp
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;eea3d212c0b7
+&lt;span class=&quot;go&quot;&gt;Step 12/13 : COPY --from=test3 /tmp /tmp
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;9beba31a0ff6
+&lt;span class=&quot;go&quot;&gt;Step 13/13 : RUN echo &quot;build finished&quot;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0986bef3d18f
+&lt;span class=&quot;go&quot;&gt;Successfully built 0986bef3d18f
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が直列に実行されるため、ビルドに &lt;strong&gt;最低でも40秒&lt;/strong&gt; かかっていました。&lt;/p&gt;
+
+&lt;h3 id=&quot;並列実行する場合&quot;&gt;並列実行する場合&lt;/h3&gt;
+
+&lt;p&gt;では次に並列実行してみましょう。&lt;/p&gt;
+
+&lt;p&gt;並列実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; をセットするか、私の環境の場合 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT&lt;/code&gt; の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;[+] Building 13.9s (14/14) FINISHED
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load build definition from Dockerfile                                            0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring dockerfile: 37B                                                             0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load .dockerignore                                                               0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring context: 2B                                                                 0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load metadata &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;docker.io/library/alpine:latest                                0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;CACHED &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 1/2] FROM docker.io/library/alpine                                            0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test2 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2                                              12.4s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 2/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;                                                        2.3s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3                                              12.5s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test1 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1                                              12.3s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 3/7] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main                                             10.6s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 4/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test1 /tmp /tmp                                                   0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 5/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test2 /tmp /tmp                                                   0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 6/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test3 /tmp /tmp                                                   0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 7/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;                                                     0.4s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;exporting to image                                                                          0.2s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; exporting layers                                                                         0.2s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; writing image sha256:2dfb39f0fbed99a19fee51b23db685a0878eed7291bce08e88c3226e8fea271d    0.0s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が並列に実行されるため、全体として10秒程度でビルドが終了しています。&lt;/p&gt;
+
+&lt;h2 id=&quot;比較結果&quot;&gt;比較結果&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;ビルド時間&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;並列実行しない場合&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;50秒&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;並列実行する場合&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;15秒&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;今回サンプルとなった &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; の場合、&lt;strong&gt;3倍の高速化&lt;/strong&gt; に成功しました。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://kotaroooo0-dev.hatenablog.com/entry/2020/06/10/225333&quot;&gt;DockerイメージのビルドをBuildKitで並列実行し高速化する - 🤖&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://matsuand.github.io/docs.docker.jp.onthefly/develop/develop-images/multistage-build/&quot;&gt;マルチステージビルドの利用 | Docker ドキュメント&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html">本記事では、マルチステージビルド構成のDockerfileのビルドの並列実行について紹介したいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）</title><link href="https://blog.toshimaru.net/enable-disqus-again/" rel="alternate" type="text/html" title="Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）" /><published>2021-03-07T00:00:00+09:00</published><updated>2021-03-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/enable-disqus-again</id><content type="html" xml:base="https://blog.toshimaru.net/enable-disqus-again/">&lt;p&gt;タイトルの通り。&lt;/p&gt;
 
 &lt;p&gt;本ブログは &lt;a href=&quot;https://disqus.com/&quot;&gt;Disqus&lt;/a&gt; を使ってコメントフォームを設置しています。いや、正確には設置していました。&lt;/p&gt;
 
@@ -618,260 +766,4 @@
       &lt;p&gt;RailsDM2018で発表したこちらの内容もあわせて参考にしていただけると :pray: &lt;a href=&quot;/rdm2018-active-record-anti-patterns/&quot;&gt;railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました&lt;/a&gt; &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rspec" /><category term="rails" /><summary type="html">Kaigi on Railsで「FactoryBot the Right Way」というタイトルで発表しました1。 たぶん文法的には「FactoryBot in the right way」ってのが正しい気がするけど、こちらがゴロが良かったということでそれはご愛嬌で。。。 &amp;#8617;</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">「アラサーエンジニアの生存戦略」を発表しました</title><link href="https://blog.toshimaru.net/career-strategy-for-around-thirty-engineer/" rel="alternate" type="text/html" title="「アラサーエンジニアの生存戦略」を発表しました" /><published>2020-08-09T00:00:00+09:00</published><updated>2021-03-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/career-strategy-for-around-thirty-engineer</id><content type="html" xml:base="https://blog.toshimaru.net/career-strategy-for-around-thirty-engineer/">&lt;p&gt;&lt;a href=&quot;https://medpeer.connpass.com/event/181835/&quot;&gt;リードエンジニアから学ぶMedPeerのプロダクト開発&lt;/a&gt;という僕が所属する企業のイベントで、「&lt;a href=&quot;https://speakerdeck.com/toshimaru/career-strategy-for-around-thirty-engineer&quot;&gt;アラサーエンジニアの生存戦略&lt;/a&gt;」というタイトルで発表しました。&lt;/p&gt;
-
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;314bb46f6f1e423d98dddadd84e9bc77&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
-
-&lt;h2 id=&quot;発表の経緯&quot;&gt;発表の経緯&lt;/h2&gt;
-
-&lt;p&gt;もともとの発表の着想となったエントリはこちらになります。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;/like-a-sponge-as-an-engineer/&quot;&gt;技術者としてスポンジであり続けること　あるいは老害回避戦略の話&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;エンジニアリングとは常に学習し続けることである。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;思うに、コードを書かず学習意欲を失ってしまった35歳のおじさんたちが自分がコードが書けないこと・学ばないことの言い訳として言い出し始めたのがこの「35歳定年説」の真実じゃないだろうか。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;この文章は僕自身が若手とは言えない年齢となり今後シニアな立場へとなっていく中で「自分は老害化していくのではないか」という危機感から自戒も込めて書いたものである。願わくば五年後十年後自分がここに書いたような老害になっていないことを祈る。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;この記事のトピックとしては、「エンジニアの学習」「老害にならないためのマインド」になります。&lt;/p&gt;
-
-&lt;p&gt;これらのトピックに「キャリア論」を加えて、「エンジニアにとってのキャリア戦略」みたいな話はどこかでまとめてみたいなー、という思いがありました。&lt;/p&gt;
-
-&lt;p&gt;そんな中、僕の所属する企業から「会社ミートアップを開催するので、シニアエンジニア向けのネタで登壇してくれないか？」という話が舞い込んできたので、今回の発表に至ったという感じです。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;会社主催イベントの登壇依頼来ているけど、同僚が十分にテックトークしてくれそうなので、僕はアラサーエンジニア向けのエモエモ・エンジニアキャリアトークでもしようかと画策している&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1281043327958147072?ref_src=twsrc%5Etfw&quot;&gt;July 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;また、僕自身がアラサーといえる世代ではなくなってきて（35歳に接近してきていて）自分の今の考えをスナップショットとして残しておきたかったという思いもあります。この発表内容がアラフォーになっても通じるものかは今後自分自身の身を持って検証していきたいと思っています。&lt;/p&gt;
-
-&lt;p&gt;正直、この手のキャリア論みたいなものはおっさんの成功体験語りみたいなものになりがちな気がしていて（それこそ老害トークですね）、そうはならないように気をつけたつもりです。&lt;/p&gt;
-
-&lt;p&gt;なのでスライド中にも書いた通り、歩むキャリアに「正解はない」というスタンスですし、最終的に「自分の道は自分で決める」というスタンスです。安易な正解はないとした上で、確固たる軸は確立しておきましょうねという話です。&lt;/p&gt;
-
-&lt;h2 id=&quot;発表のメインメッセージ&quot;&gt;発表のメインメッセージ&lt;/h2&gt;
-
-&lt;p&gt;今回の発表のメインメッセージとしては要約すると下記の通りです。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;技術の判断軸（審美眼）を持ち、継続的に学習しましょう&lt;/li&gt;
-  &lt;li&gt;自身の仕事の価値観（仕事観）を明確にし、成長できるキャリアを歩みましょう&lt;/li&gt;
-  &lt;li&gt;成長のためにチャレンジし続けよう&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;審美眼という言葉は &lt;a href=&quot;https://twitter.com/t_wada&quot;&gt;twada&lt;/a&gt; さんからお借りいたしました。詳しくは&lt;a href=&quot;https://speakerdeck.com/twada/worse-is-better-understanding-the-spiral-of-technologies-2019-edition&quot;&gt;スライド&lt;/a&gt;と合わせて下記Podcastを聴いてみるとよいかと思います。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://fukabori.fm/episode/28&quot;&gt;28. 技術選定の審美眼(1) w/ twada | fukabori.fm&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://fukabori.fm/episode/29&quot;&gt;29. 技術選定の審美眼(2) w/ twada | fukabori.fm&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;お前の場合どうなのよ&quot;&gt;お前の場合どうなのよ？&lt;/h2&gt;
-
-&lt;p&gt;おっさんの成功体験語りにならないようにあえて自分の話は発表内には多くは入れませんでした。ただ本発表に至る原体験としては僕自身の20代の経験が元になっていることは間違いありません。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_12.jpg&quot; alt=&quot;全能感&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;これとかまさに20代中盤くらいの僕です。&lt;/p&gt;
-
-&lt;p&gt;若手時代は黙ってても成長してきました。時期的には丁度新卒3~5年くらいですかね。そりゃそうだ、知らないことしかない。ただ目の前の技術を追いかけるだけで十分成長してきた。ある程度成長実感を得た、さぁどうする？　周囲を見渡す、そこにはさらに広い世界があった。自分の小ささを実感する、20代後半。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_19.jpg&quot; alt=&quot;憂鬱&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;そんなときに僕がとったチャレンジが「マネージャーへの挑戦」でした。単に技術者としてやっているだけじゃ成長に陰りが出てきた。＜非連続的な成長＞へとつながるNext Dotがマネージャーへの挑戦だったわけです。実際振り返ってみると、これは僕にとっての大きな成長へとつながったと実感しています。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_59.jpg&quot; alt=&quot;チャレンジする&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;（一方で、この手のチャレンジは誰しもが即座にできるわけでなくタイミング・運も重要なので、そういう意味で僕は運が良かったと思っています）&lt;/p&gt;
-
-&lt;h2 id=&quot;ロールモデルになっている人たち&quot;&gt;ロールモデルになっている人たち&lt;/h2&gt;
-
-&lt;p&gt;発表内ではバイネームで言及しなかったものの、いくつかロールモデルになっている人たちを補足します&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-
-&lt;h3 id=&quot;35歳定年説とか関係なさそうな人&quot;&gt;35歳定年説とか関係なさそうな人&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/miyagawa&quot;&gt;Miyagawa&lt;/a&gt; さん
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://rebuild.fm/&quot;&gt;Rebuild.fm&lt;/a&gt;のホストの方&lt;/li&gt;
-      &lt;li&gt;昔からPerl Hackerとして有名で、現Fastly勤務、アメリカ在住&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/kazuho&quot;&gt;kazuho&lt;/a&gt; さん
-    &lt;ul&gt;
-      &lt;li&gt;同Fastly勤務、&lt;a href=&quot;https://github.com/h2o/h2o&quot;&gt;H2O&lt;/a&gt;の作者&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;http://blog.kazuhooku.com/2017/01/fastly.html&quot;&gt;OSS活動が転職のきっかけになった&lt;/a&gt;のは良い話&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/mattn&quot;&gt;mattn&lt;/a&gt; さん
-    &lt;ul&gt;
-      &lt;li&gt;OSSの世界で大活躍している方&lt;/li&gt;
-      &lt;li&gt;本当に幅広くOSSコントリビュートされていてすごいなぁと尊敬します&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Guido van Rossum
-    &lt;ul&gt;
-      &lt;li&gt;Python の作者。GoogleからDropboxに転職&lt;/li&gt;
-      &lt;li&gt;引退に至る最後の最後までエンジニアリングし続けた人。カッコイイ！
-        &lt;ul&gt;
-          &lt;li&gt;
-            &lt;blockquote&gt;
-              &lt;p&gt;While mypy was one of the projects Guido spent a lot of his time on, he also cared deeply about making engineering culture, both at Dropbox and in the Python community, more inclusive for women.&lt;/p&gt;
-            &lt;/blockquote&gt;
-          &lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;https://blog.dropbox.com/topics/company/thank-you--guido&quot;&gt;Thank you, Guido | Dropbox Blog&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;登大遊さん
-    &lt;ul&gt;
-      &lt;li&gt;最近だとこのニュースが話題になりました: &lt;a href=&quot;https://xtech.nikkei.com/atcl/nxt/column/18/00001/04192/&quot;&gt;天才プログラマーのテレワークシステムに4万人殺到、開発費わずか65万円&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;彼のすごさはこの記事に集約されています。絶対マネはできませんが…
-        &lt;ul&gt;
-          &lt;li&gt;
-            &lt;blockquote&gt;
-              &lt;p&gt;僕は、1 日に少なくとも 3,000 行程度、多く書くときで 10,000 行以上のプログラムを書くことができる。その結果、多い月で 10 万行 / 月くらいである。なお、言語は書くソフトウェアの性質上、大半が C 言語である。&lt;/p&gt;
-            &lt;/blockquote&gt;
-          &lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;https://softether.hatenadiary.org/entry/20070324/p1&quot;&gt;論理的思考の放棄 - 登 大遊 (Daiyuu Nobori) の個人日記&lt;/a&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/rui314&quot;&gt;rui&lt;/a&gt;さん
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://turingcomplete.fm/&quot;&gt;Turing Complete FM&lt;/a&gt; のホストの方&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://www.sigbus.info/compilerbook&quot;&gt;低レイヤを知りたい人のためのCコンパイラ作成入門&lt;/a&gt;を公開されている。無料ながらめちゃくちゃいいコンテンツ！&lt;/li&gt;
-      &lt;li&gt;YouTube でもプログラミング配信したり質問を受け付けたり情報発信している &lt;a href=&quot;https://www.youtube.com/channel/UCyEOiuZoutEJrE3zvfJV7aQ&quot;&gt;Rui Ueyama - YouTube&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;追記:&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Ruiさんもこう言ってるし先般の僕の発表とかは真に受けないようにしましょう。 &lt;a href=&quot;https://t.co/BEeDTtugtV&quot;&gt;https://t.co/BEeDTtugtV&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1305744154182389760?ref_src=twsrc%5Etfw&quot;&gt;September 15, 2020&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;※ ちなみにruiさんの当該Tweetは僕に対するエアリプってわけではないようです&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-
-&lt;h3 id=&quot;楽しんで技術学習している人&quot;&gt;楽しんで技術学習している人&lt;/h3&gt;
-
-&lt;p&gt;「継続的学習において楽しむことは重要だ」と発表しましたが、楽しんで学習を継続してる方で参考にしたい方でいうと下記です。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/DQNEO&quot;&gt;ドキュネオ&lt;/a&gt;さん
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://qiita.com/DQNEO/items/2efaec18772a1ae3c198&quot;&gt;Goコンパイラをゼロから作って147日でセルフホストを達成した - Qiita&lt;/a&gt;
-        &lt;ul&gt;
-          &lt;li&gt;楽しんで続けていたからこそできる偉業だなぁと思いました&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=d0mYwTj2O1M&quot;&gt;builderscon の発表&lt;/a&gt;も素晴らしい&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/tomzoh&quot;&gt;tomzoh&lt;/a&gt; さん
-    &lt;ul&gt;
-      &lt;li&gt;PHPer Kaigi Organizerの方（いろいろなイベントのオーガナイザーやってらっしゃってすごい）&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://www.hasegawa-tomoki.com/blog/2018/10/16/php-terminal-nes-emulator/&quot;&gt;PHPで動くファミコンエミュレータを作った&lt;/a&gt;
-        &lt;ul&gt;
-          &lt;li&gt;PHPでファミコンエミュレータを作ってみようという発想がすごいし、達成するのもすごい&lt;/li&gt;
-          &lt;li&gt;（とむぞーさん以外にもファミコンエミュレータを作ってらっしゃる方は多くいるようです。こういった興味の持てる学習トピックを１つ見つけてやり込むのは良さそうですね）&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/Lily0727K&quot;&gt;Lillian&lt;/a&gt; さん
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://note.com/neko_chan0214/n/n3a64bc1e1412&quot;&gt;医師 → Google という異色の経歴&lt;/a&gt;の方&lt;/li&gt;
-      &lt;li&gt;地頭よければソフトウェアエンジニアへの転身も華麗にできるという良い例&lt;/li&gt;
-      &lt;li&gt;プログラミング初学者は学習リソースとか学習方法は参考にしてみていいかもしれません&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;エンジニア35歳定年説の嘘&quot;&gt;「エンジニア35歳定年説」の嘘&lt;/h2&gt;
-
-&lt;p&gt;上記に紹介させていただいた方々はほんのごく一部ですが、そんな方々を見ていて「もう35歳だしコードは書けないわぁ」とか「新しいこと学習できなくなってきたわぁ」とか言ってられないのは明白ですね。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_22.jpg&quot; alt=&quot;定年説&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;アラフォーアラフィフに向けて&quot;&gt;アラフォー、アラフィフに向けて&lt;/h2&gt;
-
-&lt;p&gt;一方で「生涯コードを書き続ける」ことだけが正解だとは思っていなくて、Linux作者のリーナス・トーバルズやRuby作者のMatzのように&lt;a href=&quot;https://ja.wikipedia.org/wiki/%E5%84%AA%E3%81%97%E3%81%84%E7%B5%82%E8%BA%AB%E3%81%AE%E7%8B%AC%E8%A3%81%E8%80%85&quot;&gt;優しい終身の独裁者&lt;/a&gt;として存在を確立している人もいます。彼らは今でこそ最前線でコードは書いてはいませんが、コミュニティにとって重要な存在であることは言うまでもないでしょう。&lt;/p&gt;
-
-&lt;p&gt;またエンジニアキャリアパスの上を目指す人は技術以外の知識を深める必要が出てくるでしょう。具体的には組織運営の手法であったり経営に関する知識であったりします。アラフォー、アラフィフに向けてジョブグレードを高めていきたい人にとってはより多角的な知識・経験が求められるようになっていく気がしています。&lt;/p&gt;
-
-&lt;p&gt;今回の発表は僕自身がアラサーだったのでターゲットとしてもアラサー世代になりましたが、アラフォー世代にも通じるところが多くあるとは考えているので&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;（アラフィフ世代に通じるかは自信がないですが）、今後僕がアラフォー世代になったときに本発表内容がどれだけ通じるのかは僕自身検証していきたいと思っています。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_38.jpg&quot; alt=&quot;雑キャリアパス&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;アンサーソング&quot;&gt;アンサーソング&lt;/h2&gt;
-
-&lt;p&gt;元同僚が良いツッコミを書いてくれました。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://note.com/imagawa_yakata/n/na2ddc9126f7f&quot;&gt;アラサー終盤エンジニアの生存戦略｜いまがわ｜note&lt;/a&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;しかしこうした「成長」を最も重視したキャリアのモデルはアラサーエンジニア全般に適したものでは無い。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;要するにとしまるさんの発表はエンジニアの「成長戦略」であって「生存戦略」ではないと言いたかった&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;指摘としてはもっともで、発表タイトルとしては＜生存戦略＞というキャッチーな言葉をあえて選びましたが、正しくタイトルを付けると＜成長戦略＞であり、もっと言うなら「アラサーエンジニアの成長のためのキャリア戦略」と言うべきものでしょう。&lt;/p&gt;
-
-&lt;p&gt;本発表は「成長したいと思っているエンジニア」を暗黙的なターゲットとしており、「別に成長とかどうでもいいし〜」みたいな人にはあまり響かない・刺さらないかもしれません。一方、そんな人にも共通して言えることがあって、それが「キャリアの軸・仕事観は持っておく」ということです。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_67.jpg&quot; alt=&quot;ぶれない軸&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;それさえハッキリしていれば特に僕から言うこともないし、迷うこともないと思うんですよね。&lt;/p&gt;
-
-&lt;p&gt;例えば「俺は何より金が重要じゃ！」って人はお賃金だけを指標として持ってキャリアを選択していけばいいし、「この事業にフルコミットしたいんじゃ！他の要素はどうでもええ！」って人は自分の目先の成長ではなくフルコミットしたい事業成長に全力を注ぐべきだと思います（えてしてそれが自分の成長にも結果的につながるケースが多い）。むしろそちらのほうが変に＜成長＞に束縛されず楽しく生きていけそうで健全とさえ感じます。&lt;/p&gt;
-
-&lt;p&gt;発表内のメッセージとしては「エンジニア業界で長く生存し続けられるのは最後まで学習しつづけるヤツだ」という意識高い系メッセージでしたが、そもそも成長しなくともある程度技術力があればしばらくやっていけると正直思いますし、「成長しないキャリアを選択した」のであればそれはそれで全く否定すべきものではないでしょう。&lt;/p&gt;
-
-&lt;p&gt;最終的にやっぱり一番大事なのは「&lt;strong&gt;自分の道は自分で決める&lt;/strong&gt;」、これに尽きると思います。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://files.speakerdeck.com/presentations/314bb46f6f1e423d98dddadd84e9bc77/slide_68.jpg&quot; alt=&quot;自分の道は自分で決める&quot; /&gt;&lt;/p&gt;
-
-&lt;!-- （説教臭いのでカット）年齢を経るにつれ人間の価値観は良い意味でも悪い意味でも固定化していきます。（僕の発表含め）それに口出しする人がいるかもしれません。それに「うるせぇ」と返せるくらいの軸を持ちましょう。他人に耳を貸すなという意味ではありません。他の人の話を聴いた上でそれを自分の中で消化（昇華）して、「これが俺の人生だ」って納得して、胸を張って言える人生が素敵だなぁと思います。 --&gt;
-
-&lt;h2 id=&quot;発表を終えての感想&quot;&gt;発表を終えての感想&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;今回はエモめ成分多めの発表だったので Keynote を使ってスライドを作成しました
-    &lt;ul&gt;
-      &lt;li&gt;図・絵を自由に入れられたり、レイアウトを柔軟に変えたりできるのは良い（markdown のみで作ったスライドだとこうもいきません）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;画像素材は &lt;a href=&quot;https://pixabay.com/ja/&quot;&gt;pixabay&lt;/a&gt; を使わせていただきました
-    &lt;ul&gt;
-      &lt;li&gt;プレゼン内で画像素材を適切に使うことで、オーディエンスに内容をよりイメージさせやすくすることができます&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;リモート発表は&lt;a href=&quot;/how-to-deal-with-fat-model-after/&quot;&gt;銀座Railsの前回&lt;/a&gt;に引き続き二回目だったのですんなりできました
-    &lt;ul&gt;
-      &lt;li&gt;やっぱりオーディエンスの顔が見れないとか、反応ないとかは悲しいけど、これがIT系勉強会のニューノーマルだと思って落ち着くまではこのスタイルを続けたいと思います&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;ここではあくまで知名度のある人だけ書きます。ですが有名であることがロールモデルになる人の必要条件というわけではありません。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://twitter.com/rui314/status/1305744753078595584&quot;&gt;https://twitter.com/rui314/status/1305744753078595584&lt;/a&gt; &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;実際、はてブコメントを観ていると「アラサーより上の世代だけどわかる」というコメントが寄せられていました。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><summary type="html">リードエンジニアから学ぶMedPeerのプロダクト開発という僕が所属する企業のイベントで、「アラサーエンジニアの生存戦略」というタイトルで発表しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/career/slide_0.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/career/slide_0.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rspec" /><category term="rails" /><summary type="html">Kaigi on Railsで「FactoryBot the Right Way」というタイトルで発表しました1。 たぶん文法的には「FactoryBot in the right way」ってのが正しい気がするけど、こちらがゴロが良かったということでそれはご愛嬌で。。。 &amp;#8617;</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

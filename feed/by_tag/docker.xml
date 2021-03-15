@@ -1,4 +1,152 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/docker.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-08T10:19:29+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/docker.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">docker-compose で Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2020-01-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/docker.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-16T08:57:00+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/docker.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/">&lt;p&gt;本記事では、マルチステージビルド構成の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;のビルドの並列実行について紹介したいと思います。&lt;/p&gt;
+
+&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Docker Desktop v3.2.1
+    &lt;ul&gt;
+      &lt;li&gt;Docker v20.10&lt;/li&gt;
+      &lt;li&gt;Docker Compose v1.28&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/docker/desktop1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+
+&lt;p&gt;今回テストで使うマルチステージビルドのサンプルとなる&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;は下記です。&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test1&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test2&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test3&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test1 /tmp /tmp&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test2 /tmp /tmp&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test3 /tmp /tmp&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;直列実行-vs-並列実行&quot;&gt;直列実行 vs 並列実行&lt;/h2&gt;
+
+&lt;p&gt;実際に上述の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; のビルドを並列実行しない場合（直列実行）と並列実行する場合の結果を比較してみます。&lt;/p&gt;
+
+&lt;h3 id=&quot;並列実行しない場合&quot;&gt;並列実行しない場合&lt;/h3&gt;
+
+&lt;p&gt;並列実行をOFFにして実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=0&lt;/code&gt; の環境変数をセットして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker build&lt;/code&gt;を行います。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;DOCKER_BUILDKIT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;Sending build context to Docker daemon  331.1MB
+Step 1/13 : FROM alpine as test1
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;gp&quot;&gt;Step 2/13 : RUN sleep 10.1 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test1
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;11b4518313de
+&lt;span class=&quot;go&quot;&gt;Step 3/13 : FROM alpine as test2
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;gp&quot;&gt;Step 4/13 : RUN sleep 10.2 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test2
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;c61101646517
+&lt;span class=&quot;go&quot;&gt;Step 5/13 : FROM alpine as test3
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;gp&quot;&gt;Step 6/13 : RUN sleep 10.3 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test3
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;1aa97a170923
+&lt;span class=&quot;go&quot;&gt;Step 7/13 : FROM alpine
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
+&lt;span class=&quot;go&quot;&gt;Step 8/13 : RUN echo &quot;build start&quot;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;8b2b09749321
+&lt;span class=&quot;gp&quot;&gt;Step 9/13 : RUN sleep 10.0 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from main
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;bc3f772d3fb1
+&lt;span class=&quot;go&quot;&gt;Step 10/13 : COPY --from=test1 /tmp /tmp
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0f861020f1c0
+&lt;span class=&quot;go&quot;&gt;Step 11/13 : COPY --from=test2 /tmp /tmp
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;eea3d212c0b7
+&lt;span class=&quot;go&quot;&gt;Step 12/13 : COPY --from=test3 /tmp /tmp
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;9beba31a0ff6
+&lt;span class=&quot;go&quot;&gt;Step 13/13 : RUN echo &quot;build finished&quot;
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
+&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0986bef3d18f
+&lt;span class=&quot;go&quot;&gt;Successfully built 0986bef3d18f
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が直列に実行されるため、ビルドに &lt;strong&gt;最低でも40秒&lt;/strong&gt; かかっていました。&lt;/p&gt;
+
+&lt;h3 id=&quot;並列実行する場合&quot;&gt;並列実行する場合&lt;/h3&gt;
+
+&lt;p&gt;では次に並列実行してみましょう。&lt;/p&gt;
+
+&lt;p&gt;並列実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; をセットするか、私の環境の場合 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT&lt;/code&gt; の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;go&quot;&gt;[+] Building 13.9s (14/14) FINISHED
+&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load build definition from Dockerfile                                            0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring dockerfile: 37B                                                             0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load .dockerignore                                                               0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring context: 2B                                                                 0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load metadata &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;docker.io/library/alpine:latest                                0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;CACHED &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 1/2] FROM docker.io/library/alpine                                            0.0s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test2 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2                                              12.4s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 2/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;                                                        2.3s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3                                              12.5s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test1 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1                                              12.3s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 3/7] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main                                             10.6s&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 4/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test1 /tmp /tmp                                                   0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 5/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test2 /tmp /tmp                                                   0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 6/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test3 /tmp /tmp                                                   0.1s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 7/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;                                                     0.4s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;exporting to image                                                                          0.2s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; exporting layers                                                                         0.2s
+&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; writing image sha256:2dfb39f0fbed99a19fee51b23db685a0878eed7291bce08e88c3226e8fea271d    0.0s
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が並列に実行されるため、全体として10秒程度でビルドが終了しています。&lt;/p&gt;
+
+&lt;h2 id=&quot;比較結果&quot;&gt;比較結果&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;ビルド時間&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;並列実行しない場合&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;50秒&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;並列実行する場合&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;15秒&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;今回サンプルとなった &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; の場合、&lt;strong&gt;3倍の高速化&lt;/strong&gt; に成功しました。&lt;/p&gt;
+
+&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://kotaroooo0-dev.hatenablog.com/entry/2020/06/10/225333&quot;&gt;DockerイメージのビルドをBuildKitで並列実行し高速化する - 🤖&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://matsuand.github.io/docs.docker.jp.onthefly/develop/develop-images/multistage-build/&quot;&gt;マルチステージビルドの利用 | Docker ドキュメント&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html">本記事では、マルチステージビルド構成のDockerfileのビルドの並列実行について紹介したいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">docker-compose で Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2020-01-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
 
 &lt;h2 id=&quot;ゴール&quot;&gt;ゴール&lt;/h2&gt;
 
