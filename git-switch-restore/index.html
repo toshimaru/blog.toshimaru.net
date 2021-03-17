@@ -2,7 +2,7 @@
 <html class="no-js" lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>git switch養成ギプス - Hack Your Design!</title>
+  <title>git switch養成ギプス 〜git checkoutからの卒業〜 - Hack Your Design!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="manifest" href="/site.webmanifest">
@@ -12,14 +12,14 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@toshimaru_e">
-  <meta name="twitter:title" content="git switch養成ギプス - Hack Your Design!">
-  <meta property="og:title" content="git switch養成ギプス - Hack Your Design!">
-  <meta name="description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使っている人をちらほら見るので、git switchに移行していくためのコツを書いてみます。">
-  <meta name="twitter:description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使っている人をちらほら見るので、git switchに移行していくためのコツを書いてみます。">
-  <meta property="og:description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使っている人をちらほら見るので、git switchに移行していくためのコツを書いてみます。">
+  <meta name="twitter:title" content="git switch養成ギプス 〜git checkoutからの卒業〜 - Hack Your Design!">
+  <meta property="og:title" content="git switch養成ギプス 〜git checkoutからの卒業〜 - Hack Your Design!">
+  <meta name="description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使い続けている人をちらほら見るので、本記事ではgit switchに移行していくためのコツを書いてみます。">
+  <meta name="twitter:description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使い続けている人をちらほら見るので、本記事ではgit switchに移行していくためのコツを書いてみます。">
+  <meta property="og:description" content="git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使い続けている人をちらほら見るので、本記事ではgit switchに移行していくためのコツを書いてみます。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/git-switch.png" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/git-switch.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2020-12-09T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/git-switch-restore/">
+  <meta property="article:published_time" content="2020-12-09T00:00:00+09:00"><meta property="article:modified_time" content="2021-03-18T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/git-switch-restore/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -61,16 +61,16 @@
     <div class="main clearfix">
       <div id="contents">
        <div class="post">
-  <h1 class="fadeInLeft">git switch養成ギプス</h1>
+  <h1 class="fadeInLeft">git switch養成ギプス 〜git checkoutからの卒業〜</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2020-12-09T00:00:00+09:00" pubdate>2020/12/09</time>
+      <i class="icon-calendar"></i><time datetime="2020-12-09T00:00:00+09:00" pubdate>2020/12/09 (更新: 2021/03/18)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/git/" rel="tag">git</a>
 
 
     </div>
-    <img class="post-image" src="/images/posts/git-switch.png" alt="(image)git switch養成ギプス" title="git switch養成ギプス" />
+    <img class="post-image" src="/images/posts/git-switch.png" alt="(image)git switch養成ギプス 〜git checkoutからの卒業〜" title="git switch養成ギプス 〜git checkoutからの卒業〜" />
   </div>
 </div>
 
@@ -82,9 +82,9 @@
 
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">One of our favorite open source projects has a big update... Git 2.23 is here!<br /><br />Read all about the latest release and new features ✨<a href="https://t.co/fpQICF8Onc">https://t.co/fpQICF8Onc</a></p>&mdash; GitHub (@github) <a href="https://twitter.com/github/status/1162474366380269568?ref_src=twsrc%5Etfw">August 16, 2019</a></blockquote>
 
-<p>雑に要約すると「<code class="language-plaintext highlighter-rouge">git checkout</code>に機能もたせすぎてわかりにくくなっちゃったから、<code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code>でわかりやすくしたよ！」ってことだと思います。</p>
+<p>雑に要約すると「<strong><code class="language-plaintext highlighter-rouge">git checkout</code>に機能もたせすぎてわかりにくくなっちゃったから、<code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code>でわかりやすくしたよ！</strong>」ってことだと思います。</p>
 
-<p>一方、まだ<code class="language-plaintext highlighter-rouge">git switch</code>に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も<code class="language-plaintext highlighter-rouge">git checkout</code>を使っている人をちらほら見るので、<code class="language-plaintext highlighter-rouge">git switch</code>に移行していくためのコツを書いてみます。</p>
+<p>一方、まだ<code class="language-plaintext highlighter-rouge">git switch</code>に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も<code class="language-plaintext highlighter-rouge">git checkout</code>を使い続けている人をちらほら見るので、本記事では<code class="language-plaintext highlighter-rouge">git switch</code>に移行していくためのコツを書いてみます。</p>
 
 <h2 id="結論">結論</h2>
 
@@ -112,7 +112,7 @@
 
 <h2 id="git-switch時代">git switch時代</h2>
 
-<p><code class="language-plaintext highlighter-rouge">git switch</code> を使いやすくするために下記のようなaliasを設定します。</p>
+<p><code class="language-plaintext highlighter-rouge">git switch</code>を使いやすくするために下記のようなaliasを設定します。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
 [alias]
@@ -120,21 +120,35 @@
   swc = switch -c
 </code></pre></div></div>
 
-<p>こうすることでcheckoutコマンドが下記のように生まれ変わります。</p>
+<p>こうすることで checkout コマンドが下記のように生まれ変わります。</p>
 
 <h3 id="main-branch-へ切り替え">main branch へ切り替え</h3>
+
+<p>before:</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git checkout main
 </code></pre></div></div>
 
-<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch
+<p>after:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git switch main
+</code></pre></div></div>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch を設定している場合
 <span class="gp">$</span><span class="w"> </span>git sw main
 </code></pre></div></div>
 
 <h3 id="main-branch-から-hoge-branch-作成">main branch から hoge branch 作成</h3>
 
+<p>before:</p>
+
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">git checkout -b hoge main
 </span></code></pre></div></div>
+
+<p>after:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git switch <span class="nt">-c</span> hoge main
+</code></pre></div></div>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch <span class="nt">-c</span>
 <span class="go">g swc hoge main
@@ -142,7 +156,9 @@
 
 <h2 id="余談">余談</h2>
 
-<p><code class="language-plaintext highlighter-rouge">git restore</code>に対する良いaliasは今のところ見つかっていません。<code class="language-plaintext highlighter-rouge">git reset</code>とalias的に名前空間かぶつかるのでまだ良い命名できていないんですよね。</p>
+<p><code class="language-plaintext highlighter-rouge">git restore</code>に対する良いaliasは今のところ見つかっていません。</p>
+
+<p><code class="language-plaintext highlighter-rouge">git reset</code>とalias的に名前空間かぶつかるので、自分の中でしっくりくる命名できていないんですよね。何かいいアイディアのお持ちの方は教えてください。</p>
 
 </div>
 
@@ -169,7 +185,7 @@
   
     <li><a href="/git-log-p-s/" title="gitのログから特定の文字列を含むコミットを採掘する">gitのログから特定の文字列を含むコミットを採掘する</a></li>
   
-    <li><a href="/github-and-hub/" title="Github+hubコマンドで快適なGithubライフを営む">Github+hubコマンドで快適なGithubライフを営む</a></li>
+    <li><a href="/github-and-hub/" title="GitHub + hubコマンドで快適な GitHub ライフを営む">GitHub + hubコマンドで快適な GitHub ライフを営む</a></li>
   
     <li><a href="/git-revert-mainline/" title="Gitのrevertの-m(mainline)オプションについて">Gitのrevertの-m(mainline)オプションについて</a></li>
   
@@ -258,9 +274,9 @@ this.page.identifier = "/git-switch-restore/";
       "@type": "Blog",
       "@id": "https://blog.toshimaru.net/git-switch-restore/"
     },
-    "headline": "git switch養成ギプス",
+    "headline": "git switch養成ギプス 〜git checkoutからの卒業〜",
     "datePublished": "2020-12-09T00:00:00+09:00",
-    "author": {
+    "dateModified": "2021-03-18T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"

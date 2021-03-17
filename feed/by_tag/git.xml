@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/git.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-16T08:57:00+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/git.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">git switch養成ギプス</title><link href="https://blog.toshimaru.net/git-switch-restore/" rel="alternate" type="text/html" title="git switch養成ギプス" /><published>2020-12-09T00:00:00+09:00</published><updated>2020-12-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-switch-restore</id><content type="html" xml:base="https://blog.toshimaru.net/git-switch-restore/">&lt;p&gt;本記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2020/git&quot;&gt;Git Advent Calendar 2020&lt;/a&gt; 9日目の記事です。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/git.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-18T08:47:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/git.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">git switch養成ギプス 〜git checkoutからの卒業〜</title><link href="https://blog.toshimaru.net/git-switch-restore/" rel="alternate" type="text/html" title="git switch養成ギプス 〜git checkoutからの卒業〜" /><published>2020-12-09T00:00:00+09:00</published><updated>2021-03-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-switch-restore</id><content type="html" xml:base="https://blog.toshimaru.net/git-switch-restore/">&lt;p&gt;本記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2020/git&quot;&gt;Git Advent Calendar 2020&lt;/a&gt; 9日目の記事です。&lt;/p&gt;
 
 &lt;p&gt;git 2.23 にて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt; というコマンドが導入されたことはみなさん既にご存知のことかと思います。&lt;/p&gt;
 
 &lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;One of our favorite open source projects has a big update... Git 2.23 is here!&lt;br /&gt;&lt;br /&gt;Read all about the latest release and new features ✨&lt;a href=&quot;https://t.co/fpQICF8Onc&quot;&gt;https://t.co/fpQICF8Onc&lt;/a&gt;&lt;/p&gt;&amp;mdash; GitHub (@github) &lt;a href=&quot;https://twitter.com/github/status/1162474366380269568?ref_src=twsrc%5Etfw&quot;&gt;August 16, 2019&lt;/a&gt;&lt;/blockquote&gt;
 
-&lt;p&gt;雑に要約すると「&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;に機能もたせすぎてわかりにくくなっちゃったから、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;でわかりやすくしたよ！」ってことだと思います。&lt;/p&gt;
+&lt;p&gt;雑に要約すると「&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;に機能もたせすぎてわかりにくくなっちゃったから、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;でわかりやすくしたよ！&lt;/strong&gt;」ってことだと思います。&lt;/p&gt;
 
-&lt;p&gt;一方、まだ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;を使っている人をちらほら見るので、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行していくためのコツを書いてみます。&lt;/p&gt;
+&lt;p&gt;一方、まだ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;を使い続けている人をちらほら見るので、本記事では&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行していくためのコツを書いてみます。&lt;/p&gt;
 
 &lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
 
@@ -34,7 +34,7 @@
 
 &lt;h2 id=&quot;git-switch時代&quot;&gt;git switch時代&lt;/h2&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt; を使いやすくするために下記のようなaliasを設定します。&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;を使いやすくするために下記のようなaliasを設定します。&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ~/.gitconfig
 [alias]
@@ -42,21 +42,35 @@
   swc = switch -c
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;こうすることでcheckoutコマンドが下記のように生まれ変わります。&lt;/p&gt;
+&lt;p&gt;こうすることで checkout コマンドが下記のように生まれ変わります。&lt;/p&gt;
 
 &lt;h3 id=&quot;main-branch-へ切り替え&quot;&gt;main branch へ切り替え&lt;/h3&gt;
+
+&lt;p&gt;before:&lt;/p&gt;
 
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git checkout main
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;sw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; switch
+&lt;p&gt;after:&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git switch main
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;sw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; switch を設定している場合
 &lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git sw main
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;main-branch-から-hoge-branch-作成&quot;&gt;main branch から hoge branch 作成&lt;/h3&gt;
 
+&lt;p&gt;before:&lt;/p&gt;
+
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;go&quot;&gt;git checkout -b hoge main
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;after:&lt;/p&gt;
+
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git switch &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; hoge main
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;sw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; switch &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt;
 &lt;span class=&quot;go&quot;&gt;g swc hoge main
@@ -64,7 +78,9 @@
 
 &lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;に対する良いaliasは今のところ見つかっていません。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset&lt;/code&gt;とalias的に名前空間かぶつかるのでまだ良い命名できていないんですよね。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">本記事はGit Advent Calendar 2020 9日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/git-switch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/git-switch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">gitのログから特定の文字列を含むコミットを採掘する</title><link href="https://blog.toshimaru.net/git-log-p-s/" rel="alternate" type="text/html" title="gitのログから特定の文字列を含むコミットを採掘する" /><published>2013-12-02T00:00:00+09:00</published><updated>2013-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-log-p-s</id><content type="html" xml:base="https://blog.toshimaru.net/git-log-p-s/">&lt;p&gt;「このコード書いたのは誰だ？」ってのは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git blame&lt;/code&gt;からの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git show&lt;/code&gt;でOKですが、多くのコミットを重ねている場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git blame&lt;/code&gt;では「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;に対する良いaliasは今のところ見つかっていません。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset&lt;/code&gt;とalias的に名前空間かぶつかるので、自分の中でしっくりくる命名できていないんですよね。何かいいアイディアのお持ちの方は教えてください。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">本記事はGit Advent Calendar 2020 9日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/git-switch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/git-switch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">gitのログから特定の文字列を含むコミットを採掘する</title><link href="https://blog.toshimaru.net/git-log-p-s/" rel="alternate" type="text/html" title="gitのログから特定の文字列を含むコミットを採掘する" /><published>2013-12-02T00:00:00+09:00</published><updated>2013-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-log-p-s</id><content type="html" xml:base="https://blog.toshimaru.net/git-log-p-s/">&lt;p&gt;「このコード書いたのは誰だ？」ってのは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git blame&lt;/code&gt;からの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git show&lt;/code&gt;でOKですが、多くのコミットを重ねている場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git blame&lt;/code&gt;では「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git log -p -S &apos;function shitty_function&apos;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -75,37 +91,37 @@
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;http://blog.eiel.info/blog/2013/06/04/git-log-s/&quot;&gt;このコード書いた誰だよ! そんな時の Git Log -S でもしてみよう&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">「このコード書いたのは誰だ？」ってのはgit blameからのgit showでOKですが、多くのコミットを重ねている場合、git blameでは「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK.</summary></entry><entry><title type="html">Github+hubコマンドで快適なGithubライフを営む</title><link href="https://blog.toshimaru.net/github-and-hub/" rel="alternate" type="text/html" title="Github+hubコマンドで快適なGithubライフを営む" /><published>2013-11-28T00:00:00+09:00</published><updated>2013-11-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-and-hub</id><content type="html" xml:base="https://blog.toshimaru.net/github-and-hub/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;github&lt;/code&gt;で開発を進めている場合、&lt;a href=&quot;https://github.com/github/hub&quot;&gt;hubコマンド&lt;/a&gt;の利用が素敵な感じです。&lt;/p&gt;
+&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">「このコード書いたのは誰だ？」ってのはgit blameからのgit showでOKですが、多くのコミットを重ねている場合、git blameでは「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは負えなかったりします。そんなときはこんなgitコマンドを使えばOK.</summary></entry><entry><title type="html">GitHub + hubコマンドで快適な GitHub ライフを営む</title><link href="https://blog.toshimaru.net/github-and-hub/" rel="alternate" type="text/html" title="GitHub + hubコマンドで快適な GitHub ライフを営む" /><published>2013-11-28T00:00:00+09:00</published><updated>2021-03-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-and-hub</id><content type="html" xml:base="https://blog.toshimaru.net/github-and-hub/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;github&lt;/code&gt;で開発を進めている場合、&lt;a href=&quot;https://github.com/github/hub&quot;&gt;hubコマンド&lt;/a&gt;の利用が素敵な感じです。&lt;/p&gt;
 
 &lt;h2 id=&quot;インストール&quot;&gt;インストール&lt;/h2&gt;
 
 &lt;p&gt;Macを使っていると&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt;使って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hub&lt;/code&gt;コマンドが一発で入ります。&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ brew install hub
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;hub
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;gitのエイリアスをhubコマンドで拡張&quot;&gt;gitのエイリアスをhubコマンドで拡張&lt;/h2&gt;
 
 &lt;p&gt;ただこのままだとhubコマンドはgitコマンドと分離しており少し不便なので、gitコマンドをhubコマンドで置き換えてやりましょう。もちろん既存のgitコマンドに悪影響を与えるようなことはありません。やり方は下記の１行を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt;なり&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt;に追記すればOK.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;eval &quot;$(hub alias -s)&quot;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;hub &lt;span class=&quot;nb&quot;&gt;alias&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;githubからのcloneが楽に&quot;&gt;githubからのcloneが楽に&lt;/h2&gt;
+&lt;h2 id=&quot;githubからのcloneが楽になる&quot;&gt;GitHubからのcloneが楽になる&lt;/h2&gt;
 
 &lt;p&gt;hubコマンドの導入によりGithubからのcloneが楽になります。下記のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{user}/{repo}&lt;/code&gt;でcloneできます。&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git clone toshimaru/dotfiles
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git clone toshimaru/dotfiles
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;githubページを開く&quot;&gt;githubページを開く&lt;/h2&gt;
+&lt;h2 id=&quot;github上の当該レポジトリのページを開く&quot;&gt;GitHub上の当該レポジトリのページを開く&lt;/h2&gt;
 
 &lt;p&gt;自分の場合、GithubにpushしたあとにGithubのGUI上でDiffであったり諸々の状態を確認したいことがよくあります。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hub&lt;/code&gt;コマンドであれば一発でいけます。&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git browse
+&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git browse
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;規定のブラウザで当該Githubページが開きます。&lt;/p&gt;
+&lt;p&gt;規定のブラウザで当該レポジトリのGithubページが開きます。&lt;/p&gt;
 
 &lt;h2 id=&quot;その他&quot;&gt;その他&lt;/h2&gt;
 
