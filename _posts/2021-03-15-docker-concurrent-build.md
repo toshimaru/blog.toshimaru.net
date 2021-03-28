@@ -6,6 +6,7 @@ description: "本記事では、マルチステージビルド構成のDockerfil
 hideimage: true
 tags: docker
 toc: true
+last_modified_at: 2021-03-28
 ---
 
 本記事では、マルチステージビルド構成の`Dockerfile`のビルドの並列実行について紹介したいと思います。
@@ -100,6 +101,10 @@ Successfully built 0986bef3d18f
 では次に並列実行してみましょう。
 
 並列実行するには `DOCKER_BUILDKIT=1` をセットするか、私の環境の場合 `DOCKER_BUILDKIT` の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。
+
+**Docker Desktop v3.2** を使っている場合は `DOCKER_BUILDKIT=1` の環境変数が不要でデフォルトで並列実行されるようになっており、一方、**Docker Desktop v3.1**の場合は並列実行するためには`DOCKER_BUILDKIT=1` の環境変数の指定が必要でした。
+{: .info}
+
 
 ```console
 $ docker build --no-cache .
