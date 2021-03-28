@@ -19,7 +19,7 @@
   <meta property="og:description" content="本記事では、マルチステージビルド構成のDockerfileのビルドの並列実行について紹介したいと思います。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/docker/desktop1.png" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/docker/desktop1.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2021-03-15T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/docker-concurrent-build/">
+  <meta property="article:published_time" content="2021-03-15T00:00:00+09:00"><meta property="article:modified_time" content="2021-03-28T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/docker-concurrent-build/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -64,7 +64,7 @@
   <h1 class="fadeInLeft">Dockerマルチステージビルドの並列実行</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2021-03-15T00:00:00+09:00" pubdate>2021/03/15</time>
+      <i class="icon-calendar"></i><time datetime="2021-03-15T00:00:00+09:00" pubdate>2021/03/15 (更新: 2021/03/28)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/docker/" rel="tag">docker</a>
 
@@ -187,6 +187,8 @@ Step 1/13 : FROM alpine as test1
 <p>では次に並列実行してみましょう。</p>
 
 <p>並列実行するには <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> をセットするか、私の環境の場合 <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT</code> の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。</p>
+
+<p class="info"><strong>Docker Desktop v3.2</strong> を使っている場合は <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> の環境変数が不要でデフォルトで並列実行されるようになっており、一方、<strong>Docker Desktop v3.1</strong>の場合は並列実行するためには<code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> の環境変数の指定が必要でした。</p>
 
 <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker build <span class="nt">--no-cache</span> <span class="nb">.</span>
 <span class="go">[+] Building 13.9s (14/14) FINISHED
@@ -354,7 +356,7 @@ this.page.identifier = "/docker-concurrent-build/";
     },
     "headline": "Dockerマルチステージビルドの並列実行",
     "datePublished": "2021-03-15T00:00:00+09:00",
-    "author": {
+    "dateModified": "2021-03-28T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
