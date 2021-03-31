@@ -167,7 +167,7 @@
     <tr>
       <td>3</td>
       <td>高</td>
-      <td>Fat Model<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>
+      <td>Fat Model<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>
 </td>
     </tr>
   </tbody>
@@ -197,11 +197,11 @@
 
 <p>Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、<code class="language-plaintext highlighter-rouge">User</code>モデルがあれば<code class="language-plaintext highlighter-rouge">UsersController</code>があり、Controllerのそれぞれのアクションに<code class="language-plaintext highlighter-rouge">User</code>モデルが紐づくという形です。</p>
 
-<p>しかし下図<sup id="fnref:a" role="doc-noteref"><a href="#fn:a" class="footnote">2</a></sup>はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。</p>
+<p>しかし下図<sup id="fnref:a" role="doc-noteref"><a href="#fn:a" class="footnote" rel="footnote">2</a></sup>はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。</p>
 
 <p><img src="/images/posts/ginzarails-21/controllers-model.jpg" alt="inline"></p>
 
-<p>続いてのスライドです<sup id="fnref:b" role="doc-noteref"><a href="#fn:b" class="footnote">3</a></sup>。</p>
+<p>続いてのスライドです<sup id="fnref:b" role="doc-noteref"><a href="#fn:b" class="footnote" rel="footnote">3</a></sup>。</p>
 
 <p><img src="https://speakerd.s3.amazonaws.com/presentations/ce30c3cf9433471283e24855f6bdd2b4/slide_42.jpg?12161035" alt="inline"></p>
 
@@ -228,7 +228,7 @@
 
 <p>ではどうRailsの限界を乗り越えていけばいいでしょうか？</p>
 
-<p>下記は横軸がコードベースのサイズ、縦軸がペイン（痛みの度合い）を描いたグラフです<sup id="fnref:c" role="doc-noteref"><a href="#fn:c" class="footnote">4</a></sup>。</p>
+<p>下記は横軸がコードベースのサイズ、縦軸がペイン（痛みの度合い）を描いたグラフです<sup id="fnref:c" role="doc-noteref"><a href="#fn:c" class="footnote" rel="footnote">4</a></sup>。</p>
 
 <p><img src="/images/posts/ginzarails-21/growth.png" alt="inline"></p>
 
@@ -252,7 +252,7 @@
 
 <h3 id="concerns">Concerns</h3>
 
-<p>まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s <code class="language-plaintext highlighter-rouge">Recording</code> Class<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote">5</a></sup>）。</p>
+<p>まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s <code class="language-plaintext highlighter-rouge">Recording</code> Class<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote" rel="footnote">5</a></sup>）。</p>
 
 <p><img src="/images/posts/ginzarails-21/concerns.png" alt="inline"></p>
 
@@ -274,7 +274,7 @@
 
 <p>RailsにおいてテーブルとModelは原則的に1対1で結びつきます。しかし、STIを使えば1つのテーブルで複数Model紐付けることができます。</p>
 
-<p>下図は<code class="language-plaintext highlighter-rouge">players</code>という単一テーブルに複数のクラスが結びついている図です<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote">6</a></sup>。</p>
+<p>下図は<code class="language-plaintext highlighter-rouge">players</code>という単一テーブルに複数のクラスが結びついている図です<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">6</a></sup>。</p>
 
 <p><img src="/images/posts/ginzarails-21/sti.png" alt="inline"></p>
 
@@ -341,7 +341,7 @@
 <span class="n">member</span> <span class="o">=</span> <span class="no">Member</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:member</span><span class="p">])</span>
 </code></pre></div></div>
 
-<p>ただしこの<code class="language-plaintext highlighter-rouge">accepts_nested_attributes_for</code>はDHH自らが「消したい」と発言しており<sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote">7</a></sup>、積極的に使うのはやや躊躇われるかもしれません。</p>
+<p>ただしこの<code class="language-plaintext highlighter-rouge">accepts_nested_attributes_for</code>はDHH自らが「消したい」と発言しており<sup id="fnref:7" role="doc-noteref"><a href="#fn:7" class="footnote" rel="footnote">7</a></sup>、積極的に使うのはやや躊躇われるかもしれません。</p>
 
 <p><img src="/images/posts/ginzarails-21/dhh.png" alt="inline"></p>
 
@@ -396,7 +396,7 @@
 
 <p>ModelにおけるView関連ロジックを <strong>View Model</strong> として切り出す手法です。</p>
 
-<p>Development of Further PoEAAで<a href="https://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model</a>という概念で紹介されているパターンにあたると考えています。ModelをDecoratorパターンっぽく拡張しているのでDecoratorとも呼ばれることが多いです<sup id="fnref:8" role="doc-noteref"><a href="#fn:8" class="footnote">8</a></sup>。</p>
+<p>Development of Further PoEAAで<a href="https://martinfowler.com/eaaDev/PresentationModel.html">Presentation Model</a>という概念で紹介されているパターンにあたると考えています。ModelをDecoratorパターンっぽく拡張しているのでDecoratorとも呼ばれることが多いです<sup id="fnref:8" role="doc-noteref"><a href="#fn:8" class="footnote" rel="footnote">8</a></sup>。</p>
 
 <p>このView Modelの良いところとしては、Fat Model の対処として機能するだけでなく、Fat View の対処としても機能する点です。</p>
 
@@ -548,7 +548,7 @@
 
 <p>解決したい課題に応じて導入していくのが良いと思います。</p>
 
-<h3 id="それrailsでできるよ">「それRailsでできるよ」<sup id="fnref:10" role="doc-noteref"><a href="#fn:10" class="footnote">9</a></sup>
+<h3 id="それrailsでできるよ">「それRailsでできるよ」<sup id="fnref:10" role="doc-noteref"><a href="#fn:10" class="footnote" rel="footnote">9</a></sup>
 </h3>
 
 <p>逆にgemを使わずともRails標準で解決できるよって課題も多く存在します。例えば下記のような例です。</p>
@@ -623,7 +623,7 @@
   </li>
 </ul>
 
-<h3 id="それrubyでできるよ">「それRubyでできるよ」<sup id="fnref:10:1" role="doc-noteref"><a href="#fn:10" class="footnote">9</a></sup>
+<h3 id="それrubyでできるよ">「それRubyでできるよ」<sup id="fnref:10:1" role="doc-noteref"><a href="#fn:10" class="footnote" rel="footnote">9</a></sup>
 </h3>
 
 <p>gemを使わずともRubyでもできるよってケースもあります。</p>

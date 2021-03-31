@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/activerecord.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-03-28T17:34:39+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/activerecord.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表しました</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表しました" /><published>2020-06-01T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model/">&lt;p&gt;&lt;a href=&quot;https://ginza-rails.connpass.com/event/173610/&quot;&gt;銀座Rails#21&lt;/a&gt;で「Fat Modelの倒し方」と題して発表してきました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/activerecord.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2021-04-01T08:42:00+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/activerecord.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">銀座Rails#21で「Fat Modelの倒し方」を発表しました</title><link href="https://blog.toshimaru.net/how-to-deal-with-fat-model/" rel="alternate" type="text/html" title="銀座Rails#21で「Fat Modelの倒し方」を発表しました" /><published>2020-06-01T00:00:00+09:00</published><updated>2020-06-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-deal-with-fat-model</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-deal-with-fat-model/">&lt;p&gt;&lt;a href=&quot;https://ginza-rails.connpass.com/event/173610/&quot;&gt;銀座Rails#21&lt;/a&gt;で「Fat Modelの倒し方」と題して発表してきました。&lt;/p&gt;
 
 &lt;h2 id=&quot;発表スライド&quot;&gt;発表スライド&lt;/h2&gt;
 
@@ -83,7 +83,7 @@
     &lt;tr&gt;
       &lt;td&gt;3&lt;/td&gt;
       &lt;td&gt;高&lt;/td&gt;
-      &lt;td&gt;Fat Model&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+      &lt;td&gt;Fat Model&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
@@ -112,11 +112,11 @@
 
 &lt;p&gt;Railsの原始的な状態は、1つのModelに1つのControllerが結びついています。すなわち、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルがあれば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UsersController&lt;/code&gt;があり、Controllerのそれぞれのアクションに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;モデルが紐づくという形です。&lt;/p&gt;
 
-&lt;p&gt;しかし下図&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。&lt;/p&gt;
+&lt;p&gt;しかし下図&lt;sup id=&quot;fnref:a&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:a&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;はそれが破綻した状態です。どうなっているかというと、複数のControllerからいろんなかたちで１つのモデルが触られる、そういう状態です。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/controllers-model.jpg&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;続いてのスライドです&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;p&gt;続いてのスライドです&lt;sup id=&quot;fnref:b&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:b&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://speakerd.s3.amazonaws.com/presentations/ce30c3cf9433471283e24855f6bdd2b4/slide_42.jpg?12161035&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
@@ -143,7 +143,7 @@
 
 &lt;p&gt;ではどうRailsの限界を乗り越えていけばいいでしょうか？&lt;/p&gt;
 
-&lt;p&gt;下記は横軸がコードベースのサイズ、縦軸がペイン（痛みの度合い）を描いたグラフです&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;p&gt;下記は横軸がコードベースのサイズ、縦軸がペイン（痛みの度合い）を描いたグラフです&lt;sup id=&quot;fnref:c&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:c&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/growth.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
@@ -167,7 +167,7 @@
 
 &lt;h3 id=&quot;concerns&quot;&gt;Concerns&lt;/h3&gt;
 
-&lt;p&gt;まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Recording&lt;/code&gt; Class&lt;sup id=&quot;fnref:6&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:6&quot; class=&quot;footnote&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;）。&lt;/p&gt;
+&lt;p&gt;まずはConcerns。Model/Controllerの共通の関心事（Concern）をmoduleに切り出す手法です（代表例: DHH’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Recording&lt;/code&gt; Class&lt;sup id=&quot;fnref:6&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:6&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;）。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/concerns.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
@@ -189,7 +189,7 @@
 
 &lt;p&gt;RailsにおいてテーブルとModelは原則的に1対1で結びつきます。しかし、STIを使えば1つのテーブルで複数Model紐付けることができます。&lt;/p&gt;
 
-&lt;p&gt;下図は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;players&lt;/code&gt;という単一テーブルに複数のクラスが結びついている図です&lt;sup id=&quot;fnref:5&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:5&quot; class=&quot;footnote&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;p&gt;下図は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;players&lt;/code&gt;という単一テーブルに複数のクラスが結びついている図です&lt;sup id=&quot;fnref:5&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:5&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/sti.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
@@ -256,7 +256,7 @@
 &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Member&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:member&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;ただしこの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;はDHH自らが「消したい」と発言しており&lt;sup id=&quot;fnref:7&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:7&quot; class=&quot;footnote&quot;&gt;7&lt;/a&gt;&lt;/sup&gt;、積極的に使うのはやや躊躇われるかもしれません。&lt;/p&gt;
+&lt;p&gt;ただしこの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;accepts_nested_attributes_for&lt;/code&gt;はDHH自らが「消したい」と発言しており&lt;sup id=&quot;fnref:7&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:7&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;7&lt;/a&gt;&lt;/sup&gt;、積極的に使うのはやや躊躇われるかもしれません。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/ginzarails-21/dhh.png&quot; alt=&quot;inline&quot; /&gt;&lt;/p&gt;
 
@@ -308,7 +308,7 @@
 
 &lt;p&gt;ModelにおけるView関連ロジックを &lt;strong&gt;View Model&lt;/strong&gt; として切り出す手法です。&lt;/p&gt;
 
-&lt;p&gt;Development of Further PoEAAで&lt;a href=&quot;https://martinfowler.com/eaaDev/PresentationModel.html&quot;&gt;Presentation Model&lt;/a&gt;という概念で紹介されているパターンにあたると考えています。ModelをDecoratorパターンっぽく拡張しているのでDecoratorとも呼ばれることが多いです&lt;sup id=&quot;fnref:8&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:8&quot; class=&quot;footnote&quot;&gt;8&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;p&gt;Development of Further PoEAAで&lt;a href=&quot;https://martinfowler.com/eaaDev/PresentationModel.html&quot;&gt;Presentation Model&lt;/a&gt;という概念で紹介されているパターンにあたると考えています。ModelをDecoratorパターンっぽく拡張しているのでDecoratorとも呼ばれることが多いです&lt;sup id=&quot;fnref:8&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:8&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;8&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
 
 &lt;p&gt;このView Modelの良いところとしては、Fat Model の対処として機能するだけでなく、Fat View の対処としても機能する点です。&lt;/p&gt;
 
@@ -448,7 +448,7 @@
 
 &lt;p&gt;解決したい課題に応じて導入していくのが良いと思います。&lt;/p&gt;
 
-&lt;h3 id=&quot;それrailsでできるよ&quot;&gt;「それRailsでできるよ」&lt;sup id=&quot;fnref:10&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:10&quot; class=&quot;footnote&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
+&lt;h3 id=&quot;それrailsでできるよ&quot;&gt;「それRailsでできるよ」&lt;sup id=&quot;fnref:10&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:10&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
 
 &lt;p&gt;逆にgemを使わずともRails標準で解決できるよって課題も多く存在します。例えば下記のような例です。&lt;/p&gt;
 
@@ -504,7 +504,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;それrubyでできるよ&quot;&gt;「それRubyでできるよ」&lt;sup id=&quot;fnref:10:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:10&quot; class=&quot;footnote&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
+&lt;h3 id=&quot;それrubyでできるよ&quot;&gt;「それRubyでできるよ」&lt;sup id=&quot;fnref:10:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:10&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;&lt;/h3&gt;
 
 &lt;p&gt;gemを使わずともRubyでもできるよってケースもあります。&lt;/p&gt;
 
