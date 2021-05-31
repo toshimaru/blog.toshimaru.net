@@ -4,6 +4,7 @@ title: "ActiveRecordでhas_oneを持ったモデルをスキップして関連�
 image: "/images/posts/belongs-to-foreign-key-and-primary-key/og.png"
 description: "Railsモデルは下記のような状態です。 ユーザー（User）は複数の記事（Post）データをもっている ユーザー（User）は１つのプロフィール（Profile）データをもっている　やりたいこととしてはこのモデル構成の中心にいる User の関連をスキップして Post と Profile を直接関連付けてやることです。つまり User has_one Profile, User has_many Posts の関係を、Profile has_many Posts の関係にしちゃおう、ということです。"
 tags: activerecord rails
+last_modified_at: 2021-05-31
 toc: true
 ---
 
@@ -35,6 +36,14 @@ class Profile < ApplicationRecord
 end
 ```
 
+モデルの生成コマンド（rails generate コマンド）は下記の通りです。
+
+```console
+$ rails g model User
+$ rails g model Post user:references
+$ rails g model Profile user:references
+```
+
 ## has_oneをもったモデルをスキップする
 
 やりたいこととしてはこのモデル構成の中心にいる `User` の関連をスキップして `Post` と `Profile` を直接関連付けてやることです。つまり **User has_one Profile**, **User has_many Posts** の関係を、**Profile has_many Posts** の関係にしちゃおう、ということです。
@@ -62,7 +71,7 @@ end
 
 class Profile < ApplicationRecord
   belongs_to :user
-  has_many :posts, foreign_key: :user_id
+  has_many :posts, foreign_key: :user_id, primary_key: :user_id
 end
 ```
 
@@ -120,7 +129,7 @@ end
 
 class Profile < ApplicationRecord
   belongs_to :user
-  has_many :posts, foreign_key: :user_id, inverse_of: :profile
+  has_many :posts, foreign_key: :user_id, primary_key: :user_id, inverse_of: :profile
 end
 ```
 
