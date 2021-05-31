@@ -19,7 +19,7 @@
   <meta property="og:description" content="Railsモデルは下記のような状態です。 ユーザー（User）は複数の記事（Post）データをもっている ユーザー（User）は１つのプロフィール（Profile）データをもっている　やりたいこととしてはこのモデル構成の中心にいる User の関連をスキップして Post と Profile を直接関連付けてやることです。つまり User has_one Profile, User has_many Posts の関係を、Profile has_many Posts の関係にしちゃおう、ということです。">
   <meta property="og:image" content="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" />
   <meta name="twitter:image" content="https://blog.toshimaru.net/images/posts/belongs-to-foreign-key-and-primary-key/og.png" /><meta property="og:type" content="article">
-  <meta property="article:published_time" content="2019-11-10T00:00:00+09:00"><link rel="canonical" href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">
+  <meta property="article:published_time" content="2019-11-10T00:00:00+09:00"><meta property="article:modified_time" content="2021-05-31T00:00:00+09:00" /><link rel="canonical" href="https://blog.toshimaru.net/belongs-to-foreign-key-and-primary-key/">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -64,7 +64,7 @@
   <h1 class="fadeInLeft">ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法</h1>
   <div class="meta">
     <div class="clearfix">
-      <i class="icon-calendar"></i><time datetime="2019-11-10T00:00:00+09:00" pubdate>2019/11/10</time>
+      <i class="icon-calendar"></i><time datetime="2019-11-10T00:00:00+09:00" pubdate>2019/11/10 (更新: 2021/05/31)</time>
       <i class="icon-tags"></i> 
 <a href="/tag/activerecord/" rel="tag">activerecord</a>
 
@@ -124,6 +124,13 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
+<p>モデルの生成コマンド（rails generate コマンド）は下記の通りです。</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>rails g model User
+<span class="gp">$</span><span class="w"> </span>rails g model Post user:references
+<span class="gp">$</span><span class="w"> </span>rails g model Profile user:references
+</code></pre></div></div>
+
 <h2 id="has_oneをもったモデルをスキップする">
 <a class="anchor" href="#has_one%E3%82%92%E3%82%82%E3%81%A3%E3%81%9F%E3%83%A2%E3%83%87%E3%83%AB%E3%82%92%E3%82%B9%E3%82%AD%E3%83%83%E3%83%97%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>has_oneをもったモデルをスキップする</h2>
 
@@ -152,7 +159,7 @@
 
 <span class="k">class</span> <span class="nc">Profile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
-  <span class="n">has_many</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span><span class="p">,</span> <span class="ss">primary_key: :user_id</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
@@ -213,7 +220,7 @@
 
 <span class="k">class</span> <span class="nc">Profile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:user</span>
-  <span class="n">has_many</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span><span class="p">,</span> <span class="ss">inverse_of: :profile</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">foreign_key: :user_id</span><span class="p">,</span> <span class="ss">primary_key: :user_id</span><span class="p">,</span> <span class="ss">inverse_of: :profile</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
@@ -356,7 +363,7 @@ this.page.identifier = "/belongs-to-foreign-key-and-primary-key/";
     },
     "headline": "ActiveRecordでhas_oneを持ったモデルをスキップして関連を定義する方法",
     "datePublished": "2019-11-10T00:00:00+09:00",
-    "author": {
+    "dateModified": "2021-05-31T00:00:00+09:00","author": {
       "@type": "Person",
       "name": "Toshimaru",
       "email": "me@toshimaru.net"
