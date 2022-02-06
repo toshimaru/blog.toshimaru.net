@@ -1,239 +1,239 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/shell.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/shell.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">標準出力、標準エラー出力のリダイレクト方法まとめ</title><link href="https://blog.toshimaru.net/bash-stdout-and-stderr/" rel="alternate" type="text/html" title="標準出力、標準エラー出力のリダイレクト方法まとめ" /><published>2019-11-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/bash-stdout-and-stderr</id><content type="html" xml:base="https://blog.toshimaru.net/bash-stdout-and-stderr/">&lt;p&gt;標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/shell.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/shell.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">標準出力、標準エラー出力のリダイレクト方法まとめ</title><link href="https://blog.toshimaru.net/bash-stdout-and-stderr/" rel="alternate" type="text/html" title="標準出力、標準エラー出力のリダイレクト方法まとめ" /><published>2019-11-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/bash-stdout-and-stderr</id><content type="html" xml:base="https://blog.toshimaru.net/bash-stdout-and-stderr/"><![CDATA[<p>標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。</p>
 
-&lt;h2 id=&quot;標準入力-標準出力-標準エラー出力とは&quot;&gt;標準入力, 標準出力, 標準エラー出力とは？&lt;/h2&gt;
+<h2 id="標準入力-標準出力-標準エラー出力とは">標準入力, 標準出力, 標準エラー出力とは？</h2>
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;種類&lt;/th&gt;
-      &lt;th&gt;説明&lt;/th&gt;
-      &lt;th&gt;ファイルディスクリプタ&lt;/th&gt;
-      &lt;th&gt;省略形&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;標準入力&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;デフォルトの入力データストリーム。&lt;br /&gt;例えばコマンドのパイプラインなど。ターミナル上ではユーザーのキーボード入力のこと。&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdin&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;標準出力&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;デフォルトの出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;strong&gt;標準エラー出力&lt;/strong&gt;&lt;/td&gt;
-      &lt;td&gt;デフォルトのエラーに関連する出力データストリーム。&lt;br /&gt;ターミナル上ではユーザーの画面に表示される。&lt;/td&gt;
-      &lt;td&gt;2&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stderr&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+<table>
+  <thead>
+    <tr>
+      <th>種類</th>
+      <th>説明</th>
+      <th>ファイルディスクリプタ</th>
+      <th>省略形</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>標準入力</strong></td>
+      <td>デフォルトの入力データストリーム。<br />例えばコマンドのパイプラインなど。ターミナル上ではユーザーのキーボード入力のこと。</td>
+      <td>0</td>
+      <td><code class="language-plaintext highlighter-rouge">stdin</code></td>
+    </tr>
+    <tr>
+      <td><strong>標準出力</strong></td>
+      <td>デフォルトの出力データストリーム。<br />ターミナル上ではユーザーの画面に表示される。</td>
+      <td>1</td>
+      <td><code class="language-plaintext highlighter-rouge">stdout</code></td>
+    </tr>
+    <tr>
+      <td><strong>標準エラー出力</strong></td>
+      <td>デフォルトのエラーに関連する出力データストリーム。<br />ターミナル上ではユーザーの画面に表示される。</td>
+      <td>2</td>
+      <td><code class="language-plaintext highlighter-rouge">stderr</code></td>
+    </tr>
+  </tbody>
+</table>
 
-&lt;p&gt;（出典: &lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor? - Stdin, stdout, and stderr&lt;/a&gt; より翻訳）&lt;/p&gt;
+<p>（出典: <a href="https://www.computerhope.com/jargon/f/file-descriptor.htm">What is a File Descriptor? - Stdin, stdout, and stderr</a> より翻訳）</p>
 
-&lt;p&gt;それぞれのファイルディスクリプタは下記のように &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/stderr&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/stdin&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/stdout&lt;/code&gt; からも確認することができます&lt;/p&gt;
+<p>それぞれのファイルディスクリプタは下記のように <code class="language-plaintext highlighter-rouge">/dev/stderr</code>, <code class="language-plaintext highlighter-rouge">/dev/stdin</code>, <code class="language-plaintext highlighter-rouge">/dev/stdout</code> からも確認することができます</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; /dev/std&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;,out,err&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stderr -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/2
-&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdin -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/0
-&lt;span class=&quot;gp&quot;&gt;lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdout -&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;fd/1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">ls</span> <span class="nt">-l</span> /dev/std<span class="o">{</span><span class="k">in</span>,out,err<span class="o">}</span>
+<span class="gp">lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stderr -&gt;</span><span class="w"> </span>fd/2
+<span class="gp">lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdin -&gt;</span><span class="w"> </span>fd/0
+<span class="gp">lr-xr-xr-x  1 root  wheel  0 Sep 12 08:46 /dev/stdout -&gt;</span><span class="w"> </span>fd/1
+</code></pre></div></div>
 
-&lt;h2 id=&quot;標準出力-標準エラー出力するシェルスクリプト&quot;&gt;標準出力, 標準エラー出力するシェルスクリプト&lt;/h2&gt;
+<h2 id="標準出力-標準エラー出力するシェルスクリプト">標準出力, 標準エラー出力するシェルスクリプト</h2>
 
-&lt;p&gt;今回使用するベースとなるシェルスクリプトは下記になります。&lt;/p&gt;
+<p>今回使用するベースとなるシェルスクリプトは下記になります。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.sh
-&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;/bin/sh
-&lt;span class=&quot;go&quot;&gt;echo &quot;stdout&quot;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;echo &quot;stderr&quot; &amp;gt;&lt;/span&gt;&amp;amp;2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>stdout-stderr.sh
+<span class="gp">#</span><span class="o">!</span>/bin/sh
+<span class="go">echo "stdout"
+</span><span class="gp">echo "stderr" &gt;</span>&amp;2
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;stdout という文字列を標準出力&lt;/li&gt;
-  &lt;li&gt;stderr という文字列を標準エラー出力&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>stdout という文字列を標準出力</li>
+  <li>stderr という文字列を標準エラー出力</li>
+</ul>
 
-&lt;p&gt;このようなコードとなっております。&lt;/p&gt;
+<p>このようなコードとなっております。</p>
 
-&lt;h3 id=&quot;rubyバージョン&quot;&gt;Rubyバージョン&lt;/h3&gt;
+<h3 id="rubyバージョン">Rubyバージョン</h3>
 
-&lt;p&gt;ちなみに今回のシェルスクリプトをRubyで表現すると下記のようになります。&lt;/p&gt;
+<p>ちなみに今回のシェルスクリプトをRubyで表現すると下記のようになります。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env ruby&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stdout&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;warn&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;stderr&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env ruby</span>
+<span class="nb">puts</span> <span class="s2">"stdout"</span>
+<span class="nb">warn</span> <span class="s2">"stderr"</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;リダイレクト無し実行時&quot;&gt;リダイレクト無し実行時&lt;/h2&gt;
+<h2 id="リダイレクト無し実行時">リダイレクト無し実行時</h2>
 
-&lt;p&gt;まずは何もリダイレクトの設定をしないで実行してみます。&lt;/p&gt;
+<p>まずは何もリダイレクトの設定をしないで実行してみます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh
-&lt;span class=&quot;go&quot;&gt;stdout
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh
+<span class="go">stdout
 stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;標準出力、エラー出力ともに画面に表示される&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>標準出力、エラー出力ともに画面に表示される</li>
+</ul>
 
-&lt;h2 id=&quot;標準出力リダイレクト有り実行時&quot;&gt;標準出力リダイレクト有り実行時&lt;/h2&gt;
+<h2 id="標準出力リダイレクト有り実行時">標準出力リダイレクト有り実行時</h2>
 
-&lt;p&gt;次はリダイレクトを設定して実行してみましょう。&lt;/p&gt;
+<p>次はリダイレクトを設定して実行してみましょう。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
-&lt;span class=&quot;go&quot;&gt;stderr
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh <span class="o">&gt;</span> stdout.txt
+<span class="go">stderr
 
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
-&lt;span class=&quot;go&quot;&gt;stdout
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>stdout.txt
+<span class="go">stdout
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stdout が出力されなくなった&lt;/li&gt;
-  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に stdout が出力されている&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>リダイレクト無し実行時と比較して、画面に表示される結果から stdout が出力されなくなった</li>
+  <li>画面に表示されなくなった代わりに、リダイレクト先の <code class="language-plaintext highlighter-rouge">stdout.txt</code> に stdout が出力されている</li>
+</ul>
 
-&lt;p&gt;また上コマンドでは省略されていますが、リダイレクトのデフォルトは標準出力のファイルディスクリプタ「1」なので、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; の部分は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1&amp;gt;&lt;/code&gt; と書くこともできます。&lt;/p&gt;
+<p>また上コマンドでは省略されていますが、リダイレクトのデフォルトは標準出力のファイルディスクリプタ「1」なので、<code class="language-plaintext highlighter-rouge">&gt;</code> の部分は <code class="language-plaintext highlighter-rouge">1&gt;</code> と書くこともできます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout.txt
-&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh <span class="o">&gt;</span> stdout.txt
+<span class="gp">#</span><span class="w"> </span>下記のようにも書くことできる
+<span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh 1&gt; stdout.txt
+</code></pre></div></div>
 
-&lt;h2 id=&quot;エラー出力リダイレクト有り実行時&quot;&gt;エラー出力リダイレクト有り実行時&lt;/h2&gt;
+<h2 id="エラー出力リダイレクト有り実行時">エラー出力リダイレクト有り実行時</h2>
 
-&lt;p&gt;次はエラー出力だけリダイレクトするようにしてみましょう。&lt;/p&gt;
+<p>次はエラー出力だけリダイレクトするようにしてみましょう。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 2&amp;gt; stderr.txt
-&lt;span class=&quot;go&quot;&gt;stdout
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh 2&gt; stderr.txt
+<span class="go">stdout
 
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
-&lt;span class=&quot;go&quot;&gt;stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>stderr.txt
+<span class="go">stderr
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;リダイレクト無し実行時と比較して、画面に表示される結果から stderr が出力されなくなった&lt;/li&gt;
-  &lt;li&gt;画面に表示されなくなった代わりに、リダイレクト先の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に stderr が出力されている&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>リダイレクト無し実行時と比較して、画面に表示される結果から stderr が出力されなくなった</li>
+  <li>画面に表示されなくなった代わりに、リダイレクト先の <code class="language-plaintext highlighter-rouge">stderr.txt</code> に stderr が出力されている</li>
+</ul>
 
-&lt;h2 id=&quot;エラー出力を標準出力としてリダイレクト実行時&quot;&gt;エラー出力を標準出力としてリダイレクト実行時&lt;/h2&gt;
+<h2 id="エラー出力を標準出力としてリダイレクト実行時">エラー出力を標準出力としてリダイレクト実行時</h2>
 
-&lt;p&gt;続いてエラー出力を標準出力としてまとめて出力するようにリダイレクトしてみます。&lt;/p&gt;
+<p>続いてエラー出力を標準出力としてまとめて出力するようにリダイレクトしてみます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
-&lt;span class=&quot;go&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout-stderr.txt
-&lt;span class=&quot;go&quot;&gt;stdout
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh &amp;&gt; stdout-stderr.txt
+<span class="go">
+</span><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>stdout-stderr.txt
+<span class="go">stdout
 stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;リダイレクト実行時の画面表示は何もされない&lt;/li&gt;
-  &lt;li&gt;リダイレクト先のファイル &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout-stderr.txt&lt;/code&gt; には stdout と stderr ともに出力されている&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>リダイレクト実行時の画面表示は何もされない</li>
+  <li>リダイレクト先のファイル <code class="language-plaintext highlighter-rouge">stdout-stderr.txt</code> には stdout と stderr ともに出力されている</li>
+</ul>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; stdout-stderr.txt
-&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;下記のようにも書くことできる
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&amp;amp; stdout-stderr.txt
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout-stderr.txt 2&amp;gt;&amp;amp;1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh &amp;&gt; stdout-stderr.txt
+<span class="gp">#</span><span class="w"> </span>下記のようにも書くことできる
+<span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh <span class="o">&gt;</span>&amp; stdout-stderr.txt
+<span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh <span class="o">&gt;</span> stdout-stderr.txt 2&gt;&amp;1
+<span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh 1&gt; stdout-stderr.txt 2&gt;&amp;1
+</code></pre></div></div>
 
-&lt;h2 id=&quot;標準出力エラー出力を別々にリダイレクト実行時&quot;&gt;標準出力＆エラー出力を別々にリダイレクト実行時&lt;/h2&gt;
+<h2 id="標準出力エラー出力を別々にリダイレクト実行時">標準出力＆エラー出力を別々にリダイレクト実行時</h2>
 
-&lt;p&gt;標準出力と標準エラー出力をそれぞれ別にリダイレクトするようにしてみます。&lt;/p&gt;
+<p>標準出力と標準エラー出力をそれぞれ別にリダイレクトするようにしてみます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh 1&amp;gt; stdout.txt 2&amp;gt; stderr.txt
-&lt;span class=&quot;go&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stdout.txt
-&lt;span class=&quot;go&quot;&gt;stdout
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh 1&gt; stdout.txt 2&gt; stderr.txt
+<span class="go">
+</span><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>stdout.txt
+<span class="go">stdout
 
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;stderr.txt
-&lt;span class=&quot;go&quot;&gt;stderr
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>stderr.txt
+<span class="go">stderr
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;標準出力である stdout は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stdout.txt&lt;/code&gt; に出力される&lt;/li&gt;
-  &lt;li&gt;標準エラー出力である stderr は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stderr.txt&lt;/code&gt; に出力される&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>標準出力である stdout は <code class="language-plaintext highlighter-rouge">stdout.txt</code> に出力される</li>
+  <li>標準エラー出力である stderr は <code class="language-plaintext highlighter-rouge">stderr.txt</code> に出力される</li>
+</ul>
 
-&lt;h2 id=&quot;出力をリダイレクトで捨てる&quot;&gt;出力をリダイレクトで捨てる&lt;/h2&gt;
+<h2 id="出力をリダイレクトで捨てる">出力をリダイレクトで捨てる</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/dev/null&lt;/code&gt;にリダイレクトすれば出力内容を捨てることができます。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">/dev/null</code>にリダイレクトすれば出力内容を捨てることができます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;./stdout-stderr.sh &amp;amp;&amp;gt; /dev/null
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>./stdout-stderr.sh &amp;&gt; /dev/null
+</code></pre></div></div>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://qiita.com/laikuaut/items/e1cc312ffc7ec2c872fc&quot;&gt;bash: 標準出力、標準エラー出力をファイル、画面それぞれに出力する方法 - Qiita&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.computerhope.com/jargon/f/file-descriptor.htm&quot;&gt;What is a File Descriptor?&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="shell" /><category term="bash" /><summary type="html">標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/stdout.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/stdout.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">コマンドラインで複数行を1行に連結する</title><link href="https://blog.toshimaru.net/join-lines-command/" rel="alternate" type="text/html" title="コマンドラインで複数行を1行に連結する" /><published>2015-09-30T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/join-lines-command</id><content type="html" xml:base="https://blog.toshimaru.net/join-lines-command/">&lt;p&gt;やりたかったこととしては、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。&lt;/p&gt;
+<ul>
+  <li><a href="https://qiita.com/laikuaut/items/e1cc312ffc7ec2c872fc">bash: 標準出力、標準エラー出力をファイル、画面それぞれに出力する方法 - Qiita</a></li>
+  <li><a href="https://www.computerhope.com/jargon/f/file-descriptor.htm">What is a File Descriptor?</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="shell" /><category term="bash" /><summary type="html"><![CDATA[標準出力、標準エラー出力のリダイレクトの方法を実際のコマンド実行結果とあわせてまとめてみます。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/stdout.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/stdout.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">コマンドラインで複数行を1行に連結する</title><link href="https://blog.toshimaru.net/join-lines-command/" rel="alternate" type="text/html" title="コマンドラインで複数行を1行に連結する" /><published>2015-09-30T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/join-lines-command</id><content type="html" xml:base="https://blog.toshimaru.net/join-lines-command/"><![CDATA[<p>やりたかったこととしては、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;text
-&lt;span class=&quot;go&quot;&gt;aaaa
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>text
+<span class="go">aaaa
 bbbb
 cccc
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;text | &lt;span class=&quot;nb&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;\n&apos;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;,&apos;&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;aaaa,bbbb,cccc,%
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>text | <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span>
+<span class="go">aaaa,bbbb,cccc,%
+</span></code></pre></div></div>
 
-&lt;p&gt;こんな感じで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tr&lt;/code&gt; を使って改行コードを置換してやればカンマ区切りで1行に連結できる。&lt;/p&gt;
+<p>こんな感じで <code class="language-plaintext highlighter-rouge">tr</code> を使って改行コードを置換してやればカンマ区切りで1行に連結できる。</p>
 
-&lt;h2 id=&quot;jsonをパースして連結する&quot;&gt;JSONをパースして連結する&lt;/h2&gt;
+<h2 id="jsonをパースして連結する">JSONをパースして連結する</h2>
 
-&lt;p&gt;もともとやりたかったのはこんな感じのこと。&lt;/p&gt;
+<p>もともとやりたかったのはこんな感じのこと。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{ &quot;employees&quot;:[{&quot;firstName&quot;:&quot;John&quot;, &quot;lastName&quot;:&quot;Doe&quot;}, {&quot;firstName&quot;:&quot;Anna&quot;, &quot;lastName&quot;:&quot;Smith&quot;}, {&quot;firstName&quot;:&quot;Peter&quot;,&quot;lastName&quot;:&quot;Jones&quot;} ] }&apos;&lt;/span&gt; | jq &lt;span class=&quot;s1&quot;&gt;&apos;.employees[] .firstName&apos;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;\n&apos;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;,&apos;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{ print &quot;result = [&quot; $1 &quot;]&quot; }&apos;&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;result = [&quot;John&quot;,&quot;Anna&quot;,&quot;Peter&quot;,]
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">echo</span> <span class="s1">'{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }'</span> | jq <span class="s1">'.employees[] .firstName'</span> | <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span> | <span class="nb">awk</span> <span class="s1">'{ print "result = [" $1 "]" }'</span>
+<span class="go">result = ["John","Anna","Peter",]
+</span></code></pre></div></div>
 
-&lt;p&gt;curlでJSONをHTTP GETしてそれを &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt; でパースして出たリストをカンマ区切りで出力する、みたいなやつ。&lt;/p&gt;
+<p>curlでJSONをHTTP GETしてそれを <code class="language-plaintext highlighter-rouge">jq</code> でパースして出たリストをカンマ区切りで出力する、みたいなやつ。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/2764051/how-to-join-multiple-lines-of-file-names-into-one-with-custom-delimiter&quot;&gt;linux - How to join multiple lines of file names into one with custom delimiter? - Stack Overflow&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://tbpgr.hatenablog.com/entry/20120309/1331314857&quot;&gt;tr | 標準入力の内容を置換、削除する - Tbpgr Blog&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="shell" /><category term="api" /><summary type="html">やりたかったこととしては、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</summary></entry><entry><title type="html">「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説</title><link href="https://blog.toshimaru.net/sh3iz/" rel="alternate" type="text/html" title="「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説" /><published>2012-12-24T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/sh3iz</id><content type="html" xml:base="https://blog.toshimaru.net/sh3iz/">&lt;p&gt;&lt;a href=&quot;http://d.hatena.ne.jp/shi3z/20121217/1355695824&quot;&gt;たった一行でもっと高画質の画像を集める方法&lt;/a&gt;にあったシェルスクリプトのコード。&lt;/p&gt;
+<ul>
+  <li><a href="http://stackoverflow.com/questions/2764051/how-to-join-multiple-lines-of-file-names-into-one-with-custom-delimiter">linux - How to join multiple lines of file names into one with custom delimiter? - Stack Overflow</a></li>
+  <li><a href="http://tbpgr.hatenablog.com/entry/20120309/1331314857">tr | 標準入力の内容を置換、削除する - Tbpgr Blog</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="shell" /><category term="api" /><summary type="html"><![CDATA[やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。]]></summary></entry><entry><title type="html">「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説</title><link href="https://blog.toshimaru.net/sh3iz/" rel="alternate" type="text/html" title="「たった一行でもっと高画質の画像を集める方法」のシェルスクリプトコード解説" /><published>2012-12-24T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/sh3iz</id><content type="html" xml:base="https://blog.toshimaru.net/sh3iz/"><![CDATA[<p><a href="http://d.hatena.ne.jp/shi3z/20121217/1355695824">たった一行でもっと高画質の画像を集める方法</a>にあったシェルスクリプトのコード。</p>
 
-&lt;h2 id=&quot;ソース&quot;&gt;ソース&lt;/h2&gt;
+<h2 id="ソース">ソース</h2>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;matome_url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;cnt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
-&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;j &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;1..10&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
-  for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;curl &lt;span class=&quot;nv&quot;&gt;$matome_url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\?&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$j&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;_jWidgetData&apos;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed &lt;/span&gt;s/&lt;span class=&quot;se&quot;&gt;\&amp;amp;&lt;/span&gt;quot&lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;/g | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\:\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]*&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; 3 &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
-    &lt;/span&gt;curl &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$2_$cnt&lt;/span&gt;.jpg &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;cnt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;expr&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cnt&lt;/span&gt; + 1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;done
-done&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">matome_url</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">cnt</span><span class="o">=</span>0
+<span class="k">for </span>j <span class="k">in</span> <span class="o">{</span>1..10<span class="o">}</span><span class="p">;</span> <span class="k">do
+  for </span>i <span class="k">in</span> <span class="sb">`</span>curl <span class="nv">$matome_url</span><span class="se">\?</span><span class="nv">page</span><span class="o">=</span><span class="nv">$j</span> | <span class="nb">grep</span> <span class="s1">'_jWidgetData'</span> | <span class="nb">sed </span>s/<span class="se">\&amp;</span>quot<span class="se">\;</span>/<span class="se">\"</span>/g | <span class="nb">grep</span> <span class="nt">-o</span> <span class="s2">"url</span><span class="se">\"\:\"</span><span class="s2">[^</span><span class="se">\"</span><span class="s2">]*"</span> | <span class="nb">cut</span> <span class="nt">-d</span> <span class="se">\"</span> <span class="nt">-f</span> 3 <span class="sb">`</span><span class="p">;</span> <span class="k">do
+    </span>curl <span class="nt">-o</span> <span class="nv">$2_$cnt</span>.jpg <span class="nv">$i</span>
+    <span class="nv">cnt</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$cnt</span> + 1<span class="sb">`</span>
+  <span class="k">done
+done</span>
+</code></pre></div></div>
 
-&lt;p&gt;その中の１行、このコードの意味がよくわからなかったので調べてみた。&lt;/p&gt;
+<p>その中の１行、このコードの意味がよくわからなかったので調べてみた。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;curl &lt;span class=&quot;nv&quot;&gt;$matome_url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\?&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$j&lt;/span&gt;| &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;_jWidgetData&apos;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed &lt;/span&gt;s/&lt;span class=&quot;se&quot;&gt;\&amp;amp;&lt;/span&gt;quot&lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;/g | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\:\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]*&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; 3
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>curl <span class="nv">$matome_url</span><span class="se">\?</span><span class="nv">page</span><span class="o">=</span><span class="nv">$j</span>| <span class="nb">grep</span> <span class="s1">'_jWidgetData'</span> | <span class="nb">sed </span>s/<span class="se">\&amp;</span>quot<span class="se">\;</span>/<span class="se">\"</span>/g | <span class="nb">grep</span> <span class="nt">-o</span> <span class="s2">"url</span><span class="se">\"\:\"</span><span class="s2">[^</span><span class="se">\"</span><span class="s2">]*"</span> | <span class="nb">cut</span> <span class="nt">-d</span> <span class="se">\"</span> <span class="nt">-f</span> 3
+</code></pre></div></div>
 
-&lt;p&gt;バラすと下記のようになる。&lt;/p&gt;
+<p>バラすと下記のようになる。</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl https://matome.naver.jp/odai/2128076173257260401 | &lt;span class=&quot;c&quot;&gt;# curlでデータ取得&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;_jWidgetData&apos;&lt;/span&gt; |                                   &lt;span class=&quot;c&quot;&gt;# _jWidgetData(画像URLが含まれている行)をgrep&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;sed &lt;/span&gt;s/&lt;span class=&quot;se&quot;&gt;\&amp;amp;&lt;/span&gt;quot&lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;/g |                                   &lt;span class=&quot;c&quot;&gt;# &amp;amp;quot; を &quot; に変換&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;url&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\:\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;[^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]*&quot;&lt;/span&gt; |                             &lt;span class=&quot;c&quot;&gt;# url&quot;:&quot;http:~ をgrepで抜き出す&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; 3                                          &lt;span class=&quot;c&quot;&gt;# ⇡をurl,:,http:~ の３つに分割してURLである３つめをcut!&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl https://matome.naver.jp/odai/2128076173257260401 | <span class="c"># curlでデータ取得</span>
+<span class="nb">grep</span> <span class="s1">'_jWidgetData'</span> |                                   <span class="c"># _jWidgetData(画像URLが含まれている行)をgrep</span>
+<span class="nb">sed </span>s/<span class="se">\&amp;</span>quot<span class="se">\;</span>/<span class="se">\"</span>/g |                                   <span class="c"># &amp;quot; を " に変換</span>
+<span class="nb">grep</span> <span class="nt">-o</span> <span class="s2">"url</span><span class="se">\"\:\"</span><span class="s2">[^</span><span class="se">\"</span><span class="s2">]*"</span> |                             <span class="c"># url":"http:~ をgrepで抜き出す</span>
+<span class="nb">cut</span> <span class="nt">-d</span> <span class="se">\"</span> <span class="nt">-f</span> 3                                          <span class="c"># ⇡をurl,:,http:~ の３つに分割してURLである３つめをcut!</span>
+</code></pre></div></div>
 
-&lt;h3 id=&quot;出力結果&quot;&gt;出力結果&lt;/h3&gt;
+<h3 id="出力結果">出力結果</h3>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://imgcc.naver.jp/kaze/mission/USER/20121010/16/112376/0/800x1126x5e102d37fb7211123e76a10.jpg
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://imgcc.naver.jp/kaze/mission/USER/20121010/16/112376/0/800x1126x5e102d37fb7211123e76a10.jpg
 http://imgcc.naver.jp/kaze/mission/USER/20121009/16/112376/1/1134x1548x5a8f6dace3e8a811e2caeb.jpg
 http://imgcc.naver.jp/kaze/mission/USER/20121222/16/112376/1/1152x1643xa71b65cd2d7ccfbd9ab501.jpg
 http://imgcc.naver.jp/kaze/mission/USER/20121022/16/112376/3/1470x2048xf91af81cc31725554aa6a1.jpg
@@ -263,20 +263,20 @@ http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/6/896x1280x08f71b1d54
 http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/5/1280x1682xd727f8325bec6c51d47212.jpg
 http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/4/800x1067xcec4822757324881e9978c9.jpg
 http://imgcc.naver.jp/kaze/mission/USER/20121209/16/112376/3/1280x1920x0a1ca8283d2796132f14e3.jpg
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;この「◯◯で水着画像を集める」系のネタ元はPHPでしたが、シェルでもいけちゃうんですね。奥深い・・・&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="linux" /><category term="shell" /><category term="bash" /><summary type="html">たった一行でもっと高画質の画像を集める方法にあったシェルスクリプトのコード。</summary></entry><entry><title type="html">プロセス毎のメモリ使用量を調べるコマンド</title><link href="https://blog.toshimaru.net/linux/" rel="alternate" type="text/html" title="プロセス毎のメモリ使用量を調べるコマンド" /><published>2012-12-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/linux</id><content type="html" xml:base="https://blog.toshimaru.net/linux/">&lt;p&gt;メモリを食いつぶしてたプロセスがいたのでそれを調べるときに利用したコマンド。&lt;/p&gt;
-&lt;p&gt;これでズラっとでます。&lt;/p&gt;
-&lt;div&gt;
-  &lt;pre&gt;$ ps alx  | awk &apos;{printf (&amp;quot;%d\t%s\n&amp;quot;, $8,$13)}&apos;&lt;/pre&gt;
-&lt;/div&gt;
+<p>この「◯◯で水着画像を集める」系のネタ元はPHPでしたが、シェルでもいけちゃうんですね。奥深い・・・</p>]]></content><author><name>Toshimaru</name></author><category term="linux" /><category term="shell" /><category term="bash" /><summary type="html"><![CDATA[たった一行でもっと高画質の画像を集める方法にあったシェルスクリプトのコード。]]></summary></entry><entry><title type="html">プロセス毎のメモリ使用量を調べるコマンド</title><link href="https://blog.toshimaru.net/linux/" rel="alternate" type="text/html" title="プロセス毎のメモリ使用量を調べるコマンド" /><published>2012-12-02T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/linux</id><content type="html" xml:base="https://blog.toshimaru.net/linux/"><![CDATA[<p>メモリを食いつぶしてたプロセスがいたのでそれを調べるときに利用したコマンド。</p>
+<p>これでズラっとでます。</p>
+<div>
+  <pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}'</pre>
+</div>
 
-&lt;p&gt;しかし、このコマンドの結果が見づらい。なので&lt;strong&gt;使用量の多い順にソートしてトップ10を出してみる&lt;/strong&gt;と下記のようなコマンドになります。&lt;/p&gt;
+<p>しかし、このコマンドの結果が見づらい。なので<strong>使用量の多い順にソートしてトップ10を出してみる</strong>と下記のようなコマンドになります。</p>
 
-&lt;div&gt;
-  &lt;pre&gt;$ ps alx  | awk &apos;{printf (&amp;quot;%d\t%s\n&amp;quot;, $8,$13)}&apos; | sort -nr | head -10&lt;/pre&gt;
-&lt;/div&gt;
+<div>
+  <pre>$ ps alx  | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}' | sort -nr | head -10</pre>
+</div>
 
-&lt;h2&gt;参考&lt;/h2&gt;
+<h2>参考</h2>
 
-&lt;p&gt;&lt;a href=&quot;http://at-aka.blogspot.jp/2006/07/linux.html&quot;&gt;Linux でプロセスごとのメモリー使用量を調べる&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="shell" /><category term="linux" /><summary type="html">メモリを食いつぶしてたプロセスがいたのでそれを調べるときに利用したコマンド。 これでズラっとでます。 $ ps alx | awk &apos;{printf (&amp;quot;%d\t%s\n&amp;quot;, $8,$13)}&apos;</summary></entry></feed>
+<p><a href="http://at-aka.blogspot.jp/2006/07/linux.html">Linux でプロセスごとのメモリー使用量を調べる</a></p>]]></content><author><name>Toshimaru</name></author><category term="shell" /><category term="linux" /><summary type="html"><![CDATA[メモリを食いつぶしてたプロセスがいたのでそれを調べるときに利用したコマンド。 これでズラっとでます。 $ ps alx | awk '{printf (&quot;%d\t%s\n&quot;, $8,$13)}']]></summary></entry></feed>

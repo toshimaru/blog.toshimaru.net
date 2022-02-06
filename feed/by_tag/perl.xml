@@ -1,89 +1,89 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/perl.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/perl.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Apache ＆ Perl でhello world する(CentOS 6)</title><link href="https://blog.toshimaru.net/apacheperl-hello-world-centos-6/" rel="alternate" type="text/html" title="Apache ＆ Perl でhello world する(CentOS 6)" /><published>2012-10-14T00:00:00+09:00</published><updated>2012-10-14T00:00:00+09:00</updated><id>https://blog.toshimaru.net/apacheperl-hello-world-centos-6</id><content type="html" xml:base="https://blog.toshimaru.net/apacheperl-hello-world-centos-6/">&lt;p&gt;「え？　今更パール？」って感じですが動かす機会があったのでメモっとく。&lt;/p&gt;
-&lt;h3&gt;前提&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;CentOS 6.3 (さくらVPS)&lt;/li&gt;
-&lt;li&gt;apache + mod_perl&lt;/li&gt;
-&lt;li&gt;目標はURIアクセスして「hello world」を出力するまで&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;apache&lt;/h3&gt;
-&lt;p&gt;まずはapacheから。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;# yum install httpd.x86_64
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/perl.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/perl.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Apache ＆ Perl でhello world する(CentOS 6)</title><link href="https://blog.toshimaru.net/apacheperl-hello-world-centos-6/" rel="alternate" type="text/html" title="Apache ＆ Perl でhello world する(CentOS 6)" /><published>2012-10-14T00:00:00+09:00</published><updated>2012-10-14T00:00:00+09:00</updated><id>https://blog.toshimaru.net/apacheperl-hello-world-centos-6</id><content type="html" xml:base="https://blog.toshimaru.net/apacheperl-hello-world-centos-6/"><![CDATA[<p>「え？　今更パール？」って感じですが動かす機会があったのでメモっとく。</p>
+<h3>前提</h3>
+<ul>
+<li>CentOS 6.3 (さくらVPS)</li>
+<li>apache + mod_perl</li>
+<li>目標はURIアクセスして「hello world」を出力するまで</li>
+</ul>
+<h3>apache</h3>
+<p>まずはapacheから。</p>
+<div class="CodeRay">
+  <div class="code"><pre># yum install httpd.x86_64
 # service httpd start
-Starting httpd:                                            [  OK  ]&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+Starting httpd:                                            [  OK  ]</pre></div>
+</div>
 
-&lt;p&gt;index.html を設置。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;# cd /var/www/html/
+<p>index.html を設置。</p>
+<div class="CodeRay">
+  <div class="code"><pre># cd /var/www/html/
 # ll
 total 0
-# vim index.html&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+# vim index.html</pre></div>
+</div>
 
-&lt;p&gt;適当にこんな感じで。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;&amp;lt;html&amp;gt;
-&amp;lt;body&amp;gt;
+<p>適当にこんな感じで。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;html&gt;
+&lt;body&gt;
 hello world!
-&amp;lt;/body&amp;gt;
-&amp;lt;/html&amp;gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+</div>
 
-&lt;p&gt;HTTPアクセスします。&lt;/p&gt;
-&lt;p&gt;hello world の画面が出てくればOK. 次はapache にperlの設定をしていきます。&lt;/p&gt;
-&lt;h3&gt;mod_perl&lt;/h3&gt;
-&lt;p&gt;perlモジュールインストール。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;# yum install mod_perl.x86_64&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>HTTPアクセスします。</p>
+<p>hello world の画面が出てくればOK. 次はapache にperlの設定をしていきます。</p>
+<h3>mod_perl</h3>
+<p>perlモジュールインストール。</p>
+<div class="CodeRay">
+  <div class="code"><pre># yum install mod_perl.x86_64</pre></div>
+</div>
 
-&lt;p&gt;次はapacheの設定&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;# vim /etc/httpd/conf/httpd.conf&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>次はapacheの設定</p>
+<div class="CodeRay">
+  <div class="code"><pre># vim /etc/httpd/conf/httpd.conf</pre></div>
+</div>
 
-&lt;p&gt;AddHandler追加。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;AddHandler cgi-script .cgi .pl&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>AddHandler追加。</p>
+<div class="CodeRay">
+  <div class="code"><pre>AddHandler cgi-script .cgi .pl</pre></div>
+</div>
 
-&lt;p&gt;DirecctoryにExecCGIのオプション追加。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;Options Indexes FollowSymLinks +ExecCGI&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>DirecctoryにExecCGIのオプション追加。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Options Indexes FollowSymLinks +ExecCGI</pre></div>
+</div>
 
-&lt;p&gt;リスタート。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;# service httpd restart
+<p>リスタート。</p>
+<div class="CodeRay">
+  <div class="code"><pre># service httpd restart
 Stopping httpd:                                            [  OK  ]
 Starting httpd:                                            [  OK  ]
-# vim index.pl&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+# vim index.pl</pre></div>
+</div>
 
-&lt;p&gt;perlを書く。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;#!/usr/bin/perl
+<p>perlを書く。</p>
+<div class="CodeRay">
+  <div class="code"><pre>#!/usr/bin/perl
 
-print &amp;quot;Content-type:text/html\n\n&amp;quot;;
-print &apos;hello world&apos;;&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+print &quot;Content-type:text/html\n\n&quot;;
+print 'hello world';</pre></div>
+</div>
 
-&lt;p&gt;どうやらポイントは&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;シェバンをつけること。&lt;/li&gt;
-&lt;li&gt;HTTPレスポンスとして返すのでHTTPレスポンスヘッダ,Content-typeを出力すること。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;のようです。&lt;/p&gt;
-&lt;p&gt;再アクセス。「Internal Server Error」。エラーログはこう。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;(13)Permission denied: exec of &apos;/var/www/html/index.pl&apos; failed&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>どうやらポイントは</p>
+<ul>
+<li>シェバンをつけること。</li>
+<li>HTTPレスポンスとして返すのでHTTPレスポンスヘッダ,Content-typeを出力すること。</li>
+</ul>
+<p>のようです。</p>
+<p>再アクセス。「Internal Server Error」。エラーログはこう。</p>
+<div class="CodeRay">
+  <div class="code"><pre>(13)Permission denied: exec of '/var/www/html/index.pl' failed</pre></div>
+</div>
 
-&lt;p&gt;所有者をapacheにして実行権限を持たせてやる。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;# chown apache:apache index.pl
-# chmod 744 index.pl&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>所有者をapacheにして実行権限を持たせてやる。</p>
+<div class="CodeRay">
+  <div class="code"><pre># chown apache:apache index.pl
+# chmod 744 index.pl</pre></div>
+</div>
 
-&lt;p&gt;再アクセス。これにてperlで、hello world が確認できました。めでたしめでたし。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="perl" /><category term="apache" /><summary type="html">「え？　今更パール？」って感じですが動かす機会があったのでメモっとく。 前提 CentOS 6.3 (さくらVPS) apache + mod_perl 目標はURIアクセスして「hello world」を出力するまで apache まずはapacheから。 # yum install httpd.x86_64 # service httpd start Starting httpd: [ OK ]</summary></entry></feed>
+<p>再アクセス。これにてperlで、hello world が確認できました。めでたしめでたし。</p>]]></content><author><name>Toshimaru</name></author><category term="perl" /><category term="apache" /><summary type="html"><![CDATA[「え？　今更パール？」って感じですが動かす機会があったのでメモっとく。 前提 CentOS 6.3 (さくらVPS) apache + mod_perl 目標はURIアクセスして「hello world」を出力するまで apache まずはapacheから。 # yum install httpd.x86_64 # service httpd start Starting httpd: [ OK ]]]></summary></entry></feed>

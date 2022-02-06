@@ -1,237 +1,237 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/git.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/git.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">git switch養成ギプス 〜git checkoutからの卒業〜</title><link href="https://blog.toshimaru.net/git-switch-restore/" rel="alternate" type="text/html" title="git switch養成ギプス 〜git checkoutからの卒業〜" /><published>2020-12-09T00:00:00+09:00</published><updated>2021-03-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-switch-restore</id><content type="html" xml:base="https://blog.toshimaru.net/git-switch-restore/">&lt;p&gt;本記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2020/git&quot;&gt;Git Advent Calendar 2020&lt;/a&gt; 9日目の記事です。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/git.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/git.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">git switch養成ギプス 〜git checkoutからの卒業〜</title><link href="https://blog.toshimaru.net/git-switch-restore/" rel="alternate" type="text/html" title="git switch養成ギプス 〜git checkoutからの卒業〜" /><published>2020-12-09T00:00:00+09:00</published><updated>2021-03-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-switch-restore</id><content type="html" xml:base="https://blog.toshimaru.net/git-switch-restore/"><![CDATA[<p>本記事は<a href="https://qiita.com/advent-calendar/2020/git">Git Advent Calendar 2020</a> 9日目の記事です。</p>
 
-&lt;p&gt;git 2.23 にて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt; というコマンドが導入されたことはみなさん既にご存知のことかと思います。&lt;/p&gt;
+<p>git 2.23 にて <code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code> というコマンドが導入されたことはみなさん既にご存知のことかと思います。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;One of our favorite open source projects has a big update... Git 2.23 is here!&lt;br /&gt;&lt;br /&gt;Read all about the latest release and new features ✨&lt;a href=&quot;https://t.co/fpQICF8Onc&quot;&gt;https://t.co/fpQICF8Onc&lt;/a&gt;&lt;/p&gt;&amp;mdash; GitHub (@github) &lt;a href=&quot;https://twitter.com/github/status/1162474366380269568?ref_src=twsrc%5Etfw&quot;&gt;August 16, 2019&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">One of our favorite open source projects has a big update... Git 2.23 is here!<br /><br />Read all about the latest release and new features ✨<a href="https://t.co/fpQICF8Onc">https://t.co/fpQICF8Onc</a></p>&mdash; GitHub (@github) <a href="https://twitter.com/github/status/1162474366380269568?ref_src=twsrc%5Etfw">August 16, 2019</a></blockquote>
 
-&lt;p&gt;雑に要約すると「&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;に機能もたせすぎてわかりにくくなっちゃったから、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;でわかりやすくしたよ！&lt;/strong&gt;」ってことだと思います。&lt;/p&gt;
+<p>雑に要約すると「<strong><code class="language-plaintext highlighter-rouge">git checkout</code>に機能もたせすぎてわかりにくくなっちゃったから、<code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code>でわかりやすくしたよ！</strong>」ってことだと思います。</p>
 
-&lt;p&gt;一方、まだ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;を使い続けている人をちらほら見るので、本記事では&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行していくためのコツを書いてみます。&lt;/p&gt;
+<p>一方、まだ<code class="language-plaintext highlighter-rouge">git switch</code>に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も<code class="language-plaintext highlighter-rouge">git checkout</code>を使い続けている人をちらほら見るので、本記事では<code class="language-plaintext highlighter-rouge">git switch</code>に移行していくためのコツを書いてみます。</p>
 
-&lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
+<h2 id="結論">結論</h2>
 
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;switch&lt;/code&gt; のaliasを設定しろ、そして&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;checkout&lt;/code&gt;のaliasを捨てろ&lt;/strong&gt;&lt;/p&gt;
+<p><strong><code class="language-plaintext highlighter-rouge">switch</code> のaliasを設定しろ、そして<code class="language-plaintext highlighter-rouge">checkout</code>のaliasを捨てろ</strong></p>
 
-&lt;h2 id=&quot;git-checkout-only時代&quot;&gt;git checkout only時代&lt;/h2&gt;
+<h2 id="git-checkout-only時代">git checkout only時代</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;checkout&lt;/code&gt;というコマンドは長ったらしいのでaliasを設定して運用していたのではないでしょうか。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">checkout</code>というコマンドは長ったらしいのでaliasを設定して運用していたのではないでしょうか。</p>
 
-&lt;p&gt;僕の場合、下記のようにaliasを設定しました。&lt;/p&gt;
+<p>僕の場合、下記のようにaliasを設定しました。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ~/.gitconfig
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
 [alias]
   co = checkout
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;ただこれだと &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;をそのまま便利に使い続けてしまうので、思い切ってこいつを削除してしまうと良いかと思います。&lt;/p&gt;
+<p>ただこれだと <code class="language-plaintext highlighter-rouge">git checkout</code>をそのまま便利に使い続けてしまうので、思い切ってこいつを削除してしまうと良いかと思います。</p>
 
-&lt;p&gt;もしくは下記のようにメッセージ出すとかでもOK。&lt;/p&gt;
+<p>もしくは下記のようにメッセージ出すとかでもOK。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ~/.gitconfig
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
 [alias]
-  co = !echo &quot;Use git switch/restore instead!&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+  co = !echo "Use git switch/restore instead!"
+</code></pre></div></div>
 
-&lt;h2 id=&quot;git-switch時代&quot;&gt;git switch時代&lt;/h2&gt;
+<h2 id="git-switch時代">git switch時代</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;を使いやすくするために下記のようなaliasを設定します。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">git switch</code>を使いやすくするために下記のようなaliasを設定します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ~/.gitconfig
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
 [alias]
   sw = switch
   swc = switch -c
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;こうすることで checkout コマンドが下記のように生まれ変わります。&lt;/p&gt;
+<p>こうすることで checkout コマンドが下記のように生まれ変わります。</p>
 
-&lt;h3 id=&quot;main-branch-へ切り替え&quot;&gt;main branch へ切り替え&lt;/h3&gt;
+<h3 id="main-branch-へ切り替え">main branch へ切り替え</h3>
 
-&lt;p&gt;before:&lt;/p&gt;
+<p>before:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git checkout main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git checkout main
+</code></pre></div></div>
 
-&lt;p&gt;after:&lt;/p&gt;
+<p>after:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git switch main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git switch main
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;sw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; switch を設定している場合
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git sw main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch を設定している場合
+<span class="gp">$</span><span class="w"> </span>git sw main
+</code></pre></div></div>
 
-&lt;h3 id=&quot;main-branch-から-hoge-branch-作成&quot;&gt;main branch から hoge branch 作成&lt;/h3&gt;
+<h3 id="main-branch-から-hoge-branch-作成">main branch から hoge branch 作成</h3>
 
-&lt;p&gt;before:&lt;/p&gt;
+<p>before:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;go&quot;&gt;git checkout -b hoge main
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">git checkout -b hoge main
+</span></code></pre></div></div>
 
-&lt;p&gt;after:&lt;/p&gt;
+<p>after:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git switch &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; hoge main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git switch <span class="nt">-c</span> hoge main
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;sw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; switch &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;g swc hoge main
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch <span class="nt">-c</span>
+<span class="go">g swc hoge main
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
+<h2 id="余談">余談</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;に対する良いaliasは今のところ見つかっていません。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">git restore</code>に対する良いaliasは今のところ見つかっていません。</p>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset&lt;/code&gt;とalias的に名前空間かぶつかるので、自分の中でしっくりくる命名できていないんですよね。何かいいアイディアのお持ちの方は教えてください。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">本記事はGit Advent Calendar 2020 9日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/git-switch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/git-switch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">gitのログから特定の文字列を含むコミットを発掘する</title><link href="https://blog.toshimaru.net/git-log-p-s/" rel="alternate" type="text/html" title="gitのログから特定の文字列を含むコミットを発掘する" /><published>2013-12-02T00:00:00+09:00</published><updated>2021-11-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-log-p-s</id><content type="html" xml:base="https://blog.toshimaru.net/git-log-p-s/">&lt;p&gt;「このコード書いたのは誰だ？」ってのは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git blame&lt;/code&gt; からの &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git show&lt;/code&gt; で :ok: ですが、多くのコミットを重ねている場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git blame&lt;/code&gt;では「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは追いにくかったりします。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">git reset</code>とalias的に名前空間かぶつかるので、自分の中でしっくりくる命名できていないんですよね。何かいいアイディアのお持ちの方は教えてください。</p>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使い続けている人をちらほら見るので、本記事ではgit switchに移行していくためのコツを書いてみます。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/git-switch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/git-switch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">gitのログから特定の文字列を含むコミットを発掘する</title><link href="https://blog.toshimaru.net/git-log-p-s/" rel="alternate" type="text/html" title="gitのログから特定の文字列を含むコミットを発掘する" /><published>2013-12-02T00:00:00+09:00</published><updated>2021-11-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-log-p-s</id><content type="html" xml:base="https://blog.toshimaru.net/git-log-p-s/"><![CDATA[<p>「このコード書いたのは誰だ？」ってのは <code class="language-plaintext highlighter-rouge">git blame</code> からの <code class="language-plaintext highlighter-rouge">git show</code> で :ok: ですが、多くのコミットを重ねている場合、<code class="language-plaintext highlighter-rouge">git blame</code>では「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは追いにくかったりします。</p>
 
-&lt;p&gt;そんなときは下記のgitコマンドを使えばOK.&lt;/p&gt;
+<p>そんなときは下記のgitコマンドを使えばOK.</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;function shitty_function&apos;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git log <span class="nt">-p</span> <span class="nt">-S</span> <span class="s1">'function shitty_function'</span>
+</code></pre></div></div>
 
-&lt;p&gt;これで&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;function shitty_function&lt;/code&gt;という文字列にヒットした差分があるgitのcommit が最初から今にいたるまで一覧できます。&lt;/p&gt;
+<p>これで<code class="language-plaintext highlighter-rouge">function shitty_function</code>という文字列にヒットした差分があるgitのcommit が最初から今にいたるまで一覧できます。</p>
 
-&lt;p&gt;もし最初のコミットを発掘したいのであれば、コミットログ一覧の最下部にいけば発掘可能です。&lt;/p&gt;
+<p>もし最初のコミットを発掘したいのであれば、コミットログ一覧の最下部にいけば発掘可能です。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://blog.eiel.info/blog/2013/06/04/git-log-s/&quot;&gt;このコード書いた誰だよ! そんな時の git log -S でもしてみよう | そんなこと覚えてない&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">「このコード書いたのは誰だ？」ってのは git blame からの git show で :ok: ですが、多くのコミットを重ねている場合、git blameでは「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは追いにくかったりします。</summary></entry><entry><title type="html">GitHub + hubコマンドで快適な GitHub ライフを営む</title><link href="https://blog.toshimaru.net/github-and-hub/" rel="alternate" type="text/html" title="GitHub + hubコマンドで快適な GitHub ライフを営む" /><published>2013-11-28T00:00:00+09:00</published><updated>2021-03-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-and-hub</id><content type="html" xml:base="https://blog.toshimaru.net/github-and-hub/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;github&lt;/code&gt;で開発を進めている場合、&lt;a href=&quot;https://github.com/github/hub&quot;&gt;hubコマンド&lt;/a&gt;の利用が素敵な感じです。&lt;/p&gt;
+<ul>
+  <li><a href="https://blog.eiel.info/blog/2013/06/04/git-log-s/">このコード書いた誰だよ! そんな時の git log -S でもしてみよう | そんなこと覚えてない</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[「このコード書いたのは誰だ？」ってのは git blame からの git show でOKですが、多くのコミットを重ねている場合、git blameでは「元々誰がどういう意図でこのコードを足したのか？」ってとこまでは追えなかったりします。 そんなときは下記のgitコマンドを使えばOK.]]></summary></entry><entry><title type="html">GitHub + hubコマンドで快適な GitHub ライフを営む</title><link href="https://blog.toshimaru.net/github-and-hub/" rel="alternate" type="text/html" title="GitHub + hubコマンドで快適な GitHub ライフを営む" /><published>2013-11-28T00:00:00+09:00</published><updated>2021-03-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-and-hub</id><content type="html" xml:base="https://blog.toshimaru.net/github-and-hub/"><![CDATA[<p><code class="language-plaintext highlighter-rouge">github</code>で開発を進めている場合、<a href="https://github.com/github/hub">hubコマンド</a>の利用が素敵な感じです。</p>
 
-&lt;h2 id=&quot;インストール&quot;&gt;インストール&lt;/h2&gt;
+<h2 id="インストール">インストール</h2>
 
-&lt;p&gt;Macを使っていると&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt;使って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hub&lt;/code&gt;コマンドが一発で入ります。&lt;/p&gt;
+<p>Macを使っていると<code class="language-plaintext highlighter-rouge">brew</code>使って<code class="language-plaintext highlighter-rouge">hub</code>コマンドが一発で入ります。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;hub
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>brew <span class="nb">install </span>hub
+</code></pre></div></div>
 
-&lt;h2 id=&quot;gitのエイリアスをhubコマンドで拡張&quot;&gt;gitのエイリアスをhubコマンドで拡張&lt;/h2&gt;
+<h2 id="gitのエイリアスをhubコマンドで拡張">gitのエイリアスをhubコマンドで拡張</h2>
 
-&lt;p&gt;ただこのままだとhubコマンドはgitコマンドと分離しており少し不便なので、gitコマンドをhubコマンドで置き換えてやりましょう。もちろん既存のgitコマンドに悪影響を与えるようなことはありません。やり方は下記の１行を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt;なり&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt;に追記すればOK.&lt;/p&gt;
+<p>ただこのままだとhubコマンドはgitコマンドと分離しており少し不便なので、gitコマンドをhubコマンドで置き換えてやりましょう。もちろん既存のgitコマンドに悪影響を与えるようなことはありません。やり方は下記の１行を<code class="language-plaintext highlighter-rouge">.zshrc</code>なり<code class="language-plaintext highlighter-rouge">.bashrc</code>に追記すればOK.</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;hub &lt;span class=&quot;nb&quot;&gt;alias&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>hub <span class="nb">alias</span> <span class="nt">-s</span><span class="si">)</span><span class="s2">"</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;githubからのcloneが楽になる&quot;&gt;GitHubからのcloneが楽になる&lt;/h2&gt;
+<h2 id="githubからのcloneが楽になる">GitHubからのcloneが楽になる</h2>
 
-&lt;p&gt;hubコマンドの導入によりGithubからのcloneが楽になります。下記のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{user}/{repo}&lt;/code&gt;でcloneできます。&lt;/p&gt;
+<p>hubコマンドの導入によりGithubからのcloneが楽になります。下記のように<code class="language-plaintext highlighter-rouge">{user}/{repo}</code>でcloneできます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git clone toshimaru/dotfiles
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git clone toshimaru/dotfiles
+</code></pre></div></div>
 
-&lt;h2 id=&quot;github上の当該レポジトリのページを開く&quot;&gt;GitHub上の当該レポジトリのページを開く&lt;/h2&gt;
+<h2 id="github上の当該レポジトリのページを開く">GitHub上の当該レポジトリのページを開く</h2>
 
-&lt;p&gt;自分の場合、GithubにpushしたあとにGithubのGUI上でDiffであったり諸々の状態を確認したいことがよくあります。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hub&lt;/code&gt;コマンドであれば一発でいけます。&lt;/p&gt;
+<p>自分の場合、GithubにpushしたあとにGithubのGUI上でDiffであったり諸々の状態を確認したいことがよくあります。<code class="language-plaintext highlighter-rouge">hub</code>コマンドであれば一発でいけます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git browse
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git browse
+</code></pre></div></div>
 
-&lt;p&gt;規定のブラウザで当該レポジトリのGithubページが開きます。&lt;/p&gt;
+<p>規定のブラウザで当該レポジトリのGithubページが開きます。</p>
 
-&lt;h2 id=&quot;その他&quot;&gt;その他&lt;/h2&gt;
+<h2 id="その他">その他</h2>
 
-&lt;p&gt;他にもpull-requestをコマンドから簡単に送れるようになったり嬉しいことがたくさんあります。詳しくは&lt;a href=&quot;http://hub.github.com/&quot;&gt;公式hubページ&lt;/a&gt;を見てください。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><category term="github" /><summary type="html">githubで開発を進めている場合、hubコマンドの利用が素敵な感じです。</summary></entry><entry><title type="html">Gitのrevertの-m(mainline)オプションについて</title><link href="https://blog.toshimaru.net/git-revert-mainline/" rel="alternate" type="text/html" title="Gitのrevertの-m(mainline)オプションについて" /><published>2013-10-16T00:00:00+09:00</published><updated>2013-10-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-revert-mainline</id><content type="html" xml:base="https://blog.toshimaru.net/git-revert-mainline/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git revert&lt;/code&gt;しているとこんなエラーに出くわしました。&lt;/p&gt;
+<p>他にもpull-requestをコマンドから簡単に送れるようになったり嬉しいことがたくさんあります。詳しくは<a href="http://hub.github.com/">公式hubページ</a>を見てください。</p>]]></content><author><name>Toshimaru</name></author><category term="git" /><category term="github" /><summary type="html"><![CDATA[githubで開発を進めている場合、hubコマンドの利用が素敵な感じです。]]></summary></entry><entry><title type="html">Gitのrevertの-m(mainline)オプションについて</title><link href="https://blog.toshimaru.net/git-revert-mainline/" rel="alternate" type="text/html" title="Gitのrevertの-m(mainline)オプションについて" /><published>2013-10-16T00:00:00+09:00</published><updated>2013-10-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-revert-mainline</id><content type="html" xml:base="https://blog.toshimaru.net/git-revert-mainline/"><![CDATA[<p><code class="language-plaintext highlighter-rouge">git revert</code>しているとこんなエラーに出くわしました。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git revert xxxxx
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git revert xxxxx
 error: Commit xxxxx is a merge but no -m option was given.
 fatal: revert failed
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;「コミットxxxxxはマージだけど、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-m&lt;/code&gt;が指定されていないよ！」ってことなんですがどういうことでしょう？&lt;/p&gt;
+<p>「コミットxxxxxはマージだけど、<code class="language-plaintext highlighter-rouge">-m</code>が指定されていないよ！」ってことなんですがどういうことでしょう？</p>
 
-&lt;p&gt;普通に考えてみると当然のことで、マージコミットですから&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;revert&lt;/code&gt;といったときにどのブランチ状態に戻るかを指定しなければrevertできないよということです。つまり下記のようなヒストリーがあったときに、&lt;/p&gt;
+<p>普通に考えてみると当然のことで、マージコミットですから<code class="language-plaintext highlighter-rouge">revert</code>といったときにどのブランチ状態に戻るかを指定しなければrevertできないよということです。つまり下記のようなヒストリーがあったときに、</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;*   1459267 - Merge pull request #4 from branch3
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>*   1459267 - Merge pull request #4 from branch3
 |\
 | * 344fd52 - (branch3) Add sentence
 | * 2b30235 - add file
 * | dbc65f4 - add revert commit2
 * | f0b0a91 - add revert commit 1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;1459267&amp;gt;&lt;/code&gt;のマージをrevertした場合に、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;344fd52&amp;gt;&lt;/code&gt;か&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;dbc65f4&amp;gt;&lt;/code&gt;かどっちに戻すかがわかんないっちゅうことです。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">&lt;1459267&gt;</code>のマージをrevertした場合に、<code class="language-plaintext highlighter-rouge">&lt;344fd52&gt;</code>か<code class="language-plaintext highlighter-rouge">&lt;dbc65f4&gt;</code>かどっちに戻すかがわかんないっちゅうことです。</p>
 
-&lt;p&gt;このmainlineは1から始まり「1がマージされた側のブランチ」「2がマージする側のブランチ」になるようなので多くの場合、前者に戻したいと思うので1を指定しとけばよいということになります。結果としては下記のコマンド。&lt;/p&gt;
+<p>このmainlineは1から始まり「1がマージされた側のブランチ」「2がマージする側のブランチ」になるようなので多くの場合、前者に戻したいと思うので1を指定しとけばよいということになります。結果としては下記のコマンド。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git revert -m 1 1459267
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git revert -m 1 1459267
+</code></pre></div></div>
 
-&lt;p&gt;以上でした。&lt;/p&gt;
+<p>以上でした。</p>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://d.hatena.ne.jp/koba04/20121122/1353512656&quot;&gt;gitのmerge-commitをrevertする&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">git revertしているとこんなエラーに出くわしました。</summary></entry><entry><title type="html">【git】直前の数個のコミットの歴史を著作者とともに修正する</title><link href="https://blog.toshimaru.net/git-with-author/" rel="alternate" type="text/html" title="【git】直前の数個のコミットの歴史を著作者とともに修正する" /><published>2012-11-29T00:00:00+09:00</published><updated>2012-11-29T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-with-author</id><content type="html" xml:base="https://blog.toshimaru.net/git-with-author/">&lt;p&gt;たとえばこんなケース。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2012/11/terminal.png&quot;&gt;&lt;/p&gt;
-&lt;p&gt;のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;$ git rebase -i HEAD~3&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<h3 id="参考">参考</h3>
+<ul>
+  <li><a href="http://d.hatena.ne.jp/koba04/20121122/1353512656">gitのmerge-commitをrevertする</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[git revertのmainlineオプションについて考えてみました]]></summary></entry><entry><title type="html">【git】直前の数個のコミットの歴史を著作者とともに修正する</title><link href="https://blog.toshimaru.net/git-with-author/" rel="alternate" type="text/html" title="【git】直前の数個のコミットの歴史を著作者とともに修正する" /><published>2012-11-29T00:00:00+09:00</published><updated>2012-11-29T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-with-author</id><content type="html" xml:base="https://blog.toshimaru.net/git-with-author/"><![CDATA[<p>たとえばこんなケース。</p>
+<p><img src="/images/2012/11/terminal.png"></p>
+<p>のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git rebase -i HEAD~3</pre></div>
+</div>
 
-&lt;p&gt;こんな画面が出てきますので、&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2012/11/terminal1.png&quot;&gt;&lt;/p&gt;
-&lt;p&gt;pickをeditにします。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2012/11/terminal2.png&quot;&gt;&lt;/p&gt;
-&lt;p&gt;こんなメッセージ。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;Stopped at e4269d9... modify file1.
+<p>こんな画面が出てきますので、</p>
+<p><img src="/images/2012/11/terminal1.png"></p>
+<p>pickをeditにします。</p>
+<p><img src="/images/2012/11/terminal2.png"></p>
+<p>こんなメッセージ。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Stopped at e4269d9... modify file1.
 You can amend the commit now, with
     git commit --amend
 Once you are satisfied with your changes, run
-    git rebase --continue&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+    git rebase --continue</pre></div>
+</div>
 
-&lt;p&gt;HEADは3つ前になってます。 （ここで使っている &lt;a href=&quot;http://blog.toshimaru.net/git-log-graph&quot;&gt;&quot;git lga&quot; コマンドはこちらを参考&lt;/a&gt;）&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;$ git lga
-* 5a0edde - (master) add nobita-text. (20 minutes ago) &amp;lt;nobita&amp;gt;
-* 4a73401 - modify file2. (20 minutes ago) &amp;lt;nobita&amp;gt;
-* e4269d9 - (HEAD) modify file1. (20 minutes ago) &amp;lt;nobita&amp;gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>HEADは3つ前になってます。 （ここで使っている <a href="http://blog.toshimaru.net/git-log-graph">"git lga" コマンドはこちらを参考</a>）</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git lga
+* 5a0edde - (master) add nobita-text. (20 minutes ago) &lt;nobita&gt;
+* 4a73401 - modify file2. (20 minutes ago) &lt;nobita&gt;
+* e4269d9 - (HEAD) modify file1. (20 minutes ago) &lt;nobita&gt;</pre></div>
+</div>
 
-&lt;p&gt;１．amendオプションつけて、authorもジャイアンに改変します。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;git commit --amend --author=&amp;quot;jaian &amp;lt;jaian@doraemon.com&amp;gt;&amp;quot;&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>１．amendオプションつけて、authorもジャイアンに改変します。</p>
+<div class="CodeRay">
+  <div class="code"><pre>git commit --amend --author=&quot;jaian &lt;jaian@doraemon.com&gt;&quot;</pre></div>
+</div>
 
-&lt;p&gt;２．コミット後、rebase continueします。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;git rebase --continue&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>２．コミット後、rebase continueします。</p>
+<div class="CodeRay">
+  <div class="code"><pre>git rebase --continue</pre></div>
+</div>
 
-&lt;p&gt;１，２を繰り返します。&lt;/p&gt;
-&lt;p&gt;結果、のび太君の努力の歴史はジャイアンによって改変されました。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;$ git lga
-* 304d0c7 - (HEAD, master) add nobita-text. (16 seconds ago) &amp;lt;jaian&amp;gt;
-* 66b5984 - modify file2. (34 seconds ago) &amp;lt;jaian&amp;gt;
-* a0a26e2 - modify file1. (2 minutes ago) &amp;lt;jaian&amp;gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>１，２を繰り返します。</p>
+<p>結果、のび太君の努力の歴史はジャイアンによって改変されました。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ git lga
+* 304d0c7 - (HEAD, master) add nobita-text. (16 seconds ago) &lt;jaian&gt;
+* 66b5984 - modify file2. (34 seconds ago) &lt;jaian&gt;
+* a0a26e2 - modify file1. (2 minutes ago) &lt;jaian&gt;</pre></div>
+</div>
 
-&lt;p&gt;大成功☆(・&amp;omega;&amp;lt;)&lt;/p&gt;
-&lt;h3&gt;参考&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;http://git-scm.com/book/en/Git-Tools-Rewriting-History&quot;&gt;6.4 Git Tools - Rewriting History&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">たとえばこんなケース。 のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。 $ git rebase -i HEAD~3</summary></entry><entry><title type="html">【git】error There was a problem with the editor ‘vi’.</title><link href="https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/" rel="alternate" type="text/html" title="【git】error There was a problem with the editor ‘vi’." /><published>2012-11-28T00:00:00+09:00</published><updated>2012-11-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit</id><content type="html" xml:base="https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/">&lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
+<p>大成功☆(・&omega;&lt;)</p>
+<h3>参考</h3>
+<p><a href="http://git-scm.com/book/en/Git-Tools-Rewriting-History">6.4 Git Tools - Rewriting History</a></p>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[たとえばこんなケース。 のびた君の努力の成果である直前の３つのコミットをジャイアンのコミットとして歴史を改変してみましょう。rebaseにて実現できます。 $ git rebase -i HEAD~3]]></summary></entry><entry><title type="html">【git】error There was a problem with the editor ‘vi’.</title><link href="https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/" rel="alternate" type="text/html" title="【git】error There was a problem with the editor ‘vi’." /><published>2012-11-28T00:00:00+09:00</published><updated>2012-11-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit</id><content type="html" xml:base="https://blog.toshimaru.net/macgiterror-there-was-a-problem-with-the-edit/"><![CDATA[<h2 id="problem">Problem</h2>
 
-&lt;p&gt;MacのVimにてコミットメッセージを書いて&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;wq&lt;/code&gt;するとこんなエラーが出た。&lt;/p&gt;
+<p>MacのVimにてコミットメッセージを書いて<code class="language-plaintext highlighter-rouge">wq</code>するとこんなエラーが出た。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git commit
-error: There was a problem with the editor &apos;vi&apos;.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git commit
+error: There was a problem with the editor 'vi'.
 Please supply the message using either -m or -F option.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
+<h2 id="solution">Solution</h2>
 
-&lt;p&gt;明示的に使用するエディタをvimの絶対パスを設定してあげればOK.&lt;/p&gt;
+<p>明示的に使用するエディタをvimの絶対パスを設定してあげればOK.</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git config --global core.editor /usr/bin/vim
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git config --global core.editor /usr/bin/vim
+</code></pre></div></div>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;p&gt;&lt;a href=&quot;http://tooky.co.uk/2010/04/08/there-was-a-problem-with-the-editor-vi-git-on-mac-os-x.html&quot;&gt; Fixing &quot;There was a problem with the editor &apos;vi&apos;&quot; for Git on Mac OS X Snow Leopard&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">Problem</summary></entry><entry><title type="html">Git のコミットメッセージの書き方</title><link href="https://blog.toshimaru.net/git-29764/" rel="alternate" type="text/html" title="Git のコミットメッセージの書き方" /><published>2012-10-15T00:00:00+09:00</published><updated>2012-10-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-29764</id><content type="html" xml:base="https://blog.toshimaru.net/git-29764/">&lt;p&gt;書き方というよりも、お作法というべきでしょうか。だいたい下記のURLの通りですが備忘録として残しておく。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;http://keijinsonyaban.blogspot.jp/2011/01/git.html&quot;&gt;【翻訳】Gitのコミットメッセージに関する注意点&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;引用します。&lt;/p&gt;
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;Short (50 chars or less) summary of changes
+<p><a href="http://tooky.co.uk/2010/04/08/there-was-a-problem-with-the-editor-vi-git-on-mac-os-x.html"> Fixing "There was a problem with the editor 'vi'" for Git on Mac OS X Snow Leopard</a></p>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[MacのVimにてコミットメッセージを書いて"wq"するとこんなエラーが出た。error There was a problem with the editor 'vi'.]]></summary></entry><entry><title type="html">Git のコミットメッセージの書き方</title><link href="https://blog.toshimaru.net/git-29764/" rel="alternate" type="text/html" title="Git のコミットメッセージの書き方" /><published>2012-10-15T00:00:00+09:00</published><updated>2012-10-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-29764</id><content type="html" xml:base="https://blog.toshimaru.net/git-29764/"><![CDATA[<p>書き方というよりも、お作法というべきでしょうか。だいたい下記のURLの通りですが備忘録として残しておく。</p>
+<p><a href="http://keijinsonyaban.blogspot.jp/2011/01/git.html">【翻訳】Gitのコミットメッセージに関する注意点</a></p>
+<p>引用します。</p>
+<div class="CodeRay">
+  <div class="code"><pre>Short (50 chars or less) summary of changes
 
 More detailed explanatory text, if necessary.  Wrap it to about 72
 characters or so.  In some contexts, the first line is treated as the
@@ -240,8 +240,8 @@ line separating the summary from the body is critical (unless you omit
 the body entirely); tools like rebase can get confused if you run the
 two together.
 
-Write your commit message in the present tense: &amp;quot;Fix bug&amp;quot; and not &amp;quot;Fixed
-bug.&amp;quot;  This convention matches up with commit messages generated by
+Write your commit message in the present tense: &quot;Fix bug&quot; and not &quot;Fixed
+bug.&quot;  This convention matches up with commit messages generated by
 commands like git merge and git revert.
 
 Further paragraphs come after blank lines.
@@ -251,18 +251,18 @@ Further paragraphs come after blank lines.
 - Typically a hyphen or asterisk is used for the bullet, preceded by a
   single space, with blank lines in between, but conventions vary here
 
-- Use a hanging indent&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+- Use a hanging indent</pre></div>
+</div>
 
-&lt;div class=&quot;CodeRay&quot;&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;変更に対する短い（50文字以下の）要約
+<div class="CodeRay">
+  <div class="code"><pre>変更に対する短い（50文字以下の）要約
 
 もし必要なら、より詳しい説明を述べる。約72文字ほどで折り返すようにせよ。
 ある文脈では、最初の行はE-Mailの件名になり、残りのテキストが本文になる。
 空行で本文と要約を分離するのは絶対に必要だ（本文を省略していない限り）。
 もしも二つを繋げてしまうと、rebaseのようなツールが混乱する可能性がある。
 
-現在時制でコミットメッセージを書くこと。&amp;quot;Fixed bug&amp;quot;ではなく&amp;quot;Fix bug&amp;quot;だ。
+現在時制でコミットメッセージを書くこと。&quot;Fixed bug&quot;ではなく&quot;Fix bug&quot;だ。
 この慣習は git merge や git revert のようなコマンドが生成したコミット
 メッセージと調和する。
 
@@ -273,84 +273,84 @@ Further paragraphs come after blank lines.
 - 箇条書きにはハイフンかアスタリスクが使われ、一つスペースを空けてから
   書き始め、合間には空行が入るのが通常だが、この部分の慣習は多種多様だ
 
-- ぶら下げインデント(一行目だけ飛び出して後はインデントする)を使うこと&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+- ぶら下げインデント(一行目だけ飛び出して後はインデントする)を使うこと</pre></div>
+</div>
 
-&lt;p&gt;ポイントをまとめるとこう。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;１行目はコミットの要約を記述。 &lt;/strong&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;要約は50文字くらいに収めること。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;メッセージの詳細は三行目以降に記述。2行目は空行にすること。&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;時制は現在時制。過去形は使わない。&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;詳細は箇条書きでも文章でもOK。&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;72文字で折り返すように記述。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;みんな（自分も含む）が読みやすいコミットメッセージを！！！&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">書き方というよりも、お作法というべきでしょうか。だいたい下記のURLの通りですが備忘録として残しておく。 【翻訳】Gitのコミットメッセージに関する注意点 引用します。 Short (50 chars or less) summary of changes</summary></entry><entry><title type="html">初pull request がマージされました！</title><link href="https://blog.toshimaru.net/pull-request/" rel="alternate" type="text/html" title="初pull request がマージされました！" /><published>2012-09-16T00:00:00+09:00</published><updated>2012-09-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/pull-request</id><content type="html" xml:base="https://blog.toshimaru.net/pull-request/">&lt;p&gt;githubを初めて一年ちょい（本格的に始めたのは３ヶ月前）、初めてのpull requestがマージされましたー。内容はしょっぼいバグ修正ですが嬉しいもんです。&lt;/p&gt;
+<p>ポイントをまとめるとこう。</p>
+<ul>
+<li><strong>１行目はコミットの要約を記述。 </strong>
+<ul>
+<li><strong>要約は50文字くらいに収めること。</strong></li>
+</ul>
+</li>
+<li><strong>メッセージの詳細は三行目以降に記述。2行目は空行にすること。</strong></li>
+<li><strong>時制は現在時制。過去形は使わない。</strong></li>
+<li><strong>詳細は箇条書きでも文章でもOK。</strong></li>
+<li><strong>72文字で折り返すように記述。</strong></li>
+</ul>
+<p>みんな（自分も含む）が読みやすいコミットメッセージを！！！</p>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[書き方というよりも、お作法というべきでしょうか。だいたい下記のURLの通りですが備忘録として残しておく。 【翻訳】Gitのコミットメッセージに関する注意点 引用します。 Short (50 chars or less) summary of changes]]></summary></entry><entry><title type="html">初pull request がマージされました！</title><link href="https://blog.toshimaru.net/pull-request/" rel="alternate" type="text/html" title="初pull request がマージされました！" /><published>2012-09-16T00:00:00+09:00</published><updated>2012-09-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/pull-request</id><content type="html" xml:base="https://blog.toshimaru.net/pull-request/"><![CDATA[<p>githubを初めて一年ちょい（本格的に始めたのは３ヶ月前）、初めてのpull requestがマージされましたー。内容はしょっぼいバグ修正ですが嬉しいもんです。</p>
 
-&lt;p&gt;ただmasterからpull requestを送ってしまいました...orz&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;絶対にmasterブランチで作業してはいけません。また、masterブランチからpull requestを送るのもいけません。必ずpull requestのための別ブランチから送るようにしましょう。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;http://d.hatena.ne.jp/hnw/20110528&quot;&gt;GitHubへpull requestする際のベストプラクティス&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;いちおうpull requestのお作法もあるみたいですね。次回は別ブランチから送るようにします。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><category term="github" /><summary type="html">githubを初めて一年ちょい（本格的に始めたのは３ヶ月前）、初めてのpull requestがマージされましたー。内容はしょっぼいバグ修正ですが嬉しいもんです。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/2012/09/pullreq.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/2012/09/pullreq.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">gitで自分の今日のコミットログを見る</title><link href="https://blog.toshimaru.net/git/" rel="alternate" type="text/html" title="gitで自分の今日のコミットログを見る" /><published>2012-09-11T00:00:00+09:00</published><updated>2012-09-11T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git</id><content type="html" xml:base="https://blog.toshimaru.net/git/">&lt;p&gt;一発コマンドネタ。 一日の振り返りに。&lt;/p&gt;
+<p>ただmasterからpull requestを送ってしまいました...orz</p>
+<blockquote>
+<p>絶対にmasterブランチで作業してはいけません。また、masterブランチからpull requestを送るのもいけません。必ずpull requestのための別ブランチから送るようにしましょう。</p>
+<p><a href="http://d.hatena.ne.jp/hnw/20110528">GitHubへpull requestする際のベストプラクティス</a></p>
+</blockquote>
+<p>いちおうpull requestのお作法もあるみたいですね。次回は別ブランチから送るようにします。</p>]]></content><author><name>Toshimaru</name></author><category term="git" /><category term="github" /><summary type="html"><![CDATA[githubを初めて一年ちょい（本格的に始めたのは３ヶ月前）、初めてのpull requestがマージされましたー。内容はしょっぼいバグ修正ですが嬉しいもんです。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/2012/09/pullreq.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/2012/09/pullreq.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">gitで自分の今日のコミットログを見る</title><link href="https://blog.toshimaru.net/git/" rel="alternate" type="text/html" title="gitで自分の今日のコミットログを見る" /><published>2012-09-11T00:00:00+09:00</published><updated>2012-09-11T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git</id><content type="html" xml:base="https://blog.toshimaru.net/git/"><![CDATA[<p>一発コマンドネタ。 一日の振り返りに。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git log --after=2012-xx-xx --author=&quot;your_name&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git log --after=2012-xx-xx --author="your_name"
+</code></pre></div></div>
 
-&lt;p&gt;afterの日付は今日の日付（今週にしたければ月曜日の日付を）、authorには自分の名前を指定（人の見たければその人の名前を）。&lt;/p&gt;
+<p>afterの日付は今日の日付（今週にしたければ月曜日の日付を）、authorには自分の名前を指定（人の見たければその人の名前を）。</p>
 
-&lt;h2 id=&quot;追記20131115&quot;&gt;追記（2013/11/15）&lt;/h2&gt;
+<h2 id="追記20131115">追記（2013/11/15）</h2>
 
-&lt;p&gt;&lt;a href=&quot;https://coderwall.com/p/7jbwww&quot;&gt;git today&lt;/a&gt;というエイリアスが素敵だと思ったのでこちらを今後採用したいと思います。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git today&lt;/code&gt;のエイリアスは下記のように登録してください。&lt;/p&gt;
+<p><a href="https://coderwall.com/p/7jbwww">git today</a>というエイリアスが素敵だと思ったのでこちらを今後採用したいと思います。<code class="language-plaintext highlighter-rouge">git today</code>のエイリアスは下記のように登録してください。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git config --global alias.today &quot;log --since=midnight --author=&apos;$(git config user.name)&apos; --oneline&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git config --global alias.today "log --since=midnight --author='$(git config user.name)' --oneline"
+</code></pre></div></div>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://webtech-walker.com/archive/2010/03/04034601.html&quot;&gt;git log&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">一発コマンドネタ。 一日の振り返りに。</summary></entry><entry><title type="html">githubにgit pushした変更の取り消し</title><link href="https://blog.toshimaru.net/git-pushgithub/" rel="alternate" type="text/html" title="githubにgit pushした変更の取り消し" /><published>2012-09-10T00:00:00+09:00</published><updated>2012-09-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-pushgithub</id><content type="html" xml:base="https://blog.toshimaru.net/git-pushgithub/">&lt;p&gt;「間違ったコミットをリモートにpushしちゃった！取り消したい！」ってときの操作。上イメージのようにgithubに誤ったpushをした場合を想定して解説してみます。&lt;/p&gt;
-&lt;p&gt;下記コマンド打つ。&lt;/p&gt;
-&lt;div&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;$ git rebase -i HEAD~2&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<h3 id="参考">参考</h3>
+<ul>
+<li><a href="http://webtech-walker.com/archive/2010/03/04034601.html">git log</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[一発コマンドネタ。 一日の振り返りにgitで自分の今日のコミットログを見てみましょう。]]></summary></entry><entry><title type="html">githubにgit pushした変更の取り消し</title><link href="https://blog.toshimaru.net/git-pushgithub/" rel="alternate" type="text/html" title="githubにgit pushした変更の取り消し" /><published>2012-09-10T00:00:00+09:00</published><updated>2012-09-10T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-pushgithub</id><content type="html" xml:base="https://blog.toshimaru.net/git-pushgithub/"><![CDATA[<p>「間違ったコミットをリモートにpushしちゃった！取り消したい！」ってときの操作。上イメージのようにgithubに誤ったpushをした場合を想定して解説してみます。</p>
+<p>下記コマンド打つ。</p>
+<div>
+  <div class="code"><pre>$ git rebase -i HEAD~2</pre></div>
+</div>
 
-&lt;p&gt;&lt;code&gt;HEAD~2&lt;/code&gt;は「直前の２つのコミットを修正対象とする」という意味になります。３つ前のコミットを取り消したい場合は&lt;code&gt;HEAD~3&lt;/code&gt;としてください。するとこんな画面が出てくる。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2012/09/gitterminal.png&quot;&gt;&lt;/p&gt;
-&lt;p&gt;取り消したいコミットを削除して保存します。この場合、２行目のコミットが誤りなので２行目を削除して保存します。うまくいくとこんなメッセージ。&lt;/p&gt;
-&lt;div&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;Successfully rebased and updated refs/heads/master.&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p><code>HEAD~2</code>は「直前の２つのコミットを修正対象とする」という意味になります。３つ前のコミットを取り消したい場合は<code>HEAD~3</code>としてください。するとこんな画面が出てくる。</p>
+<p><img src="/images/2012/09/gitterminal.png"></p>
+<p>取り消したいコミットを削除して保存します。この場合、２行目のコミットが誤りなので２行目を削除して保存します。うまくいくとこんなメッセージ。</p>
+<div>
+  <div class="code"><pre>Successfully rebased and updated refs/heads/master.</pre></div>
+</div>
 
-&lt;p&gt;これで準備はOK。でも、その状態で普通にプッシュするとこんなエラーで受け付けてくれない。&lt;/p&gt;
-&lt;div&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;$ git push
- ! [rejected]        master -&amp;gt; master (non-fast-forward)
-error: failed to push some refs to &apos;xxxx&amp;quot;&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>これで準備はOK。でも、その状態で普通にプッシュするとこんなエラーで受け付けてくれない。</p>
+<div>
+  <div class="code"><pre>$ git push
+ ! [rejected]        master -&gt; master (non-fast-forward)
+error: failed to push some refs to 'xxxx&quot;</pre></div>
+</div>
 
-&lt;p&gt;これは一度リモートにpushした変更を書き換えようとしているためにrejectされています。今回の場合、この変更は意図したものなので&lt;code&gt;-f&lt;/code&gt;オプションを付けて強制的にpushします。&lt;/p&gt;
-&lt;div&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;$ g push -f
-+ 4f82199...2778ead master -&amp;gt; master (forced update)&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<p>これは一度リモートにpushした変更を書き換えようとしているためにrejectされています。今回の場合、この変更は意図したものなので<code>-f</code>オプションを付けて強制的にpushします。</p>
+<div>
+  <div class="code"><pre>$ g push -f
++ 4f82199...2778ead master -&gt; master (forced update)</pre></div>
+</div>
 
-&lt;p&gt;以上になります。&lt;/p&gt;
+<p>以上になります。</p>
 
-&lt;h3&gt;ローカルの変更を残したい場合...&lt;/h3&gt;
-&lt;p&gt;上手順を行うと、リモートの変更も失われますしローカル上の変更も失われます。ローカル上のコミットを残して、githubのpushを取り消したいときは下記のコマンド。&lt;/p&gt;
+<h3>ローカルの変更を残したい場合...</h3>
+<p>上手順を行うと、リモートの変更も失われますしローカル上の変更も失われます。ローカル上のコミットを残して、githubのpushを取り消したいときは下記のコマンド。</p>
 
-&lt;div&gt;
-  &lt;div class=&quot;code&quot;&gt;&lt;pre&gt;$ git push -f origin HEAD^:master
- + 91700fc...2778ead HEAD^ -&amp;gt; master (forced update)&lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
+<div>
+  <div class="code"><pre>$ git push -f origin HEAD^:master
+ + 91700fc...2778ead HEAD^ -&gt; master (forced update)</pre></div>
+</div>
 
-&lt;p&gt;上記の場合、&lt;code&gt;HEAD^&lt;/code&gt;（最新の状態から１つ前の状態）へと強制pushしているので、最新コミットの１つがgithubから失われます。&lt;/p&gt;
+<p>上記の場合、<code>HEAD^</code>（最新の状態から１つ前の状態）へと強制pushしているので、最新コミットの１つがgithubから失われます。</p>
 
-&lt;h3&gt;参考&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://d.hatena.ne.jp/n7shi/20100204/1265382280&quot;&gt;githubにpushしたcommitの取り消し&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="git" /><category term="github" /><summary type="html">「間違ったコミットをリモートにpushしちゃった！取り消したい！」ってときの操作。上イメージのようにgithubに誤ったpushをした場合を想定して解説してみます。 下記コマンド打つ。 $ git rebase -i HEAD~2</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/2012/09/gitlog.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/2012/09/gitlog.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<h3>参考</h3>
+<ul>
+<li><a href="http://d.hatena.ne.jp/n7shi/20100204/1265382280">githubにpushしたcommitの取り消し</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="git" /><category term="github" /><summary type="html"><![CDATA[「間違ったコミットをリモートにpushしちゃった！取り消したい！」ってときの操作。上イメージのようにgithubに誤ったpushをした場合を想定して解説してみます。 下記コマンド打つ。 $ git rebase -i HEAD~2]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/2012/09/gitlog.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/2012/09/gitlog.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

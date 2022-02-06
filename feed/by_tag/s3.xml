@@ -1,41 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/s3.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/s3.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">AWS S3 + CloudFront のCORS設定手順</title><link href="https://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="https://blog.toshimaru.net/s3-cloudfront-cors-setting/">&lt;p&gt;（画像は&lt;a href=&quot;http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3&quot;&gt;AWS-CloudDesignPattern&lt;/a&gt;から引用）&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/s3.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/s3.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">AWS S3 + CloudFront のCORS設定手順</title><link href="https://blog.toshimaru.net/s3-cloudfront-cors-setting/" rel="alternate" type="text/html" title="AWS S3 + CloudFront のCORS設定手順" /><published>2016-08-22T00:00:00+09:00</published><updated>2016-08-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/s3-cloudfront-cors-setting</id><content type="html" xml:base="https://blog.toshimaru.net/s3-cloudfront-cors-setting/"><![CDATA[<p>（画像は<a href="http://aws.clouddesignpattern.org/index.php/CDP:Cache_Distribution%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3">AWS-CloudDesignPattern</a>から引用）</p>
 
-&lt;h2 id=&quot;フォントファイルの豆腐化問題&quot;&gt;フォントファイルの豆腐化問題&lt;/h2&gt;
+<h2 id="フォントファイルの豆腐化問題">フォントファイルの豆腐化問題</h2>
 
-&lt;p&gt;&lt;a href=&quot;http://fontawesome.io/&quot;&gt;Font Awesome&lt;/a&gt;のようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Access-Control-Allow-Origin&lt;/code&gt;のヘッダでAllowされていないOriginからのリクエストの場合、いわゆるフォントの豆腐現象が起きます。これは&lt;a href=&quot;https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control&quot;&gt;CORS(Cross-Origin Resource Sharing)&lt;/a&gt;
-の設定が正しくなされていないためです。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明します。&lt;/p&gt;
+<p><a href="http://fontawesome.io/">Font Awesome</a>のようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、<code class="language-plaintext highlighter-rouge">Access-Control-Allow-Origin</code>のヘッダでAllowされていないOriginからのリクエストの場合、いわゆるフォントの豆腐現象が起きます。これは<a href="https://developer.mozilla.org/ja/docs/Web/HTTP/HTTP_access_control">CORS(Cross-Origin Resource Sharing)</a>
+の設定が正しくなされていないためです。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明します。</p>
 
-&lt;h2 id=&quot;s3の設定&quot;&gt;S3の設定&lt;/h2&gt;
+<h2 id="s3の設定">S3の設定</h2>
 
-&lt;p&gt;CORSの設定はS3のバケットのプロパティ設定から行えます。&lt;/p&gt;
+<p>CORSの設定はS3のバケットのプロパティ設定から行えます。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/cors/s3.png&quot; alt=&quot;s3 bucket property&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/cors/s3.png" alt="s3 bucket property" /></p>
 
-&lt;p&gt;XMLをサンプルとして下記のように設定できます。&lt;/p&gt;
+<p>XMLをサンプルとして下記のように設定できます。</p>
 
-&lt;h3 id=&quot;cors-configuration&quot;&gt;CORS Configuration&lt;/h3&gt;
+<h3 id="cors-configuration">CORS Configuration</h3>
 
-&lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;CORSConfiguration&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;CORSRule&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;http://sample.jp&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedOrigin&amp;gt;&lt;/span&gt;https://sample.jp&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedOrigin&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedMethod&amp;gt;&lt;/span&gt;HEAD&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedMethod&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedMethod&amp;gt;&lt;/span&gt;GET&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedMethod&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;MaxAgeSeconds&amp;gt;&lt;/span&gt;3600&lt;span class=&quot;nt&quot;&gt;&amp;lt;/MaxAgeSeconds&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;ExposeHeader&amp;gt;&lt;/span&gt;ETag&lt;span class=&quot;nt&quot;&gt;&amp;lt;/ExposeHeader&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;AllowedHeader&amp;gt;&lt;/span&gt;*&lt;span class=&quot;nt&quot;&gt;&amp;lt;/AllowedHeader&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/CORSRule&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/CORSConfiguration&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;CORSConfiguration</span> <span class="na">xmlns=</span><span class="s">"http://s3.amazonaws.com/doc/2006-03-01/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;CORSRule&gt;</span>
+        <span class="nt">&lt;AllowedOrigin&gt;</span>http://sample.jp<span class="nt">&lt;/AllowedOrigin&gt;</span>
+        <span class="nt">&lt;AllowedOrigin&gt;</span>https://sample.jp<span class="nt">&lt;/AllowedOrigin&gt;</span>
+        <span class="nt">&lt;AllowedMethod&gt;</span>HEAD<span class="nt">&lt;/AllowedMethod&gt;</span>
+        <span class="nt">&lt;AllowedMethod&gt;</span>GET<span class="nt">&lt;/AllowedMethod&gt;</span>
+        <span class="nt">&lt;MaxAgeSeconds&gt;</span>3600<span class="nt">&lt;/MaxAgeSeconds&gt;</span>
+        <span class="nt">&lt;ExposeHeader&gt;</span>ETag<span class="nt">&lt;/ExposeHeader&gt;</span>
+        <span class="nt">&lt;AllowedHeader&gt;</span>*<span class="nt">&lt;/AllowedHeader&gt;</span>
+    <span class="nt">&lt;/CORSRule&gt;</span>
+<span class="nt">&lt;/CORSConfiguration&gt;</span>
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AllowedOrigin&lt;/code&gt;で許可したいOriginのURLを設定、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AllowedMethod&lt;/code&gt;で許可したいHTTPリクエストメソッドを指定します。それぞれ複数並べることで複数の値を設定することが可能となっています。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">AllowedOrigin</code>で許可したいOriginのURLを設定、<code class="language-plaintext highlighter-rouge">AllowedMethod</code>で許可したいHTTPリクエストメソッドを指定します。それぞれ複数並べることで複数の値を設定することが可能となっています。</p>
 
-&lt;h3 id=&quot;確認手順&quot;&gt;確認手順&lt;/h3&gt;
+<h3 id="確認手順">確認手順</h3>
 
-&lt;p&gt;正しく設定されているかを確認するために下記のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;curl&lt;/code&gt;コマンドを使って検証してみましょう。&lt;/p&gt;
+<p>正しく設定されているかを確認するために下記のように<code class="language-plaintext highlighter-rouge">curl</code>コマンドを使って検証してみましょう。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp&quot; https://s3-ap-northeast-1.amazonaws.com/bucket/path
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp" https://s3-ap-northeast-1.amazonaws.com/bucket/path
 HTTP/1.1 200 OK
 x-amz-id-2: xxx
 x-amz-request-id: xxx
@@ -47,32 +47,32 @@ Access-Control-Max-Age: 3600
 Access-Control-Allow-Credentials: true
 Vary: Origin, Access-Control-Request-Headers, Access-Control-Request-Method
 Last-Modified: xxx
-ETag: &quot;xxx&quot;
+ETag: "xxx"
 Accept-Ranges: bytes
 Content-Type: application/json
 Content-Length: 14356
 Server: AmazonS3
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Access-Control-Allow-Origin: http://sample.jp&lt;/code&gt; のレスポンスがヘッダが返ってきており、正しく AllowOrigin されていることが確認できました。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Access-Control-Allow-Origin: http://sample.jp</code> のレスポンスがヘッダが返ってきており、正しく AllowOrigin されていることが確認できました。</p>
 
-&lt;h2 id=&quot;cloudfront&quot;&gt;CloudFront&lt;/h2&gt;
+<h2 id="cloudfront">CloudFront</h2>
 
-&lt;p&gt;実運用の際はS3から配信ではなく、CloudFrontと組み合わせて利用するケースが多いかと思います。&lt;/p&gt;
+<p>実運用の際はS3から配信ではなく、CloudFrontと組み合わせて利用するケースが多いかと思います。</p>
 
-&lt;p&gt;&lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/MigrateS3ToCloudFront.html&quot;&gt;Amazon S3 での CloudFront  の設定&lt;/a&gt;が済んでいることを前提として進めていいきます。&lt;/p&gt;
+<p><a href="http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/MigrateS3ToCloudFront.html">Amazon S3 での CloudFront  の設定</a>が済んでいることを前提として進めていいきます。</p>
 
-&lt;h3 id=&quot;cloudfrontの-cors-設定&quot;&gt;CloudFrontの CORS 設定&lt;/h3&gt;
+<h3 id="cloudfrontの-cors-設定">CloudFrontの CORS 設定</h3>
 
-&lt;p&gt;CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。OriginヘッダーがS3まで通る必要があるので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Origin&lt;/code&gt;ヘッダーを Whitelist Headers に加えてやります。&lt;/p&gt;
+<p>CORSの設定のためには、対象クラウドフロント設定から Behaviors を選択しデフォルトパスパターンの設定を変更する必要があります。OriginヘッダーがS3まで通る必要があるので<code class="language-plaintext highlighter-rouge">Origin</code>ヘッダーを Whitelist Headers に加えてやります。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/cors/cloudfront.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/cors/cloudfront.png" alt="" /></p>
 
-&lt;h3 id=&quot;確認手順-1&quot;&gt;確認手順&lt;/h3&gt;
+<h3 id="確認手順-1">確認手順</h3>
 
-&lt;p&gt;S3と同じく、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;curl&lt;/code&gt;で確認してみます。&lt;/p&gt;
+<p>S3と同じく、<code class="language-plaintext highlighter-rouge">curl</code>で確認してみます。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl -X GET -I -H &quot;Origin: http://sample.jp&quot;  https://xxx.cloudfront.net/bucket/path
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -X GET -I -H "Origin: http://sample.jp"  https://xxx.cloudfront.net/bucket/path
 HTTP/1.1 200 OK
 Content-Type: binary/octet-stream
 Content-Length: 123
@@ -84,7 +84,7 @@ Access-Control-Expose-Headers: ETag
 Access-Control-Max-Age: 3600
 Access-Control-Allow-Credentials: true
 Last-Modified: xxx
-ETag: &quot;xxx&quot;
+ETag: "xxx"
 Accept-Ranges: bytes
 Server: AmazonS3
 Vary: Origin
@@ -92,124 +92,124 @@ Age: 9
 X-Cache: Hit from cloudfront
 Via: 1.1 xxxx.cloudfront.net (CloudFront)
 X-Amz-Cf-Id: xxx
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;S3と同じく&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Access-Control-Allow-Origin&lt;/code&gt;ヘッダが設定されていることを確認できました。めでたしめでたし。&lt;/p&gt;
+<p>S3と同じく<code class="language-plaintext highlighter-rouge">Access-Control-Allow-Origin</code>ヘッダが設定されていることを確認できました。めでたしめでたし。</p>
 
-&lt;h3 id=&quot;設定にあたっての注意事項&quot;&gt;設定にあたっての注意事項&lt;/h3&gt;
+<h3 id="設定にあたっての注意事項">設定にあたっての注意事項</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
-    &lt;ul&gt;
-      &lt;li&gt;その場合は &lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html&quot;&gt;Invalidation&lt;/a&gt;を行い、キャッシュをCloudFrontから消してみると解決するかも&lt;/li&gt;
-      &lt;li&gt;Invalidation や設定変更反映はけっこう時間かかるので注意（試行錯誤のスピード落ちるのでもっと速くしてほしいところ…）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;del&gt;現時点ではCloudFrontは HTTP/2 未対応&lt;/del&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;del&gt;2017年くらいには対応してきそうな予感がある（あくまで個人的予想）&lt;/del&gt;&lt;/li&gt;
-      &lt;li&gt;:new: 2016年９月にCloudFrontがHTTP/2に対応しました &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/&quot;&gt;New – HTTP/2 Support for Amazon CloudFront | AWS Blog&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;ブラウザからアクセスされるOriginヘッダは&lt;strong&gt;末尾スラッシュ無し&lt;/strong&gt;である点に注意&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>不正な設定状態のままリクエストをすると、設定を変えたのにもかかわらず、CloudFrontにその不正な状態が残ったままになることがあるっぽい
+    <ul>
+      <li>その場合は <a href="http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html">Invalidation</a>を行い、キャッシュをCloudFrontから消してみると解決するかも</li>
+      <li>Invalidation や設定変更反映はけっこう時間かかるので注意（試行錯誤のスピード落ちるのでもっと速くしてほしいところ…）</li>
+    </ul>
+  </li>
+  <li><del>現時点ではCloudFrontは HTTP/2 未対応</del>
+    <ul>
+      <li><del>2017年くらいには対応してきそうな予感がある（あくまで個人的予想）</del></li>
+      <li>:new: 2016年９月にCloudFrontがHTTP/2に対応しました <a href="https://aws.amazon.com/blogs/aws/new-http2-support-for-cloudfront/">New – HTTP/2 Support for Amazon CloudFront | AWS Blog</a></li>
+    </ul>
+  </li>
+  <li>ブラウザからアクセスされるOriginヘッダは<strong>末尾スラッシュ無し</strong>である点に注意</li>
+</ul>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/cors.html&quot;&gt;Cross-Origin Resource Sharing (CORS) - Amazon Simple Storage Service&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-cors&quot;&gt;リクエストヘッダーに基づいてオブジェクトをキャッシュするように CloudFront を設定する - Amazon CloudFront&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html">（画像はAWS-CloudDesignPatternから引用）</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cors/cache-distribution.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cors/cache-distribution.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">GZip形式のS3上のファイルをRubyのIO.pipeでストリーム読み出し</title><link href="https://blog.toshimaru.net/ruby-pipe-s3/" rel="alternate" type="text/html" title="GZip形式のS3上のファイルをRubyのIO.pipeでストリーム読み出し" /><published>2015-01-04T00:00:00+09:00</published><updated>2015-01-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-pipe-s3</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-pipe-s3/">&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
+<ul>
+  <li><a href="https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/dev/cors.html">Cross-Origin Resource Sharing (CORS) - Amazon Simple Storage Service</a></li>
+  <li><a href="http://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-cors">リクエストヘッダーに基づいてオブジェクトをキャッシュするように CloudFront を設定する - Amazon CloudFront</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html"><![CDATA[Font Awesomeのようなフォントファイルを外部ホスト（例えばS3など）から読み込もうとする場合、Access-Control-Allow-OriginのヘッダでAllowされていないOriginからのリクエストの場合いわゆるフォントの豆腐現象が起きる。これはCORS(Cross-Origin Resource Sharing) の設定が正しくなされていないためだ。今回はAWSのS3+CloudFrontの構成でフォントファイルを配信したいので、S3およびCloudFrontのCORS設定手順および確認方法について説明する。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cors/cache-distribution.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cors/cache-distribution.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">GZip形式のS3上のファイルをRubyのIO.pipeでストリーム読み出し</title><link href="https://blog.toshimaru.net/ruby-pipe-s3/" rel="alternate" type="text/html" title="GZip形式のS3上のファイルをRubyのIO.pipeでストリーム読み出し" /><published>2015-01-04T00:00:00+09:00</published><updated>2015-01-04T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-pipe-s3</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-pipe-s3/"><![CDATA[<h2 id="やりたいこと">やりたいこと</h2>
 
-&lt;p&gt;S3からgzip形式のファイルをストリーミングダウンロードしてそれを読み出す。&lt;/p&gt;
+<p>S3からgzip形式のファイルをストリーミングダウンロードしてそれを読み出す。</p>
 
-&lt;h2 id=&quot;s3からのダウンロード&quot;&gt;S3からのダウンロード&lt;/h2&gt;
+<h2 id="s3からのダウンロード">S3からのダウンロード</h2>
 
-&lt;p&gt;&lt;a href=&quot;http://docs.aws.amazon.com/AWSRubySDK/latest/AWS/S3/S3Object.html&quot;&gt;公式ドキュメント&lt;/a&gt;によるとこうする。&lt;/p&gt;
+<p><a href="http://docs.aws.amazon.com/AWSRubySDK/latest/AWS/S3/S3Object.html">公式ドキュメント</a>によるとこうする。</p>
 
-&lt;p&gt;If you want to stream an object from S3, you can pass a block to #read.&lt;/p&gt;
+<p>If you want to stream an object from S3, you can pass a block to #read.</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;output&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;wb&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;large_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+  <span class="n">large_object</span><span class="p">.</span><span class="nf">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
+    <span class="n">file</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;gzipを読む&quot;&gt;gzipを読む&lt;/h2&gt;
+<h2 id="gzipを読む">gzipを読む</h2>
 
-&lt;p&gt;gzipの読み出しのサンプルコードはこんな感じ。&lt;/p&gt;
+<p>gzipの読み出しのサンプルコードはこんな感じ。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;hoge.gz&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;gz&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Zlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GzipReader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;gz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;close&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="s1">'hoge.gz'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+  <span class="nb">print</span> <span class="n">gz</span><span class="p">.</span><span class="nf">read</span>
+  <span class="n">gz</span><span class="p">.</span><span class="nf">close</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;via. &lt;a href=&quot;http://apidock.com/ruby/Zlib/GzipReader&quot;&gt;http://apidock.com/ruby/Zlib/GzipReader&lt;/a&gt;&lt;/p&gt;
+<p>via. <a href="http://apidock.com/ruby/Zlib/GzipReader">http://apidock.com/ruby/Zlib/GzipReader</a></p>
 
-&lt;h2 id=&quot;pipeでつなぐ&quot;&gt;pipeでつなぐ&lt;/h2&gt;
+<h2 id="pipeでつなぐ">pipeでつなぐ</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IO.pipe&lt;/code&gt;を使ってつなぐとこう。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">IO.pipe</code>を使ってつなぐとこう。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;IO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;pipe&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;write_io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;write_io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;binmode&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;thread&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;begin&lt;/span&gt;
-      &lt;span class=&quot;no&quot;&gt;AWS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;S3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;S3Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;write_io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;rescue&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;write_io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;close&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">IO</span><span class="p">.</span><span class="nf">pipe</span> <span class="k">do</span> <span class="o">|</span><span class="n">read_io</span><span class="p">,</span> <span class="n">write_io</span><span class="o">|</span>
+  <span class="n">write_io</span><span class="p">.</span><span class="nf">binmode</span>
+  <span class="n">thread</span> <span class="o">=</span> <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
+    <span class="k">begin</span>
+      <span class="no">AWS</span><span class="o">::</span><span class="no">S3</span><span class="o">::</span><span class="no">S3Object</span><span class="p">.</span><span class="nf">read</span> <span class="k">do</span> <span class="o">|</span><span class="n">chunk</span><span class="o">|</span>
+        <span class="n">write_io</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">rescue</span>
+      <span class="n">write_io</span><span class="p">.</span><span class="nf">close</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 
-  &lt;span class=&quot;n&quot;&gt;gz&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Zlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GzipReader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;gets&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# do something with line ...&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+  <span class="n">gz</span> <span class="o">=</span> <span class="no">Zlib</span><span class="o">::</span><span class="no">GzipReader</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">read_io</span><span class="p">)</span>
+  <span class="k">while</span> <span class="n">line</span> <span class="o">=</span> <span class="n">gz</span><span class="p">.</span><span class="nf">gets</span>
+    <span class="c1"># do something with line ...</span>
+    <span class="nb">puts</span> <span class="n">line</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;注意点としては以下。&lt;/p&gt;
+<p>注意点としては以下。</p>
 
-&lt;ol&gt;
-  &lt;li&gt;gzip形式なので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;write_io.binmode&lt;/code&gt;でバイナリモードにすること&lt;/li&gt;
-  &lt;li&gt;Thread内で何かエラーが起こったときに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gets&lt;/code&gt;が待ち状態で止まっちゃうので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;close&lt;/code&gt;なりなんなり適切な処理をしてやること&lt;/li&gt;
-&lt;/ol&gt;
+<ol>
+  <li>gzip形式なので<code class="language-plaintext highlighter-rouge">write_io.binmode</code>でバイナリモードにすること</li>
+  <li>Thread内で何かエラーが起こったときに<code class="language-plaintext highlighter-rouge">gets</code>が待ち状態で止まっちゃうので<code class="language-plaintext highlighter-rouge">close</code>なりなんなり適切な処理をしてやること</li>
+</ol>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+<h3 id="参考">参考</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/24016548/how-do-i-get-zlib-to-uncompress-from-s3-stream-in-ruby&quot;&gt;How do I get Zlib to uncompress from S3 stream in Ruby?&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://takuya-1st.hatenablog.jp/entry/20120205/1328470521&quot;&gt;RubyはIO.pipeを使えば、パイプを作ることが出来る&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="aws" /><category term="s3" /><summary type="html">やりたいこと</summary></entry><entry><title type="html">WindowsコマンドでAmazon S3上にバックアップする</title><link href="https://blog.toshimaru.net/windows-s3-sync/" rel="alternate" type="text/html" title="WindowsコマンドでAmazon S3上にバックアップする" /><published>2013-04-19T00:00:00+09:00</published><updated>2013-04-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/windows-s3-sync</id><content type="html" xml:base="https://blog.toshimaru.net/windows-s3-sync/">&lt;p&gt;Windows PCを処分するにあたり、音楽、写真、動画などのデータ郡をamazon S3に置き管理することにしました。S3のGUIツールはコレといった定番がないようで（あったら教えてください）、挙動にもやや不安が残る感じでした。よって今回はコマンドラインツールを使ってローカルとS3をsync、同期することにしました。&lt;/p&gt;
+<ul>
+  <li><a href="http://stackoverflow.com/questions/24016548/how-do-i-get-zlib-to-uncompress-from-s3-stream-in-ruby">How do I get Zlib to uncompress from S3 stream in Ruby?</a></li>
+  <li><a href="http://takuya-1st.hatenablog.jp/entry/20120205/1328470521">RubyはIO.pipeを使えば、パイプを作ることが出来る</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="ruby" /><category term="aws" /><category term="s3" /><summary type="html"><![CDATA[S3からgzip形式のファイルをストリーミングダウンロードしてそれをRubyで読み出す。IO.pipeを使えば可能です。]]></summary></entry><entry><title type="html">WindowsコマンドでAmazon S3上にバックアップする</title><link href="https://blog.toshimaru.net/windows-s3-sync/" rel="alternate" type="text/html" title="WindowsコマンドでAmazon S3上にバックアップする" /><published>2013-04-19T00:00:00+09:00</published><updated>2013-04-19T00:00:00+09:00</updated><id>https://blog.toshimaru.net/windows-s3-sync</id><content type="html" xml:base="https://blog.toshimaru.net/windows-s3-sync/"><![CDATA[<p>Windows PCを処分するにあたり、音楽、写真、動画などのデータ郡をamazon S3に置き管理することにしました。S3のGUIツールはコレといった定番がないようで（あったら教えてください）、挙動にもやや不安が残る感じでした。よって今回はコマンドラインツールを使ってローカルとS3をsync、同期することにしました。</p>
 
-&lt;p&gt;使ったツールは&lt;a href=&quot;http://www.dragondisk.com/&quot;&gt;Dragon Disk&lt;/a&gt;。トップにパッケージの写真があってやや有料の匂いがするが、無料なのでご安心を。&lt;/p&gt;
+<p>使ったツールは<a href="http://www.dragondisk.com/">Dragon Disk</a>。トップにパッケージの写真があってやや有料の匂いがするが、無料なのでご安心を。</p>
 
-&lt;h2 id=&quot;手順&quot;&gt;手順&lt;/h2&gt;
+<h2 id="手順">手順</h2>
 
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.dragondisk.com/download-amazon-s3-client-google-cloud-storage-client.html&quot;&gt;ダウンロードページ&lt;/a&gt;からコマンドラインツールをダウンロード&lt;/li&gt;
-  &lt;li&gt;展開してその中に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dgsync.bat&lt;/code&gt;ファイルを作成し、下記のようなバッチファイルを作成してください。
-&lt;script src=&quot;https://gist.github.com/toshimaru/5415149.js&quot;&gt;&lt;/script&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DGTOOLS_ACCESS_KEY&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DGTOOLS_SECRET_KEY&lt;/code&gt;を適宜編集。&lt;/li&gt;
-      &lt;li&gt;ファイルの削除も同期をとりたい場合は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--dont-delete&lt;/code&gt;オプションを外してください。&lt;/li&gt;
-      &lt;li&gt;S3上のフォルダはあらかじめ作成しておく。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;２で作成したバッチを実行する。&lt;/li&gt;
-&lt;/ol&gt;
+<ol>
+  <li><a href="http://www.dragondisk.com/download-amazon-s3-client-google-cloud-storage-client.html">ダウンロードページ</a>からコマンドラインツールをダウンロード</li>
+  <li>展開してその中に<code class="language-plaintext highlighter-rouge">dgsync.bat</code>ファイルを作成し、下記のようなバッチファイルを作成してください。
+<script src="https://gist.github.com/toshimaru/5415149.js"></script>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">DGTOOLS_ACCESS_KEY</code>、<code class="language-plaintext highlighter-rouge">DGTOOLS_SECRET_KEY</code>を適宜編集。</li>
+      <li>ファイルの削除も同期をとりたい場合は<code class="language-plaintext highlighter-rouge">--dont-delete</code>オプションを外してください。</li>
+      <li>S3上のフォルダはあらかじめ作成しておく。</li>
+    </ul>
+  </li>
+  <li>２で作成したバッチを実行する。</li>
+</ol>
 
-&lt;p&gt;以上です。amazon S3を使って安全、安価にデータを保管しましょう！&lt;/p&gt;
+<p>以上です。amazon S3を使って安全、安価にデータを保管しましょう！</p>
 
-&lt;h3 id=&quot;追記&quot;&gt;追記&lt;/h3&gt;
+<h3 id="追記">追記</h3>
 
-&lt;p&gt;S3のヘビーな利用はそんなに「安価」って程ではない…(´・ω・｀)&lt;/p&gt;
+<p>S3のヘビーな利用はそんなに「安価」って程ではない…(´・ω・｀)</p>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+<h3 id="参考">参考</h3>
 
-&lt;p&gt;&lt;a href=&quot;http://www.tdn.co.jp/techblog/201206/52/&quot;&gt;Amazon S3のクライアント「DragonDisk」に付属の「dgsync」が便利な件&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html">Windows PCを処分するにあたり、音楽、写真、動画などのデータ郡をamazon S3に置き管理することにしました。S3のGUIツールはコレといった定番がないようで（あったら教えてください）、挙動にもやや不安が残る感じでした。よって今回はコマンドラインツールを使ってローカルとS3をsync、同期することにしました。</summary></entry></feed>
+<p><a href="http://www.tdn.co.jp/techblog/201206/52/">Amazon S3のクライアント「DragonDisk」に付属の「dgsync」が便利な件</a></p>]]></content><author><name>Toshimaru</name></author><category term="aws" /><category term="s3" /><summary type="html"><![CDATA[Windows PCを処分するにあたり、音楽、写真、動画などのデータ郡をamazon S3に置き管理することにしました。S3のGUIツールはコレといった定番がないようで（あったら教えてください）、挙動にもやや不安が残る感じでした。よって今回はDragon Diskコマンドラインツールを使ってローカルとS3をsync、同期することにしました。]]></summary></entry></feed>

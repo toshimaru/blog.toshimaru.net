@@ -1,105 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/vscode.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/vscode.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">VS Code Extensionの公開手順</title><link href="https://blog.toshimaru.net/how-to-publish-vscode-extension/" rel="alternate" type="text/html" title="VS Code Extensionの公開手順" /><published>2018-08-01T00:00:00+09:00</published><updated>2018-08-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-publish-vscode-extension</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-publish-vscode-extension/">&lt;p&gt;先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/vscode.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/vscode.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">VS Code Extensionの公開手順</title><link href="https://blog.toshimaru.net/how-to-publish-vscode-extension/" rel="alternate" type="text/html" title="VS Code Extensionの公開手順" /><published>2018-08-01T00:00:00+09:00</published><updated>2018-08-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/how-to-publish-vscode-extension</id><content type="html" xml:base="https://blog.toshimaru.net/how-to-publish-vscode-extension/"><![CDATA[<p>先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. | はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design! &lt;a href=&quot;https://t.co/2cg3jwnT5q&quot;&gt;https://t.co/2cg3jwnT5q&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1024512092341030912?ref_src=twsrc%5Etfw&quot;&gt;August 1, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">Blogged. | はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました - Hack Your Design! <a href="https://t.co/2cg3jwnT5q">https://t.co/2cg3jwnT5q</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1024512092341030912?ref_src=twsrc%5Etfw">August 1, 2018</a></blockquote>
 
-&lt;h2 id=&quot;visual-studio-team-servicesアカウントの作成&quot;&gt;Visual Studio Team Servicesアカウントの作成&lt;/h2&gt;
+<h2 id="visual-studio-team-servicesアカウントの作成">Visual Studio Team Servicesアカウントの作成</h2>
 
-&lt;p&gt;まずVSCode Extensionを公開するためには、&lt;a href=&quot;https://visualstudio.microsoft.com/team-services/&quot;&gt;Visual Studio Team Services&lt;/a&gt;アカウントが必要になります。&lt;/p&gt;
+<p>まずVSCode Extensionを公開するためには、<a href="https://visualstudio.microsoft.com/team-services/">Visual Studio Team Services</a>アカウントが必要になります。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/sign-in.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/vsts/sign-in.png" alt="" /></p>
 
-&lt;p&gt;「MSのメールアカウントを作らなければならないんか！？」と一瞬思っちゃいましたが、手持ちのGmailなどでも登録できるのでご安心を。&lt;/p&gt;
+<p>「MSのメールアカウントを作らなければならないんか！？」と一瞬思っちゃいましたが、手持ちのGmailなどでも登録できるのでご安心を。</p>
 
-&lt;h2 id=&quot;プロジェクト作成&quot;&gt;プロジェクト作成&lt;/h2&gt;
+<h2 id="プロジェクト作成">プロジェクト作成</h2>
 
-&lt;p&gt;自分の好きな名前でプロジェクトを作成します。&lt;/p&gt;
+<p>自分の好きな名前でプロジェクトを作成します。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/create-pj.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/vsts/create-pj.png" alt="" /></p>
 
-&lt;h2 id=&quot;アクセストークンの取得&quot;&gt;アクセストークンの取得&lt;/h2&gt;
+<h2 id="アクセストークンの取得">アクセストークンの取得</h2>
 
-&lt;p&gt;作成したプロジェクトページ( &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://{youraccount}.visualstudio.com&lt;/code&gt; )でアクセストークンを取得します。 右上メニューのセキュリティからアクセストークンの追加を行ってください。&lt;/p&gt;
+<p>作成したプロジェクトページ( <code class="language-plaintext highlighter-rouge">https://{youraccount}.visualstudio.com</code> )でアクセストークンを取得します。 右上メニューのセキュリティからアクセストークンの追加を行ってください。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/security.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/vsts/security.png" alt="" /></p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/accesstoken.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/vsts/accesstoken.png" alt="" /></p>
 
-&lt;p&gt;下記の内容でアクセストークンを作成します。&lt;/p&gt;
+<p>下記の内容でアクセストークンを作成します。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;Description: &lt;strong&gt;vsce&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;Expire: &lt;strong&gt;1 year&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;Scope: &lt;strong&gt;All&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>Description: <strong>vsce</strong></li>
+  <li>Expire: <strong>1 year</strong></li>
+  <li>Scope: <strong>All</strong></li>
+</ul>
 
-&lt;p&gt;&lt;strong&gt;※ScopeをAllに設定しないとこのあとの手順がうまくいかないので注意！&lt;/strong&gt;&lt;/p&gt;
+<p><strong>※ScopeをAllに設定しないとこのあとの手順がうまくいかないので注意！</strong></p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/vsts/get-token.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/vsts/get-token.png" alt="" /></p>
 
-&lt;h2 id=&quot;vsceのダウンロード&quot;&gt;vsceのダウンロード&lt;/h2&gt;
+<h2 id="vsceのダウンロード">vsceのダウンロード</h2>
 
-&lt;p&gt;VSCode Extensionの公開に際しては&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vsce&lt;/code&gt;コマンドを使用します。npmでダウンロードしてください。&lt;/p&gt;
+<p>VSCode Extensionの公開に際しては<code class="language-plaintext highlighter-rouge">vsce</code>コマンドを使用します。npmでダウンロードしてください。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ npm install -g vsce
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ npm install -g vsce
+</code></pre></div></div>
 
-&lt;h2 id=&quot;publisher作成&quot;&gt;Publisher作成&lt;/h2&gt;
+<h2 id="publisher作成">Publisher作成</h2>
 
-&lt;p&gt;&lt;a href=&quot;https://marketplace.visualstudio.com/manage&quot;&gt;Marketplace publisher management page&lt;/a&gt; で必要な項目を記入した上でCreate Publisherを行います。&lt;/p&gt;
+<p><a href="https://marketplace.visualstudio.com/manage">Marketplace publisher management page</a> で必要な項目を記入した上でCreate Publisherを行います。</p>
 
-&lt;h2 id=&quot;vsceログイン&quot;&gt;vsceログイン&lt;/h2&gt;
+<h2 id="vsceログイン">vsceログイン</h2>
 
-&lt;p&gt;下記のコマンドでvsceログインします。手順のなかでアクセストークンを聞かれるので上手順で入手したトークンを入力します。&lt;/p&gt;
+<p>下記のコマンドでvsceログインします。手順のなかでアクセストークンを聞かれるので上手順で入手したトークンを入力します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vsce login (publisher name)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vsce login (publisher name)
+</code></pre></div></div>
 
-&lt;h2 id=&quot;公開&quot;&gt;公開！&lt;/h2&gt;
+<h2 id="公開">公開！</h2>
 
-&lt;p&gt;これで公開準備が整ったので、VSCode Extensionのルートで下記のコマンドを打ってExtensionを公開します。&lt;/p&gt;
+<p>これで公開準備が整ったので、VSCode Extensionのルートで下記のコマンドを打ってExtensionを公開します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vsce publish
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vsce publish
+</code></pre></div></div>
 
-&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+<h2 id="参考資料">参考資料</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://code.visualstudio.com/docs/extensions/publish-extension&quot;&gt;Publishing Visual Studio Code Extensions&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/vsts/organizations/accounts/create-organization-msa-or-work-student?view=vsts&quot;&gt;Create a VSTS organization with a Microsoft account or a work account | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><summary type="html">先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vsts/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vsts/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</title><link href="https://blog.toshimaru.net/vscoce-hybrid-next-plus/" rel="alternate" type="text/html" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました" /><published>2018-07-31T00:00:00+09:00</published><updated>2018-07-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vscoce-hybrid-next-plus</id><content type="html" xml:base="https://blog.toshimaru.net/vscoce-hybrid-next-plus/">&lt;p&gt;はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。&lt;/p&gt;
+<ul>
+  <li><a href="https://code.visualstudio.com/docs/extensions/publish-extension">Publishing Visual Studio Code Extensions</a></li>
+  <li><a href="https://docs.microsoft.com/en-us/vsts/organizations/accounts/create-organization-msa-or-work-student?view=vsts">Create a VSTS organization with a Microsoft account or a work account | Microsoft Docs</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="vscode" /><summary type="html"><![CDATA[先日VSCode Extensionを公開しました。公開するにあたっての手順をメモがてら残したいと思います。 まずVSCode Extensionを公開するためには、Visual Studio Team Servicesアカウントが必要になります。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vsts/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vsts/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</title><link href="https://blog.toshimaru.net/vscoce-hybrid-next-plus/" rel="alternate" type="text/html" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました" /><published>2018-07-31T00:00:00+09:00</published><updated>2018-07-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vscoce-hybrid-next-plus</id><content type="html" xml:base="https://blog.toshimaru.net/vscoce-hybrid-next-plus/"><![CDATA[<p>はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;初めてのVSCode ExtensionとしてThemeを作ってみた（Beta Version）| Hybrid Next Plus - Visual Studio Marketplace &lt;a href=&quot;https://t.co/d8xWeLHQ51&quot;&gt;https://t.co/d8xWeLHQ51&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1021918426426531840?ref_src=twsrc%5Etfw&quot;&gt;July 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">初めてのVSCode ExtensionとしてThemeを作ってみた（Beta Version）| Hybrid Next Plus - Visual Studio Marketplace <a href="https://t.co/d8xWeLHQ51">https://t.co/d8xWeLHQ51</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1021918426426531840?ref_src=twsrc%5Etfw">July 25, 2018</a></blockquote>
 
-&lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
+<h2 id="きっかけ">きっかけ</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった&lt;/li&gt;
-  &lt;li&gt;Vimで&lt;a href=&quot;https://github.com/w0ng/vim-hybrid&quot;&gt;hybrid&lt;/a&gt;、Atomで&lt;a href=&quot;https://github.com/kaicataldo/hybrid-next-syntax&quot;&gt;hybrid next&lt;/a&gt;というテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った&lt;/li&gt;
-  &lt;li&gt;公開されている&lt;a href=&quot;https://github.com/wyze/vscode-hybrid-next/&quot;&gt;vscode-hybrid-next&lt;/a&gt;を使おうと思ったが、少々気に食わない設定があった&lt;/li&gt;
-  &lt;li&gt;同レポジトリにPRしようかと思ったがテーマのあて方が&lt;a href=&quot;https://www.sublimetext.com/docs/3/color_schemes_tmtheme.html&quot;&gt;tmTheme&lt;/a&gt;形式だったため小回りが効かない感じになってた&lt;/li&gt;
-  &lt;li&gt;自分でテーマを作った &lt;a href=&quot;https://github.com/toshimaru/hybrid-next-plus&quot;&gt;hybrid-next-plus&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった</li>
+  <li>Vimで<a href="https://github.com/w0ng/vim-hybrid">hybrid</a>、Atomで<a href="https://github.com/kaicataldo/hybrid-next-syntax">hybrid next</a>というテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った</li>
+  <li>公開されている<a href="https://github.com/wyze/vscode-hybrid-next/">vscode-hybrid-next</a>を使おうと思ったが、少々気に食わない設定があった</li>
+  <li>同レポジトリにPRしようかと思ったがテーマのあて方が<a href="https://www.sublimetext.com/docs/3/color_schemes_tmtheme.html">tmTheme</a>形式だったため小回りが効かない感じになってた</li>
+  <li>自分でテーマを作った <a href="https://github.com/toshimaru/hybrid-next-plus">hybrid-next-plus</a></li>
+</ul>
 
-&lt;h2 id=&quot;参考テーマ&quot;&gt;参考テーマ&lt;/h2&gt;
+<h2 id="参考テーマ">参考テーマ</h2>
 
-&lt;p&gt;背景やサイドバーの設定は、&lt;a href=&quot;https://atom.io/themes/one-dark-ui&quot;&gt;Atom One Dark&lt;/a&gt;を参考にした。&lt;/p&gt;
+<p>背景やサイドバーの設定は、<a href="https://atom.io/themes/one-dark-ui">Atom One Dark</a>を参考にした。</p>
 
-&lt;p&gt;&lt;img src=&quot;https://i.github-camo.com/af4a063b48fb691fb25e664ca8e0680a31f6f1e4/68747470733a2f2f636c6f75642e67697468756275736572636f6e74656e742e636f6d2f6173736574732f3337383032332f32363234363831382f30383235356237362d336364362d313165372d396636642d3661653365313661383961392e706e67&quot; alt=&quot;atom one dark&quot; /&gt;&lt;/p&gt;
+<p><img src="https://i.github-camo.com/af4a063b48fb691fb25e664ca8e0680a31f6f1e4/68747470733a2f2f636c6f75642e67697468756275736572636f6e74656e742e636f6d2f6173736574732f3337383032332f32363234363831382f30383235356237362d336364362d313165372d396636642d3661653365313661383961392e706e67" alt="atom one dark" /></p>
 
-&lt;p&gt;:point_up: &lt;strong&gt;【図】Atom One Dark(公式READMEより引用)&lt;/strong&gt;&lt;/p&gt;
+<p>:point_up: <strong>【図】Atom One Dark(公式READMEより引用)</strong></p>
 
-&lt;p&gt;シンタックスハイライトのカラーは、&lt;a href=&quot;https://github.com/w0ng/vim-hybrid&quot;&gt;hybrid&lt;/a&gt;、&lt;a href=&quot;https://github.com/kaicataldo/hybrid-next-syntax&quot;&gt;hybrid next&lt;/a&gt;, &lt;a href=&quot;https://github.com/wyze/vscode-hybrid-next/&quot;&gt;vscode-hybrid-next&lt;/a&gt;を参考にしつつ一番しっくりくる色のあて方を選択した。&lt;/p&gt;
+<p>シンタックスハイライトのカラーは、<a href="https://github.com/w0ng/vim-hybrid">hybrid</a>、<a href="https://github.com/kaicataldo/hybrid-next-syntax">hybrid next</a>, <a href="https://github.com/wyze/vscode-hybrid-next/">vscode-hybrid-next</a>を参考にしつつ一番しっくりくる色のあて方を選択した。</p>
 
-&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/kaicataldo/hybrid-next-syntax/master/screenshots/hybrid-next-screenshot-1.png&quot; alt=&quot;hybrid next&quot; /&gt;&lt;/p&gt;
+<p><img src="https://raw.githubusercontent.com/kaicataldo/hybrid-next-syntax/master/screenshots/hybrid-next-screenshot-1.png" alt="hybrid next" /></p>
 
-&lt;p&gt;:point_up: &lt;strong&gt;【図】Atom Hybrid Next(公式READMEより引用)&lt;/strong&gt;&lt;/p&gt;
+<p>:point_up: <strong>【図】Atom Hybrid Next(公式READMEより引用)</strong></p>
 
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+<h2 id="最後に">最後に</h2>
 
-&lt;p&gt;一応Markdown, Ruby, JSONファイルあたりはいい感じにSyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPR/Issue報告お願いします 🙏&lt;/p&gt;
+<p>一応Markdown, Ruby, JSONファイルあたりはいい感じにSyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPR/Issue報告お願いします 🙏</p>
 
-&lt;p&gt;手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。&lt;/p&gt;
+<p>手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。</p>
 
-&lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
+<h2 id="追記">追記</h2>
 
-&lt;p&gt;&lt;a href=&quot;/how-to-publish-vscode-extension/&quot;&gt;VS Code Extensionの公開手順&lt;/a&gt;を書きました。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><category term="oss" /><summary type="html">はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p><a href="/how-to-publish-vscode-extension/">VS Code Extensionの公開手順</a>を書きました。</p>]]></content><author><name>Toshimaru</name></author><category term="vscode" /><category term="oss" /><summary type="html"><![CDATA[はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。 きっかけ もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった Vimでhybrid、Atomでhybrid nextというテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った 公開されているvscode-hybrid-nextを使おうと思ったが、少々気に食わない設定があった 同レポジトリにPRしようかと思ったがテーマのあて方がtmTheme形式だったため小回りが効かない感じになってた 自分でテーマを作った hybrid-next-plus]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

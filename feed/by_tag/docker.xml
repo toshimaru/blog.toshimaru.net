@@ -1,340 +1,340 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/docker.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/docker.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/">&lt;p&gt;本記事では、マルチステージビルド構成の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;のビルドの並列実行について紹介したいと思います。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/docker.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/docker.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/"><![CDATA[<p>本記事では、マルチステージビルド構成の<code class="language-plaintext highlighter-rouge">Dockerfile</code>のビルドの並列実行について紹介したいと思います。</p>
 
-&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
+<h2 id="前提">前提</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;Docker Desktop v3.2.1
-    &lt;ul&gt;
-      &lt;li&gt;Docker v20.10&lt;/li&gt;
-      &lt;li&gt;Docker Compose v1.28&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>Docker Desktop v3.2.1
+    <ul>
+      <li>Docker v20.10</li>
+      <li>Docker Compose v1.28</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/docker/desktop1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/docker/desktop1.png" alt="" /></p>
 
-&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+<h2 id="dockerfile">Dockerfile</h2>
 
-&lt;p&gt;今回テストで使うマルチステージビルドのサンプルとなる&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;は下記です。&lt;/p&gt;
+<p>今回テストで使うマルチステージビルドのサンプルとなる<code class="language-plaintext highlighter-rouge">Dockerfile</code>は下記です。</p>
 
-&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test1&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1&lt;/span&gt;
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> alpine as test1</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.1 <span class="c"># sleep from test1</span>
 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test2&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2&lt;/span&gt;
+<span class="k">FROM</span><span class="s"> alpine as test2</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.2 <span class="c"># sleep from test2</span>
 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test3&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3&lt;/span&gt;
+<span class="k">FROM</span><span class="s"> alpine as test3</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.3 <span class="c"># sleep from test3</span>
 
 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main&lt;/span&gt;
+<span class="k">FROM</span><span class="s"> alpine</span>
+<span class="k">RUN </span><span class="nb">echo</span> <span class="s2">"build start"</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.0 <span class="c"># sleep from main</span>
 
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test1 /tmp /tmp&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test2 /tmp /tmp&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test3 /tmp /tmp&lt;/span&gt;
+<span class="k">COPY</span><span class="s"> --from=test1 /tmp /tmp</span>
+<span class="k">COPY</span><span class="s"> --from=test2 /tmp /tmp</span>
+<span class="k">COPY</span><span class="s"> --from=test3 /tmp /tmp</span>
 
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">RUN </span><span class="nb">echo</span> <span class="s2">"build finished"</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;直列実行-vs-並列実行&quot;&gt;直列実行 vs 並列実行&lt;/h2&gt;
+<h2 id="直列実行-vs-並列実行">直列実行 vs 並列実行</h2>
 
-&lt;p&gt;実際に上述の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; のビルドを並列実行しない場合（直列実行）と並列実行する場合の結果を比較してみます。&lt;/p&gt;
+<p>実際に上述の <code class="language-plaintext highlighter-rouge">Dockerfile</code> のビルドを並列実行しない場合（直列実行）と並列実行する場合の結果を比較してみます。</p>
 
-&lt;h3 id=&quot;並列実行しない場合&quot;&gt;並列実行しない場合&lt;/h3&gt;
+<h3 id="並列実行しない場合">並列実行しない場合</h3>
 
-&lt;p&gt;並列実行をOFFにして実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=0&lt;/code&gt; の環境変数をセットして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker build&lt;/code&gt;を行います。&lt;/p&gt;
+<p>並列実行をOFFにして実行するには <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=0</code> の環境変数をセットして <code class="language-plaintext highlighter-rouge">docker build</code>を行います。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;DOCKER_BUILDKIT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;Sending build context to Docker daemon  331.1MB
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span>0 docker build <span class="nt">--no-cache</span> <span class="nb">.</span>
+<span class="go">Sending build context to Docker daemon  331.1MB
 Step 1/13 : FROM alpine as test1
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;gp&quot;&gt;Step 2/13 : RUN sleep 10.1 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test1
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;11b4518313de
-&lt;span class=&quot;go&quot;&gt;Step 3/13 : FROM alpine as test2
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;gp&quot;&gt;Step 4/13 : RUN sleep 10.2 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test2
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;c61101646517
-&lt;span class=&quot;go&quot;&gt;Step 5/13 : FROM alpine as test3
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;gp&quot;&gt;Step 6/13 : RUN sleep 10.3 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test3
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;1aa97a170923
-&lt;span class=&quot;go&quot;&gt;Step 7/13 : FROM alpine
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;go&quot;&gt;Step 8/13 : RUN echo &quot;build start&quot;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;8b2b09749321
-&lt;span class=&quot;gp&quot;&gt;Step 9/13 : RUN sleep 10.0 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from main
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;bc3f772d3fb1
-&lt;span class=&quot;go&quot;&gt;Step 10/13 : COPY --from=test1 /tmp /tmp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0f861020f1c0
-&lt;span class=&quot;go&quot;&gt;Step 11/13 : COPY --from=test2 /tmp /tmp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;eea3d212c0b7
-&lt;span class=&quot;go&quot;&gt;Step 12/13 : COPY --from=test3 /tmp /tmp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;9beba31a0ff6
-&lt;span class=&quot;go&quot;&gt;Step 13/13 : RUN echo &quot;build finished&quot;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0986bef3d18f
-&lt;span class=&quot;go&quot;&gt;Successfully built 0986bef3d18f
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="gp">Step 2/13 : RUN sleep 10.1 #</span><span class="w"> </span><span class="nb">sleep </span>from test1
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>11b4518313de
+<span class="go">Step 3/13 : FROM alpine as test2
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="gp">Step 4/13 : RUN sleep 10.2 #</span><span class="w"> </span><span class="nb">sleep </span>from test2
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>c61101646517
+<span class="go">Step 5/13 : FROM alpine as test3
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="gp">Step 6/13 : RUN sleep 10.3 #</span><span class="w"> </span><span class="nb">sleep </span>from test3
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>1aa97a170923
+<span class="go">Step 7/13 : FROM alpine
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="go">Step 8/13 : RUN echo "build start"
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>8b2b09749321
+<span class="gp">Step 9/13 : RUN sleep 10.0 #</span><span class="w"> </span><span class="nb">sleep </span>from main
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>bc3f772d3fb1
+<span class="go">Step 10/13 : COPY --from=test1 /tmp /tmp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>0f861020f1c0
+<span class="go">Step 11/13 : COPY --from=test2 /tmp /tmp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>eea3d212c0b7
+<span class="go">Step 12/13 : COPY --from=test3 /tmp /tmp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>9beba31a0ff6
+<span class="go">Step 13/13 : RUN echo "build finished"
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>0986bef3d18f
+<span class="go">Successfully built 0986bef3d18f
+</span></code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が直列に実行されるため、ビルドに &lt;strong&gt;最低でも40秒&lt;/strong&gt; かかっていました。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">sleep 10</code> × 4 が直列に実行されるため、ビルドに <strong>最低でも40秒</strong> かかっていました。</p>
 
-&lt;h3 id=&quot;並列実行する場合&quot;&gt;並列実行する場合&lt;/h3&gt;
+<h3 id="並列実行する場合">並列実行する場合</h3>
 
-&lt;p&gt;では次に並列実行してみましょう。&lt;/p&gt;
+<p>では次に並列実行してみましょう。</p>
 
-&lt;p&gt;並列実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; をセットするか、私の環境の場合 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT&lt;/code&gt; の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。&lt;/p&gt;
+<p>並列実行するには <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> をセットするか、私の環境の場合 <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT</code> の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。</p>
 
-&lt;p class=&quot;info&quot;&gt;&lt;strong&gt;Docker Desktop v3.2&lt;/strong&gt; を使っている場合は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; の環境変数が不要でデフォルトで並列実行されるようになっており、一方、&lt;strong&gt;Docker Desktop v3.1&lt;/strong&gt;の場合は並列実行するためには&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; の環境変数の指定が必要でした。&lt;/p&gt;
+<p class="info"><strong>Docker Desktop v3.2</strong> を使っている場合は <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> の環境変数が不要でデフォルトで並列実行されるようになっており、一方、<strong>Docker Desktop v3.1</strong>の場合は並列実行するためには<code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> の環境変数の指定が必要でした。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;[+] Building 13.9s (14/14) FINISHED
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load build definition from Dockerfile                                            0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring dockerfile: 37B                                                             0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load .dockerignore                                                               0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring context: 2B                                                                 0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load metadata &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;docker.io/library/alpine:latest                                0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;CACHED &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 1/2] FROM docker.io/library/alpine                                            0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test2 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2                                              12.4s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 2/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;                                                        2.3s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3                                              12.5s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test1 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1                                              12.3s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 3/7] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main                                             10.6s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 4/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test1 /tmp /tmp                                                   0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 5/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test2 /tmp /tmp                                                   0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 6/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test3 /tmp /tmp                                                   0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 7/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;                                                     0.4s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;exporting to image                                                                          0.2s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; exporting layers                                                                         0.2s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; writing image sha256:2dfb39f0fbed99a19fee51b23db685a0878eed7291bce08e88c3226e8fea271d    0.0s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker build <span class="nt">--no-cache</span> <span class="nb">.</span>
+<span class="go">[+] Building 13.9s (14/14) FINISHED
+</span><span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>internal] load build definition from Dockerfile                                            0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> transferring dockerfile: 37B                                                             0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>internal] load .dockerignore                                                               0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> transferring context: 2B                                                                 0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>internal] load metadata <span class="k">for </span>docker.io/library/alpine:latest                                0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span>CACHED <span class="o">[</span>test3 1/2] FROM docker.io/library/alpine                                            0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>test2 2/2] RUN <span class="nb">sleep </span>10.2 <span class="c"># sleep from test2                                              12.4s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 2/7] RUN <span class="nb">echo</span> <span class="s2">"build start"</span>                                                        2.3s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>test3 2/2] RUN <span class="nb">sleep </span>10.3 <span class="c"># sleep from test3                                              12.5s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>test1 2/2] RUN <span class="nb">sleep </span>10.1 <span class="c"># sleep from test1                                              12.3s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 3/7] RUN <span class="nb">sleep </span>10.0 <span class="c"># sleep from main                                             10.6s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 4/7] COPY <span class="nt">--from</span><span class="o">=</span>test1 /tmp /tmp                                                   0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 5/7] COPY <span class="nt">--from</span><span class="o">=</span>test2 /tmp /tmp                                                   0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 6/7] COPY <span class="nt">--from</span><span class="o">=</span>test3 /tmp /tmp                                                   0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 7/7] RUN <span class="nb">echo</span> <span class="s2">"build finished"</span>                                                     0.4s
+<span class="gp"> =&gt;</span><span class="w"> </span>exporting to image                                                                          0.2s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> exporting layers                                                                         0.2s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> writing image sha256:2dfb39f0fbed99a19fee51b23db685a0878eed7291bce08e88c3226e8fea271d    0.0s
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が並列に実行されるため、全体として10秒程度でビルドが終了しています。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">sleep 10</code> × 4 が並列に実行されるため、全体として10秒程度でビルドが終了しています。</p>
 
-&lt;h2 id=&quot;比較結果&quot;&gt;比較結果&lt;/h2&gt;
+<h2 id="比較結果">比較結果</h2>
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;ビルド時間&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;並列実行しない場合&lt;/td&gt;
-      &lt;td&gt;&lt;strong&gt;50秒&lt;/strong&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;並列実行する場合&lt;/td&gt;
-      &lt;td&gt;&lt;strong&gt;15秒&lt;/strong&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>ビルド時間</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>並列実行しない場合</td>
+      <td><strong>50秒</strong></td>
+    </tr>
+    <tr>
+      <td>並列実行する場合</td>
+      <td><strong>15秒</strong></td>
+    </tr>
+  </tbody>
+</table>
 
-&lt;p&gt;今回サンプルとなった &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; の場合、&lt;strong&gt;3倍の高速化&lt;/strong&gt; に成功しました。&lt;/p&gt;
+<p>今回サンプルとなった <code class="language-plaintext highlighter-rouge">Dockerfile</code> の場合、<strong>3倍の高速化</strong> に成功しました。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://kotaroooo0-dev.hatenablog.com/entry/2020/06/10/225333&quot;&gt;DockerイメージのビルドをBuildKitで並列実行し高速化する - 🤖&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://matsuand.github.io/docs.docker.jp.onthefly/develop/develop-images/multistage-build/&quot;&gt;マルチステージビルドの利用 | Docker ドキュメント&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html">本記事では、マルチステージビルド構成のDockerfileのビルドの並列実行について紹介したいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">docker-compose で Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2020-01-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/">&lt;p&gt;docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。&lt;/p&gt;
+<ul>
+  <li><a href="https://kotaroooo0-dev.hatenablog.com/entry/2020/06/10/225333">DockerイメージのビルドをBuildKitで並列実行し高速化する - 🤖</a></li>
+  <li><a href="https://matsuand.github.io/docs.docker.jp.onthefly/develop/develop-images/multistage-build/">マルチステージビルドの利用 | Docker ドキュメント</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html"><![CDATA[本記事では、マルチステージビルド構成のDockerfileのビルドの並列実行について紹介したいと思います。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">docker-compose で Rails6 + MySQL な環境を構築する</title><link href="https://blog.toshimaru.net/rails-on-docker-compose/" rel="alternate" type="text/html" title="docker-compose で Rails6 + MySQL な環境を構築する" /><published>2019-12-31T00:00:00+09:00</published><updated>2020-01-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-compose</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-compose/"><![CDATA[<p>docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。</p>
 
-&lt;h2 id=&quot;ゴール&quot;&gt;ゴール&lt;/h2&gt;
+<h2 id="ゴール">ゴール</h2>
 
-&lt;p&gt;ゴールはRailsのデフォルトホーム画面を表示させるところまでです。&lt;/p&gt;
+<p>ゴールはRailsのデフォルトホーム画面を表示させるところまでです。</p>
 
-&lt;h2 id=&quot;手順&quot;&gt;手順&lt;/h2&gt;
+<h2 id="手順">手順</h2>
 
-&lt;p&gt;下記の手順をベースに進めていきます‥&lt;/p&gt;
+<p>下記の手順をベースに進めていきます‥</p>
 
-&lt;p&gt;&lt;a href=&quot;https://docs.docker.com/compose/rails/&quot;&gt;Quickstart: Compose and Rails | Docker Documentation&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://docs.docker.com/compose/rails/">Quickstart: Compose and Rails | Docker Documentation</a></p>
 
-&lt;h3 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h3&gt;
+<h3 id="dockerfile">Dockerfile</h3>
 
-&lt;p&gt;適当なディレクトリを用意して、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
+<p>適当なディレクトリを用意して、<code class="language-plaintext highlighter-rouge">Dockerfile</code>を下記の通り用意します。</p>
 
-&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.7&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nodejs yarnpkg
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/bin/yarnpkg /usr/bin/yarn
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; /app
-&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /app&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Gemfile /app/Gemfile&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Gemfile.lock /app/Gemfile.lock&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /app&lt;/span&gt;
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ruby:2.7</span>
+<span class="k">RUN </span>apt-get update <span class="nt">-qq</span> <span class="o">&amp;&amp;</span> apt-get <span class="nb">install</span> <span class="nt">-y</span> nodejs yarnpkg
+<span class="k">RUN </span><span class="nb">ln</span> <span class="nt">-s</span> /usr/bin/yarnpkg /usr/bin/yarn
+<span class="k">RUN </span><span class="nb">mkdir</span> /app
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">COPY</span><span class="s"> Gemfile /app/Gemfile</span>
+<span class="k">COPY</span><span class="s"> Gemfile.lock /app/Gemfile.lock</span>
+<span class="k">RUN </span>bundle <span class="nb">install</span>
+<span class="k">COPY</span><span class="s"> . /app</span>
 
-&lt;span class=&quot;c&quot;&gt;# Add a script to be executed every time the container starts.&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; entrypoint.sh /usr/bin/&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x /usr/bin/entrypoint.sh
-&lt;span class=&quot;k&quot;&gt;ENTRYPOINT&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;entrypoint.sh&quot;]&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 3000&lt;/span&gt;
+<span class="c"># Add a script to be executed every time the container starts.</span>
+<span class="k">COPY</span><span class="s"> entrypoint.sh /usr/bin/</span>
+<span class="k">RUN </span><span class="nb">chmod</span> +x /usr/bin/entrypoint.sh
+<span class="k">ENTRYPOINT</span><span class="s"> ["entrypoint.sh"]</span>
+<span class="k">EXPOSE</span><span class="s"> 3000</span>
 
-&lt;span class=&quot;c&quot;&gt;# Start the main process.&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;rails&quot;, &quot;server&quot;, &quot;-b&quot;, &quot;0.0.0.0&quot;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="c"># Start the main process.</span>
+<span class="k">CMD</span><span class="s"> ["rails", "server", "-b", "0.0.0.0"]</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt;でyarnを入れると、yarn という実行ファイルではなく &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yarnpkg&lt;/code&gt; という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">yarnpkg</code>でyarnを入れると、yarn という実行ファイルではなく <code class="language-plaintext highlighter-rouge">yarnpkg</code> という実行ファイルになってしまうので、シンボリックリンクを作成している点に留意。</li>
+</ul>
 
-&lt;h3 id=&quot;初期gemfile&quot;&gt;初期Gemfile&lt;/h3&gt;
+<h3 id="初期gemfile">初期Gemfile</h3>
 
-&lt;p&gt;下記の通り&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;を用意します。&lt;/p&gt;
+<p>下記の通り<code class="language-plaintext highlighter-rouge">Gemfile</code>と<code class="language-plaintext highlighter-rouge">Gemfile.lock</code>を用意します。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;https://rubygems.org&apos;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;rails&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;~&amp;gt;6&apos;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'~&gt;6'</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;今回は Rails v6 （現時点の最新バージョン）を使います&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>今回は Rails v6 （現時点の最新バージョン）を使います</li>
+</ul>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;Gemfile.lock
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">touch </span>Gemfile.lock
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;現段階では &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; は空でOK&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>現段階では <code class="language-plaintext highlighter-rouge">Gemfile.lock</code> は空でOK</li>
+</ul>
 
-&lt;h3 id=&quot;entrypointsh&quot;&gt;entrypoint.sh&lt;/h3&gt;
+<h3 id="entrypointsh">entrypoint.sh</h3>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ENTRYPOINT&lt;/code&gt;として定義している &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;entrypoint.sh&lt;/code&gt; です。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Dockerfile</code>で<code class="language-plaintext highlighter-rouge">ENTRYPOINT</code>として定義している <code class="language-plaintext highlighter-rouge">entrypoint.sh</code> です。</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> <span class="nt">-e</span>
 
-&lt;span class=&quot;c&quot;&gt;# Remove a potentially pre-existing server.pid for Rails.&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; /app/tmp/pids/server.pid
+<span class="c"># Remove a potentially pre-existing server.pid for Rails.</span>
+<span class="nb">rm</span> <span class="nt">-f</span> /app/tmp/pids/server.pid
 
-&lt;span class=&quot;c&quot;&gt;# Then exec the container&apos;s main process (what&apos;s set as CMD in the Dockerfile).&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$@&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="c"># Then exec the container's main process (what's set as CMD in the Dockerfile).</span>
+<span class="nb">exec</span> <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
+</code></pre></div></div>
 
-&lt;h3 id=&quot;docker-composeyml&quot;&gt;docker-compose.yml&lt;/h3&gt;
+<h3 id="docker-composeyml">docker-compose.yml</h3>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;を下記の通り用意します。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">docker-compose.yml</code>を下記の通り用意します。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3&apos;&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mysql:8.0&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./tmp/db:/var/lib/mysql&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD=1&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bash -c &quot;rm -f tmp/pids/server.pid &amp;amp;&amp;amp; bundle exec rails s -p 3000 -b &apos;0.0.0.0&apos;&quot;&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.:/app&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3000:3000&quot;&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;depends_on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3'</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">db</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">mysql:8.0</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">./tmp/db:/var/lib/mysql</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">MYSQL_ALLOW_EMPTY_PASSWORD=1</span>
+  <span class="na">web</span><span class="pi">:</span>
+    <span class="na">build</span><span class="pi">:</span> <span class="s">.</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="s">bash -c "rm -f tmp/pids/server.pid &amp;&amp; bundle exec rails s -p 3000 -b '0.0.0.0'"</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">.:/app</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">3000:3000"</span>
+    <span class="na">depends_on</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">db</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;MySQL は 8.0 （現時点の最新バージョン）を使用&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD&lt;/code&gt; を設定することで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;password&lt;/code&gt; が空でもrootで接続できるようにしておく&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>MySQL は 8.0 （現時点の最新バージョン）を使用</li>
+  <li><code class="language-plaintext highlighter-rouge">MYSQL_ALLOW_EMPTY_PASSWORD</code> を設定することで <code class="language-plaintext highlighter-rouge">password</code> が空でもrootで接続できるようにしておく</li>
+</ul>
 
-&lt;h3 id=&quot;rails-new&quot;&gt;rails new&lt;/h3&gt;
+<h3 id="rails-new">rails new</h3>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails new&lt;/code&gt; のコマンドをwebコンテナ上で実行してRailsのファイル群を生成します。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">rails new</code> のコマンドをwebコンテナ上で実行してRailsのファイル群を生成します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rails new &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mysql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web bundle <span class="nb">exec </span>rails new <span class="nb">.</span> <span class="nt">--force</span> <span class="nt">--database</span><span class="o">=</span>mysql
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--force&lt;/code&gt; で既存ファイルを上書き&lt;/li&gt;
-  &lt;li&gt;DBはmysqlを指定&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">--force</code> で既存ファイルを上書き</li>
+  <li>DBはmysqlを指定</li>
+</ul>
 
-&lt;p&gt;Railsのファイル群が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails new&lt;/code&gt; コマンドによって出来上がったので build します。&lt;/p&gt;
+<p>Railsのファイル群が <code class="language-plaintext highlighter-rouge">rails new</code> コマンドによって出来上がったので build します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose build
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose build
+</code></pre></div></div>
 
-&lt;h3 id=&quot;dbホスト名変更&quot;&gt;DBホスト名変更&lt;/h3&gt;
+<h3 id="dbホスト名変更">DBホスト名変更</h3>
 
-&lt;p&gt;このままではDBに接続できません。なぜならば host 名を変更する必要があるからです。&lt;/p&gt;
+<p>このままではDBに接続できません。なぜならば host 名を変更する必要があるからです。</p>
 
-&lt;p&gt;下記の通り &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config/database.yml&lt;/code&gt; のhostの部分を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt; に置き換えましょう。&lt;/p&gt;
+<p>下記の通り <code class="language-plaintext highlighter-rouge">config/database.yml</code> のhostの部分を <code class="language-plaintext highlighter-rouge">db</code> に置き換えましょう。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;adapter&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mysql2&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;utf8mb4&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;pool&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;lt;%= ENV.fetch(&quot;RAILS_MAX_THREADS&quot;) { 5 } %&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;root&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;development&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;app_development&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;app_test&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
+  <span class="na">adapter</span><span class="pi">:</span> <span class="s">mysql2</span>
+  <span class="na">encoding</span><span class="pi">:</span> <span class="s">utf8mb4</span>
+  <span class="na">pool</span><span class="pi">:</span> <span class="s">&lt;%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %&gt;</span>
+  <span class="na">username</span><span class="pi">:</span> <span class="s">root</span>
+  <span class="na">password</span><span class="pi">:</span>
+  <span class="na">host</span><span class="pi">:</span> <span class="s">db</span>
+<span class="na">development</span><span class="pi">:</span>
+  <span class="na">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">app_development</span>
+<span class="na">test</span><span class="pi">:</span>
+  <span class="na">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">app_test</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;host&lt;/code&gt; に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt; を設定
-    &lt;ul&gt;
-      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt; はコンテナ名になります&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">host</code> に <code class="language-plaintext highlighter-rouge">db</code> を設定
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">db</code> はコンテナ名になります</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;p&gt;build後に docker-compose up します。&lt;/p&gt;
+<p>build後に docker-compose up します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose up
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose up
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost:3000&lt;/code&gt; でRailsが立ち上がるのでアクセスしてみましょう。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">localhost:3000</code> でRailsが立ち上がるのでアクセスしてみましょう。</p>
 
-&lt;h2 id=&quot;error-caching_sha2_password-could-not-be-loaded&quot;&gt;Error: caching_sha2_password could not be loaded&lt;/h2&gt;
+<h2 id="error-caching_sha2_password-could-not-be-loaded">Error: caching_sha2_password could not be loaded</h2>
 
-&lt;p&gt;しかしここでRailsに接続すると、下記のようなエラーが発生します。&lt;/p&gt;
+<p>しかしここでRailsに接続すると、下記のようなエラーが発生します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ActiveRecord::NoDatabaseError
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ActiveRecord::NoDatabaseError
 
 Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu/mariadb19/plugin/caching_sha2_password.so: cannot open shared object file: No such file or directory
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;これはwebコンテナが mysql 8.0 の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt;認証方式に対応していないためです。&lt;/p&gt;
+<p>これはwebコンテナが mysql 8.0 の<code class="language-plaintext highlighter-rouge">caching_sha2_password</code>認証方式に対応していないためです。</p>
 
-&lt;p&gt;下記の手順で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;（旧来の認証方式）に変更しましょう。&lt;/p&gt;
+<p>下記の手順で <code class="language-plaintext highlighter-rouge">caching_sha2_password</code> を <code class="language-plaintext highlighter-rouge">mysql_native_password</code>（旧来の認証方式）に変更しましょう。</p>
 
-&lt;h3 id=&quot;dbコンテナでmysqlクライアント起動&quot;&gt;DBコンテナでmysqlクライアント起動&lt;/h3&gt;
+<h3 id="dbコンテナでmysqlクライアント起動">DBコンテナでmysqlクライアント起動</h3>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;db bash
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose <span class="nb">exec </span>db bash
+</code></pre></div></div>
 
-&lt;p&gt;dbコンテナのbashを起動後にmysqlコマンドで接続します。&lt;/p&gt;
+<p>dbコンテナのbashを起動後にmysqlコマンドで接続します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;mysql &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; root
-&lt;span class=&quot;gp&quot;&gt;Welcome to the MySQL monitor.  Commands end with ;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;or &lt;span class=&quot;se&quot;&gt;\g&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;Your MySQL connection id is 9
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>mysql <span class="nt">-u</span> root
+<span class="gp">Welcome to the MySQL monitor.  Commands end with ;</span><span class="w"> </span>or <span class="se">\g</span><span class="nb">.</span>
+<span class="go">Your MySQL connection id is 9
 Server version: 8.0.18 MySQL Community Server - GPL
 
-&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;...
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="c">...
+</span></code></pre></div></div>
 
-&lt;h3 id=&quot;認証方式変更sql&quot;&gt;認証方式変更SQL&lt;/h3&gt;
+<h3 id="認証方式変更sql">認証方式変更SQL</h3>
 
-&lt;p&gt;下記のクエリでユーザー一覧とその認証方式が閲覧できます。&lt;/p&gt;
+<p>下記のクエリでユーザー一覧とその認証方式が閲覧できます。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; select User,Host,plugin from mysql.user;
 +------------------+-----------+-----------------------+
 | User             | Host      | plugin                |
 +------------------+-----------+-----------------------+
@@ -345,19 +345,19 @@ Server version: 8.0.18 MySQL Community Server - GPL
 | root             | localhost | caching_sha2_password |
 +------------------+-----------+-----------------------+
 5 rows in set (0.00 sec)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;全て &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;caching_sha2_password&lt;/code&gt; に設定されています。これを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mysql_native_password&lt;/code&gt;に変更します。&lt;/p&gt;
+<p>全て <code class="language-plaintext highlighter-rouge">caching_sha2_password</code> に設定されています。これを<code class="language-plaintext highlighter-rouge">mysql_native_password</code>に変更します。</p>
 
-&lt;p&gt;今回対象となる &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root@%&lt;/code&gt; のユーザー設定を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ALTER USER&lt;/code&gt; を使って変更しましょう。&lt;/p&gt;
+<p>今回対象となる <code class="language-plaintext highlighter-rouge">root@%</code> のユーザー設定を <code class="language-plaintext highlighter-rouge">ALTER USER</code> を使って変更しましょう。</p>
 
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;USER&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;root&apos;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;%&apos;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IDENTIFIED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql_native_password&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;-- Query OK, 0 rows affected (0.02 sec)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">USER</span> <span class="s1">'root'</span><span class="o">@</span><span class="s1">'%'</span> <span class="n">IDENTIFIED</span> <span class="k">WITH</span> <span class="n">mysql_native_password</span> <span class="k">BY</span> <span class="s1">''</span><span class="p">;</span>
+<span class="c1">-- Query OK, 0 rows affected (0.02 sec)</span>
+</code></pre></div></div>
 
-&lt;p&gt;変更されました。&lt;/p&gt;
+<p>変更されました。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; select User,Host,plugin from mysql.user;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mysql&gt; select User,Host,plugin from mysql.user;
 +------------------+-----------+-----------------------+
 | User             | Host      | plugin                |
 +------------------+-----------+-----------------------+
@@ -368,201 +368,201 @@ Server version: 8.0.18 MySQL Community Server - GPL
 | root             | localhost | caching_sha2_password |
 +------------------+-----------+-----------------------+
 5 rows in set (0.00 sec)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;yay-youre-on-rails&quot;&gt;“Yay! You’re on Rails!”&lt;/h2&gt;
+<h2 id="yay-youre-on-rails">“Yay! You’re on Rails!”</h2>
 
-&lt;p&gt;DBが作成されていないよ、というメッセージが出るので &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db:prepare&lt;/code&gt; でテーブルを作成します。&lt;/p&gt;
+<p>DBが作成されていないよ、というメッセージが出るので <code class="language-plaintext highlighter-rouge">db:prepare</code> でテーブルを作成します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;web bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rails db:prepare
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose <span class="nb">exec </span>web bundle <span class="nb">exec </span>rails db:prepare
+</code></pre></div></div>
 
-&lt;p&gt;これでRailsのホーム画面が表示されるようになります。&lt;/p&gt;
+<p>これでRailsのホーム画面が表示されるようになります。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/docker/railshome.png&quot; alt=&quot;rails home&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/docker/railshome.png" alt="rails home" /></p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;過去に同じことをやったときのエントリ: &lt;a href=&quot;docker-compose-rails/&quot;&gt;docker-compose で Rails 環境を構築する&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><category term="mysql" /><category term="rails" /><summary type="html">docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/">&lt;p&gt;Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。&lt;/p&gt;
+<ul>
+  <li>過去に同じことをやったときのエントリ: <a href="docker-compose-rails/">docker-compose で Rails 環境を構築する</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="docker" /><category term="mysql" /><category term="rails" /><summary type="html"><![CDATA[docker-compose を使って Ruby 2.7 + Rails 6.0 + MySQL 8.0 の環境を構築してみたいと思います。ゴールはRailsのデフォルトホーム画面を表示させるところまでです。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/yaml.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Rails on Docker 環境での SystemSpec 環境構築</title><link href="https://blog.toshimaru.net/rails-on-docker-system-spec/" rel="alternate" type="text/html" title="Rails on Docker 環境での SystemSpec 環境構築" /><published>2019-09-18T00:00:00+09:00</published><updated>2019-09-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rails-on-docker-system-spec</id><content type="html" xml:base="https://blog.toshimaru.net/rails-on-docker-system-spec/"><![CDATA[<p>Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</p>
 
-&lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
+<h2 id="環境">環境</h2>
 
-&lt;p&gt;今回SystemSpecを導入したのは下記のような環境です。&lt;/p&gt;
+<p>今回SystemSpecを導入したのは下記のような環境です。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;プロジェクト: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/&quot;&gt;RailsTwitterClone&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;docker-compose&lt;/li&gt;
-  &lt;li&gt;Ruby 2.6&lt;/li&gt;
-  &lt;li&gt;chromium-driver&lt;/li&gt;
-  &lt;li&gt;gem
-    &lt;ul&gt;
-      &lt;li&gt;rails (5.2)&lt;/li&gt;
-      &lt;li&gt;rspec-rails&lt;/li&gt;
-      &lt;li&gt;selenium-webdriver&lt;/li&gt;
-      &lt;li&gt;capybara&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>プロジェクト: <a href="https://github.com/toshimaru/RailsTwitterClone/">RailsTwitterClone</a></li>
+  <li>docker-compose</li>
+  <li>Ruby 2.6</li>
+  <li>chromium-driver</li>
+  <li>gem
+    <ul>
+      <li>rails (5.2)</li>
+      <li>rspec-rails</li>
+      <li>selenium-webdriver</li>
+      <li>capybara</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;対応pull-request&quot;&gt;対応Pull Request&lt;/h2&gt;
+<h2 id="対応pull-request">対応Pull Request</h2>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/506/files&quot;&gt;Re-try System Spec by toshimaru · Pull Request #506 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/506/files">Re-try System Spec by toshimaru · Pull Request #506 · toshimaru/RailsTwitterClone</a></p>
 
-&lt;h2 id=&quot;私のsystemspec遅すぎ&quot;&gt;私のSystemSpec、遅すぎ…？&lt;/h2&gt;
+<h2 id="私のsystemspec遅すぎ">私のSystemSpec、遅すぎ…？</h2>
 
-&lt;p&gt;実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。&lt;/p&gt;
+<p>実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。</p>
 
-&lt;p&gt;当時のPull Requestがこちら: &lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/216&quot;&gt;Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone&lt;/a&gt;&lt;/p&gt;
+<p>当時のPull Requestがこちら: <a href="https://github.com/toshimaru/RailsTwitterClone/pull/216">Try System Spec by toshimaru · Pull Request #216 · toshimaru/RailsTwitterClone</a></p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;Before&lt;/p&gt;
+<blockquote>
+  <p>Before</p>
 
-  &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 15.74 seconds (files took 7.65 seconds to load)
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Finished in 15.74 seconds (files took 7.65 seconds to load)
 152 examples, 0 failures
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+</code></pre></div>  </div>
 
-  &lt;p&gt;After&lt;/p&gt;
+  <p>After</p>
 
-  &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Finished in 58.46 seconds (files took 7.64 seconds to load)
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Finished in 58.46 seconds (files took 7.64 seconds to load)
 152 examples, 3 failures
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
-&lt;/blockquote&gt;
+</code></pre></div>  </div>
+</blockquote>
 
-&lt;p&gt;しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。&lt;/p&gt;
+<p>しかしこれは結果からいうと設定が悪かったのでした。下記のように system テストを Headless Chrome で走るように設定していましたが、これだとすべての System テストが Headless Chrome モードで起動してしまい、結果的に遅くなります。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="o">...</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:selenium_chrome_headless</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;下記のようにJSを起動させる必要のない System テストは従来通りの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rack_test&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;js: true&lt;/code&gt;なテストは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に設定してやればテスト全体が高速に実行可能になりました。&lt;/p&gt;
+<p>下記のようにJSを起動させる必要のない System テストは従来通りの<code class="language-plaintext highlighter-rouge">rack_test</code>、<code class="language-plaintext highlighter-rouge">js: true</code>なテストは<code class="language-plaintext highlighter-rouge">selenium_chrome_headless</code>に設定してやればテスト全体が高速に実行可能になりました。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rack_test&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="o">...</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:rack_test</span>
+  <span class="k">end</span>
 
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:selenium_chrome_headless&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">,</span> <span class="ss">js: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:selenium_chrome_headless</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+<h2 id="dockerfile">Dockerfile</h2>
 
-&lt;p&gt;今回利用した &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; は Ruby 2.6 のベースイメージに &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chromium-driver&lt;/code&gt; をインストールしたコンテナとなります。&lt;/p&gt;
+<p>今回利用した <code class="language-plaintext highlighter-rouge">Dockerfile</code> は Ruby 2.6 のベースイメージに <code class="language-plaintext highlighter-rouge">chromium-driver</code> をインストールしたコンテナとなります。</p>
 
-&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.6&lt;/span&gt;
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ruby:2.6</span>
 
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; nodejs chromium-driver 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">RUN </span>apt-get update <span class="nt">-qq</span> <span class="o">&amp;&amp;</span> apt-get <span class="nb">install</span> <span class="nt">-y</span> nodejs chromium-driver 
+</code></pre></div></div>
 
-&lt;h3 id=&quot;chrome-failed-to-start-exited-abnormally&quot;&gt;Chrome failed to start: exited abnormally&lt;/h3&gt;
+<h3 id="chrome-failed-to-start-exited-abnormally">Chrome failed to start: exited abnormally</h3>
 
-&lt;p&gt;しかし、上述の環境において&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspec&lt;/code&gt;を実行すると下記のようなエラーが発生します。&lt;/p&gt;
+<p>しかし、上述の環境において<code class="language-plaintext highlighter-rouge">rspec</code>を実行すると下記のようなエラーが発生します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Failure/Error: Unable to infer file and line number from backtrace
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Failure/Error: Unable to infer file and line number from backtrace
 
   Selenium::WebDriver::Error::UnknownError:
       unknown error: Chrome failed to start: exited abnormally
-      (unknown error: DevToolsActivePort file doesn&apos;t exist)
+      (unknown error: DevToolsActivePort file doesn't exist)
       (The process started from chrome location /usr/bin/chromium is no longer running, so ChromeDriver is assuming that Chrome has crashed.)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;このエラーは Chrome が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sandbox&lt;/code&gt;モードで起動していることに起因します。下記のような&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。&lt;/p&gt;
+<p>このエラーは Chrome が<code class="language-plaintext highlighter-rouge">sandbox</code>モードで起動していることに起因します。下記のような<code class="language-plaintext highlighter-rouge">no-sandbox</code>オプション付きの Headless Chrome を Capybara に driver として登録してやることで回避します。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;register_driver&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;WebDriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Chrome&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tap&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--headless&quot;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--disable-gpu&quot;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;opts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--no-sandbox&quot;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Selenium&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;browser: :chrome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;browser_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Capybara</span><span class="p">.</span><span class="nf">register_driver</span> <span class="ss">:headless_chrome</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+  <span class="n">browser_options</span> <span class="o">=</span> <span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">WebDriver</span><span class="o">::</span><span class="no">Chrome</span><span class="o">::</span><span class="no">Options</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">tap</span> <span class="k">do</span> <span class="o">|</span><span class="n">opts</span><span class="o">|</span>
+    <span class="n">opts</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s2">"--headless"</span>
+    <span class="n">opts</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s2">"--disable-gpu"</span>
+    <span class="n">opts</span><span class="p">.</span><span class="nf">args</span> <span class="o">&lt;&lt;</span> <span class="s2">"--no-sandbox"</span>
+  <span class="k">end</span>
+  <span class="no">Capybara</span><span class="o">::</span><span class="no">Selenium</span><span class="o">::</span><span class="no">Driver</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="ss">browser: :chrome</span><span class="p">,</span> <span class="ss">options: </span><span class="n">browser_options</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;こうして登録した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;headless_chrome&lt;/code&gt;をSystemTestに対して適応させてやればOKです。&lt;/p&gt;
+<p>こうして登録した<code class="language-plaintext highlighter-rouge">headless_chrome</code>をSystemTestに対して適応させてやればOKです。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;js: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:headless_chrome&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="o">...</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">,</span> <span class="ss">type: :system</span><span class="p">,</span> <span class="ss">js: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">driven_by</span> <span class="ss">:headless_chrome</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;これできちんとDocker上でSystemSpecが通るようになりました。&lt;/p&gt;
+<p>これできちんとDocker上でSystemSpecが通るようになりました。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web rspec
-&lt;span class=&quot;go&quot;&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web rspec
+<span class="go">
 Randomized with seed 30150
 ............................................................................................................Capybara starting Puma...
 * Version 4.1.1 , codename: Fourth and One
 * Min threads: 0, max threads: 4
 * Listening on tcp://127.0.0.1:38789
-&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;...............................................
-&lt;/span&gt;&lt;span class=&quot;go&quot;&gt;
+</span><span class="c">...............................................
+</span><span class="go">
 Finished in 19.87 seconds (files took 8.8 seconds to load)
 155 examples, 0 failures
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;公式ではno-sandboxをデフォルトにはしてくれない&quot;&gt;公式ではno-sandboxをデフォルトにはしてくれない？&lt;/h2&gt;
+<h2 id="公式ではno-sandboxをデフォルトにはしてくれない">公式ではno-sandboxをデフォルトにはしてくれない？</h2>
 
-&lt;p&gt;余談ですが、Capybara本体で登録されている&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selenium_chrome_headless&lt;/code&gt;に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt;オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。&lt;/p&gt;
+<p>余談ですが、Capybara本体で登録されている<code class="language-plaintext highlighter-rouge">selenium_chrome_headless</code>に<code class="language-plaintext highlighter-rouge">no-sandbox</code>オプションを付与する変更をPRしてみましたが、下記の通りRejectされてしまいました。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/teamcapybara/capybara/pull/2241&quot;&gt;Add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt; option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/teamcapybara/capybara/pull/2241">Add <code class="language-plaintext highlighter-rouge">no-sandbox</code> option for selenium_chrome_headless by toshimaru · Pull Request #2241 · teamcapybara/capybara</a></p>
 
-&lt;h3 id=&quot;securityを担保するためのsandbox&quot;&gt;Securityを担保するためのsandbox&lt;/h3&gt;
+<h3 id="securityを担保するためのsandbox">Securityを担保するためのsandbox</h3>
 
-&lt;p&gt;sandboxはセキュリティを高めるための環境なので基本的には &lt;strong&gt;デフォルトで no-sandbox にするべきではない&lt;/strong&gt; という判断のようです。&lt;/p&gt;
+<p>sandboxはセキュリティを高めるための環境なので基本的には <strong>デフォルトで no-sandbox にするべきではない</strong> という判断のようです。</p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential.&lt;/p&gt;
-&lt;/blockquote&gt;
+<blockquote>
+  <p>Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential.</p>
+</blockquote>
 
-&lt;p&gt;via. &lt;a href=&quot;https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md&quot;&gt;Sandbox&lt;/a&gt;&lt;/p&gt;
+<p>via. <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/design/sandbox.md">Sandbox</a></p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://qiita.com/ngron/items/f61b8635b4d67f666d75&quot;&gt;Rails + Selenium + DockerでSystemSpecの環境構築 - Qiita&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://news.mynavi.jp/article/20081009-a027/&quot;&gt;Google Chrome サンドボックスで実現するセキュリティ、Windowsの機能に依存 | マイナビニュース&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="rails" /><category term="docker" /><summary type="html">Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">docker-compose で Rails 環境を構築する</title><link href="https://blog.toshimaru.net/docker-compose-rails/" rel="alternate" type="text/html" title="docker-compose で Rails 環境を構築する" /><published>2016-04-09T00:00:00+09:00</published><updated>2016-04-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-compose-rails</id><content type="html" xml:base="https://blog.toshimaru.net/docker-compose-rails/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-machine&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose&lt;/code&gt; を使ってローカルにRails on docker な環境を構築してみます。&lt;/p&gt;
+<ul>
+  <li><a href="https://qiita.com/ngron/items/f61b8635b4d67f666d75">Rails + Selenium + DockerでSystemSpecの環境構築 - Qiita</a></li>
+  <li><a href="https://news.mynavi.jp/article/20081009-a027/">Google Chrome サンドボックスで実現するセキュリティ、Windowsの機能に依存 | マイナビニュース</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="rspec" /><category term="rails" /><category term="docker" /><summary type="html"><![CDATA[Rails on Docker な環境上に SystemSpec(System Test + RSpec) を導入しました。 環境 今回SystemSpecを導入したのは下記のような環境です。私のSystemSpec、遅すぎ…？ 実は SystemSpec を導入しようと試みたのは今回で二回目です。一回目は SystemTest が Rails の機能の一つとしてリリースされて間もない頃に試したのですが、テスト全体にかかる時間が劇的に遅くなったため、導入を断念したという経緯があります。しかしこれは結果からいうと設定が悪かったのでした。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/systemspec/og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">docker-compose で Rails 環境を構築する</title><link href="https://blog.toshimaru.net/docker-compose-rails/" rel="alternate" type="text/html" title="docker-compose で Rails 環境を構築する" /><published>2016-04-09T00:00:00+09:00</published><updated>2016-04-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-compose-rails</id><content type="html" xml:base="https://blog.toshimaru.net/docker-compose-rails/"><![CDATA[<p><code class="language-plaintext highlighter-rouge">docker-machine</code>, <code class="language-plaintext highlighter-rouge">docker-compose</code> を使ってローカルにRails on docker な環境を構築してみます。</p>
 
-&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
+<h2 id="前提">前提</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;docker-machine&lt;/li&gt;
-  &lt;li&gt;docker-compose&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>docker-machine</li>
+  <li>docker-compose</li>
+</ul>
 
-&lt;p&gt;それぞれのバージョンは下記の通り。&lt;/p&gt;
+<p>それぞれのバージョンは下記の通り。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-machine &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;docker-machine version 0.6.0, build e27fb87
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine <span class="nt">-v</span>
+<span class="go">docker-machine version 0.6.0, build e27fb87
 
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;docker-compose version 1.6.2, build unknown
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="gp">$</span><span class="w"> </span>docker-compose <span class="nt">-v</span>
+<span class="go">docker-compose version 1.6.2, build unknown
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;docker-machine-準備&quot;&gt;docker-machine 準備&lt;/h2&gt;
+<h2 id="docker-machine-準備">docker-machine 準備</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-machine create&lt;/code&gt; でdefaultのmachineを作成します。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">docker-machine create</code> でdefaultのmachineを作成します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-machine create &lt;span class=&quot;nt&quot;&gt;--driver&lt;/span&gt; virtualbox default
-&lt;span class=&quot;go&quot;&gt;Running pre-create checks...
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine create <span class="nt">--driver</span> virtualbox default
+<span class="go">Running pre-create checks...
 (...snip...)
 (default) Creating VirtualBox VM...
 (default) Creating SSH key...
 (default) Starting the VM...
 (default) Check network to re-create if needed...
-(default) Found a new host-only adapter: &quot;vboxnet0&quot;
+(default) Found a new host-only adapter: "vboxnet0"
 (default) Waiting for an IP...
 Waiting for machine to be running, this may take a few minutes...
 Detecting operating system of created instance...
@@ -575,122 +575,122 @@ Setting Docker configuration on the remote daemon...
 Checking connection to Docker...
 Docker is up and running!
 To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: docker-machine env default
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-machine ls&lt;/code&gt; で状態を確認。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">docker-machine ls</code> で状態を確認。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-machine &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER    ERRORS
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine <span class="nb">ls</span>
+<span class="go">NAME      ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER    ERRORS
 default   -        virtualbox   Running   tcp://192.168.99.100:2376           v1.10.3
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;p&gt;STATE: Running になってますね。&lt;/p&gt;
+<p>STATE: Running になってますね。</p>
 
-&lt;h3 id=&quot;環境変数設定&quot;&gt;環境変数設定&lt;/h3&gt;
+<h3 id="環境変数設定">環境変数設定</h3>
 
-&lt;p&gt;docker-machine の環境変数をセットします。&lt;/p&gt;
+<p>docker-machine の環境変数をセットします。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker-machine &lt;span class=&quot;nb&quot;&gt;env &lt;/span&gt;default&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>docker-machine <span class="nb">env </span>default<span class="si">)</span><span class="s2">"</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rails設定&quot;&gt;Rails設定&lt;/h2&gt;
+<h2 id="rails設定">Rails設定</h2>
 
-&lt;h3 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h3&gt;
+<h3 id="dockerfile">Dockerfile</h3>
 
-&lt;p&gt;このように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;を作成します。&lt;/p&gt;
+<p>このように<code class="language-plaintext highlighter-rouge">Dockerfile</code>を作成します。</p>
 
-&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; ruby:2.3.0&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; build-essential libpq-dev
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; /myapp
-&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /myapp&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Gemfile /myapp/Gemfile&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Gemfile.lock /myapp/Gemfile.lock&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; . /myapp&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> ruby:2.3.0</span>
+<span class="k">RUN </span>apt-get update <span class="nt">-qq</span> <span class="o">&amp;&amp;</span> apt-get <span class="nb">install</span> <span class="nt">-y</span> build-essential libpq-dev
+<span class="k">RUN </span><span class="nb">mkdir</span> /myapp
+<span class="k">WORKDIR</span><span class="s"> /myapp</span>
+<span class="k">ADD</span><span class="s"> Gemfile /myapp/Gemfile</span>
+<span class="k">ADD</span><span class="s"> Gemfile.lock /myapp/Gemfile.lock</span>
+<span class="k">RUN </span>bundle <span class="nb">install</span>
+<span class="k">ADD</span><span class="s"> . /myapp</span>
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;に書いてある内容はだいたいこんな感じ。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Dockerfile</code>に書いてある内容はだいたいこんな感じ。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FROM&lt;/code&gt;: Docker hub のrubyイメージ、2.3.0タグをベースイメージとする&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WORKDIR&lt;/code&gt;: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mkdir /myapp&lt;/code&gt;してそこをワーキングディレクトリと宣言&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;を追加&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WORKDIR&lt;/code&gt;にて&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;する&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">FROM</code>: Docker hub のrubyイメージ、2.3.0タグをベースイメージとする</li>
+  <li><code class="language-plaintext highlighter-rouge">WORKDIR</code>: <code class="language-plaintext highlighter-rouge">mkdir /myapp</code>してそこをワーキングディレクトリと宣言</li>
+  <li><code class="language-plaintext highlighter-rouge">Gemfile</code>, <code class="language-plaintext highlighter-rouge">Gemfile.lock</code>を追加</li>
+  <li><code class="language-plaintext highlighter-rouge">WORKDIR</code>にて<code class="language-plaintext highlighter-rouge">bundle install</code>する</li>
+</ul>
 
-&lt;h3 id=&quot;docker-composeyml&quot;&gt;docker-compose.yml&lt;/h3&gt;
+<h3 id="docker-composeyml">docker-compose.yml</h3>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;を用意します。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;はこんな感じです。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">docker-compose.yml</code>を用意します。<code class="language-plaintext highlighter-rouge">docker-compose.yml</code>はこんな感じです。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2&apos;&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mysql&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;MYSQL_ALLOW_EMPTY_PASSWORD&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;yes&quot;&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rails s -p 3000 -b &apos;0.0.0.0&apos;&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.:/myapp&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3000:3000&quot;&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;depends_on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">2'</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">db</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">mysql</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="na">MYSQL_ALLOW_EMPTY_PASSWORD</span><span class="pi">:</span> <span class="s2">"</span><span class="s">yes"</span>
+  <span class="na">web</span><span class="pi">:</span>
+    <span class="na">build</span><span class="pi">:</span> <span class="s">.</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="s">bundle exec rails s -p 3000 -b '0.0.0.0'</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">.:/myapp</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">3000:3000"</span>
+    <span class="na">depends_on</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">db</span>
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;web&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt; の２つのサービスを用意します。今回は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt;はmysqlでいきます。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">web</code>, <code class="language-plaintext highlighter-rouge">db</code> の２つのサービスを用意します。今回は<code class="language-plaintext highlighter-rouge">db</code>はmysqlでいきます。</p>
 
-&lt;h3 id=&quot;gemfile-gemfilelock&quot;&gt;Gemfile, Gemfile.lock&lt;/h3&gt;
+<h3 id="gemfile-gemfilelock">Gemfile, Gemfile.lock</h3>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;はこんな感じ。rails 4.2.6 でいきましょう。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Gemfile</code>はこんな感じ。rails 4.2.6 でいきましょう。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;https://rubygems.org&apos;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;rails&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;4.2.6&apos;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<span class="n">gem</span> <span class="s1">'rails'</span><span class="p">,</span> <span class="s1">'4.2.6'</span>
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;は空っぽで :ok: .&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code>は空っぽで :ok: .</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;Gemfile.lock
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">touch </span>Gemfile.lock
+</code></pre></div></div>
 
-&lt;h3 id=&quot;rails-new&quot;&gt;rails new&lt;/h3&gt;
+<h3 id="rails-new">rails new</h3>
 
-&lt;p&gt;これで準備完了。次に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose&lt;/code&gt;を通して&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails new&lt;/code&gt;します。&lt;/p&gt;
+<p>これで準備完了。次に<code class="language-plaintext highlighter-rouge">docker-compose</code>を通して<code class="language-plaintext highlighter-rouge">rails new</code>します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web rails new &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mysql &lt;span class=&quot;nt&quot;&gt;--skip-bundle&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web rails new <span class="nb">.</span> <span class="nt">--force</span> <span class="nt">--database</span><span class="o">=</span>mysql <span class="nt">--skip-bundle</span>
+</code></pre></div></div>
 
-&lt;p&gt;これでwebコンテナが起動して&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails new&lt;/code&gt;され、カレントディレクトリにその成果物が生成されています。&lt;/p&gt;
+<p>これでwebコンテナが起動して<code class="language-plaintext highlighter-rouge">rails new</code>され、カレントディレクトリにその成果物が生成されています。</p>
 
-&lt;p&gt;Gemfileの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;therubyracer&lt;/code&gt; gemのコメントを外して&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose build&lt;/code&gt;します。&lt;/p&gt;
+<p>Gemfileの<code class="language-plaintext highlighter-rouge">therubyracer</code> gemのコメントを外して<code class="language-plaintext highlighter-rouge">docker-compose build</code>します。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;therubyracer&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;platforms: :ruby&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s1">'therubyracer'</span><span class="p">,</span> <span class="ss">platforms: :ruby</span>
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose build
-&lt;span class=&quot;go&quot;&gt;db uses an image, skipping
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose build
+<span class="go">db uses an image, skipping
 Building web
 Step 1 : FROM ruby:2.3.0
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;268e5f4c6264
-&lt;span class=&quot;go&quot;&gt;Step 2 : RUN apt-get update -qq &amp;amp;&amp;amp; apt-get install -y build-essential libpq-dev
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b5f055055282
-&lt;span class=&quot;go&quot;&gt;Step 3 : RUN mkdir /myapp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;ef58bac5859f
-&lt;span class=&quot;go&quot;&gt;Step 4 : WORKDIR /myapp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;d712516a5383
-&lt;span class=&quot;go&quot;&gt;Step 5 : ADD Gemfile /myapp/Gemfile
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;45897d961453
-&lt;span class=&quot;go&quot;&gt;Step 6 : ADD Gemfile.lock /myapp/Gemfile.lock
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;1e9aadcd1985
-&lt;span class=&quot;go&quot;&gt;Step 7 : RUN bundle install
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Running &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;db6cade21717
-&lt;span class=&quot;go&quot;&gt;Fetching gem metadata from https://rubygems.org/...........
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>268e5f4c6264
+<span class="go">Step 2 : RUN apt-get update -qq &amp;&amp; apt-get install -y build-essential libpq-dev
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>b5f055055282
+<span class="go">Step 3 : RUN mkdir /myapp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>ef58bac5859f
+<span class="go">Step 4 : WORKDIR /myapp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>d712516a5383
+<span class="go">Step 5 : ADD Gemfile /myapp/Gemfile
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>45897d961453
+<span class="go">Step 6 : ADD Gemfile.lock /myapp/Gemfile.lock
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>1e9aadcd1985
+<span class="go">Step 7 : RUN bundle install
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Running <span class="k">in </span>db6cade21717
+<span class="go">Fetching gem metadata from https://rubygems.org/...........
 Fetching version metadata from https://rubygems.org/...
 Fetching dependency metadata from https://rubygems.org/..
 Resolving dependencies...
@@ -698,100 +698,100 @@ Installing rake 11.1.2
 ...snip...
 Removing intermediate container b18b021bc248
 Step 8 : ADD . /myapp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;e259ae327e06
-&lt;span class=&quot;go&quot;&gt;Removing intermediate container 568e85cfeee6
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>e259ae327e06
+<span class="go">Removing intermediate container 568e85cfeee6
 Successfully built e259ae327e06
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;データベース設定&quot;&gt;データベース設定&lt;/h2&gt;
+<h2 id="データベース設定">データベース設定</h2>
 
-&lt;p&gt;デフォルトだとデータベースの向き先が&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost&lt;/code&gt;になっていますので、これを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt;コンテナに向けてやる必要があります。&lt;/p&gt;
+<p>デフォルトだとデータベースの向き先が<code class="language-plaintext highlighter-rouge">localhost</code>になっていますので、これを<code class="language-plaintext highlighter-rouge">db</code>コンテナに向けてやる必要があります。</p>
 
-&lt;p&gt;下記の通り、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config/database.yml&lt;/code&gt;内のhostに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db&lt;/code&gt;を指定しましょう。&lt;/p&gt;
+<p>下記の通り、<code class="language-plaintext highlighter-rouge">config/database.yml</code>内のhostに<code class="language-plaintext highlighter-rouge">db</code>を指定しましょう。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# config/database.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;adapter&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mysql2&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;utf8&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;pool&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;root&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db&lt;/span&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/database.yml</span>
+<span class="na">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
+  <span class="na">adapter</span><span class="pi">:</span> <span class="s">mysql2</span>
+  <span class="na">encoding</span><span class="pi">:</span> <span class="s">utf8</span>
+  <span class="na">pool</span><span class="pi">:</span> <span class="m">5</span>
+  <span class="na">username</span><span class="pi">:</span> <span class="s">root</span>
+  <span class="na">password</span><span class="pi">:</span>
+  <span class="na">host</span><span class="pi">:</span> <span class="s">db</span>
 
-&lt;span class=&quot;na&quot;&gt;development&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;myapp_development&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="na">development</span><span class="pi">:</span>
+  <span class="na">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">myapp_development</span>
+</code></pre></div></div>
 
-&lt;p&gt;データベースの設定が完了したらデータベースを作成します。&lt;/p&gt;
+<p>データベースの設定が完了したらデータベースを作成します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose run web rake db:create
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose run web rake db:create
+</code></pre></div></div>
 
-&lt;h2 id=&quot;docker-compose-up&quot;&gt;docker-compose up&lt;/h2&gt;
+<h2 id="docker-compose-up">docker-compose up</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose up&lt;/code&gt;してrails serverを立ち上げます。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">docker-compose up</code>してrails serverを立ち上げます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-compose up
-&lt;span class=&quot;go&quot;&gt;Recreating rails1_db_1
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-compose up
+<span class="go">Recreating rails1_db_1
 Recreating rails1_web_1
 Attaching to rails1_db_1, rails1_web_1
 db_1  | 2016-04-09T16:48:34.775827Z 0 [Note] mysqld (mysqld 5.7.11) starting as process 1 ...
 ...snip...
-db_1  | Version: &apos;5.7.11&apos;  socket: &apos;/var/run/mysqld/mysqld.sock&apos;  port: 3306  MySQL Community Server (GPL)
+db_1  | Version: '5.7.11'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server (GPL)
 web_1 | [2016-04-09 16:48:38] INFO  WEBrick 1.3.1
 web_1 | [2016-04-09 16:48:38] INFO  ruby 2.3.0 (2015-12-25) [x86_64-linux]
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt;web_1 | [2016-04-09 16:48:38] INFO  WEBrick::HTTPServer#&lt;/span&gt;start: &lt;span class=&quot;nv&quot;&gt;pid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1 &lt;span class=&quot;nv&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3000
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="gp">web_1 | [2016-04-09 16:48:38] INFO  WEBrick::HTTPServer#</span>start: <span class="nv">pid</span><span class="o">=</span>1 <span class="nv">port</span><span class="o">=</span>3000
+</code></pre></div></div>
 
-&lt;p&gt;これでrails serverが準備できました。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.99.100:3000&lt;/code&gt;でページが見ることができます。&lt;/p&gt;
+<p>これでrails serverが準備できました。<code class="language-plaintext highlighter-rouge">192.168.99.100:3000</code>でページが見ることができます。</p>
 
-&lt;p&gt;ちなみにdocker-machineのIPアドレスは下記のように取得可能です。&lt;/p&gt;
+<p>ちなみにdocker-machineのIPアドレスは下記のように取得可能です。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker-machine ip default
-&lt;span class=&quot;go&quot;&gt;192.168.99.100
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker-machine ip default
+<span class="go">192.168.99.100
+</span></code></pre></div></div>
 
-&lt;p&gt;これにて完了！&lt;/p&gt;
+<p>これにて完了！</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.docker.com/compose/rails/&quot;&gt;Quickstart: Compose and Rails&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html">docker-machine, docker-compose を使ってローカルにRails on docker な環境を構築してみます。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/compose.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/compose.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Ruby on Rails を Google App Engine 上で動かしてみる</title><link href="https://blog.toshimaru.net/ruby-on-google-app-engine/" rel="alternate" type="text/html" title="Ruby on Rails を Google App Engine 上で動かしてみる" /><published>2016-03-26T00:00:00+09:00</published><updated>2016-03-26T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-on-google-app-engine</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-on-google-app-engine/">&lt;p&gt;&lt;a href=&quot;http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html&quot;&gt;［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey&lt;/a&gt;&lt;/p&gt;
+<ul>
+  <li><a href="https://docs.docker.com/compose/rails/">Quickstart: Compose and Rails</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html"><![CDATA[docker-machine, docker-compose を使ってローカルにdocker Rails環境を構築してみます。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/compose.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/compose.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Ruby on Rails を Google App Engine 上で動かしてみる</title><link href="https://blog.toshimaru.net/ruby-on-google-app-engine/" rel="alternate" type="text/html" title="Ruby on Rails を Google App Engine 上で動かしてみる" /><published>2016-03-26T00:00:00+09:00</published><updated>2016-03-26T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-on-google-app-engine</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-on-google-app-engine/"><![CDATA[<p><a href="http://www.publickey1.jp/blog/16/google_app_enginerubynodejsgcp_next_2016.html">［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey</a></p>
 
-&lt;p&gt;ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は公式ドキュメント・ &lt;a href=&quot;https://cloud.google.com/ruby/getting-started/hello-world&quot;&gt;How to run Hello World - Ruby — Google Cloud Platform&lt;/a&gt; を参考に進めていきます。&lt;/p&gt;
+<p>ということでRuby on RailsをGoogle App Engine 上で動かしてみました。手順は公式ドキュメント・ <a href="https://cloud.google.com/ruby/getting-started/hello-world">How to run Hello World - Ruby — Google Cloud Platform</a> を参考に進めていきます。</p>
 
-&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
+<h2 id="前提">前提</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;gcloud コマンドが使えること（&lt;a href=&quot;https://cloud.google.com/sdk/&quot;&gt;Google Cloud SDK&lt;/a&gt;に含まれています）&lt;/li&gt;
-  &lt;li&gt;Google Cloud Platformにログイン済みであり、今回のデプロイ先となるプロジェクトが作成済みであること&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>gcloud コマンドが使えること（<a href="https://cloud.google.com/sdk/">Google Cloud SDK</a>に含まれています）</li>
+  <li>Google Cloud Platformにログイン済みであり、今回のデプロイ先となるプロジェクトが作成済みであること</li>
+</ul>
 
-&lt;h2 id=&quot;手順&quot;&gt;手順&lt;/h2&gt;
+<h2 id="手順">手順</h2>
 
-&lt;h3 id=&quot;プロジェクトセットアップ&quot;&gt;プロジェクトセットアップ&lt;/h3&gt;
+<h3 id="プロジェクトセットアップ">プロジェクトセットアップ</h3>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/getting-started-ruby&quot;&gt;GoogleCloudPlatform/getting-started-ruby&lt;/a&gt; のHello World Appを今回は動かしますのでまずはプロジェクトをクローンします。&lt;/p&gt;
+<p><a href="https://github.com/GoogleCloudPlatform/getting-started-ruby">GoogleCloudPlatform/getting-started-ruby</a> のHello World Appを今回は動かしますのでまずはプロジェクトをクローンします。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git clone https://github.com/GoogleCloudPlatform/getting-started-ruby.git
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/GoogleCloudPlatform/getting-started-ruby.git
 $ cd 1-hello-world
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;まずは通常のRuby on Railsアプリと同じく&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;してRailsサーバーを立てましょう。&lt;/p&gt;
+<p>まずは通常のRuby on Railsアプリと同じく<code class="language-plaintext highlighter-rouge">bundle install</code>してRailsサーバーを立てましょう。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bundle install
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bundle install
 $ rails server
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;これで&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost:3000&lt;/code&gt;でデプロイされるHello World Appが見れました。&lt;/p&gt;
+<p>これで<code class="language-plaintext highlighter-rouge">localhost:3000</code>でデプロイされるHello World Appが見れました。</p>
 
-&lt;h3 id=&quot;gcloud-セットアップ&quot;&gt;gcloud セットアップ&lt;/h3&gt;
+<h3 id="gcloud-セットアップ">gcloud セットアップ</h3>
 
-&lt;p&gt;gcloud を使って行きますがいくつか事前の設定が必要あります。&lt;/p&gt;
+<p>gcloud を使って行きますがいくつか事前の設定が必要あります。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 初期化
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 初期化
 $ gcloud init
 
 # Googleログインする
@@ -799,29 +799,29 @@ $ gcloud auth login
 
 # 今回作成したプロジェクトIDをセット
 $ gcloud config set project {your-project-id}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;これでapp deployコマンドが動作しました。&lt;/p&gt;
+<p>これでapp deployコマンドが動作しました。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ gcloud preview app deploy
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcloud preview app deploy
+</code></pre></div></div>
 
-&lt;p&gt;デプロイされたあとは AppEngine Console のバージョンの一覧に出てきます。&lt;/p&gt;
+<p>デプロイされたあとは AppEngine Console のバージョンの一覧に出てきます。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/ruby-gae/deploy-version.png&quot; alt=&quot;deploy-version&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/ruby-gae/deploy-version.png" alt="deploy-version" /></p>
 
-&lt;h3 id=&quot;デプロイ時のログ&quot;&gt;デプロイ時のログ&lt;/h3&gt;
+<h3 id="デプロイ時のログ">デプロイ時のログ</h3>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Beginning deployment...
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Beginning deployment...
 If this is your first deployment, this may take a while...done.
 
 Using Ruby 2.2.4 as requested in the .ruby-version file
 Verifying that Managed VMs are enabled and ready.
 Building and pushing image for module [default]
 Started cloud build [789f0d61-dc0a-4994-8292-02a5ff9f65de].
-To see logs in the Cloud Console: https://console.developers.google.com/logs?project=your-project-id&amp;amp;service=cloudbuild.googleapis.com&amp;amp;key1=789f0d61-dc0a-4994-8292-02a5ff9f65de&amp;amp;logName=projects/your-project-id/logs/cloudbuild
+To see logs in the Cloud Console: https://console.developers.google.com/logs?project=your-project-id&amp;service=cloudbuild.googleapis.com&amp;key1=789f0d61-dc0a-4994-8292-02a5ff9f65de&amp;logName=projects/your-project-id/logs/cloudbuild
 --------------------------------- REMOTE BUILD OUTPUT ----------------------------------
-starting build &quot;789f0d61-dc0a-4994-8292-02a5ff9f65de&quot;
+starting build "789f0d61-dc0a-4994-8292-02a5ff9f65de"
 
 FETCHSOURCE
 Fetching storage object: gs://staging.your-project-id.appspot.com/your-project-id.default.20160326t100408#1458954328349000
@@ -882,26 +882,26 @@ Server:
  OS/Arch:      linux/amd64
 Sending build context to Docker daemon 90.62 kB
 Step 1 : FROM gcr.io/google_appengine/ruby
- ---&amp;gt; 3e6d0d6d0575
-Step 2 : RUN cd /rbenv/plugins/ruby-build &amp;amp;&amp;amp;     git pull &amp;amp;&amp;amp;     rbenv install -s 2.2.4 &amp;amp;&amp;amp;     rbenv global 2.2.4 &amp;amp;&amp;amp;     gem install -q --no-rdoc --no-ri bundler --version 1.11.2 &amp;amp;&amp;amp;     gem install -q --no-rdoc --no-ri foreman --version 0.78.0
- ---&amp;gt; Running in 451faee44d37
+ ---&gt; 3e6d0d6d0575
+Step 2 : RUN cd /rbenv/plugins/ruby-build &amp;&amp;     git pull &amp;&amp;     rbenv install -s 2.2.4 &amp;&amp;     rbenv global 2.2.4 &amp;&amp;     gem install -q --no-rdoc --no-ri bundler --version 1.11.2 &amp;&amp;     gem install -q --no-rdoc --no-ri foreman --version 0.78.0
+ ---&gt; Running in 451faee44d37
 Already up-to-date.
 Successfully installed bundler-1.11.2
 1 gem installed
 Successfully installed foreman-0.78.0
 1 gem installed
- ---&amp;gt; 5da2526068cb
+ ---&gt; 5da2526068cb
 Removing intermediate container 451faee44d37
 Step 3 : ENV RBENV_VERSION 2.2.4
- ---&amp;gt; Running in 1e6f8d74782b
- ---&amp;gt; 416110028d7d
+ ---&gt; Running in 1e6f8d74782b
+ ---&gt; 416110028d7d
 Removing intermediate container 1e6f8d74782b
 Step 4 : COPY Gemfile Gemfile.lock /app/
- ---&amp;gt; 0ab134d54690
+ ---&gt; 0ab134d54690
 Removing intermediate container 7337fb40c45b
-Step 5 : RUN bundle install &amp;amp;&amp;amp; rbenv rehash
- ---&amp;gt; Running in 0c258ea5a1be
-Don&apos;t run Bundler as root. Bundler can ask for sudo if it is needed, and
+Step 5 : RUN bundle install &amp;&amp; rbenv rehash
+ ---&gt; Running in 0c258ea5a1be
+Don't run Bundler as root. Bundler can ask for sudo if it is needed, and
 installing your bundle as root will break this application for all non-root
 users on this machine.
 Fetching gem metadata from https://rubygems.org/...........
@@ -956,14 +956,14 @@ Installing rspec-rails 3.3.2
 Installing rails 4.2.2
 Bundle complete! 6 Gemfile dependencies, 47 gems now installed.
 Use `bundle show [gemname]` to see where a bundled gem is installed.
- ---&amp;gt; 9fde5c5bec0c
+ ---&gt; 9fde5c5bec0c
 Removing intermediate container 0c258ea5a1be
 Step 6 : COPY . /app/
- ---&amp;gt; 05eb1e2b6b90
+ ---&gt; 05eb1e2b6b90
 Removing intermediate container e885ebd8251c
 Step 7 : ENTRYPOINT bundle exec rackup -p 8080 -E production config.ru
- ---&amp;gt; Running in 1b616e80361d
- ---&amp;gt; 0695731649da
+ ---&gt; Running in 1b616e80361d
+ ---&gt; 0695731649da
 Removing intermediate container 1b616e80361d
 Successfully built 0695731649da
 PUSH
@@ -1015,40 +1015,40 @@ DONE
 
 Updating module [default]...done.
 Deployed module [default] to [https://your-project-id.appspot.com]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;appyml&quot;&gt;app.yml&lt;/h2&gt;
+<h2 id="appyml">app.yml</h2>
 
-&lt;p&gt;今回使われている&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app.yml&lt;/code&gt;はこんな感じでした。&lt;/p&gt;
+<p>今回使われている<code class="language-plaintext highlighter-rouge">app.yml</code>はこんな感じでした。</p>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# [START runtime]&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;runtime&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;entrypoint&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rackup -p 8080 -E production config.ru&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# [END runtime]&lt;/span&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># [START runtime]</span>
+<span class="na">runtime</span><span class="pi">:</span> <span class="s">ruby</span>
+<span class="na">vm</span><span class="pi">:</span> <span class="no">true</span>
+<span class="na">entrypoint</span><span class="pi">:</span> <span class="s">bundle exec rackup -p 8080 -E production config.ru</span>
+<span class="c1"># [END runtime]</span>
 
-&lt;span class=&quot;c1&quot;&gt;# [START resources]&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;cpu&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.5&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;memory_gb&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1.3&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;disk_size_gb&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# [END resources]&lt;/span&gt;
+<span class="c1"># [START resources]</span>
+<span class="na">resources</span><span class="pi">:</span>
+  <span class="na">cpu</span><span class="pi">:</span> <span class="s">.5</span>
+  <span class="na">memory_gb</span><span class="pi">:</span> <span class="m">1.3</span>
+  <span class="na">disk_size_gb</span><span class="pi">:</span> <span class="m">10</span>
+<span class="c1"># [END resources]</span>
 
-&lt;span class=&quot;c1&quot;&gt;# [START scaling]&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;automatic_scaling&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;min_num_instances&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;max_num_instances&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;cool_down_period_sec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;60&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;cpu_utilization&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;target_utilization&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0.5&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# [END scaling]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="c1"># [START scaling]</span>
+<span class="na">automatic_scaling</span><span class="pi">:</span>
+  <span class="na">min_num_instances</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">max_num_instances</span><span class="pi">:</span> <span class="m">5</span>
+  <span class="na">cool_down_period_sec</span><span class="pi">:</span> <span class="m">60</span>
+  <span class="na">cpu_utilization</span><span class="pi">:</span>
+    <span class="na">target_utilization</span><span class="pi">:</span> <span class="m">0.5</span>
+<span class="c1"># [END scaling]</span>
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;runtime&lt;/code&gt;の設定がrubyプロジェクトに共通の設定で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;resources&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;scaling&lt;/code&gt;は環境に合わせて適宜チューニングしてください。デフォルトの状態としてはミニマルな設定になっているようです。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">runtime</code>の設定がrubyプロジェクトに共通の設定で<code class="language-plaintext highlighter-rouge">resources</code>, <code class="language-plaintext highlighter-rouge">scaling</code>は環境に合わせて適宜チューニングしてください。デフォルトの状態としてはミニマルな設定になっているようです。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/ruby-docker&quot;&gt;GoogleCloudPlatform/ruby-docker: Docker images for Ruby&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/GoogleCloudPlatform/ruby-docker/blob/master/appengine/Dockerfile&quot;&gt;ruby-docker/Dockerfile at master · GoogleCloudPlatform/ruby-docker&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="google-app-engine" /><category term="rails" /><category term="docker" /><summary type="html">［速報］Google App EngineがRubyとNode.jsのサポートを発表。GCP Next 2016 － Publickey</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-gae/ruby.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-gae/ruby.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<ul>
+  <li><a href="https://github.com/GoogleCloudPlatform/ruby-docker">GoogleCloudPlatform/ruby-docker: Docker images for Ruby</a></li>
+  <li><a href="https://github.com/GoogleCloudPlatform/ruby-docker/blob/master/appengine/Dockerfile">ruby-docker/Dockerfile at master · GoogleCloudPlatform/ruby-docker</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="google-app-engine" /><category term="rails" /><category term="docker" /><summary type="html"><![CDATA[Ruby on RailsをGoogle App Engine 上で動かしてみました。手順はGoogle公式ドキュメントの「How to run Hello World - Ruby — Google Cloud Platform」を参考に進めていきます。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-gae/ruby.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-gae/ruby.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

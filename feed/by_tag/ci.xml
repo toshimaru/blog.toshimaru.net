@@ -1,791 +1,791 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/ci.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/ci.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">CircleCIのベースイメージを次世代イメージ cimg に移行する</title><link href="https://blog.toshimaru.net/use-circleci-cimg/" rel="alternate" type="text/html" title="CircleCIのベースイメージを次世代イメージ cimg に移行する" /><published>2021-03-05T00:00:00+09:00</published><updated>2021-03-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/use-circleci-cimg</id><content type="html" xml:base="https://blog.toshimaru.net/use-circleci-cimg/">&lt;p&gt;2020年にCircleCIの次世代イメージ・cimg が登場しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/ci.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/ci.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">CircleCIのベースイメージを次世代イメージ cimg に移行する</title><link href="https://blog.toshimaru.net/use-circleci-cimg/" rel="alternate" type="text/html" title="CircleCIのベースイメージを次世代イメージ cimg に移行する" /><published>2021-03-05T00:00:00+09:00</published><updated>2021-03-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/use-circleci-cimg</id><content type="html" xml:base="https://blog.toshimaru.net/use-circleci-cimg/"><![CDATA[<p>2020年にCircleCIの次世代イメージ・cimg が登場しました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
-&lt;p&gt;個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところの&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;cimg/rubyに移行&lt;/a&gt;してみたので紹介します。&lt;/p&gt;
+<p>個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところの<a href="https://github.com/toshimaru/RailsTwitterClone/pull/920">cimg/rubyに移行</a>してみたので紹介します。</p>
 
-&lt;h2 id=&quot;ベースイメージの変更&quot;&gt;ベースイメージの変更&lt;/h2&gt;
+<h2 id="ベースイメージの変更">ベースイメージの変更</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へ変更します。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">circleci/ruby</code> から <code class="language-plaintext highlighter-rouge">cimg/ruby</code> へ変更します。</p>
 
-&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; executors:
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code> executors:
    default:
      working_directory: ~/app
      docker:
-&lt;span class=&quot;gi&quot;&gt;+      - image: circleci/ruby:2.7-node-browsers
-&lt;/span&gt;&lt;span class=&quot;gd&quot;&gt;-      - image: cimg/ruby:2.7-browsers
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="gi">+      - image: circleci/ruby:2.7-node-browsers
+</span><span class="gd">-      - image: cimg/ruby:2.7-browsers
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;circleci-公式-orb-の利用&quot;&gt;CircleCI 公式 Orb の利用&lt;/h2&gt;
+<h2 id="circleci-公式-orb-の利用">CircleCI 公式 Orb の利用</h2>
 
-&lt;p&gt;今回の変更とあわせて、下記２つのCircleCI公式Orbも導入しました。&lt;/p&gt;
+<p>今回の変更とあわせて、下記２つのCircleCI公式Orbも導入しました。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://circleci.com/developer/orbs/orb/circleci/ruby">CircleCI Developer Hub - circleci/ruby</a></li>
+  <li><a href="https://circleci.com/developer/orbs/orb/circleci/browser-tools">CircleCI Developer Hub - circleci/browser-tools</a></li>
+</ul>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;ruby&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby@1.1.2&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;browser-tools&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/browser-tools@1.1.3&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">orbs</span><span class="pi">:</span>
+  <span class="na">ruby</span><span class="pi">:</span> <span class="s">circleci/ruby@1.1.2</span>
+  <span class="na">browser-tools</span><span class="pi">:</span> <span class="s">circleci/browser-tools@1.1.3</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rspec-の実行&quot;&gt;RSpec の実行&lt;/h2&gt;
+<h2 id="rspec-の実行">RSpec の実行</h2>
 
-&lt;p&gt;上述のOrbを有効活用することで&lt;/p&gt;
+<p>上述のOrbを有効活用することで</p>
 
-&lt;ol&gt;
-  &lt;li&gt;bundle Install&lt;/li&gt;
-  &lt;li&gt;chromedriverインストール&lt;/li&gt;
-  &lt;li&gt;rspecの実行&lt;/li&gt;
-&lt;/ol&gt;
+<ol>
+  <li>bundle Install</li>
+  <li>chromedriverインストール</li>
+  <li>rspecの実行</li>
+</ol>
 
-&lt;p&gt;のstepを下記のようにシンプルに記述することが可能になります。&lt;/p&gt;
+<p>のstepを下記のようにシンプルに記述することが可能になります。</p>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rspec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chrome&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chromedriver&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bin/rails db:schema:load --trace&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rspec-test&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">rspec</span><span class="pi">:</span>
+  <span class="na">executor</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">checkout</span>
+    <span class="pi">-</span> <span class="s">ruby/install-deps</span>
+    <span class="pi">-</span> <span class="s">browser-tools/install-chrome</span>
+    <span class="pi">-</span> <span class="s">browser-tools/install-chromedriver</span>
+    <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">bin/rails db:schema:load --trace</span>
+    <span class="pi">-</span> <span class="s">ruby/rspec-test</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rubocop-の実行&quot;&gt;rubocop の実行&lt;/h2&gt;
+<h2 id="rubocop-の実行">rubocop の実行</h2>
 
-&lt;p&gt;rubocop の実行も同様に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; Orbに組み込まれており、簡単に実行できます。&lt;/p&gt;
+<p>rubocop の実行も同様に <code class="language-plaintext highlighter-rouge">circleci/ruby</code> Orbに組み込まれており、簡単に実行できます。</p>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rubocop-check&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">rubocop</span><span class="pi">:</span>
+  <span class="na">executor</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">checkout</span>
+    <span class="pi">-</span> <span class="s">ruby/install-deps</span>
+    <span class="pi">-</span> <span class="s">ruby/rubocop-check</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;最終形&quot;&gt;最終形&lt;/h2&gt;
+<h2 id="最終形">最終形</h2>
 
-&lt;p&gt;実際に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へと移行した Pull Request の全体像としては下記のようになります。&lt;/p&gt;
+<p>実際に <code class="language-plaintext highlighter-rouge">circleci/ruby</code> から <code class="language-plaintext highlighter-rouge">cimg/ruby</code> へと移行した Pull Request の全体像としては下記のようになります。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;Migrate CircleCI image from circleci/ruby to cimg/ruby by toshimaru · Pull Request&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/920">Migrate CircleCI image from circleci/ruby to cimg/ruby by toshimaru · Pull Request</a></p>
 
-&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+<h2 id="参考リンク">参考リンク</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;紹介したCircleCI Orbs
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/images/image/cimg/ruby&quot;&gt;cimg/ruby - CircleCI&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/CircleCI-Public/circleci-demo-ruby-rails/blob/master/.circleci/config.yml&quot;&gt;circleci-demo-ruby-rails/config.yml at master · CircleCI-Public/circleci-demo-ruby-rails&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>紹介したCircleCI Orbs
+    <ul>
+      <li><a href="https://circleci.com/developer/orbs/orb/circleci/ruby">CircleCI Developer Hub - circleci/ruby</a></li>
+      <li><a href="https://circleci.com/developer/orbs/orb/circleci/browser-tools">CircleCI Developer Hub - circleci/browser-tools</a></li>
+    </ul>
+  </li>
+  <li><a href="https://circleci.com/developer/images/image/cimg/ruby">cimg/ruby - CircleCI</a></li>
+  <li><a href="https://github.com/CircleCI-Public/circleci-demo-ruby-rails/blob/master/.circleci/config.yml">circleci-demo-ruby-rails/config.yml at master · CircleCI-Public/circleci-demo-ruby-rails</a></li>
+</ul>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://circleci.com/ja/blog/announcing-our-next-generation-convenience-images-smaller-faster-more-deterministic/&quot;&gt;次世代コンビニエンス イメージをリリース: より小さく、速く、確定的&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><category term="ci" /><summary type="html">2020年にCircleCIの次世代イメージ・cimg が登場しました1。 次世代コンビニエンス イメージをリリース: より小さく、速く、確定的 &amp;#8617;</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cimg.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cimg.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った</title><link href="https://blog.toshimaru.net/auto-author-assign/" rel="alternate" type="text/html" title="PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った" /><published>2020-12-06T00:00:00+09:00</published><updated>2020-12-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/auto-author-assign</id><content type="html" xml:base="https://blog.toshimaru.net/auto-author-assign/">&lt;p&gt;本記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2020/github-actions&quot;&gt;GitHub Actions Advent Calendar 2020&lt;/a&gt;６日目の記事です。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://circleci.com/ja/blog/announcing-our-next-generation-convenience-images-smaller-faster-more-deterministic/">次世代コンビニエンス イメージをリリース: より小さく、速く、確定的</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="circleci" /><category term="ci" /><summary type="html"><![CDATA[2020年にCircleCIの次世代イメージ・cimg が登場しました。個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところのcimg/rubyに移行してみたので紹介します。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cimg.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cimg.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った</title><link href="https://blog.toshimaru.net/auto-author-assign/" rel="alternate" type="text/html" title="PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った" /><published>2020-12-06T00:00:00+09:00</published><updated>2020-12-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/auto-author-assign</id><content type="html" xml:base="https://blog.toshimaru.net/auto-author-assign/"><![CDATA[<p>本記事は<a href="https://qiita.com/advent-calendar/2020/github-actions">GitHub Actions Advent Calendar 2020</a>６日目の記事です。</p>
 
-&lt;p&gt;今日は作ったGitHub Actions、&lt;a href=&quot;https://github.com/toshimaru/auto-author-assign&quot;&gt;auto-author-assign&lt;/a&gt;の紹介をしたいと思います。&lt;/p&gt;
+<p>今日は作ったGitHub Actions、<a href="https://github.com/toshimaru/auto-author-assign">auto-author-assign</a>の紹介をしたいと思います。</p>
 
-&lt;h2 id=&quot;作ったきっかけ&quot;&gt;作ったきっかけ&lt;/h2&gt;
+<h2 id="作ったきっかけ">作ったきっかけ</h2>
 
-&lt;p&gt;Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Assignee&lt;/code&gt;）はそのPR作者自身になるかと思います。&lt;/p&gt;
+<p>Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（<code class="language-plaintext highlighter-rouge">Assignee</code>）はそのPR作者自身になるかと思います。</p>
 
-&lt;p&gt;その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。&lt;/p&gt;
+<p>その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。</p>
 
-&lt;h2 id=&quot;何が嬉しいか&quot;&gt;何が嬉しいか？&lt;/h2&gt;
+<h2 id="何が嬉しいか">何が嬉しいか？</h2>
 
-&lt;p&gt;たくさんの人がPRを出しまくる、そんな大規模プロジェクトだとPR一覧を開いたときに&lt;/p&gt;
+<p>たくさんの人がPRを出しまくる、そんな大規模プロジェクトだとPR一覧を開いたときに</p>
 
-&lt;ul&gt;
-  &lt;li&gt;「誰がPRの担当者なのか？」がアイコンで一目でわかるようになる&lt;/li&gt;
-  &lt;li&gt;（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Author&lt;/code&gt; に加えて）&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Assignee&lt;/code&gt; によるフィルターができるようになる&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>「誰がPRの担当者なのか？」がアイコンで一目でわかるようになる</li>
+  <li>（<code class="language-plaintext highlighter-rouge">Author</code> に加えて）<code class="language-plaintext highlighter-rouge">Assignee</code> によるフィルターができるようになる</li>
+</ul>
 
-&lt;p&gt;あたりが嬉しさになります。&lt;/p&gt;
+<p>あたりが嬉しさになります。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/auto-author-assign/pull-request-list.png&quot; alt=&quot;PR list&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/auto-author-assign/pull-request-list.png" alt="PR list" /></p>
 
-&lt;h2 id=&quot;設定&quot;&gt;設定&lt;/h2&gt;
+<h2 id="設定">設定</h2>
 
-&lt;p&gt;リポジトリに &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/workflows/auto-author-assign.yml&lt;/code&gt; みたいなファイルを用意して下記のように設定すればOK。&lt;/p&gt;
+<p>リポジトリに <code class="language-plaintext highlighter-rouge">.github/workflows/auto-author-assign.yml</code> みたいなファイルを用意して下記のように設定すればOK。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Auto&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Assign&apos;&lt;/span&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">name</span><span class="pi">:</span> <span class="s1">'</span><span class="s">Auto</span><span class="nv"> </span><span class="s">Author</span><span class="nv"> </span><span class="s">Assign'</span>
 
-&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;pull_request_target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;opened&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;reopened&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">pull_request_target</span><span class="pi">:</span>
+    <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">opened</span><span class="pi">,</span> <span class="nv">reopened</span><span class="pi">]</span>
 
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;assign-author&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/auto-author-assign@v1.2.0&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;repo-token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;$&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">assign-author</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">toshimaru/auto-author-assign@v1.2.0</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">repo-token</span><span class="pi">:</span> <span class="s2">"</span><span class="s">$"</span>
+</code></pre></div></div>
 
-&lt;h3 id=&quot;on-pull_request-ではアサイン失敗することがある&quot;&gt;on: pull_request ではアサイン失敗することがある&lt;/h3&gt;
+<h3 id="on-pull_request-ではアサイン失敗することがある">on: pull_request ではアサイン失敗することがある</h3>
 
-&lt;p&gt;最初、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on: pull_request&lt;/code&gt; でイベント発火させていたのですが、これだとfolkしたレポジトリからのPRで下記エラーが出てアサインが失敗します。&lt;/p&gt;
+<p>最初、 <code class="language-plaintext highlighter-rouge">on: pull_request</code> でイベント発火させていたのですが、これだとfolkしたレポジトリからのPRで下記エラーが出てアサインが失敗します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Error: Resource not accessible by integration
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error: Resource not accessible by integration
+</code></pre></div></div>
 
-&lt;p&gt;なぜなら folk したレポジトリからは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; にアクセスできないためです。&lt;/p&gt;
+<p>なぜなら folk したレポジトリからは <code class="language-plaintext highlighter-rouge">secrets.GITHUB_TOKEN</code> にアクセスできないためです。</p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;This event is similar to pull_request, except that it runs in the context of the base repository of the pull request (snip) This means that you can more safely make your secrets available to the workflows triggered by the pull request&lt;/p&gt;
-&lt;/blockquote&gt;
+<blockquote>
+  <p>This event is similar to pull_request, except that it runs in the context of the base repository of the pull request (snip) This means that you can more safely make your secrets available to the workflows triggered by the pull request</p>
+</blockquote>
 
-&lt;p&gt;via. &lt;a href=&quot;https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#pull_request_target&quot;&gt;Events that trigger workflows - GitHub Docs&lt;/a&gt;&lt;/p&gt;
+<p>via. <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#pull_request_target">Events that trigger workflows - GitHub Docs</a></p>
 
-&lt;p&gt;ということで、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on: pull_request_target&lt;/code&gt; 使ってActionを起動させる必要があります。&lt;/p&gt;
+<p>ということで、 <code class="language-plaintext highlighter-rouge">on: pull_request_target</code> 使ってActionを起動させる必要があります。</p>
 
-&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
+<h2 id="余談">余談</h2>
 
-&lt;p&gt;本Actionは&lt;a href=&quot;https://dev.to/devteam/announcing-the-github-actions-hackathon-on-dev-3ljn&quot;&gt;GitHub Actions Hackathon&lt;/a&gt;にも提出しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p>本Actionは<a href="https://dev.to/devteam/announcing-the-github-actions-hackathon-on-dev-3ljn">GitHub Actions Hackathon</a>にも提出しました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://dev.to/toshimaru/assign-pull-request-author-automatically-with-github-actions-2i9o&quot;&gt;Assign pull request author automatically with GitHub Actions - DEV Community 👩‍💻👨‍💻&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="github_actions" /><category term="ci" /><category term="github" /><summary type="html">本記事はGitHub Actions Advent Calendar 2020６日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</title><link href="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/" rel="alternate" type="text/html" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" /><published>2020-06-22T00:00:00+09:00</published><updated>2020-06-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-deploy-with-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/">&lt;p&gt;Jekyll製&lt;a href=&quot;https://blog.toshima.ru/&quot;&gt;英語ブログ&lt;/a&gt;のGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://dev.to/toshimaru/assign-pull-request-author-automatically-with-github-actions-2i9o">Assign pull request author automatically with GitHub Actions - DEV Community 👩‍💻👨‍💻</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="github_actions" /><category term="ci" /><category term="github" /><summary type="html"><![CDATA[本記事はGitHub Actions Advent Calendar 2020６日目の記事です。 今日は作ったGitHub Actions、auto-author-assignの紹介をしたいと思います。Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（Assignee）はそのPR作者自身になるかと思います。 その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する</title><link href="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/" rel="alternate" type="text/html" title="JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する" /><published>2020-06-22T00:00:00+09:00</published><updated>2020-06-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/jekyll-deploy-with-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/jekyll-deploy-with-github-actions/"><![CDATA[<p>Jekyll製<a href="https://blog.toshima.ru/">英語ブログ</a>のGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。</p>
 
-&lt;h2 id=&quot;今までのデプロイ方式&quot;&gt;今までのデプロイ方式&lt;/h2&gt;
+<h2 id="今までのデプロイ方式">今までのデプロイ方式</h2>
 
-&lt;p&gt;今までどうページソースをGitHub Pagesに自動デプロイしていたかでいうと、&lt;a href=&quot;/autodeploy-jekyll/&quot;&gt;Jekyllでgit pushをフックしてGithub Pagesへ自動デプロイ&lt;/a&gt;するようにしていた。&lt;/p&gt;
+<p>今までどうページソースをGitHub Pagesに自動デプロイしていたかでいうと、<a href="/autodeploy-jekyll/">Jekyllでgit pushをフックしてGithub Pagesへ自動デプロイ</a>するようにしていた。</p>
 
-&lt;p&gt;この方法でも全く問題ないがセットアップがやや面倒。なので英語ブログは手動デプロイ状態のまま放置していた。今はGitHub Actionsを使ったデプロイ方式がナウそうだ、とのことで重い腰を上げてその方式をトライ。&lt;/p&gt;
+<p>この方法でも全く問題ないがセットアップがやや面倒。なので英語ブログは手動デプロイ状態のまま放置していた。今はGitHub Actionsを使ったデプロイ方式がナウそうだ、とのことで重い腰を上げてその方式をトライ。</p>
 
-&lt;h2 id=&quot;新しいデプロイ方式&quot;&gt;新しいデプロイ方式&lt;/h2&gt;
+<h2 id="新しいデプロイ方式">新しいデプロイ方式</h2>
 
-&lt;p&gt;対応したPull Request: &lt;a href=&quot;https://github.com/toshimaru/blog.toshima.ru/pull/160&quot;&gt;Deploy Automation with GitHub Actions · toshimaru/blog.toshima.ru&lt;/a&gt;&lt;/p&gt;
+<p>対応したPull Request: <a href="https://github.com/toshimaru/blog.toshima.ru/pull/160">Deploy Automation with GitHub Actions · toshimaru/blog.toshima.ru</a></p>
 
-&lt;p&gt;やっていることとしては至ってシンプル。&lt;/p&gt;
+<p>やっていることとしては至ってシンプル。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;masterブランチで変更があった場合にActionをトリガー&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;生成した静的コンテンツのデータを&lt;a href=&quot;https://github.com/peaceiris/actions-gh-pages&quot;&gt;peaceiris/actions-gh-pages&lt;/a&gt;を使って&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにデプロイ&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>masterブランチで変更があった場合にActionをトリガー</li>
+  <li><code class="language-plaintext highlighter-rouge">bundle install</code></li>
+  <li><code class="language-plaintext highlighter-rouge">jekyll build</code></li>
+  <li>生成した静的コンテンツのデータを<a href="https://github.com/peaceiris/actions-gh-pages">peaceiris/actions-gh-pages</a>を使って<code class="language-plaintext highlighter-rouge">gh-pages</code>ブランチにデプロイ</li>
+</ul>
 
-&lt;h2 id=&quot;github-actions-configuration&quot;&gt;GitHub Actions Configuration&lt;/h2&gt;
+<h2 id="github-actions-configuration">GitHub Actions Configuration</h2>
 
-&lt;p&gt;実際のyamlファイルの設定は下記の通り。&lt;/p&gt;
+<p>実際のyamlファイルの設定は下記の通り。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;branches&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;master&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;gh-pages-deploy&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Set up Ruby&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.7&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle config set path &apos;vendor/bundle&apos;&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Jekyll Build&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec jekyll build&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deploy&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;peaceiris/actions-gh-pages@v3&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;personal_token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;publish_dir&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./_site&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">on</span><span class="pi">:</span>
+  <span class="na">push</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">master</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">gh-pages-deploy</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v2</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Set up Ruby</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-ruby@v1</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">ruby-version</span><span class="pi">:</span> <span class="m">2.7</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">bundle install</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">bundle config set path 'vendor/bundle'</span>
+        <span class="s">bundle install</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Jekyll Build</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec jekyll build</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Deploy</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">peaceiris/actions-gh-pages@v3</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">personal_token</span><span class="pi">:</span> <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
+        <span class="na">publish_dir</span><span class="pi">:</span> <span class="s">./_site</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;従来と比べて良い点&quot;&gt;従来と比べて良い点&lt;/h2&gt;
+<h2 id="従来と比べて良い点">従来と比べて良い点</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;ブランチにpushするにあたって&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; でトークンをセットするだけ。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jekyll" /><category term="github" /><category term="ci" /><summary type="html">Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">DependabotをGitHub公式Dependabotに移行させた</title><link href="https://blog.toshimaru.net/github-dependabot/" rel="alternate" type="text/html" title="DependabotをGitHub公式Dependabotに移行させた" /><published>2020-06-18T00:00:00+09:00</published><updated>2020-06-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-dependabot</id><content type="html" xml:base="https://blog.toshimaru.net/github-dependabot/">&lt;p&gt;&lt;a href=&quot;https://dependabot.com/blog/hello-github/&quot;&gt;2019年、DependabotがGitHubに買収された&lt;/a&gt;ことはご存知の通り。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">gh-pages</code>ブランチにpushするにあたって<code class="language-plaintext highlighter-rouge">secrets.GITHUB_TOKEN</code> でトークンをセットするだけ。</p>]]></content><author><name>Toshimaru</name></author><category term="jekyll" /><category term="github" /><category term="ci" /><summary type="html"><![CDATA[Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-pages/action-gh-pages.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">DependabotをGitHub公式Dependabotに移行させた</title><link href="https://blog.toshimaru.net/github-dependabot/" rel="alternate" type="text/html" title="DependabotをGitHub公式Dependabotに移行させた" /><published>2020-06-18T00:00:00+09:00</published><updated>2020-06-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-dependabot</id><content type="html" xml:base="https://blog.toshimaru.net/github-dependabot/"><![CDATA[<p><a href="https://dependabot.com/blog/hello-github/">2019年、DependabotがGitHubに買収された</a>ことはご存知の通り。</p>
 
-&lt;p&gt;そのDependabotの機能が公式機能として取り込まれたということので早速移行してみた。&lt;/p&gt;
+<p>そのDependabotの機能が公式機能として取り込まれたということので早速移行してみた。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.blog/2020-06-01-keep-all-your-packages-up-to-date-with-dependabot/&quot;&gt;Keep all your packages up to date with Dependabot - The GitHub Blog&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.blog/2020-06-01-keep-all-your-packages-up-to-date-with-dependabot/">Keep all your packages up to date with Dependabot - The GitHub Blog</a></p>
 
-&lt;h2 id=&quot;dependabot管理画面から簡単移行&quot;&gt;Dependabot管理画面から簡単移行&lt;/h2&gt;
+<h2 id="dependabot管理画面から簡単移行">Dependabot管理画面から簡単移行</h2>
 
-&lt;p&gt;既存のDependabot管理画面から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Create config file&lt;/code&gt;をクリック。&lt;/p&gt;
+<p>既存のDependabot管理画面から <code class="language-plaintext highlighter-rouge">Create config file</code>をクリック。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/create-config.png&quot; alt=&quot;config&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/github-dependabot/create-config.png" alt="config" /></p>
 
-&lt;h2 id=&quot;githubdependabotyml-作成&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/dependabot.yml&lt;/code&gt; 作成&lt;/h2&gt;
+<h2 id="githubdependabotyml-作成"><code class="language-plaintext highlighter-rouge">.github/dependabot.yml</code> 作成</h2>
 
-&lt;p&gt;するとdependabot-preview氏がPull Requestを自動的に作ってくれる。&lt;/p&gt;
+<p>するとdependabot-preview氏がPull Requestを自動的に作ってくれる。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/pr.png&quot; alt=&quot;pull request&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/github-dependabot/pr.png" alt="pull request" /></p>
 
-&lt;p&gt;via. &lt;a href=&quot;https://github.com/toshimaru/auto-author-assign/pull/15&quot;&gt;Create Dependabot config file by dependabot-preview · Pull Request #15 · toshimaru/auto-author-assign&lt;/a&gt;&lt;/p&gt;
+<p>via. <a href="https://github.com/toshimaru/auto-author-assign/pull/15">Create Dependabot config file by dependabot-preview · Pull Request #15 · toshimaru/auto-author-assign</a></p>
 
-&lt;p&gt;yamlの内容は下記の通り。&lt;/p&gt;
+<p>yamlの内容は下記の通り。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;updates&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;package-ecosystem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;npm&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/&quot;&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;weekly&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;21:00&apos;&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;open-pull-requests-limit&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;reviewers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">2</span>
+<span class="na">updates</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s">npm</span>
+  <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span>
+  <span class="na">schedule</span><span class="pi">:</span>
+    <span class="na">interval</span><span class="pi">:</span> <span class="s">weekly</span>
+    <span class="na">time</span><span class="pi">:</span> <span class="s1">'</span><span class="s">21:00'</span>
+  <span class="na">open-pull-requests-limit</span><span class="pi">:</span> <span class="m">10</span>
+  <span class="na">reviewers</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">toshimaru</span>
+</code></pre></div></div>
 
-&lt;p&gt;既存の設定をベースに自動的に内容を作成してくれた雰囲気。&lt;/p&gt;
+<p>既存の設定をベースに自動的に内容を作成してくれた雰囲気。</p>
 
-&lt;h2 id=&quot;移行完了&quot;&gt;移行完了&lt;/h2&gt;
+<h2 id="移行完了">移行完了</h2>
 
-&lt;p&gt;PRをマージし、無事に移行が完了するとDependabot管理画面は下記のような表示となる。&lt;/p&gt;
+<p>PRをマージし、無事に移行が完了するとDependabot管理画面は下記のような表示となる。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/finish.png&quot; alt=&quot;done&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/github-dependabot/finish.png" alt="done" /></p>
 
-&lt;p&gt;下記の通りユーザー名は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dependabot-preview&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dependabot&lt;/code&gt; へと変更されている。&lt;/p&gt;
+<p>下記の通りユーザー名は <code class="language-plaintext highlighter-rouge">dependabot-preview</code> <code class="language-plaintext highlighter-rouge">dependabot</code> へと変更されている。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/commit-log.png&quot; alt=&quot;log&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/github-dependabot/commit-log.png" alt="log" /></p>
 
-&lt;p&gt;新しいdependabotが作るPRはgithubの公式ロゴが入っている。&lt;/p&gt;
+<p>新しいdependabotが作るPRはgithubの公式ロゴが入っている。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-dependabot/new-pr.png&quot; alt=&quot;log&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/github-dependabot/new-pr.png" alt="log" /></p>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;p&gt;余談だが&lt;a href=&quot;https://github.blog/2019-06-17-github-acquires-pull-panda/&quot;&gt;同年に買収されたPull Panda&lt;/a&gt;のリマインダー機能もGitHubの公式機能に取り込まれている。&lt;/p&gt;
+<p>余談だが<a href="https://github.blog/2019-06-17-github-acquires-pull-panda/">同年に買収されたPull Panda</a>のリマインダー機能もGitHubの公式機能に取り込まれている。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/managing-scheduled-reminders-for-your-team&quot;&gt;Managing scheduled reminders for your team - GitHub Help&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://help.github.com/en/github/setting-up-and-managing-organizations-and-teams/managing-scheduled-reminders-for-your-team">Managing scheduled reminders for your team - GitHub Help</a></p>
 
-&lt;p&gt;良い機能がこのように＜買収→公式機能＞となっていくのは良い流れですね。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html">2019年、DependabotがGitHubに買収されたことはご存知の通り。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/" rel="alternate" type="text/html" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす" /><published>2020-05-31T00:00:00+09:00</published><updated>2020-06-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/">&lt;p&gt;過去に&lt;a href=&quot;/reviewdog-rubocop/&quot;&gt;reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事&lt;/a&gt;を書きました。&lt;/p&gt;
+<p>良い機能がこのように＜買収→公式機能＞となっていくのは良い流れですね。</p>]]></content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html"><![CDATA[2019年、DependabotがGitHubに買収されたことはご存知の通り。 そのDependabotの機能が公式機能として取り込まれたということので早速移行してみた。 Keep all your packages up to date with Dependabot - The GitHub Blog]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-dependabot/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/" rel="alternate" type="text/html" title="reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす" /><published>2020-05-31T00:00:00+09:00</published><updated>2020-06-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop-github-actions</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop-github-actions/"><![CDATA[<p>過去に<a href="/reviewdog-rubocop/">reviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事</a>を書きました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. | reviewdogを使ってCI上でRuboCop自動レビューを動かす - Hack Your Design! &lt;a href=&quot;https://t.co/8vdNUEIisX&quot;&gt;https://t.co/8vdNUEIisX&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1064661783594491904?ref_src=twsrc%5Etfw&quot;&gt;November 19, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Blogged. | reviewdogを使ってCI上でRuboCop自動レビューを動かす - Hack Your Design! <a href="https://t.co/8vdNUEIisX">https://t.co/8vdNUEIisX</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1064661783594491904?ref_src=twsrc%5Etfw">November 19, 2018</a></blockquote>
 
-&lt;p&gt;本記事はそれの&lt;a href=&quot;https://github.com/features/actions&quot;&gt;GitHub Actions&lt;/a&gt;バージョンになります。&lt;/p&gt;
+<p>本記事はそれの<a href="https://github.com/features/actions">GitHub Actions</a>バージョンになります。</p>
 
-&lt;h2 id=&quot;なぜgithub-actionなのか&quot;&gt;なぜGitHub Actionなのか？&lt;/h2&gt;
+<h2 id="なぜgithub-actionなのか">なぜGitHub Actionなのか？</h2>
 
-&lt;p&gt;以前に書いた記事のようにCircleCIでも問題はないものの、GitHub ActionsはデフォルトでPull Requestにコメント可能な &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GITHUB_TOKEN&lt;/code&gt; を吐くことが可能で、そのへんのtoken周りの煩雑な設定が不要という点でCircleCIよりアドバンテージがあると言えます。&lt;/p&gt;
+<p>以前に書いた記事のようにCircleCIでも問題はないものの、GitHub ActionsはデフォルトでPull Requestにコメント可能な <code class="language-plaintext highlighter-rouge">GITHUB_TOKEN</code> を吐くことが可能で、そのへんのtoken周りの煩雑な設定が不要という点でCircleCIよりアドバンテージがあると言えます。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token&quot;&gt;Authenticating with the GITHUB_TOKEN - GitHub Help&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token">Authenticating with the GITHUB_TOKEN - GitHub Help</a></p>
 
-&lt;p&gt;GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsのほうが優れている印象があります。&lt;/p&gt;
+<p>GitHubが公式機能として出していることもあり、GitHubとのIntegrationはGitHub Actionsのほうが優れている印象があります。</p>
 
-&lt;h2 id=&quot;基本のrubocop設定&quot;&gt;基本のrubocop設定&lt;/h2&gt;
+<h2 id="基本のrubocop設定">基本のrubocop設定</h2>
 
-&lt;p&gt;GitHub Actionsで動かす基本となるrubocop設定は下記の通りです。&lt;/p&gt;
+<p>GitHub Actionsで動かす基本となるrubocop設定は下記の通りです。</p>
 
-&lt;p&gt;※ 実際はbundlerのキャッシュの設定などが必要ですが今回は設定していません&lt;/p&gt;
+<p>※ 実際はbundlerのキャッシュの設定などが必要ですが今回は設定していません</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/workflows/rubocop.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.6&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run rubocop&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/workflows/rubocop.yml</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">RuboCop</span>
+<span class="na">on</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">pull_request</span><span class="pi">]</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">rubocop</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v2</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-ruby@v1</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">ruby-version</span><span class="pi">:</span> <span class="m">2.6</span>
+    <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">gem install bundler</span>
+        <span class="s">bundle install</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Run rubocop</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec rubocop</span>
+</code></pre></div></div>
 
-&lt;p&gt;上述の設定をベースにreviewdogを使った自動レビューの設定を追加していきます。&lt;/p&gt;
+<p>上述の設定をベースにreviewdogを使った自動レビューの設定を追加していきます。</p>
 
-&lt;h2 id=&quot;reviewdogによる自動レビューを追加&quot;&gt;reviewdogによる自動レビューを追加&lt;/h2&gt;
+<h2 id="reviewdogによる自動レビューを追加">reviewdogによる自動レビューを追加</h2>
 
-&lt;p&gt;追加するのは下記の2ステップです。&lt;/p&gt;
+<p>追加するのは下記の2ステップです。</p>
 
-&lt;ol&gt;
-  &lt;li&gt;Setup reviewdog: reviewdog のバイナリをインストール&lt;/li&gt;
-  &lt;li&gt;Run rubocop with reviewdog: rubocop の指摘を reviewdog に渡してPRコメントを付けさせる&lt;/li&gt;
-&lt;/ol&gt;
+<ol>
+  <li>Setup reviewdog: reviewdog のバイナリをインストール</li>
+  <li>Run rubocop with reviewdog: rubocop の指摘を reviewdog に渡してPRコメントを付けさせる</li>
+</ol>
 
-&lt;p&gt;yamlファイルとしては下記になります。&lt;/p&gt;
+<p>yamlファイルとしては下記になります。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/workflows/rubocop.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;RuboCop&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-ruby@v1&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ruby-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.6&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;gem install bundler&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;bundle install&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Setup reviewdog&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;mkdir -p $HOME/bin &amp;amp;&amp;amp; curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b $HOME/bin&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;echo ::add-path::$HOME/bin&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Run rubocop with reviewdog&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;REVIEWDOG_GITHUB_API_TOKEN&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | reviewdog -reporter=github-pr-review -f=rubocop&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/workflows/rubocop.yml</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">RuboCop</span>
+<span class="na">on</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">pull_request</span><span class="pi">]</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">rubocop</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v2</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-ruby@v1</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">ruby-version</span><span class="pi">:</span> <span class="m">2.6</span>
+    <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">gem install bundler</span>
+        <span class="s">bundle install</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Setup reviewdog</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+        <span class="s">mkdir -p $HOME/bin &amp;&amp; curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b $HOME/bin</span>
+        <span class="s">echo ::add-path::$HOME/bin</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Run rubocop with reviewdog</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">REVIEWDOG_GITHUB_API_TOKEN</span><span class="pi">:</span> <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec rubocop | reviewdog -reporter=github-pr-review -f=rubocop</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;レビューコメント&quot;&gt;レビューコメント&lt;/h2&gt;
+<h2 id="レビューコメント">レビューコメント</h2>
 
-&lt;p&gt;設定がうまくいっていれば、下記のように &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;github-actions&lt;/code&gt; からの自動レビューコメントが付きます。&lt;/p&gt;
+<p>設定がうまくいっていれば、下記のように <code class="language-plaintext highlighter-rouge">github-actions</code> からの自動レビューコメントが付きます。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/rubocop-actions/rubocop-by-github-actions.png&quot; alt=&quot;comment by github-actions&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/rubocop-actions/rubocop-by-github-actions.png" alt="comment by github-actions" /></p>
 
-&lt;h2 id=&quot;実際に動かしてみたpull-request&quot;&gt;実際に動かしてみたPull Request&lt;/h2&gt;
+<h2 id="実際に動かしてみたpull-request">実際に動かしてみたPull Request</h2>
 
-&lt;p&gt;実際にこの構成で設定してみたPRは下記になります。&lt;/p&gt;
+<p>実際にこの構成で設定してみたPRは下記になります。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/Test/pull/16&quot;&gt;rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/Test/pull/16">rubocop x reviewdog x GitHub Actions by toshimaru · Pull Request #16 · toshimaru/Test</a></p>
 
-&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
+<h2 id="余談">余談</h2>
 
-&lt;p&gt;本記事ではミニマルな設定を紹介しましたが、実行高速化のために実際は下記の設定もあわせてしたほうが良いでしょう。&lt;/p&gt;
+<p>本記事ではミニマルな設定を紹介しましたが、実行高速化のために実際は下記の設定もあわせてしたほうが良いでしょう。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;bundler cache の設定&lt;/li&gt;
-  &lt;li&gt;rubocop cache の設定（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.cache/rubocop_cache&lt;/code&gt;）&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--parallel&lt;/code&gt; オプションの追加&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rubocop" /><category term="github" /><category term="ci" /><category term="review" /><summary type="html">過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">GitHub Actionsファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜</title><link href="https://blog.toshimaru.net/github-actions-first-impression/" rel="alternate" type="text/html" title="GitHub Actionsファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜" /><published>2019-08-20T00:00:00+09:00</published><updated>2020-05-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-actions-first-impression</id><content type="html" xml:base="https://blog.toshimaru.net/github-actions-first-impression/">&lt;p&gt;&lt;a href=&quot;https://github.com/features/actions&quot;&gt;GitHub Actions v2(beta)&lt;/a&gt;が手元に降ってきたので試してみた記事です。&lt;/p&gt;
+<ul>
+  <li>bundler cache の設定</li>
+  <li>rubocop cache の設定（<code class="language-plaintext highlighter-rouge">~/.cache/rubocop_cache</code>）</li>
+  <li><code class="language-plaintext highlighter-rouge">--parallel</code> オプションの追加</li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="rubocop" /><category term="github" /><category term="ci" /><category term="review" /><summary type="html"><![CDATA[過去にreviewdogを使ってCircleCI上でrubocop自動レビューを動かす記事を書きました。 本記事はそれのGitHub Actionsバージョンになります。　GitHub Actions上でreviewdogを使ってRuboCop自動レビューを動かすための設定を紹介します。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-actions/rubocop-actions.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">GitHub Actionsファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜</title><link href="https://blog.toshimaru.net/github-actions-first-impression/" rel="alternate" type="text/html" title="GitHub Actionsファーストインプレッション 〜v1との違い、導入方法、価格、良い点・悪い点〜" /><published>2019-08-20T00:00:00+09:00</published><updated>2020-05-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/github-actions-first-impression</id><content type="html" xml:base="https://blog.toshimaru.net/github-actions-first-impression/"><![CDATA[<p><a href="https://github.com/features/actions">GitHub Actions v2(beta)</a>が手元に降ってきたので試してみた記事です。</p>
 
-&lt;div class=&quot;warning&quot;&gt;
-  &lt;h5&gt;&lt;/h5&gt;
-  &lt;p&gt;※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。&lt;/p&gt;
-&lt;/div&gt;
+<div class="warning">
+  <h5></h5>
+  <p>※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。</p>
+</div>
 
-&lt;p&gt;公式ドキュメント: &lt;a href=&quot;https://help.github.com/en/actions/automating-your-workflow-with-github-actions&quot;&gt;Automating your workflow with GitHub Actions - GitHub Help&lt;/a&gt;&lt;/p&gt;
+<p>公式ドキュメント: <a href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions">Automating your workflow with GitHub Actions - GitHub Help</a></p>
 
-&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
+<h2 id="tldr">TL;DR</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;GitHub Actions v2、間違いなく顧客が求めていたもの&lt;/li&gt;
-  &lt;li&gt;複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可）&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>GitHub Actions v2、間違いなく顧客が求めていたもの</li>
+  <li>複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可）</li>
+</ul>
 
-&lt;h2 id=&quot;実際に対応してみたpull-request&quot;&gt;実際に対応してみたPull Request&lt;/h2&gt;
+<h2 id="実際に対応してみたpull-request">実際に対応してみたPull Request</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/nyan/pull/33&quot;&gt;CI with GitHub Actions by toshimaru · Pull Request #33 · toshimaru/nyan&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/dotfiles/pull/75&quot;&gt;GitHub Actions by toshimaru · Pull Request #75 · toshimaru/dotfiles&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://github.com/toshimaru/nyan/pull/33">CI with GitHub Actions by toshimaru · Pull Request #33 · toshimaru/nyan</a></li>
+  <li><a href="https://github.com/toshimaru/dotfiles/pull/75">GitHub Actions by toshimaru · Pull Request #75 · toshimaru/dotfiles</a></li>
+</ul>
 
-&lt;h2 id=&quot;github-actions-v1-github-actions-v2がある&quot;&gt;GitHub Actions v1, GitHub Actions v2がある&lt;/h2&gt;
+<h2 id="github-actions-v1-github-actions-v2がある">GitHub Actions v1, GitHub Actions v2がある</h2>
 
-&lt;p&gt;まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p>まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
-&lt;div class=&quot;info&quot;&gt;
-  &lt;h5&gt;追記&lt;/h5&gt;
-  &lt;p&gt;GitHub Actions v1がDeprecatedになったため、現在はv1の多くのコンテンツがv2の内容で置き換わってます。&lt;/p&gt;
-&lt;/div&gt;
+<div class="info">
+  <h5>追記</h5>
+  <p>GitHub Actions v1がDeprecatedになったため、現在はv1の多くのコンテンツがv2の内容で置き換わってます。</p>
+</div>
 
-&lt;p&gt;それぞれ違いを下記に列挙します。&lt;/p&gt;
+<p>それぞれ違いを下記に列挙します。</p>
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;GitHub Actions v1&lt;/th&gt;
-      &lt;th&gt;GitHub Actions v2&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;特徴&lt;/td&gt;
-      &lt;td&gt;汎用的なワークフロー型の&lt;br /&gt;自動化ソリューション&lt;/td&gt;
-      &lt;td&gt;CI機能を備えた&lt;br /&gt;自動化ソリューション&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;記述言語&lt;/td&gt;
-      &lt;td&gt;HCL&lt;/td&gt;
-      &lt;td&gt;YAML(JS拡張可)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;公開ステータス&lt;/td&gt;
-      &lt;td&gt;&lt;del&gt;2019年9月一杯でdeprecatedになる&lt;/del&gt;&lt;br /&gt;Deprecated&lt;/td&gt;
-      &lt;td&gt;public beta&lt;br /&gt;（順次ロールアウト中）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ドキュメントURL&lt;/td&gt;
-      &lt;td&gt;&lt;del&gt;&lt;a href=&quot;https://developer.github.com/actions/&quot;&gt;developer.github.com&lt;/a&gt;&lt;/del&gt;&lt;br /&gt;※現在アクセス不可&lt;/td&gt;
-      &lt;td&gt;&lt;a href=&quot;https://help.github.com/en/actions/automating-your-workflow-with-github-actions&quot;&gt;help.github.com&lt;/a&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;サポートOS&lt;/td&gt;
-      &lt;td&gt;Linux&lt;/td&gt;
-      &lt;td&gt;Linux/Mac/Windows&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;環境設定&lt;/td&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;を自ら記述&lt;/td&gt;
-      &lt;td&gt;用意されたOSを選択して利用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;バックエンドインフラ&lt;/td&gt;
-      &lt;td&gt;?（おそらくGitHub Cloud?）&lt;/td&gt;
-      &lt;td&gt;Azure PipelinesのFork&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;マーケットプレイス&lt;/td&gt;
-      &lt;td&gt;&lt;a href=&quot;https://github.com/marketplace?type=actions&quot;&gt;GitHub Marketplace&lt;/a&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;a href=&quot;https://github.com/marketplace?type=actions&quot;&gt;GitHub Marketplace&lt;/a&gt;&lt;br /&gt;※v1と同一URL&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;２つあるので、「GitHub Actions」というキーワードでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く内容が異なってきます。&lt;/p&gt;
-
-&lt;p&gt;またv1が手元で使えるからといってv2が自動的に使えるわけではありません。それぞれ別物なのでv1が使えてたとしても、v2が利用可能対象ユーザーとして降ってくるまでは使えません。&lt;/p&gt;
-
-&lt;h2 id=&quot;導入方法&quot;&gt;導入方法&lt;/h2&gt;
-
-&lt;p&gt;設定方法は簡単。GitHub Action v2が使える対象になっていれば、下記のように表示されますので &lt;strong&gt;Enable Repository&lt;/strong&gt; してください。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-actions/enable.png&quot; alt=&quot;Enable Repository&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;有効化されると、下記画面が出てくるのでGUIでポチポチワークフローを設定するもよし。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-actions/get-started.png&quot; alt=&quot;Enable Repository 2&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/workflows&lt;/code&gt;以下に直接YAMLを置くもよし。動くYAMLサンプルは下記の公式 starter-workflows レポジトリを覗いてみるとよいかと思います。&lt;/p&gt;
-
-&lt;p&gt;Accelerating new GitHub Actions workflows:
-&lt;a href=&quot;https://github.com/actions/starter-workflows/tree/master/ci&quot;&gt;https://github.com/actions/starter-workflows/tree/master/ci&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;価格&quot;&gt;価格&lt;/h2&gt;
-
-&lt;p&gt;気になる価格はどうでしょう。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/github-actions/price.png&quot; alt=&quot;pricing&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Public Repoは &lt;strong&gt;完全無料&lt;/strong&gt;。並列数も &lt;strong&gt;20並列&lt;/strong&gt; まで使える模様。&lt;/p&gt;
-
-&lt;p&gt;TravisCI, CircleCIと比較されることが多いかと思いますが、どちらのCIサービスも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。&lt;/p&gt;
-
-&lt;h2 id=&quot;良い点&quot;&gt;良い点&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;主要OSであるLinux/Mac/Windowsは&lt;a href=&quot;https://help.github.com/en/articles/virtual-environments-for-github-actions#supported-virtual-environments&quot;&gt;すべて対応&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;イベントをhookしてからジョブが走り出すまでが早い&lt;/li&gt;
-  &lt;li&gt;GitHubサービス内で完結する
-    &lt;ul&gt;
-      &lt;li&gt;いろんなページを行ったり来たりしなくてよい&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;並列数がしっかり確保されている&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GITHUB_TOKEN&lt;/code&gt;が自動的に発行される
-    &lt;ul&gt;
-      &lt;li&gt;外部CIサービスの場合、新たにTokenを払い出す必要があったので手間だった&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;GitHubとカジュアルに連携できるということで使い方の可能性は無限大…!!!
-    &lt;ul&gt;
-      &lt;li&gt;lintしてPRにコメント&lt;/li&gt;
-      &lt;li&gt;/x/path に変更あったら xxx のジョブ起動&lt;/li&gt;
-      &lt;li&gt;PR/Issueへの自動ラベリング&lt;/li&gt;
-      &lt;li&gt;Tagプッシュされたらリリース&lt;/li&gt;
-      &lt;li&gt;何らかの条件でIssueの作成/クローズ&lt;/li&gt;
-      &lt;li&gt;GitHubのコメントでチャットボット的な感覚でワークフロー呼び出し&lt;/li&gt;
-      &lt;li&gt;などなど
-        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;https://github.com/marketplace?type=actions&quot;&gt;Marketplace&lt;/a&gt;や&lt;a href=&quot;https://github.com/sdras/awesome-actions&quot;&gt;awesome-actions&lt;/a&gt;で良さげなものを探し見ると良さそう&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;悪い点&quot;&gt;悪い点&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;del&gt;キャッシュ機構がない&lt;/del&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;em&gt;（追記）&lt;/em&gt; きました: &lt;a href=&quot;https://help.github.com/en/actions/automating-your-workflow-with-github-actions/caching-dependencies-to-speed-up-workflows&quot;&gt;Caching dependencies to speed up workflows - GitHub Help&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Slack通知が公式では用意されていない&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[ci skip]&lt;/code&gt; 機能がない&lt;/li&gt;
-  &lt;li&gt;ドキュメントが少ない&lt;/li&gt;
-  &lt;li&gt;&lt;del&gt;CI Status Badgeがない&lt;/del&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;em&gt;（追記）&lt;/em&gt; CI Status Badgeに関して &lt;a href=&quot;https://help.github.com/en/articles/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository&quot;&gt;公式ドキュメント&lt;/a&gt; に来ました&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;del&gt;Betaなのでまだいろいろとバギー&lt;/del&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;del&gt;例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする&lt;/del&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;em&gt;（追記）&lt;/em&gt; だいぶ安定してきた感はあります&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;del&gt;サポート問い合わせてもなかなか返信がこない（おそらくGitHubの中のサポート体制がまだ整っていない）&lt;/del&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;em&gt;（追記）&lt;/em&gt; もうGitHubの中のサポート体制は整ったと思われるので、比較的返事も早く返ってくるようになった模様&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;eventの粒度がちょっと荒め？
-    &lt;ul&gt;
-      &lt;li&gt;例えば &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create&lt;/code&gt; イベントには Branch or Tag のcreateイベントが含まれるけど、ほしいのはtagのみの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tag_create&lt;/code&gt;イベントなんだよなぁみたいなとき&lt;/li&gt;
-      &lt;li&gt;意図しないイベントを拾ったりする（branch deleteでイベントトリガーされるとか）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;しかし今回のGitHub Actions as CI神機能をみんな使わないわけないので、上記の足りない点は近い将来（正式公開前くらいには）、大体直ると考えています。なので僕はGitHub Action as CIとしての機能強化はわりと楽観的にのんびり待っている感じです。&lt;/p&gt;
-
-&lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;GitHub Actions v2、間違いなく顧客が求めていたものと言えます。オープンソースは基本はGitHub ActionsでCIを動かすことになっていくでしょう&lt;/li&gt;
-  &lt;li&gt;上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません。ただCircleCIなどで行っているような複雑なワークフローの移行は、まだ知見も少ない状況なのでなかなか大変な作業だと思います&lt;/li&gt;
-  &lt;li&gt;今後どんどん便利になって、いろんなバリエーションのActionもサポートされていくと思われるので、ガンガン使ってより良いCIライフにしましょう&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;GitHubのサポートの方がそのようにGitHub Actionsを呼び分けていました。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html">GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">reviewdogを使ってCI上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop/" rel="alternate" type="text/html" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす" /><published>2018-11-19T00:00:00+09:00</published><updated>2020-06-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop/">&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop&quot;&gt;rubocop&lt;/a&gt;の自動レビューを&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;reviewdog&lt;/a&gt;を使ってやってみたのでその知見です。&lt;/p&gt;
-
-&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#追記&quot; id=&quot;markdown-toc-追記&quot;&gt;追記&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#auto-rubocop-on-circleci-powered-by-reviewdog&quot; id=&quot;markdown-toc-auto-rubocop-on-circleci-powered-by-reviewdog&quot;&gt;Auto-RuboCop on CircleCI powered by reviewdog&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#1-configymlの設定&quot; id=&quot;markdown-toc-1-configymlの設定&quot;&gt;1. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.yml&lt;/code&gt;の設定&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#2コメントできるtokenを取得--設定&quot; id=&quot;markdown-toc-2コメントできるtokenを取得--設定&quot;&gt;2.コメントできるTokenを取得 &amp;amp; 設定&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#3-rubucopの結果をreviewdogで通知&quot; id=&quot;markdown-toc-3-rubucopの結果をreviewdogで通知&quot;&gt;3. rubucopの結果をreviewdogで通知&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#完成yamlイメージ&quot; id=&quot;markdown-toc-完成yamlイメージ&quot;&gt;完成yamlイメージ&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#なぜreviewdogなのか&quot; id=&quot;markdown-toc-なぜreviewdogなのか&quot;&gt;なぜreviewdogなのか&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#最後に&quot; id=&quot;markdown-toc-最後に&quot;&gt;最後に&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#参考資料&quot; id=&quot;markdown-toc-参考資料&quot;&gt;参考資料&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
-
-&lt;p&gt;本記事の GitHub Actions 版を書きました。&lt;/p&gt;
-
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;blogged. | reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす - Hack Your Design! &lt;a href=&quot;https://t.co/4u11iBjm6G&quot;&gt;https://t.co/4u11iBjm6G&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1267121968307814401?ref_src=twsrc%5Etfw&quot;&gt;May 31, 2020&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;auto-rubocop-on-circleci-powered-by-reviewdog&quot;&gt;Auto-RuboCop on CircleCI powered by reviewdog&lt;/h2&gt;
-
-&lt;p&gt;僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/254&quot;&gt;https://github.com/toshimaru/RailsTwitterClone/pull/254&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;1-configymlの設定&quot;&gt;1. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config.yml&lt;/code&gt;の設定&lt;/h3&gt;
-
-&lt;p&gt;基本的には&lt;a href=&quot;https://github.com/haya14busa/reviewdog#circle-ci&quot;&gt;公式READMEのCircleCIセットアップ手順&lt;/a&gt;通りですが、まずは下記のようにreviewdogのバイナリを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;curl&lt;/code&gt;経由で落とします。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 環境変数でダウンロードするreviewdogのバージョンを指定&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;REVIEWDOG_VERSION&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;0.9.11&quot;&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# reviewdogをcurlでダウンロード&lt;/span&gt;
-&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install reviewdog&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-      &lt;span class=&quot;s&quot;&gt;curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;amp;&amp;amp; chmod +x ./reviewdog&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;2コメントできるtokenを取得--設定&quot;&gt;2.コメントできるTokenを取得 &amp;amp; 設定&lt;/h3&gt;
-
-&lt;p&gt;reviewdogにコメントさせるためにはコメントできる権限を持ったGitHub Tokenが必要になります。下記手順でGitHub Tokenを取得してください。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/settings/tokens&quot;&gt;アクセストークンの取得ページ&lt;/a&gt;にいく&lt;/li&gt;
-  &lt;li&gt;下記の権限を設定してTokenを発行
-    &lt;ul&gt;
-      &lt;li&gt;Privateレポジトリの設定: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repo&lt;/code&gt;をチェック&lt;/li&gt;
-      &lt;li&gt;Publicレポジトリの設定: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;public_repo&lt;/code&gt;をチェック&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;これでTokenが発行できましたので、次にそのTokenの設定です。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;CircleCIの環境変数の設定画面を開く&lt;/li&gt;
-  &lt;li&gt;下記の環境変数を設定
-    &lt;ul&gt;
-      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;REVIEWDOG_GITHUB_API_TOKEN&lt;/code&gt;の値に前手順で取得したTokenを設定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;これにてreviewdogにコメントできる権限が付与されました。&lt;/p&gt;
-
-&lt;h3 id=&quot;3-rubucopの結果をreviewdogで通知&quot;&gt;3. rubucopの結果をreviewdogで通知&lt;/h3&gt;
-
-&lt;p&gt;あとはいつも通りのrubocopのコマンドをパイプしてreviewdogに渡してあげればOK。その際のオプションは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-f=rubocop&lt;/code&gt;（rubocopフォーマット指定）, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-reporter=github-pr-review&lt;/code&gt;（GitHub PRレビューコメント形式の指定） の２つを指定します。&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;完成yamlイメージ&quot;&gt;完成yamlイメージ&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.circleci/config.yml&lt;/code&gt;の完成イメージは下記です（完全なyamlファイル&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/254/files&quot;&gt;当該Pull Request&lt;/a&gt;より確認してください）。なおCircleCIはversion2.1を使用していることに注意してください（現時点の最新バージョン）。&lt;/p&gt;
-
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2.1&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;executors&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;working_directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;~/app&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby:2.5-node-browsers&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;RAILS_ENV&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;test&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;REVIEWDOG_VERSION&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;0.9.11&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle_install&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Install reviewdog&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
-            &lt;span class=&quot;s&quot;&gt;curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;amp;&amp;amp; chmod +x ./reviewdog&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review&lt;/span&gt;
-
-&lt;span class=&quot;na&quot;&gt;workflows&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;...省略...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;なぜreviewdogなのか&quot;&gt;なぜreviewdogなのか&lt;/h2&gt;
-
-&lt;p&gt;ruboop自動レビューのための既にあるツールとしては、&lt;a href=&quot;https://github.com/packsaddle/ruby-saddler&quot;&gt;Saddler&lt;/a&gt;や&lt;a href=&quot;https://github.com/prontolabs/pronto&quot;&gt;pronto&lt;/a&gt;などがありますが、なぜそれらを使わずにreviewdogを採用したのかというと下記の理由からです。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Goのシングルバイナリポン置き（curlワンコマンド）でSetupがめちゃくちゃ楽&lt;/li&gt;
-  &lt;li&gt;Language Agnostic （Ruby以外もGo, PHP, Pythonなど他言語で使える）&lt;/li&gt;
-  &lt;li&gt;Go実装でパフォーマンスが良い&lt;/li&gt;
-  &lt;li&gt;Activeにメンテされている&lt;/li&gt;
-  &lt;li&gt;READMEドキュメントが充実している&lt;/li&gt;
-  &lt;li&gt;日本人が作っている！（おまけ理由&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
-
-&lt;p&gt;本記事ではRubyプロジェクトのrubocop checkをreviewdogを使ってCircleCI上で動かす例を紹介しました。&lt;/p&gt;
-
-&lt;p&gt;公式READMEにはTravisCI上での動かし方であったり、GitHubの新機能・GitHub Checks形式での動かし方も記載されておりますので、興味があるかたは公式READMEをご参照ください。&lt;/p&gt;
-
-&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/haya14busa/reviewdog&quot;&gt;haya14busa/reviewdog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://haya14busa.com/reviewdog/&quot;&gt;reviewdog を飼ってコードレビューや開発を改善しませんか - haya14busa&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://qiita.com/azu/items/c563da0b5455a1b1dca2&quot;&gt;reviewdogを使ってtextlintの結果をPull Requestに書き込む方法 - Qiita&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="review" /><category term="rubocop" /><category term="github" /><category term="circleci" /><category term="ci" /><summary type="html">rubocopの自動レビューをreviewdogを使ってやってみたのでその知見です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop_x_reviewdog.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop_x_reviewdog.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</title><link href="https://blog.toshimaru.net/coverage-with-codeclimate/" rel="alternate" type="text/html" title="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話" /><published>2015-03-18T00:00:00+09:00</published><updated>2019-08-20T00:00:00+09:00</updated><id>https://blog.toshimaru.net/coverage-with-codeclimate</id><content type="html" xml:base="https://blog.toshimaru.net/coverage-with-codeclimate/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone&quot;&gt;趣味で立ち上げているプロジェクト&lt;/a&gt;をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。&lt;/p&gt;
-
-&lt;h2 id=&quot;どんなサービスを使うか&quot;&gt;どんなサービスを使うか&lt;/h2&gt;
-
-&lt;p&gt;自分がRails/Rubyプロジェクト(not Private)をGitHubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測サービスであったりコードの品質の計測サービスであったりする。それらのサービス群をまとめると下記のようになる。&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;サービス&lt;/th&gt;
-      &lt;th&gt;用途&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;a href=&quot;https://travis-ci.org/repositories&quot;&gt;Travis CI&lt;/a&gt;&lt;/td&gt;
-      &lt;td&gt;CI回す&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;a href=&quot;https://coveralls.io/&quot;&gt;Coveralls&lt;/a&gt;&lt;/td&gt;
-      &lt;td&gt;カバレッジ率を計測&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;a href=&quot;https://codeclimate.com/&quot;&gt;Code Climate&lt;/a&gt;&lt;/td&gt;
-      &lt;td&gt;コード品質を計測&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;a href=&quot;https://gemnasium.com/dashboard&quot;&gt;Gemnasium&lt;/a&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;del&gt;Gemのバージョンチェック&lt;/del&gt; 既にcloseされたサービスです&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;strong&gt;※ Publicなレポジトリであれば全て無料で使えます&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://cloud.githubusercontent.com/assets/803398/6694382/558b6f5c-cd1d-11e4-96ff-1e67d5905e83.png&quot; alt=&quot;badges&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;【図】SaaSの利用により表示できるようになるバッジ群&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;coveralls--codeclimate&quot;&gt;Coveralls → CodeClimate&lt;/h2&gt;
-
-&lt;p&gt;今回その内の１つであるCoverallsをCodeClimateに移行してみたのですが、そのきっかけとしてはCircleCIでCodeClimateとのインテグレーションが推奨されていたから。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://docs.travis-ci.com/user/code-climate/&quot;&gt;Travis CI: Using Code Climate with Travis CI&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいし、TravisCIの勧めるCodeClimateに統合してみることとした。&lt;/p&gt;
-
-&lt;h2 id=&quot;手順&quot;&gt;手順&lt;/h2&gt;
-
-&lt;h3 id=&quot;set-code-climate-token&quot;&gt;Set Code Climate token&lt;/h3&gt;
-
-&lt;p&gt;CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.travis.yml&lt;/code&gt;にセット。&lt;/p&gt;
-
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;code_climate&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;repo_token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;adf08323...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;intall-codeclimate-reporter&quot;&gt;Intall CodeClimate reporter&lt;/h3&gt;
-
-&lt;p&gt;codeclimate-test-reporter を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;のtest groupに追加する。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;codeclimate-test-reporter&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;require: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;CodeClimateのセットアップインストラクション通りに書くとこう。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spec/rails_helper.rb&lt;/code&gt;に書きます。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;codeclimate-test-reporter&quot;&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;CodeClimate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestReporter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;simplecovと同居させる&quot;&gt;Simplecovと同居させる&lt;/h3&gt;
-
-&lt;p&gt;私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;simplecov&apos;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;codeclimate-test-reporter&quot;&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Formatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MultiFormatter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Formatter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;HTMLFormatter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;CodeClimate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TestReporter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Formatter&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;SimpleCov&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rails&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;このようにSimpleCovのformatterに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CodeClimate::TestReporter::Formatter&lt;/code&gt;を入れてやれば :ok:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png&quot; alt=&quot;codeclimate&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。&lt;/p&gt;
-
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter&quot;&gt;Using Code Climate’s new test reporter together with Coveralls and SimpleCov’s HTML Formatter&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rspec" /><category term="ci" /><summary type="html">趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" /><media:content medium="image" url="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>GitHub Actions v1</th>
+      <th>GitHub Actions v2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>特徴</td>
+      <td>汎用的なワークフロー型の<br />自動化ソリューション</td>
+      <td>CI機能を備えた<br />自動化ソリューション</td>
+    </tr>
+    <tr>
+      <td>記述言語</td>
+      <td>HCL</td>
+      <td>YAML(JS拡張可)</td>
+    </tr>
+    <tr>
+      <td>公開ステータス</td>
+      <td><del>2019年9月一杯でdeprecatedになる</del><br />Deprecated</td>
+      <td>public beta<br />（順次ロールアウト中）</td>
+    </tr>
+    <tr>
+      <td>ドキュメントURL</td>
+      <td><del><a href="https://developer.github.com/actions/">developer.github.com</a></del><br />※現在アクセス不可</td>
+      <td><a href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions">help.github.com</a></td>
+    </tr>
+    <tr>
+      <td>サポートOS</td>
+      <td>Linux</td>
+      <td>Linux/Mac/Windows</td>
+    </tr>
+    <tr>
+      <td>環境設定</td>
+      <td><code class="language-plaintext highlighter-rouge">Dockerfile</code>を自ら記述</td>
+      <td>用意されたOSを選択して利用</td>
+    </tr>
+    <tr>
+      <td>バックエンドインフラ</td>
+      <td>?（おそらくGitHub Cloud?）</td>
+      <td>Azure PipelinesのFork</td>
+    </tr>
+    <tr>
+      <td>マーケットプレイス</td>
+      <td><a href="https://github.com/marketplace?type=actions">GitHub Marketplace</a></td>
+      <td><a href="https://github.com/marketplace?type=actions">GitHub Marketplace</a><br />※v1と同一URL</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>２つあるので、「GitHub Actions」というキーワードでGoogle検索したときに古いv1の情報が出てくることもあるので注意してください。v1前提なのかv2前提なのかで全く内容が異なってきます。</p>
+
+<p>またv1が手元で使えるからといってv2が自動的に使えるわけではありません。それぞれ別物なのでv1が使えてたとしても、v2が利用可能対象ユーザーとして降ってくるまでは使えません。</p>
+
+<h2 id="導入方法">導入方法</h2>
+
+<p>設定方法は簡単。GitHub Action v2が使える対象になっていれば、下記のように表示されますので <strong>Enable Repository</strong> してください。</p>
+
+<p><img src="/images/posts/github-actions/enable.png" alt="Enable Repository" /></p>
+
+<p>有効化されると、下記画面が出てくるのでGUIでポチポチワークフローを設定するもよし。</p>
+
+<p><img src="/images/posts/github-actions/get-started.png" alt="Enable Repository 2" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">.github/workflows</code>以下に直接YAMLを置くもよし。動くYAMLサンプルは下記の公式 starter-workflows レポジトリを覗いてみるとよいかと思います。</p>
+
+<p>Accelerating new GitHub Actions workflows:
+<a href="https://github.com/actions/starter-workflows/tree/master/ci">https://github.com/actions/starter-workflows/tree/master/ci</a></p>
+
+<h2 id="価格">価格</h2>
+
+<p>気になる価格はどうでしょう。</p>
+
+<p><img src="/images/posts/github-actions/price.png" alt="pricing" /></p>
+
+<p>Public Repoは <strong>完全無料</strong>。並列数も <strong>20並列</strong> まで使える模様。</p>
+
+<p>TravisCI, CircleCIと比較されることが多いかと思いますが、どちらのCIサービスも同じように無料で使えるものの並列数に制限があったり、CIジョブのキューイング・実行が遅かったりするので、今回のGitHub Actionsは完全にTravisCI, CircleCIを殺しにきたと言えるでしょう。</p>
+
+<h2 id="良い点">良い点</h2>
+
+<ul>
+  <li>主要OSであるLinux/Mac/Windowsは<a href="https://help.github.com/en/articles/virtual-environments-for-github-actions#supported-virtual-environments">すべて対応</a></li>
+  <li>イベントをhookしてからジョブが走り出すまでが早い</li>
+  <li>GitHubサービス内で完結する
+    <ul>
+      <li>いろんなページを行ったり来たりしなくてよい</li>
+    </ul>
+  </li>
+  <li>並列数がしっかり確保されている</li>
+  <li><code class="language-plaintext highlighter-rouge">GITHUB_TOKEN</code>が自動的に発行される
+    <ul>
+      <li>外部CIサービスの場合、新たにTokenを払い出す必要があったので手間だった</li>
+    </ul>
+  </li>
+  <li>GitHubとカジュアルに連携できるということで使い方の可能性は無限大…!!!
+    <ul>
+      <li>lintしてPRにコメント</li>
+      <li>/x/path に変更あったら xxx のジョブ起動</li>
+      <li>PR/Issueへの自動ラベリング</li>
+      <li>Tagプッシュされたらリリース</li>
+      <li>何らかの条件でIssueの作成/クローズ</li>
+      <li>GitHubのコメントでチャットボット的な感覚でワークフロー呼び出し</li>
+      <li>などなど
+        <ul>
+          <li><a href="https://github.com/marketplace?type=actions">Marketplace</a>や<a href="https://github.com/sdras/awesome-actions">awesome-actions</a>で良さげなものを探し見ると良さそう</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="悪い点">悪い点</h2>
+
+<ul>
+  <li><del>キャッシュ機構がない</del>
+    <ul>
+      <li><em>（追記）</em> きました: <a href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions/caching-dependencies-to-speed-up-workflows">Caching dependencies to speed up workflows - GitHub Help</a></li>
+    </ul>
+  </li>
+  <li>Slack通知が公式では用意されていない</li>
+  <li><code class="language-plaintext highlighter-rouge">[ci skip]</code> 機能がない</li>
+  <li>ドキュメントが少ない</li>
+  <li><del>CI Status Badgeがない</del>
+    <ul>
+      <li><em>（追記）</em> CI Status Badgeに関して <a href="https://help.github.com/en/articles/configuring-a-workflow#adding-a-workflow-status-badge-to-your-repository">公式ドキュメント</a> に来ました</li>
+    </ul>
+  </li>
+  <li><del>Betaなのでまだいろいろとバギー</del>
+    <ul>
+      <li><del>例: 公式の提供するAction（setup-go,setup-ruby）が一部うまく動いていなかったりする</del></li>
+      <li><em>（追記）</em> だいぶ安定してきた感はあります</li>
+    </ul>
+  </li>
+  <li><del>サポート問い合わせてもなかなか返信がこない（おそらくGitHubの中のサポート体制がまだ整っていない）</del>
+    <ul>
+      <li><em>（追記）</em> もうGitHubの中のサポート体制は整ったと思われるので、比較的返事も早く返ってくるようになった模様</li>
+    </ul>
+  </li>
+  <li>eventの粒度がちょっと荒め？
+    <ul>
+      <li>例えば <code class="language-plaintext highlighter-rouge">create</code> イベントには Branch or Tag のcreateイベントが含まれるけど、ほしいのはtagのみの<code class="language-plaintext highlighter-rouge">tag_create</code>イベントなんだよなぁみたいなとき</li>
+      <li>意図しないイベントを拾ったりする（branch deleteでイベントトリガーされるとか）</li>
+    </ul>
+  </li>
+</ul>
+
+<p>しかし今回のGitHub Actions as CI神機能をみんな使わないわけないので、上記の足りない点は近い将来（正式公開前くらいには）、大体直ると考えています。なので僕はGitHub Action as CIとしての機能強化はわりと楽観的にのんびり待っている感じです。</p>
+
+<h2 id="結論">結論</h2>
+
+<ul>
+  <li>GitHub Actions v2、間違いなく顧客が求めていたものと言えます。オープンソースは基本はGitHub ActionsでCIを動かすことになっていくでしょう</li>
+  <li>上述した悪い点が飲み込めて、沼る覚悟がある方はGitHub Actions v2が利用可能になった時点で導入を前向きに検討しても良いかもしれません。ただCircleCIなどで行っているような複雑なワークフローの移行は、まだ知見も少ない状況なのでなかなか大変な作業だと思います</li>
+  <li>今後どんどん便利になって、いろんなバリエーションのActionもサポートされていくと思われるので、ガンガン使ってより良いCIライフにしましょう</li>
+</ul>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>GitHubのサポートの方がそのようにGitHub Actionsを呼び分けていました。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="github" /><category term="ci" /><summary type="html"><![CDATA[GitHub Actions v2(beta)が手元に降ってきたので試してみた記事です。 ※まだBeta版なので本エントリに書いてある記述は古くなるなる可能性があります。最新情報は適宜公式ドキュメントを参照してください。 TL;DR GitHub Actions v2、間違いなく顧客が求めていたもの 複雑なワークフロー組むにはちょっとまだバギーなので利用は控えとくのがよさげ（シンプルなものなら検討可） GitHub Actions v1, GitHub Actions v2がある まず注意点なのですが、GitHub ActionsにはGitHub社内的にGitHub Actions v1と呼ばれているものとGitHub Actions v2と呼ばれているものの２種類あります。それぞれ違いを下記に列挙します。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/github-actions/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">reviewdogを使ってCI上でRuboCop自動レビューを動かす</title><link href="https://blog.toshimaru.net/reviewdog-rubocop/" rel="alternate" type="text/html" title="reviewdogを使ってCI上でRuboCop自動レビューを動かす" /><published>2018-11-19T00:00:00+09:00</published><updated>2020-06-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/reviewdog-rubocop</id><content type="html" xml:base="https://blog.toshimaru.net/reviewdog-rubocop/"><![CDATA[<p><a href="https://github.com/rubocop-hq/rubocop">rubocop</a>の自動レビューを<a href="https://github.com/haya14busa/reviewdog">reviewdog</a>を使ってやってみたのでその知見です。</p>
+
+<ul id="markdown-toc">
+  <li><a href="#追記" id="markdown-toc-追記">追記</a></li>
+  <li><a href="#auto-rubocop-on-circleci-powered-by-reviewdog" id="markdown-toc-auto-rubocop-on-circleci-powered-by-reviewdog">Auto-RuboCop on CircleCI powered by reviewdog</a>    <ul>
+      <li><a href="#1-configymlの設定" id="markdown-toc-1-configymlの設定">1. <code class="language-plaintext highlighter-rouge">config.yml</code>の設定</a></li>
+      <li><a href="#2コメントできるtokenを取得--設定" id="markdown-toc-2コメントできるtokenを取得--設定">2.コメントできるTokenを取得 &amp; 設定</a></li>
+      <li><a href="#3-rubucopの結果をreviewdogで通知" id="markdown-toc-3-rubucopの結果をreviewdogで通知">3. rubucopの結果をreviewdogで通知</a></li>
+    </ul>
+  </li>
+  <li><a href="#完成yamlイメージ" id="markdown-toc-完成yamlイメージ">完成yamlイメージ</a></li>
+  <li><a href="#なぜreviewdogなのか" id="markdown-toc-なぜreviewdogなのか">なぜreviewdogなのか</a></li>
+  <li><a href="#最後に" id="markdown-toc-最後に">最後に</a></li>
+  <li><a href="#参考資料" id="markdown-toc-参考資料">参考資料</a></li>
+</ul>
+
+<h2 id="追記">追記</h2>
+
+<p>本記事の GitHub Actions 版を書きました。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">blogged. | reviewdogを使ってGitHub Actions上でRuboCop自動レビューを動かす - Hack Your Design! <a href="https://t.co/4u11iBjm6G">https://t.co/4u11iBjm6G</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1267121968307814401?ref_src=twsrc%5Etfw">May 31, 2020</a></blockquote>
+
+<h2 id="auto-rubocop-on-circleci-powered-by-reviewdog">Auto-RuboCop on CircleCI powered by reviewdog</h2>
+
+<p>僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。</p>
+
+<p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/254">https://github.com/toshimaru/RailsTwitterClone/pull/254</a></p>
+
+<h3 id="1-configymlの設定">1. <code class="language-plaintext highlighter-rouge">config.yml</code>の設定</h3>
+
+<p>基本的には<a href="https://github.com/haya14busa/reviewdog#circle-ci">公式READMEのCircleCIセットアップ手順</a>通りですが、まずは下記のようにreviewdogのバイナリを<code class="language-plaintext highlighter-rouge">curl</code>経由で落とします。</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 環境変数でダウンロードするreviewdogのバージョンを指定</span>
+<span class="na">environment</span><span class="pi">:</span>
+  <span class="na">REVIEWDOG_VERSION</span><span class="pi">:</span> <span class="s2">"</span><span class="s">0.9.11"</span>
+
+<span class="c1"># reviewdogをcurlでダウンロード</span>
+<span class="pi">-</span> <span class="na">run</span><span class="pi">:</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">Install reviewdog</span>
+    <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
+      <span class="s">curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;&amp; chmod +x ./reviewdog</span>
+</code></pre></div></div>
+
+<h3 id="2コメントできるtokenを取得--設定">2.コメントできるTokenを取得 &amp; 設定</h3>
+
+<p>reviewdogにコメントさせるためにはコメントできる権限を持ったGitHub Tokenが必要になります。下記手順でGitHub Tokenを取得してください。</p>
+
+<ul>
+  <li><a href="https://github.com/settings/tokens">アクセストークンの取得ページ</a>にいく</li>
+  <li>下記の権限を設定してTokenを発行
+    <ul>
+      <li>Privateレポジトリの設定: <code class="language-plaintext highlighter-rouge">repo</code>をチェック</li>
+      <li>Publicレポジトリの設定: <code class="language-plaintext highlighter-rouge">public_repo</code>をチェック</li>
+    </ul>
+  </li>
+</ul>
+
+<p>これでTokenが発行できましたので、次にそのTokenの設定です。</p>
+
+<ul>
+  <li>CircleCIの環境変数の設定画面を開く</li>
+  <li>下記の環境変数を設定
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">REVIEWDOG_GITHUB_API_TOKEN</code>の値に前手順で取得したTokenを設定</li>
+    </ul>
+  </li>
+</ul>
+
+<p>これにてreviewdogにコメントできる権限が付与されました。</p>
+
+<h3 id="3-rubucopの結果をreviewdogで通知">3. rubucopの結果をreviewdogで通知</h3>
+
+<p>あとはいつも通りのrubocopのコマンドをパイプしてreviewdogに渡してあげればOK。その際のオプションは <code class="language-plaintext highlighter-rouge">-f=rubocop</code>（rubocopフォーマット指定）, <code class="language-plaintext highlighter-rouge">-reporter=github-pr-review</code>（GitHub PRレビューコメント形式の指定） の２つを指定します。</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review</span>
+</code></pre></div></div>
+
+<h2 id="完成yamlイメージ">完成yamlイメージ</h2>
+
+<p><code class="language-plaintext highlighter-rouge">.circleci/config.yml</code>の完成イメージは下記です（完全なyamlファイル<a href="https://github.com/toshimaru/RailsTwitterClone/pull/254/files">当該Pull Request</a>より確認してください）。なおCircleCIはversion2.1を使用していることに注意してください（現時点の最新バージョン）。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">2.1</span>
+<span class="na">executors</span><span class="pi">:</span>
+  <span class="na">default</span><span class="pi">:</span>
+    <span class="na">working_directory</span><span class="pi">:</span> <span class="s">~/app</span>
+    <span class="na">docker</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">circleci/ruby:2.5-node-browsers</span>
+        <span class="na">environment</span><span class="pi">:</span>
+          <span class="na">RAILS_ENV</span><span class="pi">:</span> <span class="s">test</span>
+          <span class="na">REVIEWDOG_VERSION</span><span class="pi">:</span> <span class="s">0.9.11</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">rubocop</span><span class="pi">:</span>
+    <span class="na">executor</span><span class="pi">:</span>
+      <span class="na">name</span><span class="pi">:</span> <span class="s">default</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">checkout</span>
+      <span class="pi">-</span> <span class="s">bundle_install</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">Install reviewdog</span>
+          <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
+            <span class="s">curl -fSL https://github.com/haya14busa/reviewdog/releases/download/$REVIEWDOG_VERSION/reviewdog_linux_amd64 -o reviewdog &amp;&amp; chmod +x ./reviewdog</span>
+      <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">bundle exec rubocop | ./reviewdog -f=rubocop -reporter=github-pr-review</span>
+
+<span class="na">workflows</span><span class="pi">:</span>
+  <span class="na">test</span><span class="pi">:</span>
+    <span class="na">jobs</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">...省略...</span>
+</code></pre></div></div>
+
+<h2 id="なぜreviewdogなのか">なぜreviewdogなのか</h2>
+
+<p>ruboop自動レビューのための既にあるツールとしては、<a href="https://github.com/packsaddle/ruby-saddler">Saddler</a>や<a href="https://github.com/prontolabs/pronto">pronto</a>などがありますが、なぜそれらを使わずにreviewdogを採用したのかというと下記の理由からです。</p>
+
+<ul>
+  <li>Goのシングルバイナリポン置き（curlワンコマンド）でSetupがめちゃくちゃ楽</li>
+  <li>Language Agnostic （Ruby以外もGo, PHP, Pythonなど他言語で使える）</li>
+  <li>Go実装でパフォーマンスが良い</li>
+  <li>Activeにメンテされている</li>
+  <li>READMEドキュメントが充実している</li>
+  <li>日本人が作っている！（おまけ理由</li>
+</ul>
+
+<h2 id="最後に">最後に</h2>
+
+<p>本記事ではRubyプロジェクトのrubocop checkをreviewdogを使ってCircleCI上で動かす例を紹介しました。</p>
+
+<p>公式READMEにはTravisCI上での動かし方であったり、GitHubの新機能・GitHub Checks形式での動かし方も記載されておりますので、興味があるかたは公式READMEをご参照ください。</p>
+
+<h2 id="参考資料">参考資料</h2>
+
+<ul>
+  <li><a href="https://github.com/haya14busa/reviewdog">haya14busa/reviewdog</a></li>
+  <li><a href="http://haya14busa.com/reviewdog/">reviewdog を飼ってコードレビューや開発を改善しませんか - haya14busa</a></li>
+  <li><a href="https://qiita.com/azu/items/c563da0b5455a1b1dca2">reviewdogを使ってtextlintの結果をPull Requestに書き込む方法 - Qiita</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="review" /><category term="rubocop" /><category term="github" /><category term="circleci" /><category term="ci" /><summary type="html"><![CDATA[rubocopの自動レビューをreviewdogを使ってやってみたのでその知見です。 Auto-RuboCop on CircleCI powered by reviewdog 僕の作っているプロジェクトでrubocop自動レビューをCircleCI上で設定してみました。そのプルリクエストを見てもらうのが一番早いと思いますので、下記リンクより差分を確認してください。基本的には公式READMEのCircleCIセットアップ手順通りですが、まずは下記のようにreviewdogのバイナリをcurl経由で落とします。reviewdogにコメントさせるためにはコメントできる権限を持ったGitHub Tokenが必要になります。下記手順でGitHub Tokenを取得してください。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop_x_reviewdog.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop_x_reviewdog.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話</title><link href="https://blog.toshimaru.net/coverage-with-codeclimate/" rel="alternate" type="text/html" title="カバレッジ率計測サービスをCoverallsからCodeClimateに乗り換えてみた話" /><published>2015-03-18T00:00:00+09:00</published><updated>2019-08-20T00:00:00+09:00</updated><id>https://blog.toshimaru.net/coverage-with-codeclimate</id><content type="html" xml:base="https://blog.toshimaru.net/coverage-with-codeclimate/"><![CDATA[<p><a href="https://github.com/toshimaru/RailsTwitterClone">趣味で立ち上げているプロジェクト</a>をこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。</p>
+
+<h2 id="どんなサービスを使うか">どんなサービスを使うか</h2>
+
+<p>自分がRails/Rubyプロジェクト(not Private)をGitHubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測サービスであったりコードの品質の計測サービスであったりする。それらのサービス群をまとめると下記のようになる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>サービス</th>
+      <th>用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://travis-ci.org/repositories">Travis CI</a></td>
+      <td>CI回す</td>
+    </tr>
+    <tr>
+      <td><a href="https://coveralls.io/">Coveralls</a></td>
+      <td>カバレッジ率を計測</td>
+    </tr>
+    <tr>
+      <td><a href="https://codeclimate.com/">Code Climate</a></td>
+      <td>コード品質を計測</td>
+    </tr>
+    <tr>
+      <td><a href="https://gemnasium.com/dashboard">Gemnasium</a></td>
+      <td><del>Gemのバージョンチェック</del> 既にcloseされたサービスです</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>※ Publicなレポジトリであれば全て無料で使えます</strong></p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/803398/6694382/558b6f5c-cd1d-11e4-96ff-1e67d5905e83.png" alt="badges" /></p>
+
+<p><strong>【図】SaaSの利用により表示できるようになるバッジ群</strong></p>
+
+<h2 id="coveralls--codeclimate">Coveralls → CodeClimate</h2>
+
+<p>今回その内の１つであるCoverallsをCodeClimateに移行してみたのですが、そのきっかけとしてはCircleCIでCodeClimateとのインテグレーションが推奨されていたから。</p>
+
+<p><a href="http://docs.travis-ci.com/user/code-climate/">Travis CI: Using Code Climate with Travis CI</a></p>
+
+<p>コード品質とカバレッジ率は分散するよりも１つのサービスに集約されて閲覧できたほうが都合がよいし、TravisCIの勧めるCodeClimateに統合してみることとした。</p>
+
+<h2 id="手順">手順</h2>
+
+<h3 id="set-code-climate-token">Set Code Climate token</h3>
+
+<p>CodeClimateのSettingsからテスト実行時のTokenがゲットできるのでそれを<code class="language-plaintext highlighter-rouge">.travis.yml</code>にセット。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">addons</span><span class="pi">:</span>
+  <span class="na">code_climate</span><span class="pi">:</span>
+    <span class="na">repo_token</span><span class="pi">:</span> <span class="s">adf08323...</span>
+</code></pre></div></div>
+
+<h3 id="intall-codeclimate-reporter">Intall CodeClimate reporter</h3>
+
+<p>codeclimate-test-reporter を<code class="language-plaintext highlighter-rouge">Gemfile</code>のtest groupに追加する。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s2">"codeclimate-test-reporter"</span><span class="p">,</span> <span class="ss">require: </span><span class="kp">false</span>
+</code></pre></div></div>
+
+<p>CodeClimateのセットアップインストラクション通りに書くとこう。<code class="language-plaintext highlighter-rouge">spec/rails_helper.rb</code>に書きます。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
+<span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="p">.</span><span class="nf">start</span>
+</code></pre></div></div>
+
+<h3 id="simplecovと同居させる">Simplecovと同居させる</h3>
+
+<p>私の環境の場合、既にSimplecovが入っておりましたので、simplecovとインテグレーションさせる場合はちょっと異なるセットアップが必要になります。</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'simplecov'</span>
+<span class="nb">require</span> <span class="s2">"codeclimate-test-reporter"</span>
+<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">formatter</span> <span class="o">=</span> <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">MultiFormatter</span><span class="p">[</span>
+  <span class="no">SimpleCov</span><span class="o">::</span><span class="no">Formatter</span><span class="o">::</span><span class="no">HTMLFormatter</span><span class="p">,</span>
+  <span class="no">CodeClimate</span><span class="o">::</span><span class="no">TestReporter</span><span class="o">::</span><span class="no">Formatter</span>
+<span class="p">]</span>
+<span class="no">SimpleCov</span><span class="p">.</span><span class="nf">start</span> <span class="s2">"rails"</span>
+</code></pre></div></div>
+
+<p>このようにSimpleCovのformatterに<code class="language-plaintext highlighter-rouge">CodeClimate::TestReporter::Formatter</code>を入れてやれば :ok:</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/803398/6694285/ad01584c-cd1c-11e4-9f29-1589821188da.png" alt="codeclimate" /></p>
+
+<p>これでCode Climate上で品質・カバレッジ率が閲覧できるようになりました。</p>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://coderwall.com/p/vwhuqq/using-code-climate-s-new-test-reporter-together-with-coveralls-and-simplecov-s-html-formatter">Using Code Climate’s new test reporter together with Coveralls and SimpleCov’s HTML Formatter</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="rspec" /><category term="ci" /><summary type="html"><![CDATA[趣味で立ち上げているプロジェクトをこの度、CoverallsからCodeClimateに乗り換えてみたので、その知見の共有。自分がRails(ruby)プロジェクトをGithubに公開するとき、必ず使うSaaS群があって、例えばCIサービスであったりカバレッジ率の計測であったりコードの品質の計測であったりする。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" /><media:content medium="image" url="https://cloud.githubusercontent.com/assets/803398/6655997/d4f38dc4-cb5b-11e4-8663-86fad6baf1f3.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

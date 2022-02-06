@@ -1,787 +1,787 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/">&lt;p&gt;本記事では、マルチステージビルド構成の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;のビルドの並列実行について紹介したいと思います。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/"><![CDATA[<p>本記事では、マルチステージビルド構成の<code class="language-plaintext highlighter-rouge">Dockerfile</code>のビルドの並列実行について紹介したいと思います。</p>
 
-&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
+<h2 id="前提">前提</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;Docker Desktop v3.2.1
-    &lt;ul&gt;
-      &lt;li&gt;Docker v20.10&lt;/li&gt;
-      &lt;li&gt;Docker Compose v1.28&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>Docker Desktop v3.2.1
+    <ul>
+      <li>Docker v20.10</li>
+      <li>Docker Compose v1.28</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/docker/desktop1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/docker/desktop1.png" alt="" /></p>
 
-&lt;h2 id=&quot;dockerfile&quot;&gt;Dockerfile&lt;/h2&gt;
+<h2 id="dockerfile">Dockerfile</h2>
 
-&lt;p&gt;今回テストで使うマルチステージビルドのサンプルとなる&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt;は下記です。&lt;/p&gt;
+<p>今回テストで使うマルチステージビルドのサンプルとなる<code class="language-plaintext highlighter-rouge">Dockerfile</code>は下記です。</p>
 
-&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test1&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1&lt;/span&gt;
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> alpine as test1</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.1 <span class="c"># sleep from test1</span>
 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test2&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2&lt;/span&gt;
+<span class="k">FROM</span><span class="s"> alpine as test2</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.2 <span class="c"># sleep from test2</span>
 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine as test3&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3&lt;/span&gt;
+<span class="k">FROM</span><span class="s"> alpine as test3</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.3 <span class="c"># sleep from test3</span>
 
 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; alpine&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main&lt;/span&gt;
+<span class="k">FROM</span><span class="s"> alpine</span>
+<span class="k">RUN </span><span class="nb">echo</span> <span class="s2">"build start"</span>
+<span class="k">RUN </span><span class="nb">sleep </span>10.0 <span class="c"># sleep from main</span>
 
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test1 /tmp /tmp&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test2 /tmp /tmp&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;COPY&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; --from=test3 /tmp /tmp&lt;/span&gt;
+<span class="k">COPY</span><span class="s"> --from=test1 /tmp /tmp</span>
+<span class="k">COPY</span><span class="s"> --from=test2 /tmp /tmp</span>
+<span class="k">COPY</span><span class="s"> --from=test3 /tmp /tmp</span>
 
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">RUN </span><span class="nb">echo</span> <span class="s2">"build finished"</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;直列実行-vs-並列実行&quot;&gt;直列実行 vs 並列実行&lt;/h2&gt;
+<h2 id="直列実行-vs-並列実行">直列実行 vs 並列実行</h2>
 
-&lt;p&gt;実際に上述の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; のビルドを並列実行しない場合（直列実行）と並列実行する場合の結果を比較してみます。&lt;/p&gt;
+<p>実際に上述の <code class="language-plaintext highlighter-rouge">Dockerfile</code> のビルドを並列実行しない場合（直列実行）と並列実行する場合の結果を比較してみます。</p>
 
-&lt;h3 id=&quot;並列実行しない場合&quot;&gt;並列実行しない場合&lt;/h3&gt;
+<h3 id="並列実行しない場合">並列実行しない場合</h3>
 
-&lt;p&gt;並列実行をOFFにして実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=0&lt;/code&gt; の環境変数をセットして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker build&lt;/code&gt;を行います。&lt;/p&gt;
+<p>並列実行をOFFにして実行するには <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=0</code> の環境変数をセットして <code class="language-plaintext highlighter-rouge">docker build</code>を行います。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;DOCKER_BUILDKIT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;Sending build context to Docker daemon  331.1MB
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span>0 docker build <span class="nt">--no-cache</span> <span class="nb">.</span>
+<span class="go">Sending build context to Docker daemon  331.1MB
 Step 1/13 : FROM alpine as test1
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;gp&quot;&gt;Step 2/13 : RUN sleep 10.1 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test1
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;11b4518313de
-&lt;span class=&quot;go&quot;&gt;Step 3/13 : FROM alpine as test2
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;gp&quot;&gt;Step 4/13 : RUN sleep 10.2 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test2
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;c61101646517
-&lt;span class=&quot;go&quot;&gt;Step 5/13 : FROM alpine as test3
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;gp&quot;&gt;Step 6/13 : RUN sleep 10.3 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from test3
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;1aa97a170923
-&lt;span class=&quot;go&quot;&gt;Step 7/13 : FROM alpine
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;b7b28af77ffe
-&lt;span class=&quot;go&quot;&gt;Step 8/13 : RUN echo &quot;build start&quot;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;8b2b09749321
-&lt;span class=&quot;gp&quot;&gt;Step 9/13 : RUN sleep 10.0 #&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;from main
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;bc3f772d3fb1
-&lt;span class=&quot;go&quot;&gt;Step 10/13 : COPY --from=test1 /tmp /tmp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0f861020f1c0
-&lt;span class=&quot;go&quot;&gt;Step 11/13 : COPY --from=test2 /tmp /tmp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;eea3d212c0b7
-&lt;span class=&quot;go&quot;&gt;Step 12/13 : COPY --from=test3 /tmp /tmp
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;9beba31a0ff6
-&lt;span class=&quot;go&quot;&gt;Step 13/13 : RUN echo &quot;build finished&quot;
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;Using cache
-&lt;span class=&quot;gp&quot;&gt; ---&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;0986bef3d18f
-&lt;span class=&quot;go&quot;&gt;Successfully built 0986bef3d18f
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="gp">Step 2/13 : RUN sleep 10.1 #</span><span class="w"> </span><span class="nb">sleep </span>from test1
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>11b4518313de
+<span class="go">Step 3/13 : FROM alpine as test2
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="gp">Step 4/13 : RUN sleep 10.2 #</span><span class="w"> </span><span class="nb">sleep </span>from test2
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>c61101646517
+<span class="go">Step 5/13 : FROM alpine as test3
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="gp">Step 6/13 : RUN sleep 10.3 #</span><span class="w"> </span><span class="nb">sleep </span>from test3
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>1aa97a170923
+<span class="go">Step 7/13 : FROM alpine
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>b7b28af77ffe
+<span class="go">Step 8/13 : RUN echo "build start"
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>8b2b09749321
+<span class="gp">Step 9/13 : RUN sleep 10.0 #</span><span class="w"> </span><span class="nb">sleep </span>from main
+<span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>bc3f772d3fb1
+<span class="go">Step 10/13 : COPY --from=test1 /tmp /tmp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>0f861020f1c0
+<span class="go">Step 11/13 : COPY --from=test2 /tmp /tmp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>eea3d212c0b7
+<span class="go">Step 12/13 : COPY --from=test3 /tmp /tmp
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>9beba31a0ff6
+<span class="go">Step 13/13 : RUN echo "build finished"
+</span><span class="gp"> ---&gt;</span><span class="w"> </span>Using cache
+<span class="gp"> ---&gt;</span><span class="w"> </span>0986bef3d18f
+<span class="go">Successfully built 0986bef3d18f
+</span></code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が直列に実行されるため、ビルドに &lt;strong&gt;最低でも40秒&lt;/strong&gt; かかっていました。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">sleep 10</code> × 4 が直列に実行されるため、ビルドに <strong>最低でも40秒</strong> かかっていました。</p>
 
-&lt;h3 id=&quot;並列実行する場合&quot;&gt;並列実行する場合&lt;/h3&gt;
+<h3 id="並列実行する場合">並列実行する場合</h3>
 
-&lt;p&gt;では次に並列実行してみましょう。&lt;/p&gt;
+<p>では次に並列実行してみましょう。</p>
 
-&lt;p&gt;並列実行するには &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; をセットするか、私の環境の場合 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT&lt;/code&gt; の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。&lt;/p&gt;
+<p>並列実行するには <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> をセットするか、私の環境の場合 <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT</code> の環境変数のセットしなくてもデフォルトで並列実行されるようになっていました。</p>
 
-&lt;p class=&quot;info&quot;&gt;&lt;strong&gt;Docker Desktop v3.2&lt;/strong&gt; を使っている場合は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; の環境変数が不要でデフォルトで並列実行されるようになっており、一方、&lt;strong&gt;Docker Desktop v3.1&lt;/strong&gt;の場合は並列実行するためには&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER_BUILDKIT=1&lt;/code&gt; の環境変数の指定が必要でした。&lt;/p&gt;
+<p class="info"><strong>Docker Desktop v3.2</strong> を使っている場合は <code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> の環境変数が不要でデフォルトで並列実行されるようになっており、一方、<strong>Docker Desktop v3.1</strong>の場合は並列実行するためには<code class="language-plaintext highlighter-rouge">DOCKER_BUILDKIT=1</code> の環境変数の指定が必要でした。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;docker build &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;[+] Building 13.9s (14/14) FINISHED
-&lt;/span&gt;&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load build definition from Dockerfile                                            0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring dockerfile: 37B                                                             0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load .dockerignore                                                               0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; transferring context: 2B                                                                 0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;internal] load metadata &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;docker.io/library/alpine:latest                                0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;CACHED &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 1/2] FROM docker.io/library/alpine                                            0.0s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test2 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.2 &lt;span class=&quot;c&quot;&gt;# sleep from test2                                              12.4s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 2/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build start&quot;&lt;/span&gt;                                                        2.3s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test3 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.3 &lt;span class=&quot;c&quot;&gt;# sleep from test3                                              12.5s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;test1 2/2] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.1 &lt;span class=&quot;c&quot;&gt;# sleep from test1                                              12.3s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 3/7] RUN &lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;10.0 &lt;span class=&quot;c&quot;&gt;# sleep from main                                             10.6s&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 4/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test1 /tmp /tmp                                                   0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 5/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test2 /tmp /tmp                                                   0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 6/7] COPY &lt;span class=&quot;nt&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test3 /tmp /tmp                                                   0.1s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;stage-3 7/7] RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;build finished&quot;&lt;/span&gt;                                                     0.4s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;exporting to image                                                                          0.2s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; exporting layers                                                                         0.2s
-&lt;span class=&quot;gp&quot;&gt; =&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; writing image sha256:2dfb39f0fbed99a19fee51b23db685a0878eed7291bce08e88c3226e8fea271d    0.0s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>docker build <span class="nt">--no-cache</span> <span class="nb">.</span>
+<span class="go">[+] Building 13.9s (14/14) FINISHED
+</span><span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>internal] load build definition from Dockerfile                                            0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> transferring dockerfile: 37B                                                             0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>internal] load .dockerignore                                                               0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> transferring context: 2B                                                                 0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>internal] load metadata <span class="k">for </span>docker.io/library/alpine:latest                                0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span>CACHED <span class="o">[</span>test3 1/2] FROM docker.io/library/alpine                                            0.0s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>test2 2/2] RUN <span class="nb">sleep </span>10.2 <span class="c"># sleep from test2                                              12.4s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 2/7] RUN <span class="nb">echo</span> <span class="s2">"build start"</span>                                                        2.3s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>test3 2/2] RUN <span class="nb">sleep </span>10.3 <span class="c"># sleep from test3                                              12.5s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>test1 2/2] RUN <span class="nb">sleep </span>10.1 <span class="c"># sleep from test1                                              12.3s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 3/7] RUN <span class="nb">sleep </span>10.0 <span class="c"># sleep from main                                             10.6s</span>
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 4/7] COPY <span class="nt">--from</span><span class="o">=</span>test1 /tmp /tmp                                                   0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 5/7] COPY <span class="nt">--from</span><span class="o">=</span>test2 /tmp /tmp                                                   0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 6/7] COPY <span class="nt">--from</span><span class="o">=</span>test3 /tmp /tmp                                                   0.1s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">[</span>stage-3 7/7] RUN <span class="nb">echo</span> <span class="s2">"build finished"</span>                                                     0.4s
+<span class="gp"> =&gt;</span><span class="w"> </span>exporting to image                                                                          0.2s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> exporting layers                                                                         0.2s
+<span class="gp"> =&gt;</span><span class="w"> </span><span class="o">=&gt;</span> writing image sha256:2dfb39f0fbed99a19fee51b23db685a0878eed7291bce08e88c3226e8fea271d    0.0s
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sleep 10&lt;/code&gt; × 4 が並列に実行されるため、全体として10秒程度でビルドが終了しています。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">sleep 10</code> × 4 が並列に実行されるため、全体として10秒程度でビルドが終了しています。</p>
 
-&lt;h2 id=&quot;比較結果&quot;&gt;比較結果&lt;/h2&gt;
+<h2 id="比較結果">比較結果</h2>
 
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;ビルド時間&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;並列実行しない場合&lt;/td&gt;
-      &lt;td&gt;&lt;strong&gt;50秒&lt;/strong&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;並列実行する場合&lt;/td&gt;
-      &lt;td&gt;&lt;strong&gt;15秒&lt;/strong&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>ビルド時間</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>並列実行しない場合</td>
+      <td><strong>50秒</strong></td>
+    </tr>
+    <tr>
+      <td>並列実行する場合</td>
+      <td><strong>15秒</strong></td>
+    </tr>
+  </tbody>
+</table>
 
-&lt;p&gt;今回サンプルとなった &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; の場合、&lt;strong&gt;3倍の高速化&lt;/strong&gt; に成功しました。&lt;/p&gt;
+<p>今回サンプルとなった <code class="language-plaintext highlighter-rouge">Dockerfile</code> の場合、<strong>3倍の高速化</strong> に成功しました。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://kotaroooo0-dev.hatenablog.com/entry/2020/06/10/225333&quot;&gt;DockerイメージのビルドをBuildKitで並列実行し高速化する - 🤖&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://matsuand.github.io/docs.docker.jp.onthefly/develop/develop-images/multistage-build/&quot;&gt;マルチステージビルドの利用 | Docker ドキュメント&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html">本記事では、マルチステージビルド構成のDockerfileのビルドの並列実行について紹介したいと思います。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）</title><link href="https://blog.toshimaru.net/enable-disqus-again/" rel="alternate" type="text/html" title="Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）" /><published>2021-03-07T00:00:00+09:00</published><updated>2021-03-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/enable-disqus-again</id><content type="html" xml:base="https://blog.toshimaru.net/enable-disqus-again/">&lt;p&gt;タイトルの通り。&lt;/p&gt;
+<ul>
+  <li><a href="https://kotaroooo0-dev.hatenablog.com/entry/2020/06/10/225333">DockerイメージのビルドをBuildKitで並列実行し高速化する - 🤖</a></li>
+  <li><a href="https://matsuand.github.io/docs.docker.jp.onthefly/develop/develop-images/multistage-build/">マルチステージビルドの利用 | Docker ドキュメント</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="docker" /><summary type="html"><![CDATA[本記事では、マルチステージビルド構成のDockerfileのビルドの並列実行について紹介したいと思います。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/docker/desktop1.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）</title><link href="https://blog.toshimaru.net/enable-disqus-again/" rel="alternate" type="text/html" title="Disqusコメント再有効化しました（Disqus有料プランに一度切り替えると二度と無料プランに戻れない）" /><published>2021-03-07T00:00:00+09:00</published><updated>2021-03-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/enable-disqus-again</id><content type="html" xml:base="https://blog.toshimaru.net/enable-disqus-again/"><![CDATA[<p>タイトルの通り。</p>
 
-&lt;p&gt;本ブログは &lt;a href=&quot;https://disqus.com/&quot;&gt;Disqus&lt;/a&gt; を使ってコメントフォームを設置しています。いや、正確には設置していました。&lt;/p&gt;
+<p>本ブログは <a href="https://disqus.com/">Disqus</a> を使ってコメントフォームを設置しています。いや、正確には設置していました。</p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;SNSのプラットフォームが十分に成熟している昨今ですから、そもそもコメント欄を設置すること自体がなんとなく時代遅れになってきているのでは？と感じるのですが、Jekyllを使われている皆さんはDisqusを使ってコメント欄を設置されているようなので、それに倣ってDisqusでコメントフォームを設置。&lt;/p&gt;
-&lt;/blockquote&gt;
+<blockquote>
+  <p>SNSのプラットフォームが十分に成熟している昨今ですから、そもそもコメント欄を設置すること自体がなんとなく時代遅れになってきているのでは？と感じるのですが、Jekyllを使われている皆さんはDisqusを使ってコメント欄を設置されているようなので、それに倣ってDisqusでコメントフォームを設置。</p>
+</blockquote>
 
-&lt;p&gt;&lt;a href=&quot;/new-blog-concept/&quot;&gt;Jekyllならここまでできる！ブログをJekyllに移行しました&lt;/a&gt;&lt;/p&gt;
+<p><a href="/new-blog-concept/">Jekyllならここまでできる！ブログをJekyllに移行しました</a></p>
 
-&lt;p&gt;しかしながら、試したいDisqus有料機能があり有料プランに一度トライアル申込みするとトライアル終了後に &lt;strong&gt;広告が表示され続けて消せない&lt;/strong&gt; という事態に見舞われました。&lt;/p&gt;
+<p>しかしながら、試したいDisqus有料機能があり有料プランに一度トライアル申込みするとトライアル終了後に <strong>広告が表示され続けて消せない</strong> という事態に見舞われました。</p>
 
-&lt;p&gt;サポートチームに問い合わせたのですが &lt;strong&gt;広告を消す唯一の手段は再度有料プランに切り替えることだ&lt;/strong&gt; ということらしいです。（今までは無料で広告無しで使えていたのですが、一度有料プランにしてしまうとそれが継続できなくなるっぽい😢&lt;/p&gt;
+<p>サポートチームに問い合わせたのですが <strong>広告を消す唯一の手段は再度有料プランに切り替えることだ</strong> ということらしいです。（今までは無料で広告無しで使えていたのですが、一度有料プランにしてしまうとそれが継続できなくなるっぽい😢</p>
 
-&lt;p&gt;そんなこんなでしばらく Disqus コメントフォームを閉鎖していたのですが、やはりコメントフォームはあったほうがいいかなぁということで、 Disqus の別のアカウントを作成し Disqus のコメントを再設置いたしました。&lt;/p&gt;
+<p>そんなこんなでしばらく Disqus コメントフォームを閉鎖していたのですが、やはりコメントフォームはあったほうがいいかなぁということで、 Disqus の別のアカウントを作成し Disqus のコメントを再設置いたしました。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/disqus-comment.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/disqus-comment.png" alt="" /></p>
 
-&lt;p&gt;過去のコメントも移行できれば良かったのですが、どうやら Disqus から Disqus のコメント移行はサポートされていないようだったので、過去コメントは失ってしまいました。（過去にコメントいただいた方すみません🙇 データは旧アカウントには一応残っています…&lt;/p&gt;
+<p>過去のコメントも移行できれば良かったのですが、どうやら Disqus から Disqus のコメント移行はサポートされていないようだったので、過去コメントは失ってしまいました。（過去にコメントいただいた方すみません🙇 データは旧アカウントには一応残っています…</p>
 
-&lt;p&gt;Disqus側のほうで方針変わって広告が無料プランでも表示されるようになったら再び消す可能性もありますが、しばらくはこちらをご利用いただければと思います。🙏&lt;/p&gt;
+<p>Disqus側のほうで方針変わって広告が無料プランでも表示されるようになったら再び消す可能性もありますが、しばらくはこちらをご利用いただければと思います。🙏</p>
 
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+<h2 id="まとめ">まとめ</h2>
 
-&lt;p&gt;&lt;strong&gt;Disqus有料プランに（トライアルでも）一度切り替えると、二度と広告無しの無料プランには戻れない。&lt;/strong&gt;&lt;/p&gt;
+<p><strong>Disqus有料プランに（トライアルでも）一度切り替えると、二度と広告無しの無料プランには戻れない。</strong></p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://help.disqus.com/en/articles/1717293-how-do-i-import-my-old-comments&quot;&gt;How do I import my old comments? | Disqus&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="雑記" /><summary type="html">タイトルの通り。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/disqus.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/disqus.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">CircleCIのベースイメージを次世代イメージ cimg に移行する</title><link href="https://blog.toshimaru.net/use-circleci-cimg/" rel="alternate" type="text/html" title="CircleCIのベースイメージを次世代イメージ cimg に移行する" /><published>2021-03-05T00:00:00+09:00</published><updated>2021-03-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/use-circleci-cimg</id><content type="html" xml:base="https://blog.toshimaru.net/use-circleci-cimg/">&lt;p&gt;2020年にCircleCIの次世代イメージ・cimg が登場しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<ul>
+  <li><a href="https://help.disqus.com/en/articles/1717293-how-do-i-import-my-old-comments">How do I import my old comments? | Disqus</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="雑記" /><summary type="html"><![CDATA[しばらく Disqus コメントフォームを閉鎖していたのですが、やはりコメントフォームはあったほうがいいかなぁということで、 Disqus の別のアカウントを作成し Disqus のコメントを再設置いたしました。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/disqus.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/disqus.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">CircleCIのベースイメージを次世代イメージ cimg に移行する</title><link href="https://blog.toshimaru.net/use-circleci-cimg/" rel="alternate" type="text/html" title="CircleCIのベースイメージを次世代イメージ cimg に移行する" /><published>2021-03-05T00:00:00+09:00</published><updated>2021-03-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/use-circleci-cimg</id><content type="html" xml:base="https://blog.toshimaru.net/use-circleci-cimg/"><![CDATA[<p>2020年にCircleCIの次世代イメージ・cimg が登場しました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
-&lt;p&gt;個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところの&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;cimg/rubyに移行&lt;/a&gt;してみたので紹介します。&lt;/p&gt;
+<p>個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところの<a href="https://github.com/toshimaru/RailsTwitterClone/pull/920">cimg/rubyに移行</a>してみたので紹介します。</p>
 
-&lt;h2 id=&quot;ベースイメージの変更&quot;&gt;ベースイメージの変更&lt;/h2&gt;
+<h2 id="ベースイメージの変更">ベースイメージの変更</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へ変更します。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">circleci/ruby</code> から <code class="language-plaintext highlighter-rouge">cimg/ruby</code> へ変更します。</p>
 
-&lt;div class=&quot;language-diff highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; executors:
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code> executors:
    default:
      working_directory: ~/app
      docker:
-&lt;span class=&quot;gi&quot;&gt;+      - image: circleci/ruby:2.7-node-browsers
-&lt;/span&gt;&lt;span class=&quot;gd&quot;&gt;-      - image: cimg/ruby:2.7-browsers
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="gi">+      - image: circleci/ruby:2.7-node-browsers
+</span><span class="gd">-      - image: cimg/ruby:2.7-browsers
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;circleci-公式-orb-の利用&quot;&gt;CircleCI 公式 Orb の利用&lt;/h2&gt;
+<h2 id="circleci-公式-orb-の利用">CircleCI 公式 Orb の利用</h2>
 
-&lt;p&gt;今回の変更とあわせて、下記２つのCircleCI公式Orbも導入しました。&lt;/p&gt;
+<p>今回の変更とあわせて、下記２つのCircleCI公式Orbも導入しました。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://circleci.com/developer/orbs/orb/circleci/ruby">CircleCI Developer Hub - circleci/ruby</a></li>
+  <li><a href="https://circleci.com/developer/orbs/orb/circleci/browser-tools">CircleCI Developer Hub - circleci/browser-tools</a></li>
+</ul>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;ruby&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby@1.1.2&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;browser-tools&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/browser-tools@1.1.3&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">orbs</span><span class="pi">:</span>
+  <span class="na">ruby</span><span class="pi">:</span> <span class="s">circleci/ruby@1.1.2</span>
+  <span class="na">browser-tools</span><span class="pi">:</span> <span class="s">circleci/browser-tools@1.1.3</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rspec-の実行&quot;&gt;RSpec の実行&lt;/h2&gt;
+<h2 id="rspec-の実行">RSpec の実行</h2>
 
-&lt;p&gt;上述のOrbを有効活用することで&lt;/p&gt;
+<p>上述のOrbを有効活用することで</p>
 
-&lt;ol&gt;
-  &lt;li&gt;bundle Install&lt;/li&gt;
-  &lt;li&gt;chromedriverインストール&lt;/li&gt;
-  &lt;li&gt;rspecの実行&lt;/li&gt;
-&lt;/ol&gt;
+<ol>
+  <li>bundle Install</li>
+  <li>chromedriverインストール</li>
+  <li>rspecの実行</li>
+</ol>
 
-&lt;p&gt;のstepを下記のようにシンプルに記述することが可能になります。&lt;/p&gt;
+<p>のstepを下記のようにシンプルに記述することが可能になります。</p>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rspec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chrome&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;browser-tools/install-chromedriver&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bin/rails db:schema:load --trace&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rspec-test&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">rspec</span><span class="pi">:</span>
+  <span class="na">executor</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">checkout</span>
+    <span class="pi">-</span> <span class="s">ruby/install-deps</span>
+    <span class="pi">-</span> <span class="s">browser-tools/install-chrome</span>
+    <span class="pi">-</span> <span class="s">browser-tools/install-chromedriver</span>
+    <span class="pi">-</span> <span class="na">run</span><span class="pi">:</span> <span class="s">bin/rails db:schema:load --trace</span>
+    <span class="pi">-</span> <span class="s">ruby/rspec-test</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rubocop-の実行&quot;&gt;rubocop の実行&lt;/h2&gt;
+<h2 id="rubocop-の実行">rubocop の実行</h2>
 
-&lt;p&gt;rubocop の実行も同様に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; Orbに組み込まれており、簡単に実行できます。&lt;/p&gt;
+<p>rubocop の実行も同様に <code class="language-plaintext highlighter-rouge">circleci/ruby</code> Orbに組み込まれており、簡単に実行できます。</p>
 
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;rubocop&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/install-deps&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ruby/rubocop-check&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">rubocop</span><span class="pi">:</span>
+  <span class="na">executor</span><span class="pi">:</span> <span class="s">default</span>
+  <span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">checkout</span>
+    <span class="pi">-</span> <span class="s">ruby/install-deps</span>
+    <span class="pi">-</span> <span class="s">ruby/rubocop-check</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;最終形&quot;&gt;最終形&lt;/h2&gt;
+<h2 id="最終形">最終形</h2>
 
-&lt;p&gt;実際に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;circleci/ruby&lt;/code&gt; から &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cimg/ruby&lt;/code&gt; へと移行した Pull Request の全体像としては下記のようになります。&lt;/p&gt;
+<p>実際に <code class="language-plaintext highlighter-rouge">circleci/ruby</code> から <code class="language-plaintext highlighter-rouge">cimg/ruby</code> へと移行した Pull Request の全体像としては下記のようになります。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/920&quot;&gt;Migrate CircleCI image from circleci/ruby to cimg/ruby by toshimaru · Pull Request&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/920">Migrate CircleCI image from circleci/ruby to cimg/ruby by toshimaru · Pull Request</a></p>
 
-&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+<h2 id="参考リンク">参考リンク</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;紹介したCircleCI Orbs
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/ruby&quot;&gt;CircleCI Developer Hub - circleci/ruby&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/orbs/orb/circleci/browser-tools&quot;&gt;CircleCI Developer Hub - circleci/browser-tools&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://circleci.com/developer/images/image/cimg/ruby&quot;&gt;cimg/ruby - CircleCI&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/CircleCI-Public/circleci-demo-ruby-rails/blob/master/.circleci/config.yml&quot;&gt;circleci-demo-ruby-rails/config.yml at master · CircleCI-Public/circleci-demo-ruby-rails&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>紹介したCircleCI Orbs
+    <ul>
+      <li><a href="https://circleci.com/developer/orbs/orb/circleci/ruby">CircleCI Developer Hub - circleci/ruby</a></li>
+      <li><a href="https://circleci.com/developer/orbs/orb/circleci/browser-tools">CircleCI Developer Hub - circleci/browser-tools</a></li>
+    </ul>
+  </li>
+  <li><a href="https://circleci.com/developer/images/image/cimg/ruby">cimg/ruby - CircleCI</a></li>
+  <li><a href="https://github.com/CircleCI-Public/circleci-demo-ruby-rails/blob/master/.circleci/config.yml">circleci-demo-ruby-rails/config.yml at master · CircleCI-Public/circleci-demo-ruby-rails</a></li>
+</ul>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://circleci.com/ja/blog/announcing-our-next-generation-convenience-images-smaller-faster-more-deterministic/&quot;&gt;次世代コンビニエンス イメージをリリース: より小さく、速く、確定的&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><category term="ci" /><summary type="html">2020年にCircleCIの次世代イメージ・cimg が登場しました1。 次世代コンビニエンス イメージをリリース: より小さく、速く、確定的 &amp;#8617;</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cimg.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cimg.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://circleci.com/ja/blog/announcing-our-next-generation-convenience-images-smaller-faster-more-deterministic/">次世代コンビニエンス イメージをリリース: より小さく、速く、確定的</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="circleci" /><category term="ci" /><summary type="html"><![CDATA[2020年にCircleCIの次世代イメージ・cimg が登場しました。個人のRuby on Railsプロジェクトで、従来のcircleci/rubyから次世代イメージであるところのcimg/rubyに移行してみたので紹介します。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/cimg.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/cimg.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/"><![CDATA[<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</p>
 
-&lt;p&gt;（gem名としては &lt;a href=&quot;https://github.com/rubygems/rubygems&quot;&gt;rubygems/rubygems&lt;/a&gt; にインスパイアされて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundled_gems&lt;/code&gt; とした）&lt;/p&gt;
+<p>（gem名としては <a href="https://github.com/rubygems/rubygems">rubygems/rubygems</a> にインスパイアされて <code class="language-plaintext highlighter-rouge">bundled_gems</code> とした）</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/bundled_gems&quot;&gt;toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/bundled_gems">toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.</a></p>
 
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+<h2 id="モチベーション">モチベーション</h2>
 
-&lt;p&gt;もともとは、GitHub Actionに &lt;a href=&quot;https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows&quot;&gt;cache機能&lt;/a&gt;が来る前に作ったもの。&lt;/p&gt;
+<p>もともとは、GitHub Actionに <a href="https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows">cache機能</a>が来る前に作ったもの。</p>
 
-&lt;p&gt;GitHub Action でCIしていた場合、cache機能がないと毎回 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。&lt;/p&gt;
+<p>GitHub Action でCIしていた場合、cache機能がないと毎回 <code class="language-plaintext highlighter-rouge">bundle install</code>走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。</p>
 
-&lt;p&gt;また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。&lt;/p&gt;
+<p>また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。</p>
 
-&lt;p&gt;「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。&lt;/p&gt;
+<p>「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。</p>
 
-&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+<h2 id="使い方">使い方</h2>
 
-&lt;h3 id=&quot;インストール&quot;&gt;インストール&lt;/h3&gt;
+<h3 id="インストール">インストール</h3>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;bundled_gems
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>gem <span class="nb">install </span>bundled_gems
+</code></pre></div></div>
 
-&lt;p&gt;これで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem&lt;/code&gt; コマンドが利用可能になる。&lt;/p&gt;
+<p>これで <code class="language-plaintext highlighter-rouge">bgem</code> コマンドが利用可能になる。</p>
 
-&lt;h3 id=&quot;gemfilelock-内のgemのインストール&quot;&gt;Gemfile.lock 内のgemのインストール&lt;/h3&gt;
+<h3 id="gemfilelock-内のgemのインストール">Gemfile.lock 内のgemのインストール</h3>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bgem install gem_name
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bgem install gem_name
+</code></pre></div></div>
 
-&lt;p&gt;こうすることで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;内に記載されている &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem_name&lt;/code&gt; のバージョンを読み取ってそれをインストールしてくれる（内部的には &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem install gem_name:version&lt;/code&gt; を走らせている）。&lt;/p&gt;
+<p>こうすることで <code class="language-plaintext highlighter-rouge">Gemfile.lock</code>内に記載されている <code class="language-plaintext highlighter-rouge">gem_name</code> のバージョンを読み取ってそれをインストールしてくれる（内部的には <code class="language-plaintext highlighter-rouge">gem install gem_name:version</code> を走らせている）。</p>
 
-&lt;p&gt;例としては、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem install rubocop&lt;/code&gt;とした場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記載されているバージョンの &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop&lt;/code&gt; をインストールする。&lt;/p&gt;
+<p>例としては、<code class="language-plaintext highlighter-rouge">bgem install rubocop</code>とした場合、<code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記載されているバージョンの <code class="language-plaintext highlighter-rouge">rubocop</code> をインストールする。</p>
 
-&lt;h2 id=&quot;課題&quot;&gt;課題&lt;/h2&gt;
+<h2 id="課題">課題</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;installするgemの子となる依存gemのバージョンまでは解決してくれない点
-    &lt;ul&gt;
-      &lt;li&gt;このへん実装しようと思っていたら、先にGitHub公式の &lt;a href=&quot;https://github.com/actions/cache&quot;&gt;actions/cache&lt;/a&gt;が来てしまった次第。。。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>installするgemの子となる依存gemのバージョンまでは解決してくれない点
+    <ul>
+      <li>このへん実装しようと思っていたら、先にGitHub公式の <a href="https://github.com/actions/cache">actions/cache</a>が来てしまった次第。。。</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;special-thanks&quot;&gt;Special Thanks&lt;/h2&gt;
+<h2 id="special-thanks">Special Thanks</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; のパースに関しては、&lt;a href=&quot;https://github.com/ledsun&quot;&gt;@ledsun&lt;/a&gt; さんにサンプルをいただきました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。ありがとうございました。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code> のパースに関しては、<a href="https://github.com/ledsun">@ledsun</a> さんにサンプルをいただきました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。ありがとうございました。</p>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://github.com/ledsun/orgen&quot;&gt;ledsun/orgen&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html">Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</title><link href="https://blog.toshimaru.net/dependabot-gomod/" rel="alternate" type="text/html" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）" /><published>2021-01-27T00:00:00+09:00</published><updated>2021-01-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/dependabot-gomod</id><content type="html" xml:base="https://blog.toshimaru.net/dependabot-gomod/">&lt;p&gt;Dependabot が GitHub の公式機能の一部として利用可能になりました。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://github.com/ledsun/orgen">ledsun/orgen</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html"><![CDATA[Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。 toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</title><link href="https://blog.toshimaru.net/dependabot-gomod/" rel="alternate" type="text/html" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）" /><published>2021-01-27T00:00:00+09:00</published><updated>2021-01-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/dependabot-gomod</id><content type="html" xml:base="https://blog.toshimaru.net/dependabot-gomod/"><![CDATA[<p>Dependabot が GitHub の公式機能の一部として利用可能になりました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;blogged. | DependabotをGitHub公式Dependabotに移行させた - Hack Your Design! &lt;a href=&quot;https://t.co/6Mb0XDSaSC&quot;&gt;https://t.co/6Mb0XDSaSC&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1273437750499270659?ref_src=twsrc%5Etfw&quot;&gt;June 18, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">blogged. | DependabotをGitHub公式Dependabotに移行させた - Hack Your Design! <a href="https://t.co/6Mb0XDSaSC">https://t.co/6Mb0XDSaSC</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1273437750499270659?ref_src=twsrc%5Etfw">June 18, 2020</a></blockquote>
 
-&lt;p&gt;ただ go modules のアップデートに関しては、アップデート時に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; を実行してくれないという問題がありました。&lt;/p&gt;
+<p>ただ go modules のアップデートに関しては、アップデート時に <code class="language-plaintext highlighter-rouge">go mod tidy</code> を実行してくれないという問題がありました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;renovate ならオプションでやってくれるみたいなのでGoプロジェクトはこっちに乗り換えるかー&lt;a href=&quot;https://t.co/qVbkb5UXlA&quot;&gt;https://t.co/qVbkb5UXlA&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1219800597982932992?ref_src=twsrc%5Etfw&quot;&gt;January 22, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">renovate ならオプションでやってくれるみたいなのでGoプロジェクトはこっちに乗り換えるかー<a href="https://t.co/qVbkb5UXlA">https://t.co/qVbkb5UXlA</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1219800597982932992?ref_src=twsrc%5Etfw">January 22, 2020</a></blockquote>
 
-&lt;p&gt;代替として、&lt;a href=&quot;https://github.com/renovatebot/renovate&quot;&gt;Renovate&lt;/a&gt;という &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; してくれるアップデーターを使っていました。&lt;/p&gt;
+<p>代替として、<a href="https://github.com/renovatebot/renovate">Renovate</a>という <code class="language-plaintext highlighter-rouge">go mod tidy</code> してくれるアップデーターを使っていました。</p>
 
-&lt;p&gt;しかし、この度 Dependabot が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; も実行してくれるようになっていました。&lt;/p&gt;
+<p>しかし、この度 Dependabot が <code class="language-plaintext highlighter-rouge">go mod tidy</code> も実行してくれるようになっていました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Dependabot: `go mod tidy` and `vendor` support &lt;a href=&quot;https://t.co/x9Wwj0yuMG&quot;&gt;https://t.co/x9Wwj0yuMG&lt;/a&gt;&lt;/p&gt;&amp;mdash; GitHub Changelog (@GHchangelog) &lt;a href=&quot;https://twitter.com/GHchangelog/status/1318223496569290752?ref_src=twsrc%5Etfw&quot;&gt;October 19, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Dependabot: `go mod tidy` and `vendor` support <a href="https://t.co/x9Wwj0yuMG">https://t.co/x9Wwj0yuMG</a></p>&mdash; GitHub Changelog (@GHchangelog) <a href="https://twitter.com/GHchangelog/status/1318223496569290752?ref_src=twsrc%5Etfw">October 19, 2020</a></blockquote>
 
-&lt;h2 id=&quot;dependabot-go-modules設定&quot;&gt;Dependabot Go Modules設定&lt;/h2&gt;
+<h2 id="dependabot-go-modules設定">Dependabot Go Modules設定</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/dependabot.yml&lt;/code&gt; ファイルを作って、下記のように記述すればOK。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">.github/dependabot.yml</code> ファイルを作って、下記のように記述すればOK。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/dependabot.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;updates&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;package-ecosystem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gomod&quot;&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Location of package manifests&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;weekly&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/dependabot.yml</span>
+<span class="na">version</span><span class="pi">:</span> <span class="m">2</span>
+<span class="na">updates</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s2">"</span><span class="s">gomod"</span>
+    <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span> <span class="c1"># Location of package manifests</span>
+    <span class="na">schedule</span><span class="pi">:</span>
+      <span class="na">interval</span><span class="pi">:</span> <span class="s2">"</span><span class="s">weekly"</span>
+</code></pre></div></div>
 
-&lt;p&gt;下記のPRの通り、きちんと &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; をやってくれています。&lt;/p&gt;
+<p>下記のPRの通り、きちんと <code class="language-plaintext highlighter-rouge">go mod tidy</code> をやってくれています。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/nyan/pull/104&quot;&gt;github.com/toshimaru/nyan/pull/104&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/nyan/pull/104">github.com/toshimaru/nyan/pull/104</a></p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.blog/changelog/2020-10-19-dependabot-go-mod-tidy-and-vendor-support/&quot;&gt;Dependabot: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vendor&lt;/code&gt; support - GitHub Changelog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/golang/go/wiki/Modules&quot;&gt;Modules · golang/go Wiki&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">Dependabot が GitHub の公式機能の一部として利用可能になりました。</summary></entry><entry><title type="html">頑張らない在宅ワーク環境</title><link href="https://blog.toshimaru.net/no-hustle-wfh-setup/" rel="alternate" type="text/html" title="頑張らない在宅ワーク環境" /><published>2020-12-12T00:00:00+09:00</published><updated>2020-12-13T00:00:00+09:00</updated><id>https://blog.toshimaru.net/no-hustle-wfh-setup</id><content type="html" xml:base="https://blog.toshimaru.net/no-hustle-wfh-setup/">&lt;p&gt;この記事は &lt;a href=&quot;https://qiita.com/advent-calendar/2020/lenovo_env&quot;&gt;生産性向上のための環境整備2020 【PR】 Lenovo Advent Calendar 2020&lt;/a&gt; 12日目の記事です。&lt;/p&gt;
+<ul>
+  <li><a href="https://github.blog/changelog/2020-10-19-dependabot-go-mod-tidy-and-vendor-support/">Dependabot: <code class="language-plaintext highlighter-rouge">go mod tidy</code> and <code class="language-plaintext highlighter-rouge">vendor</code> support - GitHub Changelog</a></li>
+  <li><a href="https://github.com/golang/go/wiki/Modules">Modules · golang/go Wiki</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="go" /><summary type="html"><![CDATA[Dependabot が GitHub の公式機能の一部として利用可能になりました。ただ go modules のアップデートに関しては、アップデート時に go mod tidy を実行してくれないという問題がありました。代替として、Renovateという go mod tidy してくれるアップデーターを使っていました。しかし、この度 Dependabot が go mod tidy も実行してくれるようになっていました。]]></summary></entry><entry><title type="html">頑張らない在宅ワーク環境</title><link href="https://blog.toshimaru.net/no-hustle-wfh-setup/" rel="alternate" type="text/html" title="頑張らない在宅ワーク環境" /><published>2020-12-12T00:00:00+09:00</published><updated>2020-12-13T00:00:00+09:00</updated><id>https://blog.toshimaru.net/no-hustle-wfh-setup</id><content type="html" xml:base="https://blog.toshimaru.net/no-hustle-wfh-setup/"><![CDATA[<p>この記事は <a href="https://qiita.com/advent-calendar/2020/lenovo_env">生産性向上のための環境整備2020 【PR】 Lenovo Advent Calendar 2020</a> 12日目の記事です。</p>
 
-&lt;p&gt;Withコロナの時代においてリモートワーク、もっというとWork from Homeーーすなわち在宅ワークは当たり前のものとなりました。&lt;/p&gt;
+<p>Withコロナの時代においてリモートワーク、もっというとWork from Homeーーすなわち在宅ワークは当たり前のものとなりました。</p>
 
-&lt;p&gt;そんな中、少なくない人が＜最強の在宅ワーク環境＞を求めて、インターネットの海を泳いだことでしょう。&lt;/p&gt;
+<p>そんな中、少なくない人が＜最強の在宅ワーク環境＞を求めて、インターネットの海を泳いだことでしょう。</p>
 
-&lt;p&gt;その結果、見つかる情報は、&lt;/p&gt;
+<p>その結果、見つかる情報は、</p>
 
-&lt;ul&gt;
-  &lt;li&gt;◯万円のディスプレイ （ドン！）&lt;/li&gt;
-  &lt;li&gt;◯万円のデスク （ドン！）&lt;/li&gt;
-  &lt;li&gt;◯万円のマイク （ドン！）&lt;/li&gt;
-  &lt;li&gt;◯万円のヘッドホン （ドン！）&lt;/li&gt;
-  &lt;li&gt;◯◯万円の高級チェア （ドドン！）&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>◯万円のディスプレイ （ドン！）</li>
+  <li>◯万円のデスク （ドン！）</li>
+  <li>◯万円のマイク （ドン！）</li>
+  <li>◯万円のヘッドホン （ドン！）</li>
+  <li>◯◯万円の高級チェア （ドドン！）</li>
+</ul>
 
-&lt;p&gt;みたいなものであったりします。&lt;/p&gt;
+<p>みたいなものであったりします。</p>
 
-&lt;p&gt;ーーで、思うわけです。&lt;/p&gt;
+<p>ーーで、思うわけです。</p>
 
-&lt;p&gt;&lt;strong&gt;「そんな金もそんなスペースも家にはねぇ❗💢」&lt;/strong&gt;&lt;/p&gt;
+<p><strong>「そんな金もそんなスペースも家にはねぇ❗💢」</strong></p>
 
-&lt;p&gt;そもそもそんな金をかけて作る在宅ワーク環境は書斎や仕事部屋であったりしますが、そんな贅沢なスペースは誰しもがあるわけではありません。既存の限られたスペースの中でいかに仕事をするためのスペースを確保していくかが重要になります。&lt;/p&gt;
+<p>そもそもそんな金をかけて作る在宅ワーク環境は書斎や仕事部屋であったりしますが、そんな贅沢なスペースは誰しもがあるわけではありません。既存の限られたスペースの中でいかに仕事をするためのスペースを確保していくかが重要になります。</p>
 
-&lt;p&gt;また良いモノに高いお金を払う、それ自体は素晴らしいことですし否定はしませんが、誰しもが手元にそんなお金があるわけではありません。在りモノ・もしくは安価に環境が揃えられるのであればそれに越したことはありません。&lt;/p&gt;
+<p>また良いモノに高いお金を払う、それ自体は素晴らしいことですし否定はしませんが、誰しもが手元にそんなお金があるわけではありません。在りモノ・もしくは安価に環境が揃えられるのであればそれに越したことはありません。</p>
 
-&lt;p&gt;ということで、今日は「&lt;strong&gt;頑張らない在宅ワーク環境&lt;/strong&gt;」ということでまとめてみようと思います。&lt;/p&gt;
+<p>ということで、今日は「<strong>頑張らない在宅ワーク環境</strong>」ということでまとめてみようと思います。</p>
 
-&lt;h2 id=&quot;この記事のゴール&quot;&gt;この記事のゴール&lt;/h2&gt;
+<h2 id="この記事のゴール">この記事のゴール</h2>
 
-&lt;p&gt;在りモノを活用しつつ、安価にそこそこの在宅ワーク環境を整えること&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p>在りモノを活用しつつ、安価にそこそこの在宅ワーク環境を整えること<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
-&lt;!--
+<!--
 ## 前提
 ## この記事のターゲット
---&gt;
+-->
 
-&lt;h2 id=&quot;椅子&quot;&gt;椅子&lt;/h2&gt;
+<h2 id="椅子">椅子</h2>
 
-&lt;p&gt;良い椅子・チェアがなく腰痛に悩まされている方も多くいるのでは、と思います。&lt;/p&gt;
+<p>良い椅子・チェアがなく腰痛に悩まされている方も多くいるのでは、と思います。</p>
 
-&lt;p&gt;つい高級チェアなんかを求めがちですが、発想を転換させて「そもそも座らない」とするのはいかがでしょうか？&lt;/p&gt;
+<p>つい高級チェアなんかを求めがちですが、発想を転換させて「そもそも座らない」とするのはいかがでしょうか？</p>
 
-&lt;p&gt;僕は子ども用に購入した棚が高さとしてちょうど良かったので、そいつをちょいと拝借して雑なスタンディングデスク（？）を構築しました。&lt;/p&gt;
+<p>僕は子ども用に購入した棚が高さとしてちょうど良かったので、そいつをちょいと拝借して雑なスタンディングデスク（？）を構築しました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;これが在宅ワーク環境のリアルだ！（子ども用に新調した棚の上にむりやり作ったスタンディング環境） &lt;a href=&quot;https://t.co/gFMsDeIp75&quot;&gt;pic.twitter.com/gFMsDeIp75&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1260827322568994816?ref_src=twsrc%5Etfw&quot;&gt;May 14, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">これが在宅ワーク環境のリアルだ！（子ども用に新調した棚の上にむりやり作ったスタンディング環境） <a href="https://t.co/gFMsDeIp75">pic.twitter.com/gFMsDeIp75</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1260827322568994816?ref_src=twsrc%5Etfw">May 14, 2020</a></blockquote>
 
-&lt;p&gt;ただずっと立っているのも疲れるので（無理に立ち続ける必要はないと思います）、たまに座れる椅子を横に用意しておくと良いかと思います。僕は5年以上前に&lt;a href=&quot;https://www.nitori-net.jp/ec/product/8700459s/&quot;&gt;ニトリで買った折り畳み椅子&lt;/a&gt;をいまだに使い続けています。&lt;/p&gt;
+<p>ただずっと立っているのも疲れるので（無理に立ち続ける必要はないと思います）、たまに座れる椅子を横に用意しておくと良いかと思います。僕は5年以上前に<a href="https://www.nitori-net.jp/ec/product/8700459s/">ニトリで買った折り畳み椅子</a>をいまだに使い続けています。</p>
 
-&lt;p class=&quot;warn&quot;&gt;&lt;a href=&quot;https://www.esquire.com/jp/menshealth/wellness/a30352943/standing-desk-benefits-truth/&quot;&gt;スタンディングデスクを使うことで全てが解決するわけではない&lt;/a&gt;ようなので、体勢を変えることやストレッチを挟むなどの工夫は依然必要だと思います。&lt;/p&gt;
+<p class="warn"><a href="https://www.esquire.com/jp/menshealth/wellness/a30352943/standing-desk-benefits-truth/">スタンディングデスクを使うことで全てが解決するわけではない</a>ようなので、体勢を変えることやストレッチを挟むなどの工夫は依然必要だと思います。</p>
 
-&lt;p&gt;ただこれだけだと心許ないので気分にあわせて下記を使っています&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p>ただこれだけだと心許ないので気分にあわせて下記を使っています<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://amzn.to/3qSEjno&quot;&gt;Backjoy&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://amzn.to/37bhfsb&quot;&gt;腰サポーター&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://amzn.to/3qSEjno">Backjoy</a></li>
+  <li><a href="https://amzn.to/37bhfsb">腰サポーター</a></li>
+</ul>
 
-&lt;p&gt;これらそのものが腰に効くというよりは、姿勢を矯正することで腰の負担を軽減してくれる、というモノと理解しています。&lt;/p&gt;
+<p>これらそのものが腰に効くというよりは、姿勢を矯正することで腰の負担を軽減してくれる、というモノと理解しています。</p>
 
-&lt;p&gt;良い椅子はないけど、仕事時の腰の負担を軽減したいという人にはおすすめのグッズです。&lt;/p&gt;
+<p>良い椅子はないけど、仕事時の腰の負担を軽減したいという人にはおすすめのグッズです。</p>
 
-&lt;h2 id=&quot;ラップトップスタンド&quot;&gt;ラップトップスタンド&lt;/h2&gt;
+<h2 id="ラップトップスタンド">ラップトップスタンド</h2>
 
-&lt;p&gt;ラップトップスタンドとしては、&lt;a href=&quot;https://amzn.to/37dhrqG&quot;&gt;BoYataのノートパソコンスタンド&lt;/a&gt;を使っています。&lt;/p&gt;
+<p>ラップトップスタンドとしては、<a href="https://amzn.to/37dhrqG">BoYataのノートパソコンスタンド</a>を使っています。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://www.amazon.co.jp/dp/B07VXCVVRM/ref=as_li_ss_il?ie=UTF8&amp;amp;linkCode=li2&amp;amp;tag=toshimaru-22&amp;amp;linkId=84bbc110999727ee8549075d6cd1afae&amp;amp;language=ja_JP&quot; target=&quot;_blank&quot;&gt;&lt;img border=&quot;0&quot; src=&quot;//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;amp;ASIN=B07VXCVVRM&amp;amp;Format=_SL160_&amp;amp;ID=AsinImage&amp;amp;MarketPlace=JP&amp;amp;ServiceVersion=20070822&amp;amp;WS=1&amp;amp;tag=toshimaru-22&amp;amp;language=ja_JP&quot; /&gt;&lt;/a&gt;&lt;img src=&quot;https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;l=li2&amp;amp;o=9&amp;amp;a=B07VXCVVRM&quot; width=&quot;1&quot; height=&quot;1&quot; border=&quot;0&quot; alt=&quot;&quot; style=&quot;border:none !important; margin:0px !important;&quot; /&gt;&lt;/p&gt;
+<p><a href="https://www.amazon.co.jp/dp/B07VXCVVRM/ref=as_li_ss_il?ie=UTF8&amp;linkCode=li2&amp;tag=toshimaru-22&amp;linkId=84bbc110999727ee8549075d6cd1afae&amp;language=ja_JP" target="_blank"><img border="0" src="//ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&amp;ASIN=B07VXCVVRM&amp;Format=_SL160_&amp;ID=AsinImage&amp;MarketPlace=JP&amp;ServiceVersion=20070822&amp;WS=1&amp;tag=toshimaru-22&amp;language=ja_JP" /></a><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=toshimaru-22&amp;language=ja_JP&amp;l=li2&amp;o=9&amp;a=B07VXCVVRM" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></p>
 
-&lt;p&gt;他の製品より多少値が張るのですが、安いスタンド買って失敗したことのある僕にとって、これは買ってよかったと思える製品でした。&lt;/p&gt;
+<p>他の製品より多少値が張るのですが、安いスタンド買って失敗したことのある僕にとって、これは買ってよかったと思える製品でした。</p>
 
-&lt;p&gt;抜群の安定感があることに加え高さ、角度がよい感じに調整できるのが素晴らしいです。&lt;/p&gt;
+<p>抜群の安定感があることに加え高さ、角度がよい感じに調整できるのが素晴らしいです。</p>
 
-&lt;p class=&quot;info&quot;&gt;しっかりとしたモニタ &amp;amp; デスクがある方であれば&lt;a href=&quot;https://amzn.to/2W87iVX&quot;&gt;モニターアーム&lt;/a&gt;を取り付けると机上のスペースがスッキリして良さそうです。&lt;/p&gt;
+<p class="info">しっかりとしたモニタ &amp; デスクがある方であれば<a href="https://amzn.to/2W87iVX">モニターアーム</a>を取り付けると机上のスペースがスッキリして良さそうです。</p>
 
-&lt;h2 id=&quot;サブディスプレイ&quot;&gt;サブディスプレイ&lt;/h2&gt;
+<h2 id="サブディスプレイ">サブディスプレイ</h2>
 
-&lt;p&gt;金とスペースがあればウン万円するようなウルトラワイド曲面ディスプレイがほしいところですがそんなスペースも金もありません。&lt;/p&gt;
+<p>金とスペースがあればウン万円するようなウルトラワイド曲面ディスプレイがほしいところですがそんなスペースも金もありません。</p>
 
-&lt;p&gt;MacユーザーかつiPadをお持ちであれば&lt;a href=&quot;https://support.apple.com/ja-jp/HT210380&quot;&gt;Sidecar で iPad をサブディスプレイとして使う&lt;/a&gt;のがオススメです。&lt;/p&gt;
+<p>MacユーザーかつiPadをお持ちであれば<a href="https://support.apple.com/ja-jp/HT210380">Sidecar で iPad をサブディスプレイとして使う</a>のがオススメです。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;スタンディングスペースにSidecar iPad用のスタンド買い足して幾分かワーク体験がよくなった &lt;a href=&quot;https://t.co/cv1T8akL4j&quot;&gt;pic.twitter.com/cv1T8akL4j&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1318697515466682368?ref_src=twsrc%5Etfw&quot;&gt;October 20, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">スタンディングスペースにSidecar iPad用のスタンド買い足して幾分かワーク体験がよくなった <a href="https://t.co/cv1T8akL4j">pic.twitter.com/cv1T8akL4j</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1318697515466682368?ref_src=twsrc%5Etfw">October 20, 2020</a></blockquote>
 
-&lt;p&gt;ノートパソコンと高さをあわせるため、先程紹介したラップトップスタンドに加え、Amazonで見つけた安いスマホ兼タブレットスタンドを使ってます。&lt;/p&gt;
+<p>ノートパソコンと高さをあわせるため、先程紹介したラップトップスタンドに加え、Amazonで見つけた安いスマホ兼タブレットスタンドを使ってます。</p>
 
-&lt;h2 id=&quot;キーボード&quot;&gt;キーボード&lt;/h2&gt;
+<h2 id="キーボード">キーボード</h2>
 
-&lt;p&gt;現状のラップトップ付属のキーボードに満足しているなら無理に用意する必要はないと思いますが、在宅ワークが状態化して家にいることが多いのであれば、使いやすい・疲れにくいキーボードを一台常備しても良いかと思います。&lt;/p&gt;
+<p>現状のラップトップ付属のキーボードに満足しているなら無理に用意する必要はないと思いますが、在宅ワークが状態化して家にいることが多いのであれば、使いやすい・疲れにくいキーボードを一台常備しても良いかと思います。</p>
 
-&lt;p&gt;僕はエンジニアなので元々手元にあったHHKBを使っています。ただ高いしエンジニア向けなので万人におすすめはしません。&lt;/p&gt;
+<p>僕はエンジニアなので元々手元にあったHHKBを使っています。ただ高いしエンジニア向けなので万人におすすめはしません。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;/macbook-hhkb-sonshi-style/&quot;&gt;俺流 MacBook+HHKB 最強尊師スタイル&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;/hhkb-hybrid-type-s/&quot;&gt;【レビュー】HHKB Hybrid Type-S をしばらく使ってみた感想 - Hack Your Design!&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="/macbook-hhkb-sonshi-style/">俺流 MacBook+HHKB 最強尊師スタイル</a></li>
+  <li><a href="/hhkb-hybrid-type-s/">【レビュー】HHKB Hybrid Type-S をしばらく使ってみた感想 - Hack Your Design!</a></li>
+</ul>
 
-&lt;p&gt;何をもって使いやすいというのは人それぞれなので、ここでは特にコレ！といったおすすめキーボードは上げません。一番良いのは、実際に店頭にいって試してみて自分に最もあったものを購入することかと思います。&lt;/p&gt;
+<p>何をもって使いやすいというのは人それぞれなので、ここでは特にコレ！といったおすすめキーボードは上げません。一番良いのは、実際に店頭にいって試してみて自分に最もあったものを購入することかと思います。</p>
 
-&lt;p class=&quot;info&quot;&gt;最近だと老舗の&lt;a href=&quot;https://amzn.to/2W8pyOV&quot;&gt;REALFORCE&lt;/a&gt;や&lt;a href=&quot;https://amzn.to/3nfbMWz&quot;&gt;HHKB&lt;/a&gt;でなくとも、1万円以下でも良いキーボードが買えるようなので、いろいろ調べてみると良いかと思います（こだわりすぎると、いわゆるキーボード沼にはまるので注意⚠️）。&lt;/p&gt;
+<p class="info">最近だと老舗の<a href="https://amzn.to/2W8pyOV">REALFORCE</a>や<a href="https://amzn.to/3nfbMWz">HHKB</a>でなくとも、1万円以下でも良いキーボードが買えるようなので、いろいろ調べてみると良いかと思います（こだわりすぎると、いわゆるキーボード沼にはまるので注意⚠️）。</p>
 
-&lt;h2 id=&quot;音声環境&quot;&gt;音声環境&lt;/h2&gt;
+<h2 id="音声環境">音声環境</h2>
 
-&lt;p&gt;リモートワークとともにリモート会議も当たり前のものとなりました。Zoom, Google Meet, Slack Callーー使っているリモート会議ツールはそれぞれでしょう。&lt;/p&gt;
+<p>リモートワークとともにリモート会議も当たり前のものとなりました。Zoom, Google Meet, Slack Callーー使っているリモート会議ツールはそれぞれでしょう。</p>
 
-&lt;p&gt;リモート会議で音声が悪いというのは喋る側、聴く側双方にとってかなりストレスとなります。ですので仕事を円滑に進めるためにも音声にはこだわりましょう。&lt;/p&gt;
+<p>リモート会議で音声が悪いというのは喋る側、聴く側双方にとってかなりストレスとなります。ですので仕事を円滑に進めるためにも音声にはこだわりましょう。</p>
 
-&lt;p&gt;といっても、音声に関してはそこまでお金をかけなくていいと思っています。みなさんiPhoneは持ってますよね？ じゃあ付属のApple EarPodsを使いましょう。これだけで格段に喋る側、聴く側双方が幸せになれます。&lt;/p&gt;
+<p>といっても、音声に関してはそこまでお金をかけなくていいと思っています。みなさんiPhoneは持ってますよね？ じゃあ付属のApple EarPodsを使いましょう。これだけで格段に喋る側、聴く側双方が幸せになれます。</p>
 
-&lt;p&gt;参考. &lt;a href=&quot;https://www.itmedia.co.jp/news/articles/2005/01/news118.html&quot;&gt;テレワーク用にヘッドセットは買わなくてもいい　“iPhoneのオマケ”が役に立つ - ITmedia NEWS&lt;/a&gt;&lt;/p&gt;
+<p>参考. <a href="https://www.itmedia.co.jp/news/articles/2005/01/news118.html">テレワーク用にヘッドセットは買わなくてもいい　“iPhoneのオマケ”が役に立つ - ITmedia NEWS</a></p>
 
-&lt;p&gt;一方、ソフトウェアでノイズを削減するというのも手です。&lt;/p&gt;
+<p>一方、ソフトウェアでノイズを削減するというのも手です。</p>
 
-&lt;p&gt;おすすめは&lt;a href=&quot;https://ref.krisp.ai/u/ud778344eb&quot;&gt;Krisp&lt;/a&gt;です。Krispをかますだけで出力側、入力側の両方でめちゃめちゃノイズを削減してくれます。&lt;/p&gt;
+<p>おすすめは<a href="https://ref.krisp.ai/u/ud778344eb">Krisp</a>です。Krispをかますだけで出力側、入力側の両方でめちゃめちゃノイズを削減してくれます。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-cards=&quot;hidden&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;最高のリモートミーティング体験を求めて Krisp を試用してみたけど、ホントにものっそい周囲のノイズがカットされていてすごかった&lt;br /&gt;Krisp | Noise Cancelling App &lt;a href=&quot;https://t.co/bF8bQ8q2xg&quot;&gt;https://t.co/bF8bQ8q2xg&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1240137161405607939?ref_src=twsrc%5Etfw&quot;&gt;March 18, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-cards="hidden"><p lang="ja" dir="ltr">最高のリモートミーティング体験を求めて Krisp を試用してみたけど、ホントにものっそい周囲のノイズがカットされていてすごかった<br />Krisp | Noise Cancelling App <a href="https://t.co/bF8bQ8q2xg">https://t.co/bF8bQ8q2xg</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1240137161405607939?ref_src=twsrc%5Etfw">March 18, 2020</a></blockquote>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;リモート戦国時代を生き抜くために Krisp を年間購読した&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1252784955878305792?ref_src=twsrc%5Etfw&quot;&gt;April 22, 2020&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">リモート戦国時代を生き抜くために Krisp を年間購読した</p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1252784955878305792?ref_src=twsrc%5Etfw">April 22, 2020</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-&lt;p&gt;Beforeコロナ時代に、カフェとかからリモート会議繋ぐとめちゃめちゃ周囲のノイズが入っていたのですが、これを使うことでだいぶ改善されました。&lt;/p&gt;
+<p>Beforeコロナ時代に、カフェとかからリモート会議繋ぐとめちゃめちゃ周囲のノイズが入っていたのですが、これを使うことでだいぶ改善されました。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://iwashi.co/2020/03/27/Effective-Remote-Meeting&quot;&gt;効果的なリモート会議にするためのプラクティス&lt;/a&gt;から音声環境として意識すべき点をいくつか抜粋します。&lt;/p&gt;
+<p><a href="https://iwashi.co/2020/03/27/Effective-Remote-Meeting">効果的なリモート会議にするためのプラクティス</a>から音声環境として意識すべき点をいくつか抜粋します。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;ヘッドセット、イヤフォンマイクを使う&lt;/li&gt;
-  &lt;li&gt;ヘッドセットには無線ではなく有線を&lt;/li&gt;
-  &lt;li&gt;マイクミュートの使用&lt;/li&gt;
-  &lt;li&gt;マイクは口元に近いほどよい&lt;/li&gt;
-  &lt;li&gt;ネットワーク回線は安定したものを&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>ヘッドセット、イヤフォンマイクを使う</li>
+  <li>ヘッドセットには無線ではなく有線を</li>
+  <li>マイクミュートの使用</li>
+  <li>マイクは口元に近いほどよい</li>
+  <li>ネットワーク回線は安定したものを</li>
+</ul>
 
-&lt;h2 id=&quot;ネットワーク環境&quot;&gt;ネットワーク環境&lt;/h2&gt;
+<h2 id="ネットワーク環境">ネットワーク環境</h2>
 
-&lt;p&gt;在宅ワークにおいて強いネットワーク環境を用意することが大事なのは言うまでもありません。&lt;/p&gt;
+<p>在宅ワークにおいて強いネットワーク環境を用意することが大事なのは言うまでもありません。</p>
 
-&lt;p&gt;僕の場合、しばらく&lt;a href=&quot;https://amzn.to/348KppT&quot;&gt;Google Wifi&lt;/a&gt;を使っていたのですが、WiFiルーターを変更することでWifiの速度が劇的に向上しました。&lt;/p&gt;
+<p>僕の場合、しばらく<a href="https://amzn.to/348KppT">Google Wifi</a>を使っていたのですが、WiFiルーターを変更することでWifiの速度が劇的に向上しました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;同じデバイス、回線、時間帯と条件を合わせて２つのWi-Fiルーターで速度テスト。これだけ速度が違うのだからやっぱWi-Fiルーターにはこだわりたい。 &lt;a href=&quot;https://t.co/VLn89H1xRS&quot;&gt;pic.twitter.com/VLn89H1xRS&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1337794637289775104?ref_src=twsrc%5Etfw&quot;&gt;December 12, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">同じデバイス、回線、時間帯と条件を合わせて２つのWi-Fiルーターで速度テスト。これだけ速度が違うのだからやっぱWi-Fiルーターにはこだわりたい。 <a href="https://t.co/VLn89H1xRS">pic.twitter.com/VLn89H1xRS</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1337794637289775104?ref_src=twsrc%5Etfw">December 12, 2020</a></blockquote>
 
-&lt;p&gt;（ちなみに早い結果のほうのルーターは&lt;a href=&quot;https://amzn.to/3qQbsjr&quot;&gt;AtermのWG1200HP3 &lt;/a&gt;です）&lt;/p&gt;
+<p>（ちなみに早い結果のほうのルーターは<a href="https://amzn.to/3qQbsjr">AtermのWG1200HP3 </a>です）</p>
 
-&lt;p&gt;インターネット回線に関しては家庭によっていろいろな制限がある（マンション共有回線が厳しい、高速なXXX社の回線は引けない、速度制限がある等）ので、すぐには改善できない方も多いかもしれませんが下記などで改善できそうなら検討してみてもいいかもしれません。&lt;/p&gt;
+<p>インターネット回線に関しては家庭によっていろいろな制限がある（マンション共有回線が厳しい、高速なXXX社の回線は引けない、速度制限がある等）ので、すぐには改善できない方も多いかもしれませんが下記などで改善できそうなら検討してみてもいいかもしれません。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;WiFiルーターを早いもの・安定するものに変えてみる&lt;/li&gt;
-  &lt;li&gt;WiFi中継機を仕事スペースの近くに用意してみる&lt;/li&gt;
-  &lt;li&gt;無線接続を諦めて有線接続にしてみる&lt;/li&gt;
-  &lt;li&gt;IPoE 接続方式に変えてみる&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>WiFiルーターを早いもの・安定するものに変えてみる</li>
+  <li>WiFi中継機を仕事スペースの近くに用意してみる</li>
+  <li>無線接続を諦めて有線接続にしてみる</li>
+  <li>IPoE 接続方式に変えてみる</li>
+</ul>
 
-&lt;h2 id=&quot;さいごに&quot;&gt;さいごに&lt;/h2&gt;
+<h2 id="さいごに">さいごに</h2>
 
-&lt;p&gt;みなさんはどんな工夫をして在宅ワーク環境を乗り越えているでしょうか？　もし「頑張らないリモート環境」のコンセプトに合致する良いアイディアがあればぜひ教えてください。😄&lt;/p&gt;
+<p>みなさんはどんな工夫をして在宅ワーク環境を乗り越えているでしょうか？　もし「頑張らないリモート環境」のコンセプトに合致する良いアイディアがあればぜひ教えてください。😄</p>
 
-&lt;p&gt;余談で実は今年引越ししたのですが、本記事で紹介したようなセットアップさえ整っていれば、下記のとおり引越し後の部屋の片隅に引っ越しダンボールを積み上げて、即席のスタンディング環境を用意することができました。&lt;/p&gt;
+<p>余談で実は今年引越ししたのですが、本記事で紹介したようなセットアップさえ整っていれば、下記のとおり引越し後の部屋の片隅に引っ越しダンボールを積み上げて、即席のスタンディング環境を用意することができました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;最強のWFH環境（2020年） &lt;a href=&quot;https://t.co/bwEdUgNUmX&quot;&gt;pic.twitter.com/bwEdUgNUmX&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1325591907687309312?ref_src=twsrc%5Etfw&quot;&gt;November 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">最強のWFH環境（2020年） <a href="https://t.co/bwEdUgNUmX">pic.twitter.com/bwEdUgNUmX</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1325591907687309312?ref_src=twsrc%5Etfw">November 9, 2020</a></blockquote>
 
-&lt;p&gt;最後に在宅ワークのお供として飲んでいるコーヒーグッズのおすすめを置いておきます。&lt;/p&gt;
+<p>最後に在宅ワークのお供として飲んでいるコーヒーグッズのおすすめを置いておきます。</p>
 
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B00EJADDW4&amp;amp;linkId=71ac203f4b5d035f61d3cf6b8ff11888&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B074MX813G&amp;amp;linkId=a2f0a0cd65b264b7d5319baf90080eb7&quot;&gt;&lt;/iframe&gt;
-&lt;iframe style=&quot;width:120px;height:240px;&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; scrolling=&quot;no&quot; frameborder=&quot;0&quot; src=&quot;//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;amp;bc1=000000&amp;amp;IS2=1&amp;amp;bg1=FFFFFF&amp;amp;fc1=000000&amp;amp;lc1=0000FF&amp;amp;t=toshimaru-22&amp;amp;language=ja_JP&amp;amp;o=9&amp;amp;p=8&amp;amp;l=as4&amp;amp;m=amazon&amp;amp;f=ifr&amp;amp;ref=as_ss_li_til&amp;amp;asins=B07VFLG85K&amp;amp;linkId=34e1630223bc31fb9d8a438140d41ba5&quot;&gt;&lt;/iframe&gt;
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B00EJADDW4&amp;linkId=71ac203f4b5d035f61d3cf6b8ff11888"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B074MX813G&amp;linkId=a2f0a0cd65b264b7d5319baf90080eb7"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=toshimaru-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B07VFLG85K&amp;linkId=34e1630223bc31fb9d8a438140d41ba5"></iframe>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;一方で本当に良いと思えるものはケチらずお金を投資してよいと思ってます。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;たまに姿勢を変えて考え込んだり、ダラーっとリラックスしつつコーヒーを飲んだりするときにそれらが邪魔になったりするので常に使っているわけではありません。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="wfh" /><category term="productivity" /><summary type="html">この記事は 生産性向上のための環境整備2020 【PR】 Lenovo Advent Calendar 2020 12日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/wfh-og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/wfh-og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">git switch養成ギプス 〜git checkoutからの卒業〜</title><link href="https://blog.toshimaru.net/git-switch-restore/" rel="alternate" type="text/html" title="git switch養成ギプス 〜git checkoutからの卒業〜" /><published>2020-12-09T00:00:00+09:00</published><updated>2021-03-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-switch-restore</id><content type="html" xml:base="https://blog.toshimaru.net/git-switch-restore/">&lt;p&gt;本記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2020/git&quot;&gt;Git Advent Calendar 2020&lt;/a&gt; 9日目の記事です。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>一方で本当に良いと思えるものはケチらずお金を投資してよいと思ってます。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>たまに姿勢を変えて考え込んだり、ダラーっとリラックスしつつコーヒーを飲んだりするときにそれらが邪魔になったりするので常に使っているわけではありません。 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="wfh" /><category term="productivity" /><summary type="html"><![CDATA[Withコロナの時代においてリモートワーク、もっというとWork from Homeーーすなわち在宅ワークは当たり前のものとなりました。 今日は在りモノを活用しつつ、安価に整えられるそこそこの在宅ワーク環境を「頑張らない在宅ワーク環境」と題してまとめてみようと思います。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/wfh-og.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/wfh-og.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">git switch養成ギプス 〜git checkoutからの卒業〜</title><link href="https://blog.toshimaru.net/git-switch-restore/" rel="alternate" type="text/html" title="git switch養成ギプス 〜git checkoutからの卒業〜" /><published>2020-12-09T00:00:00+09:00</published><updated>2021-03-18T00:00:00+09:00</updated><id>https://blog.toshimaru.net/git-switch-restore</id><content type="html" xml:base="https://blog.toshimaru.net/git-switch-restore/"><![CDATA[<p>本記事は<a href="https://qiita.com/advent-calendar/2020/git">Git Advent Calendar 2020</a> 9日目の記事です。</p>
 
-&lt;p&gt;git 2.23 にて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt; というコマンドが導入されたことはみなさん既にご存知のことかと思います。&lt;/p&gt;
+<p>git 2.23 にて <code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code> というコマンドが導入されたことはみなさん既にご存知のことかと思います。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;One of our favorite open source projects has a big update... Git 2.23 is here!&lt;br /&gt;&lt;br /&gt;Read all about the latest release and new features ✨&lt;a href=&quot;https://t.co/fpQICF8Onc&quot;&gt;https://t.co/fpQICF8Onc&lt;/a&gt;&lt;/p&gt;&amp;mdash; GitHub (@github) &lt;a href=&quot;https://twitter.com/github/status/1162474366380269568?ref_src=twsrc%5Etfw&quot;&gt;August 16, 2019&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">One of our favorite open source projects has a big update... Git 2.23 is here!<br /><br />Read all about the latest release and new features ✨<a href="https://t.co/fpQICF8Onc">https://t.co/fpQICF8Onc</a></p>&mdash; GitHub (@github) <a href="https://twitter.com/github/status/1162474366380269568?ref_src=twsrc%5Etfw">August 16, 2019</a></blockquote>
 
-&lt;p&gt;雑に要約すると「&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;に機能もたせすぎてわかりにくくなっちゃったから、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;でわかりやすくしたよ！&lt;/strong&gt;」ってことだと思います。&lt;/p&gt;
+<p>雑に要約すると「<strong><code class="language-plaintext highlighter-rouge">git checkout</code>に機能もたせすぎてわかりにくくなっちゃったから、<code class="language-plaintext highlighter-rouge">git switch</code>, <code class="language-plaintext highlighter-rouge">git restore</code>でわかりやすくしたよ！</strong>」ってことだと思います。</p>
 
-&lt;p&gt;一方、まだ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;を使い続けている人をちらほら見るので、本記事では&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;に移行していくためのコツを書いてみます。&lt;/p&gt;
+<p>一方、まだ<code class="language-plaintext highlighter-rouge">git switch</code>に移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今も<code class="language-plaintext highlighter-rouge">git checkout</code>を使い続けている人をちらほら見るので、本記事では<code class="language-plaintext highlighter-rouge">git switch</code>に移行していくためのコツを書いてみます。</p>
 
-&lt;h2 id=&quot;結論&quot;&gt;結論&lt;/h2&gt;
+<h2 id="結論">結論</h2>
 
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;switch&lt;/code&gt; のaliasを設定しろ、そして&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;checkout&lt;/code&gt;のaliasを捨てろ&lt;/strong&gt;&lt;/p&gt;
+<p><strong><code class="language-plaintext highlighter-rouge">switch</code> のaliasを設定しろ、そして<code class="language-plaintext highlighter-rouge">checkout</code>のaliasを捨てろ</strong></p>
 
-&lt;h2 id=&quot;git-checkout-only時代&quot;&gt;git checkout only時代&lt;/h2&gt;
+<h2 id="git-checkout-only時代">git checkout only時代</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;checkout&lt;/code&gt;というコマンドは長ったらしいのでaliasを設定して運用していたのではないでしょうか。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">checkout</code>というコマンドは長ったらしいのでaliasを設定して運用していたのではないでしょうか。</p>
 
-&lt;p&gt;僕の場合、下記のようにaliasを設定しました。&lt;/p&gt;
+<p>僕の場合、下記のようにaliasを設定しました。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ~/.gitconfig
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
 [alias]
   co = checkout
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;ただこれだと &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git checkout&lt;/code&gt;をそのまま便利に使い続けてしまうので、思い切ってこいつを削除してしまうと良いかと思います。&lt;/p&gt;
+<p>ただこれだと <code class="language-plaintext highlighter-rouge">git checkout</code>をそのまま便利に使い続けてしまうので、思い切ってこいつを削除してしまうと良いかと思います。</p>
 
-&lt;p&gt;もしくは下記のようにメッセージ出すとかでもOK。&lt;/p&gt;
+<p>もしくは下記のようにメッセージ出すとかでもOK。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ~/.gitconfig
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
 [alias]
-  co = !echo &quot;Use git switch/restore instead!&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+  co = !echo "Use git switch/restore instead!"
+</code></pre></div></div>
 
-&lt;h2 id=&quot;git-switch時代&quot;&gt;git switch時代&lt;/h2&gt;
+<h2 id="git-switch時代">git switch時代</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch&lt;/code&gt;を使いやすくするために下記のようなaliasを設定します。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">git switch</code>を使いやすくするために下記のようなaliasを設定します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# ~/.gitconfig
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ~/.gitconfig
 [alias]
   sw = switch
   swc = switch -c
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;こうすることで checkout コマンドが下記のように生まれ変わります。&lt;/p&gt;
+<p>こうすることで checkout コマンドが下記のように生まれ変わります。</p>
 
-&lt;h3 id=&quot;main-branch-へ切り替え&quot;&gt;main branch へ切り替え&lt;/h3&gt;
+<h3 id="main-branch-へ切り替え">main branch へ切り替え</h3>
 
-&lt;p&gt;before:&lt;/p&gt;
+<p>before:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git checkout main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git checkout main
+</code></pre></div></div>
 
-&lt;p&gt;after:&lt;/p&gt;
+<p>after:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git switch main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git switch main
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;sw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; switch を設定している場合
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git sw main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch を設定している場合
+<span class="gp">$</span><span class="w"> </span>git sw main
+</code></pre></div></div>
 
-&lt;h3 id=&quot;main-branch-から-hoge-branch-作成&quot;&gt;main branch から hoge branch 作成&lt;/h3&gt;
+<h3 id="main-branch-から-hoge-branch-作成">main branch から hoge branch 作成</h3>
 
-&lt;p&gt;before:&lt;/p&gt;
+<p>before:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;go&quot;&gt;git checkout -b hoge main
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">git checkout -b hoge main
+</span></code></pre></div></div>
 
-&lt;p&gt;after:&lt;/p&gt;
+<p>after:</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;git switch &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; hoge main
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>git switch <span class="nt">-c</span> hoge main
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;sw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; switch &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;g swc hoge main
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="w"> </span>sw <span class="o">=</span> switch <span class="nt">-c</span>
+<span class="go">g swc hoge main
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
+<h2 id="余談">余談</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git restore&lt;/code&gt;に対する良いaliasは今のところ見つかっていません。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">git restore</code>に対する良いaliasは今のところ見つかっていません。</p>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset&lt;/code&gt;とalias的に名前空間かぶつかるので、自分の中でしっくりくる命名できていないんですよね。何かいいアイディアのお持ちの方は教えてください。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="git" /><summary type="html">本記事はGit Advent Calendar 2020 9日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/git-switch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/git-switch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った</title><link href="https://blog.toshimaru.net/auto-author-assign/" rel="alternate" type="text/html" title="PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った" /><published>2020-12-06T00:00:00+09:00</published><updated>2020-12-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/auto-author-assign</id><content type="html" xml:base="https://blog.toshimaru.net/auto-author-assign/">&lt;p&gt;本記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2020/github-actions&quot;&gt;GitHub Actions Advent Calendar 2020&lt;/a&gt;６日目の記事です。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">git reset</code>とalias的に名前空間かぶつかるので、自分の中でしっくりくる命名できていないんですよね。何かいいアイディアのお持ちの方は教えてください。</p>]]></content><author><name>Toshimaru</name></author><category term="git" /><summary type="html"><![CDATA[git 2.23 にて git switch, git restore というコマンドが導入されたことはみなさん既にご存知のことかと思います。一方、まだgit switchに移行しきれていないという人も多くいるのではないかと思います。実際、私の周囲でも今もgit checkoutを使い続けている人をちらほら見るので、本記事ではgit switchに移行していくためのコツを書いてみます。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/git-switch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/git-switch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った</title><link href="https://blog.toshimaru.net/auto-author-assign/" rel="alternate" type="text/html" title="PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った" /><published>2020-12-06T00:00:00+09:00</published><updated>2020-12-06T00:00:00+09:00</updated><id>https://blog.toshimaru.net/auto-author-assign</id><content type="html" xml:base="https://blog.toshimaru.net/auto-author-assign/"><![CDATA[<p>本記事は<a href="https://qiita.com/advent-calendar/2020/github-actions">GitHub Actions Advent Calendar 2020</a>６日目の記事です。</p>
 
-&lt;p&gt;今日は作ったGitHub Actions、&lt;a href=&quot;https://github.com/toshimaru/auto-author-assign&quot;&gt;auto-author-assign&lt;/a&gt;の紹介をしたいと思います。&lt;/p&gt;
+<p>今日は作ったGitHub Actions、<a href="https://github.com/toshimaru/auto-author-assign">auto-author-assign</a>の紹介をしたいと思います。</p>
 
-&lt;h2 id=&quot;作ったきっかけ&quot;&gt;作ったきっかけ&lt;/h2&gt;
+<h2 id="作ったきっかけ">作ったきっかけ</h2>
 
-&lt;p&gt;Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Assignee&lt;/code&gt;）はそのPR作者自身になるかと思います。&lt;/p&gt;
+<p>Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（<code class="language-plaintext highlighter-rouge">Assignee</code>）はそのPR作者自身になるかと思います。</p>
 
-&lt;p&gt;その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。&lt;/p&gt;
+<p>その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。</p>
 
-&lt;h2 id=&quot;何が嬉しいか&quot;&gt;何が嬉しいか？&lt;/h2&gt;
+<h2 id="何が嬉しいか">何が嬉しいか？</h2>
 
-&lt;p&gt;たくさんの人がPRを出しまくる、そんな大規模プロジェクトだとPR一覧を開いたときに&lt;/p&gt;
+<p>たくさんの人がPRを出しまくる、そんな大規模プロジェクトだとPR一覧を開いたときに</p>
 
-&lt;ul&gt;
-  &lt;li&gt;「誰がPRの担当者なのか？」がアイコンで一目でわかるようになる&lt;/li&gt;
-  &lt;li&gt;（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Author&lt;/code&gt; に加えて）&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Assignee&lt;/code&gt; によるフィルターができるようになる&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>「誰がPRの担当者なのか？」がアイコンで一目でわかるようになる</li>
+  <li>（<code class="language-plaintext highlighter-rouge">Author</code> に加えて）<code class="language-plaintext highlighter-rouge">Assignee</code> によるフィルターができるようになる</li>
+</ul>
 
-&lt;p&gt;あたりが嬉しさになります。&lt;/p&gt;
+<p>あたりが嬉しさになります。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/auto-author-assign/pull-request-list.png&quot; alt=&quot;PR list&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/auto-author-assign/pull-request-list.png" alt="PR list" /></p>
 
-&lt;h2 id=&quot;設定&quot;&gt;設定&lt;/h2&gt;
+<h2 id="設定">設定</h2>
 
-&lt;p&gt;リポジトリに &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/workflows/auto-author-assign.yml&lt;/code&gt; みたいなファイルを用意して下記のように設定すればOK。&lt;/p&gt;
+<p>リポジトリに <code class="language-plaintext highlighter-rouge">.github/workflows/auto-author-assign.yml</code> みたいなファイルを用意して下記のように設定すればOK。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Auto&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Assign&apos;&lt;/span&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">name</span><span class="pi">:</span> <span class="s1">'</span><span class="s">Auto</span><span class="nv"> </span><span class="s">Author</span><span class="nv"> </span><span class="s">Assign'</span>
 
-&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;pull_request_target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;types&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;opened&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;reopened&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">pull_request_target</span><span class="pi">:</span>
+    <span class="na">types</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">opened</span><span class="pi">,</span> <span class="nv">reopened</span><span class="pi">]</span>
 
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;assign-author&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/auto-author-assign@v1.2.0&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;repo-token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;$&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">assign-author</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">toshimaru/auto-author-assign@v1.2.0</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">repo-token</span><span class="pi">:</span> <span class="s2">"</span><span class="s">$"</span>
+</code></pre></div></div>
 
-&lt;h3 id=&quot;on-pull_request-ではアサイン失敗することがある&quot;&gt;on: pull_request ではアサイン失敗することがある&lt;/h3&gt;
+<h3 id="on-pull_request-ではアサイン失敗することがある">on: pull_request ではアサイン失敗することがある</h3>
 
-&lt;p&gt;最初、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on: pull_request&lt;/code&gt; でイベント発火させていたのですが、これだとfolkしたレポジトリからのPRで下記エラーが出てアサインが失敗します。&lt;/p&gt;
+<p>最初、 <code class="language-plaintext highlighter-rouge">on: pull_request</code> でイベント発火させていたのですが、これだとfolkしたレポジトリからのPRで下記エラーが出てアサインが失敗します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Error: Resource not accessible by integration
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error: Resource not accessible by integration
+</code></pre></div></div>
 
-&lt;p&gt;なぜなら folk したレポジトリからは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.GITHUB_TOKEN&lt;/code&gt; にアクセスできないためです。&lt;/p&gt;
+<p>なぜなら folk したレポジトリからは <code class="language-plaintext highlighter-rouge">secrets.GITHUB_TOKEN</code> にアクセスできないためです。</p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;This event is similar to pull_request, except that it runs in the context of the base repository of the pull request (snip) This means that you can more safely make your secrets available to the workflows triggered by the pull request&lt;/p&gt;
-&lt;/blockquote&gt;
+<blockquote>
+  <p>This event is similar to pull_request, except that it runs in the context of the base repository of the pull request (snip) This means that you can more safely make your secrets available to the workflows triggered by the pull request</p>
+</blockquote>
 
-&lt;p&gt;via. &lt;a href=&quot;https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#pull_request_target&quot;&gt;Events that trigger workflows - GitHub Docs&lt;/a&gt;&lt;/p&gt;
+<p>via. <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#pull_request_target">Events that trigger workflows - GitHub Docs</a></p>
 
-&lt;p&gt;ということで、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;on: pull_request_target&lt;/code&gt; 使ってActionを起動させる必要があります。&lt;/p&gt;
+<p>ということで、 <code class="language-plaintext highlighter-rouge">on: pull_request_target</code> 使ってActionを起動させる必要があります。</p>
 
-&lt;h2 id=&quot;余談&quot;&gt;余談&lt;/h2&gt;
+<h2 id="余談">余談</h2>
 
-&lt;p&gt;本Actionは&lt;a href=&quot;https://dev.to/devteam/announcing-the-github-actions-hackathon-on-dev-3ljn&quot;&gt;GitHub Actions Hackathon&lt;/a&gt;にも提出しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p>本Actionは<a href="https://dev.to/devteam/announcing-the-github-actions-hackathon-on-dev-3ljn">GitHub Actions Hackathon</a>にも提出しました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://dev.to/toshimaru/assign-pull-request-author-automatically-with-github-actions-2i9o&quot;&gt;Assign pull request author automatically with GitHub Actions - DEV Community 👩‍💻👨‍💻&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="github_actions" /><category term="ci" /><category term="github" /><summary type="html">本記事はGitHub Actions Advent Calendar 2020６日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">rubocop-rails_config v1.0 をリリースした</title><link href="https://blog.toshimaru.net/rubocop-rails-config-v1/" rel="alternate" type="text/html" title="rubocop-rails_config v1.0 をリリースした" /><published>2020-11-23T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config-v1</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config-v1/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt; gem の v1.0 をリリースした。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://dev.to/toshimaru/assign-pull-request-author-automatically-with-github-actions-2i9o">Assign pull request author automatically with GitHub Actions - DEV Community 👩‍💻👨‍💻</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="github_actions" /><category term="ci" /><category term="github" /><summary type="html"><![CDATA[本記事はGitHub Actions Advent Calendar 2020６日目の記事です。 今日は作ったGitHub Actions、auto-author-assignの紹介をしたいと思います。Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（Assignee）はそのPR作者自身になるかと思います。 その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/auto-author-assign/auto-author-assign.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">rubocop-rails_config v1.0 をリリースした</title><link href="https://blog.toshimaru.net/rubocop-rails-config-v1/" rel="alternate" type="text/html" title="rubocop-rails_config v1.0 をリリースした" /><published>2020-11-23T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config-v1</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config-v1/"><![CDATA[<p><a href="https://github.com/toshimaru/rubocop-rails_config">rubocop-rails_config</a> gem の v1.0 をリリースした。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;rubocop-rails_config v1.0.0 has been released! rubocop-rails_config now requires rubocop v1.0. &lt;a href=&quot;https://t.co/PL2v9POeVC&quot;&gt;https://t.co/PL2v9POeVC&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1320895710254882817?ref_src=twsrc%5Etfw&quot;&gt;October 27, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">rubocop-rails_config v1.0.0 has been released! rubocop-rails_config now requires rubocop v1.0. <a href="https://t.co/PL2v9POeVC">https://t.co/PL2v9POeVC</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1320895710254882817?ref_src=twsrc%5Etfw">October 27, 2020</a></blockquote>
 
-&lt;h2 id=&quot;今までの流れ&quot;&gt;今までの流れ&lt;/h2&gt;
+<h2 id="今までの流れ">今までの流れ</h2>
 
-&lt;p&gt;もともと作ったきっかけとかの記事。&lt;/p&gt;
+<p>もともと作ったきっかけとかの記事。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-cards=&quot;hidden&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;つくったやつ | Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design! &lt;a href=&quot;https://t.co/szG0eLPetS&quot;&gt;https://t.co/szG0eLPetS&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/958123075572195331?ref_src=twsrc%5Etfw&quot;&gt;January 29, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-cards="hidden"><p lang="ja" dir="ltr">つくったやつ | Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design! <a href="https://t.co/szG0eLPetS">https://t.co/szG0eLPetS</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/958123075572195331?ref_src=twsrc%5Etfw">January 29, 2018</a></blockquote>
 
-&lt;p&gt;作ったプロジェクト名を公式に譲ってリネームした話。&lt;/p&gt;
+<p>作ったプロジェクト名を公式に譲ってリネームした話。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-cards=&quot;hidden&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. RuboCopチームにgemの名前を譲った話 - Hack Your Design! &lt;a href=&quot;https://t.co/vumSGBK3UN&quot;&gt;https://t.co/vumSGBK3UN&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1019011276561833985?ref_src=twsrc%5Etfw&quot;&gt;July 17, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-cards="hidden"><p lang="ja" dir="ltr">Blogged. RuboCopチームにgemの名前を譲った話 - Hack Your Design! <a href="https://t.co/vumSGBK3UN">https://t.co/vumSGBK3UN</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1019011276561833985?ref_src=twsrc%5Etfw">July 17, 2018</a></blockquote>
 
-&lt;h2 id=&quot;v10-に上げたきっかけ&quot;&gt;v1.0 に上げたきっかけ&lt;/h2&gt;
+<h2 id="v10-に上げたきっかけ">v1.0 に上げたきっかけ</h2>
 
-&lt;p&gt;rubocopメンテナの&lt;a href=&quot;https://github.com/koic&quot;&gt;@koic&lt;/a&gt;さんとは、rubocop v1.0 に&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config/issues/71#issuecomment-617490886&quot;&gt;あわせて rubocop-rails_config v1.0 もリリースしようぜ&lt;/a&gt;と話していた。&lt;/p&gt;
+<p>rubocopメンテナの<a href="https://github.com/koic">@koic</a>さんとは、rubocop v1.0 に<a href="https://github.com/toshimaru/rubocop-rails_config/issues/71#issuecomment-617490886">あわせて rubocop-rails_config v1.0 もリリースしようぜ</a>と話していた。</p>
 
-&lt;p&gt;今回rubocop v1.0 がリリースされたことに加えて、Rails本体でも&lt;a href=&quot;https://github.com/rails/rails/pull/40436&quot;&gt;rubocop v1.0が使用されるようになった&lt;/a&gt;ことをきっかけとして rubocop-rails_config も v1.0 にあげることを決めた。&lt;/p&gt;
+<p>今回rubocop v1.0 がリリースされたことに加えて、Rails本体でも<a href="https://github.com/rails/rails/pull/40436">rubocop v1.0が使用されるようになった</a>ことをきっかけとして rubocop-rails_config も v1.0 にあげることを決めた。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-cards=&quot;hidden&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;RuboCop 1.0 がリリースされた - koicの日記&lt;a href=&quot;https://t.co/ii353h4ZBQ&quot;&gt;https://t.co/ii353h4ZBQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Koichi ITO (@koic) &lt;a href=&quot;https://twitter.com/koic/status/1318884005941374979?ref_src=twsrc%5Etfw&quot;&gt;October 21, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-cards="hidden"><p lang="ja" dir="ltr">RuboCop 1.0 がリリースされた - koicの日記<a href="https://t.co/ii353h4ZBQ">https://t.co/ii353h4ZBQ</a></p>&mdash; Koichi ITO (@koic) <a href="https://twitter.com/koic/status/1318884005941374979?ref_src=twsrc%5Etfw">October 21, 2020</a></blockquote>
 
-&lt;h2 id=&quot;rubocop-rails_config-v101&quot;&gt;rubocop-rails_config v1.0.1&lt;/h2&gt;
+<h2 id="rubocop-rails_config-v101">rubocop-rails_config v1.0.1</h2>
 
-&lt;p&gt;この記事を書いている時点で既に rubocop は v1.3 までリリースされていたので、 v1.3 までのバージョンは&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config/pull/84&quot;&gt;サポートしておいた&lt;/a&gt;。&lt;/p&gt;
+<p>この記事を書いている時点で既に rubocop は v1.3 までリリースされていたので、 v1.3 までのバージョンは<a href="https://github.com/toshimaru/rubocop-rails_config/pull/84">サポートしておいた</a>。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config/releases/tag/v1.0.1&quot;&gt;Release v1.0.1 · toshimaru/rubocop-rails_config&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rubocop" /><summary type="html">rubocop-rails_config gem の v1.0 をリリースした。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Kaigi on Railsで「FactoryBot the Right Way」を発表しました</title><link href="https://blog.toshimaru.net/kaigi-on-rails/" rel="alternate" type="text/html" title="Kaigi on Railsで「FactoryBot the Right Way」を発表しました" /><published>2020-10-07T00:00:00+09:00</published><updated>2020-10-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/kaigi-on-rails</id><content type="html" xml:base="https://blog.toshimaru.net/kaigi-on-rails/">&lt;p&gt;&lt;a href=&quot;https://kaigionrails.org/&quot;&gt;Kaigi on Rails&lt;/a&gt;で「FactoryBot the Right Way」というタイトルで発表しました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/rubocop-rails_config/releases/tag/v1.0.1">Release v1.0.1 · toshimaru/rubocop-rails_config</a></p>]]></content><author><name>Toshimaru</name></author><category term="rubocop" /><summary type="html"><![CDATA[rubocop-rails_config gem の v1.0 をリリースした。 rubocop-rails_config v1.0.0 has been released!]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Kaigi on Railsで「FactoryBot the Right Way」を発表しました</title><link href="https://blog.toshimaru.net/kaigi-on-rails/" rel="alternate" type="text/html" title="Kaigi on Railsで「FactoryBot the Right Way」を発表しました" /><published>2020-10-07T00:00:00+09:00</published><updated>2020-10-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/kaigi-on-rails</id><content type="html" xml:base="https://blog.toshimaru.net/kaigi-on-rails/"><![CDATA[<p><a href="https://kaigionrails.org/">Kaigi on Rails</a>で「FactoryBot the Right Way」というタイトルで発表しました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
 
-&lt;h2 id=&quot;スライド&quot;&gt;スライド&lt;/h2&gt;
+<h2 id="スライド">スライド</h2>
 
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;8084985a97ce4b6685d8528388da9779&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+<script async="" class="speakerdeck-embed" data-id="8084985a97ce4b6685d8528388da9779" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
 
-&lt;h2 id=&quot;アーカイブ動画&quot;&gt;アーカイブ動画&lt;/h2&gt;
+<h2 id="アーカイブ動画">アーカイブ動画</h2>
 
-&lt;p&gt;動画もYouTubeにアーカイブとして上がっておりますので、音声付きで聴きたい方はこちらをどうぞ。&lt;/p&gt;
+<p>動画もYouTubeにアーカイブとして上がっておりますので、音声付きで聴きたい方はこちらをどうぞ。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;先行して &lt;a href=&quot;https://twitter.com/toshimaru_e?ref_src=twsrc%5Etfw&quot;&gt;@toshimaru_e&lt;/a&gt; さんの動画をアップしました！他のセッションも順次公開していきますのでお楽しみに！ &lt;a href=&quot;https://twitter.com/hashtag/kaigionrails?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#kaigionrails&lt;/a&gt;&lt;a href=&quot;https://t.co/duhoF1Xu1S&quot;&gt;https://t.co/duhoF1Xu1S&lt;/a&gt; &lt;a href=&quot;https://t.co/y3PRYVRlO8&quot;&gt;https://t.co/y3PRYVRlO8&lt;/a&gt;&lt;/p&gt;&amp;mdash; Kaigi on Rails (@kaigionrails) &lt;a href=&quot;https://twitter.com/kaigionrails/status/1312397413592653824?ref_src=twsrc%5Etfw&quot;&gt;October 3, 2020&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">先行して <a href="https://twitter.com/toshimaru_e?ref_src=twsrc%5Etfw">@toshimaru_e</a> さんの動画をアップしました！他のセッションも順次公開していきますのでお楽しみに！ <a href="https://twitter.com/hashtag/kaigionrails?src=hash&amp;ref_src=twsrc%5Etfw">#kaigionrails</a><a href="https://t.co/duhoF1Xu1S">https://t.co/duhoF1Xu1S</a> <a href="https://t.co/y3PRYVRlO8">https://t.co/y3PRYVRlO8</a></p>&mdash; Kaigi on Rails (@kaigionrails) <a href="https://twitter.com/kaigionrails/status/1312397413592653824?ref_src=twsrc%5Etfw">October 3, 2020</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-&lt;h2 id=&quot;感想&quot;&gt;感想&lt;/h2&gt;
+<h2 id="感想">感想</h2>
 
-&lt;p&gt;今回は初のビデオ録画登壇でした。&lt;/p&gt;
+<p>今回は初のビデオ録画登壇でした。</p>
 
-&lt;p&gt;今までのリモート登壇（&lt;a href=&quot;/career-strategy-for-around-thirty-engineer/&quot;&gt;アラサーエンジニアの生存戦略&lt;/a&gt;、&lt;a href=&quot;/how-to-deal-with-fat-model/&quot;&gt;Fat Modelの倒し方&lt;/a&gt;）は基本Zoomを使ったLIVE登壇だったので、今回初めて録画登壇を経験できて良かったと思います。&lt;/p&gt;
+<p>今までのリモート登壇（<a href="/career-strategy-for-around-thirty-engineer/">アラサーエンジニアの生存戦略</a>、<a href="/how-to-deal-with-fat-model/">Fat Modelの倒し方</a>）は基本Zoomを使ったLIVE登壇だったので、今回初めて録画登壇を経験できて良かったと思います。</p>
 
-&lt;p&gt;録画のセットアップとしては下記を利用しました。&lt;/p&gt;
+<p>録画のセットアップとしては下記を利用しました。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;プレゼンテーションツール: Keynote&lt;/li&gt;
-  &lt;li&gt;スライド録画+音声録音: Keynoteのレコーディング機能 (with Krisp)
-    &lt;ul&gt;
-      &lt;li&gt;参考: &lt;a href=&quot;https://support.apple.com/ja-jp/guide/keynote/tan8a5df9cc5/mac&quot;&gt;MacのKeynoteでオーディオを録音する - Apple サポート&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Backup用音声録音: QuickTime Player
-    &lt;ul&gt;
-      &lt;li&gt;参考: &lt;a href=&quot;https://support.apple.com/ja-jp/guide/quicktime-player/qtpf25d6f827/mac&quot;&gt;MacのQuickTime Playerでオーディオを録音する - Apple サポート&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;スピーカー側の動画撮影: iPad&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>プレゼンテーションツール: Keynote</li>
+  <li>スライド録画+音声録音: Keynoteのレコーディング機能 (with Krisp)
+    <ul>
+      <li>参考: <a href="https://support.apple.com/ja-jp/guide/keynote/tan8a5df9cc5/mac">MacのKeynoteでオーディオを録音する - Apple サポート</a></li>
+    </ul>
+  </li>
+  <li>Backup用音声録音: QuickTime Player
+    <ul>
+      <li>参考: <a href="https://support.apple.com/ja-jp/guide/quicktime-player/qtpf25d6f827/mac">MacのQuickTime Playerでオーディオを録音する - Apple サポート</a></li>
+    </ul>
+  </li>
+  <li>スピーカー側の動画撮影: iPad</li>
+</ul>
 
-&lt;blockquote&gt;
-  &lt;p&gt;Kaigi on Railsのコアコンセプトは 「初学者から上級者までが楽しめるWeb系の技術カンファレンス」 です。&lt;/p&gt;
-&lt;/blockquote&gt;
+<blockquote>
+  <p>Kaigi on Railsのコアコンセプトは 「初学者から上級者までが楽しめるWeb系の技術カンファレンス」 です。</p>
+</blockquote>
 
-&lt;p&gt;ということでしたが、今回の発表の内容的には初学者もそこそこ楽しめる内容になっていのではないでしょうか。参考になったのなら幸いです&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p>ということでしたが、今回の発表の内容的には初学者もそこそこ楽しめる内容になっていのではないでしょうか。参考になったのなら幸いです<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-conversation=&quot;none&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://twitter.com/hashtag/kaigionrails?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#kaigionrails&lt;/a&gt; 発表資料チラ見せ。FactoryBotをより上手に使いこなしたい初級者〜中級者レベルの方にはそこそこ有益な情報になっていると思いますので是非😊 &lt;a href=&quot;https://t.co/dQDOzP3BpX&quot;&gt;pic.twitter.com/dQDOzP3BpX&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1311079864070369280?ref_src=twsrc%5Etfw&quot;&gt;September 29, 2020&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+<blockquote class="twitter-tweet" data-conversation="none"><p lang="ja" dir="ltr"><a href="https://twitter.com/hashtag/kaigionrails?src=hash&amp;ref_src=twsrc%5Etfw">#kaigionrails</a> 発表資料チラ見せ。FactoryBotをより上手に使いこなしたい初級者〜中級者レベルの方にはそこそこ有益な情報になっていると思いますので是非😊 <a href="https://t.co/dQDOzP3BpX">pic.twitter.com/dQDOzP3BpX</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1311079864070369280?ref_src=twsrc%5Etfw">September 29, 2020</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-&lt;h2 id=&quot;おわり&quot;&gt;おわり&lt;/h2&gt;
+<h2 id="おわり">おわり</h2>
 
-&lt;p&gt;Kaigi on Railsをオンラインで開催してくださったチーフオーガナイザーの &lt;a href=&quot;https://twitter.com/okuramasafumi&quot;&gt;@okuramasafumi&lt;/a&gt; をはじめ、運営スタッフの皆さま、ありがとうございました。&lt;/p&gt;
+<p>Kaigi on Railsをオンラインで開催してくださったチーフオーガナイザーの <a href="https://twitter.com/okuramasafumi">@okuramasafumi</a> をはじめ、運営スタッフの皆さま、ありがとうございました。</p>
 
-&lt;h2 id=&quot;参考リンク&quot;&gt;参考リンク&lt;/h2&gt;
+<h2 id="参考リンク">参考リンク</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;公式ドキュメント
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md&quot;&gt;GETTING_STARTED.md&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/thoughtbot/factory_bot/blob/master/NAME.md&quot;&gt;Project Naming History&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;ベンチマークソースコード
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/factory-bot-the-right-way&quot;&gt;toshimaru/factory-bot-the-right-way&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://fukabori.fm/episode/13&quot;&gt;13. ペアプロやテストの疑問とか、ソフトウェアエンジニアの育成とか | fukabori.fm&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://sinsoku.hatenablog.com/entry/2017/04/09/214728&quot;&gt;Rails アンチパターン - 錆びついたファクトリー (factory_girl) - アジャイルSEの憂鬱&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://magazine.rubyist.net/articles/kaigi_on_rails/index.html&quot;&gt;Rubyist Magazine: Kaigi on Rails 特集号&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>公式ドキュメント
+    <ul>
+      <li><a href="https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md">GETTING_STARTED.md</a></li>
+      <li><a href="https://github.com/thoughtbot/factory_bot/blob/master/NAME.md">Project Naming History</a></li>
+    </ul>
+  </li>
+  <li>ベンチマークソースコード
+    <ul>
+      <li><a href="https://github.com/toshimaru/factory-bot-the-right-way">toshimaru/factory-bot-the-right-way</a></li>
+    </ul>
+  </li>
+  <li><a href="https://fukabori.fm/episode/13">13. ペアプロやテストの疑問とか、ソフトウェアエンジニアの育成とか | fukabori.fm</a></li>
+  <li><a href="https://sinsoku.hatenablog.com/entry/2017/04/09/214728">Rails アンチパターン - 錆びついたファクトリー (factory_girl) - アジャイルSEの憂鬱</a></li>
+  <li><a href="https://magazine.rubyist.net/articles/kaigi_on_rails/index.html">Rubyist Magazine: Kaigi on Rails 特集号</a></li>
+</ul>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;たぶん文法的には「FactoryBot &lt;strong&gt;in&lt;/strong&gt; the right way」ってのが正しい気がするけど、こちらがゴロが良かったということでそれはご愛嬌で。。。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;RailsDM2018で発表したこちらの内容もあわせて参考にしていただけると :pray: &lt;a href=&quot;/rdm2018-active-record-anti-patterns/&quot;&gt;railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました&lt;/a&gt; &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rspec" /><category term="rails" /><summary type="html">Kaigi on Railsで「FactoryBot the Right Way」というタイトルで発表しました1。 たぶん文法的には「FactoryBot in the right way」ってのが正しい気がするけど、こちらがゴロが良かったということでそれはご愛嬌で。。。 &amp;#8617;</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>たぶん文法的には「FactoryBot <strong>in</strong> the right way」ってのが正しい気がするけど、こちらがゴロが良かったということでそれはご愛嬌で。。。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>RailsDM2018で発表したこちらの内容もあわせて参考にしていただけると :pray: <a href="/rdm2018-active-record-anti-patterns/">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rspec" /><category term="rails" /><summary type="html"><![CDATA[Kaigi on Railsで「FactoryBot the Right Way」というタイトルで発表しました。動画もYouTubeにアーカイブとして上がっておりますので、音声付きで聴きたい方はこちらをどうぞ。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

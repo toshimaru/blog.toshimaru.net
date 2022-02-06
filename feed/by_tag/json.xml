@@ -1,43 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/json.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/json.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">RubyのJSONパーサーのパース速度比較</title><link href="https://blog.toshimaru.net/json-parser-benchmark/" rel="alternate" type="text/html" title="RubyのJSONパーサーのパース速度比較" /><published>2015-12-13T00:00:00+09:00</published><updated>2015-12-13T00:00:00+09:00</updated><id>https://blog.toshimaru.net/json-parser-benchmark</id><content type="html" xml:base="https://blog.toshimaru.net/json-parser-benchmark/">&lt;p&gt;標準のJSONパーサーとは別に&lt;a href=&quot;https://www.ruby-toolbox.com/categories/JSON_Parsers&quot;&gt;いくつかのJSONパーサー&lt;/a&gt;実装がRuby gemにはある。それらを比較としてベンチマークとってみた。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/json.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/json.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">RubyのJSONパーサーのパース速度比較</title><link href="https://blog.toshimaru.net/json-parser-benchmark/" rel="alternate" type="text/html" title="RubyのJSONパーサーのパース速度比較" /><published>2015-12-13T00:00:00+09:00</published><updated>2015-12-13T00:00:00+09:00</updated><id>https://blog.toshimaru.net/json-parser-benchmark</id><content type="html" xml:base="https://blog.toshimaru.net/json-parser-benchmark/"><![CDATA[<p>標準のJSONパーサーとは別に<a href="https://www.ruby-toolbox.com/categories/JSON_Parsers">いくつかのJSONパーサー</a>実装がRuby gemにはある。それらを比較としてベンチマークとってみた。</p>
 
-&lt;h2 id=&quot;前提&quot;&gt;前提&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Ruby 2.2.2 を使います&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/evanphx/benchmark-ips&quot;&gt;benchmark-ips&lt;/a&gt;でベンチとる&lt;/li&gt;
-  &lt;li&gt;パースするJSONは30KB程度のサイズ&lt;/li&gt;
-  &lt;li&gt;比較対象は下記3つ
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;http://ruby-doc.org/stdlib-2.2.0/libdoc/json/rdoc/JSON.html&quot;&gt;Module: JSON&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/brianmario/yajl-ruby&quot;&gt;yajl&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/ohler55/oj&quot;&gt;oj&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="前提">前提</h2>
+<ul>
+  <li>Ruby 2.2.2 を使います</li>
+  <li><a href="https://github.com/evanphx/benchmark-ips">benchmark-ips</a>でベンチとる</li>
+  <li>パースするJSONは30KB程度のサイズ</li>
+  <li>比較対象は下記3つ
+    <ul>
+      <li><a href="http://ruby-doc.org/stdlib-2.2.0/libdoc/json/rdoc/JSON.html">Module: JSON</a></li>
+      <li><a href="https://github.com/brianmario/yajl-ruby">yajl</a></li>
+      <li><a href="https://github.com/ohler55/oj">oj</a></li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;ruby-code&quot;&gt;Ruby code&lt;/h2&gt;
+<h2 id="ruby-code">Ruby code</h2>
 
-&lt;p&gt;書いてみた。&lt;/p&gt;
+<p>書いてみた。</p>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;uri&apos;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;net/http&apos;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;json&apos;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;yajl&apos;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;oj&apos;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;benchmark/ips&apos;&lt;/span&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'uri'</span>
+<span class="nb">require</span> <span class="s1">'net/http'</span>
+<span class="nb">require</span> <span class="s1">'json'</span>
+<span class="nb">require</span> <span class="s1">'yajl'</span>
+<span class="nb">require</span> <span class="s1">'oj'</span>
+<span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
-&lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;URI&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;http://complex/json/url.json&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uri&lt;/span&gt;
+<span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span> <span class="s2">"http://complex/json/url.json"</span>
+<span class="n">response</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="p">.</span><span class="nf">get</span> <span class="n">uri</span>
 
-&lt;span class=&quot;no&quot;&gt;Benchmark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ips&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;JSON.parse&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Yajl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Yajl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Parser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;report&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Oj&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Oj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;compare!&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"JSON.parse"</span><span class="p">)</span> <span class="p">{</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"Yajl"</span><span class="p">)</span> <span class="p">{</span> <span class="no">Yajl</span><span class="o">::</span><span class="no">Parser</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s2">"Oj"</span><span class="p">)</span> <span class="p">{</span> <span class="no">Oj</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">compare!</span>
+<span class="k">end</span></code></pre></figure>
 
-&lt;h2 id=&quot;result&quot;&gt;Result&lt;/h2&gt;
+<h2 id="result">Result</h2>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Calculating -------------------------------------
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Calculating -------------------------------------
           JSON.parse    99.000  i/100ms
                 Yajl   108.000  i/100ms
                   Oj   173.000  i/100ms
@@ -50,57 +50,57 @@ Comparison:
                   Oj:     1838.3 i/s
           JSON.parse:     1123.1 i/s - 1.64x slower
                 Yajl:     1105.2 i/s - 1.66x slower
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;OjがJSON.parseやYajlより1.5倍〜1.8倍ほど高速という結果が得られた。&lt;/p&gt;
+<p>OjがJSON.parseやYajlより1.5倍〜1.8倍ほど高速という結果が得られた。</p>
 
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+<h2 id="まとめ">まとめ</h2>
 
-&lt;p&gt;Oj使ってこ。&lt;/p&gt;
+<p>Oj使ってこ。</p>
 
-&lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
+<h2 id="追記">追記</h2>
 
-&lt;p&gt;こんなPRを見つけた。 &lt;a href=&quot;https://github.com/fluent/fluentd/pull/748&quot;&gt;Use ‘oj’ for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="json" /><category term="ruby" /><summary type="html">標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。</summary></entry><entry><title type="html">JSON Schemaについて発表しました</title><link href="https://blog.toshimaru.net/json-schema-collaboration/" rel="alternate" type="text/html" title="JSON Schemaについて発表しました" /><published>2015-12-09T00:00:00+09:00</published><updated>2015-12-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/json-schema-collaboration</id><content type="html" xml:base="https://blog.toshimaru.net/json-schema-collaboration/">&lt;p&gt;「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題して&lt;a href=&quot;http://gunosy-beer.connpass.com/event/22825/&quot;&gt;エムスリー x Gunosy Beer bash&lt;/a&gt;で発表してきました。&lt;/p&gt;
+<p>こんなPRを見つけた。 <a href="https://github.com/fluent/fluentd/pull/748">Use ‘oj’ for performance improvement when oj is installed by repeatedly · Pull Request #748 · fluent/fluentd</a></p>]]></content><author><name>Toshimaru</name></author><category term="json" /><category term="ruby" /><summary type="html"><![CDATA[標準のJSONパーサーとは別にいくつかのJSONパーサー実装がRuby gemにはある。それらを比較としてベンチマークとってみた。]]></summary></entry><entry><title type="html">JSON Schemaについて発表しました</title><link href="https://blog.toshimaru.net/json-schema-collaboration/" rel="alternate" type="text/html" title="JSON Schemaについて発表しました" /><published>2015-12-09T00:00:00+09:00</published><updated>2015-12-09T00:00:00+09:00</updated><id>https://blog.toshimaru.net/json-schema-collaboration</id><content type="html" xml:base="https://blog.toshimaru.net/json-schema-collaboration/"><![CDATA[<p>「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題して<a href="http://gunosy-beer.connpass.com/event/22825/">エムスリー x Gunosy Beer bash</a>で発表してきました。</p>
 
-&lt;p&gt;当日ハッシュタグ: &lt;a href=&quot;https://twitter.com/hashtag/gunosybeer?src=hash&quot;&gt;#gunosybeer hashtag on Twitter&lt;/a&gt;&lt;/p&gt;
+<p>当日ハッシュタグ: <a href="https://twitter.com/hashtag/gunosybeer?src=hash">#gunosybeer hashtag on Twitter</a></p>
 
-&lt;h2 id=&quot;発表資料point_down&quot;&gt;発表資料:point_down:&lt;/h2&gt;
+<h2 id="発表資料point_down">発表資料:point_down:</h2>
 
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;ddf8953b3746496a848dd7e4038ece4e&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+<script async="" class="speakerdeck-embed" data-id="ddf8953b3746496a848dd7e4038ece4e" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
 
-&lt;h1 id=&quot;2-types-of-json-schema&quot;&gt;2 Types of JSON Schema&lt;/h1&gt;
+<h1 id="2-types-of-json-schema">2 Types of JSON Schema</h1>
 
-&lt;p&gt;&lt;a href=&quot;http://json-schema.org/&quot;&gt;JSON Schema and Hyper-Schema&lt;/a&gt;&lt;/p&gt;
+<p><a href="http://json-schema.org/">JSON Schema and Hyper-Schema</a></p>
 
-&lt;ul&gt;
-  &lt;li&gt;JSON Schema&lt;/li&gt;
-  &lt;li&gt;JSON Hyper-Schema&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>JSON Schema</li>
+  <li>JSON Hyper-Schema</li>
+</ul>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/json-schema.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/jsonschema/json-schema.png" alt="" /></p>
 
-&lt;h2 id=&quot;json-schema&quot;&gt;JSON Schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;JSONの &lt;strong&gt;データフォーマット&lt;/strong&gt; を記述する&lt;/li&gt;
-  &lt;li&gt;人間にも機械にもわかりやすいドキュメント&lt;/li&gt;
-  &lt;li&gt;フォームでサブミットするデータのバリデーションに使える&lt;/li&gt;
-  &lt;li&gt;自動テストにも使える&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json-schema">JSON Schema</h2>
+<ul>
+  <li>JSONの <strong>データフォーマット</strong> を記述する</li>
+  <li>人間にも機械にもわかりやすいドキュメント</li>
+  <li>フォームでサブミットするデータのバリデーションに使える</li>
+  <li>自動テストにも使える</li>
+</ul>
 
-&lt;h2 id=&quot;json-hyper-schema&quot;&gt;JSON Hyper-Schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Web APIの仕様&lt;/strong&gt; を記述する&lt;/li&gt;
-  &lt;li&gt;APIで期待するデータをJSON Schemaの形式で記述&lt;/li&gt;
-  &lt;li&gt;日本ではこっちの方がポピュラー？&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json-hyper-schema">JSON Hyper-Schema</h2>
+<ul>
+  <li><strong>Web APIの仕様</strong> を記述する</li>
+  <li>APIで期待するデータをJSON Schemaの形式で記述</li>
+  <li>日本ではこっちの方がポピュラー？</li>
+</ul>
 
-&lt;p&gt;観測範囲内だと日本のコミュニティでJSON Schemaといったときにこちらを指すことが多い気がする。&lt;/p&gt;
+<p>観測範囲内だと日本のコミュニティでJSON Schemaといったときにこちらを指すことが多い気がする。</p>
 
-&lt;h2 id=&quot;コラボレーション図&quot;&gt;コラボレーション図&lt;/h2&gt;
+<h2 id="コラボレーション図">コラボレーション図</h2>
 
-&lt;p&gt;JSON Schemaでコラボレーションした事例を紹介するよ。&lt;/p&gt;
+<p>JSON Schemaでコラボレーションした事例を紹介するよ。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+------------------+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------------------+
 |                  |
 |  Client-side JS  |
 |     (React)      |
@@ -108,7 +108,7 @@ Comparison:
 +---+--------+-----+
     |        ^
     |        |            +---------------+
-    |  JSON  |  &amp;lt;-------- |  JSON Schema  |
+    |  JSON  |  &lt;-------- |  JSON Schema  |
     |        |            +---------------+
     v        |
 +---+--------+-----+
@@ -117,179 +117,179 @@ Comparison:
 |     (Rails)      |
 |                  |
 +------------------+
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;json-schema-for-us&quot;&gt;JSON Schema for us&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;For Humans
-    &lt;ul&gt;
-      &lt;li&gt;Clear specification&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;For Apps
-    &lt;ul&gt;
-      &lt;li&gt;useful for Validation&lt;/li&gt;
-      &lt;li&gt;useful for Test&lt;/li&gt;
-      &lt;li&gt;etc.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json-schema-for-us">JSON Schema for us</h2>
+<ul>
+  <li>For Humans
+    <ul>
+      <li>Clear specification</li>
+    </ul>
+  </li>
+  <li>For Apps
+    <ul>
+      <li>useful for Validation</li>
+      <li>useful for Test</li>
+      <li>etc.</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;repositories&quot;&gt;Repositories&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;:point_down: Rails API Repo :point_down:&lt;/li&gt;
-  &lt;li&gt;:point_right: &lt;strong&gt;JSON Schema Repo&lt;/strong&gt; :point_left:&lt;/li&gt;
-  &lt;li&gt;:point_up_2: Frontend Repo :point_up_2:&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="repositories">Repositories</h2>
+<ul>
+  <li>:point_down: Rails API Repo :point_down:</li>
+  <li>:point_right: <strong>JSON Schema Repo</strong> :point_left:</li>
+  <li>:point_up_2: Frontend Repo :point_up_2:</li>
+</ul>
 
-&lt;p&gt;バックエンドAPIのレポジトリ、フロントエンドのJSレポジトリ、共通で使うJSON Schemaのためのレポジトリ、これら３つを用意した。&lt;/p&gt;
+<p>バックエンドAPIのレポジトリ、フロントエンドのJSレポジトリ、共通で使うJSON Schemaのためのレポジトリ、これら３つを用意した。</p>
 
-&lt;h2 id=&quot;workflow&quot;&gt;Workflow&lt;/h2&gt;
+<h2 id="workflow">Workflow</h2>
 
-&lt;ol&gt;
-  &lt;li&gt;必要なAPIとそこに含まれるべきデータを洗い出し&lt;/li&gt;
-  &lt;li&gt;1をJSON Schemaに落としこむ&lt;/li&gt;
-  &lt;li&gt;プルリク！&lt;/li&gt;
-&lt;/ol&gt;
+<ol>
+  <li>必要なAPIとそこに含まれるべきデータを洗い出し</li>
+  <li>1をJSON Schemaに落としこむ</li>
+  <li>プルリク！</li>
+</ol>
 
-&lt;p&gt;1は仕様・ワイヤーをもとにマークダウンでもスプレッドシートでも荒くアウトプット出す。&lt;/p&gt;
+<p>1は仕様・ワイヤーをもとにマークダウンでもスプレッドシートでも荒くアウトプット出す。</p>
 
-&lt;p&gt;バックエンドエンジニアとフロントエンドエンジニアが共通認識を深めながらJSON Schemaレポジトリを育てていく。&lt;/p&gt;
+<p>バックエンドエンジニアとフロントエンドエンジニアが共通認識を深めながらJSON Schemaレポジトリを育てていく。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/schema-pr.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/jsonschema/schema-pr.png" alt="" /></p>
 
-&lt;h2 id=&quot;get-usersid&quot;&gt;GET /users/{id}&lt;/h2&gt;
+<h2 id="get-usersid">GET /users/{id}</h2>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# user.schema.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;$schema&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;http://json-schema.org/draft-04/schema#&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;User&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;An User&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;object&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;properties&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;integer&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;email&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;string&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;minLength&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;maxLength&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;32&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;required&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;id&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;email&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># user.schema.yml</span>
+<span class="na">$schema</span><span class="pi">:</span> <span class="s">http://json-schema.org/draft-04/schema#</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">User</span>
+<span class="na">description</span><span class="pi">:</span> <span class="s">An User</span>
+<span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+<span class="na">properties</span><span class="pi">:</span>
+  <span class="na">id</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">integer</span>
+  <span class="na">email</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+    <span class="na">format</span><span class="pi">:</span> <span class="s">email</span>
+  <span class="na">name</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+    <span class="na">minLength</span><span class="pi">:</span> <span class="m">1</span>
+    <span class="na">maxLength</span><span class="pi">:</span> <span class="m">32</span>
+<span class="na">required</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">id</span>
+  <span class="pi">-</span> <span class="s">email</span>
+  <span class="pi">-</span> <span class="s">name</span></code></pre></figure>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PUT /users/{id}&lt;/code&gt;とかもスキーマ使いまわせる。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">PUT /users/{id}</code>とかもスキーマ使いまわせる。</p>
 
-&lt;h2 id=&quot;json-schema-validation&quot;&gt;JSON Schema Validation&lt;/h2&gt;
+<h2 id="json-schema-validation">JSON Schema Validation</h2>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;json-schema&apos;&lt;/span&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'json-schema'</span>
 
-&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;type&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;object&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;required&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;properties&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;type&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;integer&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">"type"</span> <span class="o">=&gt;</span> <span class="s2">"object"</span><span class="p">,</span>
+  <span class="s2">"required"</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">],</span>
+  <span class="s2">"properties"</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">"type"</span> <span class="o">=&gt;</span> <span class="s2">"integer"</span><span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">"a"</span> <span class="o">=&gt;</span> <span class="mi">5</span>
+<span class="p">}</span>
 
-&lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Validator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;validate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+<span class="no">JSON</span><span class="o">::</span><span class="no">Validator</span><span class="p">.</span><span class="nf">validate</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></code></pre></figure>
 
-&lt;h2 id=&quot;rspec-json-schema-matcher&quot;&gt;RSpec JSON Schema Matcher&lt;/h2&gt;
+<h2 id="rspec-json-schema-matcher">RSpec JSON Schema Matcher</h2>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Fetching the current user&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;with valid auth token&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;returns the current user&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;auth_header&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Auth-Token&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;auth_token&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">"Fetching the current user"</span> <span class="k">do</span>
+  <span class="n">context</span> <span class="s2">"with valid auth token"</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">"returns the current user"</span> <span class="k">do</span>
+      <span class="n">user</span> <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
+      <span class="n">auth_header</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"Auth-Token"</span> <span class="o">=&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">auth_token</span> <span class="p">}</span>
 
-      &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v1_current_user_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;auth_header&lt;/span&gt;
+      <span class="n">get</span> <span class="n">v1_current_user_url</span><span class="p">,</span> <span class="p">{},</span> <span class="n">auth_header</span>
 
-      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;match_response_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;user&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">status</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="mi">200</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">).</span><span class="nf">to</span> <span class="n">match_response_schema</span><span class="p">(</span><span class="s2">"user"</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
 
-&lt;p&gt;参考: &lt;a href=&quot;https://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher&quot;&gt;Validating JSON Schemas with an RSpec Matcher&lt;/a&gt;&lt;/p&gt;
+<p>参考: <a href="https://robots.thoughtbot.com/validating-json-schemas-with-an-rspec-matcher">Validating JSON Schemas with an RSpec Matcher</a></p>
 
-&lt;h2 id=&quot;ruby-json-schema-library&quot;&gt;Ruby JSON Schema Library&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/ruby-json-schema/json-schema&quot;&gt;ruby-json-schema/json-schema&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/brandur/json_schema&quot;&gt;brandur/json_schema&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="ruby-json-schema-library">Ruby JSON Schema Library</h2>
+<ul>
+  <li><a href="https://github.com/ruby-json-schema/json-schema">ruby-json-schema/json-schema</a></li>
+  <li><a href="https://github.com/brandur/json_schema">brandur/json_schema</a></li>
+</ul>
 
-&lt;p&gt;ダッシュとアンダースコア！ わかりにくい！！&lt;/p&gt;
+<p>ダッシュとアンダースコア！ わかりにくい！！</p>
 
-&lt;h2 id=&quot;json-schema-vs-json_schema&quot;&gt;json-schema vs json_schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;depending on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;json-schema&lt;/code&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/airbrake/airbrake&quot;&gt;airbrake/airbrake&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/square/fdoc&quot;&gt;square/fdoc&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json-schema-vs-json_schema">json-schema vs json_schema</h2>
+<ul>
+  <li>depending on <code class="language-plaintext highlighter-rouge">json-schema</code>:
+    <ul>
+      <li><a href="https://github.com/airbrake/airbrake">airbrake/airbrake</a></li>
+      <li><a href="https://github.com/square/fdoc">square/fdoc</a></li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;json-schema-vs-json_schema-1&quot;&gt;json-schema vs json_schema&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;depending on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;json_schema&lt;/code&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/interagent/committee&quot;&gt;interagent/committee&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/interagent/prmd&quot;&gt;interagent/prmd&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/increments/qiita-rb&quot;&gt;increments/qiita-rb&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/r7kamura/rack-json_schema&quot;&gt;r7kamura/rack-json_schema&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://github.com/r7kamura/jdoc&quot;&gt;r7kamura/jdoc&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json-schema-vs-json_schema-1">json-schema vs json_schema</h2>
+<ul>
+  <li>depending on <code class="language-plaintext highlighter-rouge">json_schema</code>:
+    <ul>
+      <li><a href="https://github.com/interagent/committee">interagent/committee</a></li>
+      <li><a href="https://github.com/interagent/prmd">interagent/prmd</a></li>
+      <li><a href="https://github.com/increments/qiita-rb">increments/qiita-rb</a></li>
+      <li><a href="https://github.com/r7kamura/rack-json_schema">r7kamura/rack-json_schema</a></li>
+      <li><a href="https://github.com/r7kamura/jdoc">r7kamura/jdoc</a></li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;javascript-json-schema-library&quot;&gt;JavaScript JSON Schema Library&lt;/h2&gt;
+<h2 id="javascript-json-schema-library">JavaScript JSON Schema Library</h2>
 
-&lt;p&gt;弊社フロンエンドエンジニアのオススメ2つ。&lt;/p&gt;
+<p>弊社フロンエンドエンジニアのオススメ2つ。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/mafintosh/is-my-json-valid&quot;&gt;mafintosh/is-my-json-valid&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/epoberezkin/ajv&quot;&gt;epoberezkin/ajv&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://github.com/mafintosh/is-my-json-valid">mafintosh/is-my-json-valid</a></li>
+  <li><a href="https://github.com/epoberezkin/ajv">epoberezkin/ajv</a></li>
+</ul>
 
-&lt;h2 id=&quot;json書くのツラい問題&quot;&gt;JSON書くのツラい問題&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;「閉じカッコがー!!」&lt;/li&gt;
-  &lt;li&gt;「カンマがー!!!!」&lt;/li&gt;
-  &lt;li&gt;「コメントがー!!!!!!」&lt;/li&gt;
-  &lt;li&gt;「クオテーションがー!!!!!!」&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json書くのツラい問題">JSON書くのツラい問題</h2>
+<ul>
+  <li>「閉じカッコがー!!」</li>
+  <li>「カンマがー!!!!」</li>
+  <li>「コメントがー!!!!!!」</li>
+  <li>「クオテーションがー!!!!!!」</li>
+</ul>
 
-&lt;p&gt;&lt;strong&gt;黙ってYAMLで書こう。&lt;/strong&gt; こっちのが可読性もよいしミスも少ないし書きやすいです。&lt;/p&gt;
+<p><strong>黙ってYAMLで書こう。</strong> こっちのが可読性もよいしミスも少ないし書きやすいです。</p>
 
-&lt;h2 id=&quot;json-schemaの今とこれから&quot;&gt;JSON Schemaの今とこれから&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema&quot;&gt;json-schema/json-schema&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json-schemaの今とこれから">JSON Schemaの今とこれから</h2>
+<ul>
+  <li><a href="https://github.com/json-schema/json-schema">json-schema/json-schema</a></li>
+</ul>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/ima.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/jsonschema/ima.png" alt="" /></p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema/wiki/v5-Proposals&quot;&gt;JSON Schema v5 Proposals&lt;/a&gt;が出されている段階&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/json-schema/json-schema/issues&quot;&gt;Issue&lt;/a&gt;や&lt;a href=&quot;https://groups.google.com/forum/#!forum/json-schema&quot;&gt;Google Groups&lt;/a&gt;を追うとよさげ&lt;/li&gt;
-  &lt;li&gt;v5への具体的なロードマップは引かれていない模様&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://github.com/json-schema/json-schema/wiki/v5-Proposals">JSON Schema v5 Proposals</a>が出されている段階</li>
+  <li><a href="https://github.com/json-schema/json-schema/issues">Issue</a>や<a href="https://groups.google.com/forum/#!forum/json-schema">Google Groups</a>を追うとよさげ</li>
+  <li>v5への具体的なロードマップは引かれていない模様</li>
+</ul>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/jsonschema/korekara.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/jsonschema/korekara.png" alt="" /></p>
 
-&lt;h2 id=&quot;json-schemaコラボでよかったこと&quot;&gt;JSON Schemaコラボでよかったこと&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;バックエンドエンジニアとフロントエンドエンジニアの仕様の共通認識&lt;/li&gt;
-  &lt;li&gt;JSON Schemaを先に定義しておくことでバックエンドエンジニアとフロントエンドエンジニアが疎に開発できる&lt;/li&gt;
-  &lt;li&gt;JSON Schemaでバグの混入を防ぐ&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="json-schemaコラボでよかったこと">JSON Schemaコラボでよかったこと</h2>
+<ul>
+  <li>バックエンドエンジニアとフロントエンドエンジニアの仕様の共通認識</li>
+  <li>JSON Schemaを先に定義しておくことでバックエンドエンジニアとフロントエンドエンジニアが疎に開発できる</li>
+  <li>JSON Schemaでバグの混入を防ぐ</li>
+</ul>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;h2 id=&quot;所感&quot;&gt;所感&lt;/h2&gt;
-&lt;p&gt;時間にシビアなLT形式だったので発表途中でぶった切られた。もう少し簡潔にすべきだったかもしれない。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="jsonschema" /><category term="json" /><category term="presentation" /><summary type="html">「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題してエムスリー x Gunosy Beer bashで発表してきました。</summary></entry></feed>
+<h2 id="所感">所感</h2>
+<p>時間にシビアなLT形式だったので発表途中でぶった切られた。もう少し簡潔にすべきだったかもしれない。</p>]]></content><author><name>Toshimaru</name></author><category term="jsonschema" /><category term="json" /><category term="presentation" /><summary type="html"><![CDATA[「JSON Schemaでバックエンドエンジニアとフロントエンドエンジニアがコラボする」と題してエムスリー x Gunosy Beer bashで発表してきました。]]></summary></entry></feed>

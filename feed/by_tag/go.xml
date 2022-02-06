@@ -1,151 +1,151 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/go.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/go.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</title><link href="https://blog.toshimaru.net/dependabot-gomod/" rel="alternate" type="text/html" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）" /><published>2021-01-27T00:00:00+09:00</published><updated>2021-01-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/dependabot-gomod</id><content type="html" xml:base="https://blog.toshimaru.net/dependabot-gomod/">&lt;p&gt;Dependabot が GitHub の公式機能の一部として利用可能になりました。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/go.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/go.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dependabot で go modules の自動アップデートをする（go mod tidy付き）</title><link href="https://blog.toshimaru.net/dependabot-gomod/" rel="alternate" type="text/html" title="Dependabot で go modules の自動アップデートをする（go mod tidy付き）" /><published>2021-01-27T00:00:00+09:00</published><updated>2021-01-27T00:00:00+09:00</updated><id>https://blog.toshimaru.net/dependabot-gomod</id><content type="html" xml:base="https://blog.toshimaru.net/dependabot-gomod/"><![CDATA[<p>Dependabot が GitHub の公式機能の一部として利用可能になりました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;blogged. | DependabotをGitHub公式Dependabotに移行させた - Hack Your Design! &lt;a href=&quot;https://t.co/6Mb0XDSaSC&quot;&gt;https://t.co/6Mb0XDSaSC&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1273437750499270659?ref_src=twsrc%5Etfw&quot;&gt;June 18, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">blogged. | DependabotをGitHub公式Dependabotに移行させた - Hack Your Design! <a href="https://t.co/6Mb0XDSaSC">https://t.co/6Mb0XDSaSC</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1273437750499270659?ref_src=twsrc%5Etfw">June 18, 2020</a></blockquote>
 
-&lt;p&gt;ただ go modules のアップデートに関しては、アップデート時に &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; を実行してくれないという問題がありました。&lt;/p&gt;
+<p>ただ go modules のアップデートに関しては、アップデート時に <code class="language-plaintext highlighter-rouge">go mod tidy</code> を実行してくれないという問題がありました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;renovate ならオプションでやってくれるみたいなのでGoプロジェクトはこっちに乗り換えるかー&lt;a href=&quot;https://t.co/qVbkb5UXlA&quot;&gt;https://t.co/qVbkb5UXlA&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1219800597982932992?ref_src=twsrc%5Etfw&quot;&gt;January 22, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">renovate ならオプションでやってくれるみたいなのでGoプロジェクトはこっちに乗り換えるかー<a href="https://t.co/qVbkb5UXlA">https://t.co/qVbkb5UXlA</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1219800597982932992?ref_src=twsrc%5Etfw">January 22, 2020</a></blockquote>
 
-&lt;p&gt;代替として、&lt;a href=&quot;https://github.com/renovatebot/renovate&quot;&gt;Renovate&lt;/a&gt;という &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; してくれるアップデーターを使っていました。&lt;/p&gt;
+<p>代替として、<a href="https://github.com/renovatebot/renovate">Renovate</a>という <code class="language-plaintext highlighter-rouge">go mod tidy</code> してくれるアップデーターを使っていました。</p>
 
-&lt;p&gt;しかし、この度 Dependabot が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; も実行してくれるようになっていました。&lt;/p&gt;
+<p>しかし、この度 Dependabot が <code class="language-plaintext highlighter-rouge">go mod tidy</code> も実行してくれるようになっていました。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Dependabot: `go mod tidy` and `vendor` support &lt;a href=&quot;https://t.co/x9Wwj0yuMG&quot;&gt;https://t.co/x9Wwj0yuMG&lt;/a&gt;&lt;/p&gt;&amp;mdash; GitHub Changelog (@GHchangelog) &lt;a href=&quot;https://twitter.com/GHchangelog/status/1318223496569290752?ref_src=twsrc%5Etfw&quot;&gt;October 19, 2020&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Dependabot: `go mod tidy` and `vendor` support <a href="https://t.co/x9Wwj0yuMG">https://t.co/x9Wwj0yuMG</a></p>&mdash; GitHub Changelog (@GHchangelog) <a href="https://twitter.com/GHchangelog/status/1318223496569290752?ref_src=twsrc%5Etfw">October 19, 2020</a></blockquote>
 
-&lt;h2 id=&quot;dependabot-go-modules設定&quot;&gt;Dependabot Go Modules設定&lt;/h2&gt;
+<h2 id="dependabot-go-modules設定">Dependabot Go Modules設定</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.github/dependabot.yml&lt;/code&gt; ファイルを作って、下記のように記述すればOK。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">.github/dependabot.yml</code> ファイルを作って、下記のように記述すればOK。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# .github/dependabot.yml&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;updates&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;package-ecosystem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;gomod&quot;&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;directory&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Location of package manifests&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;interval&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;weekly&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/dependabot.yml</span>
+<span class="na">version</span><span class="pi">:</span> <span class="m">2</span>
+<span class="na">updates</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s2">"</span><span class="s">gomod"</span>
+    <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span> <span class="c1"># Location of package manifests</span>
+    <span class="na">schedule</span><span class="pi">:</span>
+      <span class="na">interval</span><span class="pi">:</span> <span class="s2">"</span><span class="s">weekly"</span>
+</code></pre></div></div>
 
-&lt;p&gt;下記のPRの通り、きちんと &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; をやってくれています。&lt;/p&gt;
+<p>下記のPRの通り、きちんと <code class="language-plaintext highlighter-rouge">go mod tidy</code> をやってくれています。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/nyan/pull/104&quot;&gt;github.com/toshimaru/nyan/pull/104&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/nyan/pull/104">github.com/toshimaru/nyan/pull/104</a></p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.blog/changelog/2020-10-19-dependabot-go-mod-tidy-and-vendor-support/&quot;&gt;Dependabot: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go mod tidy&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vendor&lt;/code&gt; support - GitHub Changelog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/golang/go/wiki/Modules&quot;&gt;Modules · golang/go Wiki&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">Dependabot が GitHub の公式機能の一部として利用可能になりました。</summary></entry><entry><title type="html">複数のGoroutineをWaitGroup（ErrGroup）で制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/">&lt;div class=&quot;info&quot;&gt;
-  &lt;h5&gt;追記&lt;/h5&gt;
-  &lt;p&gt;errgroup について追記しました。&lt;/p&gt;
-&lt;/div&gt;
+<ul>
+  <li><a href="https://github.blog/changelog/2020-10-19-dependabot-go-mod-tidy-and-vendor-support/">Dependabot: <code class="language-plaintext highlighter-rouge">go mod tidy</code> and <code class="language-plaintext highlighter-rouge">vendor</code> support - GitHub Changelog</a></li>
+  <li><a href="https://github.com/golang/go/wiki/Modules">Modules · golang/go Wiki</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="go" /><summary type="html"><![CDATA[Dependabot が GitHub の公式機能の一部として利用可能になりました。ただ go modules のアップデートに関しては、アップデート時に go mod tidy を実行してくれないという問題がありました。代替として、Renovateという go mod tidy してくれるアップデーターを使っていました。しかし、この度 Dependabot が go mod tidy も実行してくれるようになっていました。]]></summary></entry><entry><title type="html">複数のGoroutineをWaitGroup（ErrGroup）で制御する</title><link href="https://blog.toshimaru.net/goroutine-with-waitgroup/" rel="alternate" type="text/html" title="複数のGoroutineをWaitGroup（ErrGroup）で制御する" /><published>2019-12-05T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/goroutine-with-waitgroup</id><content type="html" xml:base="https://blog.toshimaru.net/goroutine-with-waitgroup/"><![CDATA[<div class="info">
+  <h5>追記</h5>
+  <p>errgroup について追記しました。</p>
+</div>
 
-&lt;p&gt;この記事は&lt;a href=&quot;https://qiita.com/advent-calendar/2019/go7&quot;&gt;Go7 Advent Calendar 2019&lt;/a&gt;五日目の記事です。&lt;/p&gt;
+<p>この記事は<a href="https://qiita.com/advent-calendar/2019/go7">Go7 Advent Calendar 2019</a>五日目の記事です。</p>
 
-&lt;h2 id=&quot;やりたいこと&quot;&gt;やりたいこと&lt;/h2&gt;
+<h2 id="やりたいこと">やりたいこと</h2>
 
-&lt;p&gt;下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。&lt;/p&gt;
+<p>下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。</p>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;p&gt;上述のプログラムを実行した場合、実行時間は約3分30秒となります。&lt;/p&gt;
+<p>上述のプログラムを実行した場合、実行時間は約3分30秒となります。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run original.go
-&lt;span class=&quot;go&quot;&gt;End: 0
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run original.go
+<span class="go">End: 0
 End: 1
 End: 2
 ...(snip)...
 End: 97
 End: 98
 End: 99
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;p&gt;これを並行に行うことで劇的な改善を目指します。&lt;/p&gt;
+<p>これを並行に行うことで劇的な改善を目指します。</p>
 
-&lt;h2 id=&quot;goroutine-を使う&quot;&gt;Goroutine を使う&lt;/h2&gt;
+<h2 id="goroutine-を使う">Goroutine を使う</h2>
 
-&lt;p&gt;Goの並行処理といえば Goroutine。こいつを使うには処理を関数化して &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go&lt;/code&gt; というキーワードを付けるだけです。&lt;/p&gt;
+<p>Goの並行処理といえば Goroutine。こいつを使うには処理を関数化して <code class="language-plaintext highlighter-rouge">go</code> というキーワードを付けるだけです。</p>
 
-&lt;p&gt;下記のように変更します。&lt;/p&gt;
+<p>下記のように変更します。</p>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// original2.go&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// original2.go</span>
+<span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="k">func</span><span class="p">(</span><span class="n">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
+			<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+		<span class="p">}(</span><span class="n">i</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;p&gt;実行してみましょう。&lt;/p&gt;
+<p>実行してみましょう。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run original2.go
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run original2.go
+</code></pre></div></div>
 
-&lt;p&gt;しかし、何も出力されません！　どうしてでしょうか？&lt;/p&gt;
+<p>しかし、何も出力されません！　どうしてでしょうか？</p>
 
-&lt;h2 id=&quot;goroutine--channel-を使う&quot;&gt;Goroutine + Channel を使う&lt;/h2&gt;
+<h2 id="goroutine--channel-を使う">Goroutine + Channel を使う</h2>
 
-&lt;p&gt;考えてみるとそれはそうで、Goroutine と呼ばれる軽量スレッドに処理を切り分けたものの、その処理の実行中にプログラム自体が終了してしまったからです。Goroutine の処理が完了するまで何らかの仕組みで「待つ」必要があります。&lt;/p&gt;
+<p>考えてみるとそれはそうで、Goroutine と呼ばれる軽量スレッドに処理を切り分けたものの、その処理の実行中にプログラム自体が終了してしまったからです。Goroutine の処理が完了するまで何らかの仕組みで「待つ」必要があります。</p>
 
-&lt;p&gt;ここで使えるのが Channel です。Channel はデータの送受信ができる&lt;a href=&quot;https://ja.wikipedia.org/wiki/%E3%83%91%E3%82%A4%E3%83%97_(%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF)&quot;&gt;パイプ&lt;/a&gt;のようなもので、主に Goroutine とのデータのやり取りで使われます。&lt;/p&gt;
+<p>ここで使えるのが Channel です。Channel はデータの送受信ができる<a href="https://ja.wikipedia.org/wiki/%E3%83%91%E3%82%A4%E3%83%97_(%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF)">パイプ</a>のようなもので、主に Goroutine とのデータのやり取りで使われます。</p>
 
-&lt;p&gt;Channel を使って Goroutine からのデータを受信するようにコードを書き換えてみましょう。&lt;/p&gt;
+<p>Channel を使って Goroutine からのデータを受信するようにコードを書き換えてみましょう。</p>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// channel.go&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// channel.go</span>
+<span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;chan&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="k">chan</span> <span class="kt">int</span><span class="p">)</span>
 
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="k">func</span><span class="p">(</span><span class="n">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
+			<span class="n">ch</span> <span class="o">&lt;-</span> <span class="n">i</span>
+		<span class="p">}(</span><span class="n">i</span><span class="p">)</span>
+	<span class="p">}</span>
 
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="o">&lt;-</span><span class="n">ch</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;int&lt;/code&gt; 型の Channel を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;make&lt;/code&gt; する&lt;/li&gt;
-  &lt;li&gt;ループ内の Goroutine の中で↑で作成した Channel に値、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;i&lt;/code&gt; を送信&lt;/li&gt;
-  &lt;li&gt;2回目のループ内で Channel の値を受信して、Printする&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">int</code> 型の Channel を <code class="language-plaintext highlighter-rouge">make</code> する</li>
+  <li>ループ内の Goroutine の中で↑で作成した Channel に値、<code class="language-plaintext highlighter-rouge">i</code> を送信</li>
+  <li>2回目のループ内で Channel の値を受信して、Printする</li>
+</ul>
 
-&lt;p&gt;実行すると下記の通り、Goroutine から受信される値の順番はバラバラで出力されました。&lt;/p&gt;
+<p>実行すると下記の通り、Goroutine から受信される値の順番はバラバラで出力されました。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ go run channel.go
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go run channel.go
 End: 95
 End: 98
 End: 5
@@ -153,112 +153,112 @@ End: 5
 End: 55
 End: 30
 End: 99
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;実行時間も2.6秒程で完了しました。最初の3分30秒という実行時間に比べて劇的な改善と言えるでしょう。&lt;/p&gt;
+<p>実行時間も2.6秒程で完了しました。最初の3分30秒という実行時間に比べて劇的な改善と言えるでしょう。</p>
 
-&lt;h2 id=&quot;goroutine--waitgroup-を使う&quot;&gt;Goroutine + WaitGroup を使う&lt;/h2&gt;
+<h2 id="goroutine--waitgroup-を使う">Goroutine + WaitGroup を使う</h2>
 
-&lt;p&gt;しかし Channel を使うよりももっと良い書き方があるんです！ それが &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; です。&lt;/p&gt;
+<p>しかし Channel を使うよりももっと良い書き方があるんです！ それが <code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> です。</p>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; は複数の Goroutine の実行を待ってくれます。今回のプログラムの場合、下記のように書くことができます。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> は複数の Goroutine の実行を待ってくれます。今回のプログラムの場合、下記のように書くことができます。</p>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// waitgroup.go&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// waitgroup.go</span>
+<span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;sync&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"sync"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WaitGroup&lt;/span&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">wg</span> <span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span>
 
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+		<span class="k">go</span> <span class="k">func</span><span class="p">(</span><span class="n">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
+			<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+			<span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span>
+		<span class="p">}(</span><span class="n">i</span><span class="p">)</span>
+	<span class="p">}</span>
 
-	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+	<span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を宣言&lt;/li&gt;
-  &lt;li&gt;ループ内の Goroutine の処理の手前で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add(1)&lt;/code&gt; してグループをインクリメントする&lt;/li&gt;
-  &lt;li&gt;Goroutine 内の最後で &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Done()&lt;/code&gt; して Goroutine の処理が終わったことを &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WaitGroup&lt;/code&gt; に教えてあげる&lt;/li&gt;
-  &lt;li&gt;ループ終了後に、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Wait()&lt;/code&gt; して &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; の &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Done&lt;/code&gt; を待つ&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> を宣言</li>
+  <li>ループ内の Goroutine の処理の手前で <code class="language-plaintext highlighter-rouge">Add(1)</code> してグループをインクリメントする</li>
+  <li>Goroutine 内の最後で <code class="language-plaintext highlighter-rouge">Done()</code> して Goroutine の処理が終わったことを <code class="language-plaintext highlighter-rouge">WaitGroup</code> に教えてあげる</li>
+  <li>ループ終了後に、<code class="language-plaintext highlighter-rouge">Wait()</code> して <code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> の <code class="language-plaintext highlighter-rouge">Done</code> を待つ</li>
+</ul>
 
-&lt;p&gt;実行すると下記の出力を得ることができます。&lt;/p&gt;
+<p>実行すると下記の出力を得ることができます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run waitgroup.go
-&lt;span class=&quot;go&quot;&gt;End: 86
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run waitgroup.go
+<span class="go">End: 86
 End: 5
 End: 16
 ...(snip)...
 End: 66
 End: 85
 End: 70
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;p&gt;実行時間は2.2秒程で完了しました。Channel を使った場合よりも速く処理が完了したのは、Channel を使ったデータの送受信のオーバーヘッドを削れたことが大きいと考えられます。&lt;/p&gt;
+<p>実行時間は2.2秒程で完了しました。Channel を使った場合よりも速く処理が完了したのは、Channel を使ったデータの送受信のオーバーヘッドを削れたことが大きいと考えられます。</p>
 
-&lt;h2 id=&quot;goroutine--errgroup-を使う&quot;&gt;Goroutine + errgroup を使う&lt;/h2&gt;
+<h2 id="goroutine--errgroup-を使う">Goroutine + errgroup を使う</h2>
 
-&lt;p&gt;Goroutine の処理内でエラーが発生する可能性があり、それをハンドリングしたいという場合はどうすればよいでしょうか？&lt;/p&gt;
+<p>Goroutine の処理内でエラーが発生する可能性があり、それをハンドリングしたいという場合はどうすればよいでしょうか？</p>
 
-&lt;p&gt;そんなときに使えるのが&lt;a href=&quot;https://godoc.org/golang.org/x/sync/errgroup&quot;&gt;errgroup&lt;/a&gt;です。errgroup を使ったコードを下記に示します。&lt;/p&gt;
+<p>そんなときに使えるのが<a href="https://godoc.org/golang.org/x/sync/errgroup">errgroup</a>です。errgroup を使ったコードを下記に示します。</p>
 
-&lt;p&gt;※下記のコードサンプル内では &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;i&lt;/code&gt; が90より大きい場合にエラーが発生するとしています。&lt;/p&gt;
+<p>※下記のコードサンプル内では <code class="language-plaintext highlighter-rouge">i</code> が90より大きい場合にエラーが発生するとしています。</p>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// errgroup.go&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// errgroup.go</span>
+<span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;log&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"log"</span>
+	<span class="s">"time"</span>
 
-	&lt;span class=&quot;s&quot;&gt;&quot;golang.org/x/sync/errgroup&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	<span class="s">"golang.org/x/sync/errgroup"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eg&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errgroup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Group&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;eg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Go&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Error:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Errorf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Error occurred: %d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fatal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">eg</span> <span class="n">errgroup</span><span class="o">.</span><span class="n">Group</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">i</span> <span class="o">:=</span> <span class="n">i</span>
+		<span class="n">eg</span><span class="o">.</span><span class="n">Go</span><span class="p">(</span><span class="k">func</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
+			<span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="m">90</span> <span class="p">{</span>
+				<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Error:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"Error occurred: %d"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+			<span class="k">return</span> <span class="no">nil</span>
+		<span class="p">})</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">eg</span><span class="o">.</span><span class="n">Wait</span><span class="p">();</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+		<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;golang.org/x/sync/errgroup&lt;/code&gt; をimportして &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup.Group&lt;/code&gt; を宣言&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; 内で Goroutine の処理を定義&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; して &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; で実行した Goroutine を待つ&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; の処理でエラーがあれば、一番最初のエラーを &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Wait()&lt;/code&gt; は返す&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">golang.org/x/sync/errgroup</code> をimportして <code class="language-plaintext highlighter-rouge">errgroup.Group</code> を宣言</li>
+  <li><code class="language-plaintext highlighter-rouge">eg.Go()</code> 内で Goroutine の処理を定義</li>
+  <li><code class="language-plaintext highlighter-rouge">eg.Wait()</code> して <code class="language-plaintext highlighter-rouge">eg.Go()</code> で実行した Goroutine を待つ</li>
+  <li><code class="language-plaintext highlighter-rouge">eg.Go()</code> の処理でエラーがあれば、一番最初のエラーを <code class="language-plaintext highlighter-rouge">eg.Wait()</code> は返す</li>
+</ul>
 
-&lt;p&gt;実行すると下記の出力を得ることができます。&lt;/p&gt;
+<p>実行すると下記の出力を得ることができます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run errgroup.go
-&lt;span class=&quot;go&quot;&gt;End: 86
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run errgroup.go
+<span class="go">End: 86
 End: 3
 End: 1
 End: 2
@@ -273,66 +273,66 @@ End: 88
 End: 74
 2019/12/07 15:24:15 Error occurred: 96
 exit status 1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;p&gt;全ての Goroutine を実行して最初に出会ったエラー、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Error: 96&lt;/code&gt; が &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Error occurred: 96&lt;/code&gt; として処理の最後で出力されていることがわかります。&lt;/p&gt;
+<p>全ての Goroutine を実行して最初に出会ったエラー、 <code class="language-plaintext highlighter-rouge">Error: 96</code> が <code class="language-plaintext highlighter-rouge">Error occurred: 96</code> として処理の最後で出力されていることがわかります。</p>
 
-&lt;h2 id=&quot;goroutine--errgroup--context-を使う&quot;&gt;Goroutine + errgroup + context を使う&lt;/h2&gt;
+<h2 id="goroutine--errgroup--context-を使う">Goroutine + errgroup + context を使う</h2>
 
-&lt;p&gt;もう少し踏み込んで高度なエラー処理をしてみましょう。エラーが発生したときに後続の Goroutine をキャンセルしたいという場合はどうしたらよいでしょうか？&lt;/p&gt;
+<p>もう少し踏み込んで高度なエラー処理をしてみましょう。エラーが発生したときに後続の Goroutine をキャンセルしたいという場合はどうしたらよいでしょうか？</p>
 
-&lt;p&gt;これは &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; に加えて、&lt;a href=&quot;https://golang.org/pkg/context/&quot;&gt;context&lt;/a&gt;を組み合わせて使えば実現できます。&lt;/p&gt;
+<p>これは <code class="language-plaintext highlighter-rouge">errgroup</code> に加えて、<a href="https://golang.org/pkg/context/">context</a>を組み合わせて使えば実現できます。</p>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// errgroup_cancel.go&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// errgroup_cancel.go</span>
+<span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;context&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;log&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"context"</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"log"</span>
+	<span class="s">"time"</span>
 
-	&lt;span class=&quot;s&quot;&gt;&quot;golang.org/x/sync/errgroup&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	<span class="s">"golang.org/x/sync/errgroup"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;eg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errgroup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WithContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Background&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">eg</span><span class="p">,</span> <span class="n">ctx</span> <span class="o">:=</span> <span class="n">errgroup</span><span class="o">.</span><span class="n">WithContext</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">Background</span><span class="p">())</span>
 
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;eg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Go&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Second&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// 長い処理&lt;/span&gt;
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">i</span> <span class="o">:=</span> <span class="n">i</span>
+		<span class="n">eg</span><span class="o">.</span><span class="n">Go</span><span class="p">(</span><span class="k">func</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">Sleep</span><span class="p">(</span><span class="m">2</span> <span class="o">*</span> <span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span> <span class="c">// 長い処理</span>
 
-			&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Canceled:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-					&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Error:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-					&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Errorf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Error: %d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-				&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;End:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt;
-			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Fatal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="n">ctx</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="o">:</span>
+				<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Canceled:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="k">return</span> <span class="no">nil</span>
+			<span class="k">default</span><span class="o">:</span>
+				<span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="m">90</span> <span class="p">{</span>
+					<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Error:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+					<span class="k">return</span> <span class="n">fmt</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"Error: %d"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="p">}</span>
+				<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"End:"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="k">return</span> <span class="no">nil</span>
+			<span class="p">}</span>
+		<span class="p">})</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">eg</span><span class="o">.</span><span class="n">Wait</span><span class="p">();</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+		<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup.WithContext()&lt;/code&gt; を使って、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; と &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;context&lt;/code&gt; を生成&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;eg.Go()&lt;/code&gt; 内でキャンセルされたときの処理を &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;case &amp;lt;-ctx.Done():&lt;/code&gt; 内に記述&lt;/li&gt;
-  &lt;li&gt;non-nil error が返されると context はキャンセルされ、後続の Goroutine がキャンセルされる&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">errgroup.WithContext()</code> を使って、<code class="language-plaintext highlighter-rouge">errgroup</code> と <code class="language-plaintext highlighter-rouge">context</code> を生成</li>
+  <li><code class="language-plaintext highlighter-rouge">eg.Go()</code> 内でキャンセルされたときの処理を <code class="language-plaintext highlighter-rouge">case &lt;-ctx.Done():</code> 内に記述</li>
+  <li>non-nil error が返されると context はキャンセルされ、後続の Goroutine がキャンセルされる</li>
+</ul>
 
-&lt;p&gt;これを実行すると下記のような出力となります。&lt;/p&gt;
+<p>これを実行すると下記のような出力となります。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go run errgroup_cancel.go
-&lt;span class=&quot;go&quot;&gt;End: 5
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go run errgroup_cancel.go
+<span class="go">End: 5
 End: 6
 End: 23
 Error: 98
@@ -345,364 +345,364 @@ Cenceled: 92
 Cenceled: 53
 2019/12/07 15:43:48 Error: 98
 exit status 1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Error: 98&lt;/code&gt; が発生し、後続の Goroutine がキャンセルされていることがわかります。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Error: 98</code> が発生し、後続の Goroutine がキャンセルされていることがわかります。</p>
 
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+<h2 id="まとめ">まとめ</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;複数の Goroutine を取り扱う場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sync.WaitGroup&lt;/code&gt; を使って制御（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Done&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Wait&lt;/code&gt;）すると良い&lt;/li&gt;
-  &lt;li&gt;複数の Goroutine をエラーハンドリングとともに取り扱う場合、 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;errgroup&lt;/code&gt; を使って制御（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Go&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Wait&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WithContext&lt;/code&gt;）すると良い&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>複数の Goroutine を取り扱う場合、<code class="language-plaintext highlighter-rouge">sync.WaitGroup</code> を使って制御（<code class="language-plaintext highlighter-rouge">Add</code>, <code class="language-plaintext highlighter-rouge">Done</code>, <code class="language-plaintext highlighter-rouge">Wait</code>）すると良い</li>
+  <li>複数の Goroutine をエラーハンドリングとともに取り扱う場合、 <code class="language-plaintext highlighter-rouge">errgroup</code> を使って制御（<code class="language-plaintext highlighter-rouge">Go</code>, <code class="language-plaintext highlighter-rouge">Wait</code>, <code class="language-plaintext highlighter-rouge">WithContext</code>）すると良い</li>
+</ul>
 
-&lt;h2 id=&quot;参考情報&quot;&gt;参考情報&lt;/h2&gt;
+<h2 id="参考情報">参考情報</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://godoc.org/golang.org/x/sync/errgroup&quot;&gt;errgroup - GoDoc&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://golang.org/pkg/context/&quot;&gt;context - The Go Programming Language&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://deeeet.com/writing/2016/10/12/errgroup/&quot;&gt;sync.ErrGroupで複数のgoroutineを制御する | SOTA&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://dono.hatenablog.com/entry/2018/01/04/111204&quot;&gt;[Golang] errgroup使用例 - xonoのブログ&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">追記 errgroup について追記しました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Syntax HighlightされるcatコマンドをGoで作った</title><link href="https://blog.toshimaru.net/go-nyan-cat/" rel="alternate" type="text/html" title="Syntax HighlightされるcatコマンドをGoで作った" /><published>2019-08-15T00:00:00+09:00</published><updated>2019-08-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/go-nyan-cat</id><content type="html" xml:base="https://blog.toshimaru.net/go-nyan-cat/">&lt;p&gt;Goの習作としてSyntax Highlight可能な&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cat&lt;/code&gt;コマンドを作った。&lt;/p&gt;
+<ul>
+  <li><a href="https://godoc.org/golang.org/x/sync/errgroup">errgroup - GoDoc</a></li>
+  <li><a href="https://golang.org/pkg/context/">context - The Go Programming Language</a></li>
+  <li><a href="https://deeeet.com/writing/2016/10/12/errgroup/">sync.ErrGroupで複数のgoroutineを制御する | SOTA</a></li>
+  <li><a href="http://dono.hatenablog.com/entry/2018/01/04/111204">[Golang] errgroup使用例 - xonoのブログ</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="go" /><summary type="html"><![CDATA[この記事はGo7 Advent Calendar 2019五日目の記事です。やりたいこととしては、下記のように直列で動作し実行時間の長いGoのプログラムを、並行処理に変えて処理を効率化させます。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/goroutine-waitgroup.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Syntax HighlightされるcatコマンドをGoで作った</title><link href="https://blog.toshimaru.net/go-nyan-cat/" rel="alternate" type="text/html" title="Syntax HighlightされるcatコマンドをGoで作った" /><published>2019-08-15T00:00:00+09:00</published><updated>2019-08-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/go-nyan-cat</id><content type="html" xml:base="https://blog.toshimaru.net/go-nyan-cat/"><![CDATA[<p>Goの習作としてSyntax Highlight可能な<code class="language-plaintext highlighter-rouge">cat</code>コマンドを作った。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;夏休みの工作で作ったやつ。Go 製の Syntax Highlight な cat コマンド. | toshimaru/nyan: Colored `cat` command. &lt;a href=&quot;https://t.co/lu1CL4YdDi&quot;&gt;https://t.co/lu1CL4YdDi&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1161656766100230144?ref_src=twsrc%5Etfw&quot;&gt;August 14, 2019&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">夏休みの工作で作ったやつ。Go 製の Syntax Highlight な cat コマンド. | toshimaru/nyan: Colored `cat` command. <a href="https://t.co/lu1CL4YdDi">https://t.co/lu1CL4YdDi</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1161656766100230144?ref_src=twsrc%5Etfw">August 14, 2019</a></blockquote>
 
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+<h2 id="モチベーション">モチベーション</h2>
 
-&lt;p&gt;全く同じコンセプトのツールとして&lt;a href=&quot;https://github.com/jingweno/ccat&quot;&gt;ccat&lt;/a&gt;があるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。&lt;/p&gt;
+<p>全く同じコンセプトのツールとして<a href="https://github.com/jingweno/ccat">ccat</a>があるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。</p>
 
-&lt;p&gt;更に強力な&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cat&lt;/code&gt;コマンドとしてRust製の&lt;a href=&quot;https://github.com/sharkdp/bat&quot;&gt;bat&lt;/a&gt;があるのだが、これを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccat&lt;/code&gt;とともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。&lt;/p&gt;
+<p>更に強力な<code class="language-plaintext highlighter-rouge">cat</code>コマンドとしてRust製の<a href="https://github.com/sharkdp/bat">bat</a>があるのだが、これを<code class="language-plaintext highlighter-rouge">ccat</code>とともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。</p>
 
-&lt;p&gt;ちなみに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccat&lt;/code&gt;との実装の違いでいうと、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccat&lt;/code&gt;はsynatax highlightに&lt;a href=&quot;https://github.com/sourcegraph/syntaxhighlight&quot;&gt;sourcegraph/syntaxhighlight&lt;/a&gt;を使っていて、今回作った&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nyan&lt;/code&gt;は&lt;a href=&quot;https://github.com/alecthomas/chroma&quot;&gt;alecthomas/chroma&lt;/a&gt;を使っている。&lt;/p&gt;
+<p>ちなみに<code class="language-plaintext highlighter-rouge">ccat</code>との実装の違いでいうと、<code class="language-plaintext highlighter-rouge">ccat</code>はsynatax highlightに<a href="https://github.com/sourcegraph/syntaxhighlight">sourcegraph/syntaxhighlight</a>を使っていて、今回作った<code class="language-plaintext highlighter-rouge">nyan</code>は<a href="https://github.com/alecthomas/chroma">alecthomas/chroma</a>を使っている。</p>
 
-&lt;h2 id=&quot;使ったgoライブラリサービスなど&quot;&gt;使ったGoライブラリ・サービスなど&lt;/h2&gt;
+<h2 id="使ったgoライブラリサービスなど">使ったGoライブラリ・サービスなど</h2>
 
-&lt;h3 id=&quot;goライブラリ&quot;&gt;Goライブラリ&lt;/h3&gt;
+<h3 id="goライブラリ">Goライブラリ</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;パッケージ管理: &lt;a href=&quot;https://blog.golang.org/using-go-modules&quot;&gt;go modules&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;CLIライブラリ: &lt;a href=&quot;https://github.com/spf13/cobra&quot;&gt;cobra&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Syntax Highlightライブラリ: &lt;a href=&quot;https://github.com/alecthomas/chroma&quot;&gt;chroma&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;リリース管理: &lt;a href=&quot;https://github.com/goreleaser/goreleaser&quot;&gt;goreleaser&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;homebrew tapへのリリースも自動でやってくれている: &lt;a href=&quot;https://github.com/toshimaru/homebrew-nyan&quot;&gt;homebrew-nyan&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;テストライブラリ: &lt;a href=&quot;https://github.com/stretchr/testify&quot;&gt;testify&lt;/a&gt;/assert&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>パッケージ管理: <a href="https://blog.golang.org/using-go-modules">go modules</a></li>
+  <li>CLIライブラリ: <a href="https://github.com/spf13/cobra">cobra</a></li>
+  <li>Syntax Highlightライブラリ: <a href="https://github.com/alecthomas/chroma">chroma</a></li>
+  <li>リリース管理: <a href="https://github.com/goreleaser/goreleaser">goreleaser</a>
+    <ul>
+      <li>homebrew tapへのリリースも自動でやってくれている: <a href="https://github.com/toshimaru/homebrew-nyan">homebrew-nyan</a></li>
+    </ul>
+  </li>
+  <li>テストライブラリ: <a href="https://github.com/stretchr/testify">testify</a>/assert</li>
+</ul>
 
-&lt;h3 id=&quot;サービス&quot;&gt;サービス&lt;/h3&gt;
+<h3 id="サービス">サービス</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;CI: &lt;a href=&quot;https://travis-ci.com&quot;&gt;TravisCI&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Code Coverage: &lt;a href=&quot;https://codeclimate.com&quot;&gt;Code Climate&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>CI: <a href="https://travis-ci.com">TravisCI</a></li>
+  <li>Code Coverage: <a href="https://codeclimate.com">Code Climate</a></li>
+</ul>
 
-&lt;h2 id=&quot;今後の展望&quot;&gt;今後の展望&lt;/h2&gt;
+<h2 id="今後の展望">今後の展望</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;今回CIはTravisで動かしたけど先日リリースされた&lt;a href=&quot;https://github.blog/2019-08-08-github-actions-now-supports-ci-cd/&quot;&gt;GitHub Actons(v2)&lt;/a&gt;が使えるようになったら乗り換えたい&lt;/li&gt;
-  &lt;li&gt;行番号表示などの機能拡張も今後やっていきたい&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>今回CIはTravisで動かしたけど先日リリースされた<a href="https://github.blog/2019-08-08-github-actions-now-supports-ci-cd/">GitHub Actons(v2)</a>が使えるようになったら乗り換えたい</li>
+  <li>行番号表示などの機能拡張も今後やっていきたい</li>
+</ul>
 
-&lt;h2 id=&quot;goでツール書いてみた感想&quot;&gt;Goでツール書いてみた感想&lt;/h2&gt;
+<h2 id="goでツール書いてみた感想">Goでツール書いてみた感想</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;パッケージ管理の機能が言語としてサポートされたのは嬉しい（Go 1.11〜）&lt;/li&gt;
-  &lt;li&gt;プログラムのコンパイル、実行、テストなどすべてが早いので開発体験がとても良い&lt;/li&gt;
-  &lt;li&gt;普段はRubyを使うことが多いが、書き味の良さではGoはRubyに負けるかもだけど、Goは堅牢で高速なアプリケーションを書くのに良い&lt;/li&gt;
-  &lt;li&gt;Goコミュニティは日本でもとても活発だし、ライブラリのエコシステムも整っているのが素晴らしい&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><category term="oss" /><summary type="html">Goの習作としてSyntax Highlight可能なcatコマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><media:content medium="image" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Goの日付フォーマット 〜＜2006年1月2日＞の謎〜</title><link href="https://blog.toshimaru.net/go-time-format/" rel="alternate" type="text/html" title="Goの日付フォーマット 〜＜2006年1月2日＞の謎〜" /><published>2017-09-15T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/go-time-format</id><content type="html" xml:base="https://blog.toshimaru.net/go-time-format/">&lt;p&gt;Goの現在時刻は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;time.Now()&lt;/code&gt; で取得することができるが、フォーマットされた現在日時はどのように取得すればよいのだろうか？&lt;/p&gt;
+<ul>
+  <li>パッケージ管理の機能が言語としてサポートされたのは嬉しい（Go 1.11〜）</li>
+  <li>プログラムのコンパイル、実行、テストなどすべてが早いので開発体験がとても良い</li>
+  <li>普段はRubyを使うことが多いが、書き味の良さではGoはRubyに負けるかもだけど、Goは堅牢で高速なアプリケーションを書くのに良い</li>
+  <li>Goコミュニティは日本でもとても活発だし、ライブラリのエコシステムも整っているのが素晴らしい</li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="go" /><category term="oss" /><summary type="html"><![CDATA[Goの習作としてSyntax Highlight可能な`cat`コマンドを作った。モチベーション 全く同じコンセプトのツールとしてccatがあるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。 更に強力なcatコマンドとしてRust製のbatがあるのだが、これをccatとともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。 ちなみにccatとの実装の違いでいうと、ccatはsynatax highlightにsourcegraph/syntaxhighlightを使っていて、今回作ったnyanはalecthomas/chromaを使っている。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><media:content medium="image" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Goの日付フォーマット 〜＜2006年1月2日＞の謎〜</title><link href="https://blog.toshimaru.net/go-time-format/" rel="alternate" type="text/html" title="Goの日付フォーマット 〜＜2006年1月2日＞の謎〜" /><published>2017-09-15T00:00:00+09:00</published><updated>2019-12-07T00:00:00+09:00</updated><id>https://blog.toshimaru.net/go-time-format</id><content type="html" xml:base="https://blog.toshimaru.net/go-time-format/"><![CDATA[<p>Goの現在時刻は <code class="language-plaintext highlighter-rouge">time.Now()</code> で取得することができるが、フォーマットされた現在日時はどのように取得すればよいのだろうか？</p>
 
-&lt;h2 id=&quot;今日の日付の取得&quot;&gt;今日の日付の取得&lt;/h2&gt;
+<h2 id="今日の日付の取得">今日の日付の取得</h2>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;c&quot;&gt;// フォーマットなし現在時刻&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-	&lt;span class=&quot;c&quot;&gt;// フォーマットあり現在時刻&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2006年01月02日&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c">// フォーマットなし現在時刻</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">())</span>
+	<span class="c">// フォーマットあり現在時刻</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="s">"2006年01月02日"</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;p&gt;これで今日の日付を取得することができる。&lt;/p&gt;
+<p>これで今日の日付を取得することができる。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2009-11-10 23:00:00 +0000 UTC m=+0.000000001
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2009-11-10 23:00:00 +0000 UTC m=+0.000000001
 2009年11月10日
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;2006年1月2日の謎&quot;&gt;2006年1月2日の謎&lt;/h2&gt;
-
-&lt;p&gt;しかしここで１つの疑問が残る。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Format()&lt;/code&gt;の引数として与えられる &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2006年01月02日&lt;/code&gt; はどうして2006年1月2日なのだろうか？　2001年2月3日でもダメだし1234年5月6日でもダメだ。きっちり &lt;strong&gt;2006年1月2日&lt;/strong&gt; でなければならない。&lt;/p&gt;
-
-&lt;p&gt;この理由については下記の記事で解説されている。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;では一体この2006年1月2日という特別な日は、なんの日なのか？&lt;/p&gt;
-
-  &lt;p&gt;（…中略…）&lt;/p&gt;
-
-  &lt;p&gt;答えは単純だ。これはアメリカ式の時刻の順番なのだ。”1月2日午後3時4分5秒2006年”（つまり「自然な順番」で1, 2, 3, 4, 5, 6）を指しているのである。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;via. &lt;a href=&quot;http://qiita.com/ruiu/items/5936b4c3bd6eb487c182&quot;&gt;Goのtimeパッケージのリファレンスタイム（2006年1月2日）は何の日？ - Qiita&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;考えてみるとなんてことはない、&lt;strong&gt;アメリカ式の日時の表示順番でのインクリメンタルな自然数であった！&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;goの内部実装を覗いてみる&quot;&gt;Goの内部実装を覗いてみる&lt;/h2&gt;
-
-&lt;p&gt;もう少し深く理解するために、Goでどのように実装されているかを覗いてみる。それぞれの&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;const&lt;/code&gt;がどの数値とマッピングするかがコメントで示されている。&lt;/p&gt;
-
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt;                        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;iota&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdLongMonth&lt;/span&gt;             &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;iota&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdNeedDate&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;// &quot;January&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdMonth&lt;/span&gt;                                       &lt;span class=&quot;c&quot;&gt;// &quot;Jan&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdNumMonth&lt;/span&gt;                                    &lt;span class=&quot;c&quot;&gt;// &quot;1&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdZeroMonth&lt;/span&gt;                                   &lt;span class=&quot;c&quot;&gt;// &quot;01&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdLongWeekDay&lt;/span&gt;                                 &lt;span class=&quot;c&quot;&gt;// &quot;Monday&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdWeekDay&lt;/span&gt;                                     &lt;span class=&quot;c&quot;&gt;// &quot;Mon&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdDay&lt;/span&gt;                                         &lt;span class=&quot;c&quot;&gt;// &quot;2&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdUnderDay&lt;/span&gt;                                    &lt;span class=&quot;c&quot;&gt;// &quot;_2&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdZeroDay&lt;/span&gt;                                     &lt;span class=&quot;c&quot;&gt;// &quot;02&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdHour&lt;/span&gt;                  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;iota&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdNeedClock&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// &quot;15&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdHour12&lt;/span&gt;                                      &lt;span class=&quot;c&quot;&gt;// &quot;3&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdZeroHour12&lt;/span&gt;                                  &lt;span class=&quot;c&quot;&gt;// &quot;03&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdMinute&lt;/span&gt;                                      &lt;span class=&quot;c&quot;&gt;// &quot;4&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdZeroMinute&lt;/span&gt;                                  &lt;span class=&quot;c&quot;&gt;// &quot;04&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdSecond&lt;/span&gt;                                      &lt;span class=&quot;c&quot;&gt;// &quot;5&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdZeroSecond&lt;/span&gt;                                  &lt;span class=&quot;c&quot;&gt;// &quot;05&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdLongYear&lt;/span&gt;              &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;iota&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdNeedDate&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;// &quot;2006&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdYear&lt;/span&gt;                                        &lt;span class=&quot;c&quot;&gt;// &quot;06&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdPM&lt;/span&gt;                    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;iota&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stdNeedClock&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// &quot;PM&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdpm&lt;/span&gt;                                          &lt;span class=&quot;c&quot;&gt;// &quot;pm&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdTZ&lt;/span&gt;                    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;iota&lt;/span&gt;                &lt;span class=&quot;c&quot;&gt;// &quot;MST&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdISO8601TZ&lt;/span&gt;                                   &lt;span class=&quot;c&quot;&gt;// &quot;Z0700&quot;  // prints Z for UTC&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdISO8601SecondsTZ&lt;/span&gt;                            &lt;span class=&quot;c&quot;&gt;// &quot;Z070000&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdISO8601ShortTZ&lt;/span&gt;                              &lt;span class=&quot;c&quot;&gt;// &quot;Z07&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdISO8601ColonTZ&lt;/span&gt;                              &lt;span class=&quot;c&quot;&gt;// &quot;Z07:00&quot; // prints Z for UTC&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdISO8601ColonSecondsTZ&lt;/span&gt;                       &lt;span class=&quot;c&quot;&gt;// &quot;Z07:00:00&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdNumTZ&lt;/span&gt;                                       &lt;span class=&quot;c&quot;&gt;// &quot;-0700&quot;  // always numeric&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdNumSecondsTz&lt;/span&gt;                                &lt;span class=&quot;c&quot;&gt;// &quot;-070000&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdNumShortTZ&lt;/span&gt;                                  &lt;span class=&quot;c&quot;&gt;// &quot;-07&quot;    // always numeric&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdNumColonTZ&lt;/span&gt;                                  &lt;span class=&quot;c&quot;&gt;// &quot;-07:00&quot; // always numeric&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdNumColonSecondsTZ&lt;/span&gt;                           &lt;span class=&quot;c&quot;&gt;// &quot;-07:00:00&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdFracSecond0&lt;/span&gt;                                 &lt;span class=&quot;c&quot;&gt;// &quot;.0&quot;, &quot;.00&quot;, ... , trailing zeros included&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdFracSecond9&lt;/span&gt;                                 &lt;span class=&quot;c&quot;&gt;// &quot;.9&quot;, &quot;.99&quot;, ..., trailing zeros omitted&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;stdNeedDate&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;             &lt;span class=&quot;c&quot;&gt;// need month, day, year&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdNeedClock&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;             &lt;span class=&quot;c&quot;&gt;// need hour, minute, second&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdArgShift&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;16&lt;/span&gt;                 &lt;span class=&quot;c&quot;&gt;// extra argument in high bits, above low stdArgShift&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;stdMask&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdArgShift&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// mask out argument&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;via. &lt;a href=&quot;https://github.com/golang/go/blob/master/src/time/format.go&quot;&gt;go/format.go at master · golang/go&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;この実装をみると &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2006-01-02&lt;/code&gt; は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{stdLongYear}-{stdZeroMonth}-{stdZeroDay}&lt;/code&gt; であることがわかる。&lt;/p&gt;
-
-&lt;h2 id=&quot;goの標準日付フォーマット&quot;&gt;Goの標準日付フォーマット&lt;/h2&gt;
-
-&lt;p&gt;RFCなどの標準的な時刻フォーマットは、Goが標準で用意してくれている。&lt;/p&gt;
-
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;ANSIC&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mon Jan _2 15:04:05 2006&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;UnixDate&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mon Jan _2 15:04:05 MST 2006&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RubyDate&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mon Jan 02 15:04:05 -0700 2006&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RFC822&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;02 Jan 06 15:04 MST&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RFC822Z&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;02 Jan 06 15:04 -0700&quot;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// RFC822 with numeric zone&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RFC850&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Monday, 02-Jan-06 15:04:05 MST&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RFC1123&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mon, 02 Jan 2006 15:04:05 MST&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RFC1123Z&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Mon, 02 Jan 2006 15:04:05 -0700&quot;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// RFC1123 with numeric zone&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RFC3339&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;2006-01-02T15:04:05Z07:00&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;RFC3339Nano&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;2006-01-02T15:04:05.999999999Z07:00&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;Kitchen&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;3:04PM&quot;&lt;/span&gt;
-	&lt;span class=&quot;c&quot;&gt;// Handy time stamps.&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;Stamp&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Jan _2 15:04:05&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;StampMilli&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Jan _2 15:04:05.000&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;StampMicro&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Jan _2 15:04:05.000000&quot;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;StampNano&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Jan _2 15:04:05.000000000&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;これを使って下記のように書くことができる。&lt;/p&gt;
-
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;time&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+</code></pre></div></div>
+
+<h2 id="2006年1月2日の謎">2006年1月2日の謎</h2>
+
+<p>しかしここで１つの疑問が残る。<code class="language-plaintext highlighter-rouge">Format()</code>の引数として与えられる <code class="language-plaintext highlighter-rouge">2006年01月02日</code> はどうして2006年1月2日なのだろうか？　2001年2月3日でもダメだし1234年5月6日でもダメだ。きっちり <strong>2006年1月2日</strong> でなければならない。</p>
+
+<p>この理由については下記の記事で解説されている。</p>
+
+<blockquote>
+  <p>では一体この2006年1月2日という特別な日は、なんの日なのか？</p>
+
+  <p>（…中略…）</p>
+
+  <p>答えは単純だ。これはアメリカ式の時刻の順番なのだ。”1月2日午後3時4分5秒2006年”（つまり「自然な順番」で1, 2, 3, 4, 5, 6）を指しているのである。</p>
+</blockquote>
+
+<p>via. <a href="http://qiita.com/ruiu/items/5936b4c3bd6eb487c182">Goのtimeパッケージのリファレンスタイム（2006年1月2日）は何の日？ - Qiita</a></p>
+
+<p>考えてみるとなんてことはない、<strong>アメリカ式の日時の表示順番でのインクリメンタルな自然数であった！</strong></p>
+
+<h2 id="goの内部実装を覗いてみる">Goの内部実装を覗いてみる</h2>
+
+<p>もう少し深く理解するために、Goでどのように実装されているかを覗いてみる。それぞれの<code class="language-plaintext highlighter-rouge">const</code>がどの数値とマッピングするかがコメントで示されている。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="p">(</span>
+	<span class="n">_</span>                        <span class="o">=</span> <span class="no">iota</span>
+	<span class="n">stdLongMonth</span>             <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedDate</span>  <span class="c">// "January"</span>
+	<span class="n">stdMonth</span>                                       <span class="c">// "Jan"</span>
+	<span class="n">stdNumMonth</span>                                    <span class="c">// "1"</span>
+	<span class="n">stdZeroMonth</span>                                   <span class="c">// "01"</span>
+	<span class="n">stdLongWeekDay</span>                                 <span class="c">// "Monday"</span>
+	<span class="n">stdWeekDay</span>                                     <span class="c">// "Mon"</span>
+	<span class="n">stdDay</span>                                         <span class="c">// "2"</span>
+	<span class="n">stdUnderDay</span>                                    <span class="c">// "_2"</span>
+	<span class="n">stdZeroDay</span>                                     <span class="c">// "02"</span>
+	<span class="n">stdHour</span>                  <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedClock</span> <span class="c">// "15"</span>
+	<span class="n">stdHour12</span>                                      <span class="c">// "3"</span>
+	<span class="n">stdZeroHour12</span>                                  <span class="c">// "03"</span>
+	<span class="n">stdMinute</span>                                      <span class="c">// "4"</span>
+	<span class="n">stdZeroMinute</span>                                  <span class="c">// "04"</span>
+	<span class="n">stdSecond</span>                                      <span class="c">// "5"</span>
+	<span class="n">stdZeroSecond</span>                                  <span class="c">// "05"</span>
+	<span class="n">stdLongYear</span>              <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedDate</span>  <span class="c">// "2006"</span>
+	<span class="n">stdYear</span>                                        <span class="c">// "06"</span>
+	<span class="n">stdPM</span>                    <span class="o">=</span> <span class="no">iota</span> <span class="o">+</span> <span class="n">stdNeedClock</span> <span class="c">// "PM"</span>
+	<span class="n">stdpm</span>                                          <span class="c">// "pm"</span>
+	<span class="n">stdTZ</span>                    <span class="o">=</span> <span class="no">iota</span>                <span class="c">// "MST"</span>
+	<span class="n">stdISO8601TZ</span>                                   <span class="c">// "Z0700"  // prints Z for UTC</span>
+	<span class="n">stdISO8601SecondsTZ</span>                            <span class="c">// "Z070000"</span>
+	<span class="n">stdISO8601ShortTZ</span>                              <span class="c">// "Z07"</span>
+	<span class="n">stdISO8601ColonTZ</span>                              <span class="c">// "Z07:00" // prints Z for UTC</span>
+	<span class="n">stdISO8601ColonSecondsTZ</span>                       <span class="c">// "Z07:00:00"</span>
+	<span class="n">stdNumTZ</span>                                       <span class="c">// "-0700"  // always numeric</span>
+	<span class="n">stdNumSecondsTz</span>                                <span class="c">// "-070000"</span>
+	<span class="n">stdNumShortTZ</span>                                  <span class="c">// "-07"    // always numeric</span>
+	<span class="n">stdNumColonTZ</span>                                  <span class="c">// "-07:00" // always numeric</span>
+	<span class="n">stdNumColonSecondsTZ</span>                           <span class="c">// "-07:00:00"</span>
+	<span class="n">stdFracSecond0</span>                                 <span class="c">// ".0", ".00", ... , trailing zeros included</span>
+	<span class="n">stdFracSecond9</span>                                 <span class="c">// ".9", ".99", ..., trailing zeros omitted</span>
+
+	<span class="n">stdNeedDate</span>  <span class="o">=</span> <span class="m">1</span> <span class="o">&lt;&lt;</span> <span class="m">8</span>             <span class="c">// need month, day, year</span>
+	<span class="n">stdNeedClock</span> <span class="o">=</span> <span class="m">2</span> <span class="o">&lt;&lt;</span> <span class="m">8</span>             <span class="c">// need hour, minute, second</span>
+	<span class="n">stdArgShift</span>  <span class="o">=</span> <span class="m">16</span>                 <span class="c">// extra argument in high bits, above low stdArgShift</span>
+	<span class="n">stdMask</span>      <span class="o">=</span> <span class="m">1</span><span class="o">&lt;&lt;</span><span class="n">stdArgShift</span> <span class="o">-</span> <span class="m">1</span> <span class="c">// mask out argument</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>via. <a href="https://github.com/golang/go/blob/master/src/time/format.go">go/format.go at master · golang/go</a></p>
+
+<p>この実装をみると <code class="language-plaintext highlighter-rouge">2006-01-02</code> は <code class="language-plaintext highlighter-rouge">{stdLongYear}-{stdZeroMonth}-{stdZeroDay}</code> であることがわかる。</p>
+
+<h2 id="goの標準日付フォーマット">Goの標準日付フォーマット</h2>
+
+<p>RFCなどの標準的な時刻フォーマットは、Goが標準で用意してくれている。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="p">(</span>
+	<span class="n">ANSIC</span>       <span class="o">=</span> <span class="s">"Mon Jan _2 15:04:05 2006"</span>
+	<span class="n">UnixDate</span>    <span class="o">=</span> <span class="s">"Mon Jan _2 15:04:05 MST 2006"</span>
+	<span class="n">RubyDate</span>    <span class="o">=</span> <span class="s">"Mon Jan 02 15:04:05 -0700 2006"</span>
+	<span class="n">RFC822</span>      <span class="o">=</span> <span class="s">"02 Jan 06 15:04 MST"</span>
+	<span class="n">RFC822Z</span>     <span class="o">=</span> <span class="s">"02 Jan 06 15:04 -0700"</span> <span class="c">// RFC822 with numeric zone</span>
+	<span class="n">RFC850</span>      <span class="o">=</span> <span class="s">"Monday, 02-Jan-06 15:04:05 MST"</span>
+	<span class="n">RFC1123</span>     <span class="o">=</span> <span class="s">"Mon, 02 Jan 2006 15:04:05 MST"</span>
+	<span class="n">RFC1123Z</span>    <span class="o">=</span> <span class="s">"Mon, 02 Jan 2006 15:04:05 -0700"</span> <span class="c">// RFC1123 with numeric zone</span>
+	<span class="n">RFC3339</span>     <span class="o">=</span> <span class="s">"2006-01-02T15:04:05Z07:00"</span>
+	<span class="n">RFC3339Nano</span> <span class="o">=</span> <span class="s">"2006-01-02T15:04:05.999999999Z07:00"</span>
+	<span class="n">Kitchen</span>     <span class="o">=</span> <span class="s">"3:04PM"</span>
+	<span class="c">// Handy time stamps.</span>
+	<span class="n">Stamp</span>      <span class="o">=</span> <span class="s">"Jan _2 15:04:05"</span>
+	<span class="n">StampMilli</span> <span class="o">=</span> <span class="s">"Jan _2 15:04:05.000"</span>
+	<span class="n">StampMicro</span> <span class="o">=</span> <span class="s">"Jan _2 15:04:05.000000"</span>
+	<span class="n">StampNano</span>  <span class="o">=</span> <span class="s">"Jan _2 15:04:05.000000000"</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>これを使って下記のように書くことができる。</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"time"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RFC822Z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">RFC822Z</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;p&gt;RFC822Z の形式で下記のように出力される。&lt;/p&gt;
+<p>RFC822Z の形式で下記のように出力される。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;10 Nov 09 23:00 +0000
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="go" /><summary type="html">Goの現在時刻は time.Now() で取得することができるが、フォーマットされた現在日時はどのように取得すればよいのだろうか？</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/go-time-format.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/go-time-format.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RubyとGoとBashで並行処理のパフォーマンス比較をしてみた</title><link href="https://blog.toshimaru.net/ruby-vs-go/" rel="alternate" type="text/html" title="RubyとGoとBashで並行処理のパフォーマンス比較をしてみた" /><published>2015-03-05T00:00:00+09:00</published><updated>2019-11-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-vs-go</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-vs-go/">&lt;p&gt;Rubyで書いたコードをGoで書き直したらどれくらい早くなるかを検証したくてやってみた。ついでにBashでもどうなるかも比較した。&lt;/p&gt;
-
-&lt;p&gt;画像ファイルをダウンロードするだけの単純な処理での比較。複雑な処理になるとまた結果は全然違ってくると思います。あしからず。&lt;/p&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>10 Nov 09 23:00 +0000
+</code></pre></div></div>]]></content><author><name>Toshimaru</name></author><category term="go" /><summary type="html"><![CDATA[Goの現在時刻はtime.Now()で取得することができるがフォーマットされた現在日時はどのように取得すればよいだろうか？　Format()の引数として与えられる 2006年1月2日 はどうして2006年1月2日なのだろうか？　2001年2月3日でもダメだし1234年5月6日でもダメだ。きっちり 2006年1月2日 でなければならない。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/go-time-format.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/go-time-format.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RubyとGoとBashで並行処理のパフォーマンス比較をしてみた</title><link href="https://blog.toshimaru.net/ruby-vs-go/" rel="alternate" type="text/html" title="RubyとGoとBashで並行処理のパフォーマンス比較をしてみた" /><published>2015-03-05T00:00:00+09:00</published><updated>2019-11-24T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-vs-go</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-vs-go/"><![CDATA[<p>Rubyで書いたコードをGoで書き直したらどれくらい早くなるかを検証したくてやってみた。ついでにBashでもどうなるかも比較した。</p>
+
+<p>画像ファイルをダウンロードするだけの単純な処理での比較。複雑な処理になるとまた結果は全然違ってくると思います。あしからず。</p>
 
-&lt;h2 id=&quot;比較する処理内容&quot;&gt;比較する処理内容&lt;/h2&gt;
-
-&lt;p&gt;100個の画像をダウンロードするコードをサンプルにやってみた。&lt;/p&gt;
+<h2 id="比較する処理内容">比較する処理内容</h2>
+
+<p>100個の画像をダウンロードするコードをサンプルにやってみた。</p>
 
-&lt;h2 id=&quot;rubyの場合&quot;&gt;Rubyの場合&lt;/h2&gt;
+<h2 id="rubyの場合">Rubyの場合</h2>
 
-&lt;p&gt;Ruby 2.6 で検証。&lt;/p&gt;
+<p>Ruby 2.6 で検証。</p>
 
-&lt;h3 id=&quot;直列ダウンロード&quot;&gt;直列ダウンロード&lt;/h3&gt;
+<h3 id="直列ダウンロード">直列ダウンロード</h3>
 
-&lt;p&gt;まずは何も考えず順番に１つ１つダウンロードするRubyコード。&lt;/p&gt;
+<p>まずは何も考えず順番に１つ１つダウンロードするRubyコード。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# no_thread.rb&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;open-uri&apos;&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># no_thread.rb</span>
+<span class="nb">require</span> <span class="s1">'open-uri'</span>
 
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./images/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;wb&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;write&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">100</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+  <span class="nb">open</span><span class="p">(</span><span class="s2">"./images/</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">.png"</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+    <span class="n">f</span><span class="p">.</span><span class="nf">write</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"https://dummyimage.com/600x400"</span><span class="p">).</span><span class="nf">read</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;ruby no_thread.rb
-&lt;span class=&quot;go&quot;&gt;ruby no_thread.rb  1.85s user 0.28s system 1% cpu 2:05.11 total
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">time </span>ruby no_thread.rb
+<span class="go">ruby no_thread.rb  1.85s user 0.28s system 1% cpu 2:05.11 total
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;実行時間: 約2分。遅い&lt;/li&gt;
-  &lt;li&gt;CPU: 1％。CPUはほとんど使い切れていないことがわかる&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>実行時間: 約2分。遅い</li>
+  <li>CPU: 1％。CPUはほとんど使い切れていないことがわかる</li>
+</ul>
 
-&lt;h3 id=&quot;threadで並行ダウンロード&quot;&gt;Threadで並行ダウンロード&lt;/h3&gt;
+<h3 id="threadで並行ダウンロード">Threadで並行ダウンロード</h3>
 
-&lt;p&gt;Threadを使って並行に処理してみる。&lt;/p&gt;
+<p>Threadを使って並行に処理してみる。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# thread.rb&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;open-uri&apos;&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># thread.rb</span>
+<span class="nb">require</span> <span class="s1">'open-uri'</span>
 
-&lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;./images/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;wb&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;write&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">100</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+  <span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
+    <span class="nb">open</span><span class="p">(</span><span class="s2">"./images/</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">.png"</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+      <span class="n">f</span><span class="p">.</span><span class="nf">write</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"https://dummyimage.com/600x400"</span><span class="p">).</span><span class="nf">read</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+<span class="n">threads</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;ruby thread.rb
-&lt;span class=&quot;go&quot;&gt;ruby thread.rb  1.64s user 0.28s system 71% cpu 2.670 total
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">time </span>ruby thread.rb
+<span class="go">ruby thread.rb  1.64s user 0.28s system 71% cpu 2.670 total
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;実行時間: 2.6秒。劇的な改善&lt;/li&gt;
-  &lt;li&gt;CPU: 70％。うまくCPUも使えている&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>実行時間: 2.6秒。劇的な改善</li>
+  <li>CPU: 70％。うまくCPUも使えている</li>
+</ul>
 
-&lt;h2 id=&quot;goの場合&quot;&gt;Goの場合&lt;/h2&gt;
+<h2 id="goの場合">Goの場合</h2>
 
-&lt;p&gt;Goで書き直してみる。Goのバージョンは1.13を使用。&lt;/p&gt;
+<p>Goで書き直してみる。Goのバージョンは1.13を使用。</p>
 
-&lt;p&gt;&lt;a href=&quot;http://qiita.com/keisukeP/items/f4d680eb9e8f93263fa9&quot;&gt;こちらのコード&lt;/a&gt;を参考に書いてみた。&lt;/p&gt;
+<p><a href="http://qiita.com/keisukeP/items/f4d680eb9e8f93263fa9">こちらのコード</a>を参考に書いてみた。</p>
 
-&lt;div class=&quot;language-go highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;// go.go&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">// go.go</span>
+<span class="k">package</span> <span class="n">main</span>
 
-&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;io&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;net/http&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;os&quot;&lt;/span&gt;
-	&lt;span class=&quot;s&quot;&gt;&quot;sync&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<span class="k">import</span> <span class="p">(</span>
+	<span class="s">"fmt"</span>
+	<span class="s">"io"</span>
+	<span class="s">"net/http"</span>
+	<span class="s">"os"</span>
+	<span class="s">"sync"</span>
+<span class="p">)</span>
 
-&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WaitGroup&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt;
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">var</span> <span class="n">wg</span> <span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span>
+	<span class="k">var</span> <span class="n">url</span> <span class="kt">string</span> <span class="o">=</span> <span class="s">"https://dummyimage.com/600x400"</span>
 
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;images/%d.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;nb&quot;&gt;panic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="n">file</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">Create</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"images/%d.png"</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+			<span class="nb">panic</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+		<span class="p">}</span>
 
-		&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;go&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;nb&quot;&gt;panic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;defer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Body&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;defer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-		&lt;span class=&quot;p&quot;&gt;}()&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+		<span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+		<span class="k">go</span> <span class="k">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="n">response</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">http</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+				<span class="nb">panic</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="k">defer</span> <span class="n">response</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+			<span class="k">defer</span> <span class="n">file</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+			<span class="n">io</span><span class="o">.</span><span class="n">Copy</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span>
+			<span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
 
-	&lt;span class=&quot;n&quot;&gt;wg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Wait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+	<span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;h3 id=&quot;go-runで実行&quot;&gt;Go runで実行&lt;/h3&gt;
+<h3 id="go-runで実行">Go runで実行</h3>
 
-&lt;p&gt;コンパイルせずに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;go run&lt;/code&gt;で実行してみる。&lt;/p&gt;
+<p>コンパイルせずに<code class="language-plaintext highlighter-rouge">go run</code>で実行してみる。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;go run go.go
-&lt;span class=&quot;go&quot;&gt;go run go.go  0.79s user 0.37s system 25% cpu 4.532 total
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">time </span>go run go.go
+<span class="go">go run go.go  0.79s user 0.37s system 25% cpu 4.532 total
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;実行時間: 約4.5秒&lt;/li&gt;
-  &lt;li&gt;CPU: 25％&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>実行時間: 約4.5秒</li>
+  <li>CPU: 25％</li>
+</ul>
 
-&lt;h3 id=&quot;build済みバイナリで実行&quot;&gt;build済みバイナリで実行&lt;/h3&gt;
+<h3 id="build済みバイナリで実行">build済みバイナリで実行</h3>
 
-&lt;p&gt;buildして実行する。&lt;/p&gt;
+<p>buildして実行する。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;go build go.go
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt; ./go
-&lt;span class=&quot;go&quot;&gt;./go  0.23s user 0.12s system 11% cpu 3.111 total
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>go build go.go
+<span class="gp">$</span><span class="w"> </span><span class="nb">time</span> ./go
+<span class="go">./go  0.23s user 0.12s system 11% cpu 3.111 total
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;実行時間: 約3秒。RubyのThreadコードより少し遅かった&lt;/li&gt;
-  &lt;li&gt;CPU: 約10％。速度のわりにCPU消費が著しく低い！&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>実行時間: 約3秒。RubyのThreadコードより少し遅かった</li>
+  <li>CPU: 約10％。速度のわりにCPU消費が著しく低い！</li>
+</ul>
 
-&lt;h2 id=&quot;bashの場合&quot;&gt;Bashの場合&lt;/h2&gt;
+<h2 id="bashの場合">Bashの場合</h2>
 
-&lt;p&gt;Bash（シェルスクリプト）の場合も試してみる。&lt;/p&gt;
+<p>Bash（シェルスクリプト）の場合も試してみる。</p>
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# bash.bash&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;seq &lt;/span&gt;1 100&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
-  &lt;/span&gt;wget &lt;span class=&quot;nt&quot;&gt;--background&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--quiet&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://dummyimage.com/600x400&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-O&lt;/span&gt; images/&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;.png &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /dev/null
-&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># bash.bash</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 100<span class="sb">`</span><span class="p">;</span> <span class="k">do
+  </span>wget <span class="nt">--background</span> <span class="nt">--quiet</span> <span class="s2">"https://dummyimage.com/600x400"</span> <span class="nt">-O</span> images/<span class="nv">$i</span>.png <span class="o">&gt;</span> /dev/null
+<span class="k">done</span>
+</code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt; ./bash.bash
-&lt;span class=&quot;go&quot;&gt;./bash.bash  0.25s user 0.30s system 43% cpu 1.241 total
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">time</span> ./bash.bash
+<span class="go">./bash.bash  0.25s user 0.30s system 43% cpu 1.241 total
+</span></code></pre></div></div>
 
-&lt;ul&gt;
-  &lt;li&gt;実行時間: 約1.2秒。速い！&lt;/li&gt;
-  &lt;li&gt;CPU: 約40%&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>実行時間: 約1.2秒。速い！</li>
+  <li>CPU: 約40%</li>
+</ul>
 
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+<h2 id="まとめ">まとめ</h2>
 
-&lt;p&gt;単純な並行ダウンロードという処理において、実行速度だけでいうとRubyもThreadを使えばGoと同じ速度は出せるということがわかった。&lt;/p&gt;
+<p>単純な並行ダウンロードという処理において、実行速度だけでいうとRubyもThreadを使えばGoと同じ速度は出せるということがわかった。</p>
 
-&lt;p&gt;一方でCPUコストに関してはビルド済みのGoバイナリのほうが圧倒的低く済むということが判明した。つまり複雑な計算処理においてはGoがRubyよりずっとアドバンテージがあるであろうことがわかった。&lt;/p&gt;
+<p>一方でCPUコストに関してはビルド済みのGoバイナリのほうが圧倒的低く済むということが判明した。つまり複雑な計算処理においてはGoがRubyよりずっとアドバンテージがあるであろうことがわかった。</p>
 
-&lt;p&gt;今回は単純な処理なのでRubyとGoの間で処理速度に大きな差は生まれなかったものの、比較するロジックが複雑化すればするほどRubyはGoに負けそうな予感がした。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="go" /><category term="bash" /><summary type="html">Rubyで書いたコードをGoで書き直したらどれくらい早くなるかを検証したくてやってみた。ついでにBashでもどうなるかも比較した。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-vs-go.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-vs-go.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p>今回は単純な処理なのでRubyとGoの間で処理速度に大きな差は生まれなかったものの、比較するロジックが複雑化すればするほどRubyはGoに負けそうな予感がした。</p>]]></content><author><name>Toshimaru</name></author><category term="ruby" /><category term="go" /><category term="bash" /><summary type="html"><![CDATA[Rubyで書いたコードをGoで書き直したらどれくらい早くなるかを検証したくてやってみた。ついでにBashでもどうなるかも比較した。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/ruby-vs-go.jpg" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/ruby-vs-go.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

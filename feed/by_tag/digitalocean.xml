@@ -1,44 +1,44 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/digitalocean.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/digitalocean.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">terraformでDigitalOceanに簡単ドロップレット作成</title><link href="https://blog.toshimaru.net/terraform/" rel="alternate" type="text/html" title="terraformでDigitalOceanに簡単ドロップレット作成" /><published>2016-04-05T00:00:00+09:00</published><updated>2016-04-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/terraform</id><content type="html" xml:base="https://blog.toshimaru.net/terraform/">&lt;p&gt;&lt;a href=&quot;https://www.terraform.io/&quot;&gt;Terraform&lt;/a&gt;を使って1円クラウド、&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;DigitalOcean&lt;/a&gt;にドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/digitalocean.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/digitalocean.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">terraformでDigitalOceanに簡単ドロップレット作成</title><link href="https://blog.toshimaru.net/terraform/" rel="alternate" type="text/html" title="terraformでDigitalOceanに簡単ドロップレット作成" /><published>2016-04-05T00:00:00+09:00</published><updated>2016-04-05T00:00:00+09:00</updated><id>https://blog.toshimaru.net/terraform</id><content type="html" xml:base="https://blog.toshimaru.net/terraform/"><![CDATA[<p><a href="https://www.terraform.io/">Terraform</a>を使って1円クラウド、<a href="https://m.do.co/c/a79091850c6e">DigitalOcean</a>にドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。</p>
 
-&lt;h2 id=&quot;環境&quot;&gt;環境&lt;/h2&gt;
+<h2 id="環境">環境</h2>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform version
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform version
 Terraform v0.6.14
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;上記のバージョンの terraform を使っていきます。&lt;/p&gt;
+<p>上記のバージョンの terraform を使っていきます。</p>
 
-&lt;h2 id=&quot;tfファイル作成&quot;&gt;tfファイル作成&lt;/h2&gt;
+<h2 id="tfファイル作成">tfファイル作成</h2>
 
-&lt;p&gt;terraformファイル、例えば&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;test.tf&lt;/code&gt;ファイルを下記のように作成します（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.tf&lt;/code&gt;という拡張子でファイル名はなんでもよいようです）。&lt;/p&gt;
+<p>terraformファイル、例えば<code class="language-plaintext highlighter-rouge">test.tf</code>ファイルを下記のように作成します（<code class="language-plaintext highlighter-rouge">.tf</code>という拡張子でファイル名はなんでもよいようです）。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Configure the DigitalOcean Provider
-provider &quot;digitalocean&quot; {
-  token = &quot;your_digitalocean_token&quot;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Configure the DigitalOcean Provider
+provider "digitalocean" {
+  token = "your_digitalocean_token"
 }
 
 # Create a web server
-resource &quot;digitalocean_droplet&quot; &quot;web&quot; {
-  image = &quot;ubuntu-14-04-x64&quot;
-  name = &quot;web-1&quot;
-  region = &quot;sfo1&quot;
-  size = &quot;512mb&quot;
+resource "digitalocean_droplet" "web" {
+  image = "ubuntu-14-04-x64"
+  name = "web-1"
+  region = "sfo1"
+  size = "512mb"
   ssh_keys = [123456]
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;token&lt;/code&gt;にはDigitalOceanのあなた自身のトークンをセットしてください。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">token</code>にはDigitalOceanのあなた自身のトークンをセットしてください。</p>
 
-&lt;p&gt;ちなみに上記にある &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ssh_keys&lt;/code&gt; の id は下記のようにAPI経由で取得できます（jqを使ってます）。&lt;/p&gt;
+<p>ちなみに上記にある <code class="language-plaintext highlighter-rouge">ssh_keys</code> の id は下記のようにAPI経由で取得できます（jqを使ってます）。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ curl &quot;https://api.digitalocean.com/v2/account/keys&quot; -H &quot;Authorization: Bearer your_token&quot; | jq &quot;.ssh_keys[0].id&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl "https://api.digitalocean.com/v2/account/keys" -H "Authorization: Bearer your_token" | jq ".ssh_keys[0].id"
+</code></pre></div></div>
 
-&lt;h2 id=&quot;terraform-実行プラン表示&quot;&gt;terraform 実行プラン表示&lt;/h2&gt;
+<h2 id="terraform-実行プラン表示">terraform 実行プラン表示</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;terraform plan&lt;/code&gt;で実行プランを表示できます。これで何が作成されるかを確認しましょう。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">terraform plan</code>で実行プランを表示できます。これで何が作成されるかを確認しましょう。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform plan
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform plan
 Refreshing Terraform state prior to plan...
 
 
@@ -48,45 +48,45 @@ will be created (or destroyed and then created if an existing resource
 exists), yellow resources are being changed in-place, and red resources
 will be destroyed.
 
-Note: You didn&apos;t specify an &quot;-out&quot; parameter to save this plan, so when
-&quot;apply&quot; is called, Terraform can&apos;t guarantee this is what will execute.
+Note: You didn't specify an "-out" parameter to save this plan, so when
+"apply" is called, Terraform can't guarantee this is what will execute.
 
 + digitalocean_droplet.web
-    image:                &quot;&quot; =&amp;gt; &quot;ubuntu-14-04-x64&quot;
-    ipv4_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-    ipv4_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-    ipv6_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-    ipv6_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-    locked:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-    name:                 &quot;&quot; =&amp;gt; &quot;web-1&quot;
-    region:               &quot;&quot; =&amp;gt; &quot;sfo1&quot;
-    size:                 &quot;&quot; =&amp;gt; &quot;512mb&quot;
-    ssh_keys.#:           &quot;&quot; =&amp;gt; &quot;1&quot;
-    ssh_keys.0:           &quot;&quot; =&amp;gt; &quot;123456&quot;
-    status:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+    image:                "" =&gt; "ubuntu-14-04-x64"
+    ipv4_address:         "" =&gt; "&lt;computed&gt;"
+    ipv4_address_private: "" =&gt; "&lt;computed&gt;"
+    ipv6_address:         "" =&gt; "&lt;computed&gt;"
+    ipv6_address_private: "" =&gt; "&lt;computed&gt;"
+    locked:               "" =&gt; "&lt;computed&gt;"
+    name:                 "" =&gt; "web-1"
+    region:               "" =&gt; "sfo1"
+    size:                 "" =&gt; "512mb"
+    ssh_keys.#:           "" =&gt; "1"
+    ssh_keys.0:           "" =&gt; "123456"
+    status:               "" =&gt; "&lt;computed&gt;"
 
 
 Plan: 1 to add, 0 to change, 0 to destroy.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;プラン実行&quot;&gt;プラン実行&lt;/h2&gt;
+<h2 id="プラン実行">プラン実行</h2>
 
-&lt;p&gt;確認後は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;terraform apply&lt;/code&gt;で実際に作成を行えます。&lt;/p&gt;
+<p>確認後は<code class="language-plaintext highlighter-rouge">terraform apply</code>で実際に作成を行えます。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform apply
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform apply
 digitalocean_droplet.web: Creating...
-image:                &quot;&quot; =&amp;gt; &quot;ubuntu-14-04-x64&quot;
-ipv4_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-ipv4_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-ipv6_address:         &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-ipv6_address_private: &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-locked:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
-name:                 &quot;&quot; =&amp;gt; &quot;web-1&quot;
-region:               &quot;&quot; =&amp;gt; &quot;sfo1&quot;
-size:                 &quot;&quot; =&amp;gt; &quot;512mb&quot;
-ssh_keys.#:           &quot;&quot; =&amp;gt; &quot;1&quot;
-ssh_keys.0:           &quot;&quot; =&amp;gt; &quot;123456&quot;
-status:               &quot;&quot; =&amp;gt; &quot;&amp;lt;computed&amp;gt;&quot;
+image:                "" =&gt; "ubuntu-14-04-x64"
+ipv4_address:         "" =&gt; "&lt;computed&gt;"
+ipv4_address_private: "" =&gt; "&lt;computed&gt;"
+ipv6_address:         "" =&gt; "&lt;computed&gt;"
+ipv6_address_private: "" =&gt; "&lt;computed&gt;"
+locked:               "" =&gt; "&lt;computed&gt;"
+name:                 "" =&gt; "web-1"
+region:               "" =&gt; "sfo1"
+size:                 "" =&gt; "512mb"
+ssh_keys.#:           "" =&gt; "1"
+ssh_keys.0:           "" =&gt; "123456"
+status:               "" =&gt; "&lt;computed&gt;"
 digitalocean_droplet.web: Creation complete
 
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
@@ -97,13 +97,13 @@ infrastructure, so keep it safe. To inspect the complete state
 use the `terraform show` command.
 
 State path: terraform.tfstate
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;作成物の情報表示&quot;&gt;作成物の情報表示&lt;/h2&gt;
+<h2 id="作成物の情報表示">作成物の情報表示</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;terraform show&lt;/code&gt; で作成物の情報を表示できます。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">terraform show</code> で作成物の情報を表示できます。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform show
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform show
 digitalocean_droplet.web:
   id = 12808253
   image = ubuntu-14-04-x64
@@ -115,18 +115,18 @@ digitalocean_droplet.web:
   ssh_keys.# = 1
   ssh_keys.0 = 123456
   status = active
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;確かにできあがってます。&lt;/p&gt;
+<p>確かにできあがってます。</p>
 
-&lt;h2 id=&quot;ドロップレット削除&quot;&gt;ドロップレット削除&lt;/h2&gt;
+<h2 id="ドロップレット削除">ドロップレット削除</h2>
 
-&lt;p&gt;ほっとくとどんどん課金されていきますので使い終わったら削除しましょう。&lt;/p&gt;
+<p>ほっとくとどんどん課金されていきますので使い終わったら削除しましょう。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ terraform destroy
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ terraform destroy
 Do you really want to destroy?
   Terraform will delete all your managed infrastructure.
-  There is no undo. Only &apos;yes&apos; will be accepted to confirm.
+  There is no undo. Only 'yes' will be accepted to confirm.
 
   Enter a value: yes
 
@@ -135,286 +135,286 @@ digitalocean_droplet.web: Destroying...
 digitalocean_droplet.web: Destruction complete
 
 Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;p&gt;この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)&lt;/p&gt;
+<p>この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)</p>
 
-&lt;p&gt;&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;&lt;img src=&quot;/images/digitalocean.png&quot; alt=&quot;digitalocean&quot; /&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="terraform" /><summary type="html">Terraformを使って1円クラウド、DigitalOceanにドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/terraform.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/terraform.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">packerを使ってDigital Ocean上にイメージを作成する</title><link href="https://blog.toshimaru.net/digitalocean-image-with-packer/" rel="alternate" type="text/html" title="packerを使ってDigital Ocean上にイメージを作成する" /><published>2014-03-16T00:00:00+09:00</published><updated>2014-03-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/digitalocean-image-with-packer</id><content type="html" xml:base="https://blog.toshimaru.net/digitalocean-image-with-packer/">&lt;p&gt;＜前回のあらすじ＞&lt;br /&gt;
-&lt;a href=&quot;/digital-ocean-vagrant-puppet/&quot;&gt;1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://m.do.co/c/a79091850c6e"><img src="/images/digitalocean.png" alt="digitalocean" /></a></p>]]></content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="terraform" /><summary type="html"><![CDATA[Terraformを使って1円クラウド、DigitalOceanにドロップレットをさくっと立ててみます。Vagrantに似たツールではありますが、Vagrantよりシンプルでかつ軽量に動作します。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/terraform.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/terraform.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">packerを使ってDigital Ocean上にイメージを作成する</title><link href="https://blog.toshimaru.net/digitalocean-image-with-packer/" rel="alternate" type="text/html" title="packerを使ってDigital Ocean上にイメージを作成する" /><published>2014-03-16T00:00:00+09:00</published><updated>2014-03-16T00:00:00+09:00</updated><id>https://blog.toshimaru.net/digitalocean-image-with-packer</id><content type="html" xml:base="https://blog.toshimaru.net/digitalocean-image-with-packer/"><![CDATA[<p>＜前回のあらすじ＞<br />
+<a href="/digital-ocean-vagrant-puppet/">1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする</a></p>
 
-&lt;p&gt;&lt;a href=&quot;http://www.packer.io/&quot;&gt;packer&lt;/a&gt;を使ってDigital Ocean上にイメージを作成してみたのでそのときのメモ。&lt;/p&gt;
+<p><a href="http://www.packer.io/">packer</a>を使ってDigital Ocean上にイメージを作成してみたのでそのときのメモ。</p>
 
-&lt;h2 id=&quot;packerとは&quot;&gt;Packerとは？&lt;/h2&gt;
+<h2 id="packerとは">Packerとは？</h2>
 
-&lt;p&gt;&lt;a href=&quot;http://www.vagrantup.com/&quot;&gt;Vagrant&lt;/a&gt;がVMの構築とかAWS/Digitgal Oceanでのインスタンス作成とかを抽象化して、プログラマブルにすることが可能なツールだとしたら、Packerはそれをさらに抽象化して、1つの設定ファイル(JSON)からAWS, Digital Ocean, VirtualBox向けのイメージを作成できるツール。&lt;/p&gt;
+<p><a href="http://www.vagrantup.com/">Vagrant</a>がVMの構築とかAWS/Digitgal Oceanでのインスタンス作成とかを抽象化して、プログラマブルにすることが可能なツールだとしたら、Packerはそれをさらに抽象化して、1つの設定ファイル(JSON)からAWS, Digital Ocean, VirtualBox向けのイメージを作成できるツール。</p>
 
-&lt;h2 id=&quot;digital-oceanにイメージ作成する&quot;&gt;Digital Oceanにイメージ作成する&lt;/h2&gt;
+<h2 id="digital-oceanにイメージ作成する">Digital Oceanにイメージ作成する</h2>
 
-&lt;p&gt;今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。&lt;/p&gt;
+<p>今回はDigital Oceanにイメージを作成した。まずはpakcer用のディレクトリを用意。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ mkdir packer-test
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir packer-test
 $ cd packer-test
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;次にpackerの設定ファイルを用意。ファイル名は何でもよいっぽい。&lt;/p&gt;
+<p>次にpackerの設定ファイルを用意。ファイル名は何でもよいっぽい。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ touch Packer.json
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ touch Packer.json
+</code></pre></div></div>
 
-&lt;p&gt;このように書く。&lt;/p&gt;
+<p>このように書く。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
-  &quot;builders&quot;: [
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "builders": [
     {
-      &quot;type&quot;: &quot;digitalocean&quot;,
-      &quot;client_id&quot;: &quot;your_client_id&quot;,
-      &quot;api_key&quot;: &quot;your_api_key&quot;,
-      &quot;image_id&quot;: 1505447,
-      &quot;region_id&quot;: 3,
-      &quot;size_id&quot;: 66
+      "type": "digitalocean",
+      "client_id": "your_client_id",
+      "api_key": "your_api_key",
+      "image_id": 1505447,
+      "region_id": 3,
+      "size_id": 66
     }
   ],
 
-  &quot;provisioners&quot;: [
+  "provisioners": [
     {
-      &quot;type&quot;: &quot;shell&quot;,
-      &quot;script&quot;: &quot;setup.sh&quot;
+      "type": "shell",
+      "script": "setup.sh"
     }
   ]
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;builder&lt;/code&gt;でタイプをチョイス。今回は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;digitalocean&lt;/code&gt;を選択。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;client_id&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;api_key&lt;/code&gt;を設定。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;image_id&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;region_id&lt;/code&gt;,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;size_id&lt;/code&gt;のint値については&lt;a href=&quot;https://developers.digitalocean.com/&quot;&gt;こちらのDigitalOcean API&lt;/a&gt;を見るとよいっぽい。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">builder</code>でタイプをチョイス。今回は<code class="language-plaintext highlighter-rouge">digitalocean</code>を選択。<code class="language-plaintext highlighter-rouge">client_id</code>, <code class="language-plaintext highlighter-rouge">api_key</code>を設定。<code class="language-plaintext highlighter-rouge">image_id</code>,<code class="language-plaintext highlighter-rouge">region_id</code>,<code class="language-plaintext highlighter-rouge">size_id</code>のint値については<a href="https://developers.digitalocean.com/">こちらのDigitalOcean API</a>を見るとよいっぽい。</p>
 
-&lt;p&gt;プロビジョニングのタイプは今回はシンプルにshellを設定。適当に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;setup.sh&lt;/code&gt;を作る。&lt;/p&gt;
+<p>プロビジョニングのタイプは今回はシンプルにshellを設定。適当に<code class="language-plaintext highlighter-rouge">setup.sh</code>を作る。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ echo &quot;echo &apos;hello world&apos;&quot; &amp;gt; setup.sh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo "echo 'hello world'" &gt; setup.sh
+</code></pre></div></div>
 
-&lt;h2 id=&quot;packer&quot;&gt;Packer!&lt;/h2&gt;
+<h2 id="packer">Packer!</h2>
 
-&lt;p&gt;packerビルドしてみる。&lt;/p&gt;
+<p>packerビルドしてみる。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ packer build Packer.json
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ packer build Packer.json
 digitalocean output will be in this color.
 
-==&amp;gt; digitalocean: Creating temporary ssh key for droplet...
-==&amp;gt; digitalocean: Creating droplet...
-==&amp;gt; digitalocean: Waiting for droplet to become active...
-==&amp;gt; digitalocean: Waiting for SSH to become available...
-==&amp;gt; digitalocean: Connected to SSH!
-==&amp;gt; digitalocean: Provisioning with shell script: setup.sh
+==&gt; digitalocean: Creating temporary ssh key for droplet...
+==&gt; digitalocean: Creating droplet...
+==&gt; digitalocean: Waiting for droplet to become active...
+==&gt; digitalocean: Waiting for SSH to become available...
+==&gt; digitalocean: Connected to SSH!
+==&gt; digitalocean: Provisioning with shell script: setup.sh
     digitalocean: hello world!
     digitalocean:
-==&amp;gt; digitalocean: Gracefully shutting down droplet...
-==&amp;gt; digitalocean: Creating snapshot: packer-1395033724
-==&amp;gt; digitalocean: Waiting for snapshot to complete...
-==&amp;gt; digitalocean: Destroying droplet...
-==&amp;gt; digitalocean: Deleting temporary ssh key...
-Build &apos;digitalocean&apos; finished.
+==&gt; digitalocean: Gracefully shutting down droplet...
+==&gt; digitalocean: Creating snapshot: packer-1395033724
+==&gt; digitalocean: Waiting for snapshot to complete...
+==&gt; digitalocean: Destroying droplet...
+==&gt; digitalocean: Deleting temporary ssh key...
+Build 'digitalocean' finished.
 
-==&amp;gt; Builds finished. The artifacts of successful builds are:
---&amp;gt; digitalocean: A snapshot was created: &apos;packer-1395033724&apos; in region &apos;San Francisco 1&apos;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+==&gt; Builds finished. The artifacts of successful builds are:
+--&gt; digitalocean: A snapshot was created: 'packer-1395033724' in region 'San Francisco 1'
+</code></pre></div></div>
 
-&lt;h2 id=&quot;結果&quot;&gt;結果&lt;/h2&gt;
+<h2 id="結果">結果</h2>
 
-&lt;p&gt;Before,Afterで見てみる。&lt;/p&gt;
+<p>Before,Afterで見てみる。</p>
 
-&lt;p&gt;Before:&lt;/p&gt;
+<p>Before:</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/packer/do-before.png&quot; alt=&quot;before&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/packer/do-before.png" alt="before" /></p>
 
-&lt;p&gt;After:&lt;/p&gt;
+<p>After:</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/packer/do-after.png&quot; alt=&quot;after&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/packer/do-after.png" alt="after" /></p>
 
-&lt;p&gt;イメージのスナップショット（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;packer-1395033724&lt;/code&gt;）が作成されてますね。&lt;/p&gt;
+<p>イメージのスナップショット（<code class="language-plaintext highlighter-rouge">packer-1395033724</code>）が作成されてますね。</p>
 
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+<h2 id="最後に">最後に</h2>
 
-&lt;p&gt;packerはあくまでもイメージを作成するツールであり、イメージを管理するツールではないようです。&lt;/p&gt;
+<p>packerはあくまでもイメージを作成するツールであり、イメージを管理するツールではないようです。</p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;Packer only builds images. It does not attempt to manage them in any way.&lt;/p&gt;
-&lt;/blockquote&gt;
+<blockquote>
+  <p>Packer only builds images. It does not attempt to manage them in any way.</p>
+</blockquote>
 
-&lt;p&gt;See. &lt;a href=&quot;http://www.packer.io/intro/getting-started/build-image.html&quot;&gt;http://www.packer.io/intro/getting-started/build-image.html&lt;/a&gt;&lt;/p&gt;
+<p>See. <a href="http://www.packer.io/intro/getting-started/build-image.html">http://www.packer.io/intro/getting-started/build-image.html</a></p>
 
-&lt;p&gt;また、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;builders&lt;/code&gt;の設定を変更することで、&lt;a href=&quot;http://www.packer.io/docs/builders/amazon.html&quot;&gt;Amazon EC2&lt;/a&gt;や&lt;a href=&quot;http://www.packer.io/docs/builders/googlecompute.html&quot;&gt;Google Compute Engine&lt;/a&gt;とかにもイメージ作成できるようですね。&lt;/p&gt;
+<p>また、<code class="language-plaintext highlighter-rouge">builders</code>の設定を変更することで、<a href="http://www.packer.io/docs/builders/amazon.html">Amazon EC2</a>や<a href="http://www.packer.io/docs/builders/googlecompute.html">Google Compute Engine</a>とかにもイメージ作成できるようですね。</p>
 
-&lt;h3 id=&quot;github-repo&quot;&gt;Github Repo&lt;/h3&gt;
+<h3 id="github-repo">Github Repo</h3>
 
-&lt;p&gt;今回使ったものをGithubにおいておきます。&lt;/p&gt;
+<p>今回使ったものをGithubにおいておきます。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/packer-digitalocean-sample&quot;&gt;https://github.com/toshimaru/packer-digitalocean-sample&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/packer-digitalocean-sample">https://github.com/toshimaru/packer-digitalocean-sample</a></p>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+<h3 id="参考">参考</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rebuild.fm/25/&quot;&gt;Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="http://rebuild.fm/25/">Rebuild: 25: Immutable Infrastructure (Naoya Ito, Gosuke Miyashita)</a></li>
+</ul>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;p&gt;この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)&lt;/p&gt;
+<p>この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)</p>
 
-&lt;p&gt;&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;&lt;img src=&quot;/images/digitalocean.png&quot; alt=&quot;digitalocean&quot; /&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="packer" /><summary type="html">＜前回のあらすじ＞ 1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/packer/packer.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/packer/packer.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする</title><link href="https://blog.toshimaru.net/digital-ocean-vagrant-puppet/" rel="alternate" type="text/html" title="1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする" /><published>2014-03-12T00:00:00+09:00</published><updated>2014-03-12T00:00:00+09:00</updated><id>https://blog.toshimaru.net/digital-ocean-vagrant-puppet</id><content type="html" xml:base="https://blog.toshimaru.net/digital-ocean-vagrant-puppet/">&lt;p&gt;流行りの1円クラウド、&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;DigitalOcean&lt;/a&gt;上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。&lt;/p&gt;
+<p><a href="https://m.do.co/c/a79091850c6e"><img src="/images/digitalocean.png" alt="digitalocean" /></a></p>]]></content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="packer" /><summary type="html"><![CDATA[packerを使ってDigital Ocean上にイメージを作成してみたのでそのときのメモ。 Packerとは？ VagrantがVMの構築とかAWS/Digitgal Oceanでのインスタンス作成とかを抽象化して、プログラマブルにすることが可能なツールだとしたら、Packerはそれをさらに抽象化して、1つの設定ファイル(JSON)からAWS, Digital Ocean, VirtualBox向けのイメージを作成できるツール。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/packer/packer.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/packer/packer.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする</title><link href="https://blog.toshimaru.net/digital-ocean-vagrant-puppet/" rel="alternate" type="text/html" title="1円クラウド・DigitalOceanのインスタンスをVagrantで上げて、puppetでプロビジョニングする" /><published>2014-03-12T00:00:00+09:00</published><updated>2014-03-12T00:00:00+09:00</updated><id>https://blog.toshimaru.net/digital-ocean-vagrant-puppet</id><content type="html" xml:base="https://blog.toshimaru.net/digital-ocean-vagrant-puppet/"><![CDATA[<p>流行りの1円クラウド、<a href="https://m.do.co/c/a79091850c6e">DigitalOcean</a>上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。</p>
 
-&lt;h2 id=&quot;install-vagrant-command&quot;&gt;Install vagrant command&lt;/h2&gt;
+<h2 id="install-vagrant-command">Install vagrant command</h2>
 
-&lt;p&gt;Mac使っているのであれば&lt;a href=&quot;https://github.com/phinze/homebrew-cask&quot;&gt;homebrew-cask&lt;/a&gt;を使うのが便利。&lt;/p&gt;
+<p>Mac使っているのであれば<a href="https://github.com/phinze/homebrew-cask">homebrew-cask</a>を使うのが便利。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;brew cask &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;vagrant
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>brew cask <span class="nb">install </span>vagrant
+</code></pre></div></div>
 
-&lt;p&gt;バージョンは1.5.1&lt;/p&gt;
+<p>バージョンは1.5.1</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;vagrant &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;Vagrant 1.5.1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>vagrant <span class="nt">-v</span>
+<span class="go">Vagrant 1.5.1
+</span></code></pre></div></div>
 
-&lt;h2 id=&quot;install-vagrant-digitalocean-plugin&quot;&gt;Install vagrant-digitalocean plugin&lt;/h2&gt;
+<h2 id="install-vagrant-digitalocean-plugin">Install vagrant-digitalocean plugin</h2>
 
-&lt;p&gt;そのままではDigitalOceanは使えないので、次にvagrantのDigitalOceanプラグインをインストール。&lt;/p&gt;
+<p>そのままではDigitalOceanは使えないので、次にvagrantのDigitalOceanプラグインをインストール。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;vagrant plugin &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;vagrant-digitalocean
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>vagrant plugin <span class="nb">install </span>vagrant-digitalocean
+</code></pre></div></div>
 
-&lt;h2 id=&quot;vagrantfile-configuration&quot;&gt;Vagrantfile Configuration&lt;/h2&gt;
+<h2 id="vagrantfile-configuration">Vagrantfile Configuration</h2>
 
-&lt;p&gt;まずはVagrantfileを用意。&lt;/p&gt;
+<p>まずはVagrantfileを用意。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;vagrant-digitalocean-test
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;vagrant-digitalocean-test
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;Vagrantfile
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">mkdir </span>vagrant-digitalocean-test
+<span class="gp">$</span><span class="w"> </span><span class="nb">cd </span>vagrant-digitalocean-test
+<span class="gp">$</span><span class="w"> </span><span class="nb">touch </span>Vagrantfile
+</code></pre></div></div>
 
-&lt;p&gt;次に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Vagrantfile&lt;/code&gt;に書く設定。&lt;/p&gt;
+<p>次に<code class="language-plaintext highlighter-rouge">Vagrantfile</code>に書く設定。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;2&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;provider&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:digital_ocean&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ssh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;private_key_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;~/.ssh/id_rsa&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;box&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;digital_ocean&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;box_url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box&quot;&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Vagrant</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="s1">'2'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provider</span> <span class="ss">:digital_ocean</span> <span class="k">do</span> <span class="o">|</span><span class="n">provider</span><span class="p">,</span> <span class="n">override</span><span class="o">|</span>
+    <span class="n">override</span><span class="p">.</span><span class="nf">ssh</span><span class="p">.</span><span class="nf">private_key_path</span> <span class="o">=</span> <span class="s1">'~/.ssh/id_rsa'</span>
+    <span class="n">override</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span> <span class="o">=</span> <span class="s1">'digital_ocean'</span>
+    <span class="n">override</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box_url</span> <span class="o">=</span> <span class="s2">"https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"</span>
 
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;client_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{your_client_id}&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;api_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{your_api_key}&apos;&lt;/span&gt;
+    <span class="n">provider</span><span class="p">.</span><span class="nf">client_id</span> <span class="o">=</span> <span class="s1">'{your_client_id}'</span>
+    <span class="n">provider</span><span class="p">.</span><span class="nf">api_key</span> <span class="o">=</span> <span class="s1">'{your_api_key}'</span>
 
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;CentOS 6.4 x64&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;region&lt;/span&gt;               &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;San Francisco 1&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;size&lt;/span&gt;                 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;512MB&apos;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+    <span class="n">provider</span><span class="p">.</span><span class="nf">image</span>                <span class="o">=</span> <span class="s1">'CentOS 6.4 x64'</span>
+    <span class="n">provider</span><span class="p">.</span><span class="nf">region</span>               <span class="o">=</span> <span class="s1">'San Francisco 1'</span>
+    <span class="n">provider</span><span class="p">.</span><span class="nf">size</span>                 <span class="o">=</span> <span class="s1">'512MB'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;provider.client_id&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;provider.api_key&lt;/code&gt;の値はアカウント作成後、下記URLより生成できる。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">provider.client_id</code>, <code class="language-plaintext highlighter-rouge">provider.api_key</code>の値はアカウント作成後、下記URLより生成できる。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://cloud.digitalocean.com/api_access&quot;&gt;https://cloud.digitalocean.com/api_access&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://cloud.digitalocean.com/api_access">https://cloud.digitalocean.com/api_access</a></p>
 
-&lt;p&gt;今回はCentOS6.4、場所はサンフランシスコ、サイズは512で作ってみる。&lt;/p&gt;
+<p>今回はCentOS6.4、場所はサンフランシスコ、サイズは512で作ってみる。</p>
 
-&lt;h2 id=&quot;インスタンス作成&quot;&gt;インスタンス作成！&lt;/h2&gt;
+<h2 id="インスタンス作成">インスタンス作成！</h2>
 
-&lt;p&gt;あとはこのコマンドのみ。&lt;/p&gt;
+<p>あとはこのコマンドのみ。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;vagrant up &lt;span class=&quot;nt&quot;&gt;--provider&lt;/span&gt; digital_ocean
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>vagrant up <span class="nt">--provider</span> digital_ocean
+</code></pre></div></div>
 
-&lt;p&gt;これで一分くらい待つと立ち上がりました。動いてます。&lt;/p&gt;
+<p>これで一分くらい待つと立ち上がりました。動いてます。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;vagrant status
-&lt;span class=&quot;go&quot;&gt;Current machine states:
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>vagrant status
+<span class="go">Current machine states:
 
 default                   active (digital_ocean)
 
 active
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;p&gt;あとは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vagrant ssh&lt;/code&gt;するなり&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vagrant destroy&lt;/code&gt;（インスタンス破棄[重要！]）するなり。&lt;/p&gt;
+<p>あとは<code class="language-plaintext highlighter-rouge">vagrant ssh</code>するなり<code class="language-plaintext highlighter-rouge">vagrant destroy</code>（インスタンス破棄[重要！]）するなり。</p>
 
-&lt;h2 id=&quot;プロビジョニング&quot;&gt;プロビジョニング&lt;/h2&gt;
+<h2 id="プロビジョニング">プロビジョニング</h2>
 
-&lt;p&gt;これだけでは最小パッケージで必要なパッケージが入ってなく片手落ち。そうだ、puppetでプロビジョニングしてみよう。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Vagrantfile&lt;/code&gt;をこうしてみる。&lt;/p&gt;
+<p>これだけでは最小パッケージで必要なパッケージが入ってなく片手落ち。そうだ、puppetでプロビジョニングしてみよう。<code class="language-plaintext highlighter-rouge">Vagrantfile</code>をこうしてみる。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;2&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;shell&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inline: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force&quot;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;shell&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inline: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;yum -y install puppet&quot;&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Vagrant</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="s1">'2'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="s2">"shell"</span><span class="p">,</span> <span class="ss">inline: </span><span class="s2">"rpm -Uvh http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm --force"</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="s2">"shell"</span><span class="p">,</span> <span class="ss">inline: </span><span class="s2">"yum -y install puppet"</span>
 
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;provider&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:digital_ocean&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ssh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;private_key_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;~/.ssh/id_rsa&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;box&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;digital_ocean&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;override&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;box_url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box&quot;&lt;/span&gt;
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provider</span> <span class="ss">:digital_ocean</span> <span class="k">do</span> <span class="o">|</span><span class="n">provider</span><span class="p">,</span> <span class="n">override</span><span class="o">|</span>
+    <span class="n">override</span><span class="p">.</span><span class="nf">ssh</span><span class="p">.</span><span class="nf">private_key_path</span> <span class="o">=</span> <span class="s1">'~/.ssh/id_rsa'</span>
+    <span class="n">override</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span> <span class="o">=</span> <span class="s1">'digital_ocean'</span>
+    <span class="n">override</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box_url</span> <span class="o">=</span> <span class="s2">"https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"</span>
 
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;client_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{client_id}&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;api_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{api_key}&apos;&lt;/span&gt;
+    <span class="n">provider</span><span class="p">.</span><span class="nf">client_id</span> <span class="o">=</span> <span class="s1">'{client_id}'</span>
+    <span class="n">provider</span><span class="p">.</span><span class="nf">api_key</span> <span class="o">=</span> <span class="s1">'{api_key}'</span>
 
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;CentOS 6.4 x64&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;region&lt;/span&gt;               &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;San Francisco 1&apos;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;size&lt;/span&gt;                 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;512MB&apos;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    <span class="n">provider</span><span class="p">.</span><span class="nf">image</span>                <span class="o">=</span> <span class="s1">'CentOS 6.4 x64'</span>
+    <span class="n">provider</span><span class="p">.</span><span class="nf">region</span>               <span class="o">=</span> <span class="s1">'San Francisco 1'</span>
+    <span class="n">provider</span><span class="p">.</span><span class="nf">size</span>                 <span class="o">=</span> <span class="s1">'512MB'</span>
+  <span class="k">end</span>
 
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;puppet&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;puppet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;puppet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;options&lt;/span&gt;                &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;--verbose&quot;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="s2">"puppet"</span> <span class="k">do</span> <span class="o">|</span><span class="n">puppet</span><span class="o">|</span>
+    <span class="n">puppet</span><span class="p">.</span><span class="nf">options</span>                <span class="o">=</span> <span class="s2">"--verbose"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;最初にpuppetをインストールコマンドを追加。そして&lt;/p&gt;
+<p>最初にpuppetをインストールコマンドを追加。そして</p>
 
-&lt;h2 id=&quot;puppet-manifest&quot;&gt;puppet manifest&lt;/h2&gt;
+<h2 id="puppet-manifest">puppet manifest</h2>
 
-&lt;p&gt;puppetのmanifestファイルを定義します。&lt;/p&gt;
+<p>puppetのmanifestファイルを定義します。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;manifests
-&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;manifests/default.pp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">mkdir </span>manifests
+<span class="gp">$</span><span class="w"> </span><span class="nb">touch </span>manifests/default.pp
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;manifests/default.pp&lt;/code&gt;はこう。vimとgitのパッケージを追加。必要に応じて追加したりする。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">manifests/default.pp</code>はこう。vimとgitのパッケージを追加。必要に応じて追加したりする。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-    &lt;span class=&quot;s1&quot;&gt;&apos;vim-enhanced&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s1&quot;&gt;&apos;git&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;ensure&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;installed&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">package</span> <span class="p">{</span>
+  <span class="p">[</span>
+    <span class="s1">'vim-enhanced'</span><span class="p">,</span>
+    <span class="s1">'git'</span><span class="p">,</span>
+  <span class="p">]:</span>
+  <span class="k">ensure</span> <span class="o">=&gt;</span> <span class="n">installed</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;lets-provision&quot;&gt;Let’s provision!&lt;/h2&gt;
+<h2 id="lets-provision">Let’s provision!</h2>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;vagrant provision
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>vagrant provision
+</code></pre></div></div>
 
-&lt;p&gt;これでpuppet経由で、vimやらgitが入る。良い。&lt;/p&gt;
+<p>これでpuppet経由で、vimやらgitが入る。良い。</p>
 
-&lt;h2 id=&quot;本当に１円&quot;&gt;本当に１円？&lt;/h2&gt;
+<h2 id="本当に１円">本当に１円？</h2>
 
-&lt;p&gt;はい。１円です。&lt;/p&gt;
+<p>はい。１円です。</p>
 
-&lt;p&gt;検証環境として使ったあとに、Dropletをちゃんと破棄していればこうなります。&lt;/p&gt;
+<p>検証環境として使ったあとに、Dropletをちゃんと破棄していればこうなります。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/vagrant/bill.png&quot; alt=&quot;bill&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/vagrant/bill.png" alt="bill" /></p>
 
-&lt;p&gt;現時点で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1USD&lt;/code&gt; = &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;102JPY&lt;/code&gt;くらいなので&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.01USD&lt;/code&gt;=約１円ですね。&lt;/p&gt;
+<p>現時点で<code class="language-plaintext highlighter-rouge">1USD</code> = <code class="language-plaintext highlighter-rouge">102JPY</code>くらいなので<code class="language-plaintext highlighter-rouge">0.01USD</code>=約１円ですね。</p>
 
-&lt;h2 id=&quot;github-repository&quot;&gt;GitHub Repository&lt;/h2&gt;
+<h2 id="github-repository">GitHub Repository</h2>
 
-&lt;p&gt;Githubに今回のサンプルの最終形を置いておく。&lt;/p&gt;
+<p>Githubに今回のサンプルの最終形を置いておく。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/vagrant-digitalocean-puppet&quot;&gt;https://github.com/toshimaru/vagrant-digitalocean-puppet&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/vagrant-digitalocean-puppet">https://github.com/toshimaru/vagrant-digitalocean-puppet</a></p>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+<h3 id="参考">参考</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;Simple Cloud Computing, Built for Developers | DigitalOcean&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/&quot;&gt;VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://m.do.co/c/a79091850c6e">Simple Cloud Computing, Built for Developers | DigitalOcean</a></li>
+  <li><a href="http://blog.glidenote.com/blog/2013/12/05/digital-ocean-with-vagrant/">VagrantとSSDなVPS(Digital Ocean)で1時間1円の使い捨て高速サーバ環境を構築する</a></li>
+</ul>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;p&gt;この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)&lt;/p&gt;
+<p>この記事を気に入っていただけたなら下記のリファラルリンクよりDigital Oceanにご登録いただけますと筆者が喜びます(*´ω｀*)</p>
 
-&lt;p&gt;&lt;a href=&quot;https://m.do.co/c/a79091850c6e&quot;&gt;&lt;img src=&quot;/images/digitalocean.png&quot; alt=&quot;digitalocean&quot; /&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="vagrant" /><summary type="html">流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vagrant/vagrant.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vagrant/vagrant.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p><a href="https://m.do.co/c/a79091850c6e"><img src="/images/digitalocean.png" alt="digitalocean" /></a></p>]]></content><author><name>Toshimaru</name></author><category term="digitalocean" /><category term="vagrant" /><summary type="html"><![CDATA[流行りの1円クラウド、DigitalOcean上にVagrantでインスタンス(DigitalOcean的にはDroplet)を立ててみて、それが感動的にラクだったので書き残しておく。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vagrant/vagrant.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vagrant/vagrant.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

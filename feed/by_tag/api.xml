@@ -1,30 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/api.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/api.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">コマンドラインで複数行を1行に連結する</title><link href="https://blog.toshimaru.net/join-lines-command/" rel="alternate" type="text/html" title="コマンドラインで複数行を1行に連結する" /><published>2015-09-30T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/join-lines-command</id><content type="html" xml:base="https://blog.toshimaru.net/join-lines-command/">&lt;p&gt;やりたかったこととしては、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/api.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/api.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">コマンドラインで複数行を1行に連結する</title><link href="https://blog.toshimaru.net/join-lines-command/" rel="alternate" type="text/html" title="コマンドラインで複数行を1行に連結する" /><published>2015-09-30T00:00:00+09:00</published><updated>2019-11-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/join-lines-command</id><content type="html" xml:base="https://blog.toshimaru.net/join-lines-command/"><![CDATA[<p>やりたかったこととしては、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;text
-&lt;span class=&quot;go&quot;&gt;aaaa
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>text
+<span class="go">aaaa
 bbbb
 cccc
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</span></code></pre></div></div>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;text | &lt;span class=&quot;nb&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;\n&apos;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;,&apos;&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;aaaa,bbbb,cccc,%
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">cat </span>text | <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span>
+<span class="go">aaaa,bbbb,cccc,%
+</span></code></pre></div></div>
 
-&lt;p&gt;こんな感じで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tr&lt;/code&gt; を使って改行コードを置換してやればカンマ区切りで1行に連結できる。&lt;/p&gt;
+<p>こんな感じで <code class="language-plaintext highlighter-rouge">tr</code> を使って改行コードを置換してやればカンマ区切りで1行に連結できる。</p>
 
-&lt;h2 id=&quot;jsonをパースして連結する&quot;&gt;JSONをパースして連結する&lt;/h2&gt;
+<h2 id="jsonをパースして連結する">JSONをパースして連結する</h2>
 
-&lt;p&gt;もともとやりたかったのはこんな感じのこと。&lt;/p&gt;
+<p>もともとやりたかったのはこんな感じのこと。</p>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{ &quot;employees&quot;:[{&quot;firstName&quot;:&quot;John&quot;, &quot;lastName&quot;:&quot;Doe&quot;}, {&quot;firstName&quot;:&quot;Anna&quot;, &quot;lastName&quot;:&quot;Smith&quot;}, {&quot;firstName&quot;:&quot;Peter&quot;,&quot;lastName&quot;:&quot;Jones&quot;} ] }&apos;&lt;/span&gt; | jq &lt;span class=&quot;s1&quot;&gt;&apos;.employees[] .firstName&apos;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;\n&apos;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;,&apos;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;{ print &quot;result = [&quot; $1 &quot;]&quot; }&apos;&lt;/span&gt;
-&lt;span class=&quot;go&quot;&gt;result = [&quot;John&quot;,&quot;Anna&quot;,&quot;Peter&quot;,]
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span><span class="nb">echo</span> <span class="s1">'{ "employees":[{"firstName":"John", "lastName":"Doe"}, {"firstName":"Anna", "lastName":"Smith"}, {"firstName":"Peter","lastName":"Jones"} ] }'</span> | jq <span class="s1">'.employees[] .firstName'</span> | <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span> | <span class="nb">awk</span> <span class="s1">'{ print "result = [" $1 "]" }'</span>
+<span class="go">result = ["John","Anna","Peter",]
+</span></code></pre></div></div>
 
-&lt;p&gt;curlでJSONをHTTP GETしてそれを &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jq&lt;/code&gt; でパースして出たリストをカンマ区切りで出力する、みたいなやつ。&lt;/p&gt;
+<p>curlでJSONをHTTP GETしてそれを <code class="language-plaintext highlighter-rouge">jq</code> でパースして出たリストをカンマ区切りで出力する、みたいなやつ。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/2764051/how-to-join-multiple-lines-of-file-names-into-one-with-custom-delimiter&quot;&gt;linux - How to join multiple lines of file names into one with custom delimiter? - Stack Overflow&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://tbpgr.hatenablog.com/entry/20120309/1331314857&quot;&gt;tr | 標準入力の内容を置換、削除する - Tbpgr Blog&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="shell" /><category term="api" /><summary type="html">やりたかったこととしては、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。</summary></entry></feed>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/2764051/how-to-join-multiple-lines-of-file-names-into-one-with-custom-delimiter">linux - How to join multiple lines of file names into one with custom delimiter? - Stack Overflow</a></li>
+  <li><a href="http://tbpgr.hatenablog.com/entry/20120309/1331314857">tr | 標準入力の内容を置換、削除する - Tbpgr Blog</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="shell" /><category term="api" /><summary type="html"><![CDATA[やりたかったことは、コマンドラインで複数行の標準入力を受け取ってそれを１行にカンマ区切りにして出力すること。]]></summary></entry></feed>

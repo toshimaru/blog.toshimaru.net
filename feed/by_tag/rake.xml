@@ -1,114 +1,114 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/rake.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/rake.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">他のrakeタスクに依存するrakeタスクの実行</title><link href="https://blog.toshimaru.net/rake-dependency/" rel="alternate" type="text/html" title="他のrakeタスクに依存するrakeタスクの実行" /><published>2015-08-22T00:00:00+09:00</published><updated>2015-08-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rake-dependency</id><content type="html" xml:base="https://blog.toshimaru.net/rake-dependency/">&lt;h2 id=&quot;rakeタスクの前に別のrakeタスクを実行&quot;&gt;rakeタスクの前に別のrakeタスクを実行&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/rake.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/rake.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">他のrakeタスクに依存するrakeタスクの実行</title><link href="https://blog.toshimaru.net/rake-dependency/" rel="alternate" type="text/html" title="他のrakeタスクに依存するrakeタスクの実行" /><published>2015-08-22T00:00:00+09:00</published><updated>2015-08-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rake-dependency</id><content type="html" xml:base="https://blog.toshimaru.net/rake-dependency/"><![CDATA[<h2 id="rakeタスクの前に別のrakeタスクを実行">rakeタスクの前に別のrakeタスクを実行</h2>
 
-&lt;p&gt;ある特定のRakeタスクを実行する前に別のタスクを実行したい場合、このようにタスクを書きます。&lt;/p&gt;
+<p>ある特定のRakeタスクを実行する前に別のタスクを実行したい場合、このようにタスクを書きます。</p>
 
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;z&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"x"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"y"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"z"</span> <span class="p">}</span>
 
-&lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;dependency rake task&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foo: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;foo task&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="n">desc</span> <span class="s2">"dependency rake task"</span>
+<span class="n">task</span> <span class="ss">foo: </span><span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="p">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"foo task"</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;結果はこんな感じ。&lt;/p&gt;
+<p>結果はこんな感じ。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake foo
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake foo
 x
 y
 z
 foo task
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;タスク&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;y&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;z&lt;/code&gt; が実行された後にタスク&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo&lt;/code&gt;が実行されます。&lt;/p&gt;
+<p>タスク<code class="language-plaintext highlighter-rouge">x</code>, <code class="language-plaintext highlighter-rouge">y</code>, <code class="language-plaintext highlighter-rouge">z</code> が実行された後にタスク<code class="language-plaintext highlighter-rouge">foo</code>が実行されます。</p>
 
-&lt;h3 id=&quot;別の方法&quot;&gt;別の方法&lt;/h3&gt;
+<h3 id="別の方法">別の方法</h3>
 
-&lt;p&gt;また下記のように&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo&lt;/code&gt;タスクのみ先に定期して、別のtaskとして依存を定義することも可能です。&lt;/p&gt;
+<p>また下記のように<code class="language-plaintext highlighter-rouge">foo</code>タスクのみ先に定期して、別のtaskとして依存を定義することも可能です。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;z&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"x"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"y"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"z"</span> <span class="p">}</span>
 
-&lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;dependency rake task&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;foo task&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+<span class="n">desc</span> <span class="s2">"dependency rake task"</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:foo</span><span class="p">)</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"foo task"</span>
+<span class="k">end</span>
 
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foo: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="n">task</span> <span class="ss">foo: </span><span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="p">]</span>
+</code></pre></div></div>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake foo
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake foo
 x
 y
 z
 foo task
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rakeタスクの後に別のrakeタスクを実行&quot;&gt;rakeタスクの後に別のrakeタスクを実行&lt;/h2&gt;
+<h2 id="rakeタスクの後に別のrakeタスクを実行">rakeタスクの後に別のrakeタスクを実行</h2>
 
-&lt;p&gt;ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enhance&lt;/code&gt;を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。&lt;/p&gt;
+<p>ある特定のRakeタスクを実行する後に別のタスクを実行したい場合、<code class="language-plaintext highlighter-rouge">enhance</code>を使ってこのようにタスクを書けます。さっきの書いたタスクをenhanceしてみましょう。</p>
 
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;z&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span><span class="p">(</span><span class="ss">:x</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"x"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:y</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"y"</span> <span class="p">}</span>
+<span class="n">task</span><span class="p">(</span><span class="ss">:z</span><span class="p">)</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"z"</span> <span class="p">}</span>
 
-&lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;dependency rake task&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foo: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;foo task&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+<span class="n">desc</span> <span class="s2">"dependency rake task"</span>
+<span class="n">task</span> <span class="ss">foo: </span><span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="ss">:z</span><span class="p">]</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"foo task"</span>
+<span class="k">end</span>
 
-&lt;span class=&quot;no&quot;&gt;Rake&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;enhance&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;foo enhancing task&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="no">Rake</span><span class="o">::</span><span class="no">Task</span><span class="p">[</span><span class="s2">"foo"</span><span class="p">].</span><span class="nf">enhance</span> <span class="k">do</span>
+  <span class="nb">puts</span> <span class="s2">"foo enhancing task"</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;結果はこんな感じ。&lt;/p&gt;
+<p>結果はこんな感じ。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ rake foo
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake foo
 x
 y
 z
 foo task
 foo enhancing task
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enhance&lt;/code&gt;の中にかいた処理はしっかり&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;foo&lt;/code&gt;タスクのあとに実行されていますね。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">enhance</code>の中にかいた処理はしっかり<code class="language-plaintext highlighter-rouge">foo</code>タスクのあとに実行されていますね。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.dan-manges.com/blog/modifying-rake-tasks&quot;&gt;Modifying Rake Tasks - Dan Manges’s Blog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/ruby/rake&quot;&gt;ruby/rake&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://yamayo.github.io/blog/2014/06/06/rake-before-task-hook/&quot;&gt;Rake で before task をフックする - northaven&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="rake" /><summary type="html">rakeタスクの前に別のrakeタスクを実行</summary></entry><entry><title type="html">Rakeタスクにエイリアスを付ける</title><link href="https://blog.toshimaru.net/rake-alias/" rel="alternate" type="text/html" title="Rakeタスクにエイリアスを付ける" /><published>2013-11-17T00:00:00+09:00</published><updated>2013-11-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rake-alias</id><content type="html" xml:base="https://blog.toshimaru.net/rake-alias/">&lt;p&gt;RubyのRakeタスクにエイリアス付けたいときってありませんか？&lt;/p&gt;
+<ul>
+  <li><a href="http://www.dan-manges.com/blog/modifying-rake-tasks">Modifying Rake Tasks - Dan Manges’s Blog</a></li>
+  <li><a href="https://github.com/ruby/rake">ruby/rake</a></li>
+  <li><a href="http://yamayo.github.io/blog/2014/06/06/rake-before-task-hook/">Rake で before task をフックする - northaven</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="rake" /><summary type="html"><![CDATA[他のrakeタスクに依存性のあるrakeタスクの実行の仕方について紹介します。]]></summary></entry><entry><title type="html">Rakeタスクにエイリアスを付ける</title><link href="https://blog.toshimaru.net/rake-alias/" rel="alternate" type="text/html" title="Rakeタスクにエイリアスを付ける" /><published>2013-11-17T00:00:00+09:00</published><updated>2013-11-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rake-alias</id><content type="html" xml:base="https://blog.toshimaru.net/rake-alias/"><![CDATA[<p>RubyのRakeタスクにエイリアス付けたいときってありませんか？</p>
 
-&lt;p&gt;僕はあります。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rake create&lt;/code&gt;なんていうタスクがあったとしたら、手癖で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rake new&lt;/code&gt;とか打っちゃうことがあるんですよ。そういうときは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;alias_task&lt;/code&gt;なんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。具体的にはこんな感じです。&lt;/p&gt;
+<p>僕はあります。<code class="language-plaintext highlighter-rouge">rake create</code>なんていうタスクがあったとしたら、手癖で<code class="language-plaintext highlighter-rouge">rake new</code>とか打っちゃうことがあるんですよ。そういうときは<code class="language-plaintext highlighter-rouge">alias_task</code>なんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。具体的にはこんな感じです。</p>
 
-&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;alias_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;old_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rake&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;old_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;arg_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;old_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">alias_task</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
+  <span class="n">tasks</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">new_name</span><span class="p">,</span> <span class="n">old_name</span><span class="o">|</span>
+    <span class="n">task</span> <span class="n">new_name</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="no">Rake</span><span class="p">.</span><span class="nf">application</span><span class="p">[</span><span class="n">old_name</span><span class="p">].</span><span class="nf">arg_names</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-&lt;span class=&quot;n&quot;&gt;alias_task&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:dc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;ss&quot;&gt;:db_create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="n">alias_task</span> <span class="p">[</span>
+  <span class="p">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">],</span>
+  <span class="p">[</span><span class="ss">:dc</span><span class="p">,</span>  <span class="ss">:db_create</span><span class="p">]</span>
+<span class="p">]</span>
+</code></pre></div></div>
 
-&lt;p&gt;このコードでは&lt;/p&gt;
+<p>このコードでは</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create&lt;/code&gt;タスクに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;new&lt;/code&gt;というエイリアス名&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;db_create&lt;/code&gt;タスクに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dc&lt;/code&gt;というエイリアス名&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">create</code>タスクに<code class="language-plaintext highlighter-rouge">new</code>というエイリアス名</li>
+  <li><code class="language-plaintext highlighter-rouge">db_create</code>タスクに<code class="language-plaintext highlighter-rouge">dc</code>というエイリアス名</li>
+</ul>
 
-&lt;p&gt;をそれぞれ割り当てています。&lt;/p&gt;
+<p>をそれぞれ割り当てています。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
+<h2 id="参考">参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/7656541/the-alias-of-task-name-in-rake&quot;&gt;The alias of task name in rake&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="rake" /><summary type="html">RubyのRakeタスクにエイリアス付けたいときってありませんか？</summary></entry></feed>
+<ul>
+  <li><a href="http://stackoverflow.com/questions/7656541/the-alias-of-task-name-in-rake">The alias of task name in rake</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="ruby" /><category term="rake" /><summary type="html"><![CDATA[RubyのRakeタスクにエイリアス付けたいときってありません？ 僕はあります。rake createなんていうタスクがあったとしたら、何らかの手癖のせいでrake newとか打っちゃうことがあるんですよ。そういうときはalias_taskなんていう関数を作ってやって、タスク名に別のエイリアス名を割り当ててやればOK。]]></summary></entry></feed>

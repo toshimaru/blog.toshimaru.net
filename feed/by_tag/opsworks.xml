@@ -1,349 +1,349 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/opsworks.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/opsworks.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">GunosyでのRails開発フロー</title><link href="https://blog.toshimaru.net/gunosy-rails-way/" rel="alternate" type="text/html" title="GunosyでのRails開発フロー" /><published>2014-12-22T00:00:00+09:00</published><updated>2014-12-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gunosy-rails-way</id><content type="html" xml:base="https://blog.toshimaru.net/gunosy-rails-way/">&lt;p&gt;&lt;strong&gt;この当時の内容と大きく変わっていませんが、最新のRails開発について&lt;a href=&quot;http://tech.gunosy.io/entry/gunosy-admin-rails&quot;&gt;公式テックブログ&lt;/a&gt;に書きました。そちらも合わせてご参照ください。&lt;/strong&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/opsworks.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/opsworks.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">GunosyでのRails開発フロー</title><link href="https://blog.toshimaru.net/gunosy-rails-way/" rel="alternate" type="text/html" title="GunosyでのRails開発フロー" /><published>2014-12-22T00:00:00+09:00</published><updated>2014-12-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gunosy-rails-way</id><content type="html" xml:base="https://blog.toshimaru.net/gunosy-rails-way/"><![CDATA[<p><strong>この当時の内容と大きく変わっていませんが、最新のRails開発について<a href="http://tech.gunosy.io/entry/gunosy-admin-rails">公式テックブログ</a>に書きました。そちらも合わせてご参照ください。</strong></p>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;p&gt;この記事は&lt;a href=&quot;http://qiita.com/advent-calendar/2014/gunosy&quot;&gt;Gunosy Advent Calendar 2014&lt;/a&gt;の22日目の記事です。&lt;/p&gt;
+<p>この記事は<a href="http://qiita.com/advent-calendar/2014/gunosy">Gunosy Advent Calendar 2014</a>の22日目の記事です。</p>
 
-&lt;p&gt;こんにちは、Gunosyの&lt;a href=&quot;https://twitter.com/toshimaru_e&quot;&gt;toshimaru&lt;/a&gt;です。Gunosyでは主にRuby on Railsアプリを担当しています。&lt;/p&gt;
+<p>こんにちは、Gunosyの<a href="https://twitter.com/toshimaru_e">toshimaru</a>です。Gunosyでは主にRuby on Railsアプリを担当しています。</p>
 
-&lt;h2 id=&quot;はじめに&quot;&gt;はじめに&lt;/h2&gt;
-&lt;p&gt;Gunosyでは昨年度よりAPIの実装を&lt;a href=&quot;https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua&quot;&gt;Rails実装からGo実装へと変えた&lt;/a&gt;ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも&lt;a href=&quot;http://blog.gopheracademy.com/advent-2014/atlas/&quot;&gt;Railsは手放せない&lt;/a&gt;ようですしね。&lt;/p&gt;
+<h2 id="はじめに">はじめに</h2>
+<p>Gunosyでは昨年度よりAPIの実装を<a href="https://speakerdeck.com/ymatsuwitter/300mo-ren-wogodeba-itahua">Rails実装からGo実装へと変えた</a>ことでAPIのパフォーマンスの大幅な改善が行われました。そんなわけで「GunosyってRails捨ててGoを使ってるんじゃないの？」とお思いの方もいらっしゃるかもしれませんがそんなことはありません。大規模アクセスのない管理画面などではRuby on RailsはまだまだGunosyで現役バリバリです<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">1</a></sup>。高速にWEBアプリを作る必要のあるシーンにおいてはGoはRailsにはまだ敵いません。あのGoカンパニーとして名高いHashiCorpでさえも<a href="http://blog.gopheracademy.com/advent-2014/atlas/">Railsは手放せない</a>ようですしね。</p>
 
-&lt;p&gt;本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<p>本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">2</a></sup>。</p>
 
-&lt;h2 id=&quot;ブランチの運用&quot;&gt;ブランチの運用&lt;/h2&gt;
-&lt;p&gt;基本は&lt;a href=&quot;http://danielkummer.github.io/git-flow-cheatsheet/index.ja_JP.html&quot;&gt;Git flow&lt;/a&gt;に則って開発を進めています。ただGit flowにおけるリリースブランチの運用はフローの簡易化のため、またスモールチーム（２〜３人）での開発ということもあり省いています。これによりdevelop→master間のフローがラクになりスピーディな開発が可能になります。&lt;/p&gt;
+<h2 id="ブランチの運用">ブランチの運用</h2>
+<p>基本は<a href="http://danielkummer.github.io/git-flow-cheatsheet/index.ja_JP.html">Git flow</a>に則って開発を進めています。ただGit flowにおけるリリースブランチの運用はフローの簡易化のため、またスモールチーム（２〜３人）での開発ということもあり省いています。これによりdevelop→master間のフローがラクになりスピーディな開発が可能になります。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/gunosy/deploy.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/gunosy/deploy.png" alt="" /></p>
 
-&lt;p&gt;&lt;strong&gt;【↑図】developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ&lt;/strong&gt;&lt;/p&gt;
+<p><strong>【↑図】developからfeatureブランチが切られ、developにマージ・確認した後にmasterへ</strong></p>
 
-&lt;h2 id=&quot;デプロイ&quot;&gt;デプロイ&lt;/h2&gt;
-&lt;p&gt;デプロイフローは下記のようになっています。&lt;/p&gt;
+<h2 id="デプロイ">デプロイ</h2>
+<p>デプロイフローは下記のようになっています。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/gunosy/workflow.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/gunosy/workflow.png" alt="" /></p>
 
-&lt;ol&gt;
-  &lt;li&gt;ローカルで開発&lt;/li&gt;
-  &lt;li&gt;コードをGithubにプッシュ&lt;/li&gt;
-  &lt;li&gt;CircleCIでテスト &amp;amp; テスト結果を通知&lt;/li&gt;
-  &lt;li&gt;CircleCIからAmazon OpsWorksにデプロイ命令（Chefのデプロイレシピを実行させる）&lt;/li&gt;
-  &lt;li&gt;OpsWorksからデプロイ完了通知&lt;/li&gt;
-&lt;/ol&gt;
+<ol>
+  <li>ローカルで開発</li>
+  <li>コードをGithubにプッシュ</li>
+  <li>CircleCIでテスト &amp; テスト結果を通知</li>
+  <li>CircleCIからAmazon OpsWorksにデプロイ命令（Chefのデプロイレシピを実行させる）</li>
+  <li>OpsWorksからデプロイ完了通知</li>
+</ol>
 
-&lt;p&gt;※Amazon OpsWorksについては昨日のChefAdventCalendarにまとめさせていただきましたのでよかったらどうぞ。&lt;/p&gt;
+<p>※Amazon OpsWorksについては昨日のChefAdventCalendarにまとめさせていただきましたのでよかったらどうぞ。</p>
 
-&lt;p&gt;&lt;a href=&quot;/opsworks-rails/&quot;&gt;Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング&lt;/a&gt;&lt;/p&gt;
+<p><a href="/opsworks-rails/">Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング</a></p>
 
-&lt;p&gt;上記のブランチ運用と照らし合わせるとこうなります。&lt;/p&gt;
+<p>上記のブランチ運用と照らし合わせるとこうなります。</p>
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;develop&lt;/code&gt;ブランチ変更時&lt;/td&gt;
-      &lt;td&gt;CircleCIテスト後に、（テストパスすれば）OpsWorksのステージング環境に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;develop&lt;/code&gt; ブランチをデプロイ&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;ブランチ変更時&lt;/td&gt;
-      &lt;td&gt;CircleCIテスト後に、OpsWorksのプロダクション環境に&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;ブランチをデプロイ&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+<table>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">develop</code>ブランチ変更時</td>
+      <td>CircleCIテスト後に、（テストパスすれば）OpsWorksのステージング環境に<code class="language-plaintext highlighter-rouge">develop</code> ブランチをデプロイ</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">master</code>ブランチ変更時</td>
+      <td>CircleCIテスト後に、OpsWorksのプロダクション環境に<code class="language-plaintext highlighter-rouge">master</code>ブランチをデプロイ</td>
+    </tr>
+  </tbody>
+</table>
 
-&lt;p&gt;アプリケーションレポジトリの責任範囲がCircleCIでテストを実行してOpsWorksにデプロイリクエストを投げるまでで、その後のデプロイは別レポジトリとして管理されているChefのレシピの責任範囲として役割が分けられています。デプロイ環境が一通り揃ってしまえば、アプリケーション開発者はほとんどデプロイに関するアレコレを考える必要がなく本来の開発に集中できます。&lt;/p&gt;
+<p>アプリケーションレポジトリの責任範囲がCircleCIでテストを実行してOpsWorksにデプロイリクエストを投げるまでで、その後のデプロイは別レポジトリとして管理されているChefのレシピの責任範囲として役割が分けられています。デプロイ環境が一通り揃ってしまえば、アプリケーション開発者はほとんどデプロイに関するアレコレを考える必要がなく本来の開発に集中できます。</p>
 
-&lt;h2 id=&quot;railsのバージョン&quot;&gt;Railsのバージョン&lt;/h2&gt;
-&lt;p&gt;入社以来、Gunosyでは２つのRailsプロジェクトにかかわってきましたが（どちらも入社後にゼロから開始したプロジェクトです）両プロジェクトともにバージョン4.1.8です。まだ現時点で最新のバージョン4.2.0には上げてませんが今後も最新のRailsに追従していく所存です。&lt;/p&gt;
+<h2 id="railsのバージョン">Railsのバージョン</h2>
+<p>入社以来、Gunosyでは２つのRailsプロジェクトにかかわってきましたが（どちらも入社後にゼロから開始したプロジェクトです）両プロジェクトともにバージョン4.1.8です。まだ現時点で最新のバージョン4.2.0には上げてませんが今後も最新のRailsに追従していく所存です。</p>
 
-&lt;h2 id=&quot;テスト&quot;&gt;テスト&lt;/h2&gt;
-&lt;p&gt;Railsのテストに関してはRSpec, FactoryGirl, Capybaraあたりを使っています。&lt;/p&gt;
+<h2 id="テスト">テスト</h2>
+<p>Railsのテストに関してはRSpec, FactoryGirl, Capybaraあたりを使っています。</p>
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;RSpec&lt;/td&gt;
-      &lt;td&gt;モデル、コントローラー周りのテスト&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Capybara&lt;/td&gt;
-      &lt;td&gt;ビューを含むEnd-to-Endテスト&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+<table>
+  <tbody>
+    <tr>
+      <td>RSpec</td>
+      <td>モデル、コントローラー周りのテスト</td>
+    </tr>
+    <tr>
+      <td>Capybara</td>
+      <td>ビューを含むEnd-to-Endテスト<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup></td>
+    </tr>
+  </tbody>
+</table>
 
-&lt;p&gt;カバレッジ率に関しては90%前後を保っています。カバレッジは&lt;a href=&quot;https://github.com/colszowka/simplecov&quot;&gt;simplecov&lt;/a&gt;を使用し、結果作成されるカバレッジ率はCircleCIの&lt;a href=&quot;https://circleci.com/docs/build-artifacts&quot;&gt;artifacts&lt;/a&gt;の機能を使いカバレッジ率と共に公開しています。&lt;/p&gt;
+<p>カバレッジ率に関しては90%前後を保っています。カバレッジは<a href="https://github.com/colszowka/simplecov">simplecov</a>を使用し、結果作成されるカバレッジ率はCircleCIの<a href="https://circleci.com/docs/build-artifacts">artifacts</a>の機能を使いカバレッジ率と共に公開しています。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/gunosy/coverage.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/gunosy/coverage.png" alt="" /></p>
 
-&lt;p&gt;&lt;strong&gt;【↑図】artifactsで公開されたカバレッジ率&lt;/strong&gt;&lt;/p&gt;
+<p><strong>【↑図】artifactsで公開されたカバレッジ率</strong></p>
 
-&lt;p&gt;ただ「テストカバレッジを上げること」が目的化してしまっては本末転倒なので（いわゆる「テスト書きすぎ問題」）、「どこまでテストを書くか」は今後も考えていきたいテーマではあります。&lt;/p&gt;
+<p>ただ「テストカバレッジを上げること」が目的化してしまっては本末転倒なので（いわゆる「テスト書きすぎ問題」）、「どこまでテストを書くか」は今後も考えていきたいテーマではあります。</p>
 
-&lt;h2 id=&quot;複数db&quot;&gt;複数DB&lt;/h2&gt;
-&lt;p&gt;Railsの悩みとして１つ大きいのは複数DBの扱いではないでしょうか？ Gunosyでももちろん複数DBを使い分ける必要があり、そのときはCookpadさん, DeNAさんで実績のある&lt;a href=&quot;https://github.com/eagletmt/switch_point&quot;&gt;swith_point&lt;/a&gt; gemを使用しています。&lt;/p&gt;
+<h2 id="複数db">複数DB</h2>
+<p>Railsの悩みとして１つ大きいのは複数DBの扱いではないでしょうか？ Gunosyでももちろん複数DBを使い分ける必要があり、そのときはCookpadさん, DeNAさんで実績のある<a href="https://github.com/eagletmt/switch_point">swith_point</a> gemを使用しています。</p>
 
-&lt;p&gt;この2社のDB事情に関しては下記ブログ・資料に詳しいです。&lt;/p&gt;
+<p>この2社のDB事情に関しては下記ブログ・資料に詳しいです。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://techlife.cookpad.com/entry/2014/08/28/194147&quot;&gt;クックパッドにおける最近のActiveRecord運用事情&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.slideshare.net/sonots/mobage-ruby-db&quot;&gt;Mobage を支える Ruby の技術 ~ 複数DB編 ~&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="http://techlife.cookpad.com/entry/2014/08/28/194147">クックパッドにおける最近のActiveRecord運用事情</a></li>
+  <li><a href="http://www.slideshare.net/sonots/mobage-ruby-db">Mobage を支える Ruby の技術 ~ 複数DB編 ~</a></li>
+</ul>
 
-&lt;p&gt;上記に紹介されているように下記のように簡単に複数DBをswitchでき素敵です。&lt;/p&gt;
+<p>上記に紹介されているように下記のように簡単に複数DBをswitchでき素敵です。</p>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Configuration&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;SwitchPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;define_switch_point&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:blog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;ss&quot;&gt;readonly: :&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;_blog_slave&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;ss&quot;&gt;writable: :&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;_blog_master&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Configuration</span>
+<span class="no">SwitchPoint</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">define_switch_point</span> <span class="ss">:blog</span><span class="p">,</span>
+    <span class="ss">readonly: :"</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="si">}</span><span class="ss">_blog_slave"</span><span class="p">,</span>
+    <span class="ss">writable: :"</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">env</span><span class="si">}</span><span class="ss">_blog_master"</span>
+<span class="k">end</span>
 
-&lt;span class=&quot;c1&quot;&gt;# Model&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Article&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;use_switch_point&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:blog&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+<span class="c1"># Model</span>
+<span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">use_switch_point</span> <span class="ss">:blog</span>
+<span class="k">end</span></code></pre></figure>
 
-&lt;p&gt;Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。&lt;a href=&quot;http://mozaic.fm/post/104575088493/12-rails&quot;&gt;参考: #12 Rails mozaic.fm&lt;/a&gt;&lt;/p&gt;
+<p>Railsの機能として複数データベースがサポートされる話もあるようなのでそこも期待ですね。<a href="http://mozaic.fm/post/104575088493/12-rails">参考: #12 Rails mozaic.fm</a></p>
 
-&lt;h2 id=&quot;権限管理&quot;&gt;権限管理&lt;/h2&gt;
-&lt;p&gt;管理画面の権限管理に関しては&lt;a href=&quot;https://github.com/nathanl/authority&quot;&gt;authority&lt;/a&gt;を使用しています。権限は大まかにそれぞれの機能においてそれを参照できる権限（READ）・更新できる権限（CREATE/UPDATE/DELETE）というような権限分けを行っています。例えば＜ユーザーを閲覧可能＞という権限、＜ユーザーを更新可能＞な権限、これらを組み合わせて管理ユーザーの権限を定義します。&lt;/p&gt;
+<h2 id="権限管理">権限管理</h2>
+<p>管理画面の権限管理に関しては<a href="https://github.com/nathanl/authority">authority</a>を使用しています。権限は大まかにそれぞれの機能においてそれを参照できる権限（READ）・更新できる権限（CREATE/UPDATE/DELETE）というような権限分けを行っています。例えば＜ユーザーを閲覧可能＞という権限、＜ユーザーを更新可能＞な権限、これらを組み合わせて管理ユーザーの権限を定義します。</p>
 
-&lt;p&gt;なお、初期の権限設定は&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;seeds.rb&lt;/code&gt;で権限をまくようにしています。&lt;/p&gt;
+<p>なお、初期の権限設定は<code class="language-plaintext highlighter-rouge">seeds.rb</code>で権限をまくようにしています。</p>
 
-&lt;h2 id=&quot;バッチ&quot;&gt;バッチ&lt;/h2&gt;
-&lt;p&gt;cronの管理に関しては&lt;a href=&quot;https://github.com/javan/whenever&quot;&gt;whenever&lt;/a&gt;を使用しています。こちらはOpsWorkのデプロイ実行時にChefのwheneverレシビが定義してあり、そこでcronがデプロイ時に更新されるようになっています。&lt;/p&gt;
+<h2 id="バッチ">バッチ</h2>
+<p>cronの管理に関しては<a href="https://github.com/javan/whenever">whenever</a>を使用しています。こちらはOpsWorkのデプロイ実行時にChefのwheneverレシビが定義してあり、そこでcronがデプロイ時に更新されるようになっています。</p>
 
-&lt;h2 id=&quot;非同期ジョブ&quot;&gt;非同期ジョブ&lt;/h2&gt;
-&lt;p&gt;重い処理に関してはSidekiqを使いRails側ではSidekiqにキューイングするまでにして、その後の処理はSidekiqで行うようにしてます。例えばGunosyの場合何が重い処理にあたるかというと「全ユーザーにプッシュ通知を送るぞ！」みたいなケース。そのような時間のかかる処理に関してはSidekiqで処理を行っています&lt;sup id=&quot;fnref:4&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:4&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+<h2 id="非同期ジョブ">非同期ジョブ</h2>
+<p>重い処理に関してはSidekiqを使いRails側ではSidekiqにキューイングするまでにして、その後の処理はSidekiqで行うようにしてます。例えばGunosyの場合何が重い処理にあたるかというと「全ユーザーにプッシュ通知を送るぞ！」みたいなケース。そのような時間のかかる処理に関してはSidekiqで処理を行っています<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">4</a></sup>。</p>
 
-&lt;h2 id=&quot;その他今後の課題&quot;&gt;その他・今後の課題&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;僕が携わったプロジェクトはどちらもRails4系だが、歴史が積み重なったRails3系プロジェクトもあるので今後どうアップデートしていくか。&lt;/li&gt;
-  &lt;li&gt;Hubotは遊びで飼ってるけど&lt;a href=&quot;https://speakerdeck.com/jnewland/chatops-at-github&quot;&gt;ChatOps&lt;/a&gt;といえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？&lt;/li&gt;
-&lt;/ul&gt;
+<h2 id="その他今後の課題">その他・今後の課題</h2>
+<ul>
+  <li>僕が携わったプロジェクトはどちらもRails4系だが、歴史が積み重なったRails3系プロジェクトもあるので今後どうアップデートしていくか。</li>
+  <li>Hubotは遊びで飼ってるけど<a href="https://speakerdeck.com/jnewland/chatops-at-github">ChatOps</a>といえるほど真面目に運用していない。もっとうまく使えば幸せになれるかも？</li>
+</ul>
 
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
-&lt;p&gt;Ruby/Rails業務経験歴半年足らずのヒヨッコではありますが、僕がかかわった範囲内でのGunosyでのRailsの開発の方法を紹介してみました。もし「うちはこんなRailsの開発してるよ！」とか「これ使うともっと便利になるよ！」とか教えていただけたら嬉しいです。&lt;/p&gt;
+<h2 id="最後に">最後に</h2>
+<p>Ruby/Rails業務経験歴半年足らずのヒヨッコではありますが、僕がかかわった範囲内でのGunosyでのRailsの開発の方法を紹介してみました。もし「うちはこんなRailsの開発してるよ！」とか「これ使うともっと便利になるよ！」とか教えていただけたら嬉しいです。</p>
 
-&lt;p&gt;ではでは。&lt;/p&gt;
+<p>ではでは。</p>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;ちなみにDjangoも使われています。 &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;とはいえ会社全てのRailsプロダクトが今回紹介するようなやり方で統一されているわけではありません。あくまでも自分がかかわっている範囲での開発の進め方です。 &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;デフォルトのrack_testドライバーを使っていますが、&lt;a href=&quot;http://qiita.com/take/items/779747e0981355e569ad&quot;&gt;poltergaistが良さ気なので&lt;/a&gt;今後使っていきたいと思っています。 &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li id=&quot;fn:4&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;正確には別途配信ワーカーがいるのですがここでは割愛 &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="opsworks" /><summary type="html">この当時の内容と大きく変わっていませんが、最新のRails開発について公式テックブログに書きました。そちらも合わせてご参照ください。</summary></entry><entry><title type="html">Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング</title><link href="https://blog.toshimaru.net/opsworks-rails/" rel="alternate" type="text/html" title="Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング" /><published>2014-12-21T00:00:00+09:00</published><updated>2014-12-21T00:00:00+09:00</updated><id>https://blog.toshimaru.net/opsworks-rails</id><content type="html" xml:base="https://blog.toshimaru.net/opsworks-rails/">&lt;p&gt;本記事は&lt;a href=&quot;http://qiita.com/advent-calendar/2014/chef&quot;&gt;Chef Advent Calendar 2014&lt;/a&gt;の21日目の記事です。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:2" role="doc-endnote">
+      <p>ちなみにDjangoも使われています。 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:1" role="doc-endnote">
+      <p>とはいえ会社全てのRailsプロダクトが今回紹介するようなやり方で統一されているわけではありません。あくまでも自分がかかわっている範囲での開発の進め方です。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>デフォルトのrack_testドライバーを使っていますが、<a href="http://qiita.com/take/items/779747e0981355e569ad">poltergaistが良さ気なので</a>今後使っていきたいと思っています。 <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>正確には別途配信ワーカーがいるのですがここでは割愛 <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="rails" /><category term="opsworks" /><summary type="html"><![CDATA[本エントリでは僕がGunosyでかかわっているRailsプロジェクトにおいてどのように開発を進めていっているのかを紹介したいと思います (この記事はGunosy Advent Calendar 2014の22日目の記事です)]]></summary></entry><entry><title type="html">Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング</title><link href="https://blog.toshimaru.net/opsworks-rails/" rel="alternate" type="text/html" title="Amazon OpsWorksでRailsアプリを簡単Chefプロビジョニング" /><published>2014-12-21T00:00:00+09:00</published><updated>2014-12-21T00:00:00+09:00</updated><id>https://blog.toshimaru.net/opsworks-rails</id><content type="html" xml:base="https://blog.toshimaru.net/opsworks-rails/"><![CDATA[<p>本記事は<a href="http://qiita.com/advent-calendar/2014/chef">Chef Advent Calendar 2014</a>の21日目の記事です。</p>
 
-&lt;h2 id=&quot;opsworksとは&quot;&gt;OpsWorksとは？&lt;/h2&gt;
-&lt;p&gt;公式サイトの説明は下記です。&lt;/p&gt;
+<h2 id="opsworksとは">OpsWorksとは？</h2>
+<p>公式サイトの説明は下記です。</p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;設定管理サービスである AWS OpsWorks を使用すると、ユーザーは Chef を使用して、あらゆる種類およびサイズのアプリケーションを簡単に設定および運用できます。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。&lt;/p&gt;
+<blockquote>
+  <p>設定管理サービスである AWS OpsWorks を使用すると、ユーザーは Chef を使用して、あらゆる種類およびサイズのアプリケーションを簡単に設定および運用できます。パッケージのインストール、ソフトウェア設定およびストレージなどのリソースを含む、各コンポーネントのアプリケーションのアーキテクチャおよび仕様を定義できます。</p>
 
-  &lt;p&gt;&lt;a href=&quot;http://aws.amazon.com/jp/opsworks/&quot;&gt;AWS OpsWorks&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+  <p><a href="http://aws.amazon.com/jp/opsworks/">AWS OpsWorks</a></p>
+</blockquote>
 
-&lt;p&gt;ポイントは以下の通り。&lt;/p&gt;
+<p>ポイントは以下の通り。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;Chefでサーバーをプロビジョニング・デプロイできる&lt;/li&gt;
-  &lt;li&gt;スタック ＞ レイヤー ＞ App という概念でシステムを構成&lt;/li&gt;
-  &lt;li&gt;インスタンスをタイムベース or ロードベースでスケールアウトできる&lt;/li&gt;
-  &lt;li&gt;OpsWorksで使われているレシピは&lt;a href=&quot;https://github.com/aws/opsworks-cookbooks&quot;&gt;Githubで公開&lt;/a&gt;されており実行コードが追える&lt;/li&gt;
-  &lt;li&gt;OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>Chefでサーバーをプロビジョニング・デプロイできる</li>
+  <li>スタック ＞ レイヤー ＞ App という概念でシステムを構成</li>
+  <li>インスタンスをタイムベース or ロードベースでスケールアウトできる</li>
+  <li>OpsWorksで使われているレシピは<a href="https://github.com/aws/opsworks-cookbooks">Githubで公開</a>されており実行コードが追える</li>
+  <li>OpsWorksの用意したレシピに加えて自らのCustom Chefレシピを追加することも可能</li>
+</ul>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/stack.png&quot; alt=&quot;stack image&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/stack.png" alt="stack image" /></p>
 
-&lt;p&gt;&lt;strong&gt;【↑図】OpsWorksのStack &amp;amp; Layerの関係&lt;/strong&gt;&lt;/p&gt;
+<p><strong>【↑図】OpsWorksのStack &amp; Layerの関係</strong></p>
 
-&lt;h2 id=&quot;料金&quot;&gt;料金&lt;/h2&gt;
-&lt;p&gt;OpsWorksの使用自体にかかる料金は &lt;strong&gt;0円&lt;/strong&gt; です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。&lt;/p&gt;
+<h2 id="料金">料金</h2>
+<p>OpsWorksの使用自体にかかる料金は <strong>0円</strong> です。OpsWorks上で使用したAWSリソースの料金（ロードバランサ、EC2インスタンス、RDS等）のみがかかってきます。</p>
 
-&lt;h2 id=&quot;railsをopsworksにデプロイしてみよう&quot;&gt;RailsをOpsWorksにデプロイしてみよう&lt;/h2&gt;
-&lt;p&gt;OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2のアプリケーションをOpsWorksにデプロイしてみようと思います。&lt;/p&gt;
+<h2 id="railsをopsworksにデプロイしてみよう">RailsをOpsWorksにデプロイしてみよう</h2>
+<p>OpsWorksはとくにRailsアプリケーションとの相性が良く、今回はRails4.2のアプリケーションをOpsWorksにデプロイしてみようと思います。</p>
 
-&lt;p&gt;今回デプロイするRailsアプリケーションのコードの最終形は下記になります。&lt;/p&gt;
+<p>今回デプロイするRailsアプリケーションのコードの最終形は下記になります。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/opsworks-rails&quot;&gt;https://github.com/toshimaru/opsworks-rails&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/opsworks-rails">https://github.com/toshimaru/opsworks-rails</a></p>
 
-&lt;h2 id=&quot;デプロイ手順&quot;&gt;デプロイ手順&lt;/h2&gt;
+<h2 id="デプロイ手順">デプロイ手順</h2>
 
-&lt;h3 id=&quot;スタックの追加&quot;&gt;スタックの追加&lt;/h3&gt;
+<h3 id="スタックの追加">スタックの追加</h3>
 
-&lt;p&gt;まずはAWS ConsoleからOpsWorksにいきAdd Stackしましょう。RegionとかVPCとかIAMとかは適宜設定してね。&lt;/p&gt;
+<p>まずはAWS ConsoleからOpsWorksにいきAdd Stackしましょう。RegionとかVPCとかIAMとかは適宜設定してね。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/add_stack.png&quot; alt=&quot;add stack&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/add_stack.png" alt="add stack" /></p>
 
-&lt;p&gt;こんなのがStackのトップ画面。&lt;/p&gt;
+<p>こんなのがStackのトップ画面。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/top.png&quot; alt=&quot;stack top&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/top.png" alt="stack top" /></p>
 
-&lt;h3 id=&quot;レイヤーの定義&quot;&gt;レイヤーの定義&lt;/h3&gt;
+<h3 id="レイヤーの定義">レイヤーの定義</h3>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/layer.png&quot; alt=&quot;layer&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/layer.png" alt="layer" /></p>
 
-&lt;p&gt;Layer TypeはRails App、Ruby versionは2.1、nginx+unicornを選択する&lt;/p&gt;
+<p>Layer TypeはRails App、Ruby versionは2.1、nginx+unicornを選択する</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/add_layer.png&quot; alt=&quot;add layer&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/add_layer.png" alt="add layer" /></p>
 
-&lt;p&gt;追加されました。&lt;/p&gt;
+<p>追加されました。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/layer_done.png&quot; alt=&quot;layer done&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/layer_done.png" alt="layer done" /></p>
 
-&lt;h3 id=&quot;レシピ&quot;&gt;レシピ&lt;/h3&gt;
+<h3 id="レシピ">レシピ</h3>
 
-&lt;p&gt;RecipesでOpsWorksにどんなレシピが設定されているかがわかります。レシピ名がGithubへのリンクになっており、どんなレシピが書かれているかを確認できます。&lt;/p&gt;
+<p>RecipesでOpsWorksにどんなレシピが設定されているかがわかります。レシピ名がGithubへのリンクになっており、どんなレシピが書かれているかを確認できます。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/recipes.png&quot; alt=&quot;recipes&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/recipes.png" alt="recipes" /></p>
 
-&lt;p&gt;今回はこのままでOK.&lt;/p&gt;
+<p>今回はこのままでOK.</p>
 
-&lt;h3 id=&quot;インスタンスの追加&quot;&gt;インスタンスの追加&lt;/h3&gt;
+<h3 id="インスタンスの追加">インスタンスの追加</h3>
 
-&lt;p&gt;では次にAppインスタンスを追加。t1.microインスタンスで。&lt;/p&gt;
+<p>では次にAppインスタンスを追加。t1.microインスタンスで。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/add_instance.png&quot; alt=&quot;add instance&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/add_instance.png" alt="add instance" /></p>
 
-&lt;p&gt;AddInstanceするとステータスがStoppedなのでstartで起動します。&lt;/p&gt;
+<p>AddInstanceするとステータスがStoppedなのでstartで起動します。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/instance_stopped.png&quot; alt=&quot;instance stop&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/instance_stopped.png" alt="instance stop" /></p>
 
-&lt;p&gt;10分くらいでセットアップが完了します。Statusがonlineでグリーンになれば準備OK.&lt;/p&gt;
+<p>10分くらいでセットアップが完了します。Statusがonlineでグリーンになれば準備OK.</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/instance_online.png&quot; alt=&quot;online&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/instance_online.png" alt="online" /></p>
 
-&lt;h3 id=&quot;appの設定&quot;&gt;Appの設定&lt;/h3&gt;
+<h3 id="appの設定">Appの設定</h3>
 
-&lt;p&gt;次にデプロイするAppの設定を追加していきます。&lt;/p&gt;
+<p>次にデプロイするAppの設定を追加していきます。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/apps.png&quot; alt=&quot;setting app&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/apps.png" alt="setting app" /></p>
 
-&lt;p&gt;こんな感じでAppを設定。&lt;/p&gt;
+<p>こんな感じでAppを設定。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;Type: Ruby on Rails&lt;/li&gt;
-  &lt;li&gt;DataSource: 今回は特にないのでNone&lt;/li&gt;
-  &lt;li&gt;Applicationソース: GithubからデプロイしたいGithubのレポジトリURLを指定&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>Type: Ruby on Rails</li>
+  <li>DataSource: 今回は特にないのでNone</li>
+  <li>Applicationソース: GithubからデプロイしたいGithubのレポジトリURLを指定</li>
+</ul>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/add_apps.png&quot; alt=&quot;add app&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/add_apps.png" alt="add app" /></p>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SECRET_KEY_BASE&lt;/code&gt;(Rails4.2の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secrets.yml&lt;/code&gt;で必要になる)もあわせてセットしましょう。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">SECRET_KEY_BASE</code>(Rails4.2の<code class="language-plaintext highlighter-rouge">secrets.yml</code>で必要になる)もあわせてセットしましょう。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/add_envvar.png&quot; alt=&quot;env var&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/add_envvar.png" alt="env var" /></p>
 
-&lt;p&gt;Deployments で Deploy Appしてみよう。&lt;/p&gt;
+<p>Deployments で Deploy Appしてみよう。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/deploy_app.png&quot; alt=&quot;deploy app&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/deploy_app.png" alt="deploy app" /></p>
 
-&lt;p&gt;Appは先ほど設定したApp、CommandはDeployを指定してDeploy App!（マイグレーションが必要であればここでMigration ON）&lt;/p&gt;
+<p>Appは先ほど設定したApp、CommandはDeployを指定してDeploy App!（マイグレーションが必要であればここでMigration ON）</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/deploy_app2.png&quot; alt=&quot;deploy app 2&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/deploy_app2.png" alt="deploy app 2" /></p>
 
-&lt;p&gt;SuccessすればOK.&lt;/p&gt;
+<p>SuccessすればOK.</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/deploy_app3.png&quot; alt=&quot;deploy finished&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/deploy_app3.png" alt="deploy finished" /></p>
 
-&lt;h2 id=&quot;幾つかのハマりポイント&quot;&gt;幾つかのハマりポイント&lt;/h2&gt;
+<h2 id="幾つかのハマりポイント">幾つかのハマりポイント</h2>
 
-&lt;h3 id=&quot;gemfile&quot;&gt;Gemfile&lt;/h3&gt;
+<h3 id="gemfile">Gemfile</h3>
 
-&lt;p&gt;下記のGemが必要になるのでコメントアウトされていることを確認すること。&lt;/p&gt;
+<p>下記のGemが必要になるのでコメントアウトされていることを確認すること。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gem &apos;therubyracer&apos;, platforms: :ruby
-gem &apos;unicorn&apos;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem 'therubyracer', platforms: :ruby
+gem 'unicorn'
+</code></pre></div></div>
 
-&lt;h3 id=&quot;databaseyml&quot;&gt;database.yml&lt;/h3&gt;
+<h3 id="databaseyml">database.yml</h3>
 
-&lt;p&gt;RDSを設定していれば自動的に設定されるのですが、今回の場合設定していないので別途手で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;database.yml&lt;/code&gt;を作りました。&lt;/p&gt;
+<p>RDSを設定していれば自動的に設定されるのですが、今回の場合設定していないので別途手で<code class="language-plaintext highlighter-rouge">database.yml</code>を作りました。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[root@rails-app1 current]# cat config/database.yml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@rails-app1 current]# cat config/database.yml
+</code></pre></div></div>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;adapter&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sqlite3&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;pool&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5000&lt;/span&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
+  <span class="na">adapter</span><span class="pi">:</span> <span class="s">sqlite3</span>
+  <span class="na">pool</span><span class="pi">:</span> <span class="m">5</span>
+  <span class="na">timeout</span><span class="pi">:</span> <span class="m">5000</span>
 
-&lt;span class=&quot;na&quot;&gt;production&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*default&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;db/production.sqlite3&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="na">production</span><span class="pi">:</span>
+  <span class="na">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">db/production.sqlite3</span>
+</code></pre></div></div>
 
-&lt;h3 id=&quot;cssが適応されていない問題&quot;&gt;CSSが適応されていない問題&lt;/h3&gt;
+<h3 id="cssが適応されていない問題">CSSが適応されていない問題</h3>
 
-&lt;p&gt;「アレ、なんかCSSが効いていないっぽい！？」&lt;/p&gt;
+<p>「アレ、なんかCSSが効いていないっぽい！？」</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/before_css.png&quot; alt=&quot;css&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/before_css.png" alt="css" /></p>
 
-&lt;p&gt;これは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;asset:precompile&lt;/code&gt;が走っていないため。&lt;/p&gt;
+<p>これは<code class="language-plaintext highlighter-rouge">asset:precompile</code>が走っていないため。</p>
 
-&lt;blockquote&gt;
-  &lt;p&gt;rake asset:precompile というタスクを実行する必要がありますが、OpsWorksのRailsアプリケーションのデフォルトのデプロイ処理ではこのタスクを実行してくれません。&lt;/p&gt;
+<blockquote>
+  <p>rake asset:precompile というタスクを実行する必要がありますが、OpsWorksのRailsアプリケーションのデフォルトのデプロイ処理ではこのタスクを実行してくれません。</p>
 
-  &lt;p&gt;&lt;a href=&quot;http://interu.hatenablog.com/entry/2013/08/01/214258&quot;&gt;OpsWorksでRailsをデプロイする際にasset:precompileを実施する方法&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+  <p><a href="http://interu.hatenablog.com/entry/2013/08/01/214258">OpsWorksでRailsをデプロイする際にasset:precompileを実施する方法</a></p>
+</blockquote>
 
-&lt;p&gt;下記を&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deploy/before_migrate.rb&lt;/code&gt;に設定する。&lt;/p&gt;
+<p>下記を<code class="language-plaintext highlighter-rouge">deploy/before_migrate.rb</code>に設定する。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Chef&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Running deploy/before_migrate.rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:deploy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:rails_opsworks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:rails_env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;current_release&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;release_path&lt;/span&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Chef</span><span class="o">::</span><span class="no">Log</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Running deploy/before_migrate.rb"</span><span class="p">)</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="ss">:deploy</span><span class="p">][</span><span class="ss">:rails_opsworks</span><span class="p">][</span><span class="ss">:rails_env</span><span class="p">]</span>
+<span class="n">current_release</span> <span class="o">=</span> <span class="n">release_path</span>
 
-&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rake assets:precompile&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;cwd&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_release&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;bundle exec rake assets:precompile&quot;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;environment&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;RAILS_ENV&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<span class="n">execute</span> <span class="s2">"rake assets:precompile"</span> <span class="k">do</span>
+  <span class="n">cwd</span> <span class="n">current_release</span>
+  <span class="n">command</span> <span class="s2">"bundle exec rake assets:precompile"</span>
+  <span class="n">environment</span> <span class="s2">"RAILS_ENV"</span> <span class="o">=&gt;</span> <span class="n">env</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-&lt;p&gt;これでデプロイ。&lt;/p&gt;
+<p>これでデプロイ。</p>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/opsworks/after_css.png&quot; alt=&quot;css 2&quot; /&gt;&lt;/p&gt;
+<p><img src="/images/posts/opsworks/after_css.png" alt="css 2" /></p>
 
-&lt;p&gt;OK.&lt;/p&gt;
+<p>OK.</p>
 
-&lt;h3 id=&quot;デプロイディレクトリ&quot;&gt;デプロイ・ディレクトリ&lt;/h3&gt;
+<h3 id="デプロイディレクトリ">デプロイ・ディレクトリ</h3>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/srv/www/rails_opsworks/current&lt;/code&gt;に最新の状態がデプロイされます。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">/srv/www/rails_opsworks/current</code>に最新の状態がデプロイされます。</p>
 
-&lt;h3 id=&quot;ログディレクトリ&quot;&gt;ログ・ディレクトリ&lt;/h3&gt;
+<h3 id="ログディレクトリ">ログ・ディレクトリ</h3>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/lib/aws/opsworks/chef&lt;/code&gt; Chefのログ、OpsWorksの設定JSONが格納されています。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">/var/lib/aws/opsworks/chef</code> Chefのログ、OpsWorksの設定JSONが格納されています。</p>
 
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+<h2 id="まとめ">まとめ</h2>
 
-&lt;p&gt;さてOpsWorksでのデプロイ手順を紹介してきましたが一体何が嬉しいのでしょうか。個人的なメリットは以下です。&lt;/p&gt;
+<p>さてOpsWorksでのデプロイ手順を紹介してきましたが一体何が嬉しいのでしょうか。個人的なメリットは以下です。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;インスタンスが Disposable（廃棄可能）・Reproducible（再現可能） である
-    &lt;ul&gt;
-      &lt;li&gt;いわゆる immutable infrastructure&lt;/li&gt;
-      &lt;li&gt;= サーバーをいつでも潰して全く同じ環境を再現できる！&lt;/li&gt;
-      &lt;li&gt;「サーバーを増やしたい！」 → Add Instanceをポチるだけ&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/capistrano/capistrano&quot;&gt;Capistrano&lt;/a&gt;などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks &amp;amp; Chefに一任できる&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>インスタンスが Disposable（廃棄可能）・Reproducible（再現可能） である
+    <ul>
+      <li>いわゆる immutable infrastructure</li>
+      <li>= サーバーをいつでも潰して全く同じ環境を再現できる！</li>
+      <li>「サーバーを増やしたい！」 → Add Instanceをポチるだけ</li>
+    </ul>
+  </li>
+  <li><a href="https://github.com/capistrano/capistrano">Capistrano</a>などのデプロイツールのコードをゴチャゴチャ書く必要がなく、デプロイタスクはOpsWorks &amp; Chefに一任できる</li>
+</ul>
 
-&lt;h2 id=&quot;さいごに&quot;&gt;さいごに&lt;/h2&gt;
+<h2 id="さいごに">さいごに</h2>
 
-&lt;p&gt;Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、&lt;strong&gt;OpsWorksレシピ+Custom Chefレシピ&lt;/strong&gt; の２つを組み合わせて運用していくのが現実的かと思います。&lt;/p&gt;
+<p>Chef Advent CalendarといいながらChefよりもOpsWorks中心の内容になってしまいましたが、冒頭に書いたようにOpsWorksの用意しているレシピに加えて自らのCustom Chefレシピを定義することが可能です。現実的な運用を考えるとOpsWorksのレシピだけでプロビジョニング・デプロイレシピを完結させることは難しいと思うので、<strong>OpsWorksレシピ+Custom Chefレシピ</strong> の２つを組み合わせて運用していくのが現実的かと思います。</p>
 
-&lt;h2 id=&quot;link-参考&quot;&gt;:link: 参考&lt;/h2&gt;
+<h2 id="link-参考">:link: 参考</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks&quot;&gt;Deploying Ruby on Rails Applications to AWS OpsWorks&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="chef" /><category term="opsworks" /><category term="rails" /><category term="aws" /><summary type="html">本記事はChef Advent Calendar 2014の21日目の記事です。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/opsworks/eyecatch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/opsworks/eyecatch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<ul>
+  <li><a href="http://ruby.awsblog.com/post/Tx7FQMT084INCR/Deploying-Ruby-on-Rails-Applications-to-AWS-OpsWorks">Deploying Ruby on Rails Applications to AWS OpsWorks</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="chef" /><category term="opsworks" /><category term="rails" /><category term="aws" /><summary type="html"><![CDATA[Rails4.2.0のアプリケーションをChefでプロビジョニングできるOpsWorksにデプロイしてみます。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/opsworks/eyecatch.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/opsworks/eyecatch.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

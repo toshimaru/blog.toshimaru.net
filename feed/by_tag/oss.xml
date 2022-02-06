@@ -1,415 +1,415 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/oss.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/oss.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/oss.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/oss.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/"><![CDATA[<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</p>
 
-&lt;p&gt;（gem名としては &lt;a href=&quot;https://github.com/rubygems/rubygems&quot;&gt;rubygems/rubygems&lt;/a&gt; にインスパイアされて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundled_gems&lt;/code&gt; とした）&lt;/p&gt;
+<p>（gem名としては <a href="https://github.com/rubygems/rubygems">rubygems/rubygems</a> にインスパイアされて <code class="language-plaintext highlighter-rouge">bundled_gems</code> とした）</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/bundled_gems&quot;&gt;toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/bundled_gems">toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.</a></p>
 
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+<h2 id="モチベーション">モチベーション</h2>
 
-&lt;p&gt;もともとは、GitHub Actionに &lt;a href=&quot;https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows&quot;&gt;cache機能&lt;/a&gt;が来る前に作ったもの。&lt;/p&gt;
+<p>もともとは、GitHub Actionに <a href="https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows">cache機能</a>が来る前に作ったもの。</p>
 
-&lt;p&gt;GitHub Action でCIしていた場合、cache機能がないと毎回 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。&lt;/p&gt;
+<p>GitHub Action でCIしていた場合、cache機能がないと毎回 <code class="language-plaintext highlighter-rouge">bundle install</code>走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。</p>
 
-&lt;p&gt;また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。&lt;/p&gt;
+<p>また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。</p>
 
-&lt;p&gt;「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。&lt;/p&gt;
+<p>「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。</p>
 
-&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+<h2 id="使い方">使い方</h2>
 
-&lt;h3 id=&quot;インストール&quot;&gt;インストール&lt;/h3&gt;
+<h3 id="インストール">インストール</h3>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;bundled_gems
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>gem <span class="nb">install </span>bundled_gems
+</code></pre></div></div>
 
-&lt;p&gt;これで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem&lt;/code&gt; コマンドが利用可能になる。&lt;/p&gt;
+<p>これで <code class="language-plaintext highlighter-rouge">bgem</code> コマンドが利用可能になる。</p>
 
-&lt;h3 id=&quot;gemfilelock-内のgemのインストール&quot;&gt;Gemfile.lock 内のgemのインストール&lt;/h3&gt;
+<h3 id="gemfilelock-内のgemのインストール">Gemfile.lock 内のgemのインストール</h3>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bgem install gem_name
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bgem install gem_name
+</code></pre></div></div>
 
-&lt;p&gt;こうすることで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;内に記載されている &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem_name&lt;/code&gt; のバージョンを読み取ってそれをインストールしてくれる（内部的には &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem install gem_name:version&lt;/code&gt; を走らせている）。&lt;/p&gt;
+<p>こうすることで <code class="language-plaintext highlighter-rouge">Gemfile.lock</code>内に記載されている <code class="language-plaintext highlighter-rouge">gem_name</code> のバージョンを読み取ってそれをインストールしてくれる（内部的には <code class="language-plaintext highlighter-rouge">gem install gem_name:version</code> を走らせている）。</p>
 
-&lt;p&gt;例としては、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem install rubocop&lt;/code&gt;とした場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記載されているバージョンの &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop&lt;/code&gt; をインストールする。&lt;/p&gt;
+<p>例としては、<code class="language-plaintext highlighter-rouge">bgem install rubocop</code>とした場合、<code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記載されているバージョンの <code class="language-plaintext highlighter-rouge">rubocop</code> をインストールする。</p>
 
-&lt;h2 id=&quot;課題&quot;&gt;課題&lt;/h2&gt;
+<h2 id="課題">課題</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;installするgemの子となる依存gemのバージョンまでは解決してくれない点
-    &lt;ul&gt;
-      &lt;li&gt;このへん実装しようと思っていたら、先にGitHub公式の &lt;a href=&quot;https://github.com/actions/cache&quot;&gt;actions/cache&lt;/a&gt;が来てしまった次第。。。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>installするgemの子となる依存gemのバージョンまでは解決してくれない点
+    <ul>
+      <li>このへん実装しようと思っていたら、先にGitHub公式の <a href="https://github.com/actions/cache">actions/cache</a>が来てしまった次第。。。</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;special-thanks&quot;&gt;Special Thanks&lt;/h2&gt;
+<h2 id="special-thanks">Special Thanks</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; のパースに関しては、&lt;a href=&quot;https://github.com/ledsun&quot;&gt;@ledsun&lt;/a&gt; さんにサンプルをいただきました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。ありがとうございました。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code> のパースに関しては、<a href="https://github.com/ledsun">@ledsun</a> さんにサンプルをいただきました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。ありがとうございました。</p>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://github.com/ledsun/orgen&quot;&gt;ledsun/orgen&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html">Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Syntax HighlightされるcatコマンドをGoで作った</title><link href="https://blog.toshimaru.net/go-nyan-cat/" rel="alternate" type="text/html" title="Syntax HighlightされるcatコマンドをGoで作った" /><published>2019-08-15T00:00:00+09:00</published><updated>2019-08-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/go-nyan-cat</id><content type="html" xml:base="https://blog.toshimaru.net/go-nyan-cat/">&lt;p&gt;Goの習作としてSyntax Highlight可能な&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cat&lt;/code&gt;コマンドを作った。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://github.com/ledsun/orgen">ledsun/orgen</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html"><![CDATA[Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。 toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Syntax HighlightされるcatコマンドをGoで作った</title><link href="https://blog.toshimaru.net/go-nyan-cat/" rel="alternate" type="text/html" title="Syntax HighlightされるcatコマンドをGoで作った" /><published>2019-08-15T00:00:00+09:00</published><updated>2019-08-15T00:00:00+09:00</updated><id>https://blog.toshimaru.net/go-nyan-cat</id><content type="html" xml:base="https://blog.toshimaru.net/go-nyan-cat/"><![CDATA[<p>Goの習作としてSyntax Highlight可能な<code class="language-plaintext highlighter-rouge">cat</code>コマンドを作った。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;夏休みの工作で作ったやつ。Go 製の Syntax Highlight な cat コマンド. | toshimaru/nyan: Colored `cat` command. &lt;a href=&quot;https://t.co/lu1CL4YdDi&quot;&gt;https://t.co/lu1CL4YdDi&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1161656766100230144?ref_src=twsrc%5Etfw&quot;&gt;August 14, 2019&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">夏休みの工作で作ったやつ。Go 製の Syntax Highlight な cat コマンド. | toshimaru/nyan: Colored `cat` command. <a href="https://t.co/lu1CL4YdDi">https://t.co/lu1CL4YdDi</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1161656766100230144?ref_src=twsrc%5Etfw">August 14, 2019</a></blockquote>
 
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+<h2 id="モチベーション">モチベーション</h2>
 
-&lt;p&gt;全く同じコンセプトのツールとして&lt;a href=&quot;https://github.com/jingweno/ccat&quot;&gt;ccat&lt;/a&gt;があるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。&lt;/p&gt;
+<p>全く同じコンセプトのツールとして<a href="https://github.com/jingweno/ccat">ccat</a>があるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。</p>
 
-&lt;p&gt;更に強力な&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cat&lt;/code&gt;コマンドとしてRust製の&lt;a href=&quot;https://github.com/sharkdp/bat&quot;&gt;bat&lt;/a&gt;があるのだが、これを&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccat&lt;/code&gt;とともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。&lt;/p&gt;
+<p>更に強力な<code class="language-plaintext highlighter-rouge">cat</code>コマンドとしてRust製の<a href="https://github.com/sharkdp/bat">bat</a>があるのだが、これを<code class="language-plaintext highlighter-rouge">ccat</code>とともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。</p>
 
-&lt;p&gt;ちなみに&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccat&lt;/code&gt;との実装の違いでいうと、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ccat&lt;/code&gt;はsynatax highlightに&lt;a href=&quot;https://github.com/sourcegraph/syntaxhighlight&quot;&gt;sourcegraph/syntaxhighlight&lt;/a&gt;を使っていて、今回作った&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nyan&lt;/code&gt;は&lt;a href=&quot;https://github.com/alecthomas/chroma&quot;&gt;alecthomas/chroma&lt;/a&gt;を使っている。&lt;/p&gt;
+<p>ちなみに<code class="language-plaintext highlighter-rouge">ccat</code>との実装の違いでいうと、<code class="language-plaintext highlighter-rouge">ccat</code>はsynatax highlightに<a href="https://github.com/sourcegraph/syntaxhighlight">sourcegraph/syntaxhighlight</a>を使っていて、今回作った<code class="language-plaintext highlighter-rouge">nyan</code>は<a href="https://github.com/alecthomas/chroma">alecthomas/chroma</a>を使っている。</p>
 
-&lt;h2 id=&quot;使ったgoライブラリサービスなど&quot;&gt;使ったGoライブラリ・サービスなど&lt;/h2&gt;
+<h2 id="使ったgoライブラリサービスなど">使ったGoライブラリ・サービスなど</h2>
 
-&lt;h3 id=&quot;goライブラリ&quot;&gt;Goライブラリ&lt;/h3&gt;
+<h3 id="goライブラリ">Goライブラリ</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;パッケージ管理: &lt;a href=&quot;https://blog.golang.org/using-go-modules&quot;&gt;go modules&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;CLIライブラリ: &lt;a href=&quot;https://github.com/spf13/cobra&quot;&gt;cobra&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Syntax Highlightライブラリ: &lt;a href=&quot;https://github.com/alecthomas/chroma&quot;&gt;chroma&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;リリース管理: &lt;a href=&quot;https://github.com/goreleaser/goreleaser&quot;&gt;goreleaser&lt;/a&gt;
-    &lt;ul&gt;
-      &lt;li&gt;homebrew tapへのリリースも自動でやってくれている: &lt;a href=&quot;https://github.com/toshimaru/homebrew-nyan&quot;&gt;homebrew-nyan&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;テストライブラリ: &lt;a href=&quot;https://github.com/stretchr/testify&quot;&gt;testify&lt;/a&gt;/assert&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>パッケージ管理: <a href="https://blog.golang.org/using-go-modules">go modules</a></li>
+  <li>CLIライブラリ: <a href="https://github.com/spf13/cobra">cobra</a></li>
+  <li>Syntax Highlightライブラリ: <a href="https://github.com/alecthomas/chroma">chroma</a></li>
+  <li>リリース管理: <a href="https://github.com/goreleaser/goreleaser">goreleaser</a>
+    <ul>
+      <li>homebrew tapへのリリースも自動でやってくれている: <a href="https://github.com/toshimaru/homebrew-nyan">homebrew-nyan</a></li>
+    </ul>
+  </li>
+  <li>テストライブラリ: <a href="https://github.com/stretchr/testify">testify</a>/assert</li>
+</ul>
 
-&lt;h3 id=&quot;サービス&quot;&gt;サービス&lt;/h3&gt;
+<h3 id="サービス">サービス</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;CI: &lt;a href=&quot;https://travis-ci.com&quot;&gt;TravisCI&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Code Coverage: &lt;a href=&quot;https://codeclimate.com&quot;&gt;Code Climate&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>CI: <a href="https://travis-ci.com">TravisCI</a></li>
+  <li>Code Coverage: <a href="https://codeclimate.com">Code Climate</a></li>
+</ul>
 
-&lt;h2 id=&quot;今後の展望&quot;&gt;今後の展望&lt;/h2&gt;
+<h2 id="今後の展望">今後の展望</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;今回CIはTravisで動かしたけど先日リリースされた&lt;a href=&quot;https://github.blog/2019-08-08-github-actions-now-supports-ci-cd/&quot;&gt;GitHub Actons(v2)&lt;/a&gt;が使えるようになったら乗り換えたい&lt;/li&gt;
-  &lt;li&gt;行番号表示などの機能拡張も今後やっていきたい&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>今回CIはTravisで動かしたけど先日リリースされた<a href="https://github.blog/2019-08-08-github-actions-now-supports-ci-cd/">GitHub Actons(v2)</a>が使えるようになったら乗り換えたい</li>
+  <li>行番号表示などの機能拡張も今後やっていきたい</li>
+</ul>
 
-&lt;h2 id=&quot;goでツール書いてみた感想&quot;&gt;Goでツール書いてみた感想&lt;/h2&gt;
+<h2 id="goでツール書いてみた感想">Goでツール書いてみた感想</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;パッケージ管理の機能が言語としてサポートされたのは嬉しい（Go 1.11〜）&lt;/li&gt;
-  &lt;li&gt;プログラムのコンパイル、実行、テストなどすべてが早いので開発体験がとても良い&lt;/li&gt;
-  &lt;li&gt;普段はRubyを使うことが多いが、書き味の良さではGoはRubyに負けるかもだけど、Goは堅牢で高速なアプリケーションを書くのに良い&lt;/li&gt;
-  &lt;li&gt;Goコミュニティは日本でもとても活発だし、ライブラリのエコシステムも整っているのが素晴らしい&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="go" /><category term="oss" /><summary type="html">Goの習作としてSyntax Highlight可能なcatコマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><media:content medium="image" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">はじめてのCircleCI Orbsを公開した</title><link href="https://blog.toshimaru.net/my-first-circleci-orbs/" rel="alternate" type="text/html" title="はじめてのCircleCI Orbsを公開した" /><published>2018-12-02T00:00:00+09:00</published><updated>2018-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/my-first-circleci-orbs</id><content type="html" xml:base="https://blog.toshimaru.net/my-first-circleci-orbs/">&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install &lt;a href=&quot;https://t.co/Ikd11JmEFd&quot;&gt;https://t.co/Ikd11JmEFd&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw&quot;&gt;November 30, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<ul>
+  <li>パッケージ管理の機能が言語としてサポートされたのは嬉しい（Go 1.11〜）</li>
+  <li>プログラムのコンパイル、実行、テストなどすべてが早いので開発体験がとても良い</li>
+  <li>普段はRubyを使うことが多いが、書き味の良さではGoはRubyに負けるかもだけど、Goは堅牢で高速なアプリケーションを書くのに良い</li>
+  <li>Goコミュニティは日本でもとても活発だし、ライブラリのエコシステムも整っているのが素晴らしい</li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="go" /><category term="oss" /><summary type="html"><![CDATA[Goの習作としてSyntax Highlight可能な`cat`コマンドを作った。モチベーション 全く同じコンセプトのツールとしてccatがあるのだが、デフォルトのハイライト色が黒背景のターミナルだと見づらいという問題があった。 更に強力なcatコマンドとしてRust製のbatがあるのだが、これをccatとともに併用していて配色がとても美しい感じに仕上がっていたので「よし、じゃあGoで配色がいい感じのやつ作ってみるか」と思い立って作成開始したやつ。 ちなみにccatとの実装の違いでいうと、ccatはsynatax highlightにsourcegraph/syntaxhighlightを使っていて、今回作ったnyanはalecthomas/chromaを使っている。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" /><media:content medium="image" url="https://user-images.githubusercontent.com/803398/63024853-00b18b80-bee3-11e9-853a-eea7e790a575.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">はじめてのCircleCI Orbsを公開した</title><link href="https://blog.toshimaru.net/my-first-circleci-orbs/" rel="alternate" type="text/html" title="はじめてのCircleCI Orbsを公開した" /><published>2018-12-02T00:00:00+09:00</published><updated>2018-12-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/my-first-circleci-orbs</id><content type="html" xml:base="https://blog.toshimaru.net/my-first-circleci-orbs/"><![CDATA[<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install <a href="https://t.co/Ikd11JmEFd">https://t.co/Ikd11JmEFd</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1068431295804465152?ref_src=twsrc%5Etfw">November 30, 2018</a></blockquote>
 
-&lt;p&gt;はじめてのCircleCI Orbsを公開した。そのメモ。&lt;/p&gt;
+<p>はじめてのCircleCI Orbsを公開した。そのメモ。</p>
 
-&lt;h2 id=&quot;circleci-orbsとは&quot;&gt;CircleCI Orbsとは&lt;/h2&gt;
+<h2 id="circleci-orbsとは">CircleCI Orbsとは</h2>
 
-&lt;p&gt;2018年11月に正式公開されたCircleCI Orbs。&lt;/p&gt;
+<p>2018年11月に正式公開されたCircleCI Orbs。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;本日Orbsをリリースしました🥳OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。&lt;/p&gt;&amp;mdash; CircleCI Japan (@CircleCIJapan) &lt;a href=&quot;https://twitter.com/CircleCIJapan/status/1060285769124696064?ref_src=twsrc%5Etfw&quot;&gt;November 7, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">本日Orbsをリリースしました🥳OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。</p>&mdash; CircleCI Japan (@CircleCIJapan) <a href="https://twitter.com/CircleCIJapan/status/1060285769124696064?ref_src=twsrc%5Etfw">November 7, 2018</a></blockquote>
 
-&lt;p&gt;要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。&lt;/p&gt;
+<p>要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。</p>
 
-&lt;h2 id=&quot;作ってみた&quot;&gt;作ってみた&lt;/h2&gt;
+<h2 id="作ってみた">作ってみた</h2>
 
-&lt;p&gt;僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;をCircleCI Orbsを使って共通化してみることにしてみました。&lt;/p&gt;
+<p>僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、<code class="language-plaintext highlighter-rouge">bundle install</code>をCircleCI Orbsを使って共通化してみることにしてみました。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;結果できたのがこちら: &lt;a href=&quot;https://circleci.com/orbs/registry/orb/toshimaru/bundle-install&quot;&gt;CircleCI Orb Registry - toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;GitHubソースコードはこちら: &lt;a href=&quot;https://github.com/toshimaru/bundle-install&quot;&gt;toshimaru/bundle-install&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>結果できたのがこちら: <a href="https://circleci.com/orbs/registry/orb/toshimaru/bundle-install">CircleCI Orb Registry - toshimaru/bundle-install</a></li>
+  <li>GitHubソースコードはこちら: <a href="https://github.com/toshimaru/bundle-install">toshimaru/bundle-install</a></li>
+</ul>
 
-&lt;h2 id=&quot;作り方&quot;&gt;作り方&lt;/h2&gt;
+<h2 id="作り方">作り方</h2>
 
-&lt;h3 id=&quot;install-circleci-command&quot;&gt;Install circleci command&lt;/h3&gt;
+<h3 id="install-circleci-command">Install circleci command</h3>
 
-&lt;p&gt;まずはcircleciコマンドを入手。MacOSの場合下記のようにbrewで入れることができます。&lt;/p&gt;
+<p>まずはcircleciコマンドを入手。MacOSの場合下記のようにbrewで入れることができます。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install circleci
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install circleci
+</code></pre></div></div>
 
-&lt;h3 id=&quot;namespace-作成&quot;&gt;namespace 作成&lt;/h3&gt;
+<h3 id="namespace-作成">namespace 作成</h3>
 
-&lt;p&gt;namespaceを取得します。&lt;/p&gt;
+<p>namespaceを取得します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci namespace create toshimaru github toshimaru
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ circleci namespace create toshimaru github toshimaru
+</code></pre></div></div>
 
-&lt;h3 id=&quot;orb-作成&quot;&gt;Orb 作成&lt;/h3&gt;
+<h3 id="orb-作成">Orb 作成</h3>
 
-&lt;p&gt;namespace以下のorb名を作成します。&lt;/p&gt;
+<p>namespace以下のorb名を作成します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb create toshimaru/bundle-install
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ circleci orb create toshimaru/bundle-install
 Orb toshimaru/bundle-install created.
 Please note that any versions you publish of this orb are world-readable.
 
 You can now register versions of toshimaru/bundle-install using circleci orb publish.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h3 id=&quot;publish-circleci-orb&quot;&gt;Publish CircleCI Orb&lt;/h3&gt;
+<h3 id="publish-circleci-orb">Publish CircleCI Orb</h3>
 
-&lt;p&gt;作成した&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;orb.yml&lt;/code&gt;を公開します。&lt;/p&gt;
+<p>作成した<code class="language-plaintext highlighter-rouge">orb.yml</code>を公開します。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ circleci orb publish src/orb.yml toshimaru/bundle-install@0.0.1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ circleci orb publish src/orb.yml toshimaru/bundle-install@0.0.1
 Orb toshimaru/bundle-install@0.0.1 was published.
 Please note that this is an open orb and is world-readable.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</code></pre></div></div>
 
-&lt;h2 id=&quot;作成したorbを使う&quot;&gt;作成したOrbを使う&lt;/h2&gt;
+<h2 id="作成したorbを使う">作成したOrbを使う</h2>
 
-&lt;p&gt;次に作成したOrbを使う側、呼び出す側の設定です。&lt;/p&gt;
+<p>次に作成したOrbを使う側、呼び出す側の設定です。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;orbs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;bundle-install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;toshimaru/bundle-install@0.1.0&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;docker&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;circleci/ruby&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;checkout&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;bundle-install/bundle-install&lt;/span&gt;
-      &lt;span class=&quot;c1&quot;&gt;# - bundle exec rspec&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">orbs</span><span class="pi">:</span>
+  <span class="na">bundle-install</span><span class="pi">:</span> <span class="s">toshimaru/bundle-install@0.1.0</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">build</span><span class="pi">:</span>
+    <span class="na">docker</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">circleci/ruby</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">checkout</span>
+      <span class="pi">-</span> <span class="s">bundle-install/bundle-install</span>
+      <span class="c1"># - bundle exec rspec</span>
+</code></pre></div></div>
 
-&lt;p&gt;実際に下記のPRでOrbの変更例が見れますのでご参照ください。&lt;/p&gt;
+<p>実際に下記のPRでOrbの変更例が見れますのでご参照ください。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/RailsTwitterClone/pull/264/files&quot;&gt;Introduce CircleCI Orbs by toshimaru · Pull Request #264&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/RailsTwitterClone/pull/264/files">Introduce CircleCI Orbs by toshimaru · Pull Request #264</a></p>
 
-&lt;h2 id=&quot;参考にした記事&quot;&gt;参考にした記事&lt;/h2&gt;
+<h2 id="参考にした記事">参考にした記事</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;全体的にこちらの手順を参考にさせていただきました。 &lt;a href=&quot;https://blog.tsub.me/post/introducing-to-circleci-orbs/&quot;&gt;CircleCI Orbs 入門 | tsub’s blog&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="circleci" /><category term="oss" /><summary type="html">I published my first CircleCI Orb! » CircleCI Orb Registry - toshimaru/bundle-install https://t.co/Ikd11JmEFd&amp;mdash; toshimaru (@toshimaru_e) November 30, 2018</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</title><link href="https://blog.toshimaru.net/vscoce-hybrid-next-plus/" rel="alternate" type="text/html" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました" /><published>2018-07-31T00:00:00+09:00</published><updated>2018-07-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vscoce-hybrid-next-plus</id><content type="html" xml:base="https://blog.toshimaru.net/vscoce-hybrid-next-plus/">&lt;p&gt;はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。&lt;/p&gt;
+<ul>
+  <li>全体的にこちらの手順を参考にさせていただきました。 <a href="https://blog.tsub.me/post/introducing-to-circleci-orbs/">CircleCI Orbs 入門 | tsub’s blog</a></li>
+  <li>ファイルの構成などこちらを参考にさせていただきました。https://github.com/sue445/circleci-ruby-orbs</li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="circleci" /><category term="oss" /><summary type="html"><![CDATA[はじめてのCircleCI Orbsを公開した。そのメモ。2018年11月に正式公開されたCircleCI Orbs。本日Orbsをリリースしました。OrbsはWorkflow以来のメジャーアップデートです。OrbsはCircleCIの設定をパッケージ化する仕組みで、誰でも自分のOrbsを公開できます。これはCI/CDサービスとしては初の試みで、今後はユーザーやパートナーを巻き込んでCircleCIのエコシステムを構築することができます。要はいろんなレポジトリで使っている共通のCircleCIの設定を共通化できる仕組みのこと。僕もいろんなRuby on Railsプロジェクトでよく使うコマンド、bundle installをCircleCI Orbsを使って共通化してみることにしてみました。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/circleci-orb.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました</title><link href="https://blog.toshimaru.net/vscoce-hybrid-next-plus/" rel="alternate" type="text/html" title="はじめてのVS Code Extension、Hybrid Next Plusテーマを公開しました" /><published>2018-07-31T00:00:00+09:00</published><updated>2018-07-31T00:00:00+09:00</updated><id>https://blog.toshimaru.net/vscoce-hybrid-next-plus</id><content type="html" xml:base="https://blog.toshimaru.net/vscoce-hybrid-next-plus/"><![CDATA[<p>はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;ja&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;初めてのVSCode ExtensionとしてThemeを作ってみた（Beta Version）| Hybrid Next Plus - Visual Studio Marketplace &lt;a href=&quot;https://t.co/d8xWeLHQ51&quot;&gt;https://t.co/d8xWeLHQ51&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1021918426426531840?ref_src=twsrc%5Etfw&quot;&gt;July 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">初めてのVSCode ExtensionとしてThemeを作ってみた（Beta Version）| Hybrid Next Plus - Visual Studio Marketplace <a href="https://t.co/d8xWeLHQ51">https://t.co/d8xWeLHQ51</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1021918426426531840?ref_src=twsrc%5Etfw">July 25, 2018</a></blockquote>
 
-&lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
+<h2 id="きっかけ">きっかけ</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった&lt;/li&gt;
-  &lt;li&gt;Vimで&lt;a href=&quot;https://github.com/w0ng/vim-hybrid&quot;&gt;hybrid&lt;/a&gt;、Atomで&lt;a href=&quot;https://github.com/kaicataldo/hybrid-next-syntax&quot;&gt;hybrid next&lt;/a&gt;というテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った&lt;/li&gt;
-  &lt;li&gt;公開されている&lt;a href=&quot;https://github.com/wyze/vscode-hybrid-next/&quot;&gt;vscode-hybrid-next&lt;/a&gt;を使おうと思ったが、少々気に食わない設定があった&lt;/li&gt;
-  &lt;li&gt;同レポジトリにPRしようかと思ったがテーマのあて方が&lt;a href=&quot;https://www.sublimetext.com/docs/3/color_schemes_tmtheme.html&quot;&gt;tmTheme&lt;/a&gt;形式だったため小回りが効かない感じになってた&lt;/li&gt;
-  &lt;li&gt;自分でテーマを作った &lt;a href=&quot;https://github.com/toshimaru/hybrid-next-plus&quot;&gt;hybrid-next-plus&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった</li>
+  <li>Vimで<a href="https://github.com/w0ng/vim-hybrid">hybrid</a>、Atomで<a href="https://github.com/kaicataldo/hybrid-next-syntax">hybrid next</a>というテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った</li>
+  <li>公開されている<a href="https://github.com/wyze/vscode-hybrid-next/">vscode-hybrid-next</a>を使おうと思ったが、少々気に食わない設定があった</li>
+  <li>同レポジトリにPRしようかと思ったがテーマのあて方が<a href="https://www.sublimetext.com/docs/3/color_schemes_tmtheme.html">tmTheme</a>形式だったため小回りが効かない感じになってた</li>
+  <li>自分でテーマを作った <a href="https://github.com/toshimaru/hybrid-next-plus">hybrid-next-plus</a></li>
+</ul>
 
-&lt;h2 id=&quot;参考テーマ&quot;&gt;参考テーマ&lt;/h2&gt;
+<h2 id="参考テーマ">参考テーマ</h2>
 
-&lt;p&gt;背景やサイドバーの設定は、&lt;a href=&quot;https://atom.io/themes/one-dark-ui&quot;&gt;Atom One Dark&lt;/a&gt;を参考にした。&lt;/p&gt;
+<p>背景やサイドバーの設定は、<a href="https://atom.io/themes/one-dark-ui">Atom One Dark</a>を参考にした。</p>
 
-&lt;p&gt;&lt;img src=&quot;https://i.github-camo.com/af4a063b48fb691fb25e664ca8e0680a31f6f1e4/68747470733a2f2f636c6f75642e67697468756275736572636f6e74656e742e636f6d2f6173736574732f3337383032332f32363234363831382f30383235356237362d336364362d313165372d396636642d3661653365313661383961392e706e67&quot; alt=&quot;atom one dark&quot; /&gt;&lt;/p&gt;
+<p><img src="https://i.github-camo.com/af4a063b48fb691fb25e664ca8e0680a31f6f1e4/68747470733a2f2f636c6f75642e67697468756275736572636f6e74656e742e636f6d2f6173736574732f3337383032332f32363234363831382f30383235356237362d336364362d313165372d396636642d3661653365313661383961392e706e67" alt="atom one dark" /></p>
 
-&lt;p&gt;:point_up: &lt;strong&gt;【図】Atom One Dark(公式READMEより引用)&lt;/strong&gt;&lt;/p&gt;
+<p>:point_up: <strong>【図】Atom One Dark(公式READMEより引用)</strong></p>
 
-&lt;p&gt;シンタックスハイライトのカラーは、&lt;a href=&quot;https://github.com/w0ng/vim-hybrid&quot;&gt;hybrid&lt;/a&gt;、&lt;a href=&quot;https://github.com/kaicataldo/hybrid-next-syntax&quot;&gt;hybrid next&lt;/a&gt;, &lt;a href=&quot;https://github.com/wyze/vscode-hybrid-next/&quot;&gt;vscode-hybrid-next&lt;/a&gt;を参考にしつつ一番しっくりくる色のあて方を選択した。&lt;/p&gt;
+<p>シンタックスハイライトのカラーは、<a href="https://github.com/w0ng/vim-hybrid">hybrid</a>、<a href="https://github.com/kaicataldo/hybrid-next-syntax">hybrid next</a>, <a href="https://github.com/wyze/vscode-hybrid-next/">vscode-hybrid-next</a>を参考にしつつ一番しっくりくる色のあて方を選択した。</p>
 
-&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/kaicataldo/hybrid-next-syntax/master/screenshots/hybrid-next-screenshot-1.png&quot; alt=&quot;hybrid next&quot; /&gt;&lt;/p&gt;
+<p><img src="https://raw.githubusercontent.com/kaicataldo/hybrid-next-syntax/master/screenshots/hybrid-next-screenshot-1.png" alt="hybrid next" /></p>
 
-&lt;p&gt;:point_up: &lt;strong&gt;【図】Atom Hybrid Next(公式READMEより引用)&lt;/strong&gt;&lt;/p&gt;
+<p>:point_up: <strong>【図】Atom Hybrid Next(公式READMEより引用)</strong></p>
 
-&lt;h2 id=&quot;最後に&quot;&gt;最後に&lt;/h2&gt;
+<h2 id="最後に">最後に</h2>
 
-&lt;p&gt;一応Markdown, Ruby, JSONファイルあたりはいい感じにSyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPR/Issue報告お願いします 🙏&lt;/p&gt;
+<p>一応Markdown, Ruby, JSONファイルあたりはいい感じにSyntaxハイライトあたっていることを確認していますが、他の拡張子で不完全なところがあるかもなので何かありましたらPR/Issue報告お願いします 🙏</p>
 
-&lt;p&gt;手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。&lt;/p&gt;
+<p>手前味噌にはなるけどなかなかいいテーマに仕上がっていると思いますのでよかったら使ってみてください。</p>
 
-&lt;h2 id=&quot;追記&quot;&gt;追記&lt;/h2&gt;
+<h2 id="追記">追記</h2>
 
-&lt;p&gt;&lt;a href=&quot;/how-to-publish-vscode-extension/&quot;&gt;VS Code Extensionの公開手順&lt;/a&gt;を書きました。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="vscode" /><category term="oss" /><summary type="html">はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RuboCopチームにgemの名前を譲った話</title><link href="https://blog.toshimaru.net/rubocop-rails-config/" rel="alternate" type="text/html" title="RuboCopチームにgemの名前を譲った話" /><published>2018-07-17T00:00:00+09:00</published><updated>2018-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config/">&lt;p&gt;かねてより僕が開発していた&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemをRuboCop公式チームの要望により譲った。&lt;/p&gt;
+<p><a href="/how-to-publish-vscode-extension/">VS Code Extensionの公開手順</a>を書きました。</p>]]></content><author><name>Toshimaru</name></author><category term="vscode" /><category term="oss" /><summary type="html"><![CDATA[はじめてのVS code Extensionとしてybrid Next Plusというテーマを公開してみた。 きっかけ もともとVSCodeのデフォルトのテーマがいまいち好きになれなかった Vimでhybrid、Atomでhybrid nextというテーマを気に入っていたのでそのテーマをVSCodeでも使おうと思った 公開されているvscode-hybrid-nextを使おうと思ったが、少々気に食わない設定があった 同レポジトリにPRしようかと思ったがテーマのあて方がtmTheme形式だったため小回りが効かない感じになってた 自分でテーマを作った hybrid-next-plus]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/vscode/hybrid.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">RuboCopチームにgemの名前を譲った話</title><link href="https://blog.toshimaru.net/rubocop-rails-config/" rel="alternate" type="text/html" title="RuboCopチームにgemの名前を譲った話" /><published>2018-07-17T00:00:00+09:00</published><updated>2018-07-17T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails-config</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails-config/"><![CDATA[<p>かねてより僕が開発していた<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a>というgemをRuboCop公式チームの要望により譲った。</p>
 
-&lt;p&gt;僕がこのgemを作った経緯とかは下記の記事の通り。&lt;/p&gt;
+<p>僕がこのgemを作った経緯とかは下記の記事の通り。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;つくったやつ | Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design! &lt;a href=&quot;https://t.co/szG0eLPetS&quot;&gt;https://t.co/szG0eLPetS&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/958123075572195331?ref_src=twsrc%5Etfw&quot;&gt;January 29, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">つくったやつ | Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った - Hack Your Design! <a href="https://t.co/szG0eLPetS">https://t.co/szG0eLPetS</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/958123075572195331?ref_src=twsrc%5Etfw">January 29, 2018</a></blockquote>
 
-&lt;h2 id=&quot;きっかけ&quot;&gt;きっかけ&lt;/h2&gt;
+<h2 id="きっかけ">きっかけ</h2>
 
-&lt;p&gt;名前を譲ることになったきっかけは下記のIssue。&lt;/p&gt;
+<p>名前を譲ることになったきっかけは下記のIssue。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/rubocop-hq/rubocop/issues/5976&quot;&gt;Extract Rails Cops in a separate · Issue #5976 · rubocop-hq/rubocop&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/rubocop-hq/rubocop/issues/5976">Extract Rails Cops in a separate · Issue #5976 · rubocop-hq/rubocop</a></p>
 
-&lt;p&gt;より正確にいうとこのIssueの前に&lt;a href=&quot;https://rubykaigi.org/2018/&quot;&gt;RubyKaigi 2018&lt;/a&gt;の懇親会でRuboCop作者から僕へ間接的に打診があり、上記のIssueに至る。&lt;/p&gt;
+<p>より正確にいうとこのIssueの前に<a href="https://rubykaigi.org/2018/">RubyKaigi 2018</a>の懇親会でRuboCop作者から僕へ間接的に打診があり、上記のIssueに至る。</p>
 
-&lt;p&gt;RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を作りたい。gem名はrubocop-railsとしたい。名前を頂戴！」と感じ。僕の想いとしては「RuboCop公式チームとして使いたい名前ということであればどうぞどうぞ。わかりやすい名前を付けることはRubyコミュニティ全体の利益にもなるだろうしね！」という感じ。&lt;/p&gt;
+<p>RuboCopチームの要望を要約すると「RuboCop公式にRailsの拡張を作りたい。gem名はrubocop-railsとしたい。名前を頂戴！」と感じ。僕の想いとしては「RuboCop公式チームとして使いたい名前ということであればどうぞどうぞ。わかりやすい名前を付けることはRubyコミュニティ全体の利益にもなるだろうしね！」という感じ。</p>
 
-&lt;h2 id=&quot;譲るにあたりやったこと&quot;&gt;譲るにあたりやったこと&lt;/h2&gt;
+<h2 id="譲るにあたりやったこと">譲るにあたりやったこと</h2>
 
-&lt;p&gt;下記のようなIssueを作成して進めていった。&lt;/p&gt;
+<p>下記のようなIssueを作成して進めていった。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails/issues/31&quot;&gt;[IMPORTANT ANNOUNCEMENT] Transfer rubocop-rails gem to RuboCop Team · Issue #31 · toshimaru/rubocop-rails&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/rubocop-rails/issues/31">[IMPORTANT ANNOUNCEMENT] Transfer rubocop-rails gem to RuboCop Team · Issue #31 · toshimaru/rubocop-rails</a></p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; に代わる新しいgemを作成: &lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; の新しいversionを切って、post_install_messageでRenameの旨を周知&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails_config&lt;/code&gt; のほうに簡単にUpdateできるようなUpdate Generator Taskを用意&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; というgemに新しいOwnerを付与&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; のRename前の古いバージョンをrubygemsから削除&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">rubocop-rails</code> に代わる新しいgemを作成: <a href="https://github.com/toshimaru/rubocop-rails_config">rubocop-rails_config</a></li>
+  <li><code class="language-plaintext highlighter-rouge">rubocop-rails</code> の新しいversionを切って、post_install_messageでRenameの旨を周知</li>
+  <li><code class="language-plaintext highlighter-rouge">rubocop-rails_config</code> のほうに簡単にUpdateできるようなUpdate Generator Taskを用意</li>
+  <li><code class="language-plaintext highlighter-rouge">rubocop-rails</code> というgemに新しいOwnerを付与</li>
+  <li><code class="language-plaintext highlighter-rouge">rubocop-rails</code> のRename前の古いバージョンをrubygemsから削除</li>
+</ul>
 
-&lt;p&gt;一番最後の &lt;strong&gt;古いバージョンをrubygemsから削除&lt;/strong&gt; はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果、古いバージョンを消してでもgemのRename周知を優先させようと思い至った。これに関しては正直正解はないと思う。&lt;/p&gt;
+<p>一番最後の <strong>古いバージョンをrubygemsから削除</strong> はIssueでもやり取りしている通り、既存のビルドを壊すことになるので正直苦渋の決断であった。だけれどもRuboCopがdevelopment依存のgemであること、全く違うgemになったら既存のgemユーザーを驚かせてしまうこと、これらを総合的に考えた結果、古いバージョンを消してでもgemのRename周知を優先させようと思い至った。これに関しては正直正解はないと思う。</p>
 
-&lt;h2 id=&quot;rubocopコミッターのkoicさんが発表してくださいました&quot;&gt;RuboCopコミッターのkoicさんが発表してくださいました&lt;/h2&gt;
+<h2 id="rubocopコミッターのkoicさんが発表してくださいました">RuboCopコミッターのkoicさんが発表してくださいました</h2>
 
-&lt;p&gt;本件に関してはRuboCopコミッターの&lt;a href=&quot;https://twitter.com/koic&quot;&gt;@koic&lt;/a&gt;さんも先日の&lt;a href=&quot;https://techplay.jp/event/679666&quot;&gt;Rails Developers Meetup 2018 Day 3 Extreme&lt;/a&gt;にて発表して頂いたようです。:innocent:&lt;/p&gt;
+<p>本件に関してはRuboCopコミッターの<a href="https://twitter.com/koic">@koic</a>さんも先日の<a href="https://techplay.jp/event/679666">Rails Developers Meetup 2018 Day 3 Extreme</a>にて発表して頂いたようです。:innocent:</p>
 
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-slide=&quot;57&quot; data-id=&quot;612849c52252464d8a63fc97f90c6091&quot; data-ratio=&quot;1.33333333333333&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+<script async="" class="speakerdeck-embed" data-slide="57" data-id="612849c52252464d8a63fc97f90c6091" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
 
-&lt;p&gt;発表エントリ: &lt;a href=&quot;http://koic.hatenablog.com/entry/railsdm-2018-day3-extreme&quot;&gt;Rails Developers Meetup 2018 Day 3 Extreme に登壇した - koicの日記&lt;/a&gt;&lt;/p&gt;
+<p>発表エントリ: <a href="http://koic.hatenablog.com/entry/railsdm-2018-day3-extreme">Rails Developers Meetup 2018 Day 3 Extreme に登壇した - koicの日記</a></p>
 
-&lt;p&gt;エピソードのご紹介ありがとうございました。:pray:&lt;/p&gt;
+<p>エピソードのご紹介ありがとうございました。:pray:</p>
 
-&lt;h2 id=&quot;参考資料&quot;&gt;参考資料&lt;/h2&gt;
+<h2 id="参考資料">参考資料</h2>
 
-&lt;p&gt;なお、gemを消す方法に関しては下記を参考にさせてもらった。&lt;/p&gt;
+<p>なお、gemを消す方法に関しては下記を参考にさせてもらった。</p>
 
-&lt;p&gt;&lt;a href=&quot;http://blog.s21g.com/articles/1755&quot;&gt;公開した gem を削除する方法 - ヽ( ・∀・)ノくまくまー - s21g&lt;/a&gt;&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><category term="oss" /><summary type="html">かねてより僕が開発していたrubocop-railsというgemをRuboCop公式チームの要望により譲った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="https://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails/">&lt;p&gt;【追記】本記事で紹介しているgem, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt;は公式RuboCopチームの要望により、&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;というgemにRenameされました。&lt;/p&gt;
+<p><a href="http://blog.s21g.com/articles/1755">公開した gem を削除する方法 - ヽ( ・∀・)ノくまくまー - s21g</a></p>]]></content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><category term="oss" /><summary type="html"><![CDATA[かねてより僕が開発していたubocop-railsというgemをRuboCop公式チームの要望により譲った。 僕がこのgemを作った経緯とかは下記の記事の通り。名前を譲ることになったきっかけは下記のIssue。 Extract Rails Cops in a separate より正確にいうとこのIssueの前にRubyKaigi 2018の懇親会でRuboCop作者から僕へ間接的に打診があり、上記のIssueに至る。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="https://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails/"><![CDATA[<p>【追記】本記事で紹介しているgem, <code class="language-plaintext highlighter-rouge">rubocop-rails</code>は公式RuboCopチームの要望により、<a href="https://github.com/toshimaru/rubocop-rails_config">rubocop-rails_config</a>というgemにRenameされました。</p>
 
-&lt;p&gt;本gemご利用の方は下記の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails_config&lt;/code&gt;のご利用をお願いします。&lt;/p&gt;
+<p>本gemご利用の方は下記の<code class="language-plaintext highlighter-rouge">rubocop-rails_config</code>のご利用をお願いします。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;toshimaru/rubocop-rails_config&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/rubocop-rails_config">toshimaru/rubocop-rails_config</a></p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. RuboCopチームにgemの名前を譲った話 - Hack Your Design! &lt;a href=&quot;https://t.co/vumSGBK3UN&quot;&gt;https://t.co/vumSGBK3UN&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1019011276561833985?ref_src=twsrc%5Etfw&quot;&gt;July 17, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Blogged. RuboCopチームにgemの名前を譲った話 - Hack Your Design! <a href="https://t.co/vumSGBK3UN">https://t.co/vumSGBK3UN</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1019011276561833985?ref_src=twsrc%5Etfw">July 17, 2018</a></blockquote>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;p&gt;Railsとほとんど同じRuboCopの設定が利用できる&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemを作りましたので紹介します。&lt;/p&gt;
+<p>Railsとほとんど同じRuboCopの設定が利用できる<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a>というgemを作りましたので紹介します。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのrubocopと同じ設定を簡単に適用できるgemを作ったよ&lt;br /&gt;toshimaru/rubocop-rails: Code style checking for Ruby on Rails project &lt;a href=&quot;https://t.co/DnTRKtJc9j&quot;&gt;https://t.co/DnTRKtJc9j&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/819931180304715776?ref_src=twsrc%5Etfw&quot;&gt;January 13, 2017&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">Railsのrubocopと同じ設定を簡単に適用できるgemを作ったよ<br />toshimaru/rubocop-rails: Code style checking for Ruby on Rails project <a href="https://t.co/DnTRKtJc9j">https://t.co/DnTRKtJc9j</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/819931180304715776?ref_src=twsrc%5Etfw">January 13, 2017</a></blockquote>
 
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+<h2 id="モチベーション">モチベーション</h2>
 
-&lt;p&gt;Rubyの静的コード解析の定番といえば&lt;a href=&quot;https://github.com/bbatsov/rubocop&quot;&gt;RuboCop&lt;/a&gt;ですよね。ですがRuboCopの設定ファイル&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;の設定作業って結構大変じゃないですか？&lt;/p&gt;
+<p>Rubyの静的コード解析の定番といえば<a href="https://github.com/bbatsov/rubocop">RuboCop</a>ですよね。ですがRuboCopの設定ファイル<code class="language-plaintext highlighter-rouge">rubocop.yml</code>の設定作業って結構大変じゃないですか？</p>
 
-&lt;p&gt;RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もありますが「誰がお前の作った設定に従うか！」という気持ちも無くはない。&lt;/p&gt;
+<p>RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もありますが「誰がお前の作った設定に従うか！」という気持ちも無くはない。</p>
 
-&lt;p&gt;「何かしらRuboCop設定のレールが欲しいよね〜 :railway_car:」というところで閃き:bulb:、「だったらrailsチームの用意した公式&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt; gemを作りました。&lt;/p&gt;
+<p>「何かしらRuboCop設定のレールが欲しいよね〜 :railway_car:」というところで閃き:bulb:、「だったらrailsチームの用意した公式<code class="language-plaintext highlighter-rouge">rubocop.yml</code>を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a> gemを作りました。</p>
 
-&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+<h2 id="使い方">使い方</h2>
 
-&lt;p&gt;使い方は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; をinstallした後に、下記の設定を記述した &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt; を用意する。&lt;/p&gt;
+<p>使い方は <code class="language-plaintext highlighter-rouge">rubocop-rails</code> をinstallした後に、下記の設定を記述した <code class="language-plaintext highlighter-rouge">rubocop.yml</code> を用意する。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;inherit_gem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rubocop-rails&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;config/rails.yml&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">inherit_gem</span><span class="pi">:</span>
+  <span class="na">rubocop-rails</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">config/rails.yml</span>
+</code></pre></div></div>
 
-&lt;p&gt;オーバーライドしたい設定、追加したい設定があれば、適宜同じ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;内に設定を追加していく。&lt;/p&gt;
+<p>オーバーライドしたい設定、追加したい設定があれば、適宜同じ<code class="language-plaintext highlighter-rouge">rubocop.yml</code>内に設定を追加していく。</p>
 
-&lt;h2 id=&quot;実際使ってみてどうか&quot;&gt;実際使ってみてどうか&lt;/h2&gt;
+<h2 id="実際使ってみてどうか">実際使ってみてどうか</h2>
 
-&lt;p&gt;実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くないです。&lt;/p&gt;
+<p>実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くないです。</p>
 
-&lt;p&gt;また副次効果として、普段からこのgemの設定に慣れておくと、Rails本体にコントリビュートするときにRailsのrubocop設定違反にならないコードを書けて便利。 :innocent:&lt;/p&gt;
+<p>また副次効果として、普段からこのgemの設定に慣れておくと、Rails本体にコントリビュートするときにRailsのrubocop設定違反にならないコードを書けて便利。 :innocent:</p>
 
-&lt;h2 id=&quot;こんなrubocop設定もあるよ&quot;&gt;こんなRuboCop設定もあるよ&lt;/h2&gt;
+<h2 id="こんなrubocop設定もあるよ">こんなRuboCop設定もあるよ</h2>
 
-&lt;p&gt;他の＜いい感じ＞に設定されたRuboCop設定も紹介します。&lt;/p&gt;
+<p>他の＜いい感じ＞に設定されたRuboCop設定も紹介します。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;GitHubの場合: &lt;a href=&quot;https://github.com/github/rubocop-github&quot;&gt;github/rubocop-github&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Siderの場合: &lt;a href=&quot;https://github.com/sider/meowcop&quot;&gt;sider/meowcop&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>GitHubの場合: <a href="https://github.com/github/rubocop-github">github/rubocop-github</a></li>
+  <li>Siderの場合: <a href="https://github.com/sider/meowcop">sider/meowcop</a></li>
+</ul>
 
-&lt;p&gt;これらの設定はきちんとチーム・会社でディスカッションされた上で作られたものだと思いますので、こちらもあわせて導入を検討してみてもいいかもしれません。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><category term="oss" /><category term="gem" /><summary type="html">【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="https://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="https://blog.toshimaru.net/gem-rack-simple-user-agent/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;というgemを作った。&lt;/p&gt;
+<p>これらの設定はきちんとチーム・会社でディスカッションされた上で作られたものだと思いますので、こちらもあわせて導入を検討してみてもいいかもしれません。</p>]]></content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><category term="oss" /><category term="gem" /><summary type="html"><![CDATA[Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="https://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="https://blog.toshimaru.net/gem-rack-simple-user-agent/"><![CDATA[<p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>というgemを作った。</p>
 
-&lt;h2 id=&quot;なぜ作ったか&quot;&gt;なぜ作ったか&lt;/h2&gt;
+<h2 id="なぜ作ったか">なぜ作ったか</h2>
 
-&lt;p&gt;同じコンセプトのgemとしては、&lt;a href=&quot;https://github.com/k0kubun&quot;&gt;k0kubun&lt;/a&gt;さんの&lt;a href=&quot;https://github.com/k0kubun/rack-user_agent&quot;&gt;rack-user_agent&lt;/a&gt;がある。詳細については下記のブログエントリに詳しい。&lt;/p&gt;
+<p>同じコンセプトのgemとしては、<a href="https://github.com/k0kubun">k0kubun</a>さんの<a href="https://github.com/k0kubun/rack-user_agent">rack-user_agent</a>がある。詳細については下記のブログエントリに詳しい。</p>
 
-&lt;p&gt;&lt;a href=&quot;http://k0kubun.hatenablog.com/entry/2014/11/21/041949&quot;&gt;Railsでデバイスの判定をするのに便利なgemを作った - k0kubun’s blog&lt;/a&gt;&lt;/p&gt;
+<p><a href="http://k0kubun.hatenablog.com/entry/2014/11/21/041949">Railsでデバイスの判定をするのに便利なgemを作った - k0kubun’s blog</a></p>
 
-&lt;p&gt;ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして&lt;a href=&quot;https://github.com/woothee/woothee&quot;&gt;woothee&lt;/a&gt;を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。&lt;/p&gt;
+<p>ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして<a href="https://github.com/woothee/woothee">woothee</a>を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。</p>
 
-&lt;h3 id=&quot;tablet-判定したい&quot;&gt;tablet 判定したい&lt;/h3&gt;
+<h3 id="tablet-判定したい">tablet 判定したい</h3>
 
-&lt;p&gt;昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。&lt;/p&gt;
+<p>昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。</p>
 
-&lt;p&gt;wootheeの場合、残念ながらcategoryとしてtabletは用意されていない。実際にwootheeを使ってiPadを判定した場合、カテゴリはsmartphoneと判定されてしまう。&lt;/p&gt;
+<p>wootheeの場合、残念ながらcategoryとしてtabletは用意されていない。実際にwootheeを使ってiPadを判定した場合、カテゴリはsmartphoneと判定されてしまう。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Mozilla/5.0 (iPad; CPU OS 9_0_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A404 Safari/601.1&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Safari&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:smartphone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;iPad&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Apple&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Woothee</span><span class="p">.</span><span class="nf">parse</span> <span class="s2">"Mozilla/5.0 (iPad; CPU OS 9_0_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A404 Safari/601.1"</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span><span class="o">=&gt;</span><span class="s2">"Safari"</span><span class="p">,</span> <span class="ss">:category</span><span class="o">=&gt;</span><span class="ss">:smartphone</span><span class="p">,</span> <span class="ss">:os</span><span class="o">=&gt;</span><span class="s2">"iPad"</span><span class="p">,</span> <span class="ss">:os_version</span><span class="o">=&gt;</span><span class="s2">"9.0.1"</span><span class="p">,</span> <span class="ss">:version</span><span class="o">=&gt;</span><span class="s2">"9.0"</span><span class="p">,</span> <span class="ss">:vendor</span><span class="o">=&gt;</span><span class="s2">"Apple"</span><span class="p">}</span>
+</code></pre></div></div>
 
-&lt;p&gt;この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。&lt;/p&gt;
+<p>この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。</p>
 
-&lt;h3 id=&quot;無条件にbot判定されたくない&quot;&gt;無条件にbot判定されたくない&lt;/h3&gt;
+<h3 id="無条件にbot判定されたくない">無条件にbot判定されたくない</h3>
 
-&lt;p&gt;また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば&lt;a href=&quot;https://www.google.com/webmasters/tools/mobile-friendly/&quot;&gt;Mobile-Friendly Test&lt;/a&gt;でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;crawler&lt;/code&gt;と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。&lt;/p&gt;
+<p>また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば<a href="https://www.google.com/webmasters/tools/mobile-friendly/">Mobile-Friendly Test</a>でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが<code class="language-plaintext highlighter-rouge">crawler</code>と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Googlebot&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:crawler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Woothee</span><span class="p">.</span><span class="nf">parse</span> <span class="s2">"​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span><span class="o">=&gt;</span><span class="s2">"Googlebot"</span><span class="p">,</span> <span class="ss">:category</span><span class="o">=&gt;</span><span class="ss">:crawler</span><span class="p">,</span> <span class="ss">:os</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:os_version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:vendor</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">}</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rack-simple_user_agentというソリューション&quot;&gt;rack-simple_user_agentというソリューション&lt;/h2&gt;
+<h2 id="rack-simple_user_agentというソリューション">rack-simple_user_agentというソリューション</h2>
 
-&lt;p&gt;これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは &lt;strong&gt;stupidly simple UA detector&lt;/strong&gt; と称することにした。&lt;/p&gt;
+<p>これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは <strong>stupidly simple UA detector</strong> と称することにした。</p>
 
-&lt;h2 id=&quot;rack-simple_user_agentで可能な判定&quot;&gt;rack-simple_user_agentで可能な判定&lt;/h2&gt;
+<h2 id="rack-simple_user_agentで可能な判定">rack-simple_user_agentで可能な判定</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;request.from_smartphone?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;iPhone, Android, Windows Phone の判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;request.from_tablet?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;iPad, Android Tablet の判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;request.from_smartdevice?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;上記のsmartphone, tabletを含む判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;from_googlebot?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;googlebot かどうかの判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">request.from_smartphone?</code>
+    <ul>
+      <li>iPhone, Android, Windows Phone の判定</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">request.from_tablet?</code>
+    <ul>
+      <li>iPad, Android Tablet の判定</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">request.from_smartdevice?</code>
+    <ul>
+      <li>上記のsmartphone, tabletを含む判定</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">from_googlebot?</code>
+    <ul>
+      <li>googlebot かどうかの判定</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;p&gt;2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.&lt;/p&gt;
+<p>2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.</p>
 
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+<h2 id="まとめ">まとめ</h2>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="oss" /><category term="gem" /><summary type="html">rack-simple_user_agentというgemを作った。</summary></entry><entry><title type="html">docomo雑談対話APIでリプライ返すhubotプラグイン作った</title><link href="https://blog.toshimaru.net/hubot-docomo-chatter/" rel="alternate" type="text/html" title="docomo雑談対話APIでリプライ返すhubotプラグイン作った" /><published>2015-08-30T00:00:00+09:00</published><updated>2015-08-30T00:00:00+09:00</updated><id>https://blog.toshimaru.net/hubot-docomo-chatter</id><content type="html" xml:base="https://blog.toshimaru.net/hubot-docomo-chatter/">&lt;p&gt;五番煎じくらいになりますが、docomo雑談対話APIを使ってリプライを返すhubotプラグインを作りました。&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。</p>]]></content><author><name>Toshimaru</name></author><category term="rails" /><category term="oss" /><category term="gem" /><summary type="html"><![CDATA[rack-simple_user_agent というgemを作った。 同じコンセプトのgemとしては、k0kubunさんのrack-user_agentがある。ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとしてwootheeを使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。]]></summary></entry><entry><title type="html">docomo雑談対話APIでリプライ返すhubotプラグイン作った</title><link href="https://blog.toshimaru.net/hubot-docomo-chatter/" rel="alternate" type="text/html" title="docomo雑談対話APIでリプライ返すhubotプラグイン作った" /><published>2015-08-30T00:00:00+09:00</published><updated>2015-08-30T00:00:00+09:00</updated><id>https://blog.toshimaru.net/hubot-docomo-chatter</id><content type="html" xml:base="https://blog.toshimaru.net/hubot-docomo-chatter/"><![CDATA[<p>五番煎じくらいになりますが、docomo雑談対話APIを使ってリプライを返すhubotプラグインを作りました。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-docomochatter&quot;&gt;toshimaru/hubot-docomochatter&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/hubot-docomochatter">toshimaru/hubot-docomochatter</a></p>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/docomochatter&quot;&gt;toshimaru/docomochatter&lt;/a&gt;というシンプルなAPIクライアントをまず作り、それを利用するかたちでプラグインを作った&lt;/li&gt;
-  &lt;li&gt;既に定義された&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hubot ping&lt;/code&gt;などのコマンドに対しては返答しないようにし、マッチするコマンドが他にない場合にプラグインが反応するようにした。 このへんのやり方についてはこちらを参照した: &lt;a href=&quot;http://qiita.com/hiconyan/items/baf6ac56129a26d8ac0c&quot;&gt;Hubotで「どのコマンドにも一致しない」ときの処理 - Qiita&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;ルーム毎（SlackでいうところのChannel）にcontextを保存するようにした&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCOMO_API_KEY&lt;/code&gt;という環境変数使ってAPIアクセスする&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><a href="https://github.com/toshimaru/docomochatter">toshimaru/docomochatter</a>というシンプルなAPIクライアントをまず作り、それを利用するかたちでプラグインを作った</li>
+  <li>既に定義された<code class="language-plaintext highlighter-rouge">hubot ping</code>などのコマンドに対しては返答しないようにし、マッチするコマンドが他にない場合にプラグインが反応するようにした。 このへんのやり方についてはこちらを参照した: <a href="http://qiita.com/hiconyan/items/baf6ac56129a26d8ac0c">Hubotで「どのコマンドにも一致しない」ときの処理 - Qiita</a></li>
+  <li>ルーム毎（SlackでいうところのChannel）にcontextを保存するようにした</li>
+  <li><code class="language-plaintext highlighter-rouge">DOCOMO_API_KEY</code>という環境変数使ってAPIアクセスする</li>
+</ul>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+<h3 id="参考">参考</h3>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://dev.smt.docomo.ne.jp/?p=docs.api.page&amp;amp;api_name=dialogue&amp;amp;p_name=api_reference&quot;&gt;雑談対話 | docomo Developer support | NTTドコモ&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="hubot" /><category term="npm" /><category term="oss" /><summary type="html">五番煎じくらいになりますが、docomo雑談対話APIを使ってリプライを返すhubotプラグインを作りました。</summary></entry><entry><title type="html">天下一bot武闘会でクソbotたちを発表してきました</title><link href="https://blog.toshimaru.net/tenkaichi-bot/" rel="alternate" type="text/html" title="天下一bot武闘会でクソbotたちを発表してきました" /><published>2015-04-25T00:00:00+09:00</published><updated>2015-04-25T00:00:00+09:00</updated><id>https://blog.toshimaru.net/tenkaichi-bot</id><content type="html" xml:base="https://blog.toshimaru.net/tenkaichi-bot/">&lt;p&gt;先日&lt;a href=&quot;http://connpass.com/event/12689/&quot;&gt;天下一bot武闘会&lt;/a&gt;で僕が作った :shit: botたちを発表してきました。&lt;/p&gt;
+<ul>
+  <li><a href="https://dev.smt.docomo.ne.jp/?p=docs.api.page&amp;api_name=dialogue&amp;p_name=api_reference">雑談対話 | docomo Developer support | NTTドコモ</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="hubot" /><category term="npm" /><category term="oss" /><summary type="html"><![CDATA[五番煎じくらいになりますが、docomo雑談対話APIを使ってリプライを返すhubotプラグインを作りました。]]></summary></entry><entry><title type="html">天下一bot武闘会でクソbotたちを発表してきました</title><link href="https://blog.toshimaru.net/tenkaichi-bot/" rel="alternate" type="text/html" title="天下一bot武闘会でクソbotたちを発表してきました" /><published>2015-04-25T00:00:00+09:00</published><updated>2015-04-25T00:00:00+09:00</updated><id>https://blog.toshimaru.net/tenkaichi-bot</id><content type="html" xml:base="https://blog.toshimaru.net/tenkaichi-bot/"><![CDATA[<p>先日<a href="http://connpass.com/event/12689/">天下一bot武闘会</a>で僕が作った :shit: botたちを発表してきました。</p>
 
-&lt;script async=&quot;&quot; class=&quot;speakerdeck-embed&quot; data-id=&quot;d050418ad57e4a67821c7e1ec7d5a73a&quot; data-ratio=&quot;1.77777777777778&quot; src=&quot;//speakerdeck.com/assets/embed.js&quot;&gt;&lt;/script&gt;
+<script async="" class="speakerdeck-embed" data-id="d050418ad57e4a67821c7e1ec7d5a73a" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
 
-&lt;h2 id=&quot;つくった-shit-bots&quot;&gt;つくった :shit: bots&lt;/h2&gt;
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-shinchoku-dou&quot;&gt;hubot-shinchoku-dou&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-hibi-no-kokoro&quot;&gt;hubot-hibi-no-kokoro&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-hanakin&quot;&gt;hubot-hanakin&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/toshimaru/hubot-hikakin&quot;&gt;hubot-hikakin&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
+<h2 id="つくった-shit-bots">つくった :shit: bots</h2>
+<ol>
+  <li><a href="https://github.com/toshimaru/hubot-shinchoku-dou">hubot-shinchoku-dou</a></li>
+  <li><a href="https://github.com/toshimaru/hubot-hibi-no-kokoro">hubot-hibi-no-kokoro</a></li>
+  <li><a href="https://github.com/toshimaru/hubot-hanakin">hubot-hanakin</a></li>
+  <li><a href="https://github.com/toshimaru/hubot-hikakin">hubot-hikakin</a></li>
+</ol>
 
-&lt;p&gt;ほんとにしょーもないクソbotたちですが、発表することにより彼らを:shit:世界から救えた気がして満足しています。:angel:&lt;/p&gt;
+<p>ほんとにしょーもないクソbotたちですが、発表することにより彼らを:shit:世界から救えた気がして満足しています。:angel:</p>
 
-&lt;p&gt;スライド作成に使ったアプリは&lt;a href=&quot;http://www.decksetapp.com/&quot;&gt;Deckset&lt;/a&gt;ってやつです。現時点でMac専用アプリ、デザインのカスタマイズも非力ですがなんといってもmarkdown書けばそれっぽいスライドが仕上がるのがとても良い。今後も使っていきたいアプリである。&lt;/p&gt;
+<p>スライド作成に使ったアプリは<a href="http://www.decksetapp.com/">Deckset</a>ってやつです。現時点でMac専用アプリ、デザインのカスタマイズも非力ですがなんといってもmarkdown書けばそれっぽいスライドが仕上がるのがとても良い。今後も使っていきたいアプリである。</p>
 
-&lt;h2 id=&quot;参考&quot;&gt;参考&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://twitter.com/search?f=realtime&amp;amp;q=%23tenkabot&amp;amp;src=typd&quot;&gt;#tenkabot - Twitter Search&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/moqada/hubot-shinchoku&quot;&gt;moqada/hubot-shinchoku&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://r7kamura.hatenablog.com/entry/2015/04/18/011129&quot;&gt;天下一bot武闘会で発表しました - ✘╹◡╹✘&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="hubot" /><category term="presentation" /><category term="oss" /><summary type="html">先日天下一bot武闘会で僕が作った :shit: botたちを発表してきました。</summary></entry></feed>
+<h2 id="参考">参考</h2>
+<ul>
+  <li><a href="https://twitter.com/search?f=realtime&amp;q=%23tenkabot&amp;src=typd">#tenkabot - Twitter Search</a></li>
+  <li><a href="https://github.com/moqada/hubot-shinchoku">moqada/hubot-shinchoku</a></li>
+  <li><a href="http://r7kamura.hatenablog.com/entry/2015/04/18/011129">天下一bot武闘会で発表しました - ✘╹◡╹✘</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="hubot" /><category term="presentation" /><category term="oss" /><summary type="html"><![CDATA[先日天下一bot武闘会で僕が作ったクソbotたちを発表してきました。]]></summary></entry></feed>

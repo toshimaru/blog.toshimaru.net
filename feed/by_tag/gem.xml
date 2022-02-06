@@ -1,245 +1,245 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/gem.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:08:52+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/gem.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/">&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/gem.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-02-06T12:17:14+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/gem.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った</title><link href="https://blog.toshimaru.net/rubygems-bundled-gems/" rel="alternate" type="text/html" title="Gemfile.lock 内の特定バージョンgemをインストールする bgem コマンド作った" /><published>2021-02-28T00:00:00+09:00</published><updated>2021-02-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubygems-bundled-gems</id><content type="html" xml:base="https://blog.toshimaru.net/rubygems-bundled-gems/"><![CDATA[<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</p>
 
-&lt;p&gt;（gem名としては &lt;a href=&quot;https://github.com/rubygems/rubygems&quot;&gt;rubygems/rubygems&lt;/a&gt; にインスパイアされて &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundled_gems&lt;/code&gt; とした）&lt;/p&gt;
+<p>（gem名としては <a href="https://github.com/rubygems/rubygems">rubygems/rubygems</a> にインスパイアされて <code class="language-plaintext highlighter-rouge">bundled_gems</code> とした）</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/bundled_gems&quot;&gt;toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/bundled_gems">toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.</a></p>
 
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+<h2 id="モチベーション">モチベーション</h2>
 
-&lt;p&gt;もともとは、GitHub Actionに &lt;a href=&quot;https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows&quot;&gt;cache機能&lt;/a&gt;が来る前に作ったもの。&lt;/p&gt;
+<p>もともとは、GitHub Actionに <a href="https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows">cache機能</a>が来る前に作ったもの。</p>
 
-&lt;p&gt;GitHub Action でCIしていた場合、cache機能がないと毎回 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。&lt;/p&gt;
+<p>GitHub Action でCIしていた場合、cache機能がないと毎回 <code class="language-plaintext highlighter-rouge">bundle install</code>走らせる必要があり、巨大プロジェクトだとそこがCIにおけるコストになっていた。</p>
 
-&lt;p&gt;また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。&lt;/p&gt;
+<p>また CI で rubocop だけを走らせている、みたいな場合、全てのライブラリのインストールは必要なく、rubocopと一部のライブラリさえあれば十分で、それ以外のライブラリのインストールはいわば無駄なインストールとなっている。</p>
 
-&lt;p&gt;「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。&lt;/p&gt;
+<p>「だったら必要なライブラリだけインストールしてCI走らせりゃいいじゃん」というのが今回のgemの着想。</p>
 
-&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+<h2 id="使い方">使い方</h2>
 
-&lt;h3 id=&quot;インストール&quot;&gt;インストール&lt;/h3&gt;
+<h3 id="インストール">インストール</h3>
 
-&lt;div class=&quot;language-console highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;gem &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;bundled_gems
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>gem <span class="nb">install </span>bundled_gems
+</code></pre></div></div>
 
-&lt;p&gt;これで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem&lt;/code&gt; コマンドが利用可能になる。&lt;/p&gt;
+<p>これで <code class="language-plaintext highlighter-rouge">bgem</code> コマンドが利用可能になる。</p>
 
-&lt;h3 id=&quot;gemfilelock-内のgemのインストール&quot;&gt;Gemfile.lock 内のgemのインストール&lt;/h3&gt;
+<h3 id="gemfilelock-内のgemのインストール">Gemfile.lock 内のgemのインストール</h3>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ bgem install gem_name
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ bgem install gem_name
+</code></pre></div></div>
 
-&lt;p&gt;こうすることで &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;内に記載されている &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem_name&lt;/code&gt; のバージョンを読み取ってそれをインストールしてくれる（内部的には &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gem install gem_name:version&lt;/code&gt; を走らせている）。&lt;/p&gt;
+<p>こうすることで <code class="language-plaintext highlighter-rouge">Gemfile.lock</code>内に記載されている <code class="language-plaintext highlighter-rouge">gem_name</code> のバージョンを読み取ってそれをインストールしてくれる（内部的には <code class="language-plaintext highlighter-rouge">gem install gem_name:version</code> を走らせている）。</p>
 
-&lt;p&gt;例としては、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bgem install rubocop&lt;/code&gt;とした場合、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt;に記載されているバージョンの &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop&lt;/code&gt; をインストールする。&lt;/p&gt;
+<p>例としては、<code class="language-plaintext highlighter-rouge">bgem install rubocop</code>とした場合、<code class="language-plaintext highlighter-rouge">Gemfile.lock</code>に記載されているバージョンの <code class="language-plaintext highlighter-rouge">rubocop</code> をインストールする。</p>
 
-&lt;h2 id=&quot;課題&quot;&gt;課題&lt;/h2&gt;
+<h2 id="課題">課題</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;installするgemの子となる依存gemのバージョンまでは解決してくれない点
-    &lt;ul&gt;
-      &lt;li&gt;このへん実装しようと思っていたら、先にGitHub公式の &lt;a href=&quot;https://github.com/actions/cache&quot;&gt;actions/cache&lt;/a&gt;が来てしまった次第。。。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>installするgemの子となる依存gemのバージョンまでは解決してくれない点
+    <ul>
+      <li>このへん実装しようと思っていたら、先にGitHub公式の <a href="https://github.com/actions/cache">actions/cache</a>が来てしまった次第。。。</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;h2 id=&quot;special-thanks&quot;&gt;Special Thanks&lt;/h2&gt;
+<h2 id="special-thanks">Special Thanks</h2>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Gemfile.lock&lt;/code&gt; のパースに関しては、&lt;a href=&quot;https://github.com/ledsun&quot;&gt;@ledsun&lt;/a&gt; さんにサンプルをいただきました&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;。ありがとうございました。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">Gemfile.lock</code> のパースに関しては、<a href="https://github.com/ledsun">@ledsun</a> さんにサンプルをいただきました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。ありがとうございました。</p>
 
-&lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
-  &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;&lt;a href=&quot;https://github.com/ledsun/orgen&quot;&gt;ledsun/orgen&lt;/a&gt; &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/div&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html">Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="https://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails/">&lt;p&gt;【追記】本記事で紹介しているgem, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt;は公式RuboCopチームの要望により、&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;rubocop-rails_config&lt;/a&gt;というgemにRenameされました。&lt;/p&gt;
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://github.com/ledsun/orgen">ledsun/orgen</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="oss" /><summary type="html"><![CDATA[Gemfile.lockに記述された特定バージョンのgemを簡単にインストールできる bgem コマンドを作った。 toshimaru/bundled_gems: Install gem specified in Gemfile.lock without bundle install.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/bgem.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/bgem.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った</title><link href="https://blog.toshimaru.net/rubocop-rails/" rel="alternate" type="text/html" title="Railsと同じRuboCopの設定が利用できるrubocop-rails gemを作った" /><published>2018-01-30T00:00:00+09:00</published><updated>2020-11-23T00:00:00+09:00</updated><id>https://blog.toshimaru.net/rubocop-rails</id><content type="html" xml:base="https://blog.toshimaru.net/rubocop-rails/"><![CDATA[<p>【追記】本記事で紹介しているgem, <code class="language-plaintext highlighter-rouge">rubocop-rails</code>は公式RuboCopチームの要望により、<a href="https://github.com/toshimaru/rubocop-rails_config">rubocop-rails_config</a>というgemにRenameされました。</p>
 
-&lt;p&gt;本gemご利用の方は下記の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails_config&lt;/code&gt;のご利用をお願いします。&lt;/p&gt;
+<p>本gemご利用の方は下記の<code class="language-plaintext highlighter-rouge">rubocop-rails_config</code>のご利用をお願いします。</p>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails_config&quot;&gt;toshimaru/rubocop-rails_config&lt;/a&gt;&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/rubocop-rails_config">toshimaru/rubocop-rails_config</a></p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Blogged. RuboCopチームにgemの名前を譲った話 - Hack Your Design! &lt;a href=&quot;https://t.co/vumSGBK3UN&quot;&gt;https://t.co/vumSGBK3UN&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/1019011276561833985?ref_src=twsrc%5Etfw&quot;&gt;July 17, 2018&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Blogged. RuboCopチームにgemの名前を譲った話 - Hack Your Design! <a href="https://t.co/vumSGBK3UN">https://t.co/vumSGBK3UN</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1019011276561833985?ref_src=twsrc%5Etfw">July 17, 2018</a></blockquote>
 
-&lt;hr /&gt;
+<hr />
 
-&lt;p&gt;Railsとほとんど同じRuboCopの設定が利用できる&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt;というgemを作りましたので紹介します。&lt;/p&gt;
+<p>Railsとほとんど同じRuboCopの設定が利用できる<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a>というgemを作りましたので紹介します。</p>
 
-&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Railsのrubocopと同じ設定を簡単に適用できるgemを作ったよ&lt;br /&gt;toshimaru/rubocop-rails: Code style checking for Ruby on Rails project &lt;a href=&quot;https://t.co/DnTRKtJc9j&quot;&gt;https://t.co/DnTRKtJc9j&lt;/a&gt;&lt;/p&gt;&amp;mdash; toshimaru (@toshimaru_e) &lt;a href=&quot;https://twitter.com/toshimaru_e/status/819931180304715776?ref_src=twsrc%5Etfw&quot;&gt;January 13, 2017&lt;/a&gt;&lt;/blockquote&gt;
+<blockquote class="twitter-tweet" data-lang="en"><p lang="ja" dir="ltr">Railsのrubocopと同じ設定を簡単に適用できるgemを作ったよ<br />toshimaru/rubocop-rails: Code style checking for Ruby on Rails project <a href="https://t.co/DnTRKtJc9j">https://t.co/DnTRKtJc9j</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/819931180304715776?ref_src=twsrc%5Etfw">January 13, 2017</a></blockquote>
 
-&lt;h2 id=&quot;モチベーション&quot;&gt;モチベーション&lt;/h2&gt;
+<h2 id="モチベーション">モチベーション</h2>
 
-&lt;p&gt;Rubyの静的コード解析の定番といえば&lt;a href=&quot;https://github.com/bbatsov/rubocop&quot;&gt;RuboCop&lt;/a&gt;ですよね。ですがRuboCopの設定ファイル&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;の設定作業って結構大変じゃないですか？&lt;/p&gt;
+<p>Rubyの静的コード解析の定番といえば<a href="https://github.com/bbatsov/rubocop">RuboCop</a>ですよね。ですがRuboCopの設定ファイル<code class="language-plaintext highlighter-rouge">rubocop.yml</code>の設定作業って結構大変じゃないですか？</p>
 
-&lt;p&gt;RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もありますが「誰がお前の作った設定に従うか！」という気持ちも無くはない。&lt;/p&gt;
+<p>RuboCopはデフォルトだと結構うるさすぎることが多いのでプロジェクト・チームに応じて何かしら設定はカスタマイズすると思います。しかし１つ１つ設定項目毎にチームのコンセンサスを取るのは非常にダルい。チームの一人が持ち込んだ＜俺の考える最強のRuboCop設定＞に従うという手もありますが「誰がお前の作った設定に従うか！」という気持ちも無くはない。</p>
 
-&lt;p&gt;「何かしらRuboCop設定のレールが欲しいよね〜 :railway_car:」というところで閃き:bulb:、「だったらrailsチームの用意した公式&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った&lt;a href=&quot;https://github.com/toshimaru/rubocop-rails&quot;&gt;rubocop-rails&lt;/a&gt; gemを作りました。&lt;/p&gt;
+<p>「何かしらRuboCop設定のレールが欲しいよね〜 :railway_car:」というところで閃き:bulb:、「だったらrailsチームの用意した公式<code class="language-plaintext highlighter-rouge">rubocop.yml</code>を使えばいいじゃない」ということで冒頭のRailsとほぼ同じ設定を持った<a href="https://github.com/toshimaru/rubocop-rails">rubocop-rails</a> gemを作りました。</p>
 
-&lt;h2 id=&quot;使い方&quot;&gt;使い方&lt;/h2&gt;
+<h2 id="使い方">使い方</h2>
 
-&lt;p&gt;使い方は &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop-rails&lt;/code&gt; をinstallした後に、下記の設定を記述した &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt; を用意する。&lt;/p&gt;
+<p>使い方は <code class="language-plaintext highlighter-rouge">rubocop-rails</code> をinstallした後に、下記の設定を記述した <code class="language-plaintext highlighter-rouge">rubocop.yml</code> を用意する。</p>
 
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;inherit_gem&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;rubocop-rails&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;config/rails.yml&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">inherit_gem</span><span class="pi">:</span>
+  <span class="na">rubocop-rails</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">config/rails.yml</span>
+</code></pre></div></div>
 
-&lt;p&gt;オーバーライドしたい設定、追加したい設定があれば、適宜同じ&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rubocop.yml&lt;/code&gt;内に設定を追加していく。&lt;/p&gt;
+<p>オーバーライドしたい設定、追加したい設定があれば、適宜同じ<code class="language-plaintext highlighter-rouge">rubocop.yml</code>内に設定を追加していく。</p>
 
-&lt;h2 id=&quot;実際使ってみてどうか&quot;&gt;実際使ってみてどうか&lt;/h2&gt;
+<h2 id="実際使ってみてどうか">実際使ってみてどうか</h2>
 
-&lt;p&gt;実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くないです。&lt;/p&gt;
+<p>実際使ってみるとうるさすぎず、しかしコードスタイルとしてきっちり統一させたいところは統一されており、使い心地はなかなか悪くないです。</p>
 
-&lt;p&gt;また副次効果として、普段からこのgemの設定に慣れておくと、Rails本体にコントリビュートするときにRailsのrubocop設定違反にならないコードを書けて便利。 :innocent:&lt;/p&gt;
+<p>また副次効果として、普段からこのgemの設定に慣れておくと、Rails本体にコントリビュートするときにRailsのrubocop設定違反にならないコードを書けて便利。 :innocent:</p>
 
-&lt;h2 id=&quot;こんなrubocop設定もあるよ&quot;&gt;こんなRuboCop設定もあるよ&lt;/h2&gt;
+<h2 id="こんなrubocop設定もあるよ">こんなRuboCop設定もあるよ</h2>
 
-&lt;p&gt;他の＜いい感じ＞に設定されたRuboCop設定も紹介します。&lt;/p&gt;
+<p>他の＜いい感じ＞に設定されたRuboCop設定も紹介します。</p>
 
-&lt;ul&gt;
-  &lt;li&gt;GitHubの場合: &lt;a href=&quot;https://github.com/github/rubocop-github&quot;&gt;github/rubocop-github&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Siderの場合: &lt;a href=&quot;https://github.com/sider/meowcop&quot;&gt;sider/meowcop&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li>GitHubの場合: <a href="https://github.com/github/rubocop-github">github/rubocop-github</a></li>
+  <li>Siderの場合: <a href="https://github.com/sider/meowcop">sider/meowcop</a></li>
+</ul>
 
-&lt;p&gt;これらの設定はきちんとチーム・会社でディスカッションされた上で作られたものだと思いますので、こちらもあわせて導入を検討してみてもいいかもしれません。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><category term="oss" /><category term="gem" /><summary type="html">【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="https://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="https://blog.toshimaru.net/gem-rack-simple-user-agent/">&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;というgemを作った。&lt;/p&gt;
+<p>これらの設定はきちんとチーム・会社でディスカッションされた上で作られたものだと思いますので、こちらもあわせて導入を検討してみてもいいかもしれません。</p>]]></content><author><name>Toshimaru</name></author><category term="rails" /><category term="rubocop" /><category term="oss" /><category term="gem" /><summary type="html"><![CDATA[Railsとほとんど同じRuboCopの設定が利用できるrubocop-railsというgemを作りましたので紹介します。 【追記】本記事で紹介しているgem, rubocop-railsは公式RuboCopチームの要望により、rubocop-rails_configというgemにRenameされました。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rail.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Railsでデバイス判定するrack-simple_user_agentというgemを作った</title><link href="https://blog.toshimaru.net/gem-rack-simple-user-agent/" rel="alternate" type="text/html" title="Railsでデバイス判定するrack-simple_user_agentというgemを作った" /><published>2016-10-02T00:00:00+09:00</published><updated>2016-10-02T00:00:00+09:00</updated><id>https://blog.toshimaru.net/gem-rack-simple-user-agent</id><content type="html" xml:base="https://blog.toshimaru.net/gem-rack-simple-user-agent/"><![CDATA[<p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>というgemを作った。</p>
 
-&lt;h2 id=&quot;なぜ作ったか&quot;&gt;なぜ作ったか&lt;/h2&gt;
+<h2 id="なぜ作ったか">なぜ作ったか</h2>
 
-&lt;p&gt;同じコンセプトのgemとしては、&lt;a href=&quot;https://github.com/k0kubun&quot;&gt;k0kubun&lt;/a&gt;さんの&lt;a href=&quot;https://github.com/k0kubun/rack-user_agent&quot;&gt;rack-user_agent&lt;/a&gt;がある。詳細については下記のブログエントリに詳しい。&lt;/p&gt;
+<p>同じコンセプトのgemとしては、<a href="https://github.com/k0kubun">k0kubun</a>さんの<a href="https://github.com/k0kubun/rack-user_agent">rack-user_agent</a>がある。詳細については下記のブログエントリに詳しい。</p>
 
-&lt;p&gt;&lt;a href=&quot;http://k0kubun.hatenablog.com/entry/2014/11/21/041949&quot;&gt;Railsでデバイスの判定をするのに便利なgemを作った - k0kubun’s blog&lt;/a&gt;&lt;/p&gt;
+<p><a href="http://k0kubun.hatenablog.com/entry/2014/11/21/041949">Railsでデバイスの判定をするのに便利なgemを作った - k0kubun’s blog</a></p>
 
-&lt;p&gt;ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして&lt;a href=&quot;https://github.com/woothee/woothee&quot;&gt;woothee&lt;/a&gt;を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。&lt;/p&gt;
+<p>ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとして<a href="https://github.com/woothee/woothee">woothee</a>を使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。</p>
 
-&lt;h3 id=&quot;tablet-判定したい&quot;&gt;tablet 判定したい&lt;/h3&gt;
+<h3 id="tablet-判定したい">tablet 判定したい</h3>
 
-&lt;p&gt;昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。&lt;/p&gt;
+<p>昨今のWebアプリケーションにおいてViewを分けたいとなったときは大体 smartphone, tablet, pc の３つのビューに分けたいのではないだろうか。もしくはsmartphone, pc の２つのビューに分け、tabletはどちらか１つのビューに属するという形にするのではないか。</p>
 
-&lt;p&gt;wootheeの場合、残念ながらcategoryとしてtabletは用意されていない。実際にwootheeを使ってiPadを判定した場合、カテゴリはsmartphoneと判定されてしまう。&lt;/p&gt;
+<p>wootheeの場合、残念ながらcategoryとしてtabletは用意されていない。実際にwootheeを使ってiPadを判定した場合、カテゴリはsmartphoneと判定されてしまう。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Mozilla/5.0 (iPad; CPU OS 9_0_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A404 Safari/601.1&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Safari&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:smartphone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;iPad&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;9.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Apple&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Woothee</span><span class="p">.</span><span class="nf">parse</span> <span class="s2">"Mozilla/5.0 (iPad; CPU OS 9_0_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13A404 Safari/601.1"</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span><span class="o">=&gt;</span><span class="s2">"Safari"</span><span class="p">,</span> <span class="ss">:category</span><span class="o">=&gt;</span><span class="ss">:smartphone</span><span class="p">,</span> <span class="ss">:os</span><span class="o">=&gt;</span><span class="s2">"iPad"</span><span class="p">,</span> <span class="ss">:os_version</span><span class="o">=&gt;</span><span class="s2">"9.0.1"</span><span class="p">,</span> <span class="ss">:version</span><span class="o">=&gt;</span><span class="s2">"9.0"</span><span class="p">,</span> <span class="ss">:vendor</span><span class="o">=&gt;</span><span class="s2">"Apple"</span><span class="p">}</span>
+</code></pre></div></div>
 
-&lt;p&gt;この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。&lt;/p&gt;
+<p>この判定だとsmartphoneとtabletのビューを分けたいといったときにやや不便だ。またtabletビューをpcビューと一緒にする場合にも困ってしまう。</p>
 
-&lt;h3 id=&quot;無条件にbot判定されたくない&quot;&gt;無条件にbot判定されたくない&lt;/h3&gt;
+<h3 id="無条件にbot判定されたくない">無条件にbot判定されたくない</h3>
 
-&lt;p&gt;また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば&lt;a href=&quot;https://www.google.com/webmasters/tools/mobile-friendly/&quot;&gt;Mobile-Friendly Test&lt;/a&gt;でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;crawler&lt;/code&gt;と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。&lt;/p&gt;
+<p>また無条件にcrawlerと判定されてしまうのも困ってしまうケースがある。例えば<a href="https://www.google.com/webmasters/tools/mobile-friendly/">Mobile-Friendly Test</a>でサイトチェックをした場合にsmartphone用の画面が結果として表示されてほしいわけだけど、rack-user_agentを用いた場合、同クローラーが<code class="language-plaintext highlighter-rouge">crawler</code>と判定されてしまい、正しくsmartphoneビューが表示されなくなってしまう。</p>
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Woothee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Googlebot&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:category&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:crawler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:os_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:vendor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;UNKNOWN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Woothee</span><span class="p">.</span><span class="nf">parse</span> <span class="s2">"​Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"</span>
+<span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span><span class="o">=&gt;</span><span class="s2">"Googlebot"</span><span class="p">,</span> <span class="ss">:category</span><span class="o">=&gt;</span><span class="ss">:crawler</span><span class="p">,</span> <span class="ss">:os</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:os_version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:version</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">,</span> <span class="ss">:vendor</span><span class="o">=&gt;</span><span class="s2">"UNKNOWN"</span><span class="p">}</span>
+</code></pre></div></div>
 
-&lt;h2 id=&quot;rack-simple_user_agentというソリューション&quot;&gt;rack-simple_user_agentというソリューション&lt;/h2&gt;
+<h2 id="rack-simple_user_agentというソリューション">rack-simple_user_agentというソリューション</h2>
 
-&lt;p&gt;これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは &lt;strong&gt;stupidly simple UA detector&lt;/strong&gt; と称することにした。&lt;/p&gt;
+<p>これらを解決することが冒頭のgemを作ったモチベーションになっている。ロジックとしては、単純にrequest UA stingに特定のデバイス特有の文字列が含まれているかどうかをチェック・判定するだけのバカ判定機だ。なのでこのgemは <strong>stupidly simple UA detector</strong> と称することにした。</p>
 
-&lt;h2 id=&quot;rack-simple_user_agentで可能な判定&quot;&gt;rack-simple_user_agentで可能な判定&lt;/h2&gt;
+<h2 id="rack-simple_user_agentで可能な判定">rack-simple_user_agentで可能な判定</h2>
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;request.from_smartphone?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;iPhone, Android, Windows Phone の判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;request.from_tablet?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;iPad, Android Tablet の判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;request.from_smartdevice?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;上記のsmartphone, tabletを含む判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;from_googlebot?&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;googlebot かどうかの判定&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">request.from_smartphone?</code>
+    <ul>
+      <li>iPhone, Android, Windows Phone の判定</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">request.from_tablet?</code>
+    <ul>
+      <li>iPad, Android Tablet の判定</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">request.from_smartdevice?</code>
+    <ul>
+      <li>上記のsmartphone, tabletを含む判定</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">from_googlebot?</code>
+    <ul>
+      <li>googlebot かどうかの判定</li>
+    </ul>
+  </li>
+</ul>
 
-&lt;p&gt;2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.&lt;/p&gt;
+<p>2016年にもなってさすがにフィーチャーフォンはもうケアしない。だが現代において普通に使われているデバイスであれば対応したいと考えているので、判定漏れているよとかこの判定も追加してよみたいなのがあれば、Pull request is welcome.</p>
 
-&lt;h2 id=&quot;まとめ&quot;&gt;まとめ&lt;/h2&gt;
+<h2 id="まとめ">まとめ</h2>
 
-&lt;p&gt;&lt;a href=&quot;https://github.com/toshimaru/rack-simple_user_agent&quot;&gt;rack-simple_user_agent&lt;/a&gt;はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。&lt;/p&gt;</content><author><name>Toshimaru</name></author><category term="rails" /><category term="oss" /><category term="gem" /><summary type="html">rack-simple_user_agentというgemを作った。</summary></entry><entry><title type="html">Ruby Gem Configuration Pattern</title><link href="https://blog.toshimaru.net/ruby-configuration-pattern/" rel="alternate" type="text/html" title="Ruby Gem Configuration Pattern" /><published>2015-09-01T00:00:00+09:00</published><updated>2015-09-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-configuration-pattern</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-configuration-pattern/">&lt;p&gt;railsのgemでよくみかける初期設定ファイル、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config/initializers/foo.rb&lt;/code&gt;。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。&lt;/p&gt;
+<p><a href="https://github.com/toshimaru/rack-simple_user_agent">rack-simple_user_agent</a>はtabletの判定をロジック内に含ませることができ、便利。あとシンプルな文字列の判定だけなのでデバイスの判定ロジックにおいて大きなパフォーマンス劣化もしない。</p>]]></content><author><name>Toshimaru</name></author><category term="rails" /><category term="oss" /><category term="gem" /><summary type="html"><![CDATA[rack-simple_user_agent というgemを作った。 同じコンセプトのgemとしては、k0kubunさんのrack-user_agentがある。ではなぜ新たに別のgemを作ったのかというと、rack-user_agentは内部で判定ロジックとしてwootheeを使っているのだが、wootheeだとやりたいことに対してややヘビーな感じがしたのと、wootheeの判定ロジックでは僕がやりたい判定が完全には出来なかったからだ。]]></summary></entry><entry><title type="html">Ruby Gem Configuration Pattern</title><link href="https://blog.toshimaru.net/ruby-configuration-pattern/" rel="alternate" type="text/html" title="Ruby Gem Configuration Pattern" /><published>2015-09-01T00:00:00+09:00</published><updated>2015-09-01T00:00:00+09:00</updated><id>https://blog.toshimaru.net/ruby-configuration-pattern</id><content type="html" xml:base="https://blog.toshimaru.net/ruby-configuration-pattern/"><![CDATA[<p>railsのgemでよくみかける初期設定ファイル、<code class="language-plaintext highlighter-rouge">config/initializers/foo.rb</code>。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</p>
 
-&lt;h2 id=&quot;めざす完成形はコレ&quot;&gt;めざす完成形はコレ！&lt;/h2&gt;
+<h2 id="めざす完成形はコレ">めざす完成形はコレ！</h2>
 
-&lt;p&gt;完成系として、下記を想定してみます。&lt;/p&gt;
+<p>完成系として、下記を想定してみます。</p>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# config/initializers/konfig.rb&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;Konfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;my configuration value&apos;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># config/initializers/konfig.rb</span>
+<span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s1">'my configuration value'</span>
+<span class="k">end</span></code></pre></figure>
 
-&lt;h2 id=&quot;configureメソッドを用意&quot;&gt;configureメソッドを用意&lt;/h2&gt;
+<h2 id="configureメソッドを用意">configureメソッドを用意</h2>
 
-&lt;p&gt;まずは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;module&lt;/code&gt;と&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;configure&lt;/code&gt;というクラスメソッドを用意します。&lt;/p&gt;
+<p>まずは<code class="language-plaintext highlighter-rouge">module</code>と<code class="language-plaintext highlighter-rouge">configure</code>というクラスメソッドを用意します。</p>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Konfig&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+    <span class="k">def</span> <span class="nf">configure</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
 
-&lt;h2 id=&quot;configurationクラス&quot;&gt;Configurationクラス&lt;/h2&gt;
+<h2 id="configurationクラス">Configurationクラス</h2>
 
-&lt;p&gt;次に実際の設定値が入る&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;クラスを用意します。&lt;/p&gt;
+<p>次に実際の設定値が入る<code class="language-plaintext highlighter-rouge">Configuration</code>クラスを用意します。</p>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Configuration&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;attr_accessor&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:my_value&lt;/span&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Configuration</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:my_value</span>
 
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
-    &lt;span class=&quot;vi&quot;&gt;@my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;default value&apos;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+  <span class="k">def</span> <span class="nf">initialize</span>
+    <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
 
-&lt;h2 id=&quot;完成形&quot;&gt;完成形&lt;/h2&gt;
+<h2 id="完成形">完成形</h2>
 
-&lt;p&gt;次にこれを組み合わせてみましょう。&lt;/p&gt;
+<p>次にこれを組み合わせてみましょう。</p>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Konfig&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Konfig</span>
+  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+    <span class="k">def</span> <span class="nf">configure</span>
+      <span class="k">yield</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
+    <span class="k">end</span>
 
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;
-      &lt;span class=&quot;vi&quot;&gt;@configuration&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    <span class="k">def</span> <span class="nf">configuration</span>
+      <span class="vi">@configuration</span> <span class="o">||=</span> <span class="no">Configuration</span><span class="p">.</span><span class="nf">new</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 
-  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Configuration&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;attr_accessor&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:my_value&lt;/span&gt;
+  <span class="k">class</span> <span class="nc">Configuration</span>
+    <span class="nb">attr_accessor</span> <span class="ss">:my_value</span>
 
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
-      &lt;span class=&quot;vi&quot;&gt;@my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;default value&apos;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+    <span class="k">def</span> <span class="nf">initialize</span>
+      <span class="vi">@my_value</span> <span class="o">=</span> <span class="s1">'default value'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
 
-&lt;p&gt;これでインスタンス化された&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;クラスが出てきます。&lt;/p&gt;
+<p>これでインスタンス化された<code class="language-plaintext highlighter-rouge">Configuration</code>クラスが出てきます。</p>
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; Konfig.configure {|config| p config}
-#&amp;lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value=&quot;default value&quot;&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Konfig.configure {|config| p config}
+#&lt;Konfig::Configuration:0x007ff5dfba4a50 @my_value="default value"&gt;
+</code></pre></div></div>
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Konfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;my_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abc&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;abc&quot;&lt;/span&gt;
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Konfig</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">my_value</span> <span class="o">=</span> <span class="s2">"abc"</span>
+<span class="k">end</span>
+<span class="c1"># =&gt; "abc"</span>
 
-&lt;span class=&quot;no&quot;&gt;Konfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; #&amp;lt;Konfig::Configuration:0x007fa9730aace8 @my_value=&quot;abc&quot;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+<span class="no">Konfig</span><span class="p">.</span><span class="nf">configuration</span>
+<span class="c1"># =&gt; #&lt;Konfig::Configuration:0x007fa9730aace8 @my_value="abc"&gt;</span></code></pre></figure>
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;configure&lt;/code&gt;で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;インスタンス作っててブロック内の&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;config&lt;/code&gt;変数で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Configuration&lt;/code&gt;インスタンスに設定注入していくようなイメージですね。&lt;/p&gt;
+<p><code class="language-plaintext highlighter-rouge">configure</code>で<code class="language-plaintext highlighter-rouge">Configuration</code>インスタンス作っててブロック内の<code class="language-plaintext highlighter-rouge">config</code>変数で<code class="language-plaintext highlighter-rouge">Configuration</code>インスタンスに設定注入していくようなイメージですね。</p>
 
-&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://robots.thoughtbot.com/mygem-configure-block&quot;&gt;MyGem.configure Block&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://jimsei.hatenablog.com/entry/20120721/1342855783&quot;&gt;クラスインスタンス変数にアクセサを利用しアクセスする - ひたすら事務&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://o.inchiki.jp/obbr/168&quot;&gt;Rubyのクラスインスタンス変数をアクセサで定義する&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="rails" /><summary type="html">railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。</summary></entry></feed>
+<h3 id="参考">参考</h3>
+<ul>
+  <li><a href="https://robots.thoughtbot.com/mygem-configure-block">MyGem.configure Block</a></li>
+  <li><a href="http://jimsei.hatenablog.com/entry/20120721/1342855783">クラスインスタンス変数にアクセサを利用しアクセスする - ひたすら事務</a></li>
+  <li><a href="http://o.inchiki.jp/obbr/168">Rubyのクラスインスタンス変数をアクセサで定義する</a></li>
+</ul>]]></content><author><name>Toshimaru</name></author><category term="ruby" /><category term="gem" /><category term="rails" /><summary type="html"><![CDATA[railsのgemでよくみかける初期設定ファイル、config/initializers/foo.rb。このような初期設定のインターフェースをgem内に作る場合、いったいどうしたら良いでしょうか。]]></summary></entry></feed>
