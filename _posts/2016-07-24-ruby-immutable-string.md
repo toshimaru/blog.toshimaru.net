@@ -2,7 +2,7 @@
 layout: post
 title: Ruby2.3で導入されたfrozen_string_literalマジックコメントでImmutable Stringを実現する
 description: Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている。この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところ.freezeを付けてプルリクエストを投げる輩が大挙してきたことだ。Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に下記のように書けばよい。
-last_modified_at: 2019-09-05
+last_modified_at: 2022-05-19
 image: /images/posts/frozenstring.jpg
 tags: ruby
 toc: true
@@ -10,34 +10,34 @@ toc: true
 
 ## Immutable String in Ruby3
 
-~~Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている~~。（**追記あり**）
+~~Ruby3 では文字列がデフォルトで immutable になるという大きな変更が予定されている~~（**追記あり**）。
 
 > Ruby 3.0 では文字列リテラルをデフォルトで immutable （破壊的変更不可） にする、という方針が『決定』しました
 
-via. [[Ruby] Ruby 3.0 の特大の非互換について - まめめも](http://d.hatena.ne.jp/ku-ma-me/20151004/p1)
+via. [[Ruby] Ruby 3.0 の特大の非互換について - まめめも](https://mametter.hatenablog.com/entry/20151004/p1)
 
-この変更の背景としては上リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに`.freeze`を付けてプルリクエストを投げる輩が大挙してきたことだ。
-
-_--- 追記ここから ---_
+この変更の背景としては引用リンクに書いてある通り、Rubyの最適化のために文字列のいたるところに`.freeze`を付けてプルリクエストを投げる輩が大挙してきたことだ。
 
 ### 追記（2019-08-07）
 
-「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、「**Ruby3 では文字列をデフォルトで immutable にはしない**」という決定がMatzによってなされた。
+{% include warning.html title="" text="「Ruby3 では文字列がデフォルトで immutable になる」と書いたが、「Ruby3 では文字列をデフォルトで immutable にはしない」という決定がMatzによってなされた。" %}
 
 > So I officially abandon making frozen-string-literals default (for Ruby3).
 
 via. [Feature #11473: Immutable String literal in Ruby 3 - Ruby master - Ruby Issue Tracking System](https://bugs.ruby-lang.org/issues/11473)
 
-したがって、Ruby3以降も文字列をimmutableにしたければ、引き続き`frozen_string_literal: true`のマジックコメントが必要となる。
+したがって、**Ruby3以降も文字列を immutable にしたければ、引き続き`frozen_string_literal: true`のマジックコメントが必要**となる。
 
-_--- 追記ここまで ---_
+---
 
 ## Immutable String in Ruby2.3+
 
-実は Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のようにマジックコメントを書けばよい。
+実は Ruby2.3 で既にこの Immutable String を有効にする機能が入っている。やり方はRubyファイルの行頭に次のように`frozen_string_literal: true` とマジックコメントを書けばよい。
 
 ```rb
 # frozen_string_literal: true
+
+frozen_string = "This string is frozen!"
 ```
 
 ## frozen_string_literal の機能を試す
@@ -135,7 +135,7 @@ puts str
 # => test.rb:3:in `<main>': can't modify frozen String (RuntimeError)
 ```
 
-### String#dup
+### 方法1: String#dup
 
 この場合の対処法としてはfreezeを解除したい文字列に対して、`.dup`を付けてやれば解決する。
 
@@ -147,7 +147,7 @@ puts str
 # => abc
 ```
 
-### String#+@
+### 方法2: String#+@
 
 あるいは、`String#+@`を使って下記のようにも書ける。
 
