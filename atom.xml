@@ -1,4 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-05-19T13:37:03+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/"><![CDATA[<p>本記事では、マルチステージビルド構成の<code class="language-plaintext highlighter-rouge">Dockerfile</code>のビルドの並列実行について紹介したいと思います。</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://blog.toshimaru.net/atom.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-05-23T01:30:20+09:00</updated><id>https://blog.toshimaru.net/atom.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">無償版G Suite終了にともないプランアップグレードしたけど、サポートに問い合わせて無償版G Suiteに戻してもらった</title><link href="https://blog.toshimaru.net/google-workspace-for-free/" rel="alternate" type="text/html" title="無償版G Suite終了にともないプランアップグレードしたけど、サポートに問い合わせて無償版G Suiteに戻してもらった" /><published>2022-05-22T00:00:00+09:00</published><updated>2022-05-22T00:00:00+09:00</updated><id>https://blog.toshimaru.net/google-workspace-for-free</id><content type="html" xml:base="https://blog.toshimaru.net/google-workspace-for-free/"><![CDATA[<h2 id="結論">結論</h2>
+
+<p>先に結論だけ書きます。ここだけ押さえておけばOK。</p>
+
+<ul>
+  <li>「無償版G Suite終了」という方針が撤回され、継続されることになった</li>
+  <li>まだ無償版からアップグレードしていない方: <a href="https://support.google.com/a/answer/60217?hl=ja#nocost">こちら</a>から申請</li>
+  <li>既にアップグレード対応してしまってた方: サポートに問い合わせれば :ok:</li>
+</ul>
+
+<h2 id="無償版g-suiteが終わる">無償版G Suiteが終わる！？</h2>
+
+<p>独自ドメインでメールアドレスを運用する場合、無償版G Suiteが定番でした。</p>
+
+<p class="warning">無償版 G Suiteの新規契約は、2012年12月5日をもって終了しており、現在新規契約は停止しています<sup id="fnref:g-suite" role="doc-noteref"><a href="#fn:g-suite" class="footnote" rel="footnote">1</a></sup>。</p>
+
+<p>しかし、2022年一月に<a href="https://www.itmedia.co.jp/news/articles/2201/20/news065.html">無償版G Suiteの終了がアナウンス</a>されました。これにより、長らく無償版G Suiteを使用していたユーザーはアカウント移行を余儀なくされるかたちとなりました。</p>
+
+<p>しかし、結論としては無償版G Suiteは継続されることになりました。それに至る経緯をまとめたいと思います。</p>
+
+<h2 id="対応タイムライン">対応タイムライン</h2>
+
+<p>個人的な対応タイムラインを時系列で追います。</p>
+
+<ul>
+  <li>2022年1月下旬: <a href="https://rebuild.fm/327/">rebuild.fm</a> で無償版G Suite が終了することを知る
+    <ul>
+      <li>この時点で僕のG Suiteアカウントに日本語のアナウンスメールは無し</li>
+      <li>この回で話されているように、影響を受ける人も多くクラスアクションが取られることを考えると有償化方針は撤回される可能性もあると考え、この時点では特にアクションせず様子見をすることに</li>
+    </ul>
+  </li>
+  <li>2022年4月上旬: Googleから無償版G Suite終了のアナウンスメールがアカウントに届く
+    <ul>
+      <li>
+        <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">先行して話題になってたからわかってはいたけど、ついにGoogle workspaceの有料化の案内が今朝きてしまった。どうするか検討せねば… <a href="https://t.co/7Tg2VcpSTH">pic.twitter.com/7Tg2VcpSTH</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1512269037790670851?ref_src=twsrc%5Etfw">April 8, 2022</a></blockquote>
+      </li>
+      <li>この頃から本格的にアカウント移行のための準備を始める</li>
+      <li>手始めに、無償版G Suiteアカウントを最小限にするために、家族のために作成したアカウントのGmail移行を行う
+        <ul>
+          <li>幸いにも家族アカウントはヘビーに運用していなかったのですんなりいった</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>2022年5月上旬:
+    <ul>
+      <li>謎の「料金不要化のオプション」が登場したが詳細不明</li>
+      <li>有償化アップグレード後も「3ヶ月無料、一年は1アカウントあたり月額300円」とのことだったので、とりあえずこのプランを契約して一年アカウントを延命することにした</li>
+      <li>
+        <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">６月までにプラン変えろとのことなのでとりあえず上げといた <a href="https://t.co/DpYMmd6tso">pic.twitter.com/DpYMmd6tso</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1521380188902551553?ref_src=twsrc%5Etfw">May 3, 2022</a></blockquote>
+        <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </li>
+    </ul>
+  </li>
+  <li>2022年5月17日: パーソナルユースのアカウントは無償版G Suiteは継続されることが発表された
+    <ul>
+      <li>
+        <blockquote class="twitter-tweet"><p lang="en" dir="ltr">For users of the free legacy GSuite, <a href="https://twitter.com/Google?ref_src=twsrc%5Etfw">@Google</a> has added an option in the admin console to opt out of the <a href="https://twitter.com/GoogleWorkspace?ref_src=twsrc%5Etfw">@GoogleWorkspace</a> transition for personal accounts. The personaly use option is rolling out slowly, so if you don&#39;t see it now, check back later. <a href="https://t.co/PURAsEM2cG">https://t.co/PURAsEM2cG</a> <a href="https://t.co/MhIiTdQElx">pic.twitter.com/MhIiTdQElx</a></p>&mdash; Steve Whitcher (@NeighborGeek) <a href="https://twitter.com/NeighborGeek/status/1526267594180857856?ref_src=twsrc%5Etfw">May 16, 2022</a></blockquote>
+      </li>
+      <li>既にアップグレードしてしまった人に関しては<a href="https://twitter.com/AskWorkspace/status/1526364256521924608">サポートに問い合わせを行えば対応してもらえる</a>とのことだったので、サポートに問い合わせた
+        <ul>
+          <li>状況を伝えるとすんなりわかってくれた</li>
+          <li>やりとりの中で同意書への同意を求められた</li>
+          <li>同意後、移行を進めます、となった</li>
+          <li>移行完了後にメールで連絡するとのこと</li>
+          <li>（もうすぐ一週間がたつがまだ無償版への移行は未完了）</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>ということで現在は一度アップグレードしてしまったプランを無償版G Suiteに戻してもらう移行手続きの途中ということになります（移行完了後にまたこちらに報告します）。</p>
+
+<h2 id="無償版g-suiteが終了した場合どうしていたか">無償版G Suiteが終了した場合どうしていたか？</h2>
+
+<p>今回は無償版G Suiteが継続されることになったから良かったものの、ついでに本当に無償版が終了していた場合に対応はどうしていたかも書いておこうと思います。</p>
+
+<p>いろいろ検討した中では、最終的には<a href="https://developers.cloudflare.com/email-routing/">Cloudflare Email Routing</a>が一番良さそうでした。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr"><a href="https://t.co/wkrifm4rz2">https://t.co/wkrifm4rz2</a> 聴きつつ Cloudflare Email Routing が良さそうやんって思って試したら全然イケたので「これでいいや」という気持ちになった<a href="https://t.co/q0gxfT5ZTs">https://t.co/q0gxfT5ZTs</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1517408538221768704?ref_src=twsrc%5Etfw">April 22, 2022</a></blockquote>
+
+<p><a href="https://blog.cloudflare.com/announcing-route-to-workers/">Cloudflare Worker にルーティングしてEメール処理をゴニョったり</a>もできて、カスタマイズ性・拡張性に富み良さそうでした。</p>
+
+<h2 id="いつか来る有償化の流れに備えを">いつか来る有償化の流れに備えを</h2>
+
+<p>今回のアナウンスに伴い、アカウントを削除・移行したり、その作業に多くの時間を費やした方も多くいらっしゃるのではないかと思います。残念ながら削除したアカウントは戻ってきませんし、費やした時間・労力も当然戻ってきません。</p>
+
+<p>先般も<a href="https://www.itmedia.co.jp/news/articles/2205/13/news131.html">楽天モバイルの0円プラン廃止</a>が話題となりました。こういった”おいしい”無料プランは未来永劫続くわけではないことを肝に命じて、いつか来る有償化の流れに備えておく必要がありそうです。</p>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://support.google.com/a/answer/60217?hl=ja#nocost">従来の無償版 G Suite からのアップグレード - Google Workspace 管理者 ヘルプ</a></li>
+</ul>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:g-suite" role="doc-endnote">
+      <p><a href="https://support.google.com/a/answer/2855120">従来の無償版 G Suite - Google Workspace 管理者 ヘルプ</a> <a href="#fnref:g-suite" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>]]></content><author><name>Toshimaru</name></author><category term="google" /><summary type="html"><![CDATA[「無償版G Suite終了」という方針が撤回され、継続されることになった まだ無償版からアップグレードしていない方: こちらから申請 既にアップグレード対応してしまってた方: サポートに問い合わせればOK]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/g-suite/og.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/g-suite/og.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/"><![CDATA[<p>本記事では、マルチステージビルド構成の<code class="language-plaintext highlighter-rouge">Dockerfile</code>のビルドの並列実行について紹介したいと思います。</p>
 
 <h2 id="前提">前提</h2>
 
@@ -707,81 +808,4 @@ Step 1/13 : FROM alpine as test1
 
 <p>この記事を書いている時点で既に rubocop は v1.3 までリリースされていたので、 v1.3 までのバージョンは<a href="https://github.com/toshimaru/rubocop-rails_config/pull/84">サポートしておいた</a>。</p>
 
-<p><a href="https://github.com/toshimaru/rubocop-rails_config/releases/tag/v1.0.1">Release v1.0.1 · toshimaru/rubocop-rails_config</a></p>]]></content><author><name>Toshimaru</name></author><category term="rubocop" /><summary type="html"><![CDATA[rubocop-rails_config gem の v1.0 をリリースした。 rubocop-rails_config v1.0.0 has been released!]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Kaigi on Railsで「FactoryBot the Right Way」を発表しました</title><link href="https://blog.toshimaru.net/kaigi-on-rails/" rel="alternate" type="text/html" title="Kaigi on Railsで「FactoryBot the Right Way」を発表しました" /><published>2020-10-07T00:00:00+09:00</published><updated>2020-10-08T00:00:00+09:00</updated><id>https://blog.toshimaru.net/kaigi-on-rails</id><content type="html" xml:base="https://blog.toshimaru.net/kaigi-on-rails/"><![CDATA[<p><a href="https://kaigionrails.org/">Kaigi on Rails</a>で「FactoryBot the Right Way」というタイトルで発表しました<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
-
-<h2 id="スライド">スライド</h2>
-
-<script async="" class="speakerdeck-embed" data-id="8084985a97ce4b6685d8528388da9779" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
-
-<h2 id="アーカイブ動画">アーカイブ動画</h2>
-
-<p>動画もYouTubeにアーカイブとして上がっておりますので、音声付きで聴きたい方はこちらをどうぞ。</p>
-
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">先行して <a href="https://twitter.com/toshimaru_e?ref_src=twsrc%5Etfw">@toshimaru_e</a> さんの動画をアップしました！他のセッションも順次公開していきますのでお楽しみに！ <a href="https://twitter.com/hashtag/kaigionrails?src=hash&amp;ref_src=twsrc%5Etfw">#kaigionrails</a><a href="https://t.co/duhoF1Xu1S">https://t.co/duhoF1Xu1S</a> <a href="https://t.co/y3PRYVRlO8">https://t.co/y3PRYVRlO8</a></p>&mdash; Kaigi on Rails (@kaigionrails) <a href="https://twitter.com/kaigionrails/status/1312397413592653824?ref_src=twsrc%5Etfw">October 3, 2020</a></blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-<h2 id="感想">感想</h2>
-
-<p>今回は初のビデオ録画登壇でした。</p>
-
-<p>今までのリモート登壇（<a href="/career-strategy-for-around-thirty-engineer/">アラサーエンジニアの生存戦略</a>、<a href="/how-to-deal-with-fat-model/">Fat Modelの倒し方</a>）は基本Zoomを使ったLIVE登壇だったので、今回初めて録画登壇を経験できて良かったと思います。</p>
-
-<p>録画のセットアップとしては下記を利用しました。</p>
-
-<ul>
-  <li>プレゼンテーションツール: Keynote</li>
-  <li>スライド録画+音声録音: Keynoteのレコーディング機能 (with Krisp)
-    <ul>
-      <li>参考: <a href="https://support.apple.com/ja-jp/guide/keynote/tan8a5df9cc5/mac">MacのKeynoteでオーディオを録音する - Apple サポート</a></li>
-    </ul>
-  </li>
-  <li>Backup用音声録音: QuickTime Player
-    <ul>
-      <li>参考: <a href="https://support.apple.com/ja-jp/guide/quicktime-player/qtpf25d6f827/mac">MacのQuickTime Playerでオーディオを録音する - Apple サポート</a></li>
-    </ul>
-  </li>
-  <li>スピーカー側の動画撮影: iPad</li>
-</ul>
-
-<blockquote>
-  <p>Kaigi on Railsのコアコンセプトは 「初学者から上級者までが楽しめるWeb系の技術カンファレンス」 です。</p>
-</blockquote>
-
-<p>ということでしたが、今回の発表の内容的には初学者もそこそこ楽しめる内容になっていのではないでしょうか。参考になったのなら幸いです<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。</p>
-
-<blockquote class="twitter-tweet" data-conversation="none"><p lang="ja" dir="ltr"><a href="https://twitter.com/hashtag/kaigionrails?src=hash&amp;ref_src=twsrc%5Etfw">#kaigionrails</a> 発表資料チラ見せ。FactoryBotをより上手に使いこなしたい初級者〜中級者レベルの方にはそこそこ有益な情報になっていると思いますので是非😊 <a href="https://t.co/dQDOzP3BpX">pic.twitter.com/dQDOzP3BpX</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1311079864070369280?ref_src=twsrc%5Etfw">September 29, 2020</a></blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-<h2 id="おわり">おわり</h2>
-
-<p>Kaigi on Railsをオンラインで開催してくださったチーフオーガナイザーの <a href="https://twitter.com/okuramasafumi">@okuramasafumi</a> をはじめ、運営スタッフの皆さま、ありがとうございました。</p>
-
-<h2 id="参考リンク">参考リンク</h2>
-
-<ul>
-  <li>公式ドキュメント
-    <ul>
-      <li><a href="https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md">GETTING_STARTED.md</a></li>
-      <li><a href="https://github.com/thoughtbot/factory_bot/blob/master/NAME.md">Project Naming History</a></li>
-    </ul>
-  </li>
-  <li>ベンチマークソースコード
-    <ul>
-      <li><a href="https://github.com/toshimaru/factory-bot-the-right-way">toshimaru/factory-bot-the-right-way</a></li>
-    </ul>
-  </li>
-  <li><a href="https://fukabori.fm/episode/13">13. ペアプロやテストの疑問とか、ソフトウェアエンジニアの育成とか | fukabori.fm</a></li>
-  <li><a href="https://sinsoku.hatenablog.com/entry/2017/04/09/214728">Rails アンチパターン - 錆びついたファクトリー (factory_girl) - アジャイルSEの憂鬱</a></li>
-  <li><a href="https://magazine.rubyist.net/articles/kaigi_on_rails/index.html">Rubyist Magazine: Kaigi on Rails 特集号</a></li>
-</ul>
-
-<div class="footnotes" role="doc-endnotes">
-  <ol>
-    <li id="fn:1" role="doc-endnote">
-      <p>たぶん文法的には「FactoryBot <strong>in</strong> the right way」ってのが正しい気がするけど、こちらがゴロが良かったということでそれはご愛嬌で。。。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
-    </li>
-    <li id="fn:2" role="doc-endnote">
-      <p>RailsDM2018で発表したこちらの内容もあわせて参考にしていただけると :pray: <a href="/rdm2018-active-record-anti-patterns/">railsdm2018で「ActiveRecordデータ処理アンチパターン」を発表しました</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
-    </li>
-  </ol>
-</div>]]></content><author><name>Toshimaru</name></author><category term="presentation" /><category term="rspec" /><category term="rails" /><summary type="html"><![CDATA[Kaigi on Railsで「FactoryBot the Right Way」というタイトルで発表しました。動画もYouTubeにアーカイブとして上がっておりますので、音声付きで聴きたい方はこちらをどうぞ。]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/kaigi-on-rails.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p><a href="https://github.com/toshimaru/rubocop-rails_config/releases/tag/v1.0.1">Release v1.0.1 · toshimaru/rubocop-rails_config</a></p>]]></content><author><name>Toshimaru</name></author><category term="rubocop" /><summary type="html"><![CDATA[rubocop-rails_config gem の v1.0 をリリースした。 rubocop-rails_config v1.0.0 has been released!]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" /><media:content medium="image" url="https://blog.toshimaru.net/images/posts/rubocop-rails-config/readme.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
