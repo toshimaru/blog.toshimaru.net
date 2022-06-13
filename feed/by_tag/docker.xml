@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/docker.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-05-23T01:30:20+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/docker.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/"><![CDATA[<p>本記事では、マルチステージビルド構成の<code class="language-plaintext highlighter-rouge">Dockerfile</code>のビルドの並列実行について紹介したいと思います。</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://blog.toshimaru.net/feed/by_tag/docker.xml" rel="self" type="application/atom+xml" /><link href="https://blog.toshimaru.net/" rel="alternate" type="text/html" /><updated>2022-06-13T09:15:23+09:00</updated><id>https://blog.toshimaru.net/feed/by_tag/docker.xml</id><title type="html">Hack Your Design!</title><subtitle>toshimaruの技術系なブログ</subtitle><author><name>Toshimaru</name></author><entry><title type="html">Dockerマルチステージビルドの並列実行</title><link href="https://blog.toshimaru.net/docker-concurrent-build/" rel="alternate" type="text/html" title="Dockerマルチステージビルドの並列実行" /><published>2021-03-15T00:00:00+09:00</published><updated>2021-03-28T00:00:00+09:00</updated><id>https://blog.toshimaru.net/docker-concurrent-build</id><content type="html" xml:base="https://blog.toshimaru.net/docker-concurrent-build/"><![CDATA[<p>本記事では、マルチステージビルド構成の<code class="language-plaintext highlighter-rouge">Dockerfile</code>のビルドの並列実行について紹介したいと思います。</p>
 
 <h2 id="前提">前提</h2>
 
@@ -17,13 +17,13 @@
 
 <p>今回テストで使うマルチステージビルドのサンプルとなる<code class="language-plaintext highlighter-rouge">Dockerfile</code>は下記です。</p>
 
-<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> alpine as test1</span>
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="w"> </span><span class="s">alpine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">test1</span>
 <span class="k">RUN </span><span class="nb">sleep </span>10.1 <span class="c"># sleep from test1</span>
 
-<span class="k">FROM</span><span class="s"> alpine as test2</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">alpine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">test2</span>
 <span class="k">RUN </span><span class="nb">sleep </span>10.2 <span class="c"># sleep from test2</span>
 
-<span class="k">FROM</span><span class="s"> alpine as test3</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">alpine</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">test3</span>
 <span class="k">RUN </span><span class="nb">sleep </span>10.3 <span class="c"># sleep from test3</span>
 
 
