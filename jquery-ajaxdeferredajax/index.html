@@ -100,13 +100,13 @@
 
 <p>まずは、少し古めのコード、昔のjQueryの本とかでよく見る書き方。</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nf">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
     <span class="na">success</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-       <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
+       <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
     <span class="p">},</span>
     <span class="na">error</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-       <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
+       <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">});</span>
 </code></pre></div></div>
@@ -116,12 +116,12 @@
 
 <p>1.5以降だと、<code class="language-plaintext highlighter-rouge">$.ajax()</code> は<a href="http://api.jquery.com/jQuery.ajax/#jqXHR">jqXHRオブジェクト</a>を返すようになります。それを利用した書き方はこう。</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nf">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
-<span class="p">}).</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
-<span class="p">}).</span><span class="nx">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}).</span><span class="nf">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}).</span><span class="nf">error</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
@@ -149,22 +149,22 @@
 
 <p>代わりに使ってね、ってことです。ということで、<code class="language-plaintext highlighter-rouge">success()</code>,<code class="language-plaintext highlighter-rouge">error()</code>は使わない。</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nf">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
-<span class="p">}).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
-<span class="p">}).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}).</span><span class="nf">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">}).</span><span class="nf">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!!</span><span class="dl">'</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
 <p>あるいは<code class="language-plaintext highlighter-rouge">then()</code>を用いてこう書いてもいいでしょう。</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">$</span><span class="p">.</span><span class="nf">ajax</span><span class="p">({</span>
     <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ajax.html</span><span class="dl">"</span><span class="p">,</span>
-<span class="p">}).</span><span class="nx">then</span><span class="p">(</span>
-    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span> <span class="p">},</span>
-    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!</span><span class="dl">'</span><span class="p">);</span>   <span class="p">}</span>
+<span class="p">}).</span><span class="nf">then</span><span class="p">(</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">success!!</span><span class="dl">'</span><span class="p">);</span> <span class="p">},</span>
+    <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">error!!</span><span class="dl">'</span><span class="p">);</span>   <span class="p">}</span>
 <span class="p">);</span>
 </code></pre></div></div>
 
@@ -201,8 +201,8 @@
 
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">Twitter</span> <span class="o">=</span> <span class="p">{</span>
     <span class="na">search</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">query</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
-        <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+        <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nc">Deferred</span><span class="p">();</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nf">ajax</span><span class="p">({</span>
             <span class="na">url</span><span class="p">:</span> <span class="dl">"</span><span class="s2">http://search.twitter.com/search.json</span><span class="dl">"</span><span class="p">,</span>
             <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
                 <span class="na">q</span><span class="p">:</span> <span class="nx">query</span><span class="p">,</span>
@@ -212,15 +212,15 @@
             <span class="na">success</span><span class="p">:</span> <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">,</span>
             <span class="na">error</span><span class="p">:</span> <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span>
         <span class="p">});</span>
-        <span class="k">return</span> <span class="nx">defer</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+        <span class="k">return</span> <span class="nx">defer</span><span class="p">.</span><span class="nf">promise</span><span class="p">();</span>
     <span class="p">}</span>
 <span class="p">};</span>
 
-<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">Twitter</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">jquery deferred</span><span class="dl">'</span><span class="p">).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
-        <span class="nx">$</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">results</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="nx">v</span><span class="p">){</span>
-           <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#tweets</span><span class="dl">'</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">text</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">&lt;br/&gt;</span><span class="dl">'</span><span class="p">);</span>
+<span class="nf">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#button</span><span class="dl">'</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">Twitter</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">jquery deferred</span><span class="dl">'</span><span class="p">).</span><span class="nf">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+        <span class="nf">$</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">results</span><span class="p">).</span><span class="nf">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="nx">v</span><span class="p">){</span>
+           <span class="nf">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#tweets</span><span class="dl">'</span><span class="p">).</span><span class="nf">append</span><span class="p">(</span><span class="nx">v</span><span class="p">.</span><span class="nx">text</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">&lt;br/&gt;</span><span class="dl">'</span><span class="p">);</span>
         <span class="p">});</span>
     <span class="p">});</span>
 <span class="p">});</span>
@@ -230,7 +230,7 @@
 
 <p>これによりネストが深くならずに済み、コードの可読性が上がります。また、イベント処理部分のほうは</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Twitter</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">query hoge</span><span class="dl">'</span><span class="p">).</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* ...code... */</span> <span class="p">});</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Twitter</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">query hoge</span><span class="dl">'</span><span class="p">).</span><span class="nf">done</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="cm">/* ...code... */</span> <span class="p">});</span>
 </code></pre></div></div>
 
 <p>と書くだけですから、ajax部分を気にすることなく結果取得後のイベント処理に意識を集中して書くことができます。素晴らしいですネ。</p>
@@ -245,11 +245,11 @@
 <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// `Twitter`のコードは同上</span>
 <span class="c1">// var Twitter = { ... }</span>
 
-<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#button</span><span class="dl">'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span><span class="nx">Twitter</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">jquery deferred</span><span class="dl">'</span><span class="p">),</span> <span class="nx">Twitter</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">jquery when</span><span class="dl">'</span><span class="p">))</span>
-    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data1</span><span class="p">,</span> <span class="nx">data2</span><span class="p">){</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data1</span><span class="p">);</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data2</span><span class="p">);</span>
+<span class="nf">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#button</span><span class="dl">'</span><span class="p">).</span><span class="nf">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nf">when</span><span class="p">(</span><span class="nx">Twitter</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">jquery deferred</span><span class="dl">'</span><span class="p">),</span> <span class="nx">Twitter</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="dl">'</span><span class="s1">jquery when</span><span class="dl">'</span><span class="p">))</span>
+    <span class="p">.</span><span class="nf">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data1</span><span class="p">,</span> <span class="nx">data2</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">data1</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">data2</span><span class="p">);</span>
     <span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div></div>
