@@ -1,0 +1,51 @@
+<header>
+  <div class="flex items-center justify-between py-10">
+    <div>
+      <a aria-label="toshimaru/blog" href="/">
+        <div class="flex items-center justify-between">
+          <div class="mr-3">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" width="32">
+              <mask id="a" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="1" y="1" width="30" height="30">
+                <path d="M16 2.7a13.3 13.3 0 1 0 0 26.6V2.7Z" stroke="#fff" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16 2.7a13.3 13.3 0 1 1 0 26.6V2.7Z" fill="#555" stroke="#fff" stroke-width="2.7" stroke-linejoin="round"></path>
+                <path d="M16 16H4m10 0" stroke="#fff" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"></path>
+              </mask>
+              <g mask="url(#a)">
+                <path d="M0 0h32v32H0" fill="currentColor"></path>
+              </g>
+            </svg>
+          </div>
+          <div class="hidden text-2xl font-semibold sm:block">
+            <span>{{ site.title | escape }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="flex items-center space-x-4 leading-5 sm:space-x-6">
+      {%- for path in site.header_pages -%}
+      {%- assign my_page = site.pages | where: "path", path | first -%}
+      {%- if my_page.title -%}
+      <a class="hidden font-medium text-gray-900 dark:text-gray-100 sm:block" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
+      {%- endif -%}
+      {%- endfor -%}
+      <button id="theme-toggle" aria-label="Toggle Dark Mode">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 text-gray-900 dark:text-gray-100">
+          <path id="sun-path" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+          <path id="moon-path" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+if (!localStorage.theme) {
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.classList.add('dark')
+  }
+} else if (localStorage.theme === 'dark') {
+  document.documentElement.classList.add('dark')
+} else {
+  document.documentElement.classList.remove('dark')
+}
+</script>

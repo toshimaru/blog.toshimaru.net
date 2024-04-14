@@ -1,0 +1,72 @@
+---
+layout: post
+title: Apache上にSVNレポジトリを作成する
+published: true
+tags: apache svn
+---
+<h3>前提</h3>
+
+<ul>
+<li>OS: Ubuntu Server</li>
+<li>すでにapacheインストール済み</li>
+</ul>
+
+
+<h3>手順</h3>
+
+<p>1.サブバージョン、apacheのSVNモジュールをインストール</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo apt-get install subversion libapache2-svn</pre></div>
+</div>
+
+
+<p>2./etc/apache2/sites-available/default に下記を追加。その後apacheを再起動。</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>&lt;Location &quot;/svn/repos&quot;&gt;
+   DAV svn                      # Subversionを使う
+   SVNPath /usr/local/svn/repos # リポジトリへのパス
+&lt;/Location&gt;</pre></div>
+</div>
+
+
+<p>3.レポジトリを初期化。権限も設定。</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>mkdir /usr/local/svn
+mkdir /usr/local/svn/repos
+svnadmin create /usr/local/svn/repos
+chown -R www-data:www-data /usr/local/svn/repos</pre></div>
+</div>
+
+
+<p>4.レポジトリのURLを叩いて &ldquo;repos &ndash; Revision 0: /&rdquo; で閲覧できることを確認。</p>
+
+<p>5.確認できたら、レポジトリにファイルを登録してみる。</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>svn import [登録するファイル/ディレクトリへのパス] リポジトリのURL</pre></div>
+</div>
+
+
+<p>ここでこんなエラー。</p>
+
+<blockquote class="posterous_medium_quote"><p>svn: コミットに失敗しました (詳しい理由は以下のとおりです):
+svn: ログメッセージを取得するのに外部エディタを使えませんでした。$SVN_EDITOR 環境変数を設定するか、&mdash;message (-m) か &mdash;file (-F) オプションを用いてみてください
+svn: 環境変数 SVN_EDITOR、VISUAL、EDITOR のどれも設定されていなく、実行時の設定オプション &lsquo;editor-cmd&rsquo; も見つかりません</p></blockquote>
+
+<p>これに対しては下記のようにエディタを登録しておく。</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>export SVN_EDITOR=&quot;vi&quot;</pre></div>
+</div>
+
+
+<p>6.コミットメッセージを入れて登録完了。"Committed revision 1.&ldquo;が表示されます。</p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.cozmixng.org/~kou/linux/svn">http://www.cozmixng.org/~kou/linux/svn</a></li>
+</ul>

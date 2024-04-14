@@ -1,0 +1,42 @@
+---
+layout: post
+title: vmware上のubuntuのネットワーク設定
+published: true
+tags:
+- linux
+- network
+---
+<p>をちょっとメモ</p>
+<p>まずはeth0に静的IPを割り振りましょう。/etc/network/interfaces を下記のような感じで書き換える。</p>
+<p>（参考：<a href="http://tobysoft.net/wiki/index.php?Ubuntu%2F%A5%A4%A5%F3%A5%B9%A5%C8%A1%BC%A5%EB%B8%E5%A4%CE%C0%DF%C4%EA#v8e1badd">Ubuntu/インストール後の設定</a> ）</p>
+<div class="CodeRay">
+  <div class="code"><pre>auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static         # ↓ 注意：この日本語コメントは削除してください（でないとかしくなります）
+        address 192.168.0.100  # ← IPアドレス
+        network 192.168.0.0  # ← (サブ)ネットワークのアドレス .0で終わるはず
+        netmask 255.255.255.0  # ← ネットマスク
+        broadcast 192.168.0.255 # ←ブロードキャストアドレス .255で終わるはず
+        :ateway 192.168.0.1  # ← ゲートウェイ（ルーター）のアドレス
+        dns-nameservers 192.168.0.10  # ← DNSのアドレス</pre></div>
+</div>
+
+<p>設定を変えたら以下のコマンドで設定を反映させます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>sudo /etc/init.d/networking restart</pre></div>
+</div>
+
+<p>するとこんなエラー。</p>
+<div class="CodeRay">
+  <div class="code"><pre>eth0: ERROR while getting interface flags: No such device</pre></div>
+</div>
+
+<p>これに対しては、以下の対応をするとよいよう。</p>
+<ol>
+<li> /etc/udev/rules.d/70-persistent-net.rulesの SUBSYSTEM==&rdquo;net&rdquo;から始まる行を削除（またはコメントアウト） </li>
+<li> /etc/udev/rules.d/75-persistent-net-generator.rulesの以下2行を削除（またはコメントアウト） </li>
+</ol>
+<p>(参考：<a href="http://namahage.dip.jp/blog/2107">vmwareのubuntuを別PCへ移動で eth0: ERROR</a>）</p>
+<p>これで問題なく通りましたとさ。</p>

@@ -1,0 +1,34 @@
+---
+layout: post
+title: XSS脆弱性のあるPHPコード簡易サンプル
+published: true
+tags: 
+- php
+- security
+---
+<p>検証時に検証担当者に「XSSもチェックお願いしますね。」というと「？？？」という返答が帰ってきましたので、簡単なプログラムを作ってその検証担当者に教えました。 その際に使った簡単なコードサンプルです。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;html&gt;
+&lt;body&gt;
+    &lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;xss_text&quot; value=&quot;&quot;&gt;
+        &lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;submit&quot;&gt;&lt;/p&gt;
+    &lt;/form&gt;
+    value: &lt;?php echo $_POST['xss_text']; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+</div>
+
+<p>見た目はテキストボックスの内容をそのまま出力するだけの簡単なPHPプログラム。</p>
+<p><img src="/images/2011/12/xss.png"></p>
+<p>しかし、ここに下記の文字列を入れてみます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>&lt;script&gt;alert('XSS');&lt;/script&gt;</pre></div>
+</div>
+
+<p><img src="/images/2011/12/xss1.png"></p>
+<p>見事にスクリプトが実行されました。</p>
+<p>このデータがDBに登録されていて、それを上サンプルのように出力させていると考えると、、、ゾッとしますね。</p>
+<p>&nbsp;</p>
+<p>XSSの具体的な対策方法や詳細については下記をご参照ください。</p>
+<p><a href="http://www.asahi-net.or.jp/~wv7y-kmr/memo/php_security.html#XSS">http://www.asahi-net.or.jp/~wv7y-kmr/memo/php_security.html#XSS</a></p>

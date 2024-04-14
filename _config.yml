@@ -1,0 +1,57 @@
+title: toshimaru/blog
+fqdn: blog.toshimaru.net
+url: https://blog.toshimaru.net
+mail: me@toshimaru.net
+description: Toshimaruの技術ブログ
+info: "ヘルステック系企業のソフトウェアエンジニアです。"
+author: Toshimaru
+paginate: 5
+permalink: /:title/
+exclude: [Gemfile, Gemfile.lock, README.md, vendor]
+timezone: Japan
+lang: ja
+header_pages:
+  - about.html
+  - archive.html
+  - search.html
+plugins:
+  - jemoji
+  - jekyll/tagging
+  - jekyll-toc
+  - jekyll-tagging-related_posts
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jekyll-feed
+  - jekyll-include-cache
+  - jekyll-redirect-from
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
+      og_type: blog
+  -
+    scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      og_type: article
+feed:
+  path: atom.xml
+  tags: true
+# tagging
+tag_page_dir: tag
+tag_page_layout: tag_page
+tag_permalink_style: pretty
+toc:
+  min_level: 1
+  max_level: 4
+# jekyll-compose
+jekyll_compose:
+  default_front_matter:
+    posts:
+      image: /images/posts/
+      description:
+      tags:

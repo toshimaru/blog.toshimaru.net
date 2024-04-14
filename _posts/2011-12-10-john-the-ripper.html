@@ -1,0 +1,33 @@
+---
+layout: post
+title: john the ripper を使用してパスワードクラッキング
+published: true
+tags: 
+- linux
+- security
+---
+<p>簡単で想像しやすいパスワードをLinuxで設定すると簡単にクラックできちゃいますよ、ということを確かめるためにも、今日は<a href="http://www.openwall.com/john/">john the ripper</a>というツールを使ってパスワードを解析してみます。</p>
+<p>まずはインストール。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo apt-get install john</pre></div>
+</div>
+
+<p>クラックするユーザーを作成。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ useradd test
+$ passwd test</pre></div>
+</div>
+
+<p>ここでは、ユーザー名を"test",パスワードも"test"という単純なアカウントを作成します。</p>
+<p>まずはパスワードとshadowファイルを統合させたファイルを作成。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ sudo unshadow /etc/passwd /etc/shadow &gt; /tmp/passfile</pre></div>
+</div>
+
+<p>単純なアカウントなのでシングルモードで解析できます。</p>
+<div class="CodeRay">
+  <div class="code"><pre>$ john --single /tmp/passfile
+test:test:1001:1001::/home/test:/bin/sh</pre></div>
+</div>
+
+<p>ということでパスワードは解析完了。 他にも辞書ファイルを使ったり、総当たりで当たっていったりもできるようです。</p>

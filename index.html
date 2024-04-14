@@ -1,0 +1,71 @@
+---
+layout: default
+---
+
+<div>
+  <div class="space-y-2 pb-8 pt-6 md:space-y-5">
+    <h1 class="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+      Index
+    </h1>
+  </div>
+
+  <ul>
+    {% for post in paginator.posts %}
+    <li class="py-7">
+      <div class="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
+        <dl>
+          <dt class="sr-only">Published on</dt>
+          <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+            <time datetime="{{ post.date | date_to_xmlschema }}" pubdate>{{ post.date | date_to_long_string }}</time>
+          </dd>
+        </dl>
+        <div class="space-y-5 xl:col-span-3">
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-2xl font-bold leading-8 tracking-tight">
+                <a href="{{ post.url }}" class="title">{{ post.title }}</a>
+              </h2>
+              {% include tags.html tags=post.tags %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="flex justify-end text-base font-medium leading-6">
+  <a aria-label="All posts" href="/archive" class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+    All Posts →
+  </a>
+</div>
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "ItemList",
+    "url": "{{ site.url }}{{ page.url }}",
+    "numberOfItems": "{{ site.paginate }}",
+    "itemListElement": [
+      {% for post in paginator.posts %}
+      {
+        "@type": "BlogPosting",
+        "mainEntityOfPage": {
+          "@type": "Blog",
+          "@id": "{{ site.url }}{{ post.url }}"
+        },
+        "url": "{{ site.url }}{{ post.url }}",
+        "headline": "{{ post.title }}",
+        "datePublished": "{{ post.date | date_to_xmlschema }}",
+        "author": {
+          "@type": "Person",
+          "name": "{{ site.author }}",
+          "email": "{{ site.mail }}"
+        },
+        "keywords": "{{ post.tags | join: ', ' }}"
+      } {% if forloop.last == false %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
