@@ -1,4 +1,5 @@
-[![CI](https://github.com/toshimaru/blog-dev.toshimaru.net/actions/workflows/ci.yml/badge.svg)](https://github.com/toshimaru/blog-dev.toshimaru.net/actions/workflows/ci.yml)
+[![CI](https://github.com/toshimaru/blog.toshimaru.net/actions/workflows/ci.yml/badge.svg)](https://github.com/toshimaru/blog.toshimaru.net/actions/workflows/ci.yml)
+[![Deploy](https://github.com/toshimaru/blog.toshimaru.net/actions/workflows/deploy.yml/badge.svg)](https://github.com/toshimaru/blog.toshimaru.net/actions/workflows/deploy.yml)
 
 # blog-dev.toshimaru.net
 
