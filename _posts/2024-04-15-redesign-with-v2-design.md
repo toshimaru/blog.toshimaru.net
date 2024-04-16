@@ -3,6 +3,7 @@ layout: post
 title: ブログをリニューアルしました
 image: "/images/posts/renewal-2024.png"
 description: お久しぶりの更新です。ブログをリニューアルしました。
+tags: design
 ---
 
 お久しぶりの更新です。ブログをリニューアルしました。
@@ -54,26 +55,27 @@ HostingはGitHub Pagesと基本は変わっていないが、開発中のPrivate
   * 最初は切り替えをさせずにブラウザのテーマをベースにスイッチするようにしようかと思ったけど、気分によってライトモード・ダークモードが切り替えられたほうが嬉しいので切り替え可能にした
 * ブログタイトルを変えた
   * ゼロ年代の慣習としてブログタイトルをオシャレなもにする、というものがあるがもはや今となってはそれは死んだ文化になっているので簡素なものにした
-  * Hack Your Design 👉 toshimaru/blog
+  * (before)Hack Your Design 👉 (after)toshimaru/blog
 * Jekyll を Ruby 3.3 でビルドするように変更
-* Tailwind CSS導入に伴い、`package.json`を導入
-* ソースコードは同じリポジトリを使って公開中
-  * <https://github.com/toshimaru/blog.toshimaru.net>
-  * 積年のコミットログで重くなっていたので、これを機に過去のデザインは別リポジトリにアーカイブし、
+* Tailwind CSS導入に伴い、リポジトリに`package.json`を導入
+* ソースコードは旧デザインと同じリポジトリを使って公開
+  * [toshimaru/blog.toshimaru.net](https://github.com/toshimaru/blog.toshimaru.net)
+  * 積年のコミットログで重くなっていたので、これを機に過去のデザインは別リポジトリにアーカイブし、新デザインでゼロからコミットログを積むことにした
 
 ## 今後対応したいこと
 
 下記あたりは今後のアップデートで対応したいと思っています。
 
-* AboutページをGitHubのプロフィールを使いまわしているのでブログ用に作成したい
-* コメントフォーム設置 ([giscus](https://giscus.app/)使いたい)
-* 検索ページが味気ないのでアップデートしたい
-* タグページを追加
-* SVGロゴの刷新
-* ダークモードスイッチャーをオシャレに
-* Google Adsense を再導入
-* OG画像をいい感じに生成するやつ
-* CSSの最適化
+* [ ] 記事シェアボタン設置
+* [ ] AboutページをGitHubのプロフィールを使いまわしているのでブログ用に作成したい
+* [ ] コメントフォーム設置 ([giscus](https://giscus.app/)使いたい)
+* [ ] 検索ページが味気ないのでアップデートしたい
+* [ ] タグページを追加
+* [ ] SVGロゴの刷新
+* [ ] ダークモードスイッチャーをオシャレに
+* [ ] Google Adsense を再導入
+* [ ] OG画像をいい感じに生成するやつ
+* [ ] CSSの最適化
 
 ## ブログ更新していくぞ
 
@@ -86,5 +88,7 @@ HostingはGitHub Pagesと基本は変わっていないが、開発中のPrivate
 - Google Analytics 4
   - [Googleアナリティクス4とは？アップデート情報を完全解説！](https://digitalidentity.co.jp/blog/analytics/google-analytics/ga4.html)
   - [\[GTM\] 新しいGA4のタグ設定の仕方 \| アユダンテ株式会社](https://ayudante.jp/column/2023-10-19/17-00/)
-- [Installation - Tailwind CSS](https://tailwindcss.com/docs/installation)
+- Tailwind情報
+  - [Installation - Tailwind CSS](https://tailwindcss.com/docs/installation)
+  - [Tailwind Play](https://play.tailwindcss.com/)
   - Tailwind CSS 導入時のメモ: [2024-03-29 TailwindCSS 入門 \| TTIL](https://til.toshimaru.net/2024-03-29)
