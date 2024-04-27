@@ -37,6 +37,11 @@ jobs:
         run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
+      - name: minify HTML
+        run: |
+          wget -O minhtml -q https://github.com/wilsonzlin/minify-html/releases/download/v0.15.0/minhtml-0.15.0-x86_64-unknown-linux-gnu &&
+            chmod +x minhtml &&
+            ./minhtml _site/**/*.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
   deploy:
