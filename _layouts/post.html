@@ -25,24 +25,30 @@ layout: default
     </details>
     {% endif %}
 
-    {{ content | inject_anchors }}
+    <section>
+      {{ content | inject_anchors }}
+    </section>
 
     {% if site.related_posts.size >= 1 %}
     <div class="py-8">
-    <h3>関連記事</h3>
-    <ul>
-    {% for related_post in site.related_posts limit: 5 %}
-      <li><a href="{{ related_post.url }}" title="{{ related_post.title }}">{{ related_post.title }}</a></li>
-    {% endfor %}
-    </ul>
+      <h3>関連記事</h3>
+      <ul>
+      {% for related_post in site.related_posts limit: 5 %}
+        <li><a href="{{ related_post.url }}" title="{{ related_post.title }}">{{ related_post.title }}</a></li>
+      {% endfor %}
+      </ul>
     </div>
     {% endif %}
   </div>
 
-  <ul class="flex justify-center">
-    <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-  </ul>
+  <footer class="my-2">
+    <ul class="flex justify-center">
+      <li>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a>
+        <script async src="https://platform.twitter.com/widgets.js"></script>
+      </li>
+    </ul>
+  </footer>
 
   {% if false %}
   <div class="related-by-google">
