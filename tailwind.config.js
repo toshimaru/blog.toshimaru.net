@@ -22,6 +22,7 @@ module.exports = {
       typography: ({ theme }) => ({
         DEFAULT: {
           css: {
+            color: theme('colors.gray.800'),
             a: {
               color: theme('colors.primary.500'),
               '&:hover': {
@@ -33,6 +34,7 @@ module.exports = {
         },
         invert: {
           css: {
+            color: theme('colors.gray.300'),
             a: {
               color: theme('colors.primary.500'),
               '&:hover': {
