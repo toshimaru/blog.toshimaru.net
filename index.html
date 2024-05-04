@@ -11,15 +11,15 @@ layout: default
 
   <ul>
     {% for post in paginator.posts %}
-    <li class="py-6">
-      <div class="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
+    <li class="py-4 xl:py-6">
+      <div class="space-y-1">
         <dl>
           <dt class="sr-only">Published on</dt>
-          <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400 xl:text-lg">
-            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_long_string }}</time>
+          <dd class="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y年%m月%d日" }}</time>
           </dd>
         </dl>
-        <div class="space-y-1 xl:col-span-3">
+        <div class="space-y-1">
           <div>
             <h2 class="text-2xl font-bold leading-8 tracking-tight">
               <a href="{{ post.url }}" class="title">{{ post.title }}</a>
@@ -33,7 +33,7 @@ layout: default
   </ul>
 </div>
 
-<div class="flex justify-end text-base font-medium leading-6">
+<div class="pt-4 xl:pt-8 text-right">
   <a aria-label="All posts" href="/archive" class="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
     All Posts →
   </a>

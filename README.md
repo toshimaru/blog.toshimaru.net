@@ -16,3 +16,7 @@ $ bundle exec jekyll post YOUR_POST_TITLE
 ```console
 $ bundle exec jekyll s
 ```
+
+## Design
+
+The Blog design is based on [timlrx/tailwind-nextjs-starter-blog](https://github.com/timlrx/tailwind-nextjs-starter-blog).
