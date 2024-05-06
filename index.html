@@ -38,32 +38,3 @@ layout: default
     All Posts →
   </a>
 </div>
-
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "ItemList",
-    "url": "{{ site.url }}{{ page.url }}",
-    "numberOfItems": "{{ site.paginate }}",
-    "itemListElement": [
-      {% for post in paginator.posts %}
-      {
-        "@type": "BlogPosting",
-        "mainEntityOfPage": {
-          "@type": "Blog",
-          "@id": "{{ site.url }}{{ post.url }}"
-        },
-        "url": "{{ site.url }}{{ post.url }}",
-        "headline": "{{ post.title }}",
-        "datePublished": "{{ post.date | date_to_xmlschema }}",
-        "author": {
-          "@type": "Person",
-          "name": "{{ site.author }}",
-          "email": "{{ site.mail }}"
-        },
-        "keywords": "{{ post.tags | join: ', ' }}"
-      } {% if forloop.last == false %},{% endif %}
-      {% endfor %}
-    ]
-  }
-  </script>
