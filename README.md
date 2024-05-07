@@ -17,6 +17,18 @@ $ bundle exec jekyll post YOUR_POST_TITLE
 $ bundle exec jekyll s
 ```
 
+## Build Tailwind CSS
+
+```console
+$ npm run build
+```
+
+For the development:
+
+```console
+$ npm run dev
+```
+
 ## Design
 
-The Blog design is based on [timlrx/tailwind-nextjs-starter-blog](https://github.com/timlrx/tailwind-nextjs-starter-blog).
+The blog design is based on [timlrx/tailwind-nextjs-starter-blog](https://github.com/timlrx/tailwind-nextjs-starter-blog).
