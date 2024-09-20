@@ -1,4 +1,4 @@
-# 糞コード対処するための アプローチ
+# 糞コード対処するためのアプローチ
 
 ## スクラップ & ビルドアプローチ
 
@@ -7,6 +7,7 @@
 犠牲的アーキテクチャ(Sacrificial Architecture)や式年遷宮アーキテクチャと言われたりする。
 
 ### 参考
+
 * http://blog.oimou.com/shen-gong-shi-nian-qian-gong-toikenie-sheng-de-akitekutiyaaf27a09a/
 
 ## マイクロサービス化 アプローチ
@@ -14,6 +15,7 @@
 糞の一部を糞じゃなくす。糞を切り取って浄化するアプローチ。結果的に糞の量が減るが、依然として糞は残り続ける。
 
 ### 参考
+
 * http://martinfowler.com/articles/microservices.html 合わせて読みたい: monolith first
 
 ## 段階的リファクタリング
