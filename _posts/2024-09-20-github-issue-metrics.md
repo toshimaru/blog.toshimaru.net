@@ -3,7 +3,7 @@ layout: post
 title: GitHub公式の issue-metrics Action で開発生産性を振り返る
 image: "/images/posts/github-issue-metrics/og.png"
 description: GitHub公式が出している issue-metrics Actionをご紹介。
-tags: github
+tags: github github-actions
 last_modified_at: 2024-09-21
 ---
 

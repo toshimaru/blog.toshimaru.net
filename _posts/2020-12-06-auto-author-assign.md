@@ -3,7 +3,7 @@ layout: post
 title: PR作者を自動でアサインするGitHub Actions, auto-author-assign を作った
 image: "/images/posts/auto-author-assign/auto-author-assign.jpg"
 description: "本記事はGitHub Actions Advent Calendar 2020６日目の記事です。 今日は作ったGitHub Actions、auto-author-assignの紹介をしたいと思います。Pull Request（以下、PRと表記）を作成をしたとき、多くの場合そのPRの担当者（Assignee）はそのPR作者自身になるかと思います。 その「PR担当者をPR作者にアサインする」アクションを自動化した、というのが今回作成したGitHub Actionsになります。"
-tags: github_actions ci github
+tags: github-actions ci
 ---
 
 本記事は[GitHub Actions Advent Calendar 2020](https://qiita.com/advent-calendar/2020/github-actions)６日目の記事です。
