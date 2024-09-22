@@ -3,7 +3,7 @@ layout: post
 title: JekyllのGitHub PagesへのデプロイをGitHub Actionsを自動化する
 image: "/images/posts/"
 description: "Jekyll製英語ブログのGitHub PagesへのデプロイをGitHub Actionsで自動化したのでそのメモ。"
-tags: jekyll github ci
+tags: jekyll github-actions ci
 image: "/images/posts/github-pages/action-gh-pages.png"
 ---
 
