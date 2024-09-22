@@ -4,6 +4,7 @@ title: ブログをリニューアルしました
 image: "/images/posts/renewal-2024.png"
 description: お久しぶりの更新です。ブログをリニューアルしました。
 tags: design
+last_modified_at: 2024-09-22
 ---
 
 お久しぶりの更新です。ブログをリニューアルしました。
@@ -69,16 +70,17 @@ HostingはGitHub Pagesと基本は変わっていないが、開発中のPrivate
 * [ ] 記事シェアボタン設置
   * [x] X(ex-Twitter)
   * [ ] Hatebu
-* [ ] AboutページをGitHubのプロフィールを使いまわしているのでブログ用に作成したい
-* [ ] フッターのアップデート
 * [ ] コメントフォーム設置 ([giscus](https://giscus.app/)使いたい)
 * [ ] 検索ページが味気ないのでアップデートしたい
-* [ ] タグページを追加
 * [ ] SVGロゴの刷新
   * [x] favicon用のSVGを作成
+  * [ ] ロゴのリニューアル
+* [ ] AboutページをGitHubのプロフィールを使いまわしているのでブログ用に作成したい
 * [ ] ダークモードスイッチャーをオシャレに
 * [ ] Google Adsense を再導入
 * [ ] OG画像をいい感じに生成するやつ
+* [x] タグページを追加
+* [x] フッターのアップデート
 * [x] HTML/CSSの最適化
 
 ## ブログ更新していくぞ
