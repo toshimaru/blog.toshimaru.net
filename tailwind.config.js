@@ -30,6 +30,12 @@ module.exports = {
               },
               code: { color: theme('colors.primary.400') },
             },
+            'code.language-plaintext': {
+              fontWeight: 'inherit',
+              padding: theme('spacing.[0.5]'),
+              borderRadius: theme('borderRadius.DEFAULT'),
+              backgroundColor: theme('colors.gray.100'),
+            },
           }
         },
         invert: {
@@ -41,6 +47,9 @@ module.exports = {
                 color: `${theme('colors.primary.400')}`,
               },
               code: { color: theme('colors.primary.400') },
+            },
+            'code.language-plaintext': {
+              backgroundColor:  theme('colors.gray.800'),
             },
           }
         }
