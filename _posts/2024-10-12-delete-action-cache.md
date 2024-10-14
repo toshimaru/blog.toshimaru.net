@@ -80,8 +80,12 @@ GitHub Actions には `v1.1`, `v1.2`, `v1.3`... のようなリリースを `v1`
 
 このActionを作るにあたり、`gh cache list`コマンドにオプションが欲しくなったので、付けておいた。
 
+- [feat: Add cache key option to `gh cache list` by toshimaru · Pull Request #8667 · cli/cli](https://github.com/cli/cli/pull/8667)
+- [feat: Add `ref` option to `gh cache list` by toshimaru · Pull Request #8711 · cli/cli](https://github.com/cli/cli/pull/8711)
+
 <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">`gh cache list` コマンドに ref オプションも足したぞい！ » Release GitHub CLI 2.45.0 · cli/cli <a href="https://t.co/4mtappf4UP">https://t.co/4mtappf4UP</a> <a href="https://t.co/lcJJw0AvjF">https://t.co/lcJJw0AvjF</a></p>&mdash; toshimaru (@toshimaru_e) <a href="https://twitter.com/toshimaru_e/status/1764823978743673179?ref_src=twsrc%5Etfw">March 5, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 ## 参考文献
 
+- [Caching dependencies to speed up workflows - GitHub Docs](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/caching-dependencies-to-speed-up-workflows)
 - [GitHub Actions の Cache 管理(2023 年 1 月の場合)](https://zenn.dev/hankei6km/articles/manage-cache-in-github-actions-2023-01)
