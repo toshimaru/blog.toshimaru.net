@@ -10,7 +10,7 @@ group :jekyll_plugins do
   gem 'jekyll-include-cache'
   gem 'jekyll-paginate'
   gem 'jekyll-redirect-from'
-  gem 'jekyll-sass-converter', '2.2.0'
+  gem 'jekyll-sass-converter', '3.1.0'
   gem 'jekyll-seo-tag'
   gem 'jekyll-sitemap'
   gem 'jekyll-tagging-related_posts'
