@@ -62,6 +62,9 @@ GitHub Actionsのビルドステップは下記のようになる。
 - `--keep-spaces-between-attributes`
 - `--ensure-spec-compliant-unquoted-attribute-values`
 
+最新の[minify-html v0.16.4](https://github.com/wilsonzlin/minify-html/releases/tag/v0.16.4)では、これらのオプションは無効なオプションとなっており、これらを付与しなくても正常に動作しました。
+{: .warning}
+
 ## まとめ
 
 SSG（静的サイト生成）で生成したHTMLをminifyするには、[wilsonzlin/minify-html](https://github.com/wilsonzlin/minify-html/)が便利だった。
