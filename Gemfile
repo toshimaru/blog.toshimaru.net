@@ -13,8 +13,12 @@ group :jekyll_plugins do
   gem 'jekyll-sass-converter', '3.1.0'
   gem 'jekyll-seo-tag'
   gem 'jekyll-sitemap'
-  gem 'jekyll-tagging-related_posts'
   gem 'jekyll-tagging'
+  gem 'jekyll-tagging-related_posts'
   gem 'jekyll-toc'
   gem 'jemoji'
+end
+
+group :development do
+  gem 'irb'
 end
