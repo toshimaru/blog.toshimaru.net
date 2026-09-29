@@ -3,7 +3,7 @@ layout: post
 title: DHH が Rails を捨てた日
 description: Rails の生みの親である DHH が Rails World 2026 のキーノートで語った内容に、いろいろと思うところがあり、"ペン"を取った。
 tags: rails
-image: "/images/posts/railw-world-2026.png"
+image: "/images/posts/rails-world-2026.png"
 hideimage: true
 ---
 
