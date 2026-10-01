@@ -1,7 +1,7 @@
 ---
 layout: post
 title: DHH が Rails を捨てた日
-description: Rails の生みの親である DHH が Rails World 2026 のキーノートで語った内容に、いろいろと思うところがあり、"ペン"を取った。
+description: Rails の生みの親である DHH が Rails World 2026 のキーノートで語った内容に、いろいろと思うところがあり、ペンを取った。
 tags: rails
 image: "/images/posts/rails-world-2026.png"
 hideimage: true
@@ -65,7 +65,7 @@ ref. [rails/rails@2533c93](https://github.com/rails/rails/commit/2533c938acb97c2
 
 僕自身も Opus 4.5 のリリースタイミングが、真の AI コーディングエージェント時代の幕開けだと思っている。それまでの AI は、おもちゃでしかなかった。よくミスるし、嘘をつく。ちょっと難しい作業をやらせると、プロンプトで正しくガイドしないと直ぐに道を外す。だったら自分で書いたほうが早い――それが Opus 4.5 登場以前の僕の AI の印象だった。
 
-Opus 4.5 がリリースされて話題になったとき、DB 変更を含むそこそこ難しそうな中サイズのタスクを任せてみた。Plan が出てくる、90点の計画だ。問題ない。実装を任せてみる。自分でやると最低一週間はかかりそうな実装が、Opus は15分で終わらせた。仕上がった Pull Request はコード変更、テスト追加、DB 変更をきちんと含んでいた。70点の実装、合格点だ。ツッコミどころは多少残るが、人間の生産性を遥かに凌駕しているのは間違いない。
+Opus 4.5 がリリースされて話題になったとき、データベースのスキーマ変更を含む、そこそこ難しそうな中サイズのタスクを任せてみた。Plan が出てくる、90点の計画だ。問題ない。実装を任せてみる。自分でやると最低一週間はかかりそうな実装が、Opus は15分で終わらせた。仕上がった Pull Request はコード変更、テスト追加、DB 変更をきちんと含んでいた。70点の実装、合格点だ。ツッコミどころは多少残るが、人間の生産性を遥かに凌駕しているのは間違いない。
 
 さて、今よりもう少し未来の AI コーディングエージェントを想像してみよう。仮にまったく手でコードを書かず、目でコードを読まない時代になったとして、人間の尺度によって選定されたプログラミング言語は意味があるだろうか？ もし関係ないのだとしたら、処理速度が速く、メモリフットプリントが少さく、堅牢性の高い静的型付けの言語が選定されるのではないか？ そこに Ruby on Rails の優位性はあるだろうか？
 
@@ -103,3 +103,5 @@ DHH は AI 時代のプログラミング言語として Rust を推している
 そして今年の Kaigi on Rails には、DHH が来る。今回の Rails World の内容を踏まえると、正直 Rails どストレートな内容は期待できないであろう。しかし、発表タイトルから内容を察するに、彼が見据えるプログラミング・プログラマの未来については十分に語られるであろう。僕も参加予定なので、彼がどんな言葉を語るのか、現地で見届けようと思う。
 
 <blockquote class="twitter-tweet" data-cards="hidden"><p lang="en" dir="ltr">DHH&#39;s keynote is titled &quot;Where the tracks go next&quot;. <a href="https://t.co/yDv40mfVt3">https://t.co/yDv40mfVt3</a> <a href="https://x.com/hashtag/kaigionrails?src=hash&amp;ref_src=twsrc%5Etfw">#kaigionrails</a></p>&mdash; Kaigi on Rails (@kaigionrails) <a href="https://x.com/kaigionrails/status/2103098323708354902?ref_src=twsrc%5Etfw">September 24, 2026</a></blockquote>
+
+P.S. [こちら](https://connpass.com/event/406332/)の Kaigi on Rails 勉強会に登壇予定です。興味ある方はどうぞ。
